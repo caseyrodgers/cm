@@ -152,7 +152,7 @@ p {
 }
 
 #content-middle {
-    height: 440px;
+    height: 280px;
 }
 
 #content-middle h2 {
@@ -178,6 +178,12 @@ p {
 
 #big-buttons {
     margin-top: 50px;
+	float: right;
+}
+
+#big-buttons a {
+	display: block;
+	margin-bottom: 10px;
 }
 
 .info-box p {

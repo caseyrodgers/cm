@@ -8,6 +8,7 @@ import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckHandler;
 import hotmath.gwt.cm_core.client.model.CatchupMathVersion;
 import hotmath.gwt.cm_core.client.model.UserSyncInfo;
 import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
+import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;

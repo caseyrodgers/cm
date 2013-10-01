@@ -4708,3 +4708,14 @@ where  pu.uid = ?
        and pu.pid = ?
        
         
+        
+.key=GET_STUDENT_ASSIGNMENT_USER_INFO
+
+ select u.user_name, a.status, a.due_date, a.close_past_due, ua.is_graded,ua.turn_in_date,ua.last_access, a.is_prevent_lesson
+ from  HA_USER u JOIN CM_ASSIGNMENT a  
+     on a.group_id = u.group_id 
+ JOIN CM_ASSIGNMENT_USER ua 
+     ON (ua.assign_key = a.assign_key and ua.uid = u.uid)
+where u.uid = ? 
+and a.assign_key = ?
+        

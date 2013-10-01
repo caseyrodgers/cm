@@ -1,16 +1,19 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
 
-import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
-import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.HasWhiteboard;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
-import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
-import hotmath.gwt.cm_mobile_shared.client.page.IPage;
-import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
+import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar;
+import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar.Callback;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
 
 import java.util.List;
 
@@ -19,6 +22,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -26,14 +30,43 @@ public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel
 
 	ProblemNumber problem;
 	
-    FlowPanel contentPanel;
+    FlowPanel _mainContainer;
+    
+    ShowWorkPanel2 _showWork;
+    ShowWorkSubToolBar _subBar;
+    private FlowPanel _whiteboardWrapper;
+    private String _lastPid;
     
 	public PrescriptionLessonResourceResultsViewImpl() {
-	    contentPanel = new FlowPanel();
-	    initWidget(contentPanel);
+	    _mainContainer = new FlowPanel();
+	    initWidget(_mainContainer);
 	    setStyleName("prescriptionLessonResourceResultsViewImpl");
 	    
-	    setupTriggers(this);
+	    
+	    _subBar = new ShowWorkSubToolBar(false,  false,  new Callback() {
+            
+            @Override
+            public void whiteboardSubmitted() {
+            }
+            
+            @Override
+            public void showWhiteboard() {
+            }
+            
+            @Override
+            public void showProblem(boolean b) {
+                _showWork.setBackground(b);
+            }
+            
+            @Override
+            public void showLesson() {
+            }
+            
+            @Override
+            public void hideWhiteboard() {
+                PrescriptionLessonResourceResultsViewImpl.this.hideWhiteboard();
+            }
+        });
 	}
 
 	Presenter presenter;
@@ -66,30 +99,15 @@ public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel
 
     @Override
     public void setQuizResults(String title, String resultHtml, String resultJson, int questionCount, int correctCount) {
-        contentPanel.clear();
-        contentPanel.add(new HTML("<h1>" + title + "</h1>"));
-        contentPanel.add(new HTML(resultHtml));
+        _mainContainer.clear();
+        _mainContainer.add(new HTML("<h1>" + title + "</h1>"));
+        _mainContainer.add(new HTML(resultHtml));
         
         markAnswers(resultJson);
         
     }
-    
-    private void showWhiteboard_Gwt(String pid) {
-        ShowWorkActivity activity = new ShowWorkActivity(CatchupMathMobile3.__clientFactory.getEventBus(), pid,"Quiz Results",0);
-        ShowWorkView view = CatchupMathMobile3.__clientFactory.getShowWorkView();
-        CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
-        
-        view.setPresenter(activity);
-    }
-    
 
-    private native void setupTriggers(PrescriptionLessonResourceResultsViewImpl x) /*-{
-    
-        $wnd.showWhiteboard_Gwt = function (pid) {
-            x.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsViewImpl::showWhiteboard_Gwt(Ljava/lang/String;)(pid);
-        };
-        
-    }-*/;
+
     
     /**
      * Parse JSONized array of HaTestRunResult objects
@@ -123,5 +141,54 @@ public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel
     
     static private native void setQuizQuestionResult(String pid, String result) /*-{
         $wnd.setQuizQuestionResult(pid, result);
-    }-*/;    
+    }-*/;
+
+    @Override
+    public void showWhiteboard(String pid) {
+        CmGwtUtils.jsni_positionQuestionToTopOfViewable(pid);
+        
+        _lastPid = pid;
+        
+        if(_showWork != null) {
+            hideWhiteboard();
+        }
+        _subBar.setupWhiteboardTools(true);
+        
+         _whiteboardWrapper = new FlowPanel();
+         _whiteboardWrapper.add(_subBar);
+        _showWork = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
+            @Override
+            public void windowResized() {
+            }
+
+            @Override
+            public void showWorkIsReady() {
+                presenter.loadWhiteboard(_showWork, _lastPid);                
+            }
+
+            @Override
+            public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
+                return null; // return presenter.getWhiteboardSaveAction(_lastPid, commandType, data);
+            }
+        });
+        _whiteboardWrapper.addStyleName("static_whiteboard");
+        _whiteboardWrapper.add(_showWork);
+        _mainContainer.add(_whiteboardWrapper);
+        
+        _showWork.setBackground(_subBar.getShowProblem());
+        
+        CmGwtUtils.addDoubleTapRemoveEvent(_showWork.getElement());
+        
+        // position to top of document so toolbar is visible on open.
+        //Window.scrollTo(0, 0);
+
+        CmGwtUtils.resizeElement(_mainContainer.getElement());
+        CmGwtUtils.moveToTopOfViewableScreen(_whiteboardWrapper.getElement(), _whiteboardWrapper.getElement());
+        
+    }
+
+    private void hideWhiteboard() {
+        // TODO Auto-generated method stub
+        
+    }    
 }

@@ -7,6 +7,14 @@ public class GetUserSyncAction implements Action<UserSyncInfo> {
     int uid;
     private int userActiveMinutes;
     boolean fullSyncCheck;
+
+    public GetUserSyncAction() {}
+    
+    public GetUserSyncAction(int uid) {
+        this.uid = uid;
+        this.fullSyncCheck = true;
+    }
+
     
     public boolean isFullSyncCheck() {
         return fullSyncCheck;
@@ -14,12 +22,6 @@ public class GetUserSyncAction implements Action<UserSyncInfo> {
 
     public void setFullSyncCheck(boolean fullSyncCheck) {
         this.fullSyncCheck = fullSyncCheck;
-    }
-
-    public GetUserSyncAction() {}
-    
-    public GetUserSyncAction(int uid) {
-        this.uid = uid;
     }
 
     public int getUid() {

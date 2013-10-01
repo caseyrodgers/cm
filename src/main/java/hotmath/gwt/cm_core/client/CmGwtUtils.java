@@ -267,5 +267,27 @@ public class CmGwtUtils {
         String styles = "width: " + width + ";height: " + height;
         element.setAttribute("style", styles);
     }
+
+
+    
+    
+
+
+    /** Search for a quiz question and scroll it to the top
+     *  of viewable area.
+     *  
+     * @param pid
+     */
+    static native public void jsni_positionQuestionToTopOfViewable(String pid) /*-{
+        var questions = $wnd.$('.question_div');
+        questions.each(function(index) {
+            var pp = $wnd.$( this ).attr('guid');
+            if(pid == pp) {
+                var el = this;
+                var top = $wnd.DL_GetElementTop(el)
+                $wnd.scrollTo(1, top - 70);
+            } 
+        });
+    }-*/;
     
 }

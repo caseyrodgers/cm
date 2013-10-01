@@ -101,8 +101,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         /** empty */
     }
 
-    /** Only assignments in draft mode will have 
-     *  their problems saved.
+    /**
+     * Only assignments in draft mode will have their problems saved.
      * 
      * @param ass
      * @return
@@ -139,9 +139,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setString(7, ass.getStatus());
                     ps.setInt(8, ass.isAllowPastDueSubmits() ? 0 : 1);
                     ps.setInt(9, ass.isGraded() ? 1 : 0);
-                    ps.setInt(10, ass.isAutoRelease()? 1: 0);
-                    ps.setInt(11, ass.isPersonalized()? 1: 0);
-                    ps.setInt(12, ass.isPreventLessonAccess() ? 1: 0);
+                    ps.setInt(10, ass.isAutoRelease() ? 1 : 0);
+                    ps.setInt(11, ass.isPersonalized() ? 1 : 0);
+                    ps.setInt(12, ass.isPreventLessonAccess() ? 1 : 0);
                     return ps;
                 }
             }, keyHolder);
@@ -175,30 +175,29 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
         final int assKey = assignKey[0];
 
-
         saveAssignmentPids(assKey, ass);
-        
+
         return assKey;
 
     }
 
-    
-    /** Remove existing and recreate the entire PID set
+    /**
+     * Remove existing and recreate the entire PID set
      * 
      * @param assKey
      * @param ass
      */
     private void saveAssignmentPids(final int assKey, final Assignment ass) {
-        
+
         __logger.debug("Saving assignment pids for: " + ass.getAssignKey());
         /**
          * save the PIDS contained in this Assignment
          * 
          */
         if (ass.getPids() != null && ass.getPids().size() > 0) {
-            
 
-            /** Only save pids if there are currently ZERO 
+            /**
+             * Only save pids if there are currently ZERO
              * 
              */
             String sql = "select count(*) as count_pids from CM_ASSIGNMENT_PIDS where assign_key = ?";
@@ -208,24 +207,24 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     return rs.getInt("count_pids");
                 }
             });
-            if(cnt == 0) {
+            if (cnt == 0) {
                 deleteAssignmentPids(assKey);
-    
+
                 String sqlPids = "insert into CM_ASSIGNMENT_PIDS(assign_key, pid, label, lesson, lesson_file, ordinal_number)values(?,?,?,?,?,?)";
                 final int counter[] = new int[1];
                 getJdbcTemplate().batchUpdate(sqlPids, new BatchPreparedStatementSetter() {
-    
+
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
                         ps.setInt(1, assKey);
                         ProblemDto p = ass.getPids().get(i);
-    
+
                         String pidParts[] = p.getPid().split("\\$");
                         String fullPid = pidParts[0];
                         if (pidParts.length > 1) {
                             try {
                                 fullPid = SolutionDao.getInstance().getGlobalSolutionContext(pidParts[0] + "$" + pidParts[1]).getPid();
-    
+
                             } catch (Exception e) {
                                 __logger.error("Error getting global context name", e);
                             }
@@ -236,7 +235,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         ps.setString(5, p.getLesson().getLessonFile());
                         ps.setInt(6, ++counter[0]);
                     }
-    
+
                     @Override
                     public int getBatchSize() {
                         return ass.getPids().size();
@@ -245,8 +244,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         }
     }
-    
-    
+
     /**
      * Fetch a persisted Assignment from DB
      * 
@@ -368,7 +366,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return new AssignmentLessonPidSelector(conn, lessonName, lessonFile, subject).getProblems();
     }
 
-
     public List<Assignment> getAssignments(int adminId, int groupId) throws PropertyLoadFileException {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENTS_FOR_GROUP");
         List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] { groupId }, new RowMapper<Assignment>() {
@@ -401,14 +398,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         List<AssignmentGradeDetailInfo> infos = getJdbcTemplate().query(sql, new Object[] { assignKey }, new RowMapper<AssignmentGradeDetailInfo>() {
             @Override
             public AssignmentGradeDetailInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
-                
+
                 int inGroup = rs.getInt("num_students_in_group");
                 int specified = rs.getInt("num_students_specified");
                 int inAssignment;
-                if(specified > 0) {
+                if (specified > 0) {
                     inAssignment = specified;
-                }
-                else {
+                } else {
                     inAssignment = inGroup;
                 }
                 return new AssignmentGradeDetailInfo(rs.getInt("num_students_graded"), inAssignment);
@@ -444,17 +440,17 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     private Assignment extractAssignmentFromRs(ResultSet rs) throws SQLException {
-        
+
         boolean allowPastDueSubmits = rs.getInt("close_past_due") == 0;
-        
+
         return new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"),
-                rs.getDate("due_date"), null, rs.getString("status"), allowPastDueSubmits, rs.getInt("is_graded") != 0,
-                rs.getTimestamp("last_modified"), rs.getInt("auto_release_grades")!=0, rs.getInt("is_personalized")!=0,rs.getInt("is_prevent_lesson")!=0);
+                rs.getDate("due_date"), null, rs.getString("status"), allowPastDueSubmits, rs.getInt("is_graded") != 0, rs.getTimestamp("last_modified"),
+                rs.getInt("auto_release_grades") != 0, rs.getInt("is_personalized") != 0, rs.getInt("is_prevent_lesson") != 0);
     }
 
     /**
-     * delete the PIDS contained in this Assignment and any 
-     * already assigned PIDS in CM_ASSIGNMENT_PIDS_USER
+     * delete the PIDS contained in this Assignment and any already assigned
+     * PIDS in CM_ASSIGNMENT_PIDS_USER
      * 
      */
     private void deleteAssignmentPids(final int assKey) {
@@ -467,10 +463,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return ps;
             }
         });
-        
+
         boolean deleteAlreadyAssigned = true;
-        if(deleteAlreadyAssigned) {
-            /** delete existing, already assigned to user pids
+        if (deleteAlreadyAssigned) {
+            /**
+             * delete existing, already assigned to user pids
              * 
              */
             getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -504,26 +501,25 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
     }
-    
-    
+
     public CmList<StudentAssignment> getAssignmentGradeBook(final int assignKey) throws Exception {
         CmList<StudentAssignment> stuAssignments = new CmArrayList<StudentAssignment>();
         final Assignment assignment = getAssignment(assignKey);
 
-
-        /** assignments are either ALL students in group, or just the 
-         *  ones specified in CM_ASSIGNMENT_USERS_SPECIFIED.
-         *  
-         *  TODO: a way to specified directly in SQL
+        /**
+         * assignments are either ALL students in group, or just the ones
+         * specified in CM_ASSIGNMENT_USERS_SPECIFIED.
+         * 
+         * TODO: a way to specified directly in SQL
          */
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_3");
         sql = getStudentsInAssignmentSqlRestriction(assignKey, sql);
-        
+
         /**
          * get assignment problem status list for all users
          */
         final Map<Integer, String> nameMap = new HashMap<Integer, String>();
-       List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey, assignKey, assignKey },
+        List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey, assignKey, assignKey },
                 new RowMapper<StudentProblemDto>() {
                     @Override
                     public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -553,7 +549,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         int uid = 0;
         CmList<StudentProblemDto> probList = null;
         Map<Integer, StudentAssignment> stuAssignMap = new HashMap<Integer, StudentAssignment>();
-        Map<String, StudentAssignmentUserInfo> userInfos = new HashMap<String,StudentAssignmentUserInfo>();
+        Map<String, StudentAssignmentUserInfo> userInfos = new HashMap<String, StudentAssignmentUserInfo>();
         for (StudentProblemDto probDto : problemStatuses) {
             if (probDto.getUid() != uid) {
                 probList = new CmArrayList<StudentProblemDto>();
@@ -562,7 +558,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 StudentAssignmentUserInfo userInfo = getStudentAssignmentUserInfo(uid, assignKey);
 
                 StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, userInfo.getTurnInDate(), userInfo.isGraded());
-                stuAssignment.setStudentStatuses(new StudentAssignmentStatuses(stuAssignment,probList,null));
+                stuAssignment.setStudentStatuses(new StudentAssignmentStatuses(stuAssignment, probList, null));
                 stuAssignment.setStudentName(nameMap.get(uid));
                 stuAssignments.add(stuAssignment);
                 stuAssignMap.put(uid, stuAssignment);
@@ -595,17 +591,16 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
             if (probDto.getUid() != uid) {
                 if (lessonStatus != null) {
-                    
+
                     lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
                     StudentAssignment sa = stuAssignMap.get(uid);
                     if (sa.isGraded() == false) {
                         sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-                    }
-                    else {
-                    	sa.setHomeworkStatus("Graded");
+                    } else {
+                        sa.setHomeworkStatus("Graded");
                     }
                     sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit, sa.isGraded()));
-                    
+
                 }
                 lessonName = "";
                 totCount = 0;
@@ -671,9 +666,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             StudentAssignment sa = stuAssignMap.get(uid);
             if (sa.isGraded() == false) {
                 sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-            }
-            else {
-            	sa.setHomeworkStatus("Graded");
+            } else {
+                sa.setHomeworkStatus("Graded");
             }
             sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit, sa.isGraded()));
         }
@@ -689,46 +683,48 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          * 
          * 
          */
-        
+
         for (StudentAssignment sa : stuAssignments) {
             setStudentDetailStatus(sa);
-            
-            
-            sa.setStudentStatuses(null); // don't need in gradebook, need on student/assignment at time
 
-//            for (StudentProblemDto sd : sa.getAssigmentStatuses()) {
-//
-//                /**
-//                 * Make sure the problem type is set for each student problem.
-//                 * The information is shared from the assignment base list
-//                 * because problem type is determined at runtime.
-//                 * 
-//                 */
-//                ProblemDto studentProblem = sd.getProblem();
-//                String pid = studentProblem.getPidOnly();
-//                for (ProblemDto pd : assignment.getPids()) {
-//                    if (pd.getPidOnly().equals(pid)) {
-//                        studentProblem.setProblemType(pd.getProblemType());
-//                    }
-//                }
-//            }
+            sa.setStudentStatuses(null); // don't need in gradebook, need on
+                                         // student/assignment at time
+
+            // for (StudentProblemDto sd : sa.getAssigmentStatuses()) {
+            //
+            // /**
+            // * Make sure the problem type is set for each student problem.
+            // * The information is shared from the assignment base list
+            // * because problem type is determined at runtime.
+            // *
+            // */
+            // ProblemDto studentProblem = sd.getProblem();
+            // String pid = studentProblem.getPidOnly();
+            // for (ProblemDto pd : assignment.getPids()) {
+            // if (pd.getPidOnly().equals(pid)) {
+            // studentProblem.setProblemType(pd.getProblemType());
+            // }
+            // }
+            // }
 
         }
-        
+
         return stuAssignments;
     }
 
     private String getStudentsInAssignmentSqlRestriction(int assignKey, String sql) {
-        sql = SbUtilities.replaceSubString(sql, "$$LIMIT_TO_SPECIFIED_USERS$$", (hasAnySpecifiedUsers(assignKey)? " and u.uid in (select uid from CM_ASSIGNMENT_USERS_SPECIFIED where assign_key = " + assignKey + ")" : ""));
+        sql = SbUtilities.replaceSubString(sql, "$$LIMIT_TO_SPECIFIED_USERS$$",
+                (hasAnySpecifiedUsers(assignKey) ? " and u.uid in (select uid from CM_ASSIGNMENT_USERS_SPECIFIED where assign_key = " + assignKey + ")" : ""));
         return sql;
     }
 
-    /** does this assignment have ANY specifically specified users?
+    /**
+     * does this assignment have ANY specifically specified users?
      * 
-     * If so, then only those users will have access to the assignment.
-     * If no specific users specified, then all users in group are assigned.
+     * If so, then only those users will have access to the assignment. If no
+     * specific users specified, then all users in group are assigned.
      * 
-     *  
+     * 
      * @param assignKey
      * @return
      */
@@ -740,7 +736,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return rs.getInt(1);
             }
         });
-        return cnt>0;
+        return cnt > 0;
     }
 
     public List<Integer> getAssignmentsForGroup(int groupId, Date fromDate, Date toDate) {
@@ -775,7 +771,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
 
         }
-        sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(sa.getStudentStatuses().getAssigmentStatuses().size(), correct, inCorrect, halfCredit, sa.isGraded()));
+        sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(sa.getStudentStatuses().getAssigmentStatuses().size(), correct, inCorrect, halfCredit,
+                sa.isGraded()));
         sa.setStudentDetailStatus(getLessonStatus(sa.getStudentStatuses().getAssigmentStatuses().size(), complete, submitted, viewed));
     }
 
@@ -805,7 +802,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     public List<StudentAssignment> getAssignmentWorkForStudent(int userId) throws Exception {
-    	return getAssignmentWorkForStudent(userId, null, null);
+        return getAssignmentWorkForStudent(userId, null, null);
     }
 
     public List<StudentAssignment> getAssignmentWorkForStudent(int userId, Date fromDate, Date toDate) throws Exception {
@@ -819,10 +816,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         String dates[] = QueryHelper.getDateTimeRange(fromDate, toDate);
 
         List<StudentProblemDto> problemStatuses = new ArrayList<StudentProblemDto>();
-        final Map<Integer, Boolean> asgGradedMap = new HashMap<Integer,Boolean>();
+        final Map<Integer, Boolean> asgGradedMap = new HashMap<Integer, Boolean>();
         try {
-            problemStatuses = getJdbcTemplate().query(sql, new Object[] { dates[0], dates[1], userId, userId, userId },
-            		new RowMapper<StudentProblemDto>() {
+            problemStatuses = getJdbcTemplate().query(sql, new Object[] { dates[0], dates[1], userId, userId, userId }, new RowMapper<StudentProblemDto>() {
                 @Override
                 public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                     StudentProblemDto prob = new StudentProblemDto();
@@ -835,7 +831,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     prob.setProblem(probDto);
                     prob.setStatus(rs.getString("status"));
                     prob.setGraded(rs.getInt("is_graded") > 0);
-                    asgGradedMap.put(rs.getInt("assign_key"), rs.getInt("assignment_graded")>0);
+                    asgGradedMap.put(rs.getInt("assign_key"), rs.getInt("assignment_graded") > 0);
                     return prob;
                 }
             });
@@ -995,9 +991,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         int assignCount = 0, errorCount = 0;
         AssignmentInfo assignmentInfo = new AssignmentInfo();
         String messages = null;
-        
+
         unassignStudentsFromAssignment(assignKey);
-        
+
         for (final StudentDto s : students) {
 
             try {
@@ -1028,10 +1024,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     private void unassignStudentsFromAssignment(final int assignKey) {
-        getJdbcTemplate().update("delete from CM_ASSIGNMENT_USERS_SPECIFIED where assign_key = ?",new PreparedStatementSetter() {
+        getJdbcTemplate().update("delete from CM_ASSIGNMENT_USERS_SPECIFIED where assign_key = ?", new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
-                ps.setInt(1,  assignKey);
+                ps.setInt(1, assignKey);
             }
         });
     }
@@ -1095,12 +1091,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ASSIGNMENT_STATUS");
         String assignKeyInList = createStudentAssignmentInList(uid);
-        String assignmentsSql="";
-        if(assignKeyInList.length() > 0) {
+        String assignmentsSql = "";
+        if (assignKeyInList.length() > 0) {
             assignmentsSql = " and a.assign_key in (" + assignKeyInList + ")";
         }
         sql = SbUtilities.replaceSubString(sql, "$$STUDENT_ASSIGN_KEYS$$", assignmentsSql);
-        
+
         getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -1117,27 +1113,28 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         });
     }
 
-    /** Create an SQL IN list that has all the assignments
-     *  this student has access it.
-     *  
-     *  This is all assignments in which this user has been 
-     *  specially added.   
-     *  
-     *  And all the assignments in this group that are 'default'.
-     *  Meaning they do not have ANY specific user specified.
-     *  
-     *  'default' assignments are assigned to all students in a group.
-     *  
-     *  If no assignments are available to student, then empty string is returned.
-     *  
-     *  
+    /**
+     * Create an SQL IN list that has all the assignments this student has
+     * access it.
+     * 
+     * This is all assignments in which this user has been specially added.
+     * 
+     * And all the assignments in this group that are 'default'. Meaning they do
+     * not have ANY specific user specified.
+     * 
+     * 'default' assignments are assigned to all students in a group.
+     * 
+     * If no assignments are available to student, then empty string is
+     * returned.
+     * 
+     * 
      * @param uid
      * @return
      */
     private String createStudentAssignmentInList(int uid) {
-        
-        /** Get list of assignments that have been specifically
-         *  assigned to me.
+
+        /**
+         * Get list of assignments that have been specifically assigned to me.
          */
         String sql = "select distinct assign_key from CM_ASSIGNMENT_USERS_SPECIFIED where uid = ?";
         List<Integer> assignKeysSpecific = getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Integer>() {
@@ -1146,29 +1143,24 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return rs.getInt("assign_key");
             }
         });
-        
-        /**  Get a list of assigments that do not have ANY specified users.  These
-         *   are the assignments that are assigned to ALL users.
-        */
-        sql = "select a.assign_key " +
-              "from    CM_ASSIGNMENT a " +
-              "   JOIN HA_USER u " + 
-              "     on u.group_id = a.group_id " +
-              "   LEFT JOIN CM_ASSIGNMENT_USERS_SPECIFIED us " + 
-              " on us.assign_key = a.assign_key " +
-              " where u.uid = ? " +
-              " and us.assign_key is null ";
+
+        /**
+         * Get a list of assigments that do not have ANY specified users. These
+         * are the assignments that are assigned to ALL users.
+         */
+        sql = "select a.assign_key " + "from    CM_ASSIGNMENT a " + "   JOIN HA_USER u " + "     on u.group_id = a.group_id "
+                + "   LEFT JOIN CM_ASSIGNMENT_USERS_SPECIFIED us " + " on us.assign_key = a.assign_key " + " where u.uid = ? " + " and us.assign_key is null ";
         List<Integer> assignKeysDefault = getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getInt("assign_key");
             }
         });
-        
-        String inList="";
+
+        String inList = "";
         assignKeysSpecific.addAll(assignKeysDefault);
-        for(Integer ak: assignKeysSpecific) {
-            if(inList.length() > 0) {
+        for (Integer ak : assignKeysSpecific) {
+            if (inList.length() > 0) {
                 inList += ",";
             }
             inList += ak;
@@ -1188,22 +1180,22 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             public StudentAssignmentInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
 
                 int assignKey = rs.getInt("assign_key");
-                if(hasAnySpecifiedUsers(assignKey)) {
-                    // then only include this assignment 
+                if (hasAnySpecifiedUsers(assignKey)) {
+                    // then only include this assignment
                     // if this user has been specifically added
                     // to CM_ASSIGNMENT_USERS_SPECIFIED
-                    if(!isUserSpecificallyAddedToAssignment(uid, assignKey)) {
+                    if (!isUserSpecificallyAddedToAssignment(uid, assignKey)) {
                         return null; // skip it.
                     }
                 }
-                
+
                 int cntSubmitted = rs.getInt("cnt_submitted");
                 int cntProblems = rs.getInt("cnt_problems");
                 String status = rs.getString("status");
                 Date dueDate = rs.getDate("due_date");
                 Date turnInDate = rs.getDate("turn_in_date");
-                
-                if(status.equals("Open") && turnInDate != null) {
+
+                if (status.equals("Open") && turnInDate != null) {
                     status = "Turned In";
                 }
                 boolean isGraded = rs.getInt("is_graded") != 0 ? true : false;
@@ -1216,8 +1208,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                             String sl = status.toLowerCase();
                             score = "0%";
                         }
-                        
-                        if(!status.equals("Closed")) {
+
+                        if (!status.equals("Closed")) {
                             status = "Graded";
                         }
                     } catch (Exception e) {
@@ -1238,7 +1230,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         List<StudentAssignmentInfo> assInfosNoNull = new ArrayList<StudentAssignmentInfo>();
         // aggregate the number of unread annotations for each assignment
         for (StudentAssignmentInfo ass : assInfos) {
-            if(ass == null) {
+            if (ass == null) {
                 continue;
             }
             assInfosNoNull.add(ass);
@@ -1266,7 +1258,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     /**
-     * has this assignment been 'changed' since the last time this student 'viewed' it?
+     * has this assignment been 'changed' since the last time this student
+     * 'viewed' it?
      */
     protected boolean determineIfAssignmentHasChanged(int assignKey, int uid) {
         try {
@@ -1385,40 +1378,37 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     public List<StudentAssignmentStatus> getCompletedAssignmentsForUsersDateRange(List<String> uids, Date fromDate, Date toDate) throws Exception {
 
-    	String[] vals = QueryHelper.getDateTimeRange(fromDate, toDate);
+        String[] vals = QueryHelper.getDateTimeRange(fromDate, toDate);
 
-    	List<StudentAssignmentStatus> list = null;
-    	try {
-    		list = getJdbcTemplate().query(
-    				CmMultiLinePropertyReader.getInstance().getProperty("COMPLETED_ASSIGNMENT_GRADES_IN_DATE_RANGE",
-    						QueryHelper.createInListMap(QueryHelper.createInList(uids)) ),
-    						new Object[]{vals[0], vals[1]},
-    						new RowMapper<StudentAssignmentStatus>() {
+        List<StudentAssignmentStatus> list = null;
+        try {
+            list = getJdbcTemplate().query(
+                    CmMultiLinePropertyReader.getInstance().getProperty("COMPLETED_ASSIGNMENT_GRADES_IN_DATE_RANGE",
+                            QueryHelper.createInListMap(QueryHelper.createInList(uids))), new Object[] { vals[0], vals[1] },
+                    new RowMapper<StudentAssignmentStatus>() {
 
-    					@Override
-    					public StudentAssignmentStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        @Override
+                        public StudentAssignmentStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-    						int userId = rs.getInt("uid");
-    						String userName = rs.getString("user_name");
-    						int assignKey = rs.getInt("assign_key");
-    						int numProblems = rs.getInt("num_problems");
-    						int numCorrect = rs.getInt("num_correct");
-    						int numHalfCredit = rs.getInt("num_halfcredit");
-    						int numIncorrect = rs.getInt("num_incorrect");
+                            int userId = rs.getInt("uid");
+                            String userName = rs.getString("user_name");
+                            int assignKey = rs.getInt("assign_key");
+                            int numProblems = rs.getInt("num_problems");
+                            int numCorrect = rs.getInt("num_correct");
+                            int numHalfCredit = rs.getInt("num_halfcredit");
+                            int numIncorrect = rs.getInt("num_incorrect");
 
-    						int score = getHomeworkGradeValue(numProblems, numCorrect, numIncorrect, numHalfCredit);
-    						StudentAssignmentStatus status =
-    								new StudentAssignmentStatus(userName, userId, score, assignKey, numCorrect, numHalfCredit,
-    										numCorrect + numHalfCredit + numIncorrect);
-    						return status;
-    					}
-    				});
-    	}
-    	catch (Exception e) {
-    		__logger.error("Error getting completed assignments", e);
-    		throw e;
-    	}
-    	return list;
+                            int score = getHomeworkGradeValue(numProblems, numCorrect, numIncorrect, numHalfCredit);
+                            StudentAssignmentStatus status = new StudentAssignmentStatus(userName, userId, score, assignKey, numCorrect, numHalfCredit,
+                                    numCorrect + numHalfCredit + numIncorrect);
+                            return status;
+                        }
+                    });
+        } catch (Exception e) {
+            __logger.error("Error getting completed assignments", e);
+            throw e;
+        }
+        return list;
     }
 
     protected String getUserScore(int uid, int assignKey) throws Exception {
@@ -1436,19 +1426,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 } else if (status.equals("incorrect")) {
                     counts[INCORRECT] += 1;
                 }
-                
+
                 counts[TOTAL]++;
                 return 0; // unused
             }
         });
 
-        return GradeBookUtils.getHomeworkGrade((int)counts[TOTAL], (int) counts[CORRECT], (int) counts[INCORRECT], (int) counts[HALFCREDIT]);
+        return GradeBookUtils.getHomeworkGrade((int) counts[TOTAL], (int) counts[CORRECT], (int) counts[INCORRECT], (int) counts[HALFCREDIT]);
     }
 
     private int getHomeworkGradeValue(int totCount, int totCorrect, int totIncorrect, int totHalfCredit) {
-        
+
         // add .5 for each half correct answer
-        float totCorrectF = (float)totCorrect + (totHalfCredit>0?totHalfCredit / 2:0);
+        float totCorrectF = (float) totCorrect + (totHalfCredit > 0 ? totHalfCredit / 2 : 0);
         if ((totCorrect + totIncorrect + totHalfCredit) > 0) {
             return Math.round(((float) totCorrectF / (float) totCount) * 100.0f);
         }
@@ -1473,9 +1463,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         final Assignment assignment = getAssignment(assignKey);
         studentAssignment.setAssignment(assignment);
-        
-        
-        if(assignment.isPersonalized()) {
+
+        if (assignment.isPersonalized()) {
             CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
             pids.addAll(getStudentAssignmentProblems(assignKey, uid));
             assignment.setPids(pids);
@@ -1519,10 +1508,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         boolean isComplete = true;
         for (StudentProblemDto prob : problemStatuses) {
-            
 
-            if(!prob.isGraded()) {
-    
+            if (!prob.isGraded()) {
+
                 /**
                  * get last input value for this problem
                  * 
@@ -1534,7 +1522,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         return rs.getInt("correct") == 0 ? false : true;
                     }
                 });
-    
+
                 /**
                  * If there is an answer, then update the status accordingly.
                  * 
@@ -1545,7 +1533,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     prob.setStatus(pidAnswers.get(0) ? "Correct" : "Incorrect");
                 }
             }
-                
+
             if (!prob.isComplete() && isComplete) {
                 isComplete = false;
             }
@@ -1578,13 +1566,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
 
         studentAssignment.setTurnInDate(studentInfo.getTurnInDate());
-        studentAssignment.setStudentStatuses(new StudentAssignmentStatuses(studentAssignment,allStatus,null));
+        studentAssignment.setStudentStatuses(new StudentAssignmentStatuses(studentAssignment, allStatus, null));
         studentAssignment.setStudentName(studentInfo.getName());
         studentAssignment.setUid(studentInfo.getUid());
 
         studentAssignment.setGraded(studentInfo.isGraded());
-        if(studentInfo.isGraded()) {
-            //studentAssignment.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(studentAssignment.getStudentStatuses().getAssigmentStatuses()));
+        if (studentInfo.isGraded()) {
+            // studentAssignment.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(studentAssignment.getStudentStatuses().getAssigmentStatuses()));
             studentAssignment.setHomeworkGrade(getUserScore(uid, assignKey));
         }
 
@@ -1608,16 +1596,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     public StudentAssignmentUserInfo getStudentAssignmentUserInfo(final int uid, final int assignKey) throws Exception {
         StudentAssignmentUserInfo studentInfo = null;
 
-        String sql = "select u.user_name, a.status, a.due_date, a.close_past_due, ua.is_graded,ua.turn_in_date,ua.last_access, a.is_prevent_lesson " +
-                     "from  HA_USER u JOIN CM_ASSIGNMENT a  on a.group_id = u.group_id JOIN CM_ASSIGNMENT_USER ua ON ua.assign_key = a.assign_key " +
-                     " where u.uid = ? and a.assign_key = ?";
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_ASSIGNMENT_USER_INFO");
         List<StudentAssignmentUserInfo> assInfos = getJdbcTemplate().query(sql, new Object[] { uid, assignKey }, new RowMapper<StudentAssignmentUserInfo>() {
             @Override
             public StudentAssignmentUserInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
-                boolean isGraded =  rs.getInt("is_graded") != 0 ? true : false;
+                boolean isGraded = rs.getInt("is_graded") != 0 ? true : false;
                 boolean isEditable = rs.getString("status").equals("Open") ? true : false;
-                return new StudentAssignmentUserInfo(uid, rs.getString("user_name"),assignKey, rs.getDate("turn_in_date"),isGraded, isEditable,rs
-                        .getTimestamp("last_access"), rs.getTimestamp("due_date"), rs.getInt("close_past_due")==0, rs.getInt("is_prevent_lesson")!=0);
+                return new StudentAssignmentUserInfo(uid, rs.getString("user_name"), assignKey, rs.getDate("turn_in_date"), isGraded, isEditable, rs
+                        .getTimestamp("last_access"), rs.getTimestamp("due_date"), rs.getInt("close_past_due") == 0, rs.getInt("is_prevent_lesson") != 0);
             }
         });
 
@@ -1642,8 +1628,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             if (cnt != 1) {
                 __logger.error("Did not add new CM_ASSIGNMENT_USER record");
             }
-            
-            /** make sure there are no problems currently defined for this user/assignment
+
+            /**
+             * make sure there are no problems currently defined for this
+             * user/assignment
              * 
              */
             int count = getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -1651,24 +1639,26 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                     String sql = "delete from CM_ASSIGNMENT_PIDS_USER where uid = ? and assign_key = ?";
                     PreparedStatement ps = con.prepareStatement(sql);
-                    ps.setInt(1,  uid);
-                    ps.setInt(2,  assignKey);
+                    ps.setInt(1, uid);
+                    ps.setInt(2, assignKey);
                     return ps;
                 }
             });
-            
+
             studentInfo = new StudentAssignmentUserInfo(assignKey, uid);
         }
         return studentInfo;
     }
-    
-    /** This reads the problems for the named assignment user.
+
+    /**
+     * This reads the problems for the named assignment user.
      * 
-     * If this assignment is not personalized, then use the main table
-     * of solutions (shared).  Otherwise, we need to read from the personalization
+     * If this assignment is not personalized, then use the main table of
+     * solutions (shared). Otherwise, we need to read from the personalization
      * table of pids for this user.
      * 
-     * If the list of personalized pids have not been created then create and persist
+     * If the list of personalized pids have not been created then create and
+     * persist
      * 
      * @param assignKey
      * @param uid
@@ -1676,70 +1666,63 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      */
     private List<ProblemDto> getStudentAssignmentProblems(final int assignKey, final int uid) throws Exception {
 
-        
-        String sql = "select apu.assign_key, apu.pid, ap.id, ap.label, ap.lesson, ap.lesson_file, ap.ordinal_number " +
-                     " from CM_ASSIGNMENT_PIDS_USER apu " +
-                     " JOIN CM_ASSIGNMENT_PIDS ap on ap.id = apu.apid_id " +                     
-                     " where ap.assign_key = ? " +    
-                     " and apu.uid = ?" +
-                     " order by ap.ordinal_number ";
+        String sql = "select apu.assign_key, apu.pid, ap.id, ap.label, ap.lesson, ap.lesson_file, ap.ordinal_number " + " from CM_ASSIGNMENT_PIDS_USER apu "
+                + " JOIN CM_ASSIGNMENT_PIDS ap on ap.id = apu.apid_id " + " where ap.assign_key = ? " + " and apu.uid = ?" + " order by ap.ordinal_number ";
         List<ProblemDto> studentProblems = getJdbcTemplate().query(sql, new Object[] { assignKey, uid }, new RowMapper<ProblemDto>() {
             @Override
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), new LessonModel(rs.getString("lesson"), rs.getString("lesson_file")), rs.getString("label"), rs.getString("pid"), rs.getInt("assign_key"));
+                return new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), new LessonModel(rs.getString("lesson"), rs.getString("lesson_file")), rs
+                        .getString("label"), rs.getString("pid"), rs.getInt("assign_key"));
             }
         });
-        if(studentProblems.size() > 0) {
-            return studentProblems;  // already created, just return
+        if (studentProblems.size() > 0) {
+            return studentProblems; // already created, just return
         }
-        
-        
-        /** Otherwise, create and persist
+
+        /**
+         * Otherwise, create and persist
          * 
          */
-        
-        
-        /** create the set of assignment pids to be used by this user
+
+        /**
+         * create the set of assignment pids to be used by this user
          * 
          */
         Assignment ass = getAssignment(assignKey);
         final List<ProblemDto> personalPids = new ArrayList<ProblemDto>();
-        for(ProblemDto problem: ass.getPids()) {
+        for (ProblemDto problem : ass.getPids()) {
             ProblemDto problemToUse = null;
-            if(ass.isPersonalized()) {
-                boolean foundOneToUse=false;
-                int maxAttempts=10;
-                while(maxAttempts-- > 0) {
+            if (ass.isPersonalized()) {
+                boolean foundOneToUse = false;
+                int maxAttempts = 10;
+                while (maxAttempts-- > 0) {
                     problemToUse = lookupPersonalizedAlternateProblem(problem);
-                    
+
                     System.out.println("Checking problem touse: " + problemToUse);
-                    
-                    if(!personalPids.contains(problemToUse)) {
-                        foundOneToUse=true;
+
+                    if (!personalPids.contains(problemToUse)) {
+                        foundOneToUse = true;
                         break;
-                    }
-                    else {
+                    } else {
                         // try again
                         logger.debug("Found duplicate: " + problemToUse);
                     }
                 }
-                
-                if(!foundOneToUse) {
+
+                if (!foundOneToUse) {
                     logger.error("Could not find alternate problem for: " + problem);
-                }
-                else {
+                } else {
                     personalPids.add(problemToUse);
                 }
-            }
-            else {
+            } else {
                 personalPids.add(problem);
             }
         }
-        
-        
+
         logger.info("Adding pids to CM_ASSIGNMENT_PIDS_USER: " + personalPids);
-        
-        /** Store these as the Pids to use for this student/assignment
+
+        /**
+         * Store these as the Pids to use for this student/assignment
          * 
          */
         String sqlPids = "insert into CM_ASSIGNMENT_PIDS_USER(uid, apid_id, assign_key, pid)values(?,?,?,?)";
@@ -1748,22 +1731,22 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             public int getBatchSize() {
                 return personalPids.size();
             }
-            
+
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                ps.setInt(1,  uid);
+                ps.setInt(1, uid);
                 ps.setInt(2, personalPids.get(i).getId());
-                ps.setInt(3,  assignKey);
-                ps.setString(4,  personalPids.get(i).getPid());
+                ps.setInt(3, assignKey);
+                ps.setString(4, personalPids.get(i).getPid());
             }
         });
-        
-        
+
         return personalPids;
     }
 
-    /** Given a PID figure out what testdef references this pid
-     * and return an alternate/similar problem pid
+    /**
+     * Given a PID figure out what testdef references this pid and return an
+     * alternate/similar problem pid
      * 
      * @param testDef
      * @param pid
@@ -1771,29 +1754,28 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     private ProblemDto lookupPersonalizedAlternateProblem(ProblemDto problem) throws Exception {
-        if(problem.getProblemType() == ProblemType.MULTI_CHOICE) {
+        if (problem.getProblemType() == ProblemType.MULTI_CHOICE) {
             // use info about how stored in quiz to extract alternate problem
             HaTestDef testDef = figureOutAssociatedTestDef(problem);
-            if(testDef != null) {
+            if (testDef != null) {
                 String newPid = ExamDao.getInstance().getAlternateProblem_MultiChoice(testDef, problem.getPid());
-                
-                if(newPid == null) {
+
+                if (newPid == null) {
                     __logger.info("Personalized pid: could not find alternate for '" + problem + "'");
-                }
-                else {
+                } else {
                     __logger.info("Personalized pid: " + problem.getPid() + " with " + newPid);
                     problem.setPid(newPid);
                 }
             }
-        }
-        else if(problem.getProblemType() == ProblemType.INPUT_WIDGET) {
+        } else if (problem.getProblemType() == ProblemType.INPUT_WIDGET) {
             String pid = problem.getPid();
-            //String newPid = ExamDao.getInstance().get
+            // String newPid = ExamDao.getInstance().get
         }
         return problem;
     }
 
-    /** Find out which CM program is associated with a given pid
+    /**
+     * Find out which CM program is associated with a given pid
      * 
      * Return null if no CM program found.
      * 
@@ -1804,8 +1786,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @return
      */
     private HaTestDef figureOutAssociatedTestDef(ProblemDto problem) throws Exception {
-        
-        /** get all records from HA_PROGRAM_LESSONS
+
+        /**
+         * get all records from HA_PROGRAM_LESSONS
          * 
          */
         String textCode = new ProblemID(problem.getPid()).getBook();
@@ -1816,20 +1799,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return rs.getInt("test_def_id");
             }
         });
-        if(testDefs.size() == 0) {
+        if (testDefs.size() == 0) {
             return null;
-        }
-        else {
-            if(testDefs.size() > 1) {
+        } else {
+            if (testDefs.size() > 1) {
                 __logger.warn("More than one test_def found for: " + problem);
             }
-            Integer testDefId = testDefs.get(testDefs.size()-1);
-            
-            if(testDefId != null) {
+            Integer testDefId = testDefs.get(testDefs.size() - 1);
+
+            if (testDefId != null) {
                 return HaTestDefDao.getInstance().getTestDef(testDefId);
             }
         }
-                    
+
         return null;
     }
 
@@ -1919,8 +1901,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return getJdbcTemplate().query(sql, new Object[] { uid, assignId, pid }, new RowMapper<WhiteboardCommand>() {
             @Override
             public WhiteboardCommand mapRow(ResultSet rs, int rowNum) throws SQLException {
-                WhiteboardCommand wCommand = new WhiteboardCommand(rs.getString("command"), loadCommandData(rs), rs.getInt("is_admin") != 0 ? true
-                        : false);
+                WhiteboardCommand wCommand = new WhiteboardCommand(rs.getString("command"), loadCommandData(rs), rs.getInt("is_admin") != 0 ? true : false);
                 return wCommand;
             }
         });
@@ -1966,63 +1947,59 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     public void saveWhiteboardData(final Integer uid, final int assignKey, final String pid, CommandType commandType, final String commandData,
-    		final boolean isAdmin) throws Exception {
-        
-        if(commandType == CommandType.DELETE) {
-           
+            final boolean isAdmin) throws Exception {
+
+        if (commandType == CommandType.DELETE) {
+
             final int rowToDelete = Integer.parseInt(commandData);
 
             String sqlD = "select whiteboard_id from  CM_ASSIGNMENT_PID_WHITEBOARD where user_id = ? and assign_key = ? and pid = ? order by whiteboard_id limit ?,1";
-            final Integer whiteboardId = getJdbcTemplate().queryForObject(sqlD, new Object[] { uid, assignKey, pid, rowToDelete}, new RowMapper<Integer>() {
+            final Integer whiteboardId = getJdbcTemplate().queryForObject(sqlD, new Object[] { uid, assignKey, pid, rowToDelete }, new RowMapper<Integer>() {
                 @Override
                 public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                     return rs.getInt("whiteboard_id");
                 }
             });
-            
-            
+
             int countDeleted = getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                     String sqlD = "delete from  CM_ASSIGNMENT_PID_WHITEBOARD where whiteboard_id = ?";
                     PreparedStatement ps = con.prepareStatement(sqlD);
-                    ps.setInt(1,whiteboardId);
+                    ps.setInt(1, whiteboardId);
                     return ps;
                 }
             });
-        }
-        else if (commandType == CommandType.CLEAR) {
-    		getJdbcTemplate().update(new PreparedStatementCreator() {
-    			@Override
-    			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-    				String sql = "delete from CM_ASSIGNMENT_PID_WHITEBOARD where user_id = ? and assign_key = ? and pid = ?";
-    				PreparedStatement ps = con.prepareStatement(sql);
-    				ps.setInt(1, uid);
-    				ps.setInt(2, assignKey);
-    				ps.setString(3, pid);
-    				return ps;
-    			}
-    		});
-    	} else if(commandType == CommandType.UNDO) {
-            
-            /** Delete the newest command
+        } else if (commandType == CommandType.CLEAR) {
+            getJdbcTemplate().update(new PreparedStatementCreator() {
+                @Override
+                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                    String sql = "delete from CM_ASSIGNMENT_PID_WHITEBOARD where user_id = ? and assign_key = ? and pid = ?";
+                    PreparedStatement ps = con.prepareStatement(sql);
+                    ps.setInt(1, uid);
+                    ps.setInt(2, assignKey);
+                    ps.setString(3, pid);
+                    return ps;
+                }
+            });
+        } else if (commandType == CommandType.UNDO) {
+
+            /**
+             * Delete the newest command
              * 
              */
-            
-            String sql = "select max(whiteboard_id) as whiteboard_id " +
-                         " from CM_ASSIGNMENT_PID_WHITEBOARD " +
-                         " where user_id = ? " +
-                         " and assign_key = ?" +
-                         " and pid = ? ";
-                         
+
+            String sql = "select max(whiteboard_id) as whiteboard_id " + " from CM_ASSIGNMENT_PID_WHITEBOARD " + " where user_id = ? " + " and assign_key = ?"
+                    + " and pid = ? ";
+
             final Integer maxWhiteboardId = getJdbcTemplate().queryForObject(sql, new Object[] { uid, assignKey, pid }, new RowMapper<Integer>() {
                 @Override
                 public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                     return rs.getInt(1);
                 }
             });
-            
-            if(maxWhiteboardId != null) {
+
+            if (maxWhiteboardId != null) {
                 getJdbcTemplate().update(new PreparedStatementCreator() {
                     @Override
                     public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -2033,39 +2010,38 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     }
                 });
             }
-            
+
         }
-    	
-    	else {
-    		try {
-    			byte[] inBytes = commandData.getBytes("UTF-8");
-    			final byte[] outBytes = CompressHelper.compress(inBytes);
 
-    			getJdbcTemplate().update(new PreparedStatementCreator() {
-    				@Override
-    				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-    					String sql = "insert into CM_ASSIGNMENT_PID_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, assign_key, is_admin, write_datetime) "
-    							+ " values(?,?,?,?,?,?,?, now()) ";
-    					PreparedStatement ps = con.prepareStatement(sql);
-    					ps.setInt(1, uid);
-    					ps.setString(2, pid);
-    					ps.setString(3, "draw");
+        else {
+            try {
+                byte[] inBytes = commandData.getBytes("UTF-8");
+                final byte[] outBytes = CompressHelper.compress(inBytes);
 
-    					ps.setBytes(4, outBytes);
+                getJdbcTemplate().update(new PreparedStatementCreator() {
+                    @Override
+                    public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                        String sql = "insert into CM_ASSIGNMENT_PID_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, assign_key, is_admin, write_datetime) "
+                                + " values(?,?,?,?,?,?,?, now()) ";
+                        PreparedStatement ps = con.prepareStatement(sql);
+                        ps.setInt(1, uid);
+                        ps.setString(2, pid);
+                        ps.setString(3, "draw");
 
-    					ps.setLong(5, System.currentTimeMillis());
-    					ps.setInt(6, assignKey);
-    					ps.setInt(7, isAdmin ? 1 : 0);
+                        ps.setBytes(4, outBytes);
 
-    					return ps;
-    				}
-    			});
-    		}
-    		catch (UnsupportedEncodingException e) {
-    			__logger.error(String.format("Error creating Assignment Whiteboard Data: userId: %d, pid: %s", uid, pid), e);
-    			throw new RuntimeException(e.getMessage());
-    		}
-    	}
+                        ps.setLong(5, System.currentTimeMillis());
+                        ps.setInt(6, assignKey);
+                        ps.setInt(7, isAdmin ? 1 : 0);
+
+                        return ps;
+                    }
+                });
+            } catch (UnsupportedEncodingException e) {
+                __logger.error(String.format("Error creating Assignment Whiteboard Data: userId: %d, pid: %s", uid, pid), e);
+                throw new RuntimeException(e.getMessage());
+            }
+        }
     }
 
     /**
@@ -2086,13 +2062,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         List<Object[]> batch = new ArrayList<Object[]>();
         for (StudentProblemDto sp : studentAssignment.getStudentStatuses().getAssigmentStatuses()) {
-            Object[] values = new Object[] { sp.getStatus(), sp.isGraded() ? 1 : 0, studentAssignment.getAssignment().getAssignKey(), sp.getPid(), studentAssignment.getUid() };
+            Object[] values = new Object[] { sp.getStatus(), sp.isGraded() ? 1 : 0, studentAssignment.getAssignment().getAssignKey(), sp.getPid(),
+                    studentAssignment.getUid() };
             batch.add(values);
         }
         SimpleJdbcTemplate template = new SimpleJdbcTemplate(this.getDataSource());
-        
+
         String sql = "update CM_ASSIGNMENT_PID_STATUS set status = ?, is_graded = ?, last_teacher_change_date = now() where assign_key = ? and pid = ? and uid = ?";
-        int[] updateCounts = template.batchUpdate(sql,batch);
+        int[] updateCounts = template.batchUpdate(sql, batch);
 
         if (releaseGrades) {
             markAssignmentAsGraded(studentAssignment.getUid(), studentAssignment.getAssignment().getAssignKey());
@@ -2278,12 +2255,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         assignmentCopy.setAssignmentName(assignmentCopy.getAssignmentName() + copyTag);
         assignmentCopy.setComments(assignmentCopy.getComments() + copyTag);
         assignmentCopy.setStatus("Draft");
-        
+
         Date now = new Date();
-        Calendar cal = Calendar.getInstance();  
-        cal.setTime(now);  
-        cal.add(Calendar.DAY_OF_YEAR, 1);  
-        Date tomorrow = cal.getTime();  
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(now);
+        cal.add(Calendar.DAY_OF_YEAR, 1);
+        Date tomorrow = cal.getTime();
         assignmentCopy.setDueDate(tomorrow);
 
         saveAssignment(assignmentCopy);
@@ -2329,12 +2306,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         assignmentCopy.setComments(assignmentCopy.getComments() + copyTag);
         assignmentCopy.setStatus("Draft");
         assignmentCopy.setGroupId(groupToImportInto);
-        
+
         Date now = new Date();
-        Calendar cal = Calendar.getInstance();  
-        cal.setTime(now);  
-        cal.add(Calendar.DAY_OF_YEAR, 1);  
-        Date tomorrow = cal.getTime();  
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(now);
+        cal.add(Calendar.DAY_OF_YEAR, 1);
+        Date tomorrow = cal.getTime();
         assignmentCopy.setDueDate(tomorrow);
 
         saveAssignment(assignmentCopy);
@@ -2346,8 +2323,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         Assignment assignment = getAssignment(assignKey);
         assignment.setStatus("Open");
         saveAssignment(assignment);
-        
-        /** mark all students as not graded
+
+        /**
+         * mark all students as not graded
          */
         int cntUngraded = getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
@@ -2358,7 +2336,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return ps;
             }
         });
-        
+
         __logger.info("Activated assignment: " + assignKey + ", students ungraded: " + cntUngraded);
     }
 
@@ -2387,7 +2365,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getAssignmentStatuses(uid, assignmentInfo);
             assignmentInfo.setUnreadAnnotations(getUnreadAnnotatedProblems(uid));
             assignmentInfo.setChanged(determineIfAnyAssignmentHasChanged(uid));
-            
+
             assignmentInfo.setLastChanged(getLastTimeUserAssignmentsUpdated(uid));
         }
         return assignmentInfo;
@@ -2395,7 +2373,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     private Date getLastTimeUserAssignmentsUpdated(int uid) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ASSIGNMENT_LAST_MODIFIED");
-        Date lastModified = getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new RowMapper<Date>() {
+        Date lastModified = getJdbcTemplate().queryForObject(sql, new Object[] { uid }, new RowMapper<Date>() {
             @Override
             public Date mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getTimestamp(1);
@@ -2546,18 +2524,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         }
 
-        /** see if auto release grade is enabled for this assignment
-         *
-         *   no need to create a new full Assignment object.
+        /**
+         * see if auto release grade is enabled for this assignment
+         * 
+         * no need to create a new full Assignment object.
          */
         String sql = "select auto_release_grades from CM_ASSIGNMENT where assign_key = ?";
-        Boolean isAutoGrade = getJdbcTemplate().queryForObject(sql, new Object[] { assignKey}, new RowMapper<Boolean>() {
+        Boolean isAutoGrade = getJdbcTemplate().queryForObject(sql, new Object[] { assignKey }, new RowMapper<Boolean>() {
             @Override
             public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new Boolean(rs.getInt("auto_release_grades")!=0?true:false);                
+                return new Boolean(rs.getInt("auto_release_grades") != 0 ? true : false);
             }
-        });        
-        if(isAutoGrade) {
+        });
+        if (isAutoGrade) {
             markAssignmentAsGraded(uid, assignKey);
         }
     }
@@ -2572,75 +2551,73 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         });
         return count;
     }
-    
-    
-    /** Return the student problem associated with the named assignment and pid
+
+    /**
+     * Return the student problem associated with the named assignment and pid
      * 
-     *  returns null if problem does not exist in assignment
-     *  
-     *  This is complicated due to a student's assignment problems 
-     *  might be from either the shared table CM_ASSIGNMENT_PIDS or
-     *  if they are personalized they are in the CM_ASSIGNMENT_PIDS_USER.
-     *  
+     * returns null if problem does not exist in assignment
+     * 
+     * This is complicated due to a student's assignment problems might be from
+     * either the shared table CM_ASSIGNMENT_PIDS or if they are personalized
+     * they are in the CM_ASSIGNMENT_PIDS_USER.
+     * 
      * @param uid
      * @param assignKey
      * @param pid
      * @return
      */
     public StudentProblemDto getStudentProblem(final int uid, final int assignKey, final String pid) throws Exception {
-        
 
-        //List<ProblemDto> p = getStudentAssignmentProblems(assignKey,  uid);
-        
-        Boolean isPersonalized = getJdbcTemplate().queryForObject("select is_personalized from CM_ASSIGNMENT where assign_key = ? ",  new Object[]{assignKey}, new RowMapper<Boolean>() {
-            @Override
-            public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getInt("is_personalized") != 0 ? true: false;
-            }
-        });
-        
+        // List<ProblemDto> p = getStudentAssignmentProblems(assignKey, uid);
+
+        Boolean isPersonalized = getJdbcTemplate().queryForObject("select is_personalized from CM_ASSIGNMENT where assign_key = ? ",
+                new Object[] { assignKey }, new RowMapper<Boolean>() {
+                    @Override
+                    public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return rs.getInt("is_personalized") != 0 ? true : false;
+                    }
+                });
+
         String sql = null;
-        if(isPersonalized) {
+        if (isPersonalized) {
             sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_ASSIGNMENT_PROBLEM");
+        } else {
+
+            sql = "select a.status as assignment_status, p.ordinal_number, p.id, p.lesson, p.lesson_file, p.label, s.status as problem_status,s.is_graded "
+                    + " from CM_ASSIGNMENT a " + " JOIN  CM_ASSIGNMENT_PIDS p on p.assign_key = a.assign_key "
+                    + " LEFT JOIN CM_ASSIGNMENT_PID_STATUS s on s.assign_key = p.assign_key and s.uid = ? and s.pid = p.pid " + " where p.assign_key = ? "
+                    + " and     p.pid = ? ";
         }
-        else {
-                
-                sql = "select a.status as assignment_status, p.ordinal_number, p.id, p.lesson, p.lesson_file, p.label, s.status as problem_status,s.is_graded " +
-                     " from CM_ASSIGNMENT a " +
-                     " JOIN  CM_ASSIGNMENT_PIDS p on p.assign_key = a.assign_key " +
-                     " LEFT JOIN CM_ASSIGNMENT_PID_STATUS s on s.assign_key = p.assign_key and s.uid = ? and s.pid = p.pid " +
-                     " where p.assign_key = ? " +
-                     " and     p.pid = ? ";
-        }
-        
-        List<StudentProblemDto> problems = getJdbcTemplate().query(sql, new Object[] {uid, assignKey, pid }, new RowMapper<StudentProblemDto>() {
+
+        List<StudentProblemDto> problems = getJdbcTemplate().query(sql, new Object[] { uid, assignKey, pid }, new RowMapper<StudentProblemDto>() {
             @Override
             public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                ProblemDto prob = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), new LessonModel(rs.getString("lesson"),rs.getString("lesson_file")), rs.getString("label"), pid, 0);
+                ProblemDto prob = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), new LessonModel(rs.getString("lesson"), rs
+                        .getString("lesson_file")), rs.getString("label"), pid, 0);
                 boolean isClosed = rs.getString("assignment_status").equals("Closed");
-                
+
                 List<ProblemDto> problems = new ArrayList<ProblemDto>();
                 problems.add(prob);
                 updateProblemTypes(problems);
-                return new StudentProblemDto(uid,prob,rs.getString("problem_status"),false,false,isClosed,rs. getInt("is_graded")!=0?true:false,rs.getInt("is_graded")!=0?true:false);            
+                return new StudentProblemDto(uid, prob, rs.getString("problem_status"), false, false, isClosed, rs.getInt("is_graded") != 0 ? true : false, rs
+                        .getInt("is_graded") != 0 ? true : false);
             }
         });
-        if(problems.size() > 0) {
+        if (problems.size() > 0) {
             return problems.get(0);
-        }
-        else {
+        } else {
             throw new CmRpcException("Assignment Problem not found: " + pid);
-            //return null;
+            // return null;
         }
     }
-    
 
     public ProblemDto getAssignmentProblem(int assignKey, final String pid) {
         String sql = "select * from CM_ASSIGNMENT_PIDS where assign_key = ? and pid = ?";
         ProblemDto problem = getJdbcTemplate().queryForObject(sql, new Object[] { assignKey, pid }, new RowMapper<ProblemDto>() {
             @Override
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), new LessonModel(rs.getString("lesson"),rs.getString("lesson_file")), rs.getString("label"), pid, 0);                
+                return new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), new LessonModel(rs.getString("lesson"), rs.getString("lesson_file")), rs
+                        .getString("label"), pid, 0);
             }
         });
         return problem;
@@ -2658,71 +2635,61 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return rs.getString(1);
             }
         });
-        if(statuses.size() > 0) {
+        if (statuses.size() > 0) {
             return statuses.get(0);
-        }
-        else {
+        } else {
             return ProblemStatus.UNANSWERED.toString();
         }
     }
 
-
-    /** Return either all the students that are assignable to the assignment
-     *  or the users that are specifically assigned.
-     *  
+    /**
+     * Return either all the students that are assignable to the assignment or
+     * the users that are specifically assigned.
+     * 
      * @param assignKey
      * @param type
      * @return
      */
     public List<StudentDto> getStudentsInAssignment(int assignKey, TYPE type) {
         String sql = null;
-        switch(type) {
-            case ALL_IN_GROUP:
-                sql = " select uid,user_name " +
-                " from   HA_USER u " +
-                " join CM_ASSIGNMENT a on (a.group_id = u.group_id and a.aid = u.admin_id) " +
-                " where a.assign_key = ? "+
-                " and is_auto_create_template = 0 " +
-                " and is_active = 1 " +
-                " order  by Lower(user_name)  ";
-                break;
-                
-            case ASSIGNED:
-                sql = "select u.uid, user_name from HA_USER u JOIN CM_ASSIGNMENT_USERS_SPECIFIED us on us.uid = u.uid where assign_key = ? and is_auto_create_template = 0 order by lower(user_name)";
-                break;
+        switch (type) {
+        case ALL_IN_GROUP:
+            sql = " select uid,user_name " + " from   HA_USER u " + " join CM_ASSIGNMENT a on (a.group_id = u.group_id and a.aid = u.admin_id) "
+                    + " where a.assign_key = ? " + " and is_auto_create_template = 0 " + " and is_active = 1 " + " order  by Lower(user_name)  ";
+            break;
+
+        case ASSIGNED:
+            sql = "select u.uid, user_name from HA_USER u JOIN CM_ASSIGNMENT_USERS_SPECIFIED us on us.uid = u.uid where assign_key = ? and is_auto_create_template = 0 order by lower(user_name)";
+            break;
         }
-        List<StudentDto> students = getJdbcTemplate().query(sql, new Object[] { assignKey}, new RowMapper<StudentDto>() {
+        List<StudentDto> students = getJdbcTemplate().query(sql, new Object[] { assignKey }, new RowMapper<StudentDto>() {
             @Override
             public StudentDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new StudentDto(rs.getInt("uid"), rs.getString("user_name"));                
+                return new StudentDto(rs.getInt("uid"), rs.getString("user_name"));
             }
         });
         return students;
     }
 
     private String loadCommandData(ResultSet rs) throws SQLException {
-    	byte[] compressed = rs.getBytes("command_data");
-    	try {
-    		if (compressed != null && compressed[0] != "{".getBytes("UTF-8")[0]) {
-    			return CompressHelper.decompress(compressed);
-    		}
-    		else {
-    			return rs.getString("command_data");
-    		}
-    	}
-    	catch (Exception e) {
-    		throw new SQLException(e.getLocalizedMessage());
-    	}
+        byte[] compressed = rs.getBytes("command_data");
+        try {
+            if (compressed != null && compressed[0] != "{".getBytes("UTF-8")[0]) {
+                return CompressHelper.decompress(compressed);
+            } else {
+                return rs.getString("command_data");
+            }
+        } catch (Exception e) {
+            throw new SQLException(e.getLocalizedMessage());
+        }
     }
-    
-    
 
     public AssignmentRealTimeStats getAssignmentStats(int assignKey) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_PID_ANSWER_STATUS");
-        List<PidStats> pidStats = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey}, new RowMapper<PidStats>() {
+        List<PidStats> pidStats = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey }, new RowMapper<PidStats>() {
             @Override
             public PidStats mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new PidStats(rs.getString("pid"), rs.getInt("correct_percent"));                
+                return new PidStats(rs.getString("pid"), rs.getInt("correct_percent"));
             }
         });
         return new AssignmentRealTimeStats(pidStats);
@@ -2731,13 +2698,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     static public void main(String as[]) {
         try {
             AssignmentDao ad = AssignmentDao.getInstance();
-            ProblemDto problem = new ProblemDto(0,0,new LessonModel("test","test"), "test", "prealgptests_1_2_chapter1practicetest_2_1", 0);
+            ProblemDto problem = new ProblemDto(0, 0, new LessonModel("test", "test"), "test", "prealgptests_1_2_chapter1practicetest_2_1", 0);
             problem.setProblemType(ProblemType.MULTI_CHOICE);
             ProblemDto res = ad.lookupPersonalizedAlternateProblem(problem);
-            
+
             System.out.println(res);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -2748,8 +2714,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             public StudentStat(int uid, String name, String status) {
                 this.uid = uid;
                 this.name = name;
-                this.status = status!=null?status:"";
+                this.status = status != null ? status : "";
             }
+
             int uid;
             String status;
             String name;
@@ -2757,33 +2724,30 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_STUDENT_STATS");
         sql = getStudentsInAssignmentSqlRestriction(assignKey, sql);
-        
-        
-        List<StudentStat> studentStatus = getJdbcTemplate().query(sql, new Object[] { assignKey, pid}, new RowMapper<StudentStat>() {
+
+        List<StudentStat> studentStatus = getJdbcTemplate().query(sql, new Object[] { assignKey, pid }, new RowMapper<StudentStat>() {
             @Override
             public StudentStat mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new StudentStat(rs.getInt("uid"), rs.getString("user_name"), rs.getString("status"));                
+                return new StudentStat(rs.getInt("uid"), rs.getString("user_name"), rs.getString("status"));
             }
         });
-        
+
         List<StudentModel> students = new ArrayList<StudentModel>();
-        
-        for(StudentStat ss: studentStatus) {
+
+        for (StudentStat ss : studentStatus) {
             StudentModel sm = new StudentModel();
             sm.setUid(ss.uid);
             sm.setName(ss.name);
-            String sl = ss.status != null?ss.status.toLowerCase():"";
-            if(sl.contains("correct") || sl.contains("half") || sl.contains("submitted")) {
+            String sl = ss.status != null ? ss.status.toLowerCase() : "";
+            if (sl.contains("correct") || sl.contains("half") || sl.contains("submitted")) {
                 sm.setStatus(ss.status);
-            }
-            else {
+            } else {
                 sm.setStatus("Unanswered");
             }
 
             students.add(sm);
         }
-        
-        
+
         return new AssignmentRealTimeStatsUsers(students);
     }
 

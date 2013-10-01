@@ -45,9 +45,7 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
     ShowWorkPanel2 _showWork;
     FlowPanel _contentPanel;
     ShowWorkSubToolBar _subBar;
-
     private FlowPanel _whiteboardWrapper;
-
     private String _lastPid;
     
     
@@ -96,7 +94,7 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
     
     private void showWhiteboardPanel(final String pid) {
         
-        jsni_positionQuestionToTopOfViewable(pid);
+        CmGwtUtils.jsni_positionQuestionToTopOfViewable(pid);
         
         _lastPid = pid;
         
@@ -137,22 +135,6 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
         CmGwtUtils.moveToTopOfViewableScreen(_whiteboardWrapper.getElement(), _whiteboardWrapper.getElement());
     }     
     
-    
-    
-
-
-    native private void jsni_positionQuestionToTopOfViewable(String pid) /*-{
-        var questions = $wnd.$('.question_div');
-        questions.each(function(index) {
-            var pp = $wnd.$( this ).attr('guid');
-            if(pid == pp) {
-                var el = this;
-                var top = $wnd.DL_GetElementTop(el)
-                $wnd.scrollTo(1, top - 70);
-            } 
-        });
-    }-*/;
-
     private void hideWhiteboard() {
         _subBar.setupWhiteboardTools(false);
         if(_showWork != null) {

@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_mobile3.client;
 
 import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.event.CmLogoutEvent;
+import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEvent;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEventHandlerImpl;
@@ -53,6 +55,10 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -204,6 +210,27 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
             }
         });
+        
+        
+        
+        /** add a low level down handler to catch any mouse down event
+         *  
+         */
+        _rootPanel.addDomHandler(new MouseDownHandler() {
+            @Override
+            public void onMouseDown(MouseDownEvent event) {
+                CmIdleTimeWatcher.getInstance().didKeyBoardActivity();
+            }
+        }, MouseDownEvent.getType());
+        CmIdleTimeWatcher.getInstance();
+        
+        Window.addCloseHandler(new CloseHandler<Window>() {
+            @Override
+            public void onClose(CloseEvent<Window> event) {
+                CmRpcCore.EVENT_BUS.fireEvent(new CmLogoutEvent());
+            }
+        });
+
 
         Log.info("Catchup Math Mobile Initialized");
     }

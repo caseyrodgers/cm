@@ -1,4 +1,4 @@
-package hotmath.gwt.shared.client.util;
+package hotmath.gwt.cm_core.client.util;
 
 import java.util.Date;
 
