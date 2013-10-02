@@ -250,19 +250,22 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         CmMessageBox.confirm("Turn In Assignment",  "Are you sure you want to turn in this assignment?",new ConfirmCallback() {
             @Override
             public void confirmed(boolean yesNo) {
-                new RetryAction<RpcData>() {
-                    @Override
-                    public void attempt() {
-                        TurnInAssignmentAction action = new TurnInAssignmentAction(UserInfoBase.getInstance().getUid(),_studentAssignment.getAssignment().getAssignKey());
-                        setAction(action);
-                        CmShared.getCmService().execute(action, this);
-                    }
-
-                    public void oncapture(RpcData data) {
-                        CatchupMathTools.setBusy(false);
-                        readAssignmentFromServer(_studentAssignment.getAssignment().getAssignKey(),null);
-                    }
-                }.register();          
+                
+                if(yesNo) {
+                    new RetryAction<RpcData>() {
+                        @Override
+                        public void attempt() {
+                            TurnInAssignmentAction action = new TurnInAssignmentAction(UserInfoBase.getInstance().getUid(),_studentAssignment.getAssignment().getAssignKey());
+                            setAction(action);
+                            CmShared.getCmService().execute(action, this);
+                        }
+    
+                        public void oncapture(RpcData data) {
+                            CatchupMathTools.setBusy(false);
+                            readAssignmentFromServer(_studentAssignment.getAssignment().getAssignKey(),null);
+                        }
+                    }.register();
+                }
             }
         });
     }
