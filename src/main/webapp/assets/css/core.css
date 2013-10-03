@@ -152,7 +152,7 @@ p {
 }
 
 #content-middle {
-    height:550px;
+    height:510px;
 }
 
 #content-middle h2 {
@@ -177,7 +177,6 @@ p {
 }
 
 #big-buttons {
-    margin-top: 50px;
 	float: right;
 }
 
