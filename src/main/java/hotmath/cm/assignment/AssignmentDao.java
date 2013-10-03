@@ -2746,7 +2746,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             joinPidsSql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_PID_ANSWER_STATUS-default");
         }
         sql = SbUtilities.replaceSubString(sql,  "$$JOIN_GET_PIDS$$", joinPidsSql);
-        List<PidStats> pidStats = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey }, new RowMapper<PidStats>() {
+        List<PidStats> pidStats = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey, assignKey }, new RowMapper<PidStats>() {
             @Override
             public PidStats mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new PidStats(rs.getString("pid"), rs.getInt("correct_percent"));

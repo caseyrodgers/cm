@@ -4620,13 +4620,21 @@ limit 1
 .key=ASSIGNMENT_PID_ANSWER_STATUS
 ## all pids in assignment and count of correct/incorrect
 
-select p_.pid, count(*) as cnt_students, cp.cnt_correct, hp.cnt_half_credit, 
+select p_.pid, uc.cnt_students, cp.cnt_correct, hp.cnt_half_credit, 
 concat(CAST( (ifnull(hp.cnt_half_credit, 0) + ifnull(cp.cnt_correct, 0)) / count(*) * 100 as unsigned), '%') as correct_percent
 from HA_USER u
    JOIN CM_ASSIGNMENT a
        on a.group_id = u.group_id
        
-       
+     JOIN (
+         select assign_key, count(*) as cnt_students
+         from HA_USER h
+           JOIN CM_ASSIGNMENT a on a.group_id = h.group_id
+         where a.assign_key = 95
+         group by assign_key
+     ) uc on uc.assign_key = a.assign_key
+     
+            
    $$JOIN_GET_PIDS$$
        
    LEFT JOIN CM_ASSIGNMENT_PID_STATUS ps
