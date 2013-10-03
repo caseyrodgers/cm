@@ -4637,22 +4637,24 @@ from HA_USER u
         where ps2.status = 'Correct'
         and ps2.assign_key = ? 
         group by pid
-   )  cp on cp.assign_key = a.assign_key
+   )  cp on cp.assign_key = a.assign_key and cp.pid = p.pid
    LEFT JOIN (
         select assign_key, pid, count(*) / 2 as cnt_half_credit
         from   CM_ASSIGNMENT_PID_STATUS
         where status = 'Half Credit'
         and assign_key = ?
         group by pid
-   )  hp on hp.assign_key = a.assign_key   
+   )  hp on hp.assign_key = a.assign_key and hp.pid = p.pid
 where p_.assign_key = ?   
 group by p_.assign_key, p_.pid
-order by ordinal_number
+order by p_.ordinal_number
 
 .key=ASSIGNMENT_PID_ANSWER_STATUS-default
 
    JOIN CM_ASSIGNMENT_PIDS p_
-       on p.assign_key = a.assign_key
+       on p_.assign_key = a.assign_key
+   JOIN CM_ASSIGNMENT_PIDS p
+       on p.assign_key = p_.assign_key and p.pid = p_.pid
       
 .key=ASSIGNMENT_PID_ANSWER_STATUS-personalized
 
