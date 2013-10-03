@@ -73,7 +73,7 @@ public class ExamDao extends SimpleJdbcDaoSupport {
         return models;
     }
 
-    public String getAlternateProblem_MultiChoice(HaTestDef testDef, String pid) throws Exception {
+    public String lookupAlternateProblem_MultiChoice(HaTestDef testDef, String pid) throws Exception {
         List<List<String>> idLists = ExamDao.getInstance().getTestIdsForAllAlternates(testDef,QuizSize.SIXTY);
         
         for(List<String> ids: idLists) {

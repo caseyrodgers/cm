@@ -529,16 +529,24 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         }
 
                         LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
-                        ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), lesson, rs.getString("label"), rs
-                                .getString("pid"), 0);
+                        
+                        /** if individualized, then pid might be different for each user
+                         * 
+                         */
+                        String realPid=rs.getString("pid");
+                        String realStatus = rs.getString("status");
+                        if(assignment.isPersonalized()) {
+                            realPid = getPersonalizedPid(assignKey, uid,  rs.getInt("problem_id"));
+                            realStatus = getPersonalizedPidStatus(assignKey, uid,  realPid);
+                        }
+                        ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), lesson, rs.getString("label"), realPid, 0);
 
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;
                         boolean isAssignmentClosed = assignment.getStatus().equals("Closed");
                         boolean isProblemGraded = rs.getInt("is_problem_graded") != 0 ? true : false;
                         boolean isStudentGraded = rs.getInt("is_student_graded") != 0 ? true : false;
-                        StudentProblemDto prob = new StudentProblemDto(uid, probDto, rs.getString("status"), hasShowWork, hasShowWorkAdmin, isAssignmentClosed,
-                                isStudentGraded, isProblemGraded);
+                        StudentProblemDto prob = new StudentProblemDto(uid, probDto, realStatus, hasShowWork, hasShowWorkAdmin, isAssignmentClosed, isStudentGraded, isProblemGraded);
                         return prob;
                     }
                 });
@@ -710,6 +718,48 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
 
         return stuAssignments;
+    }
+
+    /**Returns the personalized pid for this assignment, user or
+     *  returns null if not found.  
+     *  
+     * @param assignKey
+     * @param uid
+     * @param problemId
+     * @return
+     */
+    protected String getPersonalizedPid(int assignKey, int uid, int problemId) {
+        String sql = "select pid from CM_ASSIGNMENT_PIDS_USER where assign_key = ? and uid = ? and apid_id = ?";
+        List<String> pids = getJdbcTemplate().query(sql, new Object[] { assignKey, uid, problemId }, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("pid");
+            }
+        });
+        
+        if(pids.size() > 0) {
+            return pids.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+    
+    protected String getPersonalizedPidStatus(int assignKey, int uid, String pid) {
+        String sql = "select status from CM_ASSIGNMENT_PID_STATUS where assign_key = ? and uid = ? and pid = ?";
+        List<String> pids = getJdbcTemplate().query(sql, new Object[] { assignKey, uid, pid }, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("status");
+            }
+        });
+        
+        if(pids.size() > 0) {
+            return pids.get(0);
+        }
+        else {
+            return "Not viewed";
+        }
     }
 
     private String getStudentsInAssignmentSqlRestriction(int assignKey, String sql) {
@@ -1758,7 +1808,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             // use info about how stored in quiz to extract alternate problem
             HaTestDef testDef = figureOutAssociatedTestDef(problem);
             if (testDef != null) {
-                String newPid = ExamDao.getInstance().getAlternateProblem_MultiChoice(testDef, problem.getPid());
+                String newPid = ExamDao.getInstance().lookupAlternateProblem_MultiChoice(testDef, problem.getPid());
 
                 if (newPid == null) {
                     __logger.info("Personalized pid: could not find alternate for '" + problem + "'");
