@@ -2052,18 +2052,21 @@ var cntxt=ctx?ctx:context;
                 var currPosY = swipe_ny ? swipe_ny : 0;
                 currPosY = parseInt(currPosY)
                 currPosY = currPosY > 0 ? 0 : currPosY
-                currPosY = currPosY < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosY;
-                $get_Element('#canvas-container').style.top = currPosY + "px"
+                currPosY = currPosY < -(scroll_window.height - screen_height) ? -(scroll_window.height - screen_height) : currPosY;
+               // $get_Element('#canvas-container').style.top = currPosY + "px"
                 $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
+				scrollPosition['y']=currPosY;
                 // console.log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" +
                 // swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
                 //
                 var currPosX = swipe_nx ? swipe_nx : 0;
                 currPosX = parseInt(currPosX)
                 currPosX = currPosX > 0 ? 0 : currPosX
-                currPosX = currPosX < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPosX;
-                $get_Element('#canvas-container').style.left = currPosX + "px"
+                currPosX = currPosX < -(scroll_window.width - screen_width) ? -(scroll_window.width - screen_width) : currPosX;
+                //$get_Element('#canvas-container').style.left = currPosX + "px"
                 $get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
+				scrollPosition['x']=currPosX;					
+					updateCanvas();
                 console_log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
             }
 
@@ -2137,6 +2140,8 @@ var cntxt=ctx?ctx:context;
                 var scrub = (scroll_window.height - screen_height) / (screen_height - 30)
                 //$get_Element('#canvas-container').style.top = currPos + "px";
                 $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
+				scrollPosition['y']=currPos;					
+					updateCanvas();
                 // console.log("AFTER:"+currPos+":"+(currPos/scrub));
                 // moving the position of the object
                 // document.getElementById('scroll').style.top = currPos+"px";
