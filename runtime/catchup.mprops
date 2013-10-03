@@ -4614,17 +4614,21 @@ limit 1
 
 
 
-
+## NOTE: JOIN_GET_PIDS is created in code
+## and is made up of one of the two sql fragments
+## follwing this one.
 .key=ASSIGNMENT_PID_ANSWER_STATUS
 ## all pids in assignment and count of correct/incorrect
 
-select p.pid, count(*) as cnt_students, cp.cnt_correct, hp.cnt_half_credit, 
+select p_.pid, count(*) as cnt_students, cp.cnt_correct, hp.cnt_half_credit, 
 concat(CAST( (ifnull(hp.cnt_half_credit, 0) + ifnull(cp.cnt_correct, 0)) / count(*) * 100 as unsigned), '%') as correct_percent
 from HA_USER u
    JOIN CM_ASSIGNMENT a
        on a.group_id = u.group_id
-   JOIN CM_ASSIGNMENT_PIDS p
-       on p.assign_key = a.assign_key
+       
+       
+   $$JOIN_GET_PIDS$$
+       
    LEFT JOIN CM_ASSIGNMENT_PID_STATUS ps
        on ps.assign_key = a.assign_key and ps.pid = p.pid
    LEFT JOIN (
@@ -4641,9 +4645,24 @@ from HA_USER u
         and assign_key = ?
         group by pid
    )  hp on hp.assign_key = a.assign_key   
-where p.assign_key = ?   
-group by p.assign_key, p.pid
-order by p.ordinal_number
+where p_.assign_key = ?   
+group by p_.assign_key, p_.pid
+order by ordinal_number
+
+.key=ASSIGNMENT_PID_ANSWER_STATUS-default
+
+   JOIN CM_ASSIGNMENT_PIDS p_
+       on p.assign_key = a.assign_key
+      
+.key=ASSIGNMENT_PID_ANSWER_STATUS-personalized
+
+   JOIN CM_ASSIGNMENT_PIDS p_
+       on p_.assign_key = a.assign_key
+   LEFT JOIN CM_ASSIGNMENT_PIDS_USER p
+      on p.assign_key = a.assign_key and p.uid = u.uid and p.apid_id = p_.id
+      
+      
+
 
 
 
@@ -4653,12 +4672,14 @@ select u.uid, u.user_name, s1.status
 from HA_USER u
     JOIN CM_ASSIGNMENT a  
         on a.group_id = u.group_id
-    JOIN CM_ASSIGNMENT_PIDS p 
-        on p.assign_key = a.assign_key
+    
+    $$JOIN_GET_PIDS$$    
+    
     LEFT JOIN CM_ASSIGNMENT_PID_STATUS s1  
         on s1.assign_key = p.assign_key and s1.uid = u.uid and s1.pid = p.pid
+        
 where a.assign_key = ?
-and  p.pid = ?
+and  p_.pid = ?
 
 $$LIMIT_TO_SPECIFIED_USERS$$
 

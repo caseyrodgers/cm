@@ -2736,6 +2736,16 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     public AssignmentRealTimeStats getAssignmentStats(int assignKey) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_PID_ANSWER_STATUS");
+        
+        Assignment ass = getAssignment(assignKey);
+        String joinPidsSql=null;
+        if(ass.isPersonalized()) {
+            joinPidsSql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_PID_ANSWER_STATUS-personalized");
+        }
+        else {
+            joinPidsSql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_PID_ANSWER_STATUS-default");
+        }
+        sql = SbUtilities.replaceSubString(sql,  "$$JOIN_GET_PIDS$$", joinPidsSql);
         List<PidStats> pidStats = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey }, new RowMapper<PidStats>() {
             @Override
             public PidStats mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -2771,8 +2781,20 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             String status;
             String name;
         }
-
+        
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_STUDENT_STATS");
+
+        Assignment ass = getAssignment(assignKey);
+        String joinPidsSql=null;
+        if(ass.isPersonalized()) {
+            joinPidsSql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_PID_ANSWER_STATUS-personalized");
+        }
+        else {
+            joinPidsSql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_PID_ANSWER_STATUS-default");
+        }
+        sql = SbUtilities.replaceSubString(sql,  "$$JOIN_GET_PIDS$$", joinPidsSql);
+        
+        
         sql = getStudentsInAssignmentSqlRestriction(assignKey, sql);
 
         List<StudentStat> studentStatus = getJdbcTemplate().query(sql, new Object[] { assignKey, pid }, new RowMapper<StudentStat>() {
