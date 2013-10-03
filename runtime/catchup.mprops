@@ -4630,7 +4630,7 @@ from HA_USER u
          select assign_key, count(*) as cnt_students
          from HA_USER h
            JOIN CM_ASSIGNMENT a on a.group_id = h.group_id
-         where a.assign_key = 95
+         where a.assign_key = ?
          group by assign_key
      ) uc on uc.assign_key = a.assign_key
      
