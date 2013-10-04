@@ -33,12 +33,14 @@ import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.button.ButtonBar;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -51,8 +53,11 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.DateField;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
+import com.sencha.gxt.widget.core.client.form.FormPanel.LabelAlign;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.widget.core.client.tips.ToolTip;
+import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 
 public class EditAssignmentDialog {
     private static final int MAX_FIELD_LEN = 400;
@@ -221,6 +226,14 @@ public class EditAssignmentDialog {
         });
         //saveAssign.setToolTip("Save any changes. Once activated or closed, problems cannot be edited.");
 
+
+        if(assignment.isPersonalized()) {
+            HTML html = new HTML("<span style='margin-right: 20px;color: red'>* indicates individualized problem");
+            new ToolTip(html, new ToolTipConfig("Individualized problems might be different for each student"));
+            window.getButtonBar().add(html);
+        }
+        
+
         if(_isDraftMode) {
             window.addButton(saveDraftMode);
         }
@@ -236,7 +249,7 @@ public class EditAssignmentDialog {
 
         window.show();
     }
-
+    
     private boolean isDraftMode() {
         return _isDraftMode;
     }

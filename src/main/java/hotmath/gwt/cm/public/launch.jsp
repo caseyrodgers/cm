@@ -30,7 +30,6 @@
             <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-all.css" />
             <link class="gray" rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-gray.css" />
         -->
-        <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
         <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css" />
         <link rel="stylesheet" type="text/css" href="/css/SexyButtons/sexybuttons.css" />
   
@@ -100,6 +99,7 @@
         </div>
 
 <!-- begin SnapEngage code -->
+<!-- 
 <script type="text/javascript">
   (function() {
     var se = document.createElement('script'); se.type = 'text/javascript'; se.async = true;
@@ -107,6 +107,7 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(se, s);
   })();
 </script>
+-->
 <!-- end SnapEngage code -->
 
 

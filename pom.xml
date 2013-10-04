@@ -704,11 +704,15 @@
 					<cssFinalFile>CatchupMath_combined.css</cssFinalFile>
 					<jsFinalFile>CatchupMath_combined.js</jsFinalFile>
 					<cssSourceFiles>
+
+						<param>../../../../../../hotmath2/web/css/tutor_widget.css</param>
+
 						<param>../../../../../../hotmath2/web/css/testset.css</param>
 						<param>../../../../../../hotmath2/web/css/default.css</param>
 						<param>../../../../../../hotmath2/web/css/hotmath_review.css</param>
 
 						<param>tutor_layout_tablet.css</param>
+						<param>tutor_widget_cm.css</param>
    						<param>CatchupMath.css</param>
                                                 <param>CatchupMath-resource_container.css</param>						
 						<param>loading_image.css</param>

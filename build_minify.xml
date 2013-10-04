@@ -90,6 +90,7 @@
             <filelist dir="${web.dir}" files="
                 assets/css/reset.css
                 ../../../../hotmath2/web/css/tutor_widget.css
+            	gwt-resources/css/tutor_widget_cm.css
             	gwt-resources/css/group_touch.css
             	gwt-resources/css/quiz.css
                 assets/css/local_sexybuttons.css
@@ -117,6 +118,7 @@
             <filelist dir="${web.dir}" files="
                 assets/css/reset.css
                 ../../../../hotmath2/web/css/tutor_widget.css
+            	gwt-resources/css/tutor_widget_cm.css
                 gwt-resources/css/CatchupMathSearch.css
             	gwt-resources/css/group_touch.css
                 assets/css/local_sexybuttons.css
@@ -136,6 +138,7 @@
         <concat destfile="${web.dir}/gwt-resources/css/HmMobile_combined.css" append="true">
             <filelist dir="${web.dir}" files="
                 ../../../../hotmath2/web/css/tutor_widget.css
+            	gwt-resources/css/tutor_widget_cm.css
                 assets/css/local_sexybuttons.css
                 gwt-resources/css/tutor_layout_tablet.css
             	gwt-resources/css/mobile_core.css

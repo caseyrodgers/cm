@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.PidStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentRealTimeStatsAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
@@ -84,7 +85,7 @@ public class AssignmentProblemListView extends ContentPanel {
         if(assignment.getPids() != null) {
             int ordinal=0;
             for(ProblemDto prob: assignment.getPids()) {
-                store.add(new ProblemDtoLocal(prob, ++ordinal));    
+                store.add(new ProblemDtoLocal(assignment, prob, ++ordinal));    
             }
         }
         
@@ -140,7 +141,7 @@ public class AssignmentProblemListView extends ContentPanel {
             
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Percentage of correct answers"));
             cols.get(cols.size()-1).setMenuDisabled(true);
-            problemListGrid.setToolTip("Display percentage of correct answers");
+            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromSafeConstant("Display percentage of correct answers"));
             TextButton answers = new TextButton("Answer Stats", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
@@ -196,7 +197,7 @@ public class AssignmentProblemListView extends ContentPanel {
     protected void showUserProblemStats() {
         _selectedRecord  = problemListGrid.getSelectionModel().getSelectedItem();
         if(_selectedRecord == null) {
-            CmMessageBox.showAlert("Please select a student first");
+            CmMessageBox.showAlert("Please select a problem first");
             return;
         }
         new AssignmentProblemStatsDialog(AssignmentProblemListView.this.assignment.getAssignKey(), _selectedRecord.getPid(), _selectedRecord.getLabel(), new CallbackOnComplete() {
@@ -410,7 +411,7 @@ public class AssignmentProblemListView extends ContentPanel {
         List<ProblemDtoLocal> la = new ArrayList<ProblemDtoLocal>();
         int ordinal=0;
         for(ProblemDto p: problemsAdded) {
-            la.add(new ProblemDtoLocal(p, ++ordinal));
+            la.add(new ProblemDtoLocal(assignment, p, ++ordinal));
         }
         return la;
     }
@@ -536,9 +537,11 @@ public class AssignmentProblemListView extends ContentPanel {
         ProblemDto problem;
         int ordinal;
         PidStats pidStats;
+        private Assignment assignment;
         
 
-        public ProblemDtoLocal(ProblemDto problem, int ordinal) {
+        public ProblemDtoLocal(Assignment assignment, ProblemDto problem, int ordinal) {
+            this.assignment = assignment;
             this.problem = problem;
             this.ordinal = ordinal;
         }
@@ -567,7 +570,13 @@ public class AssignmentProblemListView extends ContentPanel {
         }
         
         public String getLabelWithType() {
-            return problem.getLabelWithType();
+            String labelWithType = problem.getLabelWithType();
+            if(assignment.isPersonalized()) {
+                if(problem.getProblemType() == ProblemType.MULTI_CHOICE) {
+                    labelWithType += " *";
+                }
+            }
+            return labelWithType;
         }
 
         public void setOrdinalNumber(Integer value) {
