@@ -10,7 +10,7 @@ package hotmath.gwt.shared.client;
  *  is out date and a message is shown to request client to
  *  refresh.
  *
- *  NOTE: This much match the client.version property
+ *  NOTE: This must match the client.version property
  *  in ~/cm.properties.
  *
  *  @SEE SystemVersionUpdateChecker.
