@@ -4753,8 +4753,8 @@ order by user_name
 .key=GET_USER_INFO_STATS
 
 
-select sum(busy_time) as active_minutes
-from CM_USER_BUSY
+select sum(active_minutes) as active_minutes
+from 	CM_USER_BUSY
 where uid = ?
 
 
