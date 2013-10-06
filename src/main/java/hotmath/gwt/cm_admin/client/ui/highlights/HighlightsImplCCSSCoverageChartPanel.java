@@ -18,6 +18,7 @@ import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Composite;
@@ -165,15 +166,23 @@ public class HighlightsImplCCSSCoverageChartPanel extends Composite implements H
     }
 
     private void showNoData() {
-    	CenterLayoutContainer clContainer = new CenterLayoutContainer();
+        _chartWidget1 = getNoDataWidget();
+    	_tabPanel.add(_chartWidget1, "Activity");
+
+        _chartWidget2 = getNoDataWidget();
+    	_tabPanel.add(_chartWidget2, "Unique");
+
+    	_tabPanel.forceLayout();
+    }
+
+    private Widget getNoDataWidget() {
+        CenterLayoutContainer clContainer = new CenterLayoutContainer();
     	FramedPanel fp = new FramedPanel();
     	fp.setHeaderVisible(false);
     	fp.add(new HTML("<h2 style='color:red'>No data found</h2>"));
         clContainer.add(fp);
-        _tabPanel.clear();
-    	_tabPanel.add(clContainer);
-    	_tabPanel.forceLayout();
-    }
+        return clContainer.asWidget();
 
+    }
 
 }
