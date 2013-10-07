@@ -1832,8 +1832,16 @@ var cntxt=ctx?ctx:context;
                         context.beginPath();
                     }*/
                     
-                } else if (currentTool == 'eraser' && isIE) {
+                } else if (currentTool == 'eraser') {
                     // alert("A");
+					rect = {
+                                xmin: 1,
+                                ymin: 1,
+                                w: 0,
+                                h: 0
+                            };
+					graphicData.brect = rect;
+					sendData();
                     updateCanvas();
                     context.beginPath();
                     // alert(rendering);
@@ -2797,8 +2805,8 @@ source: https://gist.github.com/754454
         if (graphic_id === 0) {
             for (var i = 0; i < dLength; i++) {
 
-                x1 = graphic_data[i].x;
-                y1 = graphic_data[i].y;
+                x1 = graphic_data[i].x+scrollPosition.x;
+                y1 = graphic_data[i].y+scrollPosition.y;
                 deb += x1 + ":" + y1 + "||"
                 erase(x1, y1);
                 if (isIE) {
