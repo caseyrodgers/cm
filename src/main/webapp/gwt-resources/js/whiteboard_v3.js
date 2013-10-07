@@ -1014,6 +1014,15 @@ var cntxt=ctx?ctx:context;
                 var off_ht = $get_Element("#tools").offsetHeight;
                 var topOff = off_ht + off_top + 15
                 var leftOff = off_left + 15;
+				//
+				var vWidth = docWidth - leftOff;
+                var vHeight = docHeight - topOff;
+                canvas.width = vWidth;
+                canvas.height = vHeight;            
+                var ccnt = $get_Element("#canvas-container");
+                $get_jqElement("#canvas-container").css('width', vWidth + 'px');
+                $get_jqElement("#canvas-container").css('height', vHeight + 'px');
+				//
                 if (IS_IPHONE || docWidth <= 600) {
                     dox = IS_IPHONE ? 5 : 19
                     doy = IS_IPHONE ? 5 : 19
@@ -1053,6 +1062,10 @@ var cntxt=ctx?ctx:context;
                     console_log(posData);
                     positionScroller();
                 }
+				updateCanvas()
+				gr2D_xp = nL_xp = (screen_width - 300) / 2;
+                gr2D_yp = (screen_height - 300) / 2;
+                nL_yp = (screen_height - 100) / 2;
                 // },100);
             }
 
