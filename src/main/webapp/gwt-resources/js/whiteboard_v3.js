@@ -1062,6 +1062,7 @@ var cntxt=ctx?ctx:context;
                     console_log(posData);
                     positionScroller();
                 }
+				scrollPosition={x:0,y:0}
 				updateCanvas()
 				gr2D_xp = nL_xp = (screen_width - 300) / 2;
                 gr2D_yp = (screen_height - 300) / 2;
