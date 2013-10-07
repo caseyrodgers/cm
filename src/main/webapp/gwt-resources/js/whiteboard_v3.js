@@ -2394,8 +2394,8 @@ var cntxt=ctx?ctx:context;
         }
 
         graphicData.dataArr.push({
-            x: xs,
-            y: ys,
+            x: xs-scrollPosition.x,
+            y: ys-scrollPosition.y,
             name: "graphImage",
             addImage: addGraph
         });
