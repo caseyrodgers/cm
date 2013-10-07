@@ -448,7 +448,7 @@ var cntxt=ctx?ctx:context;
             rect.h = (ht + ht / 3) * str.length
             rect.xmax = rect.x + rect.w;
             rect.ymax = rect.y + rect.h;
-            console.log('renderText')
+            //console.log('renderText')
             // console.log(this)
             var gd = graphicData
             gd.brect = rect
@@ -518,8 +518,8 @@ var cntxt=ctx?ctx:context;
 
         if (!xt) {
             updateText(txt, x0, y0, colorToNumber(colr));
-            console.log('AfterUpdateText')
-            console.log(graphicData)
+            //console.log('AfterUpdateText')
+           // console.log(graphicData)
             sendData();
             // $get_Element("#editable-math").value = "";
 
@@ -3016,7 +3016,7 @@ source: https://gist.github.com/754454
             ctx.strokeStyle = col;
         }
         var deb = ""
-        console_log("RENDER_DATA_FOR: " + graphic_id)
+        //console_log("RENDER_DATA_FOR: " + graphic_id)
         if (graphic_id === 0) {
             for (var i = 0; i < dLength; i++) {
 
