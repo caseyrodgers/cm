@@ -401,7 +401,7 @@ var Whiteboard = function (cont, isStatic) {
             yp = 0 - box.top
             wi = 325
             hi = $get_jqElement('#calc_hold').height()
-            console_log(xp + ":" + yp + ":" + wi + ":" + hi + ":" + mx + ":" + my + ":" + event.layerX + ":" + event.pageX)
+            //console_log(xp + ":" + yp + ":" + wi + ":" + hi + ":" + mx + ":" + my + ":" + event.layerX + ":" + event.pageX)
             if ((mx >= xp && mx <= xp + wi) && (my >= yp && my <= yp + hi)) {
                 return true;
             }
@@ -887,7 +887,7 @@ var cntxt=ctx?ctx:context;
                 posData += "vscroller-off-left:" + $get_Element('#vscroller').style.left + "\n";
                 posData += "hscroller-off-top:" + $get_Element('#hscroller').style.top + "\n";
                 posData += "hscroller-off-left:" + $get_Element('#hscroller').style.left + "\n";
-                console_log(posData);
+                //console_log(posData);
             }
             var cmd_keys = {};
             var nav_keys = {};
@@ -1059,7 +1059,7 @@ var cntxt=ctx?ctx:context;
                     posData += "vscroller-off-left:" + $get_Element('#vscroller').style.left + "\n";
                     posData += "hscroller-off-top:" + $get_Element('#hscroller').style.top + "\n";
                     posData += "hscroller-off-left:" + $get_Element('#hscroller').style.left + "\n";
-                    console_log(posData);
+                    //console_log(posData);
                     positionScroller();
                 }
 				scrollPosition={x:0,y:0}
@@ -1122,7 +1122,7 @@ var cntxt=ctx?ctx:context;
                 scrollObj.my = mouse_pos;
                 scrollObj.dragged = true;
                 scrollObj.scrub = (scroll_window[dim] - sdim) / (sdim - 30)
-                console_log("INIT_SCROLL_SCRUB:" + scrollObj.sy + ":" + scrollObj.my + ":" + scrollObj.scrub + ":" + event.target);
+                //console_log("INIT_SCROLL_SCRUB:" + scrollObj.sy + ":" + scrollObj.my + ":" + scrollObj.scrub + ":" + event.target);
                 if (document.addEventListener) {
                     if (isTouchEnabled) {
                         document.addEventListener("touchend", stopThumbDrag, false);
@@ -1262,7 +1262,7 @@ var cntxt=ctx?ctx:context;
                     document.onmousemove = null;
                 }
                 scrollObj.dragged = false;
-                console_log("END_SCROLL_SCRUB:" + newpos + ":" + currPos);
+               // console_log("END_SCROLL_SCRUB:" + newpos + ":" + currPos);
             }
             // canvas.width = origcanvas.width = graphcanvas.width = topcanvas.width
             // = docWidth - leftOff;
@@ -1507,7 +1507,7 @@ var cntxt=ctx?ctx:context;
                 currPosV = currPosV < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosV;
                 $get_Element('#vscroll_thumb').style.top = (-currPosV / scrubV) + "px";
                 $get_Element('#canvas-container').style.top = currPosV + "px";
-                console_log("SCROLLER_THUMB_POS:" + scrubH + ":" + scrubV + ":" + (-currPosH) + ":" + (-currPosV))
+               // console_log("SCROLLER_THUMB_POS:" + scrubH + ":" + scrubV + ":" + (-currPosH) + ":" + (-currPosV))
             }
 
             function scrollTheCanvas(event) {
@@ -2081,7 +2081,7 @@ var cntxt=ctx?ctx:context;
                 $get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
 				scrollPosition['x']=currPosX;					
 					updateCanvas();
-                console_log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
+                //console_log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
             }
 
             function stopSwipe(_event) {
@@ -2382,7 +2382,7 @@ var cntxt=ctx?ctx:context;
 			gc.append(gr);
 			$get_jqElement("#canvas-container").prepend(gc);
 			//console.log(gc)
-			console.log($get_jqElement("#canvas-container").html())
+			//console.log($get_jqElement("#canvas-container").html())
 			if(!foo){
 			var grNode=$get_jqElement("#canvas-container");
 			if(true){
