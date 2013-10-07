@@ -1905,10 +1905,10 @@ var cntxt=ctx?ctx:context;
                             context.moveTo(clickX, clickY);
                             drawLine();
                         } else if (currentTool == 'eraser') {
-                            erase(x, y);
+                            erase(x-scrollPosition.x, y-scrollPosition.y);
                             graphicData.dataArr[graphicData.dataArr.length] = {
-                                x: x,
-                                y: y,
+                                x: x-scrollPosition.x,
+                                y: y-scrollPosition.y,
                                 id: "line"
                             };
                         } else {
