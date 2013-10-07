@@ -172,7 +172,7 @@ public class AssignmentsContentPanel extends ContentPanel {
                 releaseSelectedAssignmentGrades();
             }
         });
-        btnClose.setToolTip("Allow student's to see the selected assignment's grades.");
+        btnClose.setToolTip("Close and allow students to see the selected assignment's grades.");
         menu.add(btnRelease);
         
         
