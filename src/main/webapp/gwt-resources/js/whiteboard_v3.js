@@ -2980,7 +2980,7 @@ source: https://gist.github.com/754454
         if (graphic_id === 11 || graphic_id === 12) {
             idName = graphic_id == 11 ? "gr2D" : "nL";
 			var _obj=cloneObject(obj)
-            showHideGraph(idName, graphic_data[0].x, graphic_data[0].y, graphic_data[0].addImage);
+            showHideGraph(idName, graphic_data[0].x+scrollPosition.x, graphic_data[0].y+scrollPosition.y, graphic_data[0].addImage);
 			rect = getBoundRect(graphic_data[0].x, graphic_data[0].y, 300, (idName=='gr2D'?300:150));
 			obj=_obj;
         }
