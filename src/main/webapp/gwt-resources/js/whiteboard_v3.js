@@ -1788,8 +1788,8 @@ var cntxt=ctx?ctx:context;
                         // {x:x-clickX, y:y-clickY, id:"line"}
                         var xp = x - clickX
                         var yp = y - clickY
-                        xp = currentTool == 'eraser' ? x : xp
-                        yp = currentTool == 'eraser' ? y : yp
+                        xp = currentTool == 'eraser' ? x-scrollPosition.x : xp
+                        yp = currentTool == 'eraser' ? y-scrollPosition.y : yp
                         graphicData.dataArr[graphicData.dataArr.length] = {
                             x: xp,
                             y: yp,
