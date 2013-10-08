@@ -123,6 +123,13 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             title = "Required Problems";
         }
         
+        
+        PrescriptionSessionDataResource customResource = new PrescriptionSessionDataResource();
+        customResource.setType("custom");
+        customResource.setLabel("Custom");
+        customResource.getItems().add(new InmhItemData("custom", "http://math.com/", "Local Math Resource"));
+        
+        
         problemsResource.setLabel(title);
         int cnt = 1;
         for (AssessmentPrescription.SessionData sdata : practiceProblems) {
@@ -227,6 +234,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         __logger.debug("adding prescription sessions: " + prescription.getTestRun().getRunId());
         sessionData.getInmhResources().add(lessonResource);
         sessionData.getInmhResources().add(problemsResource);
+        sessionData.getInmhResources().add(customResource);
 
         /** 
          * Add a results resource type to allow user to view current results.
@@ -288,12 +296,14 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             List<PrescriptionSessionDataResource> inmhTypes) {
 
         List<PrescriptionSessionDataResource> newTypes = new ArrayList<PrescriptionSessionDataResource>();
-        String types[][] = { { "Lesson", "review", "Written lesson on the current topic" },
+        String types[][] = { 
+                { "Lesson", "review", "Written lesson on the current topic" },
                 { "Video", "video", "Math Video(s)" },
                 { "Activities", "activity", "Math activities and games related to the current topic" },
                 { null, "practice", "Practice problems you must complete before advancing" },
                 { "Extra Practice", "cmextra", "More practice" },
-                { "Quiz Results", "results", "Quiz results" }, };
+                { "Quiz Results", "results", "Quiz results"  },
+                { "Custom", "custom", "Custom Resource" }};
 
         for (int i = 0; i < types.length; i++) {
             String type[] = types[i];
