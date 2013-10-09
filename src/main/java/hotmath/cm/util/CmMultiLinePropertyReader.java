@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  *
  *
  * You can cause a re-read of the properties by flushing the server via
- * loading resources/util/cm_system_flush.jsp.
+ * loading assets/util/cm_system_flush.jsp.
 
  *
  * @author casey
