@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_search.client.CatchupMathSearch;
 import hotmath.gwt.cm_search.client.places.SearchPlace;
 
@@ -90,13 +91,13 @@ public class TopicViewImpl extends AbstractPagePanel implements TopicView {
                 continue;
             }
             
-            String itemType = resource.getType();
+            CmResourceType itemType = resource.getType();
             /** skip these types */
-            if(itemType.equals("results") || itemType.equals("activity") || itemType.equals("cmextra")) {
+            if(itemType == CmResourceType.RESULTS || itemType == CmResourceType.ACTIVITY || itemType == CmResourceType.CMEXTRA) {
                 continue;
             }
             
-            if(itemType.equals("practice")) {
+            if(itemType.equals(CmResourceType.PRACTICE)) {
                 resource.setLabel("Practice Problems");
                 resource.setDescription("Practice math tutorials");
             }
@@ -106,7 +107,7 @@ public class TopicViewImpl extends AbstractPagePanel implements TopicView {
             li.add(new HTMLPanel("<b>" + resource.getLabel() + "</b><span> -- " + resource.getDescription() + "</span>"));
             listItems.add(li);
             
-            boolean isRpp = resource.getType().equals("practice")?true:false;
+            boolean isRpp = resource.getType() == CmResourceType.PRACTICE?true:false;
             
             int cnt=0;
             for(InmhItemData itemData: resource.getItems()) {

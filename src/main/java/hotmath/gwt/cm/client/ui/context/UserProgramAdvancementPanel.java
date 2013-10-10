@@ -5,6 +5,7 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class UserProgramAdvancementPanel extends FlowLayoutContainer {
 		
 		PrescriptionSessionDataResource rppRpa=null;
 		for(PrescriptionSessionDataResource r: resources) {
-			if(r.getType().equals("practice")) {
+			if(r.getType().equals(CmResourceType.PRACTICE)) {
 				rppRpa = r;
 				break;
 			}
@@ -57,7 +58,7 @@ public class UserProgramAdvancementPanel extends FlowLayoutContainer {
 						if(window != null) {
 							window.hide();
 						}
-						CmHistoryManager.loadResourceIntoHistory("practice",Integer.toString(ordinal));
+						CmHistoryManager.loadResourceIntoHistory(CmResourceType.PRACTICE.label(),Integer.toString(ordinal));
 					}
 				}));
 			}

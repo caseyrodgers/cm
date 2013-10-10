@@ -20,6 +20,7 @@ import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
@@ -222,7 +223,7 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
 
     @Override
     public InmhItemData getItemData() {
-        return new InmhItemData("practice",__lastPid,__lastProblem.getStudentProblem().getStudentLabel());
+        return new InmhItemData(CmResourceType.PRACTICE,__lastPid,__lastProblem.getStudentProblem().getStudentLabel());
     }
 
     @Override

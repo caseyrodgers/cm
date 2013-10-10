@@ -42,6 +42,7 @@ import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkViewImpl;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -174,7 +175,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
              * want to have to create new InmhItemData, use the existing on
              * in prescription data.
              */
-            String resourceType = token.getResourceType();
+            CmResourceType resourceType = CmResourceType.mapResourceType(token.getResourceType());
             String file = token.getResourceFile();
             if (file == null) {
                 int ordinal = token.getResourceOrdinal();
@@ -188,20 +189,20 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
             }
 
             itemData.setTitle(token.getResourceTitle());
-            if (resourceType.equals("review")) {
+            if (resourceType.equals(CmResourceType.REVIEW)) {
                 PrescriptionLessonResourceReviewActivity activity = new PrescriptionLessonResourceReviewActivity(
                         eb, itemData);
                 PrescriptionLessonResourceReviewView view = cf.getPrescriptionLessonResourceReviewView();
                 view.setPresenter(activity);
                 activity.setupView(view);
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
-            } else if (resourceType.equals("video")) {
+            } else if (resourceType.equals(CmResourceType.VIDEO)) {
                 PrescriptionLessonResourceVideoActivity activity = new PrescriptionLessonResourceVideoActivity(eb,
                         itemData);
                 PrescriptionLessonResourceVideoView view = cf.getPrescriptionLessonResourceVideoView();
                 view.setPresenter(activity);
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
-            } else if (resourceType.equals("practice")) {
+            } else if (resourceType.equals(CmResourceType.PRACTICE)) {
 
                 PrescriptionLessonResourceTutorActivity activity = new PrescriptionLessonResourceTutorActivity(eb,
                         itemData);
@@ -218,14 +219,14 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                     view.setPresenter(activity);
                     eb.fireEvent(new LoadNewPageEvent((IPage) view));
                 }
-            } else if (resourceType.equals("cmextra")) {
+            } else if (resourceType.equals(CmResourceType.CMEXTRA)) {
                 PrescriptionLessonResourceTutorActivity activity = new PrescriptionLessonResourceTutorActivity(eb,
                         itemData);
                 PrescriptionLessonResourceTutorView view = cf.getPrescriptionLessonResourceTutorView();
                 view.setHeaderTitle("Extra Practice " + itemData.getTitle());
                 view.setPresenter(activity);
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
-            } else if (resourceType.equals("results")) {
+            } else if (resourceType.equals(CmResourceType.RESULTS)) {
                 PrescriptionLessonResourceResultsActivity activity = new PrescriptionLessonResourceResultsActivity(
                         eb, itemData);
                 PrescriptionLessonResourceResultsView view = cf.getPrescriptionLessonResourceResultsView();

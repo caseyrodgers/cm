@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
@@ -214,7 +215,7 @@ public class PrescriptionContext implements CmContext {
                 if (!r.getType().equals(resourceType))
                     continue;
 
-                if (onlyRpp && r.getType().indexOf("practice") == -1)
+                if (onlyRpp && r.getType() == CmResourceType.PRACTICE)
                     continue;
 
                 CmAutoTest.ResourceObject ro = new CmAutoTest.ResourceObject(r, which++);

@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -83,13 +84,13 @@ public class ProblemResourcesButton extends TextButton {
         //practiceMenu.setEnabled(false);
 
         for(PrescriptionSessionDataResource r: prescription.getPrescriptionData().getCurrSession().getInmhResources()) {
-            String type = r.getType();
-            if(type.equals("review")) {
+            CmResourceType type = r.getType();
+            if(type == CmResourceType.REVIEW) {
                 lessonsMenu.setText("Lesson Text");
                 lessonsMenu.setResource(r);
                 lessonsMenu.setEnabled(true);
             }
-            else if(type.equals("video")){
+            else if(type == CmResourceType.VIDEO){
                 Menu subMenu = new Menu();
                 for(InmhItemData id: r.getItems()) {
                     subMenu.add(new MyMenuItem(id.getTitle(), _menuItemlistener, r));
@@ -99,7 +100,7 @@ public class ProblemResourcesButton extends TextButton {
                     videoMenu.setEnabled(true);
                 }
             }
-            else if(type.equals("practice")) {
+            else if(type == CmResourceType.PRACTICE) {
 //                Menu subMenu = new Menu();
 //                for(InmhItemData id: r.getItems()) {
 //                    subMenu.add(new MenuItem(id.getTitle(),_menuItemlistener));

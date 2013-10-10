@@ -31,6 +31,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
@@ -539,7 +540,7 @@ public class HeaderPanel extends Composite {
         
         if(_stressCount++ < 100) {
 
-            InmhItemData itemData = new InmhItemData("practice", "cmextras_1_6_1_16_6", "Test pid");
+            InmhItemData itemData = new InmhItemData(CmResourceType.PRACTICE, "cmextras_1_6_1_16_6", "Test pid");
             final PrescriptionLessonResourceTutorActivity activity = new PrescriptionLessonResourceTutorActivity(CatchupMathMobile3.__clientFactory.getEventBus(), itemData);
 
             PrescriptionLessonResourceTutorView view = CatchupMathMobile3.__clientFactory.getPrescriptionLessonResourceTutorView();

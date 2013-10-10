@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SetLessonCompletedAction;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -65,18 +66,26 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
             /** do not show EPPs
              * 
              */
-            if(resource.getType().equals("cmextra")) {
+            if(resource.getType() == CmResourceType.CMEXTRA) {
                 continue;
             }
             
+            
+            if(resource.getType() == CmResourceType.WEBLINK) {
+                if(resource.getItems() != null && resource.getItems().size() == 1) {
+                    resource.setLabel(resource.getItems().get(0).getTitle());
+                }
+            }
+            
+            String l = resource.getLabel();
             ResourceMenuButton btnResource = new ResourceMenuButton(resource);
 
-            resourceButtons.put(resource.getType(), btnResource);
+            resourceButtons.put(resource.getType().label(), btnResource);
             
             /** if a Custom Program, then make sure the results
              * button is disabled .. there are no quizzes.
              */
-            if(resource.getType().equals("results")) {
+            if(resource.getType() == CmResourceType.RESULTS) {
             	review = resource;
             }
             else {
@@ -109,7 +118,7 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
     		ResourceMenuButton btn = new ResourceMenuButton(resource);
     		add(btn);
     		add(createFiller());
-    		resourceButtons.put(resource.getType(), btn);
+    		resourceButtons.put(resource.getType().label(), btn);
         }
     }
 
@@ -123,28 +132,28 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
      * 
      */
     public void indicateRequiredPracticeComplete() {
-    	resourceButtons.get("practice").getElement().<FxElement>cast().blink();
+    	resourceButtons.get(CmResourceType.PRACTICE.label()).getElement().<FxElement>cast().blink();
     }
 
-    public void updateCheckMarks(String resourceType) {
+    public void updateCheckMarks(CmResourceType resourceType) {
         
-        if(resourceType != null && resourceType.equals("cmextra")) {
-            resourceButtons.get("cmextra").updateCheckMarks();
+        if(resourceType != null && resourceType == CmResourceType.CMEXTRA) {
+            resourceButtons.get(resourceType.label()).updateCheckMarks();
             //resourceButtons.get("cmextra").showMenu();
         }
         else {
-            resourceButtons.get("practice").updateCheckMarks();
-            if(resourceButtons.get("practice").getMenu() != null) {
-                resourceButtons.get("practice").showMenu();
+            resourceButtons.get(CmResourceType.PRACTICE.label()).updateCheckMarks();
+            if(resourceButtons.get(CmResourceType.PRACTICE.label()).getMenu() != null) {
+                resourceButtons.get(CmResourceType.PRACTICE.label()).showMenu();
             }
         }
     }
     
     public void disableGames() {
         
-        resourceButtons.get("activity_standard").disable();
-        resourceButtons.get("flashcard").disable();
-        resourceButtons.get("flashcard_spanish").disable();
+        resourceButtons.get(CmResourceType.ACTIVITY_STANDARD.label()).disable();
+        resourceButtons.get(CmResourceType.FLASHCARD.label()).disable();
+        resourceButtons.get(CmResourceType.FLASHCARD_SPANISH.label()).disable();
     }
 
     /**
@@ -177,7 +186,7 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
             	case EVENT_TYPE_REQUIRED_COMPLETE:
                     InmhItemData id = (InmhItemData)event.getEventData();
                     id.setViewed(true);
-                    boolean isComplete = __instance.resourceButtons.get("practice").checkCompletion();
+                    boolean isComplete = __instance.resourceButtons.get(CmResourceType.PRACTICE.label()).checkCompletion();
                     if (isComplete) {
                     	setLessonCompleted(id.getTitle());
                     }

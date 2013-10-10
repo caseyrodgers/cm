@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
 
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class PrescriptionSessionDataResource implements IsSerializable {
 
-    String type;
+    CmResourceType type;
 	String label;
 	boolean viewed;
 	String description;
@@ -30,11 +32,15 @@ public class PrescriptionSessionDataResource implements IsSerializable {
         this.viewed = viewed;
     }
 
-    public String getType() {
+    public CmResourceType getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+    public void setType(String typeStr) {
+        this.type = CmResourceType.mapResourceType(typeStr);
+    }
+    
+	public void setType(CmResourceType type) {
 		this.type = type;
 	}
 

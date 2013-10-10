@@ -10,6 +10,7 @@ import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -241,7 +242,7 @@ public class PrescriptionLessonChooserDialog extends GWindow {
     private String getLessonStatus(SessionTopic lesson) {
 
         for (PrescriptionSessionDataResource pr : pData.getCurrSession().getInmhResources()) {
-            if (pr.getType().equals("practice")) {
+            if (pr.getType().equals(CmResourceType.PRACTICE)) {
                 int totalRp = 0;
                 int completeRp = 0;
                 for (InmhItemData item : pr.getItems()) {

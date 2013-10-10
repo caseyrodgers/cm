@@ -3,6 +3,7 @@ package hotmath.gwt.cm.client.ui.context;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.SubMenuItem;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
          * Add the standard Activities
          * 
          */
-        String t = "activity_standard";
+        CmResourceType t = CmResourceType.ACTIVITY_STANDARD;
         PrescriptionSessionDataResource resourceType = new PrescriptionSessionDataResource();
         resourceType.setType(t);
         resourceType.setLabel("Math Games");
@@ -43,7 +44,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
          * Add the Standard Flash Cards
          * 
          */
-        t = "flashcard";
+        t = CmResourceType.FLASHCARD;
 
         List<SubMenuItem> menu = new ArrayList<SubMenuItem>();
 
@@ -66,7 +67,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         add(resourceType);
     }
 
-    private List<SubMenuItem> createEnglishSubmenu(String t, PrescriptionSessionDataResource resourceType) {
+    private List<SubMenuItem> createEnglishSubmenu(CmResourceType t, PrescriptionSessionDataResource resourceType) {
 
         List<SubMenuItem> subMenu = new ArrayList<SubMenuItem>();
         SubMenuItem si = new SubMenuItem("Fractions");
@@ -268,7 +269,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
      * SUBMENU#
      */
 
-    private List<SubMenuItem> createSpanishSubmenu(String t, PrescriptionSessionDataResource resourceType) {
+    private List<SubMenuItem> createSpanishSubmenu(CmResourceType t, PrescriptionSessionDataResource resourceType) {
         /**
          * Add the Standard Spanish Flash Cards
          * 

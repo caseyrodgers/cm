@@ -5,6 +5,7 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.SubMenuItem;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +70,7 @@ class ResourceMenuButton extends TextButton {
         	addSelectHandler(new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
-                    CmHistoryManager.loadResourceIntoHistory(resource.getType(),"0");                }
+                    CmHistoryManager.loadResourceIntoHistory(resource.getType().label(),"0");                }
             });
         }
 
@@ -96,7 +97,7 @@ class ResourceMenuButton extends TextButton {
          * the history mechanism to locate the proper resource to show.
          * 
          */
-        PrescriptionCmGuiDefinition._registeredResources.put(resource.getType(),resouresToRegister);
+        PrescriptionCmGuiDefinition._registeredResources.put(resource.getType().label(),resouresToRegister);
         
         
         checkCompletion();
@@ -129,7 +130,7 @@ class ResourceMenuButton extends TextButton {
      * 
      */
     public boolean updateCheckMarks() {
-        if(!resource.getType().equals("practice") && !resource.getType().equals("cmextra"))
+        if(!resource.getType().equals(CmResourceType.PRACTICE) && !resource.getType().equals(CmResourceType.CMEXTRA))
             return false;
         
         
@@ -202,7 +203,7 @@ class ResourceMenuButton extends TextButton {
     			isComplete = false;
 
     		MenuItem item = null;
-    		if(resource.getType().equals("practice") || resource.getType().equals("cmextra")) {
+    		if(resource.getType().equals(CmResourceType.PRACTICE) || resource.getType().equals(CmResourceType.CMEXTRA)) {
     			final CheckMenuItem citem = new CheckMenuItem(id.getTitle());
     			citem.setChecked(id.isViewed(), true);
     			item = citem;
@@ -239,12 +240,12 @@ class ResourceMenuButton extends TextButton {
                             break;
                         }
                     }
-                    CmHistoryManager.loadResourceIntoHistory(resource.getType(),ordinalPosition.toString());
+                    CmHistoryManager.loadResourceIntoHistory(resource.getType().label(),ordinalPosition.toString());
                 }
             });
     	}
 
-    	if(resource.getType().equals("practice") && isComplete) { 
+    	if(resource.getType().equals(CmResourceType.PRACTICE) && isComplete) { 
     		indicateCompletion();
     	}
 
@@ -349,7 +350,7 @@ class ResourceMenuButton extends TextButton {
     	for(InmhItemData idI: resouresToRegister) {
     		if(idI.getFile().equals(id.getFile())) {
 		        if(isResourceAvailable(resource)) {
-		            CmHistoryManager.loadResourceIntoHistory(resource.getType(),pos.toString());
+		            CmHistoryManager.loadResourceIntoHistory(resource.getType().label(),pos.toString());
 		            return;
 		        }
     		}
@@ -376,7 +377,7 @@ class ResourceMenuButton extends TextButton {
      * @return
      */
     private boolean isResourceAvailable(PrescriptionSessionDataResource resource) {
-    	return (! UserInfo.getInstance().isLimitGames() || resource.getType().indexOf("activity") < 0);
+    	return (! UserInfo.getInstance().isLimitGames() || resource.getType().label().indexOf("activity") < 0);
     }
     
     

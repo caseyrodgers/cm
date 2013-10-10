@@ -1,22 +1,50 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class InmhItemData implements IsSerializable{
 	
-	String type;
+    CmResourceType type;
 	String title;
 	String file;
 	String widgetJsonArgs;
     boolean viewed;
+    
+    
+    public static enum CmResourceType {
+        VIDEO, ACTIVITY,WORKBOOK,REVIEW,TESTSET,RESULTS,CMEXTRA,FLASHCARD,FLASHCARD_SPANISH,WEBLINK, PRACTICE, ACTIVITY_STANDARD, ACTIVITY_JS;
+        
+
+        /** Map a type string into a CmResourceType
+         * 
+         * @param typeStr
+         * @return
+         */
+        public static CmResourceType mapResourceType(String typeStr) {
+            try {
+                return CmResourceType.valueOf(typeStr.toUpperCase());
+            }
+            catch(Exception e) {
+                Log.error("Could not map resource type: " + typeStr);
+            }
+            return null;
+        }
+
+        /** Resource unique lower case name */
+        public String label() {
+            return name().toLowerCase();
+        }   
+
+    }
 
     public InmhItemData() {
     }
     
-	public InmhItemData(String type, String file, String title) {
+	public InmhItemData(CmResourceType type, String file, String title) {
 	    this(type,file,title,null);
 	}
-    public InmhItemData(String type, String file, String title,String widgetJsonArgs) {
+    public InmhItemData(CmResourceType type, String file, String title,String widgetJsonArgs) {
         this.type = type;
         this.file = file;
         this.title = title;
@@ -38,10 +66,10 @@ public class InmhItemData implements IsSerializable{
     public void setViewed(boolean viewed) {
         this.viewed = viewed;
     }
-    public String getType() {
+    public CmResourceType getType() {
 		return type;
 	}
-	public void setType(String type) {
+	public void setType(CmResourceType type) {
 		this.type = type;
 	}
 	public String getTitle() {
@@ -60,4 +88,6 @@ public class InmhItemData implements IsSerializable{
 	public String toString() {
 		return type + ", " + file + ", " +  title;
 	}
+	
+
 }

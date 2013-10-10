@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
 
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +78,7 @@ public class PrescriptionSessionData implements IsSerializable{
 	
 	public boolean dependsOnFlash() {
 	    for(PrescriptionSessionDataResource r: inmhResources) {
-	        if(r.getType().equals("practice")) {
+	        if(r.getType().equals(CmResourceType.PRACTICE)) {
 	            for(InmhItemData item: r.getItems()) {
 	                if( item.getFile().indexOf(".swf") > -1) {
 	                    return true;

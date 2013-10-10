@@ -7,6 +7,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_search.client.ClientFactory;
 import hotmath.gwt.cm_search.client.places.ReviewPlace;
 import hotmath.gwt.cm_search.client.places.SearchPlace;
@@ -72,13 +73,13 @@ public class TopicActivity extends AbstractActivity implements TopicView.Present
     }
     
     private Place determinePlace(InmhItemData resourceItem) {
-        if(resourceItem.getType().equals("practice")) {
+        if(resourceItem.getType().equals(CmResourceType.PRACTICE)) {
             return new TutorPlace(resourceItem);
         }
-        else if(resourceItem.getType().equals("review")) {
+        else if(resourceItem.getType().equals(CmResourceType.REVIEW)) {
             return new ReviewPlace(resourceItem.getFile());
         }
-        else if(resourceItem.getType().equals("video")) {
+        else if(resourceItem.getType().equals(CmResourceType.VIDEO)) {
             return new VideoPlace(resourceItem);
         }
         else {

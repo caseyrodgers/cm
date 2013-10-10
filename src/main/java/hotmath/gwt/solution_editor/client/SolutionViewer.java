@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetMobileSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.solution_editor.client.rpc.ServerFlusherAction;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -57,7 +58,7 @@ public class SolutionViewer extends LayoutContainer {
     private void showSolution(String pid) {
         CmResourceViewerImplSolution tutor = new CmResourceViewerImplSolution();
         
-        InmhItemData iid = new InmhItemData("practice",pid,"");
+        InmhItemData iid = new InmhItemData(CmResourceType.PRACTICE,pid,"");
         removeAll();
         add(tutor.getViewer(iid));
         setScrollMode(Scroll.AUTO);

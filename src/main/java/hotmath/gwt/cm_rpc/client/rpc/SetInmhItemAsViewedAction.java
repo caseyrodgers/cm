@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
@@ -8,12 +9,12 @@ public class SetInmhItemAsViewedAction implements Action<RpcData> {
 
 
     int runId;
-    String type;
+    CmResourceType type;
     String file;
     int sessionNumber;
     public SetInmhItemAsViewedAction(){}
     
-    public SetInmhItemAsViewedAction(int runId, String type, String file,int sessionNumber) {
+    public SetInmhItemAsViewedAction(int runId, CmResourceType type, String file,int sessionNumber) {
         this.runId = runId;
         this.type = type;
         this.file = file;
@@ -25,10 +26,10 @@ public class SetInmhItemAsViewedAction implements Action<RpcData> {
     public void setRunId(int runId) {
         this.runId = runId;
     }
-    public String getType() {
+    public CmResourceType getType() {
         return type;
     }
-    public void setType(String type) {
+    public void setType(CmResourceType type) {
         this.type = type;
     }
     public String getFile() {

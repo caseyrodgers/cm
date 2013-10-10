@@ -5,6 +5,7 @@ import hotmath.assessment.InmhItemData;
 import hotmath.assessment.RppWidget;
 import hotmath.gwt.cm_admin.server.model.CustomQuizQuestionManager;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -42,7 +43,7 @@ public class AssignmentLessonPidSelector {
 
         lesson = new LessonModel(lessonName, lessonFile);
 
-        InmhItemData itemData = new InmhItemData(new INeedMoreHelpItem("practice", lessonFile, lessonName));
+        InmhItemData itemData = new InmhItemData(new INeedMoreHelpItem(CmResourceType.PRACTICE.label(), lessonFile, lessonName));
         try {
             List<RppWidget> rpps = itemData.getWidgetPool(conn, "assignment_pid");
             for (RppWidget w : rpps) {

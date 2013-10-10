@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
@@ -121,7 +122,7 @@ public class TutorWithWhiteboardViewer extends Composite {
                  variableContext = problem.getInfo().getContext().getContextJson();
              }
 
-            InmhItemData item = new InmhItemData("solution", problem.getInfo().getPid(), resourceTitle);
+            InmhItemData item = new InmhItemData(CmResourceType.PRACTICE, problem.getInfo().getPid(), resourceTitle);
 
             _tutorPanel.externallyLoadedTutor(problem.getInfo(),getWidget(), item.getFile(), item.getWidgetJsonArgs(), problem.getInfo().getJs(),problem.getInfo().getHtml(), resourceTitle, true, false, variableContext);
             

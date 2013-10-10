@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.model.StudentShowWorkModelPojo;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
@@ -193,7 +194,7 @@ public class StudentShowWorkWindow extends GWindow {
             
             
             final InmhItemData solItem = new InmhItemData();
-            solItem.setType("practice");
+            solItem.setType(CmResourceType.PRACTICE);
             solItem.setFile(pid);
             
             TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true,false, false, true,new TutorCallbackDefault());
@@ -292,7 +293,7 @@ public class StudentShowWorkWindow extends GWindow {
             _showWorkPanel.setupForPid(pid);
 
             final InmhItemData solItem = new InmhItemData();
-            solItem.setType("practice");
+            solItem.setType(CmResourceType.PRACTICE);
             solItem.setFile(pid);
             
             TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true,  false, false, true,new TutorCallbackDefault());

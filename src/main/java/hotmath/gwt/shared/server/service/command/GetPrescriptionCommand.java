@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
@@ -19,6 +20,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
+import hotmath.gwt.solution_editor.client.rpc.GetSolutionResourcesAdminAction.ResourceType;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
 import hotmath.testset.ha.HaTestRun;
@@ -100,7 +102,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
          */
         List<AssessmentPrescription.SessionData> practiceProblems = session.getSessionDataFor(session.getTopic());
         PrescriptionSessionDataResource problemsResource = new PrescriptionSessionDataResource();
-        problemsResource.setType("practice");
+        problemsResource.setType(CmResourceType.PRACTICE.label());
         
         __logger.debug("assigning problems to prescription: " + prescription.getTestRun().getRunId());
         
@@ -125,9 +127,10 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         
         
         PrescriptionSessionDataResource customResource = new PrescriptionSessionDataResource();
-        customResource.setType("custom");
-        customResource.setLabel("Custom");
-        customResource.getItems().add(new InmhItemData("custom", "http://math.com/", "Local Math Resource"));
+        customResource.setType(CmResourceType.WEBLINK);
+        customResource.setLabel("External Web Links");
+        customResource.getItems().add(new InmhItemData(customResource.getType(), "http://math.com/", "Awesome math site #1"));
+        customResource.getItems().add(new InmhItemData(customResource.getType(), "http://www.coolmath.com/algebra/", "Awesome algebra math site #2"));
         
         
         problemsResource.setLabel(title);
@@ -151,7 +154,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             id.setTitle(type + (cnt++) + " " + rppInfoLabel);
             
             id.setFile(sdata.getRpp().getFile());
-            id.setType("practice");
+            id.setType(CmResourceType.PRACTICE);
             id.setWidgetJsonArgs(sdata.getRpp().getWidgetJsonArgs());
             
             problemsResource.getItems().add(id);
@@ -168,7 +171,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         INeedMoreHelpItem item = session.getSessionCategories().get(0);
         lessonId.setTitle(item.getTitle());
         lessonId.setFile(item.getFile());
-        lessonId.setType(item.getType());
+        lessonId.setType(CmResourceType.mapResourceType(item.getType()));
         lessonResource.getItems().add(lessonId);
 
         /** Always send complete list of all lesson names.
@@ -224,7 +227,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                     id.setTitle(i.getTitle());
                 }
                 
-                id.setType(i.getType());
+                id.setType(CmResourceType.mapResourceType(i.getType()));
 
                 resource.getItems().add(id);
             }
@@ -246,7 +249,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             InmhItemData id = new InmhItemData();
             id.setTitle("Your quiz results");
             id.setFile("");
-            id.setType("results");
+            id.setType(CmResourceType.mapResourceType("results"));
             resultsResource.getItems().add(id);
             sessionData.getInmhResources().add(resultsResource);
         }
@@ -297,13 +300,13 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
 
         List<PrescriptionSessionDataResource> newTypes = new ArrayList<PrescriptionSessionDataResource>();
         String types[][] = { 
-                { "Lesson", "review", "Written lesson on the current topic" },
-                { "Video", "video", "Math Video(s)" },
-                { "Activities", "activity", "Math activities and games related to the current topic" },
-                { null, "practice", "Practice problems you must complete before advancing" },
-                { "Extra Practice", "cmextra", "More practice" },
-                { "Quiz Results", "results", "Quiz results"  },
-                { "Custom", "custom", "Custom Resource" }};
+                { "Lesson", CmResourceType.REVIEW.label(), "Written lesson on the current topic" },
+                { "Video", CmResourceType.VIDEO.label(), "Math Video(s)" },
+                { "Activities", CmResourceType.ACTIVITY.label(), "Math activities and games related to the current topic" },
+                { null, CmResourceType.PRACTICE.label(), "Practice problems you must complete before advancing" },
+                { "Extra Practice", CmResourceType.CMEXTRA.label(), "More practice" },
+                { "Quiz Results", CmResourceType.RESULTS.label(), "Quiz results"  },
+                { "Web Link", CmResourceType.WEBLINK.label(), "External Web Link" }};
 
         for (int i = 0; i < types.length; i++) {
             String type[] = types[i];
@@ -311,7 +314,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             // find this type, if not exist .. create it
             boolean found = false;
             for (PrescriptionSessionDataResource r : inmhTypes) {
-                if (r.getType().equals(type[1])) {
+                if (r.getType().label().equals(type[1])) {
                     // exists, so add it
                     if (type[0] != null)
                         r.setLabel(type[0]);
@@ -328,7 +331,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 nr.setDescription(type[2]);
                 InmhItemData iid = new InmhItemData();
                 iid.setTitle("No " + type[0] + " Available");
-                iid.setType(type[1]);
+                iid.setType(CmResourceType.mapResourceType(type[1]));
                 iid.setFile("");
                 // nr.getItems().add(iid);
 

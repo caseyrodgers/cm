@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
@@ -59,7 +60,7 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
 
         List<INeedMoreHelpResourceType> items = getPrescriptionInmhTypes(conn, action.getFile(), lessonTitle, null);
         PrescriptionSessionDataResource problemsResource = new PrescriptionSessionDataResource();
-        problemsResource.setType("practice");
+        problemsResource.setType(CmResourceType.PRACTICE.label());
         boolean isActivity=false;
         if(practiceProblems.size() > 0) {
             /** label either as Problems or Activities */
@@ -72,7 +73,7 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
                 String type = isActivity ? "Problem Set " : "Problem ";
                 id.setTitle(type + cnt++);
                 id.setFile(sdata.getRpp().getFile());
-                id.setType("practice");
+                id.setType(CmResourceType.PRACTICE);
                 id.setWidgetJsonArgs(sdata.getWidgetArgs());
     
                 problemsResource.getItems().add(id);
@@ -89,7 +90,7 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
         // each session is a single topic
         lessonId.setTitle(lessonTitle);
         lessonId.setFile(action.getFile());
-        lessonId.setType("review");
+        lessonId.setType(CmResourceType.REVIEW);
         lessonResource.getItems().add(lessonId);
 
         // always send complete list of all topics
@@ -120,7 +121,7 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
                     InmhItemData id = new InmhItemData();
                     id.setFile(i.getFile());
                     id.setTitle(i.getTitle());
-                    id.setType(i.getType());
+                    id.setType(CmResourceType.mapResourceType(i.getType()));
     
                     resource.getItems().add(id);
                 }
@@ -144,7 +145,7 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
         PrescriptionSessionDataResource activityResource = new PrescriptionSessionDataResource();
         activityResource.setType("js_activity");
         activityResource.setLabel("Learning Activity (JS)");
-        InmhItemData jsActivity = new InmhItemData("js_activity", "word_problems", "Word Problems");
+        InmhItemData jsActivity = new InmhItemData(CmResourceType.ACTIVITY_JS, "word_problems", "Word Problems");
         activityResource.getItems().add(jsActivity);
         
         

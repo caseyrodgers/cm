@@ -53,7 +53,7 @@ public class CmAutoTest {
                 finished = true;
             else {
                 AutoTestWindow.getInstance().addLogMessage("Loading (" + resourcesToRun.size() + "): " + resource + ", "  + resource.which);
-                CmHistoryManager.loadResourceIntoHistory(resource.item.getType(),Integer.toString(resource.which));
+                CmHistoryManager.loadResourceIntoHistory(resource.item.getType().label(),Integer.toString(resource.which));
             }
         }    
     }    

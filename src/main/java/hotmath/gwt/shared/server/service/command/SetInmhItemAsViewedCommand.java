@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.util.sql.SqlUtilities;
 
@@ -37,7 +38,7 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
              * 
              */
             boolean shouldAdd=true;
-            if(action.getType().equals("practice")) {
+            if(action.getType().equals(CmResourceType.PRACTICE)) {
                 PreparedStatement stCheck=null;
                 try {
                 	String sql = CmMultiLinePropertyReader.getInstance().getProperty("COUNT_PRACTICE_INMH_USE");
@@ -63,7 +64,7 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
                 pstat = conn.prepareStatement(sql);
     
                 pstat.setInt(1, action.getRunId());
-                pstat.setString(2, action.getType());
+                pstat.setString(2, action.getType().label());
                 pstat.setString(3, action.getFile());
                 pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
                 pstat.setInt(5, action.getSessionNumber());

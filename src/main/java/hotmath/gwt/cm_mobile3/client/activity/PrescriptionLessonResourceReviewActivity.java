@@ -8,6 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class PrescriptionLessonResourceReviewActivity implements PrescriptionLes
     private void doResourceLoad(String type, String file) {
         // MessageBox.showError("Flie: " + file);'
         ClientFactory cf = CatchupMathMobile3.__clientFactory;
-        InmhItemData newItem = new InmhItemData(type, file,"");
+        InmhItemData newItem = new InmhItemData(CmResourceType.mapResourceType(type), file,"");
         cf.getEventBus().fireEvent(new ShowPrescriptionResourceEvent(newItem));        
     }
 

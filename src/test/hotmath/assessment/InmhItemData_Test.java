@@ -1,7 +1,7 @@
 package hotmath.assessment;
 
-import hotmath.cm.login.ClientEnvironment;
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.inmh.INeedMoreHelpItem;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class InmhItemData_Test extends CmDbTestCase {
     
     public void testCreateMixedNumbers() throws Exception {
         String file = "topics/mixed-numbers.html";
-        INeedMoreHelpItem item = new INeedMoreHelpItem("practice", file, "Test");  
+        INeedMoreHelpItem item = new INeedMoreHelpItem(CmResourceType.PRACTICE.label(), file, "Test");  
         InmhItemData itemData = new InmhItemData(item);
         List<RppWidget> rpps = itemData.getWidgetPool(conn,"testing");
         assertTrue(rpps.size() == 1);
@@ -28,7 +28,7 @@ public class InmhItemData_Test extends CmDbTestCase {
          * TODO: generalize
          * 
          */
-        INeedMoreHelpItem item = new INeedMoreHelpItem("practice", "topics/functions.html", "Test");  
+        INeedMoreHelpItem item = new INeedMoreHelpItem(CmResourceType.PRACTICE.label(), "topics/functions.html", "Test");  
         InmhItemData itemData = new InmhItemData(item);
         List<RppWidget> rpps = itemData.getWidgetPool(conn,"testing");
         assertTrue(!hasDuplicates(rpps));
@@ -40,7 +40,7 @@ public class InmhItemData_Test extends CmDbTestCase {
          * TODO: generalize
          * 
          */
-        INeedMoreHelpItem item = new INeedMoreHelpItem("practice", "topics/functions.html", "Test");  
+        INeedMoreHelpItem item = new INeedMoreHelpItem(CmResourceType.PRACTICE.label(), "topics/functions.html", "Test");  
         InmhItemData itemData = new InmhItemData(item);
         List<RppWidget> rpps = itemData.getWidgetPool(conn,"testing");
         assertTrue(rpps.get(0).getFile() != null);

@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
@@ -193,7 +194,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     } else {
                         String resourceId = location.getResourceId();
                         InmhItemData item = new InmhItemData();
-                        item.setType(resourceTypeToView);
+                        item.setType(CmResourceType.mapResourceType(resourceTypeToView));
                         item.setFile(resourceId);
                         CmMainPanel.__lastInstance.showResource(item);
                     }
@@ -243,7 +244,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
                 CmLogger.debug("PrescriptionResourceAccord: setItemAsViewed: " + resourceItem);
 
-                boolean isSolutionResource = (resourceItem.getType().equals("practice") || resourceItem.getType().equals("cmextra"));
+                boolean isSolutionResource = (resourceItem.getType().equals(CmResourceType.PRACTICE) || resourceItem.getType().equals(CmResourceType.CMEXTRA));
 
                 // update the total count in the Header
                 // only if a practice or cmextra type
@@ -348,9 +349,10 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                      * practice problems are tracked elsewhere. (where?)
                      */
                     if (viewer.getResourceItem() != null) {
-                        String type = viewer.getResourceItem().getType();
-                        if (!(type.equals("practice") || type.equals("cmextra")))
+                        CmResourceType type = viewer.getResourceItem().getType();
+                        if (!(type == CmResourceType.PRACTICE) || type == CmResourceType.CMEXTRA) {
                             __instance.markResourceAsViewed(viewer.getResourceItem());
+                        }
                     }
                 } else if (event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE) {
                     __instance.showHelpPanel();

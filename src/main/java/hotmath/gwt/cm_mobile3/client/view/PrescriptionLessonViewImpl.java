@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +103,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
             li.add(new HTMLPanel("<b>" + resource.getLabel() + "</b><span> -- " + resource.getDescription() + "</span>"));
             listItems.add(li);
             
-            boolean isRpp = resource.getType().equals("practice")?true:false;
+            boolean isRpp = resource.getType().equals(CmResourceType.PRACTICE)?true:false;
             
             int cnt=0;
             for(InmhItemData itemData: resource.getItems()) {

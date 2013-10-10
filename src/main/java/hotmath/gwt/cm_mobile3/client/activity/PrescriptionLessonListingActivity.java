@@ -10,6 +10,7 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class PrescriptionLessonListingActivity implements PrescriptionLessonList
     public String getStatusForLesson(String lesson) {
         
         for(PrescriptionSessionDataResource pr: prescriptionData.getCurrSession().getInmhResources()) {
-            if(pr.getType().equals("practice")) {
+            if(pr.getType().equals(CmResourceType.PRACTICE)) {
                 int totalRp=0;
                 int completeRp=0;
                 for(InmhItemData item: pr.getItems()) {

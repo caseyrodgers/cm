@@ -16,6 +16,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedHandler;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
@@ -80,7 +81,7 @@ public class SharedData {
      * @param type
      * @param ordinal
      */
-    public static InmhItemData findInmhDataInPrescriptionByOrdinal(String type, int ordinal) throws Exception  {
+    public static InmhItemData findInmhDataInPrescriptionByOrdinal(CmResourceType type, int ordinal) throws Exception  {
         for(PrescriptionSessionDataResource dr: flowAction.getPrescriptionResponse().getPrescriptionData().getCurrSession().getInmhResources()) {
             if(type.equals(dr.getType())) {
                 for(int i=0,t=dr.getItems().size();i<t;i++) {
@@ -96,7 +97,7 @@ public class SharedData {
     
     public static String calculateCurrentLessonStatus(String topic) {
         for(PrescriptionSessionDataResource dr: flowAction.getPrescriptionResponse().getPrescriptionData().getCurrSession().getInmhResources()) {
-            if("practice".equals(dr.getType())) {
+            if(CmResourceType.PRACTICE.equals(dr.getType())) {
                 int viewed=0;
                 int total=0;
                 for(int i=0,t=dr.getItems().size();i<t;i++) {
@@ -121,7 +122,7 @@ public class SharedData {
      * @return
      * @throws Exception
      */
-    public static InmhItemData findInmhDataInPrescriptionByFile(String type, String file) throws Exception {
+    public static InmhItemData findInmhDataInPrescriptionByFile(CmResourceType type, String file) throws Exception {
         for(PrescriptionSessionDataResource dr: flowAction.getPrescriptionResponse().getPrescriptionData().getCurrSession().getInmhResources()) {
             if(type.equals(dr.getType())) {
                 for(int i=0,t=dr.getItems().size();i<t;i++) {
@@ -135,9 +136,9 @@ public class SharedData {
     }
     
     public static int findOrdinalPositionOfResource(InmhItemData itemIn) {
-        String type = itemIn.getType();
+        CmResourceType type = itemIn.getType();
         for(PrescriptionSessionDataResource dr: flowAction.getPrescriptionResponse().getPrescriptionData().getCurrSession().getInmhResources()) {
-            if(type.equals(dr.getType())) {
+            if(type == dr.getType()) {
                 for(int i=0,t=dr.getItems().size();i<t;i++) {
                     InmhItemData item = dr.getItems().get(i);
                     if(item.getTitle().equals(itemIn.getTitle())) {
