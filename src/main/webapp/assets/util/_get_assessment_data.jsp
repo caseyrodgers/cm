@@ -39,7 +39,7 @@
               <%
               for(String s: inmhData.getPids()) {
                   %>
-                  <li> <a href='/tutor/?pid=<%= s %>'><%= s %></a> </li>
+                  <li> <a href='/tutor_viewer/CmTutor.html?pid=<%= s %>'><%= s %></a> </li>
                   <%
               }
               %>
