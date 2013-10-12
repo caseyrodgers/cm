@@ -30,6 +30,7 @@ public class ProgramSubject implements CmTreeNode,IsSerializable{
         labelMap.put("Alg 2", "Algebra 2");
         labelMap.put("Geom", "Geometry");
         labelMap.put("Ess", "Essentials");
+        labelMap.put("ElemAlg", "Elementary Algebra");
     }
     
     public ProgramSubject(String name, List<String> gradeLevels) {
