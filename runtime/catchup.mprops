@@ -4743,6 +4743,7 @@ from HA_USER u
         
 where a.assign_key = ?
 and  p_.pid = ?
+and  u.is_active = 1
 
 $$LIMIT_TO_SPECIFIED_USERS$$
 
