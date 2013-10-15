@@ -63,6 +63,9 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 	
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
+	private static final String ADMIN_EMAIL = "admin@hotmath.com";
+	private static final String DEFAULT_REP_EMAIL = "thamilton@hotmath.com";
+
 	private boolean runInSeparateThread = true;
 
     @Override
@@ -141,9 +144,8 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     		this.levelName = levelName;
     		this.fromDate = fromDate;
     	    this.toDate = toDate;
-			this.toEmailAddrs = new String[2];
+			this.toEmailAddrs = new String[1];
 			toEmailAddrs[0] = emailAddr;
-			toEmailAddrs[1] = "admin@hotmath.com";
 
     	}
 
@@ -153,6 +155,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     		Map<Integer,List<CCSSCoverageData>> ccssMap = new HashMap<Integer,List<CCSSCoverageData>>();
     		Map<Integer,List<String>> ccssNotCoveredMap = new HashMap<Integer,List<String>>();
     		Connection conn = null;
+			AccountInfoModel acctInfo = null;
     		try {
     			conn = HMConnectionPool.getConnection();
 
@@ -188,12 +191,9 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 
     			HaAdmin haAdmin = CmAdminDao.getInstance().getAdmin(adminUid);
 
-    			AccountInfoModel acctInfo = CmAdminDao.getInstance().getAccountInfo(adminUid);
+    			acctInfo = CmAdminDao.getInstance().getAccountInfo(adminUid);
     			String acctCreateDate = sdf.format(acctInfo.getAccountCreateDate());
     			String todaysDate = sdf.format(new Date());
-    			if (acctInfo.getAccountRepEmail() != null) {
-    				toEmailAddrs[1] = acctInfo.getAccountRepEmail();;    				
-    			}
 
     			StringBuilder titleBuff = new StringBuilder();
     			titleBuff.append(acctInfo.getSchoolName()).append(" (");
@@ -276,8 +276,15 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     	    			LOG.error("*** Exception mailing student data export error email ***", sbe);    					
     				}
     				try {
-    					toEmailAddrs[0] = "admin@hotmath.com";
-    					toEmailAddrs[1] = "bobhall@hotmath.com";
+    					toEmailAddrs = new String[3];
+    	    			if (acctInfo != null && acctInfo.getAccountRepEmail() != null) {
+    	    				toEmailAddrs[0] = acctInfo.getAccountRepEmail();;    				
+    	    			}
+    	    			else {
+    	    				toEmailAddrs[0] = DEFAULT_REP_EMAIL;
+    	    			}
+    					toEmailAddrs[1] = ADMIN_EMAIL;
+    					toEmailAddrs[2] = "bobhall@hotmath.com";
 	    			    SbMailManager.getInstance().sendMessage("Catchup Math Export File ERROR",
 	    					"There was a problem generating an export file for Admin UID: " + adminUid,
 	    					toEmailAddrs, "errors@hotmath.com");
