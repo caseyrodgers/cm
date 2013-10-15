@@ -156,6 +156,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     		Map<Integer,List<String>> ccssNotCoveredMap = new HashMap<Integer,List<String>>();
     		Connection conn = null;
 			AccountInfoModel acctInfo = null;
+		    StringBuilder subjBuff = new StringBuilder();
     		try {
     			conn = HMConnectionPool.getConnection();
 
@@ -216,6 +217,9 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     				sb.append(" - Filter: ( ").append(filterDescr).append(" )");
     			else
     				sb.append(" - Filter: ( All Students )");
+    			if (levelName != null) {
+    				sb.append(" - Strand: ( ").append(levelName).append(" )");
+    			}
 
     			ExportStudentsInExcelFormat exporter = new ExportStudentsInExcelFormat(studentList);
     			exporter.setReportCardList(rcList);
@@ -249,7 +253,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			msgBuff.append("The student data export you requested for ");
     			msgBuff.append(acctInfo.getSchoolName()).append(" (");
     			msgBuff.append(acctInfo.getAdminUserName()).append(") ");
-    			if (filterDescr != null) {
+    			if (filterDescr != null || levelName != null) {
     				msgBuff.append("with ").append(sb.toString());
     			}
 				msgBuff.append(" is attached.");
@@ -258,8 +262,12 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 			    msgBuff.append(NEW_LINE).append(NEW_LINE);
 			    msgBuff.append("The CatchupMath Team");
 
+			    subjBuff.append("CatchupMath Export");
+			    if (filterDescr != null || levelName != null) {
+			    	subjBuff.append(sb.toString());
+			    }
     			if(emailAddr != null) {
-	    			SbMailManager.getInstance().sendFile(filePath.getPath(), "Your Catchup Math Export File",
+	    			SbMailManager.getInstance().sendFile(filePath.getPath(), subjBuff.toString(),
 	    					msgBuff.toString(), toEmailAddrs, "registration@hotmath.com");
     			}
     		}
@@ -267,7 +275,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			LOG.error("*** Exception generating / mailing student data export for admin UID: " + adminUid, e);
     			if(emailAddr != null) {
     				try {
-	    			    SbMailManager.getInstance().sendMessage("Catchup Math Export File ERROR",
+	    			    SbMailManager.getInstance().sendMessage(subjBuff.append(" ERROR").toString(),
 	    					"Sorry, there was a problem generating your export file.  We will identify and fix the problem as soon as possible." +
 	    			        "\n\n The CatchupMath Team",
 	    					toEmailAddrs, "registration@hotmath.com");
@@ -285,7 +293,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     	    			}
     					toEmailAddrs[1] = ADMIN_EMAIL;
     					toEmailAddrs[2] = "bobhall@hotmath.com";
-	    			    SbMailManager.getInstance().sendMessage("Catchup Math Export File ERROR",
+	    			    SbMailManager.getInstance().sendMessage(subjBuff.append(" ERROR").toString(),
 	    					"There was a problem generating an export file for Admin UID: " + adminUid,
 	    					toEmailAddrs, "errors@hotmath.com");
     				}
@@ -297,8 +305,9 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     				e.printStackTrace(pw);
     				pw.flush();
     				sw.flush();
-    				String message = "There was a problem generating an export file for Admin UID: " + adminUid 
-    						+ "\n\n" + sw.toString();
+    				
+    				String message = String.format("There was a problem generating an export file for Admin UID: %d \n\n%s",
+    						adminUid, sw.toString());
     				try {
     					SbMailManager.getInstance().sendMessage("CM Export File ERROR details", message,
     							"errors@hotmath.com", "errors@hotmath.com",
