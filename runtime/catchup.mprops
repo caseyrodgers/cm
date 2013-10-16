@@ -1446,8 +1446,10 @@ and is_active = 1
 
 .key=TEST_FOR_TEST_DEF_ID
 
-SELECT *
-FROM   HA_TEST_DEF
+SELECT td.*, s.name as subject_name
+FROM   HA_TEST_DEF td
+JOIN   SUBJECT s
+  ON   s.subj_id = td.subj_id
 WHERE  test_def_id = ?
 
 

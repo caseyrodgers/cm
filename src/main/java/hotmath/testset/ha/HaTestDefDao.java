@@ -133,6 +133,7 @@ public class HaTestDefDao extends SimpleJdbcDaoSupport {
                 testDef.testDefId = rs.getInt("test_def_id");
                 testDef.config = new HaTestConfig(rs.getString("test_config_json"));
                 testDef.subjectId = rs.getString("subj_id");
+                testDef.subjectName = rs.getString("subject_name");
                 testDef.progId = rs.getString("prog_id");
                 testDef.stateId = rs.getString("state_id");
                 testDef.numAlternateTests = rs.getInt("num_alt_tests");
@@ -474,7 +475,7 @@ public class HaTestDefDao extends SimpleJdbcDaoSupport {
         PreparedStatement ps = null;
         try {
             List<HaTestDef> testDefs = new ArrayList<HaTestDef>();
-            String sql = "select * from   HA_TEST_DEF where prog_id = ? and is_active = 1 order by load_order";
+            String sql = "select test_def_id from HA_TEST_DEF td where prog_id = ? and is_active = 1 order by load_order";
             ps = conn.prepareStatement(sql);
             ps.setString(1, programType);
             ResultSet rs = ps.executeQuery();

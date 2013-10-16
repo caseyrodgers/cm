@@ -43,6 +43,7 @@ public class HaTestDef {
     String chapter;
     int testDefId;
     String subjectId;
+    String subjectName;
     String progId;
     String stateId;
     HaTestConfig config;
@@ -135,7 +136,15 @@ public class HaTestDef {
         this.subjectId = subjectId;
     }
 
-    public String getProgId() {
+    public String getSubjectName() {
+		return subjectName;
+	}
+
+	public void setSubjectName(String subjectName) {
+		this.subjectName = subjectName;
+	}
+
+	public String getProgId() {
         return progId;
     }
 

@@ -47,7 +47,17 @@ public class ProgramSubject implements CmTreeNode,IsSerializable{
         this.name = name;
     }
 
-    public int getTestDefId() {
+    public void setLabel(String label) {
+		this.label = label;
+	}
+
+    @Override
+    public String getLabel() {
+    	if (label != null) return label;
+    	return (labelMap.get(name) != null)?labelMap.get(name) : name;
+    }
+
+	public int getTestDefId() {
 		return testDefId;
 	}
 
@@ -87,11 +97,6 @@ public class ProgramSubject implements CmTreeNode,IsSerializable{
 	public CmTreeNode getParent() {
 		return parent;
 	}
-
-    @Override
-    public String getLabel() {
-    	return (labelMap.get(name) != null)?labelMap.get(name) : name;
-    }
 
 	@Override
     public int getLevel() {
