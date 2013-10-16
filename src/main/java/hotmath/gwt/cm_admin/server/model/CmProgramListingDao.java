@@ -128,6 +128,7 @@ public class CmProgramListingDao {
             ProgramSubject ps = new ProgramSubject();
             ps.setTestDefId(testDef.getTestDefId());
             ps.setName(testDef.getSubjectId());
+            ps.setLabel(testDef.getSubjectName());
             pt.getProgramSubjects().add(ps);
 
             List<String> chapNames = dao.getProgramChapters(conn, testDef);
