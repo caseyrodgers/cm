@@ -633,7 +633,18 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
 
                 String n1 = o1.getName();
             	String n2 = o2.getName();
-            	return n1.compareTo(n2);
+            	if(n1 == null && n2 != null) {
+            	    return 1;
+            	}
+            	else if(n2 == null && n1 != null) {
+            	    return -1;
+            	}
+            	else if(n1 == null && n2 == null) {
+            	    return 0;
+            	}
+            	else {
+            	    return n1.compareTo(n2);
+            	}
             }
         });
 
