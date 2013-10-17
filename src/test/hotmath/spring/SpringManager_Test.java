@@ -2,6 +2,7 @@ package hotmath.spring;
 
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.dao.HaLoginInfoDao;
+import hotmath.cm.dao.WebLinkDao;
 import hotmath.cm.exam.ExamDao;
 import hotmath.cm.server.model.CmReportCardDao;
 import hotmath.cm.server.model.CmUserProgramDao;
@@ -158,5 +159,10 @@ public class SpringManager_Test extends TestCase{
         assertNotNull(testDao);
     }
 
+    public void testWebLinkDao() throws Exception {
+        SpringManager manager = SpringManager.getInstance();
+        WebLinkDao testDao = (WebLinkDao)manager.getBeanFactory().getBean(WebLinkDao.class.getName());
+        assertNotNull(testDao);
+    }
 
 }

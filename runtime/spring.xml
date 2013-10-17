@@ -57,6 +57,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <bean id="hotmath.cm.assignment.AssignmentDao" class="hotmath.cm.assignment.AssignmentDao" parent="abstractJdbcDao" />
     <bean id="CCSSReportDao" class="hotmath.cm.dao.CCSSReportDao" parent="abstractJdbcDao" />
     <bean id="hotmath.cm.exam.ExamDao" class="hotmath.cm.exam.ExamDao" parent="abstractJdbcDao" />
+    <bean id="hotmath.cm.dao.WebLinkDao" class="hotmath.cm.dao.WebLinkDao" parent="abstractJdbcDao" />
     
 
     <!-- DAOs used by HM Mobile -->    

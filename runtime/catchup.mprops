@@ -1575,7 +1575,8 @@ select s.type,
        p.test_config_json,
        gui_background_style,
        p.pass_percent,
-       a.aid
+       a.aid,
+       u.group_id
 from   HA_USER u
        join HA_ADMIN a
          on u.admin_id = a.aid
@@ -4817,3 +4818,16 @@ where  pu.uid = ?
 where u.uid = ? 
 and a.assign_key = ?
         
+
+        
+.key=GET_LESSON_TREE
+
+select distinct s.name as subject,
+                lesson,
+                file
+from   HA_PROGRAM_LESSONS l
+  LEFT JOIN SUBJECT  s on s.subj_id = l.subject
+where  subject is not null
+       and subject > ''
+order  by s.grade_level,
+          lesson 

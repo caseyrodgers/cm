@@ -451,6 +451,8 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         
         toolbar.add(createEditAssignmentButton());
         
+        toolbar.add(createWebLinksButton());
+        
         if(CmShared.getQueryParameter("dev") != null) {
             toolbar.add(createManageCustomProblemsButton());
         }
@@ -786,6 +788,16 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
             }});
         return createEdit;
     }
+    
+    private Widget createWebLinksButton() {
+        TextButton btn = new TextButton("Web Links",new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                new WebLinksManager(_cmAdminMdl.getUid());
+            }});
+        return btn;
+    }
+
     
     private Widget createManageCustomProblemsButton() {
         return new TextButton("Problems",new SelectHandler() {
