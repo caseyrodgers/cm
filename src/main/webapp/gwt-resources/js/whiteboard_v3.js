@@ -59,13 +59,20 @@ var Whiteboard = function (cont, isStatic) {
     var selectedObjIndex = -1;
     var lineBound = {};
     var useMQ = false;
-	var selectionDragged=false;
-	var scrollPosition={x:0,y:0};
-	//
-	var cwi=8000;
-	var cht=8000;
-	var scroll_window={width:cwi,height:cht};
-	var canvas_drawing_width=0,canvas_drawing_height=0;
+    var selectionDragged = false;
+    var scrollPosition = {
+        x: 0,
+        y: 0
+    };
+    //
+    var cwi = 8000;
+    var cht = 8000;
+    var scroll_window = {
+        width: cwi,
+        height: cht
+    };
+    var canvas_drawing_width = 0,
+        canvas_drawing_height = 0;
     //
     var toolArr = [{
         name: 'button_text',
@@ -113,23 +120,23 @@ var Whiteboard = function (cont, isStatic) {
         classes: 'big_tool_button button_clear',
         text: "Clear"
     }, {
+        name: 'button_move',
+        title: 'Move',
+        classes: 'big_tool_button button_move',
+        text: ""
+    }, {
         name: 'button_undo',
         title: 'Undo',
         classes: 'big_tool_button button_undo',
         text: "Undo"
     }]
-	/*
-	{
-        name: 'button_move',
-        title: 'Move',
-        classes: 'big_tool_button button_move',
-        text: ""
-    },
-	*/
+
+
+
     //
-	/**
-	 * methods to create whiteboard gui
-	 */
+    /**
+     * methods to create whiteboard gui
+     */
 
         function createToolBtn(obj) {
             var btn = $('<button/>', {
@@ -142,13 +149,13 @@ var Whiteboard = function (cont, isStatic) {
 
         function buildGUI() {
             var parentDiv = $("#" + contDiv);
-            
+
             // only create if HTML structure not already exists
-            if(parentDiv.children().length > 0) {
-            	console.log('this whitebaord already created: ' + contDiv);
-            	return;
+            if (parentDiv.children().length > 0) {
+                console.log('this whitebaord already created: ' + contDiv);
+                return;
             }
-            
+
             var wbc = $('<div></div>').attr('name', 'wb-container').addClass("wb-container").appendTo(parentDiv);
             var toolCont = buildTools(toolArr).appendTo(wbc);
             var canvasCont = buildCanvasLayers().appendTo(wbc);
@@ -182,7 +189,7 @@ var Whiteboard = function (cont, isStatic) {
                 name: 'canvas',
                 text: "(Your browser doesn't support canvas)"
             }).addClass('canvas').appendTo(canvasCont);
-            
+
             var itxt = $("<div/>", {
                 name: 'inputBox'
             }).addClass('inputBox');
@@ -190,24 +197,24 @@ var Whiteboard = function (cont, isStatic) {
             var dbtn = $("<button/>", {
                 name: 'done_btn',
                 text: 'DONE'
-                
+
             }).addClass('done_btn');
             mqbox.appendTo(itxt);
             dbtn.appendTo(itxt);
             itxt.appendTo(canvasCont);
             canvasCont.appendTo(divObj);
-			if(buffercontext){
-			buffercanvas.width=buffercanvas.height=0;
-			}else{
-			buffercanvas=document.createElement('canvas');
-			
-			if (typeof G_vmlCanvasManager != "undefined") {
+            if (buffercontext) {
+                buffercanvas.width = buffercanvas.height = 0;
+            } else {
+                buffercanvas = document.createElement('canvas');
+
+                if (typeof G_vmlCanvasManager != "undefined") {
                     $(buffercanvas).appendTo(canvasCont)
                     G_vmlCanvasManager.initElement(buffercanvas);
-                    
+
                 }
-			buffercontext=buffercanvas.getContext('2d');
-			}
+                buffercontext = buffercanvas.getContext('2d');
+            }
             return divObj
         }
 
@@ -225,7 +232,7 @@ var Whiteboard = function (cont, isStatic) {
             }
             return divObj
         }
-		//
+        //
 
         function drawBoundRect(obj) {
             var dx = x - clickX
@@ -233,24 +240,27 @@ var Whiteboard = function (cont, isStatic) {
             context.save();
             context.lineWidth = 4;
             context.strokeStyle = "rgba(0, 0, 255, 0.5)";
-            context.strokeRect(obj.brect.xmin - 2 + dx, obj.brect.ymin - 2 + dy, obj.brect.w + 6, obj.brect.h + 6)
+            context.translate(scrollPosition.x, scrollPosition.y);
+            context.strokeRect(selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy, obj.brect.w, obj.brect.h)
             context.restore()
         }
 
         function removeBoundRect() {
             context.clearRect(0, 0, canvas.width, canvas.height);
-			reRenderCanvas();
+            reRenderCanvas();
         }
 
         function drawTempObj(selectedObj, dx, dy) {
             //console.log("DRAW_TEMP_OBJ")
             //console.log(selectedObj)
-            context.clearRect(0, 0, canvas.width, canvas.height);
+            // context.clearRect(0, 0, canvas.width, canvas.height);
             if (selectedObj.id === 2 && useMQ) {
-                context.drawImage(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
+                //context.drawImage(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
             } else {
                 try {
-                   // context.putImageData(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
+                    // context.putImageData(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
+                    renderObj(selectedObj, true);
+                    renderToBuffer(selectedObj);
                 } catch (ex) {
                     alert(ex)
                 }
@@ -259,17 +269,31 @@ var Whiteboard = function (cont, isStatic) {
 
         function transformObj(obj, dx, dy) {
             var da = obj.dataArr
+            var sa = selectedObj.dataArr[0]
             var sobj = da[0]
-            sobj.x = sobj.x + dx
-            sobj.y = sobj.y + dy
+            sobj.x = sa.x + dx
+            sobj.y = sa.y + dy
             obj.dataArr[0] = sobj;
-            da = obj.brect;
+            da = selectedObj.brect;
             for (var m in da) {
                 if (m == 'x' || m == 'xmin' || m == 'xmax') {
-                    obj.brect[m] = obj.brect[m] + dx
+                    obj.brect[m] = selectedObj.brect[m] + dx
                 }
                 if (m == 'y' || m == 'ymin' || m == 'ymax') {
-                    obj.brect[m] = obj.brect[m] + dy
+                    obj.brect[m] = selectedObj.brect[m] + dy
+                }
+            }
+            return obj
+
+        }
+
+        function transformRect(obj, dx, dy) {
+            for (var m in obj) {
+                if (m == 'x' || m == 'xmin' || m == 'xmax') {
+                    obj[m] = obj[m] + dx
+                }
+                if (m == 'y' || m == 'ymin' || m == 'ymax') {
+                    obj[m] = obj[m] + dy
                 }
             }
             return obj
@@ -279,14 +303,15 @@ var Whiteboard = function (cont, isStatic) {
         function findSelectedObjIndex(xp, yp) {
             var l = graphicDataStore.length
             for (var i = l - 1; i >= 0; i--) {
-                var rect = graphicDataStore[i].brect
+                var rect = cloneObject(graphicDataStore[i].brect);
+                transformRect(rect, scrollPosition.x, scrollPosition.y)
                 selectedObj = null
                 if (!rect) {
                     return -1
                 }
                 if (contains(rect, xp, yp)) {
-                    selectedObj = graphicDataStore[i]
-                    return i
+                    selectedObj = graphicDataStore[i];
+                    return i;
                 }
             }
             return -1
@@ -313,7 +338,9 @@ var Whiteboard = function (cont, isStatic) {
 
                 if (!obj.isErased) {
                     var r1 = obj.brect
-                    obj.isErased = intersectRect(r1, r)
+                    var rect = cloneObject(r1);
+                    transformRect(rect, scrollPosition.x, scrollPosition.y)
+                    obj.isErased = intersectRect(rect, r)
                 }
             }
             //return -1
@@ -416,7 +443,7 @@ var Whiteboard = function (cont, isStatic) {
         dummy.appendChild(dummyText);
         dummy.setAttribute("style", fontStyle);
         body.appendChild(dummy);
-        var result = dummy.offsetHeight+4;
+        var result = dummy.offsetHeight + 4;
         body.removeChild(dummy);
         return result;
     };
@@ -425,7 +452,7 @@ var Whiteboard = function (cont, isStatic) {
 
         var txt = xt ? xt : $get_Element("#content").value;
         // alert(txt);
-var cntxt=ctx?ctx:context;
+        var cntxt = ctx ? ctx : context;
         var str = txt.split("\n")
         var x0 = xp ? xp : clickX
         var y0 = yp ? yp : clickY
@@ -439,11 +466,11 @@ var cntxt=ctx?ctx:context;
             cntxt.fillText(str[i], x0, y0)
             y0 += ht + ht / 3
         }
-        
+
         if (!xt) {
             var rect = {}
-            rect.x = rect.xmin = x0
-            rect.y = rect.ymin = sy
+            rect.x = rect.xmin = x0 - scrollPosition.x
+            rect.y = rect.ymin = sy - scrollPosition.y
             rect.w = cntxt.measureText(txt).width
             rect.h = (ht + ht / 3) * str.length
             rect.xmax = rect.x + rect.w;
@@ -455,13 +482,13 @@ var cntxt=ctx?ctx:context;
 
             //context.drawImage(this, holder_x, holder_y);
             // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
-           // gd.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
+            // gd.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             //graphicDataStore[graphicDataStore.length - 1] = gd
-			//updateCanvas();
+            //updateCanvas();
             updateText(txt, x0, sy, colorToNumber(colr));
-			sendData();
-			updateCanvas();
-            
+            sendData();
+            updateCanvas();
+
             $get_Element("#content").value = "";
             $get_Element("#inputBox").style.display = 'none';
         }
@@ -519,7 +546,7 @@ var cntxt=ctx?ctx:context;
         if (!xt) {
             updateText(txt, x0, y0, colorToNumber(colr));
             //console.log('AfterUpdateText')
-           // console.log(graphicData)
+            // console.log(graphicData)
             sendData();
             // $get_Element("#editable-math").value = "";
 
@@ -530,11 +557,11 @@ var cntxt=ctx?ctx:context;
         // alert($get_Element("#inputBox").style.display)
     }
 
-    function renderText(xt, xp, yp, col,ctx) {
+    function renderText(xt, xp, yp, col, ctx) {
         if (useMQ) {
-            renderText_mq(xt, xp, yp, col,ctx)
+            renderText_mq(xt, xp, yp, col, ctx)
         } else {
-            renderText_html(xt, xp, yp, col,ctx)
+            renderText_html(xt, xp, yp, col, ctx)
         }
     }
 
@@ -564,9 +591,9 @@ var cntxt=ctx?ctx:context;
         $get_Element("#button_rect").style.border = '1px solid #000000';
         $get_Element("#button_oval").style.border = '1px solid #000000';
         $get_Element("#button_eraser").style.border = '1px solid #000000';
-		if($get_Element("#button_move")){
-		$get_Element("#button_move").style.border = '1px solid #000000';
-		}
+        if ($get_Element("#button_move")) {
+            $get_Element("#button_move").style.border = '1px solid #000000';
+        }
         //
     }
 
@@ -576,10 +603,10 @@ var cntxt=ctx?ctx:context;
         if (currentTool != 'text' && $get_Element("#inputBox").style.display == 'block') {
             hideTextBox();
         }
-		if(t!=='move'){
-		selectionMode = false;
-        removeBoundRect()
-		}
+        if (t !== 'move') {
+            selectionMode = false;
+            removeBoundRect()
+        }
     }
 
 
@@ -710,8 +737,8 @@ var cntxt=ctx?ctx:context;
 
     wb.initWhiteboard = function (mainDocIn) {
         console_log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
-		canvas_drawing_width=0;
-		canvas_drawing_height=0;
+        canvas_drawing_width = 0;
+        canvas_drawing_height = 0;
         if (context) {
             var _width = 0;
             buffercanvas.width = canvas.width = _width;
@@ -727,14 +754,14 @@ var cntxt=ctx?ctx:context;
                     'height': '0px'
                 })
                 $(buffercanvas).empty();
-                
+
             } else {
                 canvas = null;
                 buffercanvas = null;
-               
+
                 context = null;
                 buffercontext = null;
-                
+
             }
         }
         //setupMathQuill(); // defined in mathquill.js
@@ -747,7 +774,7 @@ var cntxt=ctx?ctx:context;
                 'right': '5px'
             });
         }
-		/*
+        /*
         if ($get_Element('#vscroller')) {
             if (IS_IOS) {
                 $get_jqElement('#vscroller').css({
@@ -770,27 +797,27 @@ var cntxt=ctx?ctx:context;
             console_log("CANVAS_IN_IE: " + canvas + ":" + canvas.getContext);
             if (docWidth > 600) {
                 // alert($get_jqElement('#tools button').css('width'));
-                if(isReadOnly){
-				$get_jqElement('#tools').css('height', '15px');
-				}else{
-                //$get_jqElement('#tools').css('height', '35px');
-				}
+                if (isReadOnly) {
+                    $get_jqElement('#tools').css('height', '15px');
+                } else {
+                    //$get_jqElement('#tools').css('height', '35px');
+                }
                 $("div#" + contDiv + " [name='tools'] button").removeClass('small_tool_button').addClass("big_tool_button");
-				$get_jqElement('#button_clear').css('width', '45px');
-                    $get_jqElement('#button_clear').css('height', '30px');
+                $get_jqElement('#button_clear').css('width', '45px');
+                $get_jqElement('#button_clear').css('height', '30px');
                 $get_jqElement('#button_clear').text("Clear");
                 $get_jqElement('#button_save').text("Save");
                 $get_jqElement('#button_undo').text("Undo");
                 // $get_jqElement('#button_clear').text("CL");
             } else {
-                if(isReadOnly){
-				$get_jqElement('#tools').css('height', '15px');
-				}else{
-                //$get_jqElement('#tools').css('height', '28px');
-				}
+                if (isReadOnly) {
+                    $get_jqElement('#tools').css('height', '15px');
+                } else {
+                    //$get_jqElement('#tools').css('height', '28px');
+                }
                 $("div#" + contDiv + " [name='tools'] button").removeClass('big_tool_button').addClass("small_tool_button");
-				$get_jqElement('#button_clear').css('width', '25px');
-                    $get_jqElement('#button_clear').css('height', '25px');
+                $get_jqElement('#button_clear').css('width', '25px');
+                $get_jqElement('#button_clear').css('height', '25px');
                 $get_jqElement('#button_clear').text("CL");
                 $get_jqElement('#button_save').text("S");
                 $get_jqElement('#button_undo').text("U");
@@ -809,12 +836,12 @@ var cntxt=ctx?ctx:context;
             var hscrollObj = {}
             wb.globalStrokeColor = "#000000";
             wb.mode = 'student';
-            
+
             var vWidth = docWidth - leftOff;
             var vHeight = docHeight - topOff;
             canvas.width = vWidth;
             canvas.height = vHeight;
-            
+
             var ccnt = $get_Element("#canvas-container");
             $get_jqElement("#canvas-container").css('width', vWidth + 'px');
             $get_jqElement("#canvas-container").css('height', vHeight + 'px');
@@ -838,13 +865,13 @@ var cntxt=ctx?ctx:context;
                     console_log("DEBUG_IE: parent_cont.removeChild" + parent_cont.removeChild);
                     parent_cont.removeChild(canvas)
                     parent_cont.removeChild(buffercanvas)
-                    
+
                     canvas = null;
                     buffercanvas = null;
-                    
+
                     context = null;
                     buffercontext = null;
-                    
+
                     //
                     canvas = document.createElement('canvas')
                     canvas.width = vWidth;
@@ -854,10 +881,10 @@ var cntxt=ctx?ctx:context;
                     buffercanvas = document.createElement('canvas');
                     //
                     $(parent_cont).prepend(canvas);
-					$(parent_cont).prepend(buffercanvas);
+                    $(parent_cont).prepend(buffercanvas);
                     G_vmlCanvasManager.initElement(canvas);
                     G_vmlCanvasManager.initElement(buffercanvas);
-                    
+
                 }
             } catch (error) {
                 console_log("DEBUG_IE:" + error);
@@ -982,26 +1009,26 @@ var cntxt=ctx?ctx:context;
 
                 if (docWidth > 600) {
                     // alert($('#tools button').css('width'));
-                    if(isReadOnly){
-				$get_jqElement('#tools').css('height', '15px');
-				}else{
-                //$get_jqElement('#tools').css('height', '35px');
-				}
+                    if (isReadOnly) {
+                        $get_jqElement('#tools').css('height', '15px');
+                    } else {
+                        //$get_jqElement('#tools').css('height', '35px');
+                    }
                     $("div#" + contDiv + " [name='tools'] button").removeClass('small_tool_button').addClass("big_tool_button");
-					$get_jqElement('#button_clear').css('width', '45px');
+                    $get_jqElement('#button_clear').css('width', '45px');
                     $get_jqElement('#button_clear').css('height', '30px');
                     $get_jqElement('#button_clear').text("Clear");
                     $get_jqElement('#button_save').text("Save");
                     $get_jqElement('#button_undo').text("Undo");
                 } else {
 
-                    if(isReadOnly){
-				$get_jqElement('#tools').css('height', '15px');
-				}else{
-                //$get_jqElement('#tools').css('height', '25px');
-				}
+                    if (isReadOnly) {
+                        $get_jqElement('#tools').css('height', '15px');
+                    } else {
+                        //$get_jqElement('#tools').css('height', '25px');
+                    }
                     $("div#" + contDiv + " [name='tools'] button").removeClass('big_tool_button').addClass("small_tool_button");
-					$get_jqElement('#button_clear').css('width', '25px');
+                    $get_jqElement('#button_clear').css('width', '25px');
                     $get_jqElement('#button_clear').css('height', '25px');
                     $get_jqElement('#button_clear').text("CL");
                     $get_jqElement('#button_save').text("S");
@@ -1014,15 +1041,15 @@ var cntxt=ctx?ctx:context;
                 var off_ht = $get_Element("#tools").offsetHeight;
                 var topOff = off_ht + off_top + 15
                 var leftOff = off_left + 15;
-				//
-				var vWidth = docWidth - leftOff;
+                //
+                var vWidth = docWidth - leftOff;
                 var vHeight = docHeight - topOff;
                 canvas.width = vWidth;
-                canvas.height = vHeight;            
+                canvas.height = vHeight;
                 var ccnt = $get_Element("#canvas-container");
                 $get_jqElement("#canvas-container").css('width', vWidth + 'px');
                 $get_jqElement("#canvas-container").css('height', vHeight + 'px');
-				//
+                //
                 if (IS_IPHONE || docWidth <= 600) {
                     dox = IS_IPHONE ? 5 : 19
                     doy = IS_IPHONE ? 5 : 19
@@ -1062,9 +1089,12 @@ var cntxt=ctx?ctx:context;
                     //console_log(posData);
                     positionScroller();
                 }
-				scrollPosition={x:0,y:0}
-				updateCanvas()
-				gr2D_xp = nL_xp = (screen_width - 300) / 2;
+                scrollPosition = {
+                    x: 0,
+                    y: 0
+                }
+                updateCanvas()
+                gr2D_xp = nL_xp = (screen_width - 300) / 2;
                 gr2D_yp = (screen_height - 300) / 2;
                 nL_yp = (screen_height - 100) / 2;
                 // },100);
@@ -1101,7 +1131,7 @@ var cntxt=ctx?ctx:context;
                 var mouse_pos = dy
                 var dim = 'height';
                 var sdim = screen_height;
-				var coo='y'
+                var coo = 'y'
                 var target = event.target ? event.target : event.srcElement
                 if (target == $get_Element('#hscroll_thumb')) {
                     scroll = 'h';
@@ -1110,12 +1140,12 @@ var cntxt=ctx?ctx:context;
                     mouse_pos = dx;
                     dim = 'width';
                     sdim = screen_width;
-					coo='x'
+                    coo = 'x'
                 }
                 var spos = $get_Element('#' + scroll + 'scroll_thumb').style[pos]
                 spos = spos ? spos : 0
-               // var scpos = $get_Element('#canvas-container').style[pos]
-			    var scpos = scrollPosition[coo]
+                // var scpos = $get_Element('#canvas-container').style[pos]
+                var scpos = scrollPosition[coo]
                 scpos = scpos ? scpos : 0
                 scrollObj.sy = parseInt(spos)
                 scrollObj.screeny = parseInt(scpos)
@@ -1168,7 +1198,7 @@ var cntxt=ctx?ctx:context;
                 var dim = 'height';
                 var sdim = screen_height;
                 var neg = -1;
-				var coo='y'
+                var coo = 'y'
                 if (hscrollObj.dragged) {
                     scroll = 'h';
                     pos = 'left';
@@ -1177,7 +1207,7 @@ var cntxt=ctx?ctx:context;
                     dim = 'width';
                     sdim = screen_width;
                     neg = -1;
-					coo='x'
+                    coo = 'x'
                 }
                 var change = mouse_pos - scrollObj.my
                 var newpos = scrollObj.sy + change
@@ -1190,8 +1220,8 @@ var cntxt=ctx?ctx:context;
                     // console.log("ON_SCROLL_SCRUB:"+scrollObj.sy+":"+change+":"+currPos);
                     $get_Element('#' + scroll + 'scroll_thumb').style[pos] = newpos + "px";
                     //$get_Element('#canvas-container').style[pos] = currPos + "px";
-					scrollPosition[coo]=currPos;					
-					updateCanvas();
+                    scrollPosition[coo] = currPos;
+                    updateCanvas();
                 }
 
             }
@@ -1224,7 +1254,7 @@ var cntxt=ctx?ctx:context;
                 var dim = 'height';
                 var sdim = screen_height;
                 var neg = -1
-				var coo='y'
+                var coo = 'y'
                 if (hscrollObj.dragged) {
                     scroll = 'h';
                     pos = 'left';
@@ -1233,7 +1263,7 @@ var cntxt=ctx?ctx:context;
                     dim = 'width';
                     sdim = screen_width;
                     neg = -1
-					coo='x'
+                    coo = 'x'
                 }
                 var change = mouse_pos - scrollObj.my
                 var newpos = scrollObj.sy + change
@@ -1244,9 +1274,9 @@ var cntxt=ctx?ctx:context;
                     currPos = currPos > 0 ? 0 : currPos
                     currPos = currPos < neg * (scroll_window[dim] - sdim) ? -(scroll_window[dim] - sdim) : currPos;
                     $get_Element('#' + scroll + 'scroll_thumb').style[pos] = newpos + "px";
-                   // $get_Element('#canvas-container').style[pos] = currPos + "px";
-				   scrollPosition[coo]=currPos;
-				   updateCanvas();
+                    // $get_Element('#canvas-container').style[pos] = currPos + "px";
+                    scrollPosition[coo] = currPos;
+                    updateCanvas();
                 }
                 if (document.addEventListener) {
                     if (isTouchEnabled) {
@@ -1262,7 +1292,7 @@ var cntxt=ctx?ctx:context;
                     document.onmousemove = null;
                 }
                 scrollObj.dragged = false;
-               // console_log("END_SCROLL_SCRUB:" + newpos + ":" + currPos);
+                // console_log("END_SCROLL_SCRUB:" + newpos + ":" + currPos);
             }
             // canvas.width = origcanvas.width = graphcanvas.width = topcanvas.width
             // = docWidth - leftOff;
@@ -1271,8 +1301,8 @@ var cntxt=ctx?ctx:context;
             // console.log("A " + canvas.width + ":" + canvas.height + ":" +
             // docWidth + ":" + docHeight + ":" + leftOff + ":" + topOff);
             context = canvas.getContext("2d");
-           buffercontext = buffercanvas.getContext("2d");
-            
+            buffercontext = buffercanvas.getContext("2d");
+
             // canvas.width=origcanvas.width=graphcanvas.width=topcanvas.width=5000;
             // canvas.height=origcanvas.height=graphcanvas.height=topcanvas.height=5000;
             width = screen_width; // canvas.width;
@@ -1296,7 +1326,7 @@ var cntxt=ctx?ctx:context;
             nL_h = 100;
             offX = $get_Element("#canvas-container").offsetLeft;
             offY = $get_Element("#canvas-container").offsetTop;
-            
+
 
             function getCanvasPos() {
                 console_log("getCanvasPos processing!");
@@ -1428,9 +1458,9 @@ var cntxt=ctx?ctx:context;
             }
             if ($get_Element("#button_undo")) {
                 $get_Element("#button_undo").onclick = function (event) {
-				if(graphicDataStore.length){
-				graphicDataStore.pop()
-				}
+                    if (graphicDataStore.length) {
+                        graphicDataStore.pop()
+                    }
                     wb.whiteboardOut('undo', true);
                 };
             }
@@ -1507,7 +1537,7 @@ var cntxt=ctx?ctx:context;
                 currPosV = currPosV < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosV;
                 $get_Element('#vscroll_thumb').style.top = (-currPosV / scrubV) + "px";
                 $get_Element('#canvas-container').style.top = currPosV + "px";
-               // console_log("SCROLLER_THUMB_POS:" + scrubH + ":" + scrubV + ":" + (-currPosH) + ":" + (-currPosV))
+                // console_log("SCROLLER_THUMB_POS:" + scrubH + ":" + scrubV + ":" + (-currPosH) + ":" + (-currPosV))
             }
 
             function scrollTheCanvas(event) {
@@ -1658,14 +1688,16 @@ var cntxt=ctx?ctx:context;
                             //remove selected object from data array and store it temp variable
                             //rerender object on drawing canvas...
                             selectionDragMode = true;
-							selectionDragged=false;
+                            selectionDragged = false;
                             graphicDataStore.splice(i, 1);
                             resetWhiteBoard(false);
+                            graphicDataStore.push(cloneObjectDeep(selectedObj));
                             //updateWhiteboard(graphicDataStore);
-                            for (var j = 0; j < graphicDataStore.length; j++) {
+                            /*for (var j = 0; j < graphicDataStore.length; j++) {
                                 renderObj(graphicDataStore[j], true);
-                            }
-                            drawTempObj(selectedObj, 0, 0);
+                            }*/
+                            //drawTempObj(selectedObj, 0, 0);
+                            updateCanvas();
                             drawBoundRect(selectedObj)
                             penDown = true
                         } else {
@@ -1673,7 +1705,7 @@ var cntxt=ctx?ctx:context;
                             //alert(wb.removeSelectionMode);
                             wb.removeSelectionMode();
                         }
-						if (event.preventDefault) {
+                        if (event.preventDefault) {
                             event.preventDefault()
                         } else {
                             event.returnValue = false
@@ -1699,8 +1731,8 @@ var cntxt=ctx?ctx:context;
                         penDown = false;
 
                         graphicData.dataArr[0] = {
-                            x: x-scrollPosition.x,
-                            y: y-scrollPosition.y,
+                            x: x - scrollPosition.x,
+                            y: y - scrollPosition.y,
                             text: "",
                             color: drawcolor,
                             name: "",
@@ -1710,8 +1742,8 @@ var cntxt=ctx?ctx:context;
                         showTextBox();
                     } else {
                         graphicData.dataArr[graphicData.dataArr.length] = {
-                            x: x-scrollPosition.x,
-                            y: y-scrollPosition.y,
+                            x: x - scrollPosition.x,
+                            y: y - scrollPosition.y,
                             id: "move",
                             color: drawcolor,
                             name: "",
@@ -1721,10 +1753,10 @@ var cntxt=ctx?ctx:context;
                             context.beginPath();
                             context.moveTo(clickX, clickY);
                         }
-                        lineBound.ymax = y-scrollPosition.y;
-                        lineBound.ymin = y-scrollPosition.y;
-                        lineBound.xmax = x-scrollPosition.x;
-                        lineBound.xmin = x-scrollPosition.x;
+                        lineBound.ymax = y - scrollPosition.y;
+                        lineBound.ymin = y - scrollPosition.y;
+                        lineBound.xmax = x - scrollPosition.x;
+                        lineBound.xmin = x - scrollPosition.x;
                     }
                 } else {
                     penDown = false;
@@ -1745,19 +1777,24 @@ var cntxt=ctx?ctx:context;
                     if (selectedObj) {
                         var dx = x - clickX;
                         var dy = y - clickY;
-                        selectionDragMode = false;						
+                        selectionDragMode = false;
                         removeBoundRect();
-                        drawTempObj(selectedObj, dx, dy);
+
                         updateCanvas();
-                        drawBoundRect(selectedObj);
-                        transformObj(selectedObj, dx, dy);
+
+
+                        //drawTempObj(selectedObj, dx, dy);
                         //graphicDataStore.push(cloneObject(selectedObj))
-						if(selectionDragged){
-						    selectionDragged=false;
+                        var pd = graphicDataStore.pop();
+                        transformObj(pd, dx, dy);
+                        drawBoundRect(pd);
+                        transformObj(selectedObj, dx, dy);
+                        if (selectionDragged) {
+                            selectionDragged = false;
                             updateDataToSERVER(selectedObjIndex, selectedObj);
-						}else{
-						    graphicDataStore.splice(selectedObjIndex, 0,selectedObj);
-						}
+                        } else {
+                            graphicDataStore.splice(selectedObjIndex, 0, selectedObj);
+                        }
                     }
                     penDown = false;
                     rendering = false;
@@ -1788,25 +1825,26 @@ var cntxt=ctx?ctx:context;
                         // {x:x-clickX, y:y-clickY, id:"line"}
                         var xp = x - clickX
                         var yp = y - clickY
-                        xp = currentTool == 'eraser' ? x-scrollPosition.x : xp
-                        yp = currentTool == 'eraser' ? y-scrollPosition.y : yp
+                        xp = currentTool == 'eraser' ? x - scrollPosition.x : xp
+                        yp = currentTool == 'eraser' ? y - scrollPosition.y : yp
                         graphicData.dataArr[graphicData.dataArr.length] = {
                             x: xp,
                             y: yp,
                             id: "line"
                         };
                         if (currentTool != 'eraser') {
-                            
-                            rect = getBoundRect(graphicData.dataArr[0].x, graphicData.dataArr[0].y, xp-scrollPosition.x, yp-scrollPosition.y)
+
+                            rect = getBoundRect(graphicData.dataArr[0].x, graphicData.dataArr[0].y, xp - scrollPosition.x, yp - scrollPosition.y)
                             if (currentTool == 'pencil') {
                                 rect.x = lineBound.xmin ? lineBound.xmin : 0
                                 rect.y = lineBound.ymin ? lineBound.ymin : 0
-                                rect.w = lineBound.xmax - lineBound.xmin
-                                rect.h = lineBound.ymax - lineBound.ymin
+
                                 rect.xmin = lineBound.xmin ? lineBound.xmin : 0;
                                 rect.xmax = lineBound.xmax ? lineBound.xmax : 0;
                                 rect.ymin = lineBound.ymin ? lineBound.ymin : 0;
                                 rect.ymax = lineBound.ymax ? lineBound.ymax : 0;
+                                rect.w = lineBound.xmax - lineBound.xmin;
+                                rect.h = lineBound.ymax - lineBound.ymin;
                             }
                         } else {
                             rect = {
@@ -1819,11 +1857,11 @@ var cntxt=ctx?ctx:context;
                     }
                     //graphicData.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
                     graphicData.brect = rect;
-					sendData();
+                    sendData();
                     rendering = false;
-					updateCanvas();
-                        context.beginPath();
-						/*
+                    updateCanvas();
+                    context.beginPath();
+                    /*
                     if (currentTool != 'eraser') {
                         updateCanvas();
                         context.beginPath();
@@ -1831,17 +1869,17 @@ var cntxt=ctx?ctx:context;
                         updateCanvas();
                         context.beginPath();
                     }*/
-                    
+
                 } else if (currentTool == 'eraser') {
                     // alert("A");
-					rect = {
-                                xmin: 1,
-                                ymin: 1,
-                                w: 0,
-                                h: 0
-                            };
-					graphicData.brect = rect;
-					sendData();
+                    rect = {
+                        xmin: 1,
+                        ymin: 1,
+                        w: 0,
+                        h: 0
+                    };
+                    graphicData.brect = rect;
+                    sendData();
                     updateCanvas();
                     context.beginPath();
                     // alert(rendering);
@@ -1866,14 +1904,14 @@ var cntxt=ctx?ctx:context;
                 if (penDown) {
                     rendering = true;
                     // console.log("MMOVE")
-                    if (currentTool != 'pencil' && currentTool != 'text'&& currentTool != 'eraser') {
+                    if (currentTool != 'pencil' && currentTool != 'text' && currentTool != 'eraser') {
                         // console.log("MMOVE: "+isIE)
                         if (isIE && currentTool != 'eraser') {
                             context.clearRect(0, 0, canvas.width, canvas.height);
                         } else if (!isIE) {
                             context.clearRect(0, 0, canvas.width, canvas.height);
                         }
-						reRenderCanvas();
+                        reRenderCanvas();
                     }
 
                     // x = event.layerX?event.layerX:event.pageX-offX;
@@ -1888,11 +1926,17 @@ var cntxt=ctx?ctx:context;
                     }
                     if (selectionMode) {
                         if (selectedObj && selectionDragMode) {
-						    selectionDragged=true;
+                            selectionDragged = true;
                             var dx = x - clickX;
                             var dy = y - clickY;
-                            drawTempObj(selectedObj, dx, dy)
-                            drawBoundRect(selectedObj)
+                            //drawTempObj(selectedObj, dx, dy)
+                            var pd = graphicDataStore.pop()
+                            //pd=pd.dataArr[0]
+                            transformObj(pd, dx, dy);
+                            graphicDataStore.push(pd);
+
+                            updateCanvas();
+                            drawBoundRect(pd);
                         }
 
                     } else if (currentTool == 'rect' || currentTool == 'oval') {
@@ -1915,72 +1959,76 @@ var cntxt=ctx?ctx:context;
                         } else if (currentTool == 'eraser') {
                             erase(x, y);
                             graphicData.dataArr[graphicData.dataArr.length] = {
-                                x: x-scrollPosition.x,
-                                y: y-scrollPosition.y,
+                                x: x - scrollPosition.x,
+                                y: y - scrollPosition.y,
                                 id: "line"
                             };
                         } else {
+                            var xt = x - scrollPosition.x;
+                            var yt = y - scrollPosition.y;
+                            var cxt = clickX - scrollPosition.x;
+                            var cyt = clickY - scrollPosition.y;
                             if (!selectionMode) {
-                                if (x > clickX) {
+                                if (xt > cxt) {
                                     if (!lineBound.xmax) {
-                                        lineBound.xmax = x
+                                        lineBound.xmax = xt
                                     }
-                                    if (x > lineBound.xmax) {
-                                        lineBound.xmax = x
+                                    if (xt > lineBound.xmax) {
+                                        lineBound.xmax = xt
                                     }
-                                } else if (x < clickX) {
+                                } else if (xt < cxt) {
                                     if (!lineBound.xmin) {
-                                        lineBound.xmin = x
+                                        lineBound.xmin = xt
                                     }
-                                    if (x < lineBound.xmin) {
-                                        lineBound.xmin = x
+                                    if (xt < lineBound.xmin) {
+                                        lineBound.xmin = xt
                                     }
                                 } else {
                                     if (!lineBound.xmax) {
-                                        lineBound.xmax = x
+                                        lineBound.xmax = xt
                                     }
-                                    if (x > lineBound.xmax) {
-                                        lineBound.xmax = x
+                                    if (xt > lineBound.xmax) {
+                                        lineBound.xmax = xt
                                     }
                                     if (!lineBound.xmin) {
-                                        lineBound.xmin = x
+                                        lineBound.xmin = xt
                                     }
-                                    if (x < lineBound.xmin) {
-                                        lineBound.xmin = x
+                                    if (xt < lineBound.xmin) {
+                                        lineBound.xmin = xt
                                     }
                                 }
-                                if (y > clickY) {
+                                if (yt > cyt) {
                                     if (!lineBound.ymax) {
-                                        lineBound.ymax = y
+                                        lineBound.ymax = yt
                                     }
-                                    if (y > lineBound.ymax) {
-                                        lineBound.ymax = y
+                                    if (yt > lineBound.ymax) {
+                                        lineBound.ymax = yt
                                     }
-                                } else if (y < clickY) {
+                                } else if (yt < cyt) {
                                     if (!lineBound.ymin) {
-                                        lineBound.ymin = y
+                                        lineBound.ymin = yt
                                     }
-                                    if (y < lineBound.ymin) {
-                                        lineBound.ymin = y
+                                    if (yt < lineBound.ymin) {
+                                        lineBound.ymin = yt
                                     }
                                 } else {
                                     if (!lineBound.ymax) {
-                                        lineBound.ymax = y
+                                        lineBound.ymax = yt
                                     }
-                                    if (y > lineBound.ymax) {
-                                        lineBound.ymax = y
+                                    if (yt > lineBound.ymax) {
+                                        lineBound.ymax = yt
                                     }
                                     if (!lineBound.ymin) {
-                                        lineBound.ymin = y
+                                        lineBound.ymin = yt
                                     }
-                                    if (y < lineBound.ymin) {
-                                        lineBound.ymin = y
+                                    if (yt < lineBound.ymin) {
+                                        lineBound.ymin = yt
                                     }
                                 }
-                                lineBound.xmin = lineBound.xmin ? lineBound.xmin : x;
-                                lineBound.xmax = lineBound.xmax ? lineBound.xmax : x;
-                                lineBound.ymin = lineBound.ymin ? lineBound.ymin : y;
-                                lineBound.ymax = lineBound.ymax ? lineBound.ymax : y;
+                                lineBound.xmin = lineBound.xmin ? lineBound.xmin : xt;
+                                lineBound.xmax = lineBound.xmax ? lineBound.xmax : xt;
+                                lineBound.ymin = lineBound.ymin ? lineBound.ymin : yt;
+                                lineBound.ymax = lineBound.ymax ? lineBound.ymax : yt;
                                 graphicData.dataArr[graphicData.dataArr.length] = {
                                     x: x - clickX,
                                     y: y - clickY,
@@ -2075,9 +2123,9 @@ var cntxt=ctx?ctx:context;
                 currPosY = parseInt(currPosY)
                 currPosY = currPosY > 0 ? 0 : currPosY
                 currPosY = currPosY < -(scroll_window.height - screen_height) ? -(scroll_window.height - screen_height) : currPosY;
-               // $get_Element('#canvas-container').style.top = currPosY + "px"
+                // $get_Element('#canvas-container').style.top = currPosY + "px"
                 $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
-				scrollPosition['y']=currPosY;
+                scrollPosition['y'] = currPosY;
                 // console.log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" +
                 // swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
                 //
@@ -2087,8 +2135,8 @@ var cntxt=ctx?ctx:context;
                 currPosX = currPosX < -(scroll_window.width - screen_width) ? -(scroll_window.width - screen_width) : currPosX;
                 //$get_Element('#canvas-container').style.left = currPosX + "px"
                 $get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
-				scrollPosition['x']=currPosX;					
-					updateCanvas();
+                scrollPosition['x'] = currPosX;
+                updateCanvas();
                 //console_log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
             }
 
@@ -2162,8 +2210,8 @@ var cntxt=ctx?ctx:context;
                 var scrub = (scroll_window.height - screen_height) / (screen_height - 30)
                 //$get_Element('#canvas-container').style.top = currPos + "px";
                 $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
-				scrollPosition['y']=currPos;					
-					updateCanvas();
+                scrollPosition['y'] = currPos;
+                updateCanvas();
                 // console.log("AFTER:"+currPos+":"+(currPos/scrub));
                 // moving the position of the object
                 // document.getElementById('scroll').style.top = currPos+"px";
@@ -2230,13 +2278,13 @@ var cntxt=ctx?ctx:context;
 
     function updateText(txt, x, y, c) {
         // alert("UT:"+txt)
-		if(graphicData.dataArr.length){
-		var data=graphicData.dataArr[0]
-		graphicData.dataArr=[data];
-		}
+        if (graphicData.dataArr.length) {
+            var data = graphicData.dataArr[0]
+            graphicData.dataArr = [data];
+        }
         graphicData.dataArr[0].text = escape(txt);
-        graphicData.dataArr[0].x = x-scrollPosition.x;
-        graphicData.dataArr[0].y = y-scrollPosition.y;
+        graphicData.dataArr[0].x = x - scrollPosition.x;
+        graphicData.dataArr[0].y = y - scrollPosition.y;
         graphicData.dataArr[0].color = c;
     }
 
@@ -2325,31 +2373,31 @@ var cntxt=ctx?ctx:context;
         // origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width
         // = width;
         buffercontext.clearRect(0, 0, canvas.width, canvas.height);
-        
+
         context.clearRect(0, 0, canvas.width, canvas.height);
         var _width = canvas.width;
-       buffercanvas.width = canvas.width = _width
-        
+        buffercanvas.width = canvas.width = _width
+
         drawingLayer = '1'
         $get_Element("#button_gr2D").style.border = '1px solid #000000';
         $get_Element("#button_nL").style.border = '1px solid #000000';
         $('.mathquill-embedded-latex').remove();
-		if($get_Element("#graph_cont")){
-			$get_jqElement("#graph_cont").remove()
-			}
+        if ($get_Element("#graph_cont")) {
+            $get_jqElement("#graph_cont").remove()
+        }
         if (boo) {
-		graphicDataStore=[];
+            graphicDataStore = [];
             wb.clearWhiteboard(true);
         }
     }
 
-    function showHideGraph(flag, x, y, boo,foo) {
-       // graphcanvas.width = graphcanvas.width;
+    function showHideGraph(flag, x, y, boo, foo) {
+        // graphcanvas.width = graphcanvas.width;
         //graphcanvas.height = graphcanvas.height;
         //graphcontext.clearRect(0, 0, canvas.width, canvas.height);
-		if($get_Element("#graph_cont")){
-			$get_jqElement("#graph_cont").remove()
-			}
+        if ($get_Element("#graph_cont")) {
+            $get_jqElement("#graph_cont").remove()
+        }
         graphicData.dataArr = [];
         graphicData.id = tool_id[currentTool];
         var addGraph = false
@@ -2358,8 +2406,8 @@ var cntxt=ctx?ctx:context;
             drawingLayer = '1'
             $get_Element("#button_gr2D").style.border = '1px solid #000000';
             $get_Element("#button_nL").style.border = '1px solid #000000';
-			
-			
+
+
         } else {
             $get_Element("#button_gr2D").style.border = '1px solid #000000';
             $get_Element("#button_nL").style.border = '1px solid #000000';
@@ -2386,29 +2434,34 @@ var cntxt=ctx?ctx:context;
             }
             drawingLayer = isIE ? '1' : '3';
             addGraph = true;
-			var gc=$("<div name='graph_cont' style='position:absolute;left:"+xp+"px;top:"+yp+"px;'></div>");
-			gc.append(gr);
-			$get_jqElement("#canvas-container").prepend(gc);
-			//console.log(gc)
-			//console.log($get_jqElement("#canvas-container").html())
-			if(!foo){
-			var grNode=$get_jqElement("#canvas-container");
-			if(true){
-			grNode.data('grpos',{x:xp,y:yp,sx:scrollPosition.x,sy:scrollPosition.y});
-			}
-			}
+            var gc = $("<div name='graph_cont' style='position:absolute;left:" + xp + "px;top:" + yp + "px;'></div>");
+            gc.append(gr);
+            $get_jqElement("#canvas-container").prepend(gc);
+            //console.log(gc)
+            //console.log($get_jqElement("#canvas-container").html())
+            if (!foo) {
+                var grNode = $get_jqElement("#canvas-container");
+                if (true) {
+                    grNode.data('grpos', {
+                        x: xp,
+                        y: yp,
+                        sx: scrollPosition.x,
+                        sy: scrollPosition.y
+                    });
+                }
+            }
             // graphcontext.drawImage(gr,xp,yp);
             //graphcontext.drawImage(gr, xp, yp);
-			
+
         }
 
         graphicData.dataArr.push({
-            x: xs-scrollPosition.x,
-            y: ys-scrollPosition.y,
+            x: xs - scrollPosition.x,
+            y: ys - scrollPosition.y,
             name: "graphImage",
             addImage: addGraph
         });
-		graphicData.brect=getBoundRect(xs, ys, 300, (flag=='gr2D'?300:150))
+        graphicData.brect = getBoundRect(xs, ys, 300, (flag == 'gr2D' ? 300 : 150))
         sendData();
         if (currentTool == 'gr2D' || currentTool == 'nL') {
             currentTool = 'pencil';
@@ -2440,46 +2493,46 @@ var cntxt=ctx?ctx:context;
     }
 
     function updateCanvas() {
-	buffercontext.clearRect(0, 0, buffercanvas.width, buffercanvas.height);
-	buffercanvas.width=canvas.width;
-	buffercanvas.height=canvas.height;
-	var l=graphicDataStore.length;
-	buffercontext.save();
-	buffercontext.translate(scrollPosition.x,scrollPosition.y);
-	for(var i=0;i<l;i++){	
-		renderToBuffer(graphicDataStore[i],buffercontext);
-		}
-		buffercontext.restore();
+        buffercontext.clearRect(0, 0, buffercanvas.width, buffercanvas.height);
+        buffercanvas.width = canvas.width;
+        buffercanvas.height = canvas.height;
+        var l = graphicDataStore.length;
+        buffercontext.save();
+        buffercontext.translate(scrollPosition.x, scrollPosition.y);
+        for (var i = 0; i < l; i++) {
+            renderToBuffer(graphicDataStore[i], buffercontext);
+        }
+        buffercontext.restore();
         context.clearRect(0, 0, canvas.width, canvas.height);
-		reRenderCanvas();
-		var gr=$get_jqElement("#canvas-container")
-		if(gr.data('grpos')){
-		var grxp=gr.data('grpos').x+(-gr.data('grpos').sx+scrollPosition.x)
-		var gryp=gr.data('grpos').y+(-gr.data('grpos').sy+scrollPosition.y)
-		$get_jqElement("#graph_cont").css('left',grxp+'px');
-		$get_jqElement("#graph_cont").css('top',gryp+'px');
-		}
+        reRenderCanvas();
+        var gr = $get_jqElement("#canvas-container")
+        if (gr.data('grpos')) {
+            var grxp = gr.data('grpos').x + (-gr.data('grpos').sx + scrollPosition.x)
+            var gryp = gr.data('grpos').y + (-gr.data('grpos').sy + scrollPosition.y)
+            $get_jqElement("#graph_cont").css('left', grxp + 'px');
+            $get_jqElement("#graph_cont").css('top', gryp + 'px');
+        }
         context.beginPath();
-		
+
     }
-	
-	function reRenderCanvas(){
-	
-	if (isIE) {
+
+    function reRenderCanvas() {
+
+        if (isIE) {
             //drawImage workaround for IE to fix high memory usage
             var cn = $($(canvas).children()[0]);
             var cv = $($(buffercanvas).children()[0]);
             var el = '<div style="position:absolute;">' + $($(buffercanvas).html()).html() + '</div><div style="position: absolute; filter: alpha(opacity=0); BACKGROUND-COLOR: red; overflow: hidden;"></div>'
             cn.append(el);
         } else {
-            context.drawImage(buffercanvas,0,0);
+            context.drawImage(buffercanvas, 0, 0);
         }
-	}
+    }
 
-    function erase(x, y,ctx) {
+    function erase(x, y, ctx) {
         var ew = 30
         var ep = ew;
-		var cntx=ctx?ctx:context
+        var cntx = ctx ? ctx : context
         if (isIE) {
             var x0 = x;
             var y0 = y;
@@ -2501,27 +2554,37 @@ var cntxt=ctx?ctx:context;
             cntx.restore();
             return;
         }
-		cntx.clearRect(x - ep / 2, y - ep / 2, ew, ew);
-        
+        cntx.clearRect(x - ep / 2, y - ep / 2, ew, ew);
+        var left = x - (ep / 2);
+        var right = x + ew - (ep / 2);
+        var top = y - (ep / 2);
+        var bottom = y + ew - (ep / 2)
+        var r = {
+            xmin: left,
+            ymin: top,
+            xmax: right,
+            ymax: bottom
+        }
+        checkForObjectErase(r)
     }
 
 
     function drawLine(ctx) {
-	var cntx=ctx?ctx:context
+        var cntx = ctx ? ctx : context
         cntx.lineTo(x, y)
         cntx.stroke();
     }
 
-    function drawRect(x, y, w, h, color,ctx) {
-	var cntx=ctx?ctx:context;
+    function drawRect(x, y, w, h, color, ctx) {
+        var cntx = ctx ? ctx : context;
         if (color != undefined) {
             cntx.strokeStyle = color;
         }
         cntx.strokeRect(x, y, w, h);
     }
 
-    function drawOval(x, y, w, h, color,ctx) {
-	var cntx=ctx?ctx:context;
+    function drawOval(x, y, w, h, color, ctx) {
+        var cntx = ctx ? ctx : context;
         if (color != undefined) {
             cntx.strokeStyle = color;
         }
@@ -2589,8 +2652,8 @@ var cntxt=ctx?ctx:context;
                     var ngdata = {}
                     ngdata.lineColor = graphicData.lineColor;
                     ngdata.id = graphicData.id;
-					ngdata.brect=graphicData.brect;
-					
+                    ngdata.brect = graphicData.brect;
+
 
                     if (segC > 1) {
                         var sObj = {};
@@ -2639,9 +2702,9 @@ var cntxt=ctx?ctx:context;
         var nobj = cloneObject(jsdata)
         nobj.imageData = undefined;
         var jsonStr = convertObjToString(nobj);
-var rect=nobj.brect;
-canvas_drawing_width=rect.xmax>canvas_drawing_width?rect.xmax:canvas_drawing_width;
-		canvas_drawing_height=rect.ymax>canvas_drawing_height?rect.ymax:canvas_drawing_height;
+        var rect = nobj.brect;
+        canvas_drawing_width = rect.xmax > canvas_drawing_width ? rect.xmax : canvas_drawing_width;
+        canvas_drawing_height = rect.ymax > canvas_drawing_height ? rect.ymax : canvas_drawing_height;
         console_log("Sending json string: " + jsonStr);
 
         graphicDataStore.push(cloneObject(jsdata));
@@ -2671,6 +2734,12 @@ canvas_drawing_width=rect.xmax>canvas_drawing_width?rect.xmax:canvas_drawing_wid
         for (var m in obj) {
             clone[m] = obj[m]
         }
+        return clone
+    }
+
+    function cloneObjectDeep(obj) {
+        var clone = {}
+        jQuery.extend(true, clone, obj);
         return clone
     }
 
@@ -2772,7 +2841,7 @@ source: https://gist.github.com/754454
     }
 
     function renderObjAux(obj, boo) {
-	graphicData=obj
+        graphicData = obj
         var graphic_id = obj.id;
         var graphic_data = obj.dataArr;
         var line_rgb = obj.lineColor;
@@ -2780,7 +2849,7 @@ source: https://gist.github.com/754454
         var dep, x0, y0, x1, y1;
         var textF;
         var idName;
-		var doUpdateCanvas=false;
+        var doUpdateCanvas = false;
         drawingLayer = graphic_data[0].layer ? graphic_data[0].layer : drawingLayer;
         drawingLayer = isIE ? '1' : drawingLayer;
         var rect, lineBound;
@@ -2805,13 +2874,13 @@ source: https://gist.github.com/754454
         if (graphic_id === 0) {
             for (var i = 0; i < dLength; i++) {
 
-                x1 = graphic_data[i].x+scrollPosition.x;
-                y1 = graphic_data[i].y+scrollPosition.y;
+                x1 = graphic_data[i].x + scrollPosition.x;
+                y1 = graphic_data[i].y + scrollPosition.y;
                 deb += x1 + ":" + y1 + "||"
                 erase(x1, y1);
                 if (isIE) {
-                   // updateCanvas();
-				   doUpdateCanvas=true;
+                    // updateCanvas();
+                    doUpdateCanvas = true;
                 }
 
             }
@@ -2836,9 +2905,9 @@ source: https://gist.github.com/754454
                         lineBound.xmax = x1;
                         lineBound.xmin = x1;
                     }
-				}else if(graphic_data[i].id == "continue"){
-                    ctx.moveTo(x0+x1, y0+y1);
-                   // x0 = 0;
+                } else if (graphic_data[i].id == "continue") {
+                    ctx.moveTo(x0 + x1, y0 + y1);
+                    // x0 = 0;
                     //y0 = 0;
                 } else {
                     context.lineTo(x0 + x1, y0 + y1);
@@ -2924,10 +2993,10 @@ source: https://gist.github.com/754454
             }
             context.stroke()
             if (!boo) {
-               // obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
+                // obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             }
             //updateCanvas()
-			 doUpdateCanvas=true;
+            doUpdateCanvas = true;
         }
         if (graphic_id === 2) {
             for (i = 0; i < dLength; i++) {
@@ -2964,7 +3033,7 @@ source: https://gist.github.com/754454
                 //context.strokeRect(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             }
             //updateCanvas()
-			 doUpdateCanvas=true;
+            doUpdateCanvas = true;
         }
         if (graphic_id === 4 || graphic_id === 5) {
             var fName = graphic_id == 4 ? drawRect : drawOval;
@@ -2979,32 +3048,33 @@ source: https://gist.github.com/754454
             }
             rect = getBoundRect(x0, y0, w0, h0)
             if (!boo) {
-               // obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
+                // obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
 
             }
             //updateCanvas()
-			 doUpdateCanvas=true;
+            doUpdateCanvas = true;
         }
         if (graphic_id === 11 || graphic_id === 12) {
             idName = graphic_id == 11 ? "gr2D" : "nL";
-			var _obj=cloneObject(obj)
-            showHideGraph(idName, graphic_data[0].x+scrollPosition.x, graphic_data[0].y+scrollPosition.y, graphic_data[0].addImage);
-			rect = getBoundRect(graphic_data[0].x, graphic_data[0].y, 300, (idName=='gr2D'?300:150));
-			obj=_obj;
+            var _obj = cloneObject(obj)
+            showHideGraph(idName, graphic_data[0].x + scrollPosition.x, graphic_data[0].y + scrollPosition.y, graphic_data[0].addImage);
+            rect = getBoundRect(graphic_data[0].x, graphic_data[0].y, 300, (idName == 'gr2D' ? 300 : 150));
+            obj = _obj;
         }
         if (!boo) {
 
             obj.brect = rect
             graphicDataStore.push(cloneObject(obj));
         }
-		if( doUpdateCanvas){
-		updateCanvas();
-		}
-		canvas_drawing_width=rect.xmax>canvas_drawing_width?rect.xmax:canvas_drawing_width;
-		canvas_drawing_height=rect.ymax>canvas_drawing_height?rect.ymax:canvas_drawing_height;
+        if (doUpdateCanvas) {
+            updateCanvas();
+        }
+        canvas_drawing_width = rect.xmax > canvas_drawing_width ? rect.xmax : canvas_drawing_width;
+        canvas_drawing_height = rect.ymax > canvas_drawing_height ? rect.ymax : canvas_drawing_height;
     }
-	function renderToBuffer(_obj,_ctx) {
-	var obj=_obj?_obj:graphicData
+
+    function renderToBuffer(_obj, _ctx) {
+        var obj = _obj ? _obj : graphicData
         var graphic_id = obj.id;
         var graphic_data = obj.dataArr;
         var line_rgb = obj.lineColor;
@@ -3012,9 +3082,9 @@ source: https://gist.github.com/754454
         var dep, x0, y0, x1, y1;
         var textF;
         var idName;
-        var ctx=_ctx?_ctx:buffercontext;
+        var ctx = _ctx ? _ctx : buffercontext;
         var rect, lineBound;
-        
+
         if (ctx.lineWidth != 2) {
             ctx.lineWidth = 2.0;
         }
@@ -3031,8 +3101,8 @@ source: https://gist.github.com/754454
                 x1 = graphic_data[i].x;
                 y1 = graphic_data[i].y;
                 deb += x1 + ":" + y1 + "||"
-                erase(x1, y1,ctx);
-                
+                erase(x1, y1, ctx);
+
 
             }
         }
@@ -3041,7 +3111,7 @@ source: https://gist.github.com/754454
             if (graphic_data[0].name == 'graphImage') {
                 return
             }
-            
+
             for (i = 0; i < dLength; i++) {
                 x1 = graphic_data[i].x;
                 y1 = graphic_data[i].y;
@@ -3050,18 +3120,18 @@ source: https://gist.github.com/754454
                     ctx.moveTo(x1, y1);
                     x0 = x1;
                     y0 = y1;
-				}else if(graphic_data[i].id == "continue"){
-                    ctx.moveTo(x0+x1, y0+y1);
+                } else if (graphic_data[i].id == "continue") {
+                    ctx.moveTo(x0 + x1, y0 + y1);
                     //x0 = 0;
                     //y0 = 0;
                 } else {
                     ctx.lineTo(x0 + x1, y0 + y1);
-                    
+
                 }
             }
-            
+
             ctx.stroke()
-            
+
         }
         if (graphic_id === 2) {
             for (i = 0; i < dLength; i++) {
@@ -3079,11 +3149,11 @@ source: https://gist.github.com/754454
                         xt = xt.split('{').join("");
                         xt = xt.split('}').join("")
                     }
-                    renderText(xt, x0, y0, col,ctx);
-                   
+                    renderText(xt, x0, y0, col, ctx);
+
                 }
             }
-            
+
         }
         if (graphic_id === 4 || graphic_id === 5) {
             var fName = graphic_id == 4 ? drawRect : drawOval;
@@ -3094,13 +3164,13 @@ source: https://gist.github.com/754454
                 y0 = yd < 0 ? graphic_data[i].y + graphic_data[i].h : graphic_data[i].y
                 w0 = graphic_data[i].w * xd
                 h0 = graphic_data[i].h * yd
-                fName(x0, y0, w0, h0, col,ctx);
+                fName(x0, y0, w0, h0, col, ctx);
             }
-            
+
         }
         if (graphic_id === 11 || graphic_id === 12) {
             idName = graphic_id == 11 ? "gr2D" : "nL";
-            showHideGraph(idName, graphic_data[0].x, graphic_data[0].y, graphic_data[0].addImage,true);
+            showHideGraph(idName, graphic_data[0].x, graphic_data[0].y, graphic_data[0].addImage, true);
         }
     }
     wb.updateWhiteboard_local = function (cmdArray) {
@@ -3118,7 +3188,7 @@ source: https://gist.github.com/754454
                 // make unique to whiteboard, otherwise
                 // other code can override.
                 if (command == 'clear') {
-				graphicDataStore=[];
+                    graphicDataStore = [];
                     resetWhiteBoard(false);
                 } else {
                     this[command].apply(scope, arg);
@@ -3131,7 +3201,7 @@ source: https://gist.github.com/754454
             }
         }
         // updateScroller();
-		resetArrays()
+        resetArrays()
     }
 
     /**
@@ -3222,8 +3292,8 @@ source: https://gist.github.com/754454
 
     wb.whiteboardOut = function (data, boo) {
         //alert('WHITEBOARD: whiteboardOut is going nowhere.  Hook up to external process to save data');
-		
-	
+
+
     }
 
     wb.disconnectWhiteboard = function (documentObject) {
@@ -3268,28 +3338,28 @@ source: https://gist.github.com/754454
     wb.whiteboardDelete = function (n) {
 
     }
-	wb.clearMemory=function(){
-	graphicData=null;
-	graphicDataStore=null;
-	selectedObj=null;
-	
-	var _width = 0;
-            buffercanvas.width = canvas.width = _width;
-           buffercanvas.height = canvas.height = _width;
-            if (isIE) {
-                $(canvas).css({
-                    'width': '0px',
-                    'height': '0px'
-                })
-                $(canvas).empty();
-                $(buffercanvas).css({
-                    'width': '0px',
-                    'height': '0px'
-                })
-                $(buffercanvas).empty();
-               
-            } else {
-			/*$(canvas).remove();
+    wb.clearMemory = function () {
+        graphicData = null;
+        graphicDataStore = null;
+        selectedObj = null;
+
+        var _width = 0;
+        buffercanvas.width = canvas.width = _width;
+        buffercanvas.height = canvas.height = _width;
+        if (isIE) {
+            $(canvas).css({
+                'width': '0px',
+                'height': '0px'
+            })
+            $(canvas).empty();
+            $(buffercanvas).css({
+                'width': '0px',
+                'height': '0px'
+            })
+            $(buffercanvas).empty();
+
+        } else {
+            /*$(canvas).remove();
 			$(buffercanvas).remove();
 			
                 canvas = null;
@@ -3298,13 +3368,13 @@ source: https://gist.github.com/754454
                 context = null;
                 buffercontext = null;
                 */
-            }
-			gr2D=null;
-			nL=null;
-			//scope=null;
-			//wb=null;
-			
-	}
+        }
+        gr2D = null;
+        nL = null;
+        //scope=null;
+        //wb=null;
+
+    }
     //
 
     function updateDataToSERVER(index, jsdata) {
@@ -3321,29 +3391,36 @@ source: https://gist.github.com/754454
             $("div#" + contDiv + " [name='tools'] button").show()
         }
     }
-    
-    wb.releaseResources = function() {
-	wb.clearMemory();
-    	graphicDataStore = [];
-		
+
+    wb.releaseResources = function () {
+        wb.clearMemory();
+        graphicDataStore = [];
+
     }
-	wb.getSizeOfWhiteboard=function(){
-	return canvas_drawing_width+", "+canvas_drawing_height;
-	}
-    wb.setSizeOfWhiteboard=function(w,h){
-	cwi=w;
-	cht=h;
-	scroll_window={width:cwi,height:cht}
-	}
-	
-	wb.enableUndo=function(){
-	$get_jqElement('#button_undo').prop("disabled",!true);
-	$get_jqElement('#button_undo').css({ opacity: 1.0 });
-	}
-	wb.disableUndo=function(){
-	$get_jqElement('#button_undo').prop("disabled",true);
-	$get_jqElement('#button_undo').css({ opacity: 0.3 });
-	}
+    wb.getSizeOfWhiteboard = function () {
+        return canvas_drawing_width + ", " + canvas_drawing_height;
+    }
+    wb.setSizeOfWhiteboard = function (w, h) {
+        cwi = w;
+        cht = h;
+        scroll_window = {
+            width: cwi,
+            height: cht
+        }
+    }
+
+    wb.enableUndo = function () {
+        $get_jqElement('#button_undo').prop("disabled", !true);
+        $get_jqElement('#button_undo').css({
+            opacity: 1.0
+        });
+    }
+    wb.disableUndo = function () {
+        $get_jqElement('#button_undo').prop("disabled", true);
+        $get_jqElement('#button_undo').css({
+            opacity: 0.3
+        });
+    }
     return wb;
 
 };
