@@ -489,6 +489,29 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	
     }
 
+    public List<CCSSDetail> getCCSSDetailForAssignment(int assignKey) throws Exception {
+
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_DETAIL_FOR_ASSIGNMENT");
+    	List<CCSSDetail> list = null;
+    	try {
+    		list = getJdbcTemplate().query(sql, new Object[] { assignKey }, new RowMapper<CCSSDetail>() {
+    			@Override
+    			public CCSSDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				CCSSDetail detail = new CCSSDetail(rs.getString("name"), rs.getString("original_name"),
+    						rs.getString("level_name"), rs.getString("domain_name"),
+    						rs.getString("summary"), rs.getString("description")); 
+    				return detail;
+    			}
+    		});
+    	}
+    	catch (DataAccessException e) {
+    		LOGGER.error(String.format("getCCSSDetailForAssignment(): assignKey: %d", assignKey), e);
+    		throw e;
+    	}
+    	if (list == null) list = new ArrayList<CCSSDetail>();
+    	return list;
+    }
+
     /**
      * Get student count for specified group
      * 

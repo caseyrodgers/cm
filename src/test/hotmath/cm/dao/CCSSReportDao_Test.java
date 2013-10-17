@@ -83,8 +83,15 @@ public class CCSSReportDao_Test extends CmDbTestCase {
     public void testGetCCSSDetail() throws Exception {
         CCSSReportDao dao = CCSSReportDao.getInstance();
         List<String> names = new ArrayList<String>();
+        names.add("9.A.B.C.i");
         List<CCSSDetail> detail = dao.getCCSSDetail(names);
         assertTrue(detail != null);
+    }
+
+    public void testGetCCSSDetailForAssignment() throws Exception {
+        CCSSReportDao dao = CCSSReportDao.getInstance();
+        List<CCSSDetail> detail = dao.getCCSSDetailForAssignment(3);
+        assertTrue(detail != null && detail.size() > 0);
     }
 
     public void testGetCCSSNamesForLevel() throws Exception {
@@ -95,4 +102,5 @@ public class CCSSReportDao_Test extends CmDbTestCase {
         assertTrue(names != null && names.size()>0);
     }
 
+    
 }

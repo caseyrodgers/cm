@@ -4598,11 +4598,23 @@ ORDER BY ccs.standard_name_new ASC
  
 #### 
 .key=GET_CCSS_DETAIL
+
 SELECT ccs.standard_name as original_name, ccs.standard_name_new as name, ccs.level_name, ccs.domain_name, ccs.summary, ccs.description
 FROM   common_core_standards ccs
 WHERE  ccs.standard_name_new in ( $$NAME_LIST$$ )
 order by ccs.standard_name_new
 
+#### 
+.key=GET_CCSS_DETAIL_FOR_ASSIGNMENT
+
+SELECT DISTINCT ccs.standard_name as original_name, ccs.standard_name_new as name, ccs.level_name, ccs.domain_name, ccs.summary, ccs.description
+ FROM   CM_ASSIGNMENT_PIDS cap
+ JOIN   inmh_standard ins
+   ON   ins.topic = cap.lesson_file 
+ JOIN   common_core_standards ccs
+   ON   ccs.standard_name_new = ins.standard_name_new
+WHERE   cap.assign_key = ?
+ORDER BY ccs.standard_name_new
 
 ##
 ## Delete a single command in a whiteboard
