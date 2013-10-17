@@ -186,7 +186,7 @@ public class HaUser extends HaBasicUserImpl {
     }
 
     public void setActiveTestRunId(Integer activeTestRunId) {
-		this.activeTestRunId = activeTestRunId;
+		this.activeTestRunId = activeTestRunId!=null?activeTestRunId:0;
 	}
 	
     
