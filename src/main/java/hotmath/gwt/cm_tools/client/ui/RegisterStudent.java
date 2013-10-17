@@ -945,7 +945,10 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             public void onFailure(Throwable caught) {
                 CmBusyManager.setBusy(false);
                 if (caught.getMessage().indexOf("already in use") > -1) {
-                    CmMessageBox.showAlert("Password In Use", "This password is currently in use");
+                	if (caught.getMessage().indexOf("pass") > -1)
+                        CmMessageBox.showAlert("Passcode In Use", caught.getMessage());
+                	else if (caught.getMessage().indexOf("name") > -1)
+                        CmMessageBox.showAlert("Name In Use", caught.getMessage());
                     return;
                 }
                 super.onFailure(caught);
@@ -1004,6 +1007,20 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 Info.display("Information", "Save Complete");
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED, ai.getProgramChanged()));
             }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                CmBusyManager.setBusy(false);
+                if (caught.getMessage().indexOf("already in use") > -1) {
+                	if (caught.getMessage().indexOf("pass") > -1)
+                        CmMessageBox.showAlert("Passcode In Use", caught.getMessage());
+                	else if (caught.getMessage().indexOf("name") > -1)
+                        CmMessageBox.showAlert("Name In Use", caught.getMessage());
+                    return;
+                }
+                super.onFailure(caught);
+            }
+
         }.register();
     }
 
