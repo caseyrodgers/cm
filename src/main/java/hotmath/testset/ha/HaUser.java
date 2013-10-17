@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  */
 public class HaUser extends HaBasicUserImpl {
     
-    Integer aid;
+    int aid;
 	public Integer getAid() {
         return aid;
     }
@@ -34,12 +34,13 @@ public class HaUser extends HaBasicUserImpl {
     int uid;
 	String userName;
 	String category;
-	Integer gradeLevel;
+	int gradeLevel;
 	String assignedTestName;
-	Integer activeTestSegment;
-	Integer activeTest;
-	Integer activeTestRunId;
-	Integer activeTestRunSession;
+	int activeTestSegment;
+	int activeTest;
+	int activeTestRunId;
+	int activeTestRunSession;
+	int groupId;
 	String backgroundStyle;
     String testConfigJson;
     boolean isShowWorkRequired;
@@ -89,7 +90,7 @@ public class HaUser extends HaBasicUserImpl {
 	}
 
 	public Integer getActiveTestSegment() {
-		return (activeTestSegment!=null)?activeTestSegment:0;
+		return activeTestSegment;
 	}
 
 	public void setActiveTestSegment(Integer assignedCurrentTestSegment) {
@@ -169,10 +170,22 @@ public class HaUser extends HaBasicUserImpl {
 	}
 	
 	public Integer getActiveTestRunId() {
-	    return (activeTestRunId!=null)?activeTestRunId:0;
+	    return activeTestRunId;
 	}
 
-	public void setActiveTestRunId(Integer activeTestRunId) {
+	public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
+
+    public void setActiveTestRunId(int activeTestRunId) {
+        this.activeTestRunId = activeTestRunId;
+    }
+
+    public void setActiveTestRunId(Integer activeTestRunId) {
 		this.activeTestRunId = activeTestRunId;
 	}
 	
@@ -271,6 +284,7 @@ public class HaUser extends HaBasicUserImpl {
 			if(!rs.next())
 				throw new HotMathException("No such Catchup Math user id: " + uid);
 			
+			user.setGroupId(rs.getInt("group_id"));
 			user.setUid(rs.getInt("uid"));
 			user.setUserName(rs.getString("user_name"));
 			user.setAssignedTestName(rs.getString("assigned_test_name"));
@@ -406,11 +420,10 @@ public class HaUser extends HaBasicUserImpl {
 
     @Override
     public String toString() {
-        return "HaUser [activeTest=" + activeTest + ", activeTestRunId=" + activeTestRunId + ", activeTestRunSession="
-                + activeTestRunSession + ", activeTestSegment=" + activeTestSegment + ", assignedTestName="
-                + assignedTestName + ", backgroundStyle=" + backgroundStyle + ", category=" + category
-                + ", gradeLevel=" + gradeLevel + ", isShowWorkRequired=" + isShowWorkRequired
-                + ", passPercentRequired=" + passPercentRequired + ", testConfigJson=" + testConfigJson + ", uid="
-                + uid + ", userAccountType=" + userAccountType + ", userName=" + userName + "]";
+        return "HaUser [aid=" + aid + ", uid=" + uid + ", userName=" + userName + ", category=" + category + ", gradeLevel=" + gradeLevel
+                + ", assignedTestName=" + assignedTestName + ", activeTestSegment=" + activeTestSegment + ", activeTest=" + activeTest + ", activeTestRunId="
+                + activeTestRunId + ", activeTestRunSession=" + activeTestRunSession + ", groupId=" + groupId + ", backgroundStyle=" + backgroundStyle
+                + ", testConfigJson=" + testConfigJson + ", isShowWorkRequired=" + isShowWorkRequired + ", isDemoUser=" + isDemoUser + ", userAccountType="
+                + userAccountType + ", passPercentRequired=" + passPercentRequired + "]";
     }
 }

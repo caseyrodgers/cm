@@ -5,10 +5,10 @@ import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.Range;
+import hotmath.cm.dao.WebLinkDao;
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
+import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
@@ -16,11 +16,12 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
-import hotmath.gwt.solution_editor.client.rpc.GetSolutionResourcesAdminAction.ResourceType;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
 import hotmath.testset.ha.HaTestRun;
@@ -124,14 +125,20 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         else {
             title = "Required Problems";
         }
+
+
+
+        /** Always send complete list of all lesson names.
+         * TODO: many should be done in initialize phase?
+         * TODO: why do need the full list?
+         */
+        __logger.debug("creating list of session names: " + prescription.getTestRun().getRunId());
+        PrescriptionSessionData sessionData = new PrescriptionSessionData();
+        sessionData.setSessionRpa(isActivity);
+        presData.setSessionTopics(HaTestRunDao.getInstance().getLessonStatuses(prescription.getTestRun().getRunId()));
+        presData.setCurrSession(sessionData);
         
-        
-        PrescriptionSessionDataResource customResource = new PrescriptionSessionDataResource();
-        customResource.setType(CmResourceType.WEBLINK);
-        customResource.setLabel("External Web Links");
-        customResource.getItems().add(new InmhItemData(customResource.getType(), "http://math.com/", "Awesome math site #1"));
-        customResource.getItems().add(new InmhItemData(customResource.getType(), "http://www.coolmath.com/algebra/", "Awesome algebra math site #2"));
-        
+     
         
         problemsResource.setLabel(title);
         int cnt = 1;
@@ -174,15 +181,6 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         lessonId.setType(CmResourceType.mapResourceType(item.getType()));
         lessonResource.getItems().add(lessonId);
 
-        /** Always send complete list of all lesson names.
-         * TODO: many should be done in initialize phase?
-         * TODO: why do need the full list?
-         */
-        __logger.debug("creating list of session names: " + prescription.getTestRun().getRunId());
-        PrescriptionSessionData sessionData = new PrescriptionSessionData();
-        sessionData.setSessionRpa(isActivity);
-        presData.setSessionTopics(HaTestRunDao.getInstance().getLessonStatuses(prescription.getTestRun().getRunId()));
-        presData.setCurrSession(sessionData);
 
         
         __logger.debug("Getting prescription resource items: " + prescription.getTestRun().getRunId());
@@ -237,7 +235,28 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         __logger.debug("adding prescription sessions: " + prescription.getTestRun().getRunId());
         sessionData.getInmhResources().add(lessonResource);
         sessionData.getInmhResources().add(problemsResource);
-        sessionData.getInmhResources().add(customResource);
+        
+        
+        
+        
+        /** are there any external web resources setup for this admin?
+         * 
+         */
+        
+        List<WebLinkModel> webLinks = WebLinkDao.getInstance().getWebLinksFor(cmProgram.getStudent().getAdminUid(),cmProgram.getStudent().getGroupId(), presData.getCurrSession().getTopic());
+        if(webLinks.size() > 0) {
+            PrescriptionSessionDataResource customResource = new PrescriptionSessionDataResource();
+            customResource.setType(CmResourceType.WEBLINK);
+            customResource.setLabel("External Web Links");
+            for(WebLinkModel wl: webLinks) {
+                customResource.getItems().add(new InmhItemData(customResource.getType(),wl.getUrl(), wl.getName()) );
+            }
+            sessionData.getInmhResources().add(customResource);            
+        }
+        
+        
+        
+        
 
         /** 
          * Add a results resource type to allow user to view current results.

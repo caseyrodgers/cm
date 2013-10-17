@@ -7,6 +7,8 @@ import hotmath.gwt.cm_admin.client.ui.FooterPanel;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
+import hotmath.gwt.cm_admin.client.ui.WebLinkEditorDialog;
+import hotmath.gwt.cm_admin.client.ui.WebLinksManager;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentQuestionViewerPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.EditAssignmentDialog;
 import hotmath.gwt.cm_admin.client.ui.assignment.FinalExamCreationManager;
@@ -153,6 +155,15 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             UserActivityLogDialog.startTest();
             return;
         }
+        else if(CmShared.getQueryParameterValue("test").equals("weblinks")) {
+            WebLinksManager.startTest();
+            return;
+        }
+        else if(CmShared.getQueryParameterValue("test").equals("weblinkeditor")) {
+            WebLinkEditorDialog.startTest();
+            return;
+        }        
+
 
         new MessageOfTheDayDialog(new CallbackGeneric() {
             @Override

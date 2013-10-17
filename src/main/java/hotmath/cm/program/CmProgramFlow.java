@@ -109,6 +109,11 @@ public class CmProgramFlow {
         }
     }
 
+    public StudentModelI getStudent() {
+        return this.student;
+    }
+    
+    
     /**
      * Return the active 'item' for this program.
      * 

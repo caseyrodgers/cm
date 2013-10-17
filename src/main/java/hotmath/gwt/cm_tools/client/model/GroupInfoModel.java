@@ -84,5 +84,17 @@ public class GroupInfoModel implements Response {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof GroupInfoModel) {
+            return getId() == ((GroupInfoModel)obj).getId();
+        }
+        if(obj instanceof Integer) {
+            return getId() == ((Integer)obj);
+        }
+        else {
+            return super.equals(obj);
+        }
+    }
 }
