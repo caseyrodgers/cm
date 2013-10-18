@@ -91,19 +91,22 @@ public class WebLinkDao  extends SimpleJdbcDaoSupport {
             @Override
             public WebLinkModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                 WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"));
-                wlm.setAlwaysAvailable(rs.getInt("always_available")!=0?true:false);
-                wlm.setAllGroups(rs.getInt("all_groups")!=0?true:false);
                 return wlm;
             }
         });    
 
         if(readGroupsAndLessons) {
             for(final WebLinkModel wl: links) {
-                sql = "select * from CM_WEBLINK_GROUPS where link_id = ? order by id";
+                sql = "select wg.*, g.name as group_name " +
+                      "from    CM_WEBLINK_GROUPS wg " +
+                      "JOIN CM_GROUP g on g.id = wg.group_id " +
+                      "where link_id = ? " +
+                      " order by group_name ";
+                
                 List<GroupInfoModel> groups = getJdbcTemplate().query(sql, new Object[] { wl.getLinkId() }, new RowMapper<GroupInfoModel>() {
                     @Override
                     public GroupInfoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new GroupInfoModel(wl.getAdminId(), rs.getInt("group_id"),null,0,true,false);
+                        return new GroupInfoModel(wl.getAdminId(), rs.getInt("group_id"),rs.getString("group_name"),0,true,false);
                     }
                 });
                 wl.getLinkGroups().clear();

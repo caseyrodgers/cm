@@ -101,7 +101,7 @@ public class WebLinkAddTargetsDialog extends GWindow {
         }
 
         for(String subject: subjects) {
-            targetResults.add(new LessonModel("All", null, subject));
+            targetResults.add(new LessonModel(subject + ": All lessons", null, subject));
         }
         
         

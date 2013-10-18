@@ -14,8 +14,6 @@ public class WebLinkModel implements Response {
     private List<LessonModel> linkTargets = new ArrayList<LessonModel>();
     private List<GroupInfoModel> linkGroups = new ArrayList<GroupInfoModel>();
     private int linkId;
-    private boolean alwaysAvailable;
-    private boolean allGroups;
 
     public WebLinkModel() {}
     
@@ -73,11 +71,6 @@ public class WebLinkModel implements Response {
     }
 
 
-    @Override
-    public String toString() {
-        return "WebLinkModel [url=" + url + ", name=" + name + ", adminId=" + adminId + "]";
-    }
-
     /** Return the link targets.  Will be empty
      *  list if no targets, null is never returned.
      * @return
@@ -87,18 +80,18 @@ public class WebLinkModel implements Response {
     }
 
     public boolean isAllGroups() {
-        return allGroups;
+        return linkGroups.size() == 0;
     }
 
-    public void setAllGroups(boolean allGroups) {
-        this.allGroups = allGroups;
-    }
-
-    public void setAlwaysAvailable(boolean always) {
-        this.alwaysAvailable = always;
+    public boolean getAlwaysAvailable() {
+        return linkTargets.size() == 0;
     }
     
-    public boolean getAlwaysAvailable() {
-        return this.alwaysAvailable;
+
+    @Override
+    public String toString() {
+        return "WebLinkModel [url=" + url + ", name=" + name + ", adminId=" + adminId + ", linkTargets=" + linkTargets + ", linkGroups=" + linkGroups
+                + ", linkId=" + linkId + "]";
     }
+    
 }

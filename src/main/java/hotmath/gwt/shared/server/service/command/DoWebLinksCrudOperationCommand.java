@@ -67,13 +67,11 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
     private void addWebLink(final Connection conn, WebLinkModel link) throws Exception {
         PreparedStatement ps=null;
         try {
-            String sql = "insert into CM_WEBLINK(admin_id, name, url, always_available, all_groups)values(?,?,?,?,?)";
+            String sql = "insert into CM_WEBLINK(admin_id, name, url )values(?,?,?)";
             ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, link.getAdminId());
             ps.setString(2, link.getName());
             ps.setString(3,  link.getUrl());
-            ps.setInt(4,  link.getAlwaysAvailable()?1:0);
-            ps.setInt(5,  link.isAllGroups()?1:0);
             
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();

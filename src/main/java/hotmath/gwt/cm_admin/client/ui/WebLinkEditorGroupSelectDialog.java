@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -15,19 +16,13 @@ import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
-import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
@@ -39,35 +34,15 @@ public class WebLinkEditorGroupSelectDialog extends GWindow {
     
     CheckBox allGroups;
     private WebLinkModel webLink;
-    public WebLinkEditorGroupSelectDialog(WebLinkModel link) {
+    private CallbackOnComplete callback;
+    public WebLinkEditorGroupSelectDialog(WebLinkModel link, CallbackOnComplete callbackOnComplete) {
         super(false);    
         this.webLink = link;
+        this.callback = callbackOnComplete;
         setPixelSize(250,  400);
         setHeadingText("Web Link Group Availability");
         
-        BorderLayoutContainer main = new BorderLayoutContainer();
-       
-        allGroups = new CheckBox();
-        allGroups.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
-                setupEnable();
-            }
-        });
-        FramedPanel frame = new FramedPanel();
-        frame.setHeaderVisible(false);
-        
-        FlowLayoutContainer flow = new FlowLayoutContainer();
-        flow.add(new MyFieldLabel(allGroups, "All Groups", 75, 10));
-        allGroups.setToolTip("If checked then all groups will utilize web link");
-        
-        allGroups.setValue(webLink.isAllGroups());
-        
-        frame.setWidget(flow);
-        main.setNorthWidget(frame, new BorderLayoutData(50));
-        main.setCenterWidget(createGroupsPanel());
-        setWidget(main);
-        
+        setWidget(createGroupsPanel());
         
         addButton(new TextButton("Apply", new SelectHandler() {
             @Override
@@ -83,20 +58,20 @@ public class WebLinkEditorGroupSelectDialog extends GWindow {
             }
         }));
         readGroupsFromServer();
-        setupEnable();
         setVisible(true);
     }
     
 
     protected void saveSelectedGroups() {
-        webLink.getLinkGroups().clear();
-        webLink.setAllGroups(allGroups.getValue());
         List<GroupInfoModel> sel = _grid4Groups.getSelectionModel().getSelectedItems();
         if(!webLink.isAllGroups() && sel.size() == 0) {
             CmMessageBox.showAlert("No groups selected.  Please either select All Groups or individual groups.");
             return;
         }
+        webLink.getLinkGroups().clear();
         webLink.getLinkGroups().addAll(sel);
+        
+        callback.isComplete();
         hide();
     }
 
@@ -129,18 +104,8 @@ public class WebLinkEditorGroupSelectDialog extends GWindow {
         ColumnModel<GroupInfoModel> cm = new ColumnModel<GroupInfoModel>(cols);
         ListStore<GroupInfoModel> store = new ListStore<GroupInfoModel> (groupProps.key());
         _grid4Groups = new Grid<GroupInfoModel>(store, cm);
-        _grid4Groups.setEnabled(false);
         _grid4Groups.getSelectionModel().setSelectionMode(SelectionMode.MULTI);
         return _grid4Groups;
-    }
-
-    private void setupEnable() {
-        if(allGroups.getValue()) {
-            _grid4Groups.setEnabled(false);
-        }
-        else {
-            _grid4Groups.setEnabled(true);
-        }
     }
     
     interface Grid4GroupProperties extends PropertyAccess<String> {

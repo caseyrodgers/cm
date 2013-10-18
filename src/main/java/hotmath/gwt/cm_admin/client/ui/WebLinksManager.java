@@ -40,7 +40,7 @@ public class WebLinksManager extends GWindow {
         super(true);
         this.adminId = adminId;
         setHeadingText("Web Links Manager");
-        setPixelSize(440,  300);
+        setPixelSize(500,  300);
         buildUi();
         setVisible(true);
         
@@ -131,9 +131,7 @@ public class WebLinksManager extends GWindow {
             @Override
             public void onSelect(SelectEvent event) {
                 WebLinkModel webLinkModel = new WebLinkModel(0,adminId, "New Web Link", "http://");
-                webLinkModel.setAlwaysAvailable(true);
                 new WebLinkEditorDialog(webLinkModel, new CallbackOnComplete() {
-                    
                     @Override
                     public void isComplete() {
                         readWebLinksFromServer(adminId);
