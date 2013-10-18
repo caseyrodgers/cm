@@ -634,12 +634,15 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
                 String n1 = o1.getName();
             	String n2 = o2.getName();
             	if(n1 == null && n2 != null) {
+            		__logger.warn("getReportCCSSCoverage: compare(): null standard name"); 
             	    return 1;
             	}
             	else if(n2 == null && n1 != null) {
+            		__logger.warn("getReportCCSSCoverage: compare(): null standard name"); 
             	    return -1;
             	}
             	else if(n1 == null && n2 == null) {
+            		__logger.warn("getReportCCSSCoverage: compare(): null standard names"); 
             	    return 0;
             	}
             	else {
@@ -752,9 +755,9 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
 
     
     
-    /**     •  Name: Group Usage
-    •  Tooltip: Shows the usage of optional learning resources for groups with at least one active student.
-    •  Sample report
+    /** Name: Group Usage
+        Tooltip: Shows the usage of optional learning resources for groups with at least one active student.
+        Sample report
 
         Group name  Active Videos Games Activities Flash Cards
         7th-Graders <n> <n> <n> <n> <n>
