@@ -11,17 +11,21 @@ public class WebLinkModel implements Response {
     private String url;
     private String name;
     private int adminId;
+    private String comments;
+
+
     private List<LessonModel> linkTargets = new ArrayList<LessonModel>();
     private List<GroupInfoModel> linkGroups = new ArrayList<GroupInfoModel>();
     private int linkId;
 
     public WebLinkModel() {}
     
-    public WebLinkModel(int linkId, int adminId, String name, String url) {
+    public WebLinkModel(int linkId, int adminId, String name, String url, String comments) {
         this.linkId = linkId;
         this.adminId = adminId;
         this.name = name;
         this.url = url;
+        this.comments = comments;
     }
     
     public List<GroupInfoModel> getLinkGroups() {
@@ -83,15 +87,23 @@ public class WebLinkModel implements Response {
         return linkGroups.size() == 0;
     }
 
-    public boolean getAlwaysAvailable() {
-        return linkTargets.size() == 0;
+    public boolean isAllLessons() {
+        return (linkTargets.size() == 0 || linkTargets.get(0).getLessonName().toLowerCase().equals("all lessons"));
     }
-    
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
 
     @Override
     public String toString() {
-        return "WebLinkModel [url=" + url + ", name=" + name + ", adminId=" + adminId + ", linkTargets=" + linkTargets + ", linkGroups=" + linkGroups
-                + ", linkId=" + linkId + "]";
+        return "WebLinkModel [url=" + url + ", name=" + name + ", adminId=" + adminId + ", comments=" + comments + ", linkTargets=" + linkTargets
+                + ", linkGroups=" + linkGroups + ", linkId=" + linkId + "]";
     }
     
 }

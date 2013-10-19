@@ -22,6 +22,7 @@ import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -35,6 +36,7 @@ import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
+import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
@@ -46,6 +48,7 @@ public class WebLinkEditorDialog extends GWindow {
     private TextField nameField;
     private ContentPanel _linkTargetPanel;
     private TextField urlField;
+    private TextArea commentsField = new TextArea();
     private WebLinkModel webLinkModel;
     private CallbackOnComplete callbackOnComplete;
     private ContentPanel _groupsPanel;
@@ -55,12 +58,12 @@ public class WebLinkEditorDialog extends GWindow {
         this.callbackOnComplete = callbackOnComplete;
 
         this.webLinkModel = webLinkModel;
-        setPixelSize(600, 440);
+        setPixelSize(550, 440);
         setMaximizable(true);
 
         setHeadingText("Web Link Editor: " + webLinkModel.getName());
         _main = new BorderLayoutContainer();
-        BorderLayoutData bld = new BorderLayoutData(90);
+        BorderLayoutData bld = new BorderLayoutData(115);
         // bld.setSplit(true);
 
         FramedPanel frame = new FramedPanel();
@@ -68,19 +71,23 @@ public class WebLinkEditorDialog extends GWindow {
         nameField = new TextField();
         nameField.setValue(webLinkModel.getName());
         urlField = new TextField();
-        urlField.setWidth(350);
+        urlField.setWidth(400);
         urlField.setValue(webLinkModel.getUrl());
 
+        commentsField.setWidth(400);
+        commentsField.setValue(webLinkModel.getComments());
+        
         FlowLayoutContainer flow = new FlowLayoutContainer();
         flow.add(new FieldLabel(nameField, "Web Link Name"));
         flow.add(new FieldLabel(urlField, "URL"));
+        flow.add(new FieldLabel(commentsField,"Comments"));
 
         frame.setWidget(flow);
 
         _main.setNorthWidget(frame, bld);
 
         _linkTargetPanel = new ContentPanel();
-        _linkTargetPanel.setWidget(createGrid(webLinkModel));
+        _linkTargetPanel.setWidget(createTargetLessonGrid(webLinkModel));
         _linkTargetPanel.addTool(createAddTargetsButton());
         _linkTargetPanel.addTool(createDeleteTargetButton());
         _linkTargetPanel.getHeader().setText("Lessons Link Will Be Shown");
@@ -161,6 +168,7 @@ public class WebLinkEditorDialog extends GWindow {
         
         webLinkModel.setName(name);
         webLinkModel.setUrl(url);
+        webLinkModel.setComments(commentsField.getValue());
 
         webLinkModel.getLinkTargets().clear();
         webLinkModel.getLinkTargets().addAll(_grid4LessonTarget.getStore().getAll());
@@ -214,6 +222,8 @@ public class WebLinkEditorDialog extends GWindow {
                         _grid4LessonTarget.getSelectionModel().select(_grid4LessonTarget.getStore().get(0), false);
                     }
                 }
+                
+                checkEmptyTargetGrid();
             }
         });
         return btn;
@@ -252,15 +262,15 @@ public class WebLinkEditorDialog extends GWindow {
     Grid4LessonsProperties props = GWT.create(Grid4LessonsProperties.class);
     Grid<LessonModel> _grid4LessonTarget;
 
-    private IsWidget createGrid(WebLinkModel webLinkModel) {
+    private IsWidget createTargetLessonGrid(WebLinkModel webLinkModel) {
         List<ColumnConfig<LessonModel, ?>> cols = new ArrayList<ColumnConfig<LessonModel, ?>>();
-        cols.add(new ColumnConfig<LessonModel, String>(props.lessonName(), 290, "Lesson Name"));
+        cols.add(new ColumnConfig<LessonModel, String>(props.lessonName(), 250, "Lesson Name"));
         ColumnModel<LessonModel> cm = new ColumnModel<LessonModel>(cols);
         ListStore<LessonModel> store = new ListStore<LessonModel>(props.key());
         store.addAll(webLinkModel.getLinkTargets());
         
         _grid4LessonTarget = new Grid<LessonModel>(store, cm);
-        
+        _grid4LessonTarget.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         checkEmptyTargetGrid();
         return _grid4LessonTarget;
     }
@@ -279,7 +289,7 @@ public class WebLinkEditorDialog extends GWindow {
     }
 
     public static void startTest() {
-        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org");
+        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org", "The Comment");
         new WebLinkEditorDialog(model, new CallbackOnComplete() {
             @Override
             public void isComplete() {

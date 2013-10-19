@@ -37,7 +37,7 @@ public class WebLinkDao  extends SimpleJdbcDaoSupport {
          */
         List<WebLinkModel> activeLinks = new ArrayList<WebLinkModel>();
         for(WebLinkModel l: links) {
-            if(l.getAlwaysAvailable() && l.isAllGroups() || isWebLinkActive(l, topic, groupId) ) {
+            if(l.isAllLessons() && l.isAllGroups() || isWebLinkActive(l, topic, groupId) ) {
                 activeLinks.add(l);
             }
         }
@@ -45,33 +45,71 @@ public class WebLinkDao  extends SimpleJdbcDaoSupport {
     }
 
     private boolean isWebLinkActive(WebLinkModel l, String topic, int groupId) {
-        boolean isActive=false;
+        boolean isStillActive=false;
+        
+        // check groups first
         if(l.isAllGroups()) {
-            isActive = true;
+            isStillActive = true;
         }
         else if( isWebLinkActiveInGroup(l, groupId) ) {
-            isActive = true;
+            isStillActive = true;
         }
         
-        if(isActive) {
+        // check lesson if still acive
+        if(isStillActive) {
             // made it through group check.
-            if(!l.getAlwaysAvailable()) {
-                
+            if(!l.isAllLessons()) {
                 if(!isWebLinkActiveInLesson(l, topic)) {
-                    isActive = false;
+                    isStillActive = false;
                 }
             }
         }
         
-        return isActive;
+        return isStillActive;
     }
 
     private boolean isWebLinkActiveInLesson(WebLinkModel l, String topic) {
         for(LessonModel lm: l.getLinkTargets()) {
-            if(lm.getLessonName().equals(topic)) {
+            
+            // is a subject match only
+            if(lm.getLessonFile() == null) {
+                if(isWebLinkActiveInLessonSubject(lm.getSubject(), topic)) {
+                    return true;
+                }
+            }
+            else if(lm.getLessonName().equals(topic)) {
                 return true;
             }
         }
+        return false;
+    }
+
+    /** Is topic in subject 'subject'.
+     * 
+     * @param subject
+     * @param topic
+     * @return
+     */
+    private boolean isWebLinkActiveInLessonSubject(String subject, String topic) {
+        String sql="select distinct s.name as subject " +
+                   " from   HA_PROGRAM_LESSONS_static ls " +
+                   " JOIN SUBJECT s on s.subj_id = ls.subject " +
+                   " where lesson = ? " +
+                   " order by grade_level "; 
+        List<String> subjects = getJdbcTemplate().query(sql, new Object[] { topic }, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("subject");
+            }
+        });    
+        if(subjects.size() > 0) {
+            for(String sub: subjects) {
+                if(sub != null && sub.equalsIgnoreCase(subject)) {
+                    return true;
+                }
+            }
+        }
+        
         return false;
     }
 
@@ -90,7 +128,7 @@ public class WebLinkDao  extends SimpleJdbcDaoSupport {
         List<WebLinkModel> links = getJdbcTemplate().query(sql, new Object[] { adminId }, new RowMapper<WebLinkModel>() {
             @Override
             public WebLinkModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-                WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"));
+                WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"), rs.getString("comments"));
                 return wlm;
             }
         });    

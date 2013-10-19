@@ -26,6 +26,7 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
                 return new RpcData("status=OK");
                 
                 
+            case UPDATE:
             case ADD:
                 deleteWebLink(conn, action.getWebLink());
                 addWebLink(conn, action.getWebLink());
@@ -67,11 +68,12 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
     private void addWebLink(final Connection conn, WebLinkModel link) throws Exception {
         PreparedStatement ps=null;
         try {
-            String sql = "insert into CM_WEBLINK(admin_id, name, url )values(?,?,?)";
+            String sql = "insert into CM_WEBLINK(admin_id, name, url, comments )values(?,?,?,?)";
             ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, link.getAdminId());
             ps.setString(2, link.getName());
             ps.setString(3,  link.getUrl());
+            ps.setString(4, link.getComments());
             
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
@@ -81,7 +83,7 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
             }
             ps.close();
             
-            if(!link.getAlwaysAvailable()) {
+            if(!link.isAllLessons()) {
                 sql = "insert into CM_WEBLINK_LESSONS(link_id, lesson_name, lesson_file, lesson_subject)values(?,?,?,?)";
                 ps = conn.prepareStatement(sql);
                 for(LessonModel lm: link.getLinkTargets()) {

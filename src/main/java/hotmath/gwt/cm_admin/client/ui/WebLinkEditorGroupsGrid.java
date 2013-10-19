@@ -46,6 +46,7 @@ public class WebLinkEditorGroupsGrid extends ContentPanel {
 
         store.addAll(webLinkModel.getLinkGroups());
         _grid4Groups = new Grid<GroupInfoModel>(store, cm);
+        _grid4Groups.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         checkForEmptyStore();
 
         _grid4Groups.getSelectionModel().setSelectionMode(SelectionMode.MULTI);

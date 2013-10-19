@@ -325,7 +325,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 { null, CmResourceType.PRACTICE.label(), "Practice problems you must complete before advancing" },
                 { "Extra Practice", CmResourceType.CMEXTRA.label(), "More practice" },
                 { "Quiz Results", CmResourceType.RESULTS.label(), "Quiz results"  },
-                { "Web Link", CmResourceType.WEBLINK.label(), "External Web Link" }};
+                { "Web Links", CmResourceType.WEBLINK.label(), "External Web Link" }};
 
         for (int i = 0; i < types.length; i++) {
             String type[] = types[i];

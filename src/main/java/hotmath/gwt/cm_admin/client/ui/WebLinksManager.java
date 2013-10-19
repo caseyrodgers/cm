@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.client.ui.GroupCombo.Callback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
@@ -8,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksForAdminAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
@@ -20,6 +22,7 @@ import java.util.List;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -36,6 +39,7 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 public class WebLinksManager extends GWindow {
     
     int adminId ;
+    protected CmList<WebLinkModel> _allLinks;
     public WebLinksManager(int adminId) {
         super(true);
         this.adminId = adminId;
@@ -60,16 +64,26 @@ public class WebLinksManager extends GWindow {
             @Override
             public void oncapture(CmList<WebLinkModel> links) {
                 CmBusyManager.setBusy(false);
+                _allLinks = links;
                 _grid.getStore().clear();
-                _grid.getStore().addAll(links);
+                _grid.getStore().addAll(_allLinks);
             }
         }.attempt();
     }
 
     Grid<WebLinkModel> _grid; 
     GridProperties gridProps = GWT.create(GridProperties.class);
+    private GroupCombo _groupCombo;
     private void buildUi() {
-
+        _groupCombo = new GroupCombo(this.adminId,new Callback() {
+            
+            @Override
+            public void groupSelected(GroupInfoModel group) {
+                filterByGroup(group);
+            }
+        });
+        
+        addTool(_groupCombo.asWidget());
         addTool(createAddButton());
         addTool(createDelButton());
         addTool(createEditButton());
@@ -79,7 +93,7 @@ public class WebLinksManager extends GWindow {
         cols.add(new ColumnConfig<WebLinkModel, String>(gridProps.url(), 240, "URL"));
         ColumnModel<WebLinkModel> cm = new ColumnModel<WebLinkModel>(cols);
         _grid = new Grid<WebLinkModel>(store,cm);
-        
+        _grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         _grid.addCellDoubleClickHandler(new CellDoubleClickHandler() {
             @Override
             public void onCellClick(CellDoubleClickEvent event) {
@@ -90,6 +104,27 @@ public class WebLinksManager extends GWindow {
     }
 
     
+    protected void filterByGroup(GroupInfoModel group) {
+        List<WebLinkModel> filtered = null;
+        
+        if(group.getId() == 0) {
+            filtered = _allLinks;
+        }
+        else {
+            filtered = new ArrayList<WebLinkModel>();
+            for(WebLinkModel w: _allLinks) {
+                for(GroupInfoModel gm: w.getLinkGroups()) {
+                    if(gm.getId() == group.getId()) {
+                        filtered.add(w);
+                        break;
+                    }
+                }
+            }
+        }
+        _grid.getStore().clear();
+        _grid.getStore().addAll(filtered);
+    }
+
     private Widget createEditButton() {
         TextButton button = new TextButton("Edit", new SelectHandler() {
             @Override
@@ -130,7 +165,7 @@ public class WebLinksManager extends GWindow {
         TextButton button = new TextButton("Add", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                WebLinkModel webLinkModel = new WebLinkModel(0,adminId, "New Web Link", "http://");
+                WebLinkModel webLinkModel = new WebLinkModel(0,adminId, "New Web Link", "http://", "");
                 new WebLinkEditorDialog(webLinkModel, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {

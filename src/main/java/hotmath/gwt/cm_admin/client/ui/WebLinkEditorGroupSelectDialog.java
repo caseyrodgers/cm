@@ -65,7 +65,7 @@ public class WebLinkEditorGroupSelectDialog extends GWindow {
     protected void saveSelectedGroups() {
         List<GroupInfoModel> sel = _grid4Groups.getSelectionModel().getSelectedItems();
         if(!webLink.isAllGroups() && sel.size() == 0) {
-            CmMessageBox.showAlert("No groups selected.  Please either select All Groups or individual groups.");
+            CmMessageBox.showAlert("No groups selected.  Please either select all groups or individual groups.");
             return;
         }
         webLink.getLinkGroups().clear();
