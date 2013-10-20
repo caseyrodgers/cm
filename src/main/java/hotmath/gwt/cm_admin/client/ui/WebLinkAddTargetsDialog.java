@@ -30,7 +30,7 @@ public class WebLinkAddTargetsDialog extends GWindow {
 
     static private WebLinkAddTargetsDialog __instance;
     static public WebLinkAddTargetsDialog getSharedInstance(Callback callback) {
-        if(true || __instance == null) {
+        if(__instance == null) {
             __instance = new WebLinkAddTargetsDialog();
         }
         __instance.setCallback(callback);
