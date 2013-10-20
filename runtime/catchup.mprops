@@ -4822,10 +4822,10 @@ and a.assign_key = ?
         
 .key=GET_LESSON_TREE
 
-select distinct s.name as subject,
+ select distinct s.name as subject,
                 lesson,
                 file
-from   HA_PROGRAM_LESSONS l
+from   HA_PROGRAM_LESSONS_static l
   LEFT JOIN SUBJECT  s on s.subj_id = l.subject
 where  subject is not null
        and subject > ''

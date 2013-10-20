@@ -90,7 +90,7 @@ public class WebLinkEditorDialog extends GWindow {
         _linkTargetPanel.setWidget(createTargetLessonGrid(webLinkModel));
         _linkTargetPanel.addTool(createAddTargetsButton());
         _linkTargetPanel.addTool(createDeleteTargetButton());
-        _linkTargetPanel.getHeader().setText("Lessons Link Will Be Shown");
+        _linkTargetPanel.getHeader().setText("Lesson(s) Selection");
 
         // _linkTargetPanel.setToolTip("Web link will be available on these lessons");
 
@@ -103,7 +103,7 @@ public class WebLinkEditorDialog extends GWindow {
         _groupsPanel.setWidget(createGroupsGrid(webLinkModel));
         _groupsPanel.addTool(createAddGroupButton());
         _groupsPanel.addTool(createDeleteGroupButton());
-        _groupsPanel.getHeader().setText("Groups Link Will Be Shown");
+        _groupsPanel.getHeader().setText("Group(s) Selection");
 
         center.setCenterWidget(_groupsPanel);
         _main.setCenterWidget(center);

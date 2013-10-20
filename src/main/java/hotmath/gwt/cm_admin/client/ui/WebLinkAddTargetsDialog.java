@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
 import hotmath.gwt.cm_rpc.client.rpc.GetLessonTreeAction;
@@ -15,15 +14,15 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.TreeStore;
+import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.CheckChangeEvent;
 import com.sencha.gxt.widget.core.client.event.CheckChangeEvent.CheckChangeHandler;
-import com.sencha.gxt.widget.core.client.event.CheckChangedEvent;
-import com.sencha.gxt.widget.core.client.event.CheckChangedEvent.CheckChangedHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.tree.Tree;
@@ -33,7 +32,7 @@ public class WebLinkAddTargetsDialog extends GWindow {
 
     static private WebLinkAddTargetsDialog __instance;
     static public WebLinkAddTargetsDialog getSharedInstance(Callback callback) {
-        if(__instance == null) {
+        if(true || __instance == null) {
             __instance = new WebLinkAddTargetsDialog();
         }
         __instance.setCallback(callback);
@@ -48,28 +47,28 @@ public class WebLinkAddTargetsDialog extends GWindow {
         void targetsAdded(List<LessonModel> targetResults);
     }
     
+    ContentPanel _main;
     private WebLinkAddTargetsDialog() {
         super(false);
-        this.callback = callback;
-        setHeadingText("Add Web Link Targets");
+        setHeadingText("Select Lesson(s)");
 
         setModal(true);
         setMaximizable(true);
         
-        addTool(new TextButton("Collapse All", new SelectHandler() {
+        addTool(new TextButton("Collapse", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 _tree.collapseAll();
             }
         }));
-        addTool(new TextButton("Exapand All", new SelectHandler() {
+        addTool(new TextButton("Expand", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 _tree.expandAll();
             }
         }));
 
-        addButton(new TextButton("Add Checked Target Lessons", new SelectHandler() {
+        addButton(new TextButton("Add", new SelectHandler() {
             
             @Override
             public void onSelect(SelectEvent event) {
@@ -78,8 +77,11 @@ public class WebLinkAddTargetsDialog extends GWindow {
         }));
         addCloseButton();
         
+        _main = new ContentPanel();
+        _main.setHeaderVisible(false);
+        _main.setWidget(new DefaultGxtLoadingPanel());
+        setWidget(_main);
         
-        setWidget(new DefaultGxtLoadingPanel());
         getProgramListingRPC();
         setVisible(true);
     }
@@ -166,6 +168,10 @@ public class WebLinkAddTargetsDialog extends GWindow {
             subjLessons.add(lesson);
         }
         
+        if(subjLessons.size() > 0) {
+            writeNewTreeNode(subjLessons);
+        }
+        
          _tree = new Tree<BaseDto, String>(_treeStore, new ValueProvider<BaseDto, String>() {
             
             @Override
@@ -196,7 +202,7 @@ public class WebLinkAddTargetsDialog extends GWindow {
             }
         });
 
-         setWidget(_tree);
+         _main.setWidget(_tree);
          forceLayout();
     }
     
