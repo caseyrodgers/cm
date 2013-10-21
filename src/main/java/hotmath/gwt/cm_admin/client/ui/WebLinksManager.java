@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -28,7 +29,6 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.button.ToolButton;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -83,11 +83,11 @@ public class WebLinksManager extends GWindow {
                 filterByGroup(group);
             }
         });
+        addTool(_groupCombo.asWidget());
+        addTool(new HTML("&nbsp;&nbsp;"));
         addTool(createAddButton());
         addTool(createDelButton());
         addTool(createEditButton());
-        addTool(_groupCombo.asWidget());
-        addTool(new ToolButton(ToolButton.GEAR));
         
         //_groupCombo.asWidget().getElement().setAttribute("style",  "left: 20px");
         //getButtonBar().add(_groupCombo.asWidget());

@@ -53,6 +53,14 @@ public class WebLinkAddTargetsDialog extends GWindow {
         setModal(true);
         setMaximizable(true);
         
+        addTool(new TextButton("Select All", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                _tree.collapseAll();
+            }
+        }));
+
+
         addTool(new TextButton("Collapse", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
