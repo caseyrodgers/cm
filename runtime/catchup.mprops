@@ -4843,3 +4843,19 @@ where  subject is not null
        and subject > ''
 order  by s.grade_level,
           lesson 
+
+          
+          
+          
+.key=RESET_USER_LESSON 
+
+delete
+from HA_SOLUTION_CONTEXT
+where run_id = ?
+and pid in (
+	select distinct pid
+	from HA_TEST_RUN_LESSON l
+	   JOIN HA_TEST_RUN_LESSON_PID p on p.lid = l.id
+	where l.run_id = ?
+	and lesson_number = ?
+)

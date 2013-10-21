@@ -129,13 +129,8 @@ public class HelpWindow extends GWindow {
         });
         toolBar.add(btnFeedback);
 
-        TextButton btnComputerCheck = new MyOptionButton("Computer Check", "Verify your computer can run Catchup Math", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                new ComputerCheckWindow();
-            }
-        });
-        toolBar.add(btnComputerCheck);
+        
+    
 
         /** Only the owner of the account has access to history */
         if (!UserInfo.getInstance().isActiveUser())
@@ -145,6 +140,27 @@ public class HelpWindow extends GWindow {
         supportBtn.addStyleName("button");
         toolBar.add(supportBtn);
 	
+        
+
+        if(CmShared.getQueryParameter("debug") != null) {
+            
+            toolBar.add(new MyOptionButton("Reset Lesson", "Reset the problems for the current lesson.", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    new ResetLessonDialog(UserInfo.getInstance().getUid());
+                }
+            }));
+            
+            TextButton btnComputerCheck = new MyOptionButton("Computer Check", "Verify your computer can run Catchup Math", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    new ComputerCheckWindow();
+                }
+            });
+            toolBar.add(btnComputerCheck);
+        }
+        
+        
         flowContainer.add(toolBar);
         
         fs.setWidget(flowContainer);
