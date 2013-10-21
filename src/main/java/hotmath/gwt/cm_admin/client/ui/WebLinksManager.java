@@ -28,6 +28,7 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.button.ToolButton;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -41,7 +42,7 @@ public class WebLinksManager extends GWindow {
     int adminId ;
     protected CmList<WebLinkModel> _allLinks;
     public WebLinksManager(int adminId) {
-        super(true);
+        super(false);
         this.adminId = adminId;
         setHeadingText("Web Links Manager");
         setPixelSize(500,  300);
@@ -82,11 +83,17 @@ public class WebLinksManager extends GWindow {
                 filterByGroup(group);
             }
         });
-        
-        addTool(_groupCombo.asWidget());
         addTool(createAddButton());
         addTool(createDelButton());
         addTool(createEditButton());
+        addTool(_groupCombo.asWidget());
+        addTool(new ToolButton(ToolButton.GEAR));
+        
+        //_groupCombo.asWidget().getElement().setAttribute("style",  "left: 20px");
+        //getButtonBar().add(_groupCombo.asWidget());
+        //addButton(_groupCombo.asWidget());
+        addCloseButton();
+
         ListStore<WebLinkModel> store = new ListStore<WebLinkModel>(gridProps.id());
         List<ColumnConfig<WebLinkModel, ?>> cols = new ArrayList<ColumnConfig<WebLinkModel, ?>>();
         cols.add(new ColumnConfig<WebLinkModel, String>(gridProps.name(), 160, "Name"));
