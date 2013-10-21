@@ -4605,7 +4605,19 @@ FROM   common_core_standards ccs
 WHERE  ccs.standard_name_new in ( $$NAME_LIST$$ )
 order by ccs.standard_name_new
 
-#### 
+####
+.key=GET_CCSS_COVERAGE_FOR_ASSIGNMENT
+
+SELECT DISTINCT cap.lesson, ccs.standard_name_new, ccs.summary
+ FROM   CM_ASSIGNMENT_PIDS cap
+ JOIN   inmh_standard ins
+   ON   ins.topic = cap.lesson_file 
+ JOIN   common_core_standards ccs
+   ON   ccs.standard_name_new = ins.standard_name_new
+WHERE   cap.assign_key = ?
+ORDER BY cap.lesson, ccs.standard_name_new
+
+####
 .key=GET_CCSS_DETAIL_FOR_ASSIGNMENT
 
 SELECT DISTINCT ccs.standard_name as original_name, ccs.standard_name_new as name, ccs.level_name, ccs.domain_name, ccs.summary, ccs.description
@@ -4822,7 +4834,7 @@ and a.assign_key = ?
         
 .key=GET_LESSON_TREE
 
- select distinct s.name as subject,
+select distinct s.name as subject,
                 lesson,
                 file
 from   HA_PROGRAM_LESSONS_static l

@@ -37,6 +37,7 @@ public class CCSSCoverageDataCommand implements ActionHandler<CCSSCoverageDataAc
             }
             int adminId = action.getAdminId();
             int groupId = action.getUID();
+            int assignKey = action.getAssignKey();
 
             CCSSReportDao crDao = CCSSReportDao.getInstance();
             switch(action.getType()) {
@@ -82,6 +83,10 @@ public class CCSSCoverageDataCommand implements ActionHandler<CCSSCoverageDataAc
 
                 case GROUP_LT_25_PERCENT:
                 	list = toCmList(crDao.getCCSSGroupCoverageData(adminId, groupId, fromDate, toDate, 0, 24));
+                    break;
+
+                case ASSIGNMENT:
+                	list = toCmList(crDao.getCCSSCoverageForAssignment(assignKey));
                     break;
 
                 default:
