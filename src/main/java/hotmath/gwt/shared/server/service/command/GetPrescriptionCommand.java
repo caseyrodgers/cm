@@ -243,7 +243,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
          * 
          */
         
-        List<WebLinkModel> webLinks = WebLinkDao.getInstance().getWebLinksFor(cmProgram.getStudent().getAdminUid(),cmProgram.getStudent().getGroupId(), presData.getCurrSession().getTopic());
+        List<WebLinkModel> webLinks = WebLinkDao.getInstance().getWebLinksFor(cmProgram.getStudent().getUid(),cmProgram.getStudent().getAdminUid(),cmProgram.getStudent().getGroupId(), presData.getCurrSession().getTopic());
         if(webLinks.size() > 0) {
             PrescriptionSessionDataResource customResource = new PrescriptionSessionDataResource();
             customResource.setType(CmResourceType.WEBLINK);

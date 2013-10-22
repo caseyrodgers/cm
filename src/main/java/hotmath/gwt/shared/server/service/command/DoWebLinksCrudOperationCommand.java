@@ -39,24 +39,22 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
     private void deleteWebLink(final Connection conn, WebLinkModel link) throws Exception {
         PreparedStatement ps=null;
         try {
-            String sql = "delete from CM_WEBLINK_LESSONS where link_id in (select id from CM_WEBLINK where admin_id = ? and name = ?)";
+            String sql = "delete from CM_WEBLINK_LESSONS where link_id = ?";
             ps = conn.prepareStatement(sql);
-            ps.setInt(1,  link.getAdminId());
-            ps.setString(2,  link.getName());
+            ps.setInt(1,  link.getLinkId());
             ps.executeUpdate();
             ps.close();
             
-            sql = "delete from CM_WEBLINK_GROUPS where link_id in (select id from CM_WEBLINK where admin_id = ? and name = ?)";
+            sql = "delete from CM_WEBLINK_GROUPS where link_id = ?";
             ps = conn.prepareStatement(sql);
-            ps.setInt(1,  link.getAdminId());
-            ps.setString(2,  link.getName());
+            ps.setInt(1,  link.getLinkId());
+            
             ps.executeUpdate();
             ps.close();
 
-            sql = "delete from CM_WEBLINK where admin_id = ? and name = ?";
+            sql = "delete from CM_WEBLINK where id = ?";
             ps = conn.prepareStatement(sql);
-            ps.setInt(1, link.getAdminId());
-            ps.setString(2, link.getName());
+            ps.setInt(1,  link.getLinkId());
             
             ps.executeUpdate();
         }
@@ -68,12 +66,13 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
     private void addWebLink(final Connection conn, WebLinkModel link) throws Exception {
         PreparedStatement ps=null;
         try {
-            String sql = "insert into CM_WEBLINK(admin_id, name, url, comments )values(?,?,?,?)";
+            String sql = "insert into CM_WEBLINK(admin_id, name, url, comments, works_on_device )values(?,?,?,?,?)";
             ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, link.getAdminId());
             ps.setString(2, link.getName());
             ps.setString(3,  link.getUrl());
             ps.setString(4, link.getComments());
+            ps.setInt(5, link.getAvailableWhen().ordinal());
             
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();

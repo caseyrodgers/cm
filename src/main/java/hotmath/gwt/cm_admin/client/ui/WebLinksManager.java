@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_admin.client.ui.GroupCombo.Callback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
+import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction.CrudOperation;
 import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksForAdminAction;
@@ -97,7 +98,7 @@ public class WebLinksManager extends GWindow {
         ListStore<WebLinkModel> store = new ListStore<WebLinkModel>(gridProps.id());
         List<ColumnConfig<WebLinkModel, ?>> cols = new ArrayList<ColumnConfig<WebLinkModel, ?>>();
         cols.add(new ColumnConfig<WebLinkModel, String>(gridProps.name(), 160, "Name"));
-        cols.add(new ColumnConfig<WebLinkModel, String>(gridProps.url(), 240, "URL"));
+        cols.add(new ColumnConfig<WebLinkModel, String>(gridProps.url(), 300, "URL"));
         ColumnModel<WebLinkModel> cm = new ColumnModel<WebLinkModel>(cols);
         _grid = new Grid<WebLinkModel>(store,cm);
         _grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -172,7 +173,7 @@ public class WebLinksManager extends GWindow {
         TextButton button = new TextButton("Add", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                WebLinkModel webLinkModel = new WebLinkModel(0,adminId, "New Web Link", "http://", "");
+                WebLinkModel webLinkModel = new WebLinkModel(0,adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE);
                 new WebLinkEditorDialog(webLinkModel, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {

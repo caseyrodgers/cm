@@ -12,22 +12,33 @@ public class WebLinkModel implements Response {
     private String name;
     private int adminId;
     private String comments;
-
+    
+    public enum AvailableOn {DESKTOP_AND_MOBILE, DESKTOP_ONLY, MOBILE_ONLY};
 
     private List<LessonModel> linkTargets = new ArrayList<LessonModel>();
     private List<GroupInfoModel> linkGroups = new ArrayList<GroupInfoModel>();
     private int linkId;
+    private AvailableOn availableWhen;
 
     public WebLinkModel() {}
     
-    public WebLinkModel(int linkId, int adminId, String name, String url, String comments) {
+    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available) {
         this.linkId = linkId;
         this.adminId = adminId;
         this.name = name;
         this.url = url;
         this.comments = comments;
+        this.availableWhen = available;
     }
     
+    public AvailableOn getAvailableWhen() {
+        return availableWhen;
+    }
+
+    public void setAvailableWhen(AvailableOn availableWhen) {
+        this.availableWhen = availableWhen;
+    }
+
     public List<GroupInfoModel> getLinkGroups() {
         return linkGroups;
     }

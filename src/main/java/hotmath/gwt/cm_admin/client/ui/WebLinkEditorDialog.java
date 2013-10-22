@@ -4,6 +4,7 @@ import hotmath.gwt.cm_admin.client.ui.WebLinkAddTargetsDialog.Callback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
+import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction.CrudOperation;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -22,8 +23,10 @@ import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
@@ -35,6 +38,7 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderL
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
@@ -52,6 +56,7 @@ public class WebLinkEditorDialog extends GWindow {
     private WebLinkModel webLinkModel;
     private CallbackOnComplete callbackOnComplete;
     private ContentPanel _groupsPanel;
+    private ComboBox<AvailableDevice> _availableDevice;
 
     public WebLinkEditorDialog(WebLinkModel webLinkModel, CallbackOnComplete callbackOnComplete) {
         super(false);
@@ -63,7 +68,7 @@ public class WebLinkEditorDialog extends GWindow {
 
         setHeadingText("Web Link Editor: " + webLinkModel.getName());
         _main = new BorderLayoutContainer();
-        BorderLayoutData bld = new BorderLayoutData(115);
+        BorderLayoutData bld = new BorderLayoutData(145);
         // bld.setSplit(true);
 
         FramedPanel frame = new FramedPanel();
@@ -76,11 +81,23 @@ public class WebLinkEditorDialog extends GWindow {
 
         commentsField.setWidth(400);
         commentsField.setValue(webLinkModel.getComments());
+
+        
+        _availableDevice = createAvailableCombo();
+        
+        AvailableOn av = webLinkModel.getAvailableWhen();
+        int ordinal = av.ordinal();
+        _availableDevice.setValue(_availableDevice.getStore().get(ordinal));
+
         
         FlowLayoutContainer flow = new FlowLayoutContainer();
-        flow.add(new FieldLabel(nameField, "Web Link Name"));
+        flow.add(new MyFieldLabel(nameField, "Web Link Name",100,200));
         flow.add(new FieldLabel(urlField, "URL"));
         flow.add(new FieldLabel(commentsField,"Comments"));
+        flow.add(new FieldLabel(_availableDevice, "Available On"));
+        
+        
+        
 
         frame.setWidget(flow);
 
@@ -121,6 +138,30 @@ public class WebLinkEditorDialog extends GWindow {
         setEnabledOnOff();
 
         setVisible(true);
+    }
+
+    interface AvailDeviceProps extends PropertyAccess<String> {
+
+        LabelProvider<AvailableDevice> device();
+        @Path("id")
+        ModelKeyProvider<AvailableDevice> key();
+    }
+    
+    private ComboBox<AvailableDevice> createAvailableCombo() {
+        AvailDeviceProps props = GWT.create(AvailDeviceProps.class);
+        ListStore<AvailableDevice> store = new ListStore<AvailableDevice>(props.key());
+        ComboBox<AvailableDevice> combo = new ComboBox<AvailableDevice>(store, props.device());
+        
+        combo.getStore().add(new AvailableDevice("Desktop and Mobile",AvailableOn.DESKTOP_AND_MOBILE));
+        combo.getStore().add(new AvailableDevice("Desktop Only", AvailableOn.DESKTOP_ONLY));
+        combo.getStore().add(new AvailableDevice("Mobile Only", AvailableOn.MOBILE_ONLY));
+        
+        combo.setAllowBlank(false);
+        combo.setForceSelection(true);
+        combo.setTriggerAction(TriggerAction.ALL);
+        
+        combo.setToolTip("On what type of devices should this web link be shown?");
+        return combo;
     }
 
     private Widget createDeleteGroupButton() {
@@ -175,6 +216,9 @@ public class WebLinkEditorDialog extends GWindow {
 
         webLinkModel.getLinkGroups().clear();
         webLinkModel.getLinkGroups().addAll(_gridGroups._grid4Groups.getStore().getAll());
+        
+        webLinkModel.setAvailableWhen(_availableDevice.getValue().getAvailWhen());
+        
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
@@ -289,7 +333,7 @@ public class WebLinkEditorDialog extends GWindow {
     }
 
     public static void startTest() {
-        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org", "The Comment");
+        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org", "The Comment", AvailableOn.DESKTOP_AND_MOBILE);
         new WebLinkEditorDialog(model, new CallbackOnComplete() {
             @Override
             public void isComplete() {
@@ -297,4 +341,31 @@ public class WebLinkEditorDialog extends GWindow {
             }
         });
     }
+    
+    class AvailableDevice {
+        String device;
+        private int id;
+        private AvailableOn availableWhen;
+        
+        public AvailableDevice(String label, AvailableOn available) {
+            this.availableWhen = available;
+            device = label;
+            id = available.ordinal();
+        }
+        
+        public AvailableOn getAvailWhen() {
+            // TODO Auto-generated method stub
+            return availableWhen;
+        }
+
+        public String getDevice() {
+            return device;
+        }
+        
+        public int getId() {
+            return this.id;
+        }
+    }
 }
+
+
