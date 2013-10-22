@@ -13,7 +13,6 @@ public class CCSSCoverageDataAction implements Action<CmList<CCSSCoverageData>> 
 	ReportType type;
     Integer uid;
     Integer adminId;
-    Integer assignKey;
     Date from;
     Date to;
     
@@ -49,14 +48,6 @@ public class CCSSCoverageDataAction implements Action<CmList<CCSSCoverageData>> 
 
 	public void setAdminId(Integer adminId) {
 		this.adminId = adminId;
-	}
-
-	public Integer getAssignKey() {
-		return assignKey;
-	}
-
-	public void setAssignKey(Integer assignKey) {
-		this.assignKey = assignKey;
 	}
 
 	public Date getFrom() {
