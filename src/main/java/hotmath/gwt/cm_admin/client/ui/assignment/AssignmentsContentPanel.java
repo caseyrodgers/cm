@@ -19,6 +19,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.assignment.ExportGradebooksDialog;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForAssignmentWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
@@ -108,6 +109,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         addTool(new HTML("&nbsp;&nbsp;"));
         addTool(createActivateButton());
         addTool(createScoreButton());
+        addTool(createCCSSButton());
         setCollapsible(false);
 
         AssignmentProperties props = GWT.create(AssignmentProperties.class);
@@ -610,7 +612,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         return btn;
     }
     
-    protected void selectedAssignmentStatus() {
+    private void selectedAssignmentStatus() {
         Assignment asgn = _grid.getSelectionModel().getSelectedItem();
         if(asgn == null) {
             CmMessageBox.showAlert("Select an Assignment first");
@@ -619,6 +621,27 @@ public class AssignmentsContentPanel extends ContentPanel {
         _callBack.showAssignmentStatus(asgn);        
     }
 
+    private Widget createCCSSButton() {
+        TextButton btn = new TextButton("CCSS");
+        btn.setToolTip("Show CCSS details for selected Assignment");
+        btn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                selectedAssignmentCCSS();
+            }
+
+        });
+        return btn;
+    }
+    
+    private void selectedAssignmentCCSS() {
+        Assignment asgn = _grid.getSelectionModel().getSelectedItem();
+        if(asgn == null) {
+            CmMessageBox.showAlert("Select an Assignment first");
+            return;
+        }
+        new CCSSCoverageForAssignmentWindow(asgn);
+    }
 
     private Widget createNewButton() {
         TextButton btn = new TextButton("Create");
