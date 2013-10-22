@@ -37,7 +37,7 @@ public class CCSSCoverageDataCommand implements ActionHandler<CCSSCoverageDataAc
             }
             int adminId = action.getAdminId();
             int groupId = action.getUID();
-            int assignKey = action.getAssignKey();
+            int assignKey = action.getUID();
 
             CCSSReportDao crDao = CCSSReportDao.getInstance();
             switch(action.getType()) {
