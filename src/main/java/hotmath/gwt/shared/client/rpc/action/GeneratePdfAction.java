@@ -164,7 +164,11 @@ public class GeneratePdfAction implements Action<CmWebResource>{
         /**
          * group CCSS report
          */
-        GROUP_CCSS
-        
+        GROUP_CCSS,
+
+        /**
+         * Assignment CCSS report
+         */
+        ASSIGNMENT_CCSS
     };
 }
