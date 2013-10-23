@@ -78,16 +78,14 @@ public class CCSSCoverageForAssignmentWindow extends GWindow {
     }
 
     private void displaySummary(String summary) {
-
     	FlowLayoutContainer flc = new FlowLayoutContainer();
-    	flc.setScrollMode(ScrollMode.AUTOY);
+    	flc.setScrollMode(ScrollMode.AUTO);
     	flc.setBorders(true);
 
     	BorderLayoutData bld = new BorderLayoutData(50);
     	bld.setMargins(new Margins(5));
 
-        String html = "<p style='padding: 5px;'>" + summary + "</p>";
-        flc.add(new HTML(html));
+        flc.add(new HTML("<p style='padding: 5px;'>" + summary + "</p>"));
 
         _container.setNorthWidget(flc, bld);
 	}
