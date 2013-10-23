@@ -39,17 +39,15 @@ public class StandardWindowForCCSS extends GWindow {
     }
 
 	private void displaySummary(String desc) {
-        FramedPanel fp = new FramedPanel();
-        fp.setHeaderVisible(false);
-
-        String html = "<p style='padding: 10px;'>" + desc + "</p>";
-        fp.add(new HTML(html));
-
         FlowLayoutContainer flow = new FlowLayoutContainer();
         flow.setScrollMode(ScrollMode.AUTO);
-        flow.add(fp);
+        flow.add(new HTML("<p style='padding: 10px;'>" + desc + "</p>"));
 
-        setWidget(flow);
+        FramedPanel fp = new FramedPanel();
+        fp.setHeaderVisible(false);
+        fp.setWidget(flow);
+
+        setWidget(fp);
         setVisible(true);
 	}
 
