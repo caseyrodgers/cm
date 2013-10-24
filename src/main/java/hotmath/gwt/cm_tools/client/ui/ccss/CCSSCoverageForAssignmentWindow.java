@@ -80,7 +80,7 @@ public class CCSSCoverageForAssignmentWindow extends GWindow {
     private void displaySummary(String summary) {
     	FlowLayoutContainer flc = new FlowLayoutContainer();
     	flc.setScrollMode(ScrollMode.AUTO);
-    	flc.setBorders(true);
+    	flc.setBorders(false);
 
     	BorderLayoutData bld = new BorderLayoutData(50);
     	bld.setMargins(new Margins(5));
