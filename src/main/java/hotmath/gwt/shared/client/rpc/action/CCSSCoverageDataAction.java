@@ -13,6 +13,7 @@ public class CCSSCoverageDataAction implements Action<CmList<CCSSCoverageData>> 
 	ReportType type;
     Integer uid;
     Integer adminId;
+    String key;
     Date from;
     Date to;
     
@@ -50,6 +51,14 @@ public class CCSSCoverageDataAction implements Action<CmList<CCSSCoverageData>> 
 		this.adminId = adminId;
 	}
 
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
 	public Date getFrom() {
         return from;
     }
@@ -74,6 +83,6 @@ public class CCSSCoverageDataAction implements Action<CmList<CCSSCoverageData>> 
     public enum ReportType {
     	STUDENT_ASSIGNED_COMPLETED, STUDENT_QUIZZED_PASSED, STUDENT_REVIEWED, STUDENT_COMBINED, STUDENT_NOT_COVERED,
     	GROUP_ALL_STUDENTS, GROUP_75_TO_99_PERCENT, GROUP_50_TO_99_PERCENT, GROUP_50_TO_74_PERCENT, GROUP_LT_50_PERCENT,
-    	GROUP_25_TO_49_PERCENT, GROUP_LT_25_PERCENT, ASSIGNMENT
+    	GROUP_25_TO_49_PERCENT, GROUP_LT_25_PERCENT, ASSIGNMENT, LESSON
     }
 }

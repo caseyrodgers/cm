@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindowWithNav;
@@ -24,51 +25,52 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  * @author bob
  * 
  */
-public class CCSSCoverageForAssignmentWindow extends GWindow {
+public class CCSSCoverageForLessonWindow extends GWindow {
 
-    private static CCSSCoverageForAssignmentWindow __instance;
+    private static CCSSCoverageForLessonWindow __instance;
 
     BorderLayoutContainer _container;
 
-    private static final String TITLE = "Assignment CCSS Coverage";
+    private static final String TITLE = "CCSS Coverage";
 
     BorderLayoutData _centerData = new BorderLayoutData();
     CCSSCoverageListPanel _CCSSCoverageListPanel;
-    Assignment _assignment;
-    int _assignKey;
-    int _adminId;
+    LessonModel _lesson;
+    String _lessonFile;
+    
+    int _adminUid;
     boolean _isGroupReport = false;
 
-    public CCSSCoverageForAssignmentWindow(Assignment assignment) {
+    public CCSSCoverageForLessonWindow(LessonModel lesson, int adminUid) {
         super(false);
         __instance = this;
-        _assignment = assignment;
-        _assignKey = assignment.getAssignKey();
-        _adminId = assignment.getAdminId();
+        _lessonFile = lesson.getLessonFile();
+        _lesson = lesson;
+        _adminUid = adminUid;
 
         setHeadingText(TITLE);
-        setWidth(310);
-        setHeight(500);
+        setWidth(120);
+        setHeight(300);
 
         _container = new BorderLayoutContainer();
         _container.setBorders(true);
 
-        _centerData.setSize(300);
+        _centerData.setSize(110);
 
-        final CCSSCoverageImplAssignment impl = new CCSSCoverageImplAssignment(_assignKey, new CallbackOnComplete() {
+        final CCSSCoverageImplLesson impl = new CCSSCoverageImplLesson(_lessonFile, new CallbackOnComplete() {
 			@Override
 			public void isComplete() {
 		        setWidget(_container);
 		        forceLayout();
 			}
         });
-        displaySummary(assignment.getAssignmentName());
+        displayLesson(_lesson.getLessonName());
         _container.setCenterWidget(impl.getWidget(), _centerData);
 /*
         getHeader().addTool(new TextButton("Print Report", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent ce) {
-            	printAssignmentCCSSCoverageReport();
+            	printLessonCCSSCoverageReport();
             }
         }));
 */
@@ -77,29 +79,31 @@ public class CCSSCoverageForAssignmentWindow extends GWindow {
         setVisible(true);
     }
 
-    private void displaySummary(String summary) {
+    private void displayLesson(String lessonName) {
     	FlowLayoutContainer flc = new FlowLayoutContainer();
     	flc.setScrollMode(ScrollMode.AUTO);
     	flc.setBorders(false);
 
-    	BorderLayoutData bld = new BorderLayoutData(50);
+    	BorderLayoutData bld = new BorderLayoutData(20);
     	bld.setMargins(new Margins(5));
 
-        flc.add(new HTML("<p style='padding: 5px;'>" + summary + "</p>"));
+        flc.add(new HTML("<p style='padding: 5px;'>Lesson: " + lessonName + "</p>"));
 
         _container.setNorthWidget(flc, bld);
 	}
 
-    private void printAssignmentCCSSCoverageReport() {
-    	new PdfWindowWithNav(_adminId, "Catchup Math CCSS Report for: " + _assignment.getAssignmentName(),
-    			new GeneratePdfAction(PdfType.ASSIGNMENT_CCSS,
-    			_adminId, Arrays.asList(_assignKey), null, null));
+    private void printLessonCCSSCoverageReport() {
+    	/*  TODO
+    	new PdfWindowWithNav(_adminUid, "Catchup Math CCSS Report for Lesson: " + _lesson.getLessonName(),
+    			new GeneratePdfAction(PdfType.LESSON_CCSS,
+    			_adminUid, Arrays.asList(_lessonFile), null, null));
+        */
     }
 
     public static void startTest() {
-        Assignment assignment = new Assignment();
-        assignment.setAssignKey(3);
-        assignment.setAdminId(2);
-        new CCSSCoverageForAssignmentWindow(assignment);
+        LessonModel lesson = new LessonModel();
+        lesson.setLessonName("Area");
+        lesson.setLessonFile("/topics/Area.html");
+        new CCSSCoverageForLessonWindow(lesson, 6);
     }
 }

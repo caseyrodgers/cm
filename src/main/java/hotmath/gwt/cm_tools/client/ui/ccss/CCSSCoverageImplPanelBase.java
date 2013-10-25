@@ -33,6 +33,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
     CCSSCoverageImplPanelBase __instance;
     int _uid;
     int _adminId;
+    String _key;
 
     interface GridProperties extends PropertyAccess<CCSSCoverageData> {
 
@@ -53,6 +54,14 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
         __instance = this;
         this.base = base;
         this._uid = uid;
+        this._adminId = adminId;
+        getDataFromServer();
+    }
+
+    public CCSSCoverageImplPanelBase(CCSSCoverageImplBase base, String key, int adminId) {
+        __instance = this;
+        this.base = base;
+        this._key = key;
         this._adminId = adminId;
         getDataFromServer();
     }
@@ -83,8 +92,9 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
                 
                 Date fromDate = DateRangePanel.getInstance()!=null?DateRangePanel.getInstance().getFromDate():null;
                 Date toDate = DateRangePanel.getInstance()!=null?DateRangePanel.getInstance().getToDate():null;
-                CCSSCoverageDataAction action = new CCSSCoverageDataAction(getReportType(), _uid,fromDate, toDate);
+                CCSSCoverageDataAction action = new CCSSCoverageDataAction(getReportType(), _uid, fromDate, toDate);
                 action.setAdminId(_adminId);
+                action.setKey(_key);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

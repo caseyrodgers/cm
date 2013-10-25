@@ -497,13 +497,32 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     			@Override
     			public CCSSCoverageData mapRow(ResultSet rs, int rowNum) throws SQLException {
     				CCSSCoverageData data = new CCSSCoverageData(rs.getString("lesson"), rs.getString("standard_name_new"));
-    				data.getColumnLabels().add(rs.getString("summary"));
     				return data;
     			}
     		});
     	}
     	catch (DataAccessException e) {
     		LOGGER.error(String.format("getCCSSCoverageForAssignment(): assignKey: %d", assignKey), e);
+    		throw e;
+    	}
+    	if (list == null) list = new ArrayList<CCSSCoverageData>();
+    	return list;
+	}
+
+	public List<CCSSCoverageData> getCCSSCoverageForLesson(String lessonFile) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_COVERAGE_FOR_LESSON");
+    	List<CCSSCoverageData> list = null;
+    	try {
+    		list = getJdbcTemplate().query(sql, new Object[] { lessonFile }, new RowMapper<CCSSCoverageData>() {
+    			@Override
+    			public CCSSCoverageData mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				CCSSCoverageData data = new CCSSCoverageData(rs.getString("lesson"), rs.getString("standard_name_new"));
+    				return data;
+    			}
+    		});
+    	}
+    	catch (DataAccessException e) {
+    		LOGGER.error(String.format("getCCSSCoverageForLesson(): lessonFile: %s", lessonFile), e);
     		throw e;
     	}
     	if (list == null) list = new ArrayList<CCSSCoverageData>();
