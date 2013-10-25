@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.Callback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.PidStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
@@ -9,6 +10,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentRealTimeStatsAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForLessonWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 
@@ -46,7 +48,7 @@ import com.sencha.gxt.widget.core.client.tips.QuickTip;
 public class AssignmentProblemListView extends ContentPanel {
     
     final Grid<ProblemDtoLocal> problemListGrid;
-    Assignment assignment;
+    Assignment _assignment;
     Callback callback;
     
     VerticalLayoutContainer problemListContainer;
@@ -55,10 +57,11 @@ public class AssignmentProblemListView extends ContentPanel {
     MyOrdinalProvider ordinalNumberValueProvider;
     private TextButton _upButton;
     private TextButton _downButton;
+    private TextButton _ccssButton;
     ProblemDtoLocal _selectedRecord;
     public AssignmentProblemListView(Assignment assignment, final Callback callback) {
         
-        this.assignment = assignment;
+        this._assignment = assignment;
         this.callback = callback;
 
         AssignmentProblemListPanelProperties props = GWT.create(AssignmentProblemListPanelProperties.class);
@@ -186,7 +189,23 @@ public class AssignmentProblemListView extends ContentPanel {
             }
         });
         addTool(_downButton);
-        _upButton.setToolTip("Move problem selection down");
+        _downButton.setToolTip("Move problem selection down");
+        
+        _ccssButton = new TextButton("CCSS", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                ProblemDtoLocal selected = problemListGrid.getSelectionModel().getSelectedItem();
+                if(selected == null) {
+                    CmMessageBox.showAlert("Please select a problem first");
+                    return;
+                }
+                LessonModel lesson = selected.getProblem().getLesson();
+                new CCSSCoverageForLessonWindow(lesson, _assignment.getAdminId());
+
+            }
+        });
+        addTool(_ccssButton);
+        _ccssButton.setToolTip("Display CCSS coverage for selected problem.");
         
         if(store.size()==0) {
             activateButtons(false);
@@ -200,7 +219,7 @@ public class AssignmentProblemListView extends ContentPanel {
             CmMessageBox.showAlert("Please select a problem first");
             return;
         }
-        new AssignmentProblemStatsDialog(AssignmentProblemListView.this.assignment.getAssignKey(), _selectedRecord.getPid(), _selectedRecord.getLabel(), new CallbackOnComplete() {
+        new AssignmentProblemStatsDialog(AssignmentProblemListView.this._assignment.getAssignKey(), _selectedRecord.getPid(), _selectedRecord.getLabel(), new CallbackOnComplete() {
             @Override
             public void isComplete() {
                 showSelectedProblemHtml(callback);
@@ -210,7 +229,7 @@ public class AssignmentProblemListView extends ContentPanel {
 
 
     private void startCheckingRealTimeStats() {
-        GetAssignmentRealTimeStatsAction action = new GetAssignmentRealTimeStatsAction(this.assignment.getAssignKey());
+        GetAssignmentRealTimeStatsAction action = new GetAssignmentRealTimeStatsAction(this._assignment.getAssignKey());
         CmShared.getCmService().execute(action, new AsyncCallback<AssignmentRealTimeStats>() {
             @Override
             public void onSuccess(AssignmentRealTimeStats result) {
@@ -300,7 +319,7 @@ public class AssignmentProblemListView extends ContentPanel {
         
         
         
-        if(!assignment.getStatus().equals("Draft")) {
+        if(!_assignment.getStatus().equals("Draft")) {
             startCheckingRealTimeStats();
         }
     }
@@ -411,7 +430,7 @@ public class AssignmentProblemListView extends ContentPanel {
         List<ProblemDtoLocal> la = new ArrayList<ProblemDtoLocal>();
         int ordinal=0;
         for(ProblemDto p: problemsAdded) {
-            la.add(new ProblemDtoLocal(assignment, p, ++ordinal));
+            la.add(new ProblemDtoLocal(_assignment, p, ++ordinal));
         }
         return la;
     }
@@ -527,7 +546,7 @@ public class AssignmentProblemListView extends ContentPanel {
     };
 
 
-    /** Composite of ProblemDTo and real time active info 
+    /** Composite of ProblemDto and real time active info 
      * 
      * @author casey
      *
