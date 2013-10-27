@@ -262,6 +262,7 @@ public class WebLinkEditorDialog extends GWindow {
             
             @Override
             public void onFailure(Throwable error) {
+                CmBusyManager.setBusy(false);
                 if(error.getMessage().toLowerCase().contains("duplicate")) {
                     CmMessageBox.showAlert("This web link is already in your private web links.");
                 }
