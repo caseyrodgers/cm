@@ -101,10 +101,11 @@ public class WebLinkEditorDialog extends GWindow {
         _isPublic.setToolTip("Should this web link be made public?");
         
         FieldLabel isPublicField = new MyFieldLabel(_isPublic, "Public",40, 20);
-        addTool(isPublicField);
+        isPublicField.getElement().setAttribute("style",  "position: absolute;right: 0;z-index: 100");
+        
         //isPublicField.getElement().setAttribute("style",  "position: absolute;right: 10px;");
         FlowLayoutContainer flow = new FlowLayoutContainer();
-        
+        flow.add(isPublicField);
         flow.add(new MyFieldLabel(nameField, "Web Link Name",100,200));
         flow.add(new FieldLabel(urlField, "URL"));
         flow.add(new FieldLabel(commentsField,"Comments"));

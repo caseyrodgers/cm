@@ -49,18 +49,10 @@ public class WebLinkAddTargetsDialog extends GWindow {
     private WebLinkAddTargetsDialog() {
         super(false);
         setHeadingText("Select Lesson(s)");
-
+        setPixelSize(640, 480);
         setModal(true);
         setMaximizable(true);
         
-        addTool(new TextButton("Select All", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                _tree.collapseAll();
-            }
-        }));
-
-
         addTool(new TextButton("Collapse", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
