@@ -14,6 +14,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
+import br.com.freller.tool.client.Print;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
@@ -59,7 +60,13 @@ public class CatchupMathTest implements EntryPoint {
                 startTests();
             }
         }));
-
+        toolBar.add(new Button("Print", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                printPage();
+            }
+        }));
+        
         _gotoInfo = new TextBox();
         _gotoInfo.setWidth("100%");
         _gotoInfo.addKeyDownHandler(new KeyDownHandler() {
@@ -96,6 +103,10 @@ public class CatchupMathTest implements EntryPoint {
         // startTests();
 
     }
+
+    native protected void printPage() /*-{
+        $wnd.print();
+    }-*/;
 
     /**
      * parse: [pid=quiz:quiz, runId=0, uid=31181]

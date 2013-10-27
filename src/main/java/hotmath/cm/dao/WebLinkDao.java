@@ -5,19 +5,30 @@ import hotmath.cm.util.UserAgentDetect;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaUserDao;
+import hotmath.testset.ha.SolutionDao;
+import hotmath.util.sql.SqlUtilities;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 public class WebLinkDao extends SimpleJdbcDaoSupport {
 
@@ -44,8 +55,8 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         /**
          * Check which weblink is active in this context
          * 
-         * Only add weblink that is compatible with current 
-         * user's environment (mobile, desktop)
+         * Only add weblink that is compatible with current user's environment
+         * (mobile, desktop)
          */
         List<WebLinkModel> activeLinks = new ArrayList<WebLinkModel>();
         for (WebLinkModel l : links) {
@@ -140,15 +151,18 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
 
     public Collection<? extends WebLinkModel> getAllWebLinksDefinedForAdmin(int adminId, boolean readGroupsAndLessons) {
         String sql = "select * from CM_WEBLINK where admin_id = ? order by name";
+        if (adminId == 0) {
+            sql = "select * from CM_WEBLINK where admin_id = ? or is_public = 1 order by name";
+        }
         List<WebLinkModel> links = getJdbcTemplate().query(sql, new Object[] { adminId }, new RowMapper<WebLinkModel>() {
             @Override
             public WebLinkModel mapRow(ResultSet rs, int rowNum) throws SQLException {
 
                 int available = rs.getInt("works_on_device");
                 AvailableOn availableOn = AvailableOn.values()[available];
-
+                boolean isPublic = rs.getInt("is_public") == 0 ? false : true;
                 WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"),
-                        rs.getString("comments"), availableOn);
+                        rs.getString("comments"), availableOn, isPublic);
                 return wlm;
             }
         });
@@ -179,5 +193,80 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
             }
         }
         return links;
+    }
+
+    public void importPublicWebLink(int adminId, WebLinkModel webLink) throws Exception {
+
+        if (adminId == webLink.getAdminId()) {
+            throw new CmException("This weblink is already in your private links");
+        }
+
+        webLink.setLinkId(0); // make sure it is new
+        webLink.setAdminId(adminId);
+        webLink.getLinkGroups().clear();
+        
+        
+        addWebLink(webLink);
+    }
+
+    public void addWebLink(final WebLinkModel link) {
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+                String sql = "insert into CM_WEBLINK(admin_id, name, url, comments, works_on_device, is_public)values(?,?,?,?,?, ?)";
+                PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, link.getAdminId());
+                ps.setString(2, link.getName());
+                ps.setString(3, link.getUrl());
+                ps.setString(4, link.getComments());
+                ps.setInt(5, link.getAvailableWhen().ordinal());
+                ps.setInt(6, link.isPublicAvailability() ? 1 : 0);
+                return ps;
+            }
+        }, keyHolder);
+        final int webLinkId = keyHolder.getKey().intValue();
+
+        if (!link.isAllLessons()) {
+
+            String sql = "insert into CM_WEBLINK_LESSONS(link_id, lesson_name, lesson_file, lesson_subject)values(?,?,?,?)";
+            getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() {
+
+                @Override
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    LessonModel lesson = link.getLinkTargets().get(i);
+                    ps.setInt(1, webLinkId);
+                    ps.setString(2, lesson.getLessonName());
+                    ps.setString(3, lesson.getLessonFile());
+                    ps.setString(4, lesson.getSubject());
+                }
+
+                @Override
+                public int getBatchSize() {
+                    return link.getLinkTargets().size();
+                }
+            });
+        }
+
+        if (!link.isAllGroups()) {
+
+            String sql = "insert into CM_WEBLINK_GROUPS(link_id, group_id)values(?,?)";
+            getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() {
+
+                @Override
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    GroupInfoModel group = link.getLinkGroups().get(0);
+                    ps.setInt(1, webLinkId);
+                    ps.setInt(2, group.getId());
+                }
+
+                @Override
+                public int getBatchSize() {
+                    return link.getLinkGroups().size();
+                }
+            });
+        }
     }
 }

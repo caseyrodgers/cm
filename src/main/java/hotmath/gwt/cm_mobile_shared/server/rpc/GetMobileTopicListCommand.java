@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.server.rpc;
 
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetMobileTopicListAction;
-import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
+import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;

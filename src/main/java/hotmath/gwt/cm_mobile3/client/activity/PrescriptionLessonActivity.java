@@ -16,24 +16,25 @@ import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SetLessonCompletedAction;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.event.shared.EventBus;
 
 public class PrescriptionLessonActivity implements PrescriptionLessonView.Presenter {
 
     List<Integer> testQuestionAnswers;
 
-    private com.google.gwt.event.shared.EventBus eventBus;
+    private EventBus eventBus;
     UserInfo userInfo;
     ClientFactory clientFactory;
 
-    public PrescriptionLessonActivity(ClientFactory clientFactory, com.google.gwt.event.shared.EventBus eventBus) {
+    public PrescriptionLessonActivity(ClientFactory clientFactory, EventBus eventBus) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         this.userInfo = SharedData.getMobileUser().getBaseLoginResponse().getUserInfo();

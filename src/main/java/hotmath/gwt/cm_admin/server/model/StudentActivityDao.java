@@ -117,7 +117,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             
         } catch (Exception e) {
             LOGGER.error(String.format("*** Error getting student details for student uid: %d", uid), e);
-            throw new Exception("*** Error getting student details ***");
+            throw new Exception("*** Error getting student details ***", e);
         } finally {
             SqlUtilities.releaseResources(rs, ps, conn);
         }
@@ -192,7 +192,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
         } catch (Exception e) {
             LOGGER.error(String.format("*** Error getting time-on-task for student uid: %d", uid), e);
-            throw new Exception("*** Error getting time-on-task ***");
+            throw new Exception("*** Error getting time-on-task ***", e);
         } finally {
             SqlUtilities.releaseResources(rs, stmt, null);
         }
@@ -798,7 +798,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     }
 
     public enum ActivityTypeEnum {
-        ACTIVITY, ACTIVITY_STANDARD, CMEXTRA, EPP_WB, FLASHCARD, FLASHCARD_SPANISH, PRACTICE, QUIZ, RESULTS, REVIEW, RPP_WB, SOLUTION, VIDEO, WHITEBOARD, WORKBOOK, UNKNOWN
+        ACTIVITY, ACTIVITY_STANDARD, CMEXTRA, EPP_WB, FLASHCARD, FLASHCARD_SPANISH, PRACTICE, QUIZ, RESULTS, REVIEW, RPP_WB, SOLUTION, VIDEO, WHITEBOARD, WORKBOOK, WEBLINK, UNKNOWN
     };
 
     class ActivityTime {

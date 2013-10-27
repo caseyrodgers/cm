@@ -61,7 +61,9 @@ public class GetTopicPrescriptionCommand implements ActionHandler<GetTopicPrescr
         HaTest custTest = HaTestDao.getInstance().createTest(userSharedUser,HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()), HaTestDao.EMPTY_TEST);
         StudentUserProgramModel userProgram = new StudentUserProgramModel();
         custTest.setProgramInfo(userProgram);
-        HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn, userSharedUser, custTest.getTestId(), 10, 0, 0);
+        
+        int numQuestions =  custTest.getNumTestQuestions();
+        HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn, userSharedUser, custTest.getTestId(), numQuestions, 0, 0);
         testRun.setHaTest(custTest);
         
         List<CustomLessonModel> lessonModels = new ArrayList<CustomLessonModel>();
@@ -78,7 +80,7 @@ public class GetTopicPrescriptionCommand implements ActionHandler<GetTopicPrescr
     private String lookupLessonFileFromName(Connection conn, String lesson) throws Exception {
         PreparedStatement p=null;
         try {
-            String sql = "select distinct file from HA_PROGRAM_LESSONS where lesson = ?";
+            String sql = "select distinct file from HA_PROGRAM_LESSONS_static where lesson = ?";
             p = conn.prepareStatement(sql);
             
             p.setString(1, lesson);

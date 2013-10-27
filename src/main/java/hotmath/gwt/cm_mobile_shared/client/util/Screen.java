@@ -6,12 +6,38 @@ import java.util.HashMap;
 
 import com.google.gwt.core.client.JavaScriptException;
 
+/** Monitors and notifies of orientation changes
+ * 
+ * @author casey
+ *
+ */
 public class Screen {
 
 	private ScreenOrientation mOrientation;
 	private HashMap<String, OrientationChangedHandler> mHandlers = new HashMap<String, OrientationChangedHandler>();
 	private int mCurrentHandlerId = 1;
 
+   public Screen() {
+        mOrientation = calculateScreenOrientation();
+        try {
+            registerOrientationChangedHandler(new OrientationChangedDomEvent() {
+                @Override
+                public void onOrientationChanged() {
+                    mOrientation = calculateScreenOrientation();
+
+                    for (OrientationChangedHandler handler : mHandlers.values()) {
+                        handler.orientationChanged(mOrientation);
+                    }
+                }
+
+            });
+        } catch (JavaScriptException e) {
+            // ignore b/c it may not work on some browsers
+            mOrientation = ScreenOrientation.Landscape;
+        }
+
+    }
+	   
 	private native void registerOrientationChangedHandler(OrientationChangedDomEvent handler) /*-{
 		var callback = function(){
 			handler.@hotmath.gwt.cm_mobile_shared.client.util.Screen$OrientationChangedDomEvent::onOrientationChanged()();
@@ -38,26 +64,6 @@ public class Screen {
 		void onOrientationChanged();
 	}
 
-	public Screen() {
-		mOrientation = calculateScreenOrientation();
-		try {
-			registerOrientationChangedHandler(new OrientationChangedDomEvent() {
-				@Override
-				public void onOrientationChanged() {
-					mOrientation = calculateScreenOrientation();
-
-					for (OrientationChangedHandler handler : mHandlers.values()) {
-						handler.orientationChanged(mOrientation);
-					}
-				}
-
-			});
-		} catch (JavaScriptException e) {
-			// ignore b/c it may not work on some browsers
-			mOrientation = ScreenOrientation.Landscape;
-		}
-
-	}
 
 	public ScreenOrientation getScreenOrientation() {
 		return mOrientation;

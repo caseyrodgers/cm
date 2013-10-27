@@ -14,6 +14,7 @@ import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.event.shared.EventBus;
 
 
 public class PrescriptionLessonResourceReviewActivity implements PrescriptionLessonResourceReviewView.Presenter {
@@ -21,11 +22,11 @@ public class PrescriptionLessonResourceReviewActivity implements PrescriptionLes
 
     List<Integer> testQuestionAnswers;
 
-    private com.google.gwt.event.shared.EventBus eventBus;
+    private EventBus eventBus;
     
     InmhItemData resourceItem;
 
-    public PrescriptionLessonResourceReviewActivity(com.google.gwt.event.shared.EventBus eventBus, InmhItemData resourceItem) {
+    public PrescriptionLessonResourceReviewActivity(EventBus eventBus, InmhItemData resourceItem) {
         this.eventBus = eventBus;
         this.resourceItem = resourceItem;
         

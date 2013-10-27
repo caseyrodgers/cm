@@ -5,17 +5,19 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 
 import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
+
 
 public class PrescriptionLessonResourceActivity implements PrescriptionLessonResourceView.Presenter {
 
 
     List<Integer> testQuestionAnswers;
 
-    private com.google.gwt.event.shared.EventBus eventBus;
+    private EventBus eventBus;
     
     InmhItemData resourceItem;
 
-    public PrescriptionLessonResourceActivity(com.google.gwt.event.shared.EventBus eventBus, InmhItemData resourceItem) {
+    public PrescriptionLessonResourceActivity(EventBus eventBus, InmhItemData resourceItem) {
         this.eventBus = eventBus;
         this.resourceItem = resourceItem;
     }

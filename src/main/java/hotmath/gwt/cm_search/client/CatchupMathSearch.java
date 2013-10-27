@@ -7,6 +7,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_search.client.places.SearchPlace;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -17,30 +18,24 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.event.shared.EventBus;
 
 public class CatchupMathSearch implements EntryPoint, OrientationChangedHandler {
-
-
     
     private Place defaultPlace = new SearchPlace("");
     private SimplePanel appWidget = new SimplePanel();
     
-    
     final static public ClientFactory __clientFactory = GWT.create(ClientFactoryImpl.class);
-    static public EventBus __eventBus = __clientFactory.getEventBus();
+    static public EventBus __eventBus = CmRpcCore.EVENT_BUS;
     static {
         setupJsHooks();
     }
-
-    
-    
 
     public void onModuleLoad() {
         Log.setUncaughtExceptionHandler();
@@ -61,7 +56,6 @@ public class CatchupMathSearch implements EntryPoint, OrientationChangedHandler 
     private void setupGlobalListeners() {
         _loadingDiv = RootPanel.get("loading");
 
-        
         
         final EventBus eb = __clientFactory.getEventBus();
 
@@ -130,7 +124,6 @@ public class CatchupMathSearch implements EntryPoint, OrientationChangedHandler 
         // Goes to the place represented on URL else default place
         historyHandler.handleCurrentHistory();
 
-        
         Screen screen = new Screen();
         screen.addHandler(this);
         orientationChanged(screen.getScreenOrientation());        

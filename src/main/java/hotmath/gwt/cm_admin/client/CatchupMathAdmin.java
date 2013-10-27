@@ -18,6 +18,7 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.search.LessonSearchWindow;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -163,7 +164,10 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             WebLinkEditorDialog.startTest();
             return;
         }        
-
+        else if(CmShared.getQueryParameterValue("test").equals("search")) {
+            LessonSearchWindow.startTest();
+            return;
+        }
 
         new MessageOfTheDayDialog(new CallbackGeneric() {
             @Override

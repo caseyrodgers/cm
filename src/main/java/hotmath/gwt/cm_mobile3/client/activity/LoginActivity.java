@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
-import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
@@ -18,12 +17,13 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.event.shared.EventBus;
 
 public class LoginActivity implements LoginView.Presenter {
     
-    private com.google.gwt.event.shared.EventBus eventBus;
+    private EventBus eventBus;
 
-    public LoginActivity(com.google.gwt.event.shared.EventBus eventBus) {
+    public LoginActivity(EventBus eventBus) {
         this.eventBus = eventBus;
     }
 

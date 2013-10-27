@@ -184,6 +184,22 @@ public class CatchupMath implements EntryPoint {
             }
         });
         
+        
+//        Event.addNativePreviewHandler(new Event.NativePreviewHandler() { 
+//            public void onPreviewNativeEvent(NativePreviewEvent event) { 
+//                    NativeEvent ne = event.getNativeEvent(); 
+//                    GWT.log(ne.getCharCode() + " (" + ((char) ne.getCharCode()) + ") " + 
+//                                    (ne.getButton() != 1 ? " button=" + ne.getButton() : "") + 
+//                                    (ne.getKeyCode() != ne.getCharCode() ? " keyCode=" + ne.getKeyCode() : "") + 
+//                                    (ne.getAltKey() ? " ALT" : "") + 
+//                                    (ne.getCtrlKey() ? " CTRL" : "") + 
+//                                    (ne.getMetaKey() ? " META" : "") + 
+//                                    (ne.getShiftKey() ? " SHIFT" : "")); 
+//            } 
+//       }); 
+        
+        
+        
         // CmNotifyManager.getInstance().notify("This is a test notification");
     }
 

@@ -38,6 +38,7 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderL
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextArea;
@@ -48,6 +49,8 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 
 public class WebLinkEditorDialog extends GWindow {
 
+    public enum EditType{IMPORT,NEW_OR_EDIT};
+    
     private BorderLayoutContainer _main;
     private TextField nameField;
     private ContentPanel _linkTargetPanel;
@@ -57,14 +60,19 @@ public class WebLinkEditorDialog extends GWindow {
     private CallbackOnComplete callbackOnComplete;
     private ContentPanel _groupsPanel;
     private ComboBox<AvailableDevice> _availableDevice;
+    private CheckBox _isPublic = new CheckBox();
+    private EditType editType;
+    private int adminId;
 
-    public WebLinkEditorDialog(WebLinkModel webLinkModel, CallbackOnComplete callbackOnComplete) {
+    public WebLinkEditorDialog(EditType editType, int adminId, WebLinkModel webLinkModel, CallbackOnComplete callbackOnComplete) {
         super(false);
+        this.adminId = adminId;
+        this.editType = editType;
         this.callbackOnComplete = callbackOnComplete;
 
         this.webLinkModel = webLinkModel;
         setPixelSize(550, 440);
-        setMaximizable(true);
+        setMaximizable(false);
 
         setHeadingText("Web Link Editor: " + webLinkModel.getName());
         _main = new BorderLayoutContainer();
@@ -89,16 +97,19 @@ public class WebLinkEditorDialog extends GWindow {
         int ordinal = av.ordinal();
         _availableDevice.setValue(_availableDevice.getStore().get(ordinal));
 
+        _isPublic.setValue(webLinkModel.isPublicAvailability());
+        _isPublic.setToolTip("Should this web link be made public?");
         
+        FieldLabel isPublicField = new MyFieldLabel(_isPublic, "Public",40, 20);
+        addTool(isPublicField);
+        //isPublicField.getElement().setAttribute("style",  "position: absolute;right: 10px;");
         FlowLayoutContainer flow = new FlowLayoutContainer();
+        
         flow.add(new MyFieldLabel(nameField, "Web Link Name",100,200));
         flow.add(new FieldLabel(urlField, "URL"));
         flow.add(new FieldLabel(commentsField,"Comments"));
         flow.add(new FieldLabel(_availableDevice, "Available On"));
         
-        
-        
-
         frame.setWidget(flow);
 
         _main.setNorthWidget(frame, bld);
@@ -126,13 +137,24 @@ public class WebLinkEditorDialog extends GWindow {
         _main.setCenterWidget(center);
         setWidget(_main);
 
-        addButton(new TextButton("Save", new SelectHandler() {
+        TextButton saveButton = new TextButton("Save", new SelectHandler() {
 
             @Override
             public void onSelect(SelectEvent event) {
                 saveWebLink();
             }
-        }));
+        });
+        if(editType == EditType.IMPORT) {
+            saveButton.setText("Import Web Link");
+            _groupsPanel.setEnabled(false);
+            urlField.setEnabled(false);
+            _availableDevice.setEnabled(false);
+            _isPublic.setValue(false);
+            _isPublic.setVisible(false);
+            _isPublic.getParent().setVisible(false);
+            
+        }
+        addButton(saveButton);
         addCloseButton();
 
         setEnabledOnOff();
@@ -219,11 +241,14 @@ public class WebLinkEditorDialog extends GWindow {
         
         webLinkModel.setAvailableWhen(_availableDevice.getValue().getAvailWhen());
         
+        webLinkModel.setPublicAvailability(_isPublic.getValue());
+        
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(webLinkModel.getAdminId(), CrudOperation.ADD, webLinkModel);
+                CrudOperation actionToDo = editType == EditType.IMPORT? CrudOperation.IMPORT_FROM_PUBLIC: CrudOperation.ADD;
+                DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId, actionToDo, webLinkModel);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -234,6 +259,17 @@ public class WebLinkEditorDialog extends GWindow {
                 callbackOnComplete.isComplete();
                 hide();
             }
+            
+            @Override
+            public void onFailure(Throwable error) {
+                if(error.getMessage().toLowerCase().contains("duplicate")) {
+                    CmMessageBox.showAlert("This web link is already in your private web links.");
+                }
+                else {
+                    CmMessageBox.showAlert(error.getMessage());
+                }
+            }
+            
         }.attempt();
     }
 
@@ -333,8 +369,8 @@ public class WebLinkEditorDialog extends GWindow {
     }
 
     public static void startTest() {
-        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org", "The Comment", AvailableOn.DESKTOP_AND_MOBILE);
-        new WebLinkEditorDialog(model, new CallbackOnComplete() {
+        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org", "The Comment", AvailableOn.DESKTOP_AND_MOBILE, false);
+        new WebLinkEditorDialog(EditType.NEW_OR_EDIT, 2, model, new CallbackOnComplete() {
             @Override
             public void isComplete() {
                 Window.alert("New Link Save");

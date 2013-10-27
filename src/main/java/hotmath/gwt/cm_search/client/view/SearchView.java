@@ -2,7 +2,7 @@ package hotmath.gwt.cm_search.client.view;
 
 
 
-import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
+import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_search.client.activity.SearchActivity.CallBack;
 

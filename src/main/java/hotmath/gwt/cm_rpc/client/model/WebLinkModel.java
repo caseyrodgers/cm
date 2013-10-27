@@ -12,6 +12,7 @@ public class WebLinkModel implements Response {
     private String name;
     private int adminId;
     private String comments;
+    private boolean publicAvailability;
     
     public enum AvailableOn {DESKTOP_AND_MOBILE, DESKTOP_ONLY, MOBILE_ONLY};
 
@@ -22,15 +23,25 @@ public class WebLinkModel implements Response {
 
     public WebLinkModel() {}
     
-    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available) {
+    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available, boolean isPublic) {
         this.linkId = linkId;
         this.adminId = adminId;
         this.name = name;
         this.url = url;
         this.comments = comments;
         this.availableWhen = available;
+        this.publicAvailability = isPublic;
     }
     
+    
+    public boolean isPublicAvailability() {
+        return publicAvailability;
+    }
+
+    public void setPublicAvailability(boolean publicAvailability) {
+        this.publicAvailability = publicAvailability;
+    }
+
     public AvailableOn getAvailableWhen() {
         return availableWhen;
     }
@@ -95,7 +106,7 @@ public class WebLinkModel implements Response {
     }
 
     public boolean isAllGroups() {
-        return linkGroups.size() == 0;
+        return (linkGroups.size() == 0 || linkGroups.get(0).getGroupName().toLowerCase().equals("all groups"));
     }
 
     public boolean isAllLessons() {

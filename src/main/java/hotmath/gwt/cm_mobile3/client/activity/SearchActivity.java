@@ -7,10 +7,10 @@ import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
-import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
+import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
@@ -22,13 +22,14 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.event.shared.EventBus;
 
 
 public class SearchActivity implements SearchView.Presenter {
     
-    private com.google.gwt.event.shared.EventBus eventBus;
+    private EventBus eventBus;
     ClientFactory clientFactory;
-    public SearchActivity(ClientFactory clientFactory, com.google.gwt.event.shared.EventBus eventBus) {
+    public SearchActivity(ClientFactory clientFactory, EventBus eventBus) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
     }

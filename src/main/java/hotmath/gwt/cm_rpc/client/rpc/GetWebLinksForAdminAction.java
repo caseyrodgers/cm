@@ -5,13 +5,26 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 public class GetWebLinksForAdminAction implements Action<CmList<WebLinkModel>>{
+
+    public enum TypeOfGet {PRIVATE, PUBLIC};
     
     private int adminId;
+    private TypeOfGet typeOfGet;
 
     public GetWebLinksForAdminAction() {}
     
-    public GetWebLinksForAdminAction(int adminId) {
+    public GetWebLinksForAdminAction(TypeOfGet typeOfGet, int adminId) {
+        this.typeOfGet = typeOfGet;
         this.adminId = adminId;
+    }
+
+    
+    public TypeOfGet getTypeOfGet() {
+        return typeOfGet;
+    }
+
+    public void setTypeOfGet(TypeOfGet typeOfGet) {
+        this.typeOfGet = typeOfGet;
     }
 
     public int getAdminId() {
@@ -24,6 +37,6 @@ public class GetWebLinksForAdminAction implements Action<CmList<WebLinkModel>>{
 
     @Override
     public String toString() {
-        return "GetWebLinksForAdminAction [adminId=" + adminId + "]";
+        return "GetWebLinksForAdminAction [adminId=" + adminId + ", typeOfGet=" + typeOfGet + "]";
     }
 }

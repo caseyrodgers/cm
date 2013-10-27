@@ -21,6 +21,7 @@ import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 
 import com.google.gwt.event.shared.EventBus;
 
+
 public interface ClientFactory {
     EventBus getEventBus();
     PagesContainerPanel getPagesContainer();

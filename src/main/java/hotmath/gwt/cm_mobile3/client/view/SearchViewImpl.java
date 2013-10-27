@@ -6,11 +6,11 @@ import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
-import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
+import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 import java.util.List;

@@ -2,12 +2,12 @@ package hotmath.gwt.cm_search.client.view;
 
 
 import hotmath.gwt.cm_mobile_shared.client.event.DoSearchEvent;
-import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
+import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_search.client.CatchupMathSearch;
 

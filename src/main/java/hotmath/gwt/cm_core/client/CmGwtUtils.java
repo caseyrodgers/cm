@@ -290,4 +290,9 @@ public class CmGwtUtils {
         });
     }-*/;
     
+    
+    static public native void printWindow() /*-{
+        $wnd.print();
+    }-*/;
+    
 }

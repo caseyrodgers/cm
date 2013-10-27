@@ -10,7 +10,7 @@ public class GetTopicPrescriptionAction implements Action<PrescriptionSessionRes
 
     public GetTopicPrescriptionAction() {}
 
-    /** Return the Prescription data for this runid and session
+    /** Return an anonymous prescription  for this lesson
      *
      * @param runId
      * @param sessionNumber

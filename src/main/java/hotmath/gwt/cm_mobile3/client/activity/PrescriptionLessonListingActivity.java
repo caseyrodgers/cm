@@ -8,23 +8,25 @@ import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
-import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 
 import java.util.List;
+
+import com.google.gwt.event.shared.EventBus;
 
 
 public class PrescriptionLessonListingActivity implements PrescriptionLessonListingView.Presenter {
     
     List<Integer> testQuestionAnswers;
 
-    private com.google.gwt.event.shared.EventBus eventBus;
+    private EventBus eventBus;
     
     static PrescriptionData prescriptionData;
     UserInfo userInfo;
 
-    public PrescriptionLessonListingActivity(com.google.gwt.event.shared.EventBus eventBus) {
+    public PrescriptionLessonListingActivity(EventBus eventBus) {
         this.eventBus = eventBus;
         this.userInfo = SharedData.getUserInfo();
         prescriptionData = SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData();

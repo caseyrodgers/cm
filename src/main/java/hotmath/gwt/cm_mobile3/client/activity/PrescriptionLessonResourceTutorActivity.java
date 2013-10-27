@@ -29,9 +29,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLessonResourceTutorView.Presenter {
 	InmhItemData resourceItem;
-	com.google.gwt.event.shared.EventBus eventBus;
+	com.google.gwt.event.shared.EventBus  eventBus;
 	
-	public PrescriptionLessonResourceTutorActivity(com.google.gwt.event.shared.EventBus eventBus, InmhItemData resourceItem) {
+	public PrescriptionLessonResourceTutorActivity(com.google.gwt.event.shared.EventBus  eventBus, InmhItemData resourceItem) {
 	    this.eventBus = eventBus;
 		this.resourceItem = resourceItem;
 		

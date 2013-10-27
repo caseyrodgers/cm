@@ -1,10 +1,10 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchType;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
@@ -17,9 +17,9 @@ import java.sql.ResultSet;
 import org.apache.log4j.Logger;
 
 /**
- * Read an existing prescription based on a test run
  * 
- * and return data that represents a single program prescription lesson.
+ * Search for a lesson/topic using wildcards
+ * 
  * 
  * @author casey
  * 

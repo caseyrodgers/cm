@@ -8,25 +8,20 @@ import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
-import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
-import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
-import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class PrescriptionLessonResourceResultsActivity  implements PrescriptionLessonResourceResultsView.Presenter {
 	InmhItemData resourceItem;
-	com.google.gwt.event.shared.EventBus eventBus;
+	com.google.gwt.event.shared.EventBus  eventBus;
     private PrescriptionLessonResourceResultsView _lastView;
 
-	public PrescriptionLessonResourceResultsActivity(com.google.gwt.event.shared.EventBus eventBus, InmhItemData resourceItem) {
+	public PrescriptionLessonResourceResultsActivity(com.google.gwt.event.shared.EventBus  eventBus, InmhItemData resourceItem) {
 	    this.eventBus = eventBus;
 		this.resourceItem = resourceItem;
 		

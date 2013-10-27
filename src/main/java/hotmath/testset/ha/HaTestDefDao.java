@@ -139,8 +139,7 @@ public class HaTestDefDao extends SimpleJdbcDaoSupport {
                 testDef.numAlternateTests = rs.getInt("num_alt_tests");
 
                 CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.TEST_DEF, testDef.getName(), testDef);
-                CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.TEST_DEF,
-                        String.valueOf(testDef.getTestDefId()), testDef);
+                CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.TEST_DEF,String.valueOf(testDef.getTestDefId()), testDef);
 
                 return testDef;
             } catch (Exception e) {

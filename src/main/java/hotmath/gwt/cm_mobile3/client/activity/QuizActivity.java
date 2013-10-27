@@ -33,6 +33,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.event.shared.EventBus;
 
 
 public class QuizActivity implements QuizView.Presenter {
@@ -40,9 +41,9 @@ public class QuizActivity implements QuizView.Presenter {
 
     List<Integer> testQuestionAnswers;
 
-    private com.google.gwt.event.shared.EventBus eventBus;
+    private EventBus eventBus;
 
-    public QuizActivity(com.google.gwt.event.shared.EventBus eventBus) {
+    public QuizActivity(EventBus eventBus) {
         setQuizTrigger(this);
         this.eventBus = eventBus;
     }

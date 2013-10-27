@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm.client.ui.context.QuizContext;
-import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -25,9 +24,6 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.LayoutRegion;
@@ -73,17 +69,19 @@ public class CmMainPanel extends BorderLayoutContainer {
 
 		__lastInstance = this;
 		
+		addStyleName("cm-main-panel");
+		
 		getElement().setAttribute("style","position:relative;");
 		
 		
-		_mainContentWrapper = new    CmMainResourceWrapper(WrapperType.OPTIMIZED);
+		_mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED);
 		
 		this.cmGuiDef = cmGuiDef;
 		
 		_westPanel = new BorderLayoutContainer();
 
 		_westPanel.addStyleName("main-panel-west");
-		
+		_westPanelWrapper.addStyleName("main-panel-west-wrapper");		
 		
 		// _westPanel.setAnimCollapse(true);
 		_westPanelWrapper.getHeader().addStyleName("cm-main-panel-header");
@@ -313,7 +311,9 @@ public class CmMainPanel extends BorderLayoutContainer {
                             
                             
                         case EVENT_TYPE_TOPIC_CHANGED:
-                            __lastInstance.removeResource();
+                            if(__lastInstance != null) {
+                                __lastInstance.removeResource();
+                            }
                             break;
 						}
 					}
