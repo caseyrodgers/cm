@@ -5,14 +5,13 @@ import hotmath.cm.util.UserAgentDetect;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaUserDao;
-import hotmath.testset.ha.SolutionDao;
-import hotmath.util.sql.SqlUtilities;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -209,8 +208,10 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         addWebLink(webLink);
     }
 
-    public void addWebLink(final WebLinkModel link) {
+    public void addWebLink(final WebLinkModel link) throws Exception {
 
+        validateWebLink(link.getUrl());
+        
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
@@ -267,6 +268,19 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                     return link.getLinkGroups().size();
                 }
             });
+        }
+    }
+
+    private void validateWebLink(String urlString) throws Exception {
+        try {
+            URL u = new URL(urlString); 
+            HttpURLConnection huc =  (HttpURLConnection)  u.openConnection(); 
+            huc.setRequestMethod("GET"); 
+            huc.connect(); 
+            int rc = huc.getResponseCode();
+        }
+        catch(Exception e) {
+            throw new CmException("Link does not exist: " + urlString);
         }
     }
 }

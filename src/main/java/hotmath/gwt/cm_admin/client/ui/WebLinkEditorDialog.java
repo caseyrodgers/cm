@@ -159,6 +159,14 @@ public class WebLinkEditorDialog extends GWindow {
         addCloseButton();
 
         setEnabledOnOff();
+        
+        
+        addTool(new TextButton("Open Link", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                Window.open(urlField.getValue(),"WebLink","");
+            }
+        }));
 
         setVisible(true);
     }
