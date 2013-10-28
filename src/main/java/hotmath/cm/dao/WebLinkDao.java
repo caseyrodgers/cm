@@ -67,8 +67,8 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                     } else if (!isMobile && device != AvailableOn.DESKTOP_ONLY) {
                         continue; // skip it
                     }
+                activeLinks.add(l);
             }
-            activeLinks.add(l);
         }
         return activeLinks;
     }

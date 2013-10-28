@@ -581,6 +581,13 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>print_it</groupId>
+			<artifactId>print_it</artifactId>
+			<version>1.13</version>
+			<scope>compile</scope>
+		</dependency>		
+
 	</dependencies>
 
 

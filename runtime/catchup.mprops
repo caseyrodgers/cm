@@ -1448,7 +1448,7 @@ and is_active = 1
 
 SELECT td.*, s.name as subject_name
 FROM   HA_TEST_DEF td
-JOIN   SUBJECT s
+LEFT JOIN   SUBJECT s
   ON   s.subj_id = td.subj_id
 WHERE  test_def_id = ?
 
