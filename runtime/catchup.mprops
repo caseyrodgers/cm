@@ -4632,6 +4632,18 @@ WHERE   ins.topic = ?
 ORDER BY ccs.standard_name_new
 
 ####
+.key=GET_CCSS_COVERAGE_FOR_PID
+
+SELECT DISTINCT im.title as lesson, ccs.standard_name_new
+ FROM   inmh_map im
+ JOIN   inmh_standard ins
+   ON   ins.topic = im.file
+ JOIN   common_core_standards ccs
+   ON   ccs.standard_name_new = ins.standard_name_new
+WHERE   im.guid = ?
+ORDER BY im.title
+
+####
 .key=GET_CCSS_DETAIL_FOR_ASSIGNMENT
 
 SELECT DISTINCT ccs.standard_name as original_name, ccs.standard_name_new as name, ccs.level_name, ccs.domain_name, ccs.summary, ccs.description
