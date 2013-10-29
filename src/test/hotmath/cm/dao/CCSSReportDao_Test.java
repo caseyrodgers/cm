@@ -100,6 +100,12 @@ public class CCSSReportDao_Test extends CmDbTestCase {
         assertTrue(coverage != null && coverage.size() > 0);
     }
 
+    public void testGetCCSSCoverageForPID() throws Exception {
+        CCSSReportDao dao = CCSSReportDao.getInstance();
+        List<CCSSCoverageData> coverage = dao.getCCSSCoverageForPID("nationalhm2_coursetest_2_practicetest_44_2");
+        assertTrue(coverage != null && coverage.size() > 0);
+    }
+
     public void testGetCCSSDetailForAssignment() throws Exception {
         CCSSReportDao dao = CCSSReportDao.getInstance();
         List<CCSSDetail> detail = dao.getCCSSDetailForAssignment(3);
