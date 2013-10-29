@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_rpc.client.model;
 
-import java.util.Date;
-
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+
+import java.util.Date;
 
 @SuppressWarnings("serial")
 public class CmParallelProgram implements Response {

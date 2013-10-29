@@ -6,8 +6,8 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
-import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
+import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForCustomProgramTestAction;
 
 import java.sql.Connection;

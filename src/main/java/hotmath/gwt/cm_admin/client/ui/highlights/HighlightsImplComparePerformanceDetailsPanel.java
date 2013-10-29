@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
-import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsImplBase;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 

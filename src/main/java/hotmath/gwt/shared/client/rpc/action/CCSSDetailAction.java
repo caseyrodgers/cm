@@ -1,10 +1,10 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import java.util.List;
-
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.CCSSDetail;
+
+import java.util.List;
 
 public class CCSSDetailAction implements Action<CmList<CCSSDetail>> {
     

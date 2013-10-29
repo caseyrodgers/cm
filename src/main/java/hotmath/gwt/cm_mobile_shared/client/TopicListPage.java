@@ -1,8 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
-import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
-import hotmath.gwt.cm_mobile_shared.client.page.IPage.BackAction;
 
 import java.util.List;
 

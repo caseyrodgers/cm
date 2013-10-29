@@ -1,8 +1,8 @@
 package hotmath.gwt.tutor_viewer.client.ui;
 
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionContextAction;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 
 import com.google.gwt.user.client.Window;

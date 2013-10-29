@@ -20,9 +20,9 @@ import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.event.shared.EventBus;
 
 
 public class SearchActivity implements SearchView.Presenter {

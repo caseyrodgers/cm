@@ -10,10 +10,10 @@ import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.NetTestModel;
 import hotmath.util.sql.SqlUtilities;
 
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+
+import org.apache.log4j.Logger;
 
 
 

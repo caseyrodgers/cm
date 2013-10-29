@@ -1,11 +1,10 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.util.CmWebResourceManager;
-import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlSpritedAction;
-import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 

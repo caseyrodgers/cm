@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import pl.rmalinowski.gwt2swf.client.ui.SWFSettings;
 import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
 import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
@@ -7,8 +8,6 @@ import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
-
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 
 public class WebinarWindow extends CmWindow {

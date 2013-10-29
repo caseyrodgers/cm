@@ -10,9 +10,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
-import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
-import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedHandler;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 

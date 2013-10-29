@@ -33,7 +33,6 @@ import com.sencha.gxt.widget.core.client.event.CellClickEvent.CellClickHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
-import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 
 //import hotmath.gwt.shared.client.rpc.action.GeneratePdfStudentCCSSReportAction;
 

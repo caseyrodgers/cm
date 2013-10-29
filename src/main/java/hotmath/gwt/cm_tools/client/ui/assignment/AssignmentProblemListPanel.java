@@ -24,7 +24,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;

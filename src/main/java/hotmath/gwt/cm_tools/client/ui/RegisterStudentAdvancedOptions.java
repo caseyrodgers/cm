@@ -12,7 +12,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;

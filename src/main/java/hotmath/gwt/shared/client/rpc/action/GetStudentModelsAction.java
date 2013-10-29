@@ -1,10 +1,10 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import java.util.List;
-
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+
+import java.util.List;
 
 public class GetStudentModelsAction implements Action<CmList<StudentModelI>> {
     

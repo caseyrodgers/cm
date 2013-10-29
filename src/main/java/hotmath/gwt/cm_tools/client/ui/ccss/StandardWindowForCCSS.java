@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
-import java.util.Arrays;
-
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -11,8 +9,9 @@ import hotmath.gwt.shared.client.model.CCSSDetail;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSDetailAction;
 
-import com.google.gwt.user.client.ui.HTML;
+import java.util.Arrays;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;

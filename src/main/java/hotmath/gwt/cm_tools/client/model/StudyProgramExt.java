@@ -2,10 +2,6 @@ package hotmath.gwt.cm_tools.client.model;
 
 //import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 
-import com.sencha.gxt.data.shared.LabelProvider;
-import com.sencha.gxt.data.shared.ModelKeyProvider;
-import com.sencha.gxt.data.shared.PropertyAccess;
-
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 

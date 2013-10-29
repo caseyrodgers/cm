@@ -2,9 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.ui.ccss.CCSSStrandCoverage;
 import hotmath.gwt.shared.client.model.CCSSStrandCoverageData;
-import hotmath.gwt.shared.client.rpc.action.CCSSStrandCoverageAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSStrandCoverageDataAction;
 
 public class CCSSStrandCoverageDataCommand_Test extends CmDbTestCase {

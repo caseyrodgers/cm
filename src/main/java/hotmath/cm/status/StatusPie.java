@@ -5,7 +5,6 @@ import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.testset.ha.HaTest;
 
 import java.awt.Color;
-import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.text.AttributedString;
 import java.util.List;

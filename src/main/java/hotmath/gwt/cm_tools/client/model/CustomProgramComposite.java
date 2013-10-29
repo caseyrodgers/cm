@@ -2,8 +2,6 @@ package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
-import java.io.Serializable;
-
 /** Represents a CM Custom Program Object
  * 
  *  A composite of a Custom Program.

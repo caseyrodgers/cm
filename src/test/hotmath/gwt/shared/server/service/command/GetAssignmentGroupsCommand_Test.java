@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGroupsAction;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.util.HMConnectionPool;
 import junit.framework.TestCase;
 

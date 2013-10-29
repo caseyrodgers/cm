@@ -2,9 +2,7 @@ package hotmath.testset.ha;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
-
 import hotmath.spring.SpringManager;
-import hotmath.testset.ha.SolutionDao;
 
 public class SolutionDao_Test extends CmDbTestCase {
 

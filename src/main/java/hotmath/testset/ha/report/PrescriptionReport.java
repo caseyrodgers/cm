@@ -1,6 +1,5 @@
 package hotmath.testset.ha.report;
 
-import hotmath.ProblemID;
 import hotmath.SolutionManager;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescription.SessionData;

@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.cm.dao.CmUserDao;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;

@@ -1,7 +1,6 @@
 package hotmath.gwt.hm_mobile.client;
 
 
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEventHandler;
@@ -14,8 +13,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.hm_mobile.client.event.HmLogoutEvent;
-import hotmath.gwt.hm_mobile.client.event.ShowLoginViewEvent;
-import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
 import hotmath.gwt.hm_mobile.client.view.LoginView;
 
 import com.allen_sauer.gwt.log.client.Log;

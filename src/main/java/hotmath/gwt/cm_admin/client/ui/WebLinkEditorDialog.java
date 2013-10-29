@@ -297,6 +297,11 @@ public class WebLinkEditorDialog extends GWindow {
         if (s.length != 2 || !s[0].startsWith("http")) {
             throw new Exception("URL specified is invalid");
         }
+        
+        String comments = commentsField.getValue();
+        if(comments == null || comments.length() == 0) {
+            throw new Exception("A comment must be specified");
+        }
     }
 
     private Widget createDeleteTargetButton() {

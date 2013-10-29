@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.ui.MyIconButton;
 import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;

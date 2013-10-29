@@ -57,8 +57,6 @@ public class LessonSearchPanel extends SimpleContainer {
         main.setNorthWidget(frame, new BorderLayoutData(45));
         _gridOfLessons = createLessonGrid();
 
-        getLessonsFromServer();
-        
         _lessonText.addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {

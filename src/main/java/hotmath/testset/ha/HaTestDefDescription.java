@@ -1,9 +1,9 @@
 package hotmath.testset.ha;
 
 import hotmath.assessment.AssessmentPrescription;
+import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.InmhItemData;
-import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;

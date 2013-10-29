@@ -1,11 +1,11 @@
 package hotmath.gwt.shared.server.service.command;
 
-import org.junit.Test;
-
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
+
+import org.junit.Test;
 
 public class GetCmProgramFlowCommand_Test extends CmDbTestCase {
     public GetCmProgramFlowCommand_Test(String name) {

@@ -581,13 +581,6 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>print_it</groupId>
-			<artifactId>print_it</artifactId>
-			<version>1.13</version>
-			<scope>compile</scope>
-		</dependency>		
-
 	</dependencies>
 
 
@@ -717,6 +710,7 @@
 						<param>../../../../../../hotmath2/web/css/testset.css</param>
 						<param>../../../../../../hotmath2/web/css/default.css</param>
 						<param>../../../../../../hotmath2/web/css/hotmath_review.css</param>
+						<param>tutor_widget_cm.css</param>
 
 						<param>tutor_layout_tablet.css</param>
    						<param>CatchupMath.css</param>

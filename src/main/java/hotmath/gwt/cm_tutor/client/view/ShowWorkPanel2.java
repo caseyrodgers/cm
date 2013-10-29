@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_tutor.client.view;
 
-import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;

@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
-import org.jfree.util.Log;
-
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;

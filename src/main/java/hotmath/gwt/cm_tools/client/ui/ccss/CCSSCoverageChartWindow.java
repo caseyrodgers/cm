@@ -3,11 +3,9 @@ package hotmath.gwt.cm_tools.client.ui.ccss;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.DateRangeWidget;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -18,10 +16,7 @@ import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSCoverageChartDataAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSCoverageChartDataAction.ReportType;
-import hotmath.gwt.shared.client.rpc.action.GeneratePdfAssessmentReportAction;
-import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

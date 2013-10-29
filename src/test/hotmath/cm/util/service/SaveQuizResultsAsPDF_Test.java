@@ -3,8 +3,6 @@ package hotmath.cm.util.service;
 import hotmath.cm.server.model.QuizResultDatabaseAccessor;
 import hotmath.cm.server.model.QuizResultsAccessor;
 import hotmath.cm.server.model.QuizResultsFileSystemAccessor;
-import hotmath.cm.util.service.SaveQuizResultsAsPDF;
-
 import junit.framework.TestCase;
 
 /*

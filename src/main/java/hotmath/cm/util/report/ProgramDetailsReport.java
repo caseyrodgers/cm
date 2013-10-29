@@ -10,7 +10,6 @@ import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSection;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSubject;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramType;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 
 import java.awt.Color;

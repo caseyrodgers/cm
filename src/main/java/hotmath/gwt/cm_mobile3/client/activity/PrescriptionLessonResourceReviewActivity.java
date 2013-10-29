@@ -13,8 +13,8 @@ import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
 public class PrescriptionLessonResourceReviewActivity implements PrescriptionLessonResourceReviewView.Presenter {

@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -12,9 +13,13 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -29,13 +34,46 @@ public class GroupCombo implements IsWidget {
     
     interface Callback {
         void groupSelected(GroupInfoModel group);
+        WebLinkModel getWebLink();
+    }
+    
+    interface ComboBoxTemplates extends XTemplates {
+        @XTemplate("<div qtip=\"{info}\" qtitle=\"Group Info\">{name}</div>")
+        SafeHtml group(String info, String name);
     }
     
     public GroupCombo(int adminId, final Callback callback) {
         this.adminId = adminId;
         
         ListStore<GroupInfoModel> store = new ListStore<GroupInfoModel>(props.key());
-        _combo = new ComboBox<GroupInfoModel>(store, props.groupName());
+        
+        
+        final ComboBoxTemplates comboBoxTemplates = GWT.create(ComboBoxTemplates.class);        
+        _combo = new ComboBox<GroupInfoModel>(store, props.groupName(),new AbstractSafeHtmlRenderer<GroupInfoModel>() {
+            @Override
+            public SafeHtml render(GroupInfoModel group) {
+                
+                /** how many web links are linked to this group ?
+                 * 
+                 */
+                WebLinkModel link = callback.getWebLink();
+                int count=0;
+                if(link != null) {
+                    for(GroupInfoModel gim: link.getLinkGroups()) {
+                        if(gim.getGroupName().equals(group.getGroupName())) {
+                            count++;
+                        }
+                    }
+                }
+                
+                String linkInfo="";
+                if(count > 0) {
+                    linkInfo = " links: " + count;
+                }
+                return SafeHtmlUtils.fromString("Link info: " + linkInfo);
+            }
+        });
+        
         _combo.setEmptyText("Filter by Group");
         _combo.addSelectionHandler(new SelectionHandler<GroupInfoModel>() {
             @Override

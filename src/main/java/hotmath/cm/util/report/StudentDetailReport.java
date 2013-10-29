@@ -12,9 +12,10 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
@@ -22,18 +23,14 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEvent;
 import com.lowagie.text.pdf.PdfWriter;
-
-import org.apache.log4j.Logger;
 
 public class StudentDetailReport {
 	

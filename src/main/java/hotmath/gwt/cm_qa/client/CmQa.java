@@ -3,10 +3,10 @@ import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_rpc.client.model.CategoryModel;
+import hotmath.gwt.cm_rpc.client.rpc.GetQaCategoriesAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
-import hotmath.gwt.cm_rpc.client.rpc.GetQaCategoriesAction;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;

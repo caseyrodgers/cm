@@ -12,9 +12,9 @@ import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.UpdateStudentAction;
 
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
+
+import org.apache.log4j.Logger;
 
 public class UpdateStudentCommand implements ActionHandler<UpdateStudentAction, StudentModelI> {
 

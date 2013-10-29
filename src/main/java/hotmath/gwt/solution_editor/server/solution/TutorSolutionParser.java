@@ -2,15 +2,12 @@ package hotmath.gwt.solution_editor.server.solution;
 
 import hotmath.HotMathException;
 import hotmath.HotMathTokenReplacements;
-import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.solution.SolutionResources;
 import hotmath.util.HtmlCleanser;
 
-import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.jdom.Document;
@@ -18,12 +15,7 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 
 import sb.logger.SbLogger;
-import sb.util.SbFile;
 import sb.util.SbUtilities;
-
-import com.sdicons.json.model.JSONObject;
-import com.sdicons.json.model.JSONValue;
-import com.sdicons.json.parser.JSONParser;
 
 /** Parse the XML file, and create the abstractions */
 public class TutorSolutionParser {

@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_rpc_assignments.client.model;
 
-import java.util.List;
-
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+
+import java.util.List;
 
 public class AssignmentRealTimeStats implements Response {
     

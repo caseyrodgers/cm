@@ -5,9 +5,9 @@ package hotmath.gwt.solution_editor.client;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetMobileSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.solution_editor.client.rpc.ServerFlusherAction;
 
 import com.extjs.gxt.ui.client.Style.Scroll;

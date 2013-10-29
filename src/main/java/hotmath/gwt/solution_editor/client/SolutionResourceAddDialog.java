@@ -1,5 +1,8 @@
 package hotmath.gwt.solution_editor.client;
 
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.solution_editor.client.rpc.AddMathMlResourceAction;
+
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
@@ -7,8 +10,6 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.solution_editor.client.rpc.AddMathMlResourceAction;
 
 /**
  * Manage the creating and uploading of

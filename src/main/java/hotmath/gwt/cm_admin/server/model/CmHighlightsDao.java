@@ -13,10 +13,9 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
+import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction.ReportType;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
-
-import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction.ReportType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,10 +28,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;

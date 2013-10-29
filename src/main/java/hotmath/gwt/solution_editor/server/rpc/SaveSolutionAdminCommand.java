@@ -1,13 +1,13 @@
 package hotmath.gwt.solution_editor.server.rpc;
 
-import java.sql.Connection;
-
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.solution_editor.client.rpc.SaveSolutionAdminAction;
 import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;
+
+import java.sql.Connection;
 
 /** Not used? *
  * 

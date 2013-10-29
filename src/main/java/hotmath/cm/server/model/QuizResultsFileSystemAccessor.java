@@ -1,9 +1,9 @@
 package hotmath.cm.server.model;
 
-import org.apache.log4j.Logger;
-
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+
+import org.apache.log4j.Logger;
 
 /**
  * 

@@ -9,12 +9,12 @@ import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.gwt.shared.client.rpc.result.GetViewedInmhItemsResult;
 import hotmath.util.sql.SqlUtilities;
 
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
 
 /** Get list of all INMH items that were viewed during 
  *  this run

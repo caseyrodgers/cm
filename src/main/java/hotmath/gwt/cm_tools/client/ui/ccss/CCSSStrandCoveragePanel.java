@@ -5,18 +5,13 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.DateRangeWidget;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.model.CCSSDetail;
 import hotmath.gwt.shared.client.model.CCSSStrandCoverageData;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.CCSSCoverageDataAction;
-import hotmath.gwt.shared.client.rpc.action.CCSSDetailAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSStrandCoverageDataAction;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BrowserEvents;

@@ -7,7 +7,6 @@ import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.RppWidget;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
-import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionWidgetResult;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;

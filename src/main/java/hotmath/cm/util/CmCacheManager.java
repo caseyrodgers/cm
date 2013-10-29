@@ -2,7 +2,6 @@ package hotmath.cm.util;
 
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
-import hotmath.gwt.hm_mobile.client.model.BookModel;
 
 import java.util.Arrays;
 import java.util.List;

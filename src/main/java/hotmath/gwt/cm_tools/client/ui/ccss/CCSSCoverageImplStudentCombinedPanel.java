@@ -1,14 +1,14 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
+import hotmath.gwt.shared.client.model.CCSSCoverageData;
+import hotmath.gwt.shared.client.rpc.action.CCSSCoverageDataAction;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
-
-import hotmath.gwt.shared.client.model.CCSSCoverageData;
-import hotmath.gwt.shared.client.rpc.action.CCSSCoverageDataAction;
 
 /**
  * Combined CCSS Coverage for selected student

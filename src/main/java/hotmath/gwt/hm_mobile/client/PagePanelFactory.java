@@ -1,16 +1,13 @@
 package hotmath.gwt.hm_mobile.client;
 
-import com.google.gwt.user.client.Window;
-
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
-import hotmath.gwt.hm_mobile.client.activity.CategoryListActivity;
-import hotmath.gwt.hm_mobile.client.place.CategoryListPlace;
 import hotmath.gwt.hm_mobile.client.view.CategoryListView;
-import hotmath.gwt.hm_mobile.client.view.HomeView;
+
+import com.google.gwt.user.client.Window;
 
 public class PagePanelFactory {
 

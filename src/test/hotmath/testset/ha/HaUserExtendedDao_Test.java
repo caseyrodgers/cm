@@ -1,9 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
-
 import hotmath.spring.SpringManager;
-import hotmath.testset.ha.HaUserExtendedDao;
 
 public class HaUserExtendedDao_Test extends CmDbTestCase {
 

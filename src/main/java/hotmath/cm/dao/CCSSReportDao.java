@@ -1,5 +1,20 @@
 package hotmath.cm.dao;
 
+import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.QueryHelper;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSStrandCoverage;
+import hotmath.gwt.shared.client.model.CCSSCoverageBar;
+import hotmath.gwt.shared.client.model.CCSSCoverageData;
+import hotmath.gwt.shared.client.model.CCSSData;
+import hotmath.gwt.shared.client.model.CCSSDetail;
+import hotmath.gwt.shared.client.model.CCSSDomain;
+import hotmath.gwt.shared.client.model.CCSSGradeLevel;
+import hotmath.gwt.shared.client.model.CCSSLesson;
+import hotmath.gwt.shared.client.model.CCSSStandard;
+import hotmath.spring.SpringManager;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -19,21 +34,6 @@ import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
-
-import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.cm.util.QueryHelper;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.ui.ccss.CCSSStrandCoverage;
-import hotmath.gwt.shared.client.model.CCSSCoverageBar;
-import hotmath.gwt.shared.client.model.CCSSCoverageData;
-import hotmath.gwt.shared.client.model.CCSSData;
-import hotmath.gwt.shared.client.model.CCSSDetail;
-import hotmath.gwt.shared.client.model.CCSSDomain;
-import hotmath.gwt.shared.client.model.CCSSLesson;
-import hotmath.gwt.shared.client.model.CCSSGradeLevel;
-import hotmath.gwt.shared.client.model.CCSSStandard;
-import hotmath.spring.SpringManager;
 
 /**
  * <code>CCSSReportDao</code> provides access to Common Core State Standards (CCSS) data

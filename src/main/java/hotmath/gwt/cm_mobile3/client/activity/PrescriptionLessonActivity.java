@@ -22,9 +22,9 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.event.shared.EventBus;
 
 public class PrescriptionLessonActivity implements PrescriptionLessonView.Presenter {
 

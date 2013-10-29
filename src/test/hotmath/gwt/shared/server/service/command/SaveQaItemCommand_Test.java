@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQaItemAction;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
 public class SaveQaItemCommand_Test extends CmDbTestCase {
     

@@ -1,6 +1,5 @@
 package hotmath.testset.ha;
 
-import java.sql.Connection;
 import java.util.List;
 
 /** Placement HaTestDef that will automatically 

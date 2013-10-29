@@ -1,7 +1,6 @@
 package hotmath.cm.server.model;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
-import hotmath.cm.server.model.QuizResultsModel;
 
 public class QuizResultsPDFDao_Test extends CmDbTestCase { 
     

@@ -1,13 +1,13 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
+import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
-
-import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
-import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
 /**
  * - Least Effort: Least Effort from <start date> to <end date> Ordered listing

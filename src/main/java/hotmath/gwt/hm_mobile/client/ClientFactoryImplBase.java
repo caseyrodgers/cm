@@ -22,7 +22,6 @@ import hotmath.gwt.hm_mobile.client.view.TutorView;
 import hotmath.gwt.hm_mobile.client.view.TutorViewImpl;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.place.shared.PlaceController;
 
 public class ClientFactoryImplBase implements ClientFactory {

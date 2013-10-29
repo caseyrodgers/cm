@@ -1,5 +1,8 @@
 package hotmath.cm.server.filter;
 
+import hotmath.gwt.cm_rpc_core.client.ClientInfo;
+import hotmath.gwt.cm_rpc_core.server.service.ClientInfoHolder;
+
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -11,9 +14,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
-
-import hotmath.gwt.cm_rpc_core.client.ClientInfo;
-import hotmath.gwt.cm_rpc_core.server.service.ClientInfoHolder;
 
 /**
  *

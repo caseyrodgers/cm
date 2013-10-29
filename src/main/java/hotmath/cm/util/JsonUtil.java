@@ -1,9 +1,8 @@
 package hotmath.cm.util;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import org.apache.log4j.Logger;
 
 public class JsonUtil {
 

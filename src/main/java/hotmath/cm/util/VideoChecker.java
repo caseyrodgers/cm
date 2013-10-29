@@ -7,7 +7,6 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
-import sb.client.SbTesterFrameGeneric;
 import sb.util.SbException;
 import sb.util.SbTestImpl;
 

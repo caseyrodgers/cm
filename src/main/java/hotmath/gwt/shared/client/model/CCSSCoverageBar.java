@@ -1,10 +1,10 @@
 package hotmath.gwt.shared.client.model;
 
-import java.util.Date;
-
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+
+import java.util.Date;
 
 /**
  * 

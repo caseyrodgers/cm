@@ -1,12 +1,12 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.gwt.cm_rpc.client.model.Topic;
+import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
+import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-import hotmath.gwt.cm_rpc.client.model.Topic;
-import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
-import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchType;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.util.sql.SqlUtilities;
 

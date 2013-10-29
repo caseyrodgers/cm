@@ -1,6 +1,5 @@
 package hotmath.testset.ha;
 
-import hotmath.HotMathExceptionSolutionNotFound;
 import hotmath.ProblemID;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CompressHelper;

@@ -1,8 +1,9 @@
 package hotmath.gwt.cm.server;
 
+import hotmath.util.HMConnectionPool;
+
 import java.sql.Connection;
 
-import hotmath.util.HMConnectionPool;
 import junit.framework.TestCase;
 
 public class DbTestCase extends TestCase {

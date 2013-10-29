@@ -1,22 +1,18 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_tools.client.model.AssignmentModel;
+import hotmath.gwt.cm_tools.client.model.GradeBookModel;
+import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
-
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.model.AssignmentModel;
-import hotmath.gwt.cm_tools.client.model.GradeBookModel;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 public class HomeworkDetailsWindow extends CmWindow {
 

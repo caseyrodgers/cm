@@ -1,8 +1,8 @@
 package hotmath.gwt.solution_editor.client;
 
-import com.google.gwt.user.client.ui.Frame;
-
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+
+import com.google.gwt.user.client.ui.Frame;
 
 
 public class ShowHelpWindow extends CmWindow {

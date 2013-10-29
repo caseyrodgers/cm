@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
-import java.util.List;
-
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
+
+import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

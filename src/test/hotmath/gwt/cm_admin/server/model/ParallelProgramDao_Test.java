@@ -1,8 +1,5 @@
 package hotmath.gwt.cm_admin.server.model;
 
-import java.util.Date;
-import java.util.List;
-
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.model.CmParallelProgram;
 import hotmath.gwt.cm_rpc.client.model.CmProgram;
@@ -11,6 +8,9 @@ import hotmath.gwt.cm_rpc.client.model.CmProgramInfo;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramUsageModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+
+import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 

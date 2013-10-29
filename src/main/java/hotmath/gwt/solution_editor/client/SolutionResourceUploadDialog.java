@@ -1,14 +1,19 @@
 package hotmath.gwt.solution_editor.client;
 
-import com.extjs.gxt.ui.client.event.*;
+import hotmath.gwt.cm_core.client.CmEvent;
+import hotmath.gwt.cm_core.client.EventBus;
+import hotmath.gwt.cm_core.client.EventTypes;
+
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FormEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.form.FileUploadField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.user.client.ui.Hidden;
-import hotmath.gwt.cm_core.client.CmEvent;
-import hotmath.gwt.cm_core.client.EventBus;
-import hotmath.gwt.cm_core.client.EventTypes;
 
 public class SolutionResourceUploadDialog extends Window {
 

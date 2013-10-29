@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import com.google.gwt.user.client.ui.Label;
-
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 

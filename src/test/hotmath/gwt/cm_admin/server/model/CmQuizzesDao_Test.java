@@ -1,8 +1,5 @@
 package hotmath.gwt.cm_admin.server.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -11,6 +8,9 @@ import hotmath.gwt.shared.client.model.CustomQuizId;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.gwt.shared.client.rpc.action.SaveCustomQuizAction;
 import hotmath.gwt.shared.server.service.command.SaveCustomQuizCommand;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class CmQuizzesDao_Test extends CmDbTestCase {

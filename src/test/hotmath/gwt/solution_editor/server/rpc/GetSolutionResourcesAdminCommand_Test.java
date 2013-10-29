@@ -3,8 +3,8 @@ package hotmath.gwt.solution_editor.server.rpc;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.solution_editor.client.rpc.GetSolutionResourcesAdminAction;
-import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 import hotmath.gwt.solution_editor.client.rpc.GetSolutionResourcesAdminAction.ResourceType;
+import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
 public class GetSolutionResourcesAdminCommand_Test extends CmDbTestCase {
     public GetSolutionResourcesAdminCommand_Test(String name) {

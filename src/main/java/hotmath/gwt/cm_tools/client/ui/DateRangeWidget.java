@@ -4,8 +4,6 @@ import java.util.Date;
 
 import com.google.gwt.user.client.ui.Label;
 
-import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
-
 /**
  * 
  * @author bob

@@ -1,11 +1,10 @@
 package hotmath.cm;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmWebResourceManager;
+
+import java.io.File;
+import java.io.FileWriter;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

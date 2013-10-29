@@ -2,8 +2,6 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
-import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
-import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;

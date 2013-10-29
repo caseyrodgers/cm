@@ -5,8 +5,8 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 

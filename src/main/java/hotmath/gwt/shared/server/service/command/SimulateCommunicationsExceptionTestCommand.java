@@ -6,9 +6,9 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.action.SimulateCommunicationsExceptionTestAction;
 
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
+
+import org.apache.log4j.Logger;
 
 public class SimulateCommunicationsExceptionTestCommand implements ActionHandler<SimulateCommunicationsExceptionTestAction, RpcData>{
 

@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
-import com.google.gwt.user.client.ui.Widget;
-
 import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
+
+import com.google.gwt.user.client.ui.Widget;
 
 public class HighlightsImplHighestAverageQuizScores extends HighlightsImplBase {
     HighlightsImplHighestAverageQuizScoresDetailsPanel panel = new HighlightsImplHighestAverageQuizScoresDetailsPanel(this);

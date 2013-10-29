@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.Callback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.PidStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
@@ -10,7 +9,6 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentRealTimeStatsAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForLessonWindow;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForProblemWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;

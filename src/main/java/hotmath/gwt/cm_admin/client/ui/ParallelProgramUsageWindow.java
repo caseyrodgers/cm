@@ -15,6 +15,14 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfParallelProgramUsageReportAction;
 import hotmath.gwt.shared.client.rpc.action.GetParallelProgramUsageAction;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.data.shared.ListStore;
@@ -33,15 +41,6 @@ import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.menu.MenuItem;
 import com.sencha.gxt.widget.core.client.toolbar.FillToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
-
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.ui.HTML;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  * Displays Student status in selected Parallel Program

@@ -1438,8 +1438,10 @@ ORDER BY test_def_id
 
 .key=TEST_FOR_TEST_NAME
 
-SELECT *
-FROM   HA_TEST_DEF
+SELECT d.*, s.subject as subject_name
+FROM   HA_TEST_DEF td
+  LEFT JOIN SUBJECT s
+  ON   s.subj_id = td.subj_id
 WHERE  test_name = ?
 and is_active = 1 
 

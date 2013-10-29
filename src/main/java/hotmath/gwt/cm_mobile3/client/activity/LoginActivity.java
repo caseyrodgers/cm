@@ -14,10 +14,10 @@ import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import java.util.Date;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.event.shared.EventBus;
 
 public class LoginActivity implements LoginView.Presenter {
     

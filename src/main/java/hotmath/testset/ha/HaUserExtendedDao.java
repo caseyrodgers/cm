@@ -6,7 +6,6 @@ import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
-import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.spring.SpringManager;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
