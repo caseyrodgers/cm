@@ -9,6 +9,8 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetActiveGroupsAction;
 
+import java.util.List;
+
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -27,53 +29,55 @@ import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
 public class GroupCombo implements IsWidget {
-    
+
     ComboBox<GroupInfoModel> _combo;
     GroupComboProperties props = GWT.create(GroupComboProperties.class);
     private int adminId;
-    
+
     interface Callback {
         void groupSelected(GroupInfoModel group);
-        WebLinkModel getWebLink();
+        List<WebLinkModel> getWebLinks();
     }
-    
+
     interface ComboBoxTemplates extends XTemplates {
         @XTemplate("<div qtip=\"{info}\" qtitle=\"Group Info\">{name}</div>")
         SafeHtml group(String info, String name);
     }
-    
+
     public GroupCombo(int adminId, final Callback callback) {
         this.adminId = adminId;
-        
+
         ListStore<GroupInfoModel> store = new ListStore<GroupInfoModel>(props.key());
-        
-        
-        final ComboBoxTemplates comboBoxTemplates = GWT.create(ComboBoxTemplates.class);        
-        _combo = new ComboBox<GroupInfoModel>(store, props.groupName(),new AbstractSafeHtmlRenderer<GroupInfoModel>() {
+
+        final ComboBoxTemplates comboBoxTemplates = GWT.create(ComboBoxTemplates.class);
+        _combo = new ComboBox<GroupInfoModel>(store, props.groupName(), new AbstractSafeHtmlRenderer<GroupInfoModel>() {
             @Override
             public SafeHtml render(GroupInfoModel group) {
-                
-                /** how many web links are linked to this group ?
+
+                /**
+                 * how many web links are linked to this group ?
                  * 
                  */
-                WebLinkModel link = callback.getWebLink();
-                int count=0;
-                if(link != null) {
-                    for(GroupInfoModel gim: link.getLinkGroups()) {
-                        if(gim.getGroupName().equals(group.getGroupName())) {
+                int count = 0;
+                for (WebLinkModel l : callback.getWebLinks()) {
+                    for (GroupInfoModel gim : l.getLinkGroups()) {
+                        if (gim.getGroupName().equals(group.getGroupName())) {
                             count++;
                         }
                     }
                 }
-                
-                String linkInfo="";
-                if(count > 0) {
-                    linkInfo = " links: " + count;
+
+                String linkInfo = "";
+                if (count > 0) {
+                    linkInfo = " specific links: " + count;
                 }
-                return SafeHtmlUtils.fromString("Link info: " + linkInfo);
+                else {
+                    linkInfo = " No specific links";
+                }
+                return comboBoxTemplates.group(linkInfo,  group.getGroupName());
             }
         });
-        
+
         _combo.setEmptyText("Filter by Group");
         _combo.addSelectionHandler(new SelectionHandler<GroupInfoModel>() {
             @Override
@@ -82,38 +86,39 @@ public class GroupCombo implements IsWidget {
             }
         });
         _combo.setTriggerAction(TriggerAction.ALL);
-        
+
         getGroupsFromServer();
     }
 
     private void getGroupsFromServer() {
-        new RetryAction <CmList<GroupInfoModel>>() {
+        new RetryAction<CmList<GroupInfoModel>>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true, false);
                 CmServiceAsync s = CmShared.getCmService();
                 GetActiveGroupsAction action = new GetActiveGroupsAction(adminId);
                 setAction(action);
-                s.execute(action,this);
+                s.execute(action, this);
             }
+
             public void oncapture(CmList<GroupInfoModel> result) {
                 CmBusyManager.setBusy(false);
                 _combo.getStore().clear();
-                _combo.getStore().add(new GroupInfoModel(0,0,"-- No Group Filter --",0,true,false));
+                _combo.getStore().add(new GroupInfoModel(0, 0, "-- No Group Filter --", 0, true, false));
                 _combo.getStore().addAll(result);
             }
-        }.register();    
+        }.register();
     }
 
     @Override
     public Widget asWidget() {
         return _combo;
     }
-    
+
     interface GroupComboProperties extends PropertyAccess<String> {
         @Path("groupId")
         public ModelKeyProvider<GroupInfoModel> key();
-        
+
         public LabelProvider<GroupInfoModel> groupName();
     }
 }

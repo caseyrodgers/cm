@@ -97,6 +97,7 @@ public class WebLinksManager extends GWindow {
     private GroupCombo _groupCombo;
 
     private void buildUi() {
+        
         _groupCombo = new GroupCombo(this.adminId, new Callback() {
             @Override
             public void groupSelected(GroupInfoModel group) {
@@ -104,10 +105,11 @@ public class WebLinksManager extends GWindow {
             }
             
             @Override
-            public WebLinkModel getWebLink() {
-                return getSelectedWebLink(false);
+            public List<WebLinkModel> getWebLinks() {
+                return _allLinks;
             }
         });
+        
         _privateLinksPanel.addTool(_groupCombo.asWidget());
         _privateLinksPanel.addTool(new HTML("&nbsp;&nbsp;"));
         _privateLinksPanel.addTool(createAddButton());
@@ -312,7 +314,7 @@ public class WebLinksManager extends GWindow {
     }
 
     private Widget createViewButton() {
-        TextButton button = new TextButton("View", new SelectHandler() {
+        TextButton button = new TextButton("Open Link", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 openCurrent();

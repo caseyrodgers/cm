@@ -21,6 +21,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
@@ -38,7 +39,6 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderL
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextArea;
@@ -60,7 +60,7 @@ public class WebLinkEditorDialog extends GWindow {
     private CallbackOnComplete callbackOnComplete;
     private ContentPanel _groupsPanel;
     private ComboBox<AvailableDevice> _availableDevice;
-    private CheckBox _isPublic = new CheckBox();
+    private ComboBox<ShareLink> _shareLink;
     private EditType editType;
     private int adminId;
 
@@ -71,12 +71,12 @@ public class WebLinkEditorDialog extends GWindow {
         this.callbackOnComplete = callbackOnComplete;
 
         this.webLinkModel = webLinkModel;
-        setPixelSize(550, 440);
+        setPixelSize(550, 480);
         setMaximizable(false);
 
         setHeadingText("Web Link Editor: " + webLinkModel.getName());
         _main = new BorderLayoutContainer();
-        BorderLayoutData bld = new BorderLayoutData(145);
+        BorderLayoutData bld = new BorderLayoutData(185);
         // bld.setSplit(true);
 
         FramedPanel frame = new FramedPanel();
@@ -97,20 +97,25 @@ public class WebLinkEditorDialog extends GWindow {
         int ordinal = av.ordinal();
         _availableDevice.setValue(_availableDevice.getStore().get(ordinal));
 
-        _isPublic.setValue(webLinkModel.isPublicAvailability());
-        _isPublic.setToolTip("Should this web link be made public?");
+        _shareLink = createShareLinkCombo();
+        if(!webLinkModel.isPublicAvailability()) {
+            _shareLink.setValue(_shareLink.getStore().get(0));
+        }
+        else {
+            _shareLink.setValue(_shareLink.getStore().get(1));
+        }
+
         
-        FieldLabel isPublicField = new MyFieldLabel(_isPublic, "Public",40, 20);
-        isPublicField.getElement().setAttribute("style",  "position: absolute;right: 0;z-index: 100");
-        
-        //isPublicField.getElement().setAttribute("style",  "position: absolute;right: 10px;");
+
         FlowLayoutContainer flow = new FlowLayoutContainer();
-        flow.add(isPublicField);
         flow.add(new MyFieldLabel(nameField, "Web Link Name",100,200));
         flow.add(new FieldLabel(urlField, "URL"));
         flow.add(new FieldLabel(commentsField,"Comments"));
-        flow.add(new FieldLabel(_availableDevice, "Available On"));
+        flow.add(new MyFieldLabel(_shareLink, "Share Link",100,160));        
+        flow.add(new MyFieldLabel(_availableDevice, "Platform(s)",100,160));
         
+        flow.add(new HTML("<p style='font-size:.8em;font-size: italic;color: #666;font-weight: bold;'>NOTE: The Name field is shown to students, and the comments field is shown to other teachers.</p>"));
+
         frame.setWidget(flow);
 
         _main.setNorthWidget(frame, bld);
@@ -150,10 +155,9 @@ public class WebLinkEditorDialog extends GWindow {
             _groupsPanel.setEnabled(false);
             urlField.setEnabled(false);
             _availableDevice.setEnabled(false);
-            _isPublic.setValue(false);
-            _isPublic.setVisible(false);
-            _isPublic.getParent().setVisible(false);
-            
+            _shareLink.setValue(_shareLink.getStore().get(0));
+            _shareLink.setVisible(false);
+            _shareLink.getParent().setVisible(false);
         }
         addButton(saveButton);
         addCloseButton();
@@ -169,6 +173,25 @@ public class WebLinkEditorDialog extends GWindow {
         }));
 
         setVisible(true);
+    }
+
+    interface ShareLinkProps extends PropertyAccess<String> {
+        @Path("share")
+        ModelKeyProvider<ShareLink> key();
+        LabelProvider<ShareLink> share();
+    }
+    
+    private ComboBox<ShareLink> createShareLinkCombo() {
+        ShareLinkProps shareLinkProps = GWT.create(ShareLinkProps.class);
+        ListStore<ShareLink> store = new ListStore<ShareLink>(shareLinkProps.key());
+        store.add(new ShareLink("Our school only"));
+        store.add(new ShareLink("All Catchup Math schools"));
+        ComboBox<ShareLink> cb = new ComboBox<ShareLink>(store, shareLinkProps.share());
+        cb.setAllowBlank(false);
+        cb.setForceSelection(true);
+        cb.setTriggerAction(TriggerAction.ALL);
+        cb.setToolTip("Should this link be shared with other schools?");
+        return cb;
     }
 
     interface AvailDeviceProps extends PropertyAccess<String> {
@@ -250,7 +273,7 @@ public class WebLinkEditorDialog extends GWindow {
         
         webLinkModel.setAvailableWhen(_availableDevice.getValue().getAvailWhen());
         
-        webLinkModel.setPublicAvailability(_isPublic.getValue());
+        webLinkModel.setPublicAvailability(!_shareLink.getValue().equals(_shareLink.getStore().get(0)));
         
         new RetryAction<RpcData>() {
             @Override
@@ -415,6 +438,17 @@ public class WebLinkEditorDialog extends GWindow {
         
         public int getId() {
             return this.id;
+        }
+    }
+    
+    class ShareLink {
+        String share;
+        public ShareLink(String share) {
+            this.share = share;
+        }
+        
+        public String getShare() {
+            return this.share;
         }
     }
 }
