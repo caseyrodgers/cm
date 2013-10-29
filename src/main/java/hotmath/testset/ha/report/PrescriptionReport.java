@@ -199,6 +199,11 @@ public class PrescriptionReport {
                 List<String> pids = test.getPids();
 
                 for (String pid : pids) {
+                    
+                    if(!pid.equals("elemalg_9_2_1_19_1")) {
+                        continue;
+                    }
+                    
                     /**
                      * Quick way to test a single pid if(!pid.equals(
                      * "nationalhm2_CourseTest_1_PracticeTest_63_1")) continue;
