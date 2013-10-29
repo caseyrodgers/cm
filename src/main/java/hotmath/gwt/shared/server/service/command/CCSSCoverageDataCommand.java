@@ -93,6 +93,10 @@ public class CCSSCoverageDataCommand implements ActionHandler<CCSSCoverageDataAc
                 	list = toCmList(crDao.getCCSSCoverageForLesson(action.getKey()));
                     break;
 
+                case PID:
+                	list = toCmList(crDao.getCCSSCoverageForPID(action.getKey()));
+                    break;
+
                 default:
                     throw new Exception("Unknown report type: " + action);
             }

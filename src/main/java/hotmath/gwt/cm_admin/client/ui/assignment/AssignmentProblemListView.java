@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.Problem
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentRealTimeStatsAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForLessonWindow;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForProblemWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 
@@ -199,8 +200,8 @@ public class AssignmentProblemListView extends ContentPanel {
                     CmMessageBox.showAlert("Please select a problem first");
                     return;
                 }
-                LessonModel lesson = selected.getProblem().getLesson();
-                new CCSSCoverageForLessonWindow(lesson, _assignment.getAdminId());
+                ProblemDto problem = selected.getProblem();
+                new CCSSCoverageForProblemWindow(problem, _assignment.getAdminId());
 
             }
         });
