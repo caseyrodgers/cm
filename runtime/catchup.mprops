@@ -4608,14 +4608,16 @@ order by ccs.standard_name_new
 ####
 .key=GET_CCSS_COVERAGE_FOR_ASSIGNMENT
 
-SELECT DISTINCT cap.lesson, ccs.standard_name_new
- FROM   CM_ASSIGNMENT_PIDS cap
- JOIN   inmh_standard ins
-   ON   ins.topic = cap.lesson_file 
- JOIN   common_core_standards ccs
-   ON   ccs.standard_name_new = ins.standard_name_new
-WHERE   cap.assign_key = ?
-ORDER BY cap.lesson, ccs.standard_name_new
+SELECT DISTINCT im.title as lesson, ccs.standard_name_new
+  FROM   CM_ASSIGNMENT_PIDS cap
+  JOIN   inmh_map im
+    ON   im.guid = cap.pid
+  JOIN   inmh_standard ins
+    ON   ins.topic = im.file
+  JOIN   common_core_standards ccs
+    ON   ccs.standard_name_new = ins.standard_name_new
+ WHERE   cap.assign_key = ?
+ ORDER BY im.title, ccs.standard_name_new
 
 ####
 .key=GET_CCSS_COVERAGE_FOR_LESSON
