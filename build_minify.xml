@@ -106,6 +106,9 @@
 
                 gwt-resources/css/CatchupMathMobile3.css
                 gwt-resources/css/CmMobileAssignments.css
+                gwt-resources/css/tutor_widget_cm.css
+
+                  
 
              " />
         </concat>
