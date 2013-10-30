@@ -4,6 +4,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -339,7 +340,9 @@ public class ShowWorkPanel2 extends Composite {
         /** callback to get needed indexing information 
          * (ie, each app will have different needs)
          */
-        whiteboardActions.getActions().add(_whiteboardOutCallback.createWhiteboardSaveAction(pid,  CommandType.DELETE, index + ""));
+        SaveWhiteboardDataAction action = (SaveWhiteboardDataAction)_whiteboardOutCallback.createWhiteboardSaveAction(pid,  CommandType.DELETE, index + "");
+        action.setIndex(index);
+        whiteboardActions.getActions().add(action);
         saveWhiteboardToServer();
     }
     
