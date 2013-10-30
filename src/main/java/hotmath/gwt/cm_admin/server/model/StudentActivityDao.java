@@ -180,7 +180,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
                 int count = rs.getInt("activity_count");
                 String type = rs.getString("activity_type");
-                int time = map.get(ActivityTypeEnum.valueOf(type.toUpperCase())).timeOnTask;
+                ActivityTime aTime = map.get(ActivityTypeEnum.valueOf(type.toUpperCase()));
+                int time = (aTime != null) ? aTime.timeOnTask : 0;
                 totalTime += time * count;
             }
             TimeOnTask tot = new TimeOnTask();
