@@ -29,7 +29,7 @@ public class UserActivityLogDialog extends GWindow {
     public UserActivityLogDialog(StudentModelI student) {
         super(true);
         this.student = student;
-        setHeadingText("User Activity Log for: " + student.getName());
+        setHeadingText("Active Time Log for: " + student.getName());
         setPixelSize(250,  300);
         setVisible(true);
         createGrid();
