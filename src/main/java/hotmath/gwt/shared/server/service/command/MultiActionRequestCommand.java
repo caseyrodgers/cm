@@ -21,8 +21,6 @@ public class MultiActionRequestCommand implements ActionHandler<MultiActionReque
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public CmList<Response> execute(Connection conn, MultiActionRequestAction action) throws Exception {
-        
-        System.out.println("MultiActionRequestCommand DEBUG: RUNNING " + action.getActions().size());
         CmList<Response> responses = new CmArrayList<Response>();
         for(Action<? extends Response> runAct: action.getActions()) {
             /** create a call a new instance of the real command object
