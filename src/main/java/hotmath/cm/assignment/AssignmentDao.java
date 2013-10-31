@@ -207,7 +207,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     return rs.getInt("count_pids");
                 }
             });
-            if (cnt == 0) {
+            if (ass.getStatus().equals("Draft") || cnt == 0) {
+                /** only if there are not already pids assigned.
+                 * 
+                 */
                 deleteAssignmentPids(assKey);
 
                 String sqlPids = "insert into CM_ASSIGNMENT_PIDS(assign_key, pid, label, lesson, lesson_file, ordinal_number)values(?,?,?,?,?,?)";
