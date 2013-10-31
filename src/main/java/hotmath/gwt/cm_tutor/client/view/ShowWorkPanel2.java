@@ -343,7 +343,6 @@ public class ShowWorkPanel2 extends Composite {
         SaveWhiteboardDataAction action = (SaveWhiteboardDataAction)_whiteboardOutCallback.createWhiteboardSaveAction(pid,  CommandType.DELETE, index + "");
         action.setIndex(index);
         whiteboardActions.getActions().add(action);
-        saveWhiteboardToServer();
     }
     
 
