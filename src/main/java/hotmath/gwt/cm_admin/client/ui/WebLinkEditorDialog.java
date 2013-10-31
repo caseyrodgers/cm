@@ -22,6 +22,7 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
@@ -59,62 +60,66 @@ public class WebLinkEditorDialog extends GWindow {
     private WebLinkModel webLinkModel;
     private CallbackOnComplete callbackOnComplete;
     private ContentPanel _groupsPanel;
-    private ComboBox<AvailableDevice> _availableDevice;
-    private ComboBox<ShareLink> _shareLink;
+    
+    
     private EditType editType;
     private int adminId;
 
-    public WebLinkEditorDialog(EditType editType, int adminId, WebLinkModel webLinkModel, CallbackOnComplete callbackOnComplete) {
+    public WebLinkEditorDialog(EditType editType, int adminId, WebLinkModel webLinkModelIn, CallbackOnComplete callbackOnComplete) {
         super(false);
         this.adminId = adminId;
         this.editType = editType;
         this.callbackOnComplete = callbackOnComplete;
 
-        this.webLinkModel = webLinkModel;
+        this.webLinkModel = webLinkModelIn;
         setPixelSize(550, 480);
         setMaximizable(false);
 
         setHeadingText("Web Link Editor: " + webLinkModel.getName());
         _main = new BorderLayoutContainer();
-        BorderLayoutData bld = new BorderLayoutData(185);
+        BorderLayoutData bld = new BorderLayoutData(145);
         // bld.setSplit(true);
 
         FramedPanel frame = new FramedPanel();
         frame.setHeaderVisible(false);
         nameField = new TextField();
+        nameField.setToolTip("The field shown to students");
         nameField.setValue(webLinkModel.getName());
         urlField = new TextField();
         urlField.setWidth(400);
         urlField.setValue(webLinkModel.getUrl());
 
         commentsField.setWidth(400);
+        commentsField.setToolTip("Information shown to teachers");
         commentsField.setValue(webLinkModel.getComments());
-
-        
-        _availableDevice = createAvailableCombo();
-        
-        AvailableOn av = webLinkModel.getAvailableWhen();
-        int ordinal = av.ordinal();
-        _availableDevice.setValue(_availableDevice.getStore().get(ordinal));
-
-        _shareLink = createShareLinkCombo();
-        if(!webLinkModel.isPublicAvailability()) {
-            _shareLink.setValue(_shareLink.getStore().get(0));
-        }
-        else {
-            _shareLink.setValue(_shareLink.getStore().get(1));
-        }
-
         
 
         FlowLayoutContainer flow = new FlowLayoutContainer();
-        flow.add(new MyFieldLabel(nameField, "Web Link Name",100,200));
-        flow.add(new FieldLabel(urlField, "URL"));
-        flow.add(new FieldLabel(commentsField,"Comments"));
-        flow.add(new MyFieldLabel(_shareLink, "Share Link",100,160));        
-        flow.add(new MyFieldLabel(_availableDevice, "Platform(s)",100,160));
         
-        flow.add(new HTML("<p style='font-size:.8em;font-size: italic;color: #666;font-weight: bold;'>NOTE: The Name field is shown to students, and the comments field is shown to other teachers.</p>"));
+        flow.add(new MyFieldLabel(nameField, "Web Link Name",100,200));
+        
+        HorizontalPanel hpanel = new HorizontalPanel();
+        hpanel.add(new MyFieldLabel(urlField, "URL",100,370));
+        hpanel.add(new TextButton("Visit", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                Window.open(urlField.getValue(),"WebLink","");
+            }
+        }));
+        flow.add(hpanel);
+        flow.add(new FieldLabel(commentsField,"Comment"));
+        flow.add(new TextButton("Options>>", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                new WebLinkOptionsDialog(webLinkModel);
+            }
+        }));
+
+        //flow.add(new MyFieldLabel(_shareLink, "Share Link",100,160));        
+        //flow.add(new MyFieldLabel(_availableDevice, "Platform(s)",100,160));
+        
+        
+        //flow.add(new HTML("<p style='font-size:.8em;font-size: italic;color: #666;font-weight: bold;'>NOTE: The Name field is shown to students, and the comments field is shown to other teachers.</p>"));
 
         frame.setWidget(flow);
 
@@ -154,10 +159,10 @@ public class WebLinkEditorDialog extends GWindow {
             saveButton.setText("Import Web Link");
             _groupsPanel.setEnabled(false);
             urlField.setEnabled(false);
-            _availableDevice.setEnabled(false);
-            _shareLink.setValue(_shareLink.getStore().get(0));
-            _shareLink.setVisible(false);
-            _shareLink.getParent().setVisible(false);
+//            _availableDevice.setEnabled(false);
+//            _shareLink.setValue(_shareLink.getStore().get(0));
+//            _shareLink.setVisible(false);
+//            _shareLink.getParent().setVisible(false);
         }
         addButton(saveButton);
         addCloseButton();
@@ -165,58 +170,10 @@ public class WebLinkEditorDialog extends GWindow {
         setEnabledOnOff();
         
         
-        addTool(new TextButton("Open Link", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                Window.open(urlField.getValue(),"WebLink","");
-            }
-        }));
 
         setVisible(true);
     }
 
-    interface ShareLinkProps extends PropertyAccess<String> {
-        @Path("share")
-        ModelKeyProvider<ShareLink> key();
-        LabelProvider<ShareLink> share();
-    }
-    
-    private ComboBox<ShareLink> createShareLinkCombo() {
-        ShareLinkProps shareLinkProps = GWT.create(ShareLinkProps.class);
-        ListStore<ShareLink> store = new ListStore<ShareLink>(shareLinkProps.key());
-        store.add(new ShareLink("Our school only"));
-        store.add(new ShareLink("All Catchup Math schools"));
-        ComboBox<ShareLink> cb = new ComboBox<ShareLink>(store, shareLinkProps.share());
-        cb.setAllowBlank(false);
-        cb.setForceSelection(true);
-        cb.setTriggerAction(TriggerAction.ALL);
-        cb.setToolTip("Should this link be shared with other schools?");
-        return cb;
-    }
-
-    interface AvailDeviceProps extends PropertyAccess<String> {
-
-        LabelProvider<AvailableDevice> device();
-        @Path("id")
-        ModelKeyProvider<AvailableDevice> key();
-    }
-    
-    private ComboBox<AvailableDevice> createAvailableCombo() {
-        AvailDeviceProps props = GWT.create(AvailDeviceProps.class);
-        ListStore<AvailableDevice> store = new ListStore<AvailableDevice>(props.key());
-        ComboBox<AvailableDevice> combo = new ComboBox<AvailableDevice>(store, props.device());
-        
-        combo.getStore().add(new AvailableDevice("Desktop and Mobile",AvailableOn.DESKTOP_AND_MOBILE));
-        combo.getStore().add(new AvailableDevice("Desktop Only", AvailableOn.DESKTOP_ONLY));
-        combo.getStore().add(new AvailableDevice("Mobile Only", AvailableOn.MOBILE_ONLY));
-        
-        combo.setAllowBlank(false);
-        combo.setForceSelection(true);
-        combo.setTriggerAction(TriggerAction.ALL);
-        
-        combo.setToolTip("On what type of devices should this web link be shown?");
-        return combo;
-    }
 
     private Widget createDeleteGroupButton() {
         return new TextButton("Delete", new SelectHandler() {
@@ -270,11 +227,6 @@ public class WebLinkEditorDialog extends GWindow {
 
         webLinkModel.getLinkGroups().clear();
         webLinkModel.getLinkGroups().addAll(_gridGroups._grid4Groups.getStore().getAll());
-        
-        webLinkModel.setAvailableWhen(_availableDevice.getValue().getAvailWhen());
-        
-        webLinkModel.setPublicAvailability(!_shareLink.getValue().equals(_shareLink.getStore().get(0)));
-        
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
@@ -416,41 +368,7 @@ public class WebLinkEditorDialog extends GWindow {
         });
     }
     
-    class AvailableDevice {
-        String device;
-        private int id;
-        private AvailableOn availableWhen;
-        
-        public AvailableDevice(String label, AvailableOn available) {
-            this.availableWhen = available;
-            device = label;
-            id = available.ordinal();
-        }
-        
-        public AvailableOn getAvailWhen() {
-            // TODO Auto-generated method stub
-            return availableWhen;
-        }
 
-        public String getDevice() {
-            return device;
-        }
-        
-        public int getId() {
-            return this.id;
-        }
-    }
-    
-    class ShareLink {
-        String share;
-        public ShareLink(String share) {
-            this.share = share;
-        }
-        
-        public String getShare() {
-            return this.share;
-        }
-    }
 }
 
 

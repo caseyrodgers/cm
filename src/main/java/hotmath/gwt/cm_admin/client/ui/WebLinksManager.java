@@ -24,6 +24,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
@@ -33,6 +34,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.cell.core.client.TextButtonCell;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -115,7 +117,6 @@ public class WebLinksManager extends GWindow {
         _privateLinksPanel.addTool(createAddButton());
         _privateLinksPanel.addTool(createDelButton());
         _privateLinksPanel.addTool(createEditButton());
-        _privateLinksPanel.addTool(createViewButton());
 
         // _groupCombo.asWidget().getElement().setAttribute("style",
         // "left: 20px");
@@ -175,7 +176,7 @@ public class WebLinksManager extends GWindow {
             }
         });
         _publicLinksPanel.setWidget(_grid4PublicLinks);
-        TextButton importBtn = new TextButton("Import", new SelectHandler() {
+        TextButton importBtn = new TextButton("Copy", new SelectHandler() {
 
             @Override
             public void onSelect(SelectEvent event) {
@@ -219,12 +220,52 @@ public class WebLinksManager extends GWindow {
     private Grid<WebLinkModel> createLinkGrid() {
         ListStore<WebLinkModel> store = new ListStore<WebLinkModel>(gridProps.id());
         List<ColumnConfig<WebLinkModel, ?>> cols = new ArrayList<ColumnConfig<WebLinkModel, ?>>();
-        cols.add(new ColumnConfig<WebLinkModel, String>(gridProps.name(), 160, "Name"));
-        cols.add(new ColumnConfig<WebLinkModel, String>(gridProps.comments(), 300, "Comments"));
+        
+        ColumnConfig<WebLinkModel, String> nameCol = new ColumnConfig<WebLinkModel, String>(gridProps.name(), 160, "Name");
+        cols.add(nameCol);
+        
+       
+        
+        cols.add(new ColumnConfig<WebLinkModel, String>(gridProps.comments(), 300, "Comment"));
+        ColumnConfig<WebLinkModel, String> buttonCol = new ColumnConfig<WebLinkModel, String>(gridProps.url(), 40, "View");
+        TextButtonCell buttonCell = new TextButtonCell() {
+            public void render(Cell.Context context, String value, com.google.gwt.safehtml.shared.SafeHtmlBuilder sb) {
+                super.render(context, "   ", sb);
+            }
+        };
+        buttonCol.setCell(buttonCell);
+        buttonCell.addSelectHandler(new SelectHandler() {
+           @Override
+           public void onSelect(SelectEvent event) {
+             Cell.Context c = event.getContext();
+             int row = c.getIndex();
+             WebLinkModel link = _allLinks.get(row);
+             Window.open(link.getUrl(), "WebLink", "");
+           }
+         });
+        buttonCell.setHeight(10);
+        buttonCol.setCell(buttonCell);
+        cols.add(buttonCol);
+        
+        
         ColumnModel<WebLinkModel> cm = new ColumnModel<WebLinkModel>(cols);
         Grid<WebLinkModel> grid = new Grid<WebLinkModel>(store, cm);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
+        GridView<WebLinkModel> view = createGridView();
+        view.setAutoExpandColumn(grid.getColumnModel().getColumn(1));
+        view.setAutoFill(true);
+        grid.setView(view);
+        new QuickTip(grid);
+
+        return grid;
+    }
+
+    /** Create grid view that displays specific tooltip on each row
+     * 
+     * @return
+     */
+    private GridView<WebLinkModel> createGridView() {
         GridView<WebLinkModel> view = new GridView<WebLinkModel>() {
             @Override
             protected void processRows(int startRow, boolean skipStripe) {
@@ -273,13 +314,8 @@ public class WebLinksManager extends GWindow {
                     //row.setAttribute("qtitle", "ToolTip&nbsp;Title");
                 }
             }
-        };
-        view.setAutoExpandColumn(grid.getColumnModel().getColumn(1));
-        view.setAutoFill(true);
-        grid.setView(view);
-        new QuickTip(grid);
-
-        return grid;
+        };      
+        return view;
     }
 
     protected void filterByGroup(GroupInfoModel group) {
@@ -415,6 +451,8 @@ public class WebLinksManager extends GWindow {
     public interface GridProperties extends PropertyAccess<String> {
         @Path("name")
         ModelKeyProvider<WebLinkModel> id();
+
+        ValueProvider<WebLinkModel, String> url();
 
         ValueProvider<WebLinkModel, String> name();
 

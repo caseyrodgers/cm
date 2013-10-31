@@ -40,7 +40,7 @@ public class GroupCombo implements IsWidget {
     }
 
     interface ComboBoxTemplates extends XTemplates {
-        @XTemplate("<div qtip=\"{info}\" qtitle=\"Group Info\">{name}</div>")
+        @XTemplate("<div qtip=\"{info}\">{name}</div>")
         SafeHtml group(String info, String name);
     }
 
