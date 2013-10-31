@@ -138,6 +138,13 @@ public class WebLinksManager extends GWindow {
 
         _tabPanel.add(_privateLinksPanel, new TabItemConfig("Our School", false));
 
+        _publicLinksPanel.addTool(new TextButton("Problem?", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                // TODO Auto-generated method stub
+                CmMessageBox.showMessage("Info",  "To request a change to a public link, email support@hotmath.com.");
+            }
+        }));
         _publicLinksPanel.setWidget(new DefaultGxtLoadingPanel());
         _tabPanel.add(_publicLinksPanel, new TabItemConfig("All Schools", false));
 
@@ -183,7 +190,7 @@ public class WebLinksManager extends GWindow {
                 importSelectedWebLink();
             }
         });
-        importBtn.setToolTip("Import selected web link into your private links");
+        importBtn.setToolTip("Copy selected web link into your private links");
         _publicLinksPanel.addTool(importBtn);
 
     }
