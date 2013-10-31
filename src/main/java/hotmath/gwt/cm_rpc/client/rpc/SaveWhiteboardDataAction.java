@@ -87,7 +87,7 @@ public class SaveWhiteboardDataAction implements Action<RpcData> {
 
     @Override
     public String toString() {
-        return "SaveWhiteboardDataAction [commandDataLen=" + (commandData!=null?commandData.length():-1) + ", commandType=" + commandType + ", pid=" + pid
-                + ", rid=" + rid + ", uid=" + uid + "]";
+        return "SaveWhiteboardDataAction [uid=" + uid + ", rid=" + rid + ", pid=" + pid + ", commandData=" + (commandData!=null?commandData.length():0) + ", index=" + index
+                + ", commandType=" + commandType + "]";
     }
 }
