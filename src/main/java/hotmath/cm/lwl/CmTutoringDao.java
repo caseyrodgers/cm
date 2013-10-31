@@ -281,6 +281,8 @@ public class CmTutoringDao {
             psSel.setInt(2, rid);
             psSel.setString(3, pid);
             ResultSet rs = psSel.executeQuery();
+            
+            System.out.println("DELETE WB: " + psSel);
             if(rs.first()) {
                 int wbIdToDel = rs.getInt("whiteboard_id");
                 sql = "delete from HA_TEST_RUN_WHITEBOARD where whiteboard_id = ?";

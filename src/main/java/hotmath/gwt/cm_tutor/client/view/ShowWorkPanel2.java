@@ -335,7 +335,6 @@ public class ShowWorkPanel2 extends Composite {
     
     
     private void whiteboardDelete_Gwt(int index) {
-        Window.alert("Delete wb: " + index);
         _lastCommands.remove(index);
         
         /** callback to get needed indexing information 
