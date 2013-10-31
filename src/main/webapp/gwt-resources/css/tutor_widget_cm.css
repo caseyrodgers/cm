@@ -1,6 +1,28 @@
 /** CM related tutor widget CSS */
+@font-face {
+  font-family: Symbola;
+  src: url(font/Symbola.eot);
+  src: local("Symbola Regular"), local("Symbola"),
+    url(font/Symbola.ttf) format("truetype"),
+    url(font/Symbola.otf) format("opentype")
+}
 #hm_widget_form input[type='text']{
-font-family: MathJax_Main;
-font-size: 19pt;
-font-weight:normal;
+font-family: Symbola,Times New Roman,Times,serif;
+font-size: 17pt;
+font-weight:bold;
+border:1px inset;
+}
+
+#hm_widget_form .input_units{
+font-family: Symbola,Times New Roman,Times,serif;
+font-size: 17pt;
+font-weight:bold;
+}
+
+#hm_widget_form .divider{
+height:2px;
+background: black;
+line-height: 2px;
+border-left:1px inset #000000;
+border-right:1px inset #000000;
 }
