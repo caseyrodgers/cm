@@ -188,7 +188,7 @@ public class WebLinksManager extends GWindow {
                 importSelectedWebLink();
             }
         });
-        importBtn.setToolTip("Copy selected web link into your private links");
+        importBtn.setToolTip("Copy selected web link into Our School list");
         _publicLinksPanel.addTool(importBtn);
 
     }
