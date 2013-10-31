@@ -24,6 +24,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
@@ -31,6 +32,8 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -229,15 +232,40 @@ public class WebLinksManager extends GWindow {
         ColumnConfig<WebLinkModel, String> nameCol = new ColumnConfig<WebLinkModel, String>(gridProps.name(), 160, "Name");
         cols.add(nameCol);
         
-       
         
-        cols.add(new ColumnConfig<WebLinkModel, String>(gridProps.comments(), 300, "Comment"));
-        ColumnConfig<WebLinkModel, String> buttonCol = new ColumnConfig<WebLinkModel, String>(gridProps.url(), 40, "View");
+        ColumnConfig<WebLinkModel, AvailableOn> platForm = new ColumnConfig<WebLinkModel, AvailableOn>(gridProps.availableWhen(), 10, "P");
+        platForm.setToolTip(SafeHtmlUtils.fromString("Platform (M=Mobile, D=Desktop, B=Both"));
+        AbstractCell<AvailableOn> cell = new AbstractCell<AvailableOn>() {
+            @Override
+            public void render(com.google.gwt.cell.client.Cell.Context context, AvailableOn value, SafeHtmlBuilder sb) {
+                String text="";
+                switch(value) {
+                    case DESKTOP_AND_MOBILE:
+                        text="B";
+                        break;
+                        
+                    case DESKTOP_ONLY:
+                        text="D";
+                        break;
+                        
+                    case MOBILE_ONLY:
+                        text="M";
+                        break;
+                }
+                sb.appendEscaped(text);
+            }
+        };
+        platForm.setCell(cell);
+        cols.add(platForm);
+        
+        
+        ColumnConfig<WebLinkModel, String> buttonCol = new ColumnConfig<WebLinkModel, String>(gridProps.url(), 40, "Visit");
         TextButtonCell buttonCell = new TextButtonCell() {
             public void render(Cell.Context context, String value, com.google.gwt.safehtml.shared.SafeHtmlBuilder sb) {
                 super.render(context, "   ", sb);
             }
         };
+        buttonCol.setToolTip(SafeHtmlUtils.fromString("Visit the URL for this web link"));
         buttonCol.setCell(buttonCell);
         buttonCell.addSelectHandler(new SelectHandler() {
            @Override
@@ -251,6 +279,8 @@ public class WebLinksManager extends GWindow {
         buttonCell.setHeight(10);
         buttonCol.setCell(buttonCell);
         cols.add(buttonCol);
+        
+        cols.add(new ColumnConfig<WebLinkModel, String>(gridProps.comments(), 300, "Comment"));
         
         
         ColumnModel<WebLinkModel> cm = new ColumnModel<WebLinkModel>(cols);
@@ -312,9 +342,24 @@ public class WebLinksManager extends GWindow {
                             }
                             lessons += lm.getLessonName();
                         }
-                        tip += "Only for lessons: " + lessons;
+                        tip += "Lessons: " + lessons;
                     }
                     
+                    
+                    tip += "<br/><b>Platform: </b>";
+                    switch(link.getAvailableWhen()) {
+                        case DESKTOP_AND_MOBILE:
+                            tip += " Desktop and Mobile";
+                            break;
+                             
+                        case DESKTOP_ONLY:
+                            tip += " Desktop Only";
+                            break;
+                            
+                        case MOBILE_ONLY:
+                            tip += "Mobile Only";
+                            break;
+                    }
                     row.setAttribute("qtip", tip);
                     //row.setAttribute("qtitle", "ToolTip&nbsp;Title");
                 }
@@ -456,6 +501,8 @@ public class WebLinksManager extends GWindow {
     public interface GridProperties extends PropertyAccess<String> {
         @Path("name")
         ModelKeyProvider<WebLinkModel> id();
+
+        ValueProvider<WebLinkModel, AvailableOn> availableWhen();
 
         ValueProvider<WebLinkModel, String> url();
 

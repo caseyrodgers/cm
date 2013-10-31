@@ -83,14 +83,14 @@ public class WebLinkEditorDialog extends GWindow {
         FramedPanel frame = new FramedPanel();
         frame.setHeaderVisible(false);
         nameField = new TextField();
-        nameField.setToolTip("The field shown to students");
+        nameField.setToolTip("This name is shown to students.");
         nameField.setValue(webLinkModel.getName());
         urlField = new TextField();
         urlField.setWidth(400);
         urlField.setValue(webLinkModel.getUrl());
 
         commentsField.setWidth(400);
-        commentsField.setToolTip("Information shown to teachers");
+        commentsField.setToolTip("This information only shown to teachers.");
         commentsField.setValue(webLinkModel.getComments());
         
 
