@@ -44,6 +44,8 @@ import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -133,20 +135,16 @@ public class WebLinksManager extends GWindow {
                 editCurrent();
             }
         });
-
         _privateLinksPanel.setWidget(_grid4PrivateLinks);
-
         _tabPanel.add(_privateLinksPanel, new TabItemConfig("Our School", false));
 
-        _publicLinksPanel.addTool(new TextButton("Problem?", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                // TODO Auto-generated method stub
-                CmMessageBox.showMessage("Info",  "To request a change to a public link, email support@hotmath.com.");
-            }
-        }));
+        BorderLayoutContainer blc = new BorderLayoutContainer();
+        blc.setCenterWidget(_grid4PublicLinks);
+        blc.setSouthWidget(new HTML("<p style='margin: 5px 0 0 15px;color: #666;font-size: .8em'>To request a change to a public link, email support@hotmath.com.</p>"), new BorderLayoutData(25));
+        
         _publicLinksPanel.setWidget(new DefaultGxtLoadingPanel());
-        _tabPanel.add(_publicLinksPanel, new TabItemConfig("All Schools", false));
+        blc.setCenterWidget(_publicLinksPanel);
+        _tabPanel.add(blc, new TabItemConfig("All Schools", false));
 
         _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
             @Override
