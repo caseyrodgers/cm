@@ -4064,7 +4064,13 @@ where global_context_created is null
 or global_context_created < date(now())
 order by pid
 
- 
+####
+.key=GET_LESSON_FOR_PID
+
+SELECT DISTINCT im.title as lesson, im.file as lesson_file
+  FROM  inmh_map im
+ WHERE  im.guid = ?
+ORDER BY im.title 
 
  
 .key=ASSIGNMENT_WHITEBOARD

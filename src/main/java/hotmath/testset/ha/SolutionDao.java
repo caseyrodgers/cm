@@ -3,6 +3,7 @@ package hotmath.testset.ha;
 import hotmath.ProblemID;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CompressHelper;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.util.CmException;
@@ -15,10 +16,12 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -101,7 +104,27 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
                 });
         return matches.size() > 0?matches.get(0):null;
     }
-    
+
+	public List<LessonModel> getLessonsForPID(String pid) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_LESSON_FOR_PID");
+    	List<LessonModel> list = null;
+    	try {
+    		list = getJdbcTemplate().query(sql, new Object[] { pid }, new RowMapper<LessonModel>() {
+    			@Override
+    			public LessonModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				LessonModel data = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
+    				return data;
+    			}
+    		});
+    	}
+    	catch (DataAccessException e) {
+    		__logger.error(String.format("getLessonsForPID(): lessonFile: %s", pid), e);
+    		throw e;
+    	}
+    	if (list == null) list = new ArrayList<LessonModel>();
+    	return list;
+	}
+
     private String loadSolutionContextString(ResultSet rs) throws Exception {
     	byte[] compressed = rs.getBytes("variables");
     	if (compressed[0] != "{".getBytes("UTF-8")[0]) {

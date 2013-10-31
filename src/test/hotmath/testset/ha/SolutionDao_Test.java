@@ -1,8 +1,11 @@
 package hotmath.testset.ha;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.spring.SpringManager;
+
+import java.util.List;
 
 public class SolutionDao_Test extends CmDbTestCase {
 
@@ -57,6 +60,12 @@ public class SolutionDao_Test extends CmDbTestCase {
         String pid = "test_flashcards_reducing-fractions_1_1_1$3";
         SolutionContext solnCtx = dao.getSolutionContext(runId, pid);
         assertTrue(solnCtx != null);
+    }
+
+    public void testGetLessonsForPID() throws Exception {
+        String pid = "nationalhm2_coursetest_1_practicetest_22_1";
+        List<LessonModel> list = dao.getLessonsForPID(pid);
+        assertTrue(list.size() > 0);
     }
 
 }
