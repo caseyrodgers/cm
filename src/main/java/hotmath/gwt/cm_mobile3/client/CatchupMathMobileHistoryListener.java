@@ -6,6 +6,7 @@ import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceActivity
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceResultsActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceReviewActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity;
+import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceWebLinkActivity;
 import hotmath.gwt.cm_mobile3.client.activity.QuizActivity;
 import hotmath.gwt.cm_mobile3.client.activity.SearchActivity;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
@@ -17,6 +18,7 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceReviewView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceView;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceWebLinkView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
@@ -118,7 +120,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                   
                   if(SharedData.getMobileUser().getFlowAction().getPlace() == CmPlace.ASSIGNMENTS_ONLY) {
                       // only show the assignments
-                      History.newItem("assignment_list:" + System.currentTimeMillis());
+                      History.newItem("assignment_list|" + System.currentTimeMillis());
                   }
                   else {
                       // show the current program
@@ -227,9 +229,14 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 view.setPresenter(activity);
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
             } else if (resourceType.equals(CmResourceType.RESULTS)) {
-                PrescriptionLessonResourceResultsActivity activity = new PrescriptionLessonResourceResultsActivity(
-                        eb, itemData);
+                PrescriptionLessonResourceResultsActivity activity = new PrescriptionLessonResourceResultsActivity(eb, itemData);
                 PrescriptionLessonResourceResultsView view = cf.getPrescriptionLessonResourceResultsView();
+                view.setPresenter(activity);
+                eb.fireEvent(new LoadNewPageEvent((IPage) view));
+            }
+            else if(resourceType == CmResourceType.WEBLINK) {
+                PrescriptionLessonResourceWebLinkActivity activity = new PrescriptionLessonResourceWebLinkActivity(eb, itemData);
+                PrescriptionLessonResourceWebLinkView view = cf.getPrescriptionLessonResourceWebLinkView();
                 view.setPresenter(activity);
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
             } else {
@@ -321,7 +328,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
 
         public TokenParser(String name) {
             if (name != null && name.length() > 0) {
-                _parts = name.split(":");
+                _parts = name.split("\\|");
                 type = _parts[0];
 
                 if (_parts.length > 1)

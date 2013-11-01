@@ -14,6 +14,7 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceViewImpl;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceWebLinkView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
@@ -34,6 +35,7 @@ import hotmath.gwt.cm_mobile_shared.client.view.AssignmentView;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoViewImpl;
+import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceWebLinkViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkViewImpl;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -55,7 +57,9 @@ public class ClientFactoryImplBase implements ClientFactory {
     PrescriptionLessonResourceVideoView videoView;
     PrescriptionLessonResourceTutorView tutorView;
     PrescriptionLessonResourceResultsView resultsView;
-    PrescriptionLessonListingView lessonListingView;    
+    PrescriptionLessonListingView lessonListingView;
+    PrescriptionLessonResourceWebLinkView webLinkView;
+    
     EndOfProgramView endOfProgramView;
     SearchView searchView;
     AssignmentProblemView problemView;
@@ -208,5 +212,13 @@ public class ClientFactoryImplBase implements ClientFactory {
             assShowView = new AssignmentShowWorkViewImpl();
         }
         return assShowView;
+    }
+
+    @Override
+    public PrescriptionLessonResourceWebLinkView getPrescriptionLessonResourceWebLinkView() {
+        if(webLinkView == null) {
+            webLinkView = new PrescriptionLessonResourceWebLinkViewImpl();
+        }
+        return webLinkView;
     }
 }

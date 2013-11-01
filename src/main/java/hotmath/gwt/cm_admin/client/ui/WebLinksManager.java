@@ -342,7 +342,7 @@ public class WebLinksManager extends GWindow {
                             }
                             lessons += lm.getLessonName();
                         }
-                        tip += "Lessons: " + lessons;
+                        tip += lessons;
                     }
                     
                     

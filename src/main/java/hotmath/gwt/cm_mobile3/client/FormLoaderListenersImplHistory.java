@@ -68,7 +68,7 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
             @Override
             public void showQuizView(QuizHtmlResult quizResult) {
                 String initial = quizResult != null ? "initial" : "";
-                String token = "quiz:" + initial + ":" + System.currentTimeMillis();
+                String token = "quiz|" + initial + "|" + System.currentTimeMillis();
                 History.newItem(token);
             }
         });
@@ -78,21 +78,21 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
                 if (pid == null) {
                     pid = "";
                 }
-                History.newItem("show_work:" + pid + ":" + title + ":"  + System.currentTimeMillis());
+                History.newItem("show_work|" + pid + ":" + title + ":"  + System.currentTimeMillis());
             }
         });
         eb.addHandler(ShowPrescriptionLessonViewEvent.TYPE, new ShowPrescriptionLessonViewHandler() {
             @Override
             public void showPrescriptionLesson() {
-                History.newItem("lesson:" + System.currentTimeMillis());
+                History.newItem("lesson|" + System.currentTimeMillis());
             }
         });
         eb.addHandler(ShowPrescriptionResourceEvent.TYPE, new ShowPrescriptionResourceHandler() {
             @Override
             public void showResource(InmhItemData resourceItem) {
-                History.newItem("resource:" + resourceItem.getType() + ":" + resourceItem.getFile() + ":"
-                        + "" + ":"
-                        + SharedData.findOrdinalPositionOfResource(resourceItem) + ":" + resourceItem.getTitle() + ":"
+                History.newItem("resource|" + resourceItem.getType() + "|" + resourceItem.getFile() + "|"
+                        + "" + "|"
+                        + SharedData.findOrdinalPositionOfResource(resourceItem) + "|" + resourceItem.getTitle() + "|"
                         + System.currentTimeMillis());
             }
         });

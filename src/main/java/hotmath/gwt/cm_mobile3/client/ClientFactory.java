@@ -7,6 +7,7 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceReviewView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceView;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceWebLinkView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile3.client.view.SearchView;
@@ -42,4 +43,5 @@ public interface ClientFactory {
     AssignmentView getAssignmentView();
     AssignmentProblemView getAssignmentProblemView();
     AssignmentShowWorkView getAssignmentShowworkView();
+    PrescriptionLessonResourceWebLinkView getPrescriptionLessonResourceWebLinkView();
 }
