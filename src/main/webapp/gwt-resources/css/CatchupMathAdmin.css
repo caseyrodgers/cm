@@ -489,6 +489,9 @@ program-details-panel .x-ftree2-node-over {
     margin-right: 50px !important;
 }
 
+.blue-label {
+    color: blue;
+}
 
 .report-legend div {
 	line-height: 1.5em;
