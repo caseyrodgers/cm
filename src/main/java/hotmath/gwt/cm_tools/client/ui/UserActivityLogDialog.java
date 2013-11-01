@@ -12,6 +12,8 @@ import java.util.ArrayList;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -27,15 +29,25 @@ public class UserActivityLogDialog extends GWindow {
     Grid<ActivityLogRecord> grid;
     GridProperties props;
     public UserActivityLogDialog(StudentModelI student) {
-        super(true);
+        super(false);
         this.student = student;
         setHeadingText("Active Time Log for: " + student.getName());
-        setPixelSize(250,  300);
+        setPixelSize(360, 300);
+        addFootnote();
+        super.addCloseButton();
         setVisible(true);
         createGrid();
         readActivityLogFromServer();
+        forceLayout();
     }
-    
+
+    private void addFootnote() {
+        Label label = new Label();
+        label.addStyleName("blue-label");
+        label.setText("Times before Oct 4, 2013 are estimates");
+        getButtonBar().add(label);
+    }
+
     private void readActivityLogFromServer() {
         new RetryAction<CmList<ActivityLogRecord>>() {
             @Override
@@ -50,6 +62,7 @@ public class UserActivityLogDialog extends GWindow {
                 grid.getStore().clear();
                 grid.getStore().addAll(value);
                 grid.setLoadMask(false);
+                forceLayout();
             }
         }.attempt();
     }
@@ -64,6 +77,8 @@ public class UserActivityLogDialog extends GWindow {
         ListStore<ActivityLogRecord> store = new ListStore<ActivityLogRecord>(props.key());
         grid = new Grid<ActivityLogRecord>(store, cols);
         grid.setLoadMask(true);
+        grid.getView().setAutoExpandColumn(cols.getColumn(cols.getColumnCount() - 1));
+        grid.getView().setAutoFill(true);
         setWidget(grid);
     }
     
