@@ -32,7 +32,8 @@ public class UserActivityLogDialog extends GWindow {
         super(false);
         this.student = student;
         setHeadingText("Active Time Log for: " + student.getName());
-        setPixelSize(360, 300);
+        setPixelSize(300, 300);
+        setResizable(false);
         addFootnote();
         super.addCloseButton();
         setVisible(true);
@@ -77,7 +78,7 @@ public class UserActivityLogDialog extends GWindow {
         ListStore<ActivityLogRecord> store = new ListStore<ActivityLogRecord>(props.key());
         grid = new Grid<ActivityLogRecord>(store, cols);
         grid.setLoadMask(true);
-        grid.getView().setAutoExpandColumn(cols.getColumn(cols.getColumnCount() - 1));
+        grid.getView().setAutoExpandColumn(cols.getColumn(0));
         grid.getView().setAutoFill(true);
         setWidget(grid);
     }
