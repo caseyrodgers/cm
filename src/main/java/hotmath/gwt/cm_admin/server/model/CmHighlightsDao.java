@@ -441,7 +441,8 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             while(rs.next()) {
             	int count = rs.getInt("activity_count");
             	String type = rs.getString("activity_type");
-            	int time = map.get(ActivityTypeEnum.valueOf(type.toUpperCase())).timeOnTask;
+            	ActivityTime at = map.get(ActivityTypeEnum.valueOf(type.toUpperCase()));
+            	int time = (at != null) ? at.timeOnTask : 0;
                             	
             	if (userId != rs.getInt("user_id") && userId > 0) {
             		// new student, add previous and reset total time
