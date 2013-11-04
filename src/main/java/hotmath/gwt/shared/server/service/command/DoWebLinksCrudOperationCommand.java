@@ -73,7 +73,7 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
             String emailText = subjectText + "\n\n" +
                "ID: " + webLink.getLinkId() + "\n" +
                "URL: " + webLink.getUrl() + "\n" +
-               "Name: " +   webLink.getUrl() + "\n" +
+               "Name: " +   webLink.getName() + "\n" +
                "Comment: " + webLink.getComments(); 
                
             SbMailManager.getInstance().sendMessage(subjectText,  emailText,  sendTo,  "admin@hotmath.com","text/plain");
