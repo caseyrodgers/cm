@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import org.apache.log4j.Logger;
 
 import sb.mail.SbMailManager;
+import sb.template.SbTemplateManager;
 
 public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksCrudOperationAction, RpcData> {
     
@@ -67,10 +68,9 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
             AccountInfoModel adminRec = CmAdminDao.getInstance().getAccountInfo(webLink.getAdminId());
             
             String subjectText = "Web link suggestion from: " + adminRec.getSchoolName() + " (aid=" + webLink.getAdminId() +  ")";
-            String emailTo = "casey@hotmath.com";
-            
+            String sendTo[] = {"casey@hotmath.com", "support@hotmath.com"};
             String emailText = subjectText + "\nSuggested web link: " + webLink.toString();
-            SbMailManager.getInstance().sendMessage(subjectText,  emailText,  emailTo,  "admin@hotmath.com");
+            SbMailManager.getInstance().sendMessage(subjectText,  emailText,  sendTo,  "admin@hotmath.com","text/plain");
         }
         catch(Exception sbe) {
             logger.error("Error sending web link suggestion email", sbe);
