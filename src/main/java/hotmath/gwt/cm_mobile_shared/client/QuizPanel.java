@@ -94,7 +94,7 @@ public class QuizPanel extends AbstractPagePanel {
                 SharedData.getMobileUser().setRunId(result.getRunId());
                 SharedData.getMobileUser().setPrescripion(result.getPrescriptionData());
                 
-                History.newItem("lesson:" + result.getPrescriptionData().getCurrSession().getSessionNumber());
+                History.newItem("lesson|" + result.getPrescriptionData().getCurrSession().getSessionNumber());
                 
                 EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
             }

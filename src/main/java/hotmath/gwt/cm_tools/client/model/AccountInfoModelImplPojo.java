@@ -164,4 +164,13 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
 	public String getAccountRepEmail() {
 		return accountRepEmail;
 	}
+
+    @Override
+    public String toString() {
+        return "AccountInfoModelImplPojo [schoolName=" + schoolName + ", isFreeAccount=" + isFreeAccount + ", schoolUserName=" + schoolUserName
+                + ", adminUserName=" + adminUserName + ", passcode=" + passcode + ", lastLogin=" + lastLogin + ", expirationDate=" + expirationDate
+                + ", maxStudents=" + maxStudents + ", totalStudents=" + totalStudents + ", countFreeStudents=" + countFreeStudents + ", hasTutoring="
+                + hasTutoring + ", tutoringMinutes=" + tutoringMinutes + ", subscriberId=" + subscriberId + ", studentCountStyle=" + studentCountStyle
+                + ", accountCreateDate=" + accountCreateDate + ", accountRepEmail=" + accountRepEmail + "]";
+    }
 }

@@ -133,7 +133,7 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
     @Override
     public void showLessonChooser() {
         /** Bypass adding to history */
-        History.newItem("listing:" + System.currentTimeMillis());
+        History.newItem("listing|" + System.currentTimeMillis());
     }
 
     @Override

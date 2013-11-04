@@ -12,18 +12,21 @@ public class WebLinkModel implements Response {
     private String name;
     private int adminId;
     private String comments;
-    private boolean publicAvailability;
+    private PublicAvailable publicAvailability;
     
-    public enum AvailableOn {DESKTOP_AND_MOBILE, DESKTOP_ONLY, MOBILE_ONLY};
 
     private List<LessonModel> linkTargets = new ArrayList<LessonModel>();
     private List<GroupInfoModel> linkGroups = new ArrayList<GroupInfoModel>();
     private int linkId;
     private AvailableOn availableWhen;
+    
+    
+    public enum PublicAvailable{PRIVATE,PUBLIC_SUGGESTED,PUBLIC};
+    public enum AvailableOn {DESKTOP_AND_MOBILE, DESKTOP_ONLY, MOBILE_ONLY};
 
     public WebLinkModel() {}
     
-    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available, boolean isPublic) {
+    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available, PublicAvailable isPublic) {
         this.linkId = linkId;
         this.adminId = adminId;
         this.name = name;
@@ -33,12 +36,11 @@ public class WebLinkModel implements Response {
         this.publicAvailability = isPublic;
     }
     
-    
-    public boolean isPublicAvailability() {
+    public PublicAvailable getPublicAvailability() {
         return publicAvailability;
     }
 
-    public void setPublicAvailability(boolean publicAvailability) {
+    public void setPublicAvailability(PublicAvailable publicAvailability) {
         this.publicAvailability = publicAvailability;
     }
 
@@ -124,8 +126,8 @@ public class WebLinkModel implements Response {
 
     @Override
     public String toString() {
-        return "WebLinkModel [url=" + url + ", name=" + name + ", adminId=" + adminId + ", comments=" + comments + ", linkTargets=" + linkTargets
-                + ", linkGroups=" + linkGroups + ", linkId=" + linkId + "]";
+        return "WebLinkModel [url=" + url + ", name=" + name + ", adminId=" + adminId + ", comments=" + comments + ", publicAvailability=" + publicAvailability
+                + ", linkTargets=" + linkTargets + ", linkGroups=" + linkGroups + ", linkId=" + linkId + ", availableWhen=" + availableWhen + "]";
     }
     
 }

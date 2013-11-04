@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
+import hotmath.gwt.cm_rpc.client.model.WebLinkModel.PublicAvailable;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction.CrudOperation;
 import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksForAdminAction;
@@ -312,7 +313,7 @@ public class WebLinksManager extends GWindow {
                     // whatever tooltip you want with optional qtitle
                     String tip = "<b>URL:</b> " + link.getUrl();
 
-                    if(!link.isPublicAvailability()) {
+                    if(link.getPublicAvailability() == PublicAvailable.PUBLIC) {
                         tip += "<br/><b>Groups: </b>";
                         if(link.isAllGroups()) {
                             tip += "For all groups";
@@ -447,7 +448,7 @@ public class WebLinksManager extends GWindow {
         TextButton button = new TextButton("Add", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, false);
+                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, PublicAvailable.PRIVATE);
                 new WebLinkEditorDialog(EditType.NEW_OR_EDIT, adminId, webLinkModel, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {

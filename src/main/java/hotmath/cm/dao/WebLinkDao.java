@@ -5,6 +5,7 @@ import hotmath.cm.util.UserAgentDetect;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
+import hotmath.gwt.cm_rpc.client.model.WebLinkModel.PublicAvailable;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
@@ -151,30 +152,24 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
     public Collection<? extends WebLinkModel> getAllWebLinksDefinedForAdmin(int adminId, boolean readGroupsAndLessons) {
         String sql = "select * from CM_WEBLINK where admin_id = ? order by name";
         if (adminId == 0) {
-            sql = "select * from CM_WEBLINK where admin_id = ? or is_public = 1 order by name";
+            sql = "select * from CM_WEBLINK where admin_id = ? or is_public = 2 order by name";
         }
         List<WebLinkModel> links = getJdbcTemplate().query(sql, new Object[] { adminId }, new RowMapper<WebLinkModel>() {
             @Override
             public WebLinkModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-                int available = rs.getInt("works_on_device");
-                AvailableOn availableOn = AvailableOn.values()[available];
-                boolean isPublic = rs.getInt("is_public") == 0 ? false : true;
-                WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"),
-                        rs.getString("comments"), availableOn, isPublic);
-                return wlm;
+                return extractWebLinkModel(rs);
             }
         });
 
         if (readGroupsAndLessons) {
             for (final WebLinkModel wl : links) {
-                sql = "select wg.*, g.name as group_name " + "from    CM_WEBLINK_GROUPS wg " + "JOIN CM_GROUP g on g.id = wg.group_id " + "where link_id = ? "
+                sql = "select wg.*, g.admin_id, g.name as group_name " + "from    CM_WEBLINK_GROUPS wg " + "JOIN CM_GROUP g on g.id = wg.group_id " + "where link_id = ? "
                         + " order by group_name ";
 
                 List<GroupInfoModel> groups = getJdbcTemplate().query(sql, new Object[] { wl.getLinkId() }, new RowMapper<GroupInfoModel>() {
                     @Override
                     public GroupInfoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new GroupInfoModel(wl.getAdminId(), rs.getInt("group_id"), rs.getString("group_name"), 0, true, false);
+                        return extractWebLinkGroup(rs);
                     }
                 });
                 wl.getLinkGroups().clear();
@@ -192,6 +187,19 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
             }
         }
         return links;
+    }
+
+    
+    protected GroupInfoModel extractWebLinkGroup(ResultSet rs) throws SQLException {
+        return new GroupInfoModel(rs.getInt("admin_id"), rs.getInt("group_id"), rs.getString("group_name"), 0, true, false);
+    }
+
+    protected WebLinkModel extractWebLinkModel(ResultSet rs) throws SQLException {
+        int available = rs.getInt("works_on_device");
+        AvailableOn availableOn = AvailableOn.values()[available];
+        PublicAvailable publicAvail = PublicAvailable.values()[rs.getInt("is_public")];
+        WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"), rs.getString("comments"), availableOn, publicAvail);
+        return wlm;
     }
 
     public void importPublicWebLink(int adminId, WebLinkModel webLink) throws Exception {
@@ -224,7 +232,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                 ps.setString(3, link.getUrl());
                 ps.setString(4, link.getComments());
                 ps.setInt(5, link.getAvailableWhen().ordinal());
-                ps.setInt(6, link.isPublicAvailability() ? 1 : 0);
+                ps.setInt(6, link.getPublicAvailability().ordinal());
                 return ps;
             }
         }, keyHolder);
@@ -283,4 +291,27 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
             throw new CmException("Link does not exist: " + urlString);
         }
     }
+
+    /** Looks up the weblink and returns it or returns null if not found
+     * 
+     * @param linkId
+     * @return
+     */
+    public WebLinkModel getWebLink(int linkId) {
+        String sql = "select * from CM_WEBLINK where id = ?";
+        List<WebLinkModel> links = getJdbcTemplate().query(sql, new Object[] { linkId }, new RowMapper<WebLinkModel>() {
+            @Override
+            public WebLinkModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return extractWebLinkModel(rs);
+            }
+        });
+        if(links.size() > 0) {
+            assert(links.size() < 2);
+            return links.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+
 }

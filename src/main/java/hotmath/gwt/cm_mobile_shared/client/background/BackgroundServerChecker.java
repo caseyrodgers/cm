@@ -1,10 +1,13 @@
 package hotmath.gwt.cm_mobile_shared.client.background;
 
+import hotmath.gwt.cm_core.client.event.CmLogoutEvent;
+import hotmath.gwt.cm_core.client.event.CmLogoutHandler;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckHandler;
 import hotmath.gwt.cm_core.client.model.CatchupMathVersion;
 import hotmath.gwt.cm_core.client.model.UserSyncInfo;
 import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
+import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
@@ -17,6 +20,9 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** Display a message from central server
+ * 
+ * Serves same purpose on mobile as SystemSyncChecker does on desktop.
+ * 
  * 
  * @author casey
  *
@@ -53,7 +59,7 @@ public class BackgroundServerChecker {
         _timer = new Timer() {
             @Override
             public void run() {
-                checkForUpdate();
+                checkForUpdate(true);
             }
         };
         _timer.scheduleRepeating(CHECK_EVERY);
@@ -64,7 +70,7 @@ public class BackgroundServerChecker {
      * 
      * Only call server if window is not currently being displayed.
      */
-    public void checkForUpdate() {
+    public void checkForUpdate(final boolean doFullCheck) {
         if(this.uid == 0) {
             return;
         }
@@ -75,10 +81,17 @@ public class BackgroundServerChecker {
          * 
          */
          GetUserSyncAction action = new GetUserSyncAction(uid);
+         action.setUserActiveMinutes(CmIdleTimeWatcher.getInstance().getActiveMinutes());
          CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<UserSyncInfo>() {
              @Override
             public void onSuccess(UserSyncInfo info) {
                  Log.debug("Check complete");
+                 
+                 if(!doFullCheck) {
+                     return;
+                 }
+                 
+                 
                  CatchupMathVersion version = info.getVersionInfo();
                  
                  if(info.getAssignmentInfo().isAdminUsingAssignments()) {
@@ -118,7 +131,14 @@ public class BackgroundServerChecker {
     static {
         CmRpcCore.EVENT_BUS.addHandler(ForceSystemSyncCheckEvent.TYPE, new ForceSystemSyncCheckHandler() {
             public void forceSyncCheck() {
-                __instance.checkForUpdate();
+                __instance.checkForUpdate(true);
+            }
+        });
+        
+        CmRpcCore.EVENT_BUS.addHandler(CmLogoutEvent.TYPE, new CmLogoutHandler() {
+            @Override
+            public void userLogOut() {
+                __instance.checkForUpdate(false);
             }
         });
     }

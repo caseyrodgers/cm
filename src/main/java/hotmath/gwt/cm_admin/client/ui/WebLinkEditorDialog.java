@@ -5,6 +5,7 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
+import hotmath.gwt.cm_rpc.client.model.WebLinkModel.PublicAvailable;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction.CrudOperation;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -104,7 +105,7 @@ public class WebLinkEditorDialog extends GWindow {
         }));
         flow.add(hpanel);
         flow.add(new FieldLabel(commentsField,"Comment"));
-        flow.add(new TextButton("Options>>", new SelectHandler() {
+        flow.add(new TextButton("Options", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 new WebLinkOptionsDialog(webLinkModel);
@@ -355,7 +356,7 @@ public class WebLinkEditorDialog extends GWindow {
     }
 
     public static void startTest() {
-        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org", "The Comment", AvailableOn.DESKTOP_AND_MOBILE, false);
+        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org", "The Comment", AvailableOn.DESKTOP_AND_MOBILE, PublicAvailable.PUBLIC_SUGGESTED);
         new WebLinkEditorDialog(EditType.NEW_OR_EDIT, 2, model, new CallbackOnComplete() {
             @Override
             public void isComplete() {
