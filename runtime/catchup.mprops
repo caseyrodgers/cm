@@ -4820,6 +4820,13 @@ from 	CM_USER_BUSY
 where uid = ?
 
 
+.key=USER_ACTIVE_TIME_FOR_DATE_RANGE
+
+SELECT  sum(active_minutes) as active_minutes
+  FROM 	CM_USER_BUSY
+ WHERE  uid = ?
+   AND  date(busy_time) between ? and ?
+
 
 .key=GET_USER_ACTIVITY_LOG
 
@@ -4827,6 +4834,14 @@ select date(busy_time) as activity_date, active_minutes
 from CM_USER_BUSY 
 where uid = ?
 group by date(busy_time)
+
+.key=USER_ACTIVITY_LOG_FOR_DATE_RANGE
+
+SELECT  date(busy_time) as activity_date, active_minutes
+  FROM  CM_USER_BUSY 
+ WHERE  uid = ?
+   AND  date(busy_time) between ? and ?
+GROUP BY date(busy_time)
 
 
 

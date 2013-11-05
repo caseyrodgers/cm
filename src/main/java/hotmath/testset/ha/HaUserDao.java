@@ -7,6 +7,7 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.PropertyLoadFileException;
+import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -21,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -386,6 +388,23 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
     }
     
     
+    public int getUserActiveTimeForDateRange(int uid, Date fromDate, Date toDate) throws Exception {
+ 
+    	String[] dates = QueryHelper.getDateTimeRange(fromDate, toDate);
+        
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("USER_ACTIVE_TIME_FOR_DATE_RANGE");
+        Integer activeMinutes = getJdbcTemplate().queryForObject(sql, new Object[] { uid, dates[0], dates[1] },
+                new RowMapper<Integer>() {
+                    @Override
+                    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return rs.getInt("active_minutes");
+                    }
+                });
+        
+        return activeMinutes;
+    }
+    
+    
     /** Return the percentage correct of all widgets entered
      * by this user
      * 
@@ -431,10 +450,11 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
         });        
     }
 
-    public Collection< ActivityLogRecord> getUserActivityLog(final int uid) throws Exception {
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_USER_ACTIVITY_LOG");
+    public Collection<ActivityLogRecord> getUserActivityLog(final int uid, Date fromDate, Date toDate) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("USER_ACTIVITY_LOG_FOR_DATE_RANGE");
+        String dates[] = QueryHelper.getDateTimeRange(fromDate, toDate);
         final int key[] = new int[1];
-        List<ActivityLogRecord> list = getJdbcTemplate().query(sql, new Object[] { uid },
+        List<ActivityLogRecord> list = getJdbcTemplate().query(sql, new Object[] { uid, dates[0], dates[1] },
                 new RowMapper<ActivityLogRecord>() {
                     @Override
                     public ActivityLogRecord mapRow(ResultSet rs, int rowNum) throws SQLException {

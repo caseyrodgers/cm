@@ -18,6 +18,7 @@ public class HaUserDao_Test extends CmDbTestCase {
             setupDemoAccountTestRun();
         }
     }
+
     public void testReadByIdNoCache() throws Exception {
         HaUser user = HaUserDao.getInstance().lookUser(_user.getUid(), false);
         assertTrue(user != null);
@@ -31,5 +32,10 @@ public class HaUserDao_Test extends CmDbTestCase {
     public void testSaveUserTutorInputWidget() throws Exception {
         UserTutorWidgetStats stats = HaUserDao.getInstance().saveUserTutorInputWidgetAnswer(_user.getUserKey(), _testRun.getRunId(),_test.getPids().get(0),"value",false);
         assertTrue(stats.getCorrectPercent() > -1);
+    }
+
+    public void testGetUserActiveTimeForDateRange() throws Exception {
+        int activeTime = HaUserDao.getInstance().getUserActiveTimeForDateRange(12345, null, null);
+        assertTrue(activeTime >= 0);
     }
 }
