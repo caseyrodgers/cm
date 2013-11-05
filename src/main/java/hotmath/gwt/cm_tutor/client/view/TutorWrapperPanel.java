@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tutor.client.view;
 
+import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoEvent;
@@ -363,6 +365,13 @@ public class TutorWrapperPanel extends Composite {
         
         boolean installCustomSteps = tutorCallback.installCustomSteps();
         
+        
+        
+        if(CmGwtUtils.getQueryParameterValue("problemDebug").equals("true")) {
+            enableTutorDebugMode(true);
+        }
+        
+        
         jsni_initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus.name(), installCustomSteps);
 
         debugInfo.setText(pid);
@@ -392,6 +401,17 @@ public class TutorWrapperPanel extends Composite {
         
         CmRpcCore.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
     }
+    
+    
+    /** Enable or disable the tutor loading/problem set debug mode
+     * 
+     * @param trueFalse
+     */
+    private native void enableTutorDebugMode(boolean trueFalse) /*-{
+        $wnd.Flashcard_mngr.debugMode=trueFalse;
+        
+        alert('$wnd.Flashcard_mngr.debugMode=' + $wnd.Flashcard_mngr.debugMode);
+    }-*/;
     
     private native void loadStaticWhiteboards(Element e) /*-{
         alert('attempt setting wb up');
