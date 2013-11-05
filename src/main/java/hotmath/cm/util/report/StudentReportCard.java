@@ -57,7 +57,7 @@ public class StudentReportCard {
         labelMap = new HashMap<String, String>();
 
         labelMap.put("login",      "Login Days: ");
-        labelMap.put("timeontask", "Estimated Time-on-Task: ");
+        labelMap.put("activetime", "Active Time: ");
         labelMap.put("activity",   "Learning Activities: ");
         labelMap.put("review",     "Lessons Completed: ");
         labelMap.put("practice",   "Required Practice Problems: ");
@@ -68,7 +68,7 @@ public class StudentReportCard {
         orderList = new ArrayList<String>();
         
         orderList.add("login");
-        orderList.add("timeontask");
+        orderList.add("activetime");
         orderList.add("review");
         orderList.add("practice");
         orderList.add("flashcard");
