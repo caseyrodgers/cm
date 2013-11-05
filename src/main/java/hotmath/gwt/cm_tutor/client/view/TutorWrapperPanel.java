@@ -409,8 +409,6 @@ public class TutorWrapperPanel extends Composite {
      */
     private native void enableTutorDebugMode(boolean trueFalse) /*-{
         $wnd.Flashcard_mngr.debugMode=trueFalse;
-        
-        alert('$wnd.Flashcard_mngr.debugMode=' + $wnd.Flashcard_mngr.debugMode);
     }-*/;
     
     private native void loadStaticWhiteboards(Element e) /*-{
