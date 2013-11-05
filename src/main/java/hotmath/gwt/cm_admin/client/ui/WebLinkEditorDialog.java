@@ -5,13 +5,13 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
-import hotmath.gwt.cm_rpc.client.model.WebLinkModel.PublicAvailable;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction.CrudOperation;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -47,8 +47,8 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 
 public class WebLinkEditorDialog extends GWindow {
 
-    public enum EditType{IMPORT,NEW_OR_EDIT};
-    
+    public enum EditType{IMPORT,NEW_OR_EDIT}
+
     private BorderLayoutContainer _main;
     private TextField nameField;
     private ContentPanel _linkTargetPanel;
@@ -111,6 +111,18 @@ public class WebLinkEditorDialog extends GWindow {
                 new WebLinkOptionsDialog(webLinkModel);
             }
         }));
+        
+        if(adminId == WebLinkModel.WEBLINK_DEBUG_ADMIN) {
+            if(!webLinkModelIn.isPublicLink()) {
+                addTool(new TextButton("Make Public", new SelectHandler() {
+                    
+                    @Override
+                    public void onSelect(SelectEvent event) {
+                        makePublic();
+                    }
+                }));
+            }
+        }
 
         //flow.add(new MyFieldLabel(_shareLink, "Share Link",100,160));        
         //flow.add(new MyFieldLabel(_availableDevice, "Platform(s)",100,160));
@@ -169,6 +181,36 @@ public class WebLinkEditorDialog extends GWindow {
         
 
         setVisible(true);
+    }
+
+
+    protected void makePublic() {
+        CmMessageBox.confirm("Make Public",  "Are you sure you want to make this link public?", new ConfirmCallback() {
+            @Override
+            public void confirmed(boolean yesNo) {
+                if(yesNo) {
+                    doMakePublic();
+                }
+            }
+        });
+    }
+
+
+    protected void doMakePublic() {
+        CmBusyManager.setBusy(false);
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId,  CrudOperation.IMPORT_TO_PUBLIC, webLinkModel);
+                setAction(action);
+                CmShared.getCmService().execute(action,  this);
+            }
+            
+            @Override
+            public void oncapture(RpcData value) {
+                CmBusyManager.setBusy(false);
+            }
+        }.register();
     }
 
 
@@ -356,7 +398,7 @@ public class WebLinkEditorDialog extends GWindow {
     }
 
     public static void startTest() {
-        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org", "The Comment", AvailableOn.DESKTOP_AND_MOBILE, PublicAvailable.PUBLIC_SUGGESTED);
+        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org", "The Comment", AvailableOn.DESKTOP_AND_MOBILE, false);
         new WebLinkEditorDialog(EditType.NEW_OR_EDIT, 2, model, new CallbackOnComplete() {
             @Override
             public void isComplete() {

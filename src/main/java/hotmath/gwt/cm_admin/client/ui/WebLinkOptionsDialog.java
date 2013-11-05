@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
-import hotmath.gwt.cm_rpc.client.model.WebLinkModel.PublicAvailable;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 
 import com.google.gwt.core.shared.GWT;
@@ -17,12 +16,10 @@ import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
 public class WebLinkOptionsDialog extends GWindow {
-    
-    private CheckBox _shareLink;
+
     private ComboBox<AvailableDevice> _availableDevice;
     private WebLinkModel webLink;
     public WebLinkOptionsDialog(WebLinkModel webLink) {
@@ -45,26 +42,13 @@ public class WebLinkOptionsDialog extends GWindow {
                 hide();
             }
         }));
+        
         setVisible(true);
     }
     
 
     protected void saveOption() {
         // apply changes to passed in webLink
-        
-        if(_shareLink.isEnabled() && _shareLink.getValue() == false) {
-            webLink.setPublicAvailability(PublicAvailable.PRIVATE);
-        }
-        else {
-            PublicAvailable val = webLink.getPublicAvailability();
-            if(webLink.getPublicAvailability() == PublicAvailable.PRIVATE) {
-                webLink.setPublicAvailability(PublicAvailable.PUBLIC_SUGGESTED);
-            }
-            else {
-                // no change
-            }
-        }
-        
         webLink.setAvailableWhen(_availableDevice.getValue().getAvailWhen());
         hide();
     }
@@ -94,25 +78,6 @@ public class WebLinkOptionsDialog extends GWindow {
         frame.setHeaderVisible(false);
         
         FlowPanel flow = new FlowPanel();
-
-        _shareLink = new CheckBox();
-        _shareLink.setToolTip("Submit for sharing with other schools");
-        if(webLink.getPublicAvailability() == PublicAvailable.PRIVATE) {
-            _shareLink.setEnabled(true);
-        }
-        else {
-            _shareLink.setEnabled(false);
-            _shareLink.setValue(true);
-            if(webLink.getPublicAvailability() == PublicAvailable.PUBLIC_SUGGESTED) {
-                _shareLink.setToolTip("This web link has already been submitted for sharing");
-            }
-            else {
-                _shareLink.setToolTip("This web link has been approved for sharing");
-            }
-        }
-        
-        flow.add(new MyFieldLabel(_shareLink, "Sharing",90,10));
-        
         
         AvailableOn av = webLink.getAvailableWhen();
         int ordinal = av.ordinal();

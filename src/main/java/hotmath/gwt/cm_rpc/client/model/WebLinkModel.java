@@ -8,11 +8,13 @@ import java.util.List;
 
 public class WebLinkModel implements Response {
 
+    public static final int WEBLINK_DEBUG_ADMIN = 71; // chuck50
+    
     private String url;
     private String name;
     private int adminId;
     private String comments;
-    private PublicAvailable publicAvailability;
+    private boolean publicLink;
     
 
     private List<LessonModel> linkTargets = new ArrayList<LessonModel>();
@@ -21,27 +23,27 @@ public class WebLinkModel implements Response {
     private AvailableOn availableWhen;
     
     
-    public enum PublicAvailable{PRIVATE,PUBLIC_SUGGESTED,PUBLIC};
     public enum AvailableOn {DESKTOP_AND_MOBILE, DESKTOP_ONLY, MOBILE_ONLY};
 
     public WebLinkModel() {}
     
-    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available, PublicAvailable isPublic) {
+    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available, boolean publicLink) {
         this.linkId = linkId;
         this.adminId = adminId;
         this.name = name;
         this.url = url;
         this.comments = comments;
         this.availableWhen = available;
-        this.publicAvailability = isPublic;
+        this.publicLink = publicLink;
     }
     
-    public PublicAvailable getPublicAvailability() {
-        return publicAvailability;
+
+    public boolean isPublicLink() {
+        return publicLink;
     }
 
-    public void setPublicAvailability(PublicAvailable publicAvailability) {
-        this.publicAvailability = publicAvailability;
+    public void setPublicLink(boolean publicLink) {
+        this.publicLink = publicLink;
     }
 
     public AvailableOn getAvailableWhen() {
@@ -126,7 +128,7 @@ public class WebLinkModel implements Response {
 
     @Override
     public String toString() {
-        return "WebLinkModel [url=" + url + ", name=" + name + ", adminId=" + adminId + ", comments=" + comments + ", publicAvailability=" + publicAvailability
+        return "WebLinkModel [url=" + url + ", name=" + name + ", adminId=" + adminId + ", comments=" + comments + ", publicLink=" + publicLink
                 + ", linkTargets=" + linkTargets + ", linkGroups=" + linkGroups + ", linkId=" + linkId + ", availableWhen=" + availableWhen + "]";
     }
     

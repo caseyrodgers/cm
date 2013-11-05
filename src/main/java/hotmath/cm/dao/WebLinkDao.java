@@ -5,11 +5,11 @@ import hotmath.cm.util.UserAgentDetect;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
-import hotmath.gwt.cm_rpc.client.model.WebLinkModel.PublicAvailable;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaUserDao;
+import hotmath.util.sql.SqlUtilities;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -150,10 +150,16 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
     }
 
     public Collection<? extends WebLinkModel> getAllWebLinksDefinedForAdmin(int adminId, boolean readGroupsAndLessons) {
-        String sql = "select * from CM_WEBLINK where admin_id = ? order by name";
+        String sql = "select * from CM_WEBLINK where admin_id = ? and is_public = 0 order by name";
         if (adminId == 0) {
-            sql = "select * from CM_WEBLINK where admin_id = ? or is_public = 2 order by name";
+            sql = "select * from CM_WEBLINK where is_public = 1 or (admin_id = ?) order by name";   // admin_id is placeholder
         }
+        
+        /** special case for admin of weblinks */
+        if(adminId == WebLinkModel.WEBLINK_DEBUG_ADMIN) {
+            sql = "select * from CM_WEBLINK where is_public = 0 or (-1 = ?) order by date_created desc";  // admin_id is placeholder
+        }
+        
         List<WebLinkModel> links = getJdbcTemplate().query(sql, new Object[] { adminId }, new RowMapper<WebLinkModel>() {
             @Override
             public WebLinkModel mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -195,28 +201,67 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
     }
 
     protected WebLinkModel extractWebLinkModel(ResultSet rs) throws SQLException {
-        int available = rs.getInt("works_on_device");
+        int available = rs.getInt("platform");
         AvailableOn availableOn = AvailableOn.values()[available];
-        PublicAvailable publicAvail = PublicAvailable.values()[rs.getInt("is_public")];
-        WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"), rs.getString("comments"), availableOn, publicAvail);
+        boolean publicLink = rs.getInt("is_public")!=0?true:false;
+        WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"), rs.getString("comments"), availableOn,publicLink);
         return wlm;
     }
 
-    public void importPublicWebLink(int adminId, WebLinkModel webLink) throws Exception {
+    public int importWebLink(int adminId, WebLinkModel webLink) throws Exception {
 
-        if (adminId == webLink.getAdminId()) {
+        /** if (adminId == webLink.getAdminId()) {
             throw new CmException("This weblink is already in your private links");
         }
-
+        */
         webLink.setLinkId(0); // make sure it is new
         webLink.setAdminId(adminId);
         webLink.getLinkGroups().clear();
         
-        
-        addWebLink(webLink);
+        return addWebLink(webLink);
     }
+    
 
-    public void addWebLink(final WebLinkModel link) throws Exception {
+    public void deleteWebLink(final WebLinkModel link) throws Exception {
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+                String sql = "delete from CM_WEBLINK_LESSONS where link_id = ?";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setInt(1, link.getAdminId());
+                return ps;
+            }
+        });            
+
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+                String sql = "delete from CM_WEBLINK_GROUPS where link_id = ?";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setInt(1,  link.getLinkId());
+                return ps;
+            }
+        });            
+
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+                String sql = "delete from CM_WEBLINK where id = ?";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setInt(1,  link.getLinkId());
+                return ps;
+            }
+        });
+    }
+    
+
+    /** Add new weblink and return new link_id
+     * 
+     * @param link
+     * @return
+     * @throws Exception
+     */
+    public int addWebLink(final WebLinkModel link) throws Exception {
 
         validateWebLink(link.getUrl());
         
@@ -224,7 +269,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
-                String sql = "insert into CM_WEBLINK(admin_id, name, url, comments, works_on_device, is_public)values(?,?,?,?,?, ?)";
+                String sql = "insert into CM_WEBLINK(admin_id, name, url, comments, platform, is_public, date_created)values(?,?,?,?,?,?,now())";
                 PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                 ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, link.getAdminId());
@@ -232,7 +277,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                 ps.setString(3, link.getUrl());
                 ps.setString(4, link.getComments());
                 ps.setInt(5, link.getAvailableWhen().ordinal());
-                ps.setInt(6, link.getPublicAvailability().ordinal());
+                ps.setInt(6, link.isPublicLink()?1:0);
                 return ps;
             }
         }, keyHolder);
@@ -277,7 +322,11 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                 }
             });
         }
+        
+        return webLinkId;
     }
+    
+    
 
     private void validateWebLink(String urlString) throws Exception {
         try {
@@ -288,7 +337,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
             int rc = huc.getResponseCode();
         }
         catch(Exception e) {
-            throw new CmException("Link does not exist: " + urlString);
+            throw new CmException("Link URL does not exist: " + urlString);
         }
     }
 

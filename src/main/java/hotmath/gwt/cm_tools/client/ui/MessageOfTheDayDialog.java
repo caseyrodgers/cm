@@ -29,7 +29,7 @@ public class MessageOfTheDayDialog extends GWindow {
         this.callback = callbackIn;
 
         setHeadingText("Catchup Math Teacher Alert");
-        setPixelSize(600,370);
+        setPixelSize(450,370);
         setModal(true);
 
         setWidget(uiBinder.createAndBindUi(this));

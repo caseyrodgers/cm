@@ -7,7 +7,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 public class DoWebLinksCrudOperationAction implements Action<RpcData> {
     
     public enum CrudOperation {
-        ADD,DELETE,UPDATE, IMPORT_FROM_PUBLIC
+        ADD,DELETE,UPDATE, IMPORT_FROM_PUBLIC, IMPORT_TO_PUBLIC
     }
     
     CrudOperation operation;

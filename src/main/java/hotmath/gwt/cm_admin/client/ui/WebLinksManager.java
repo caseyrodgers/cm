@@ -6,7 +6,6 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
-import hotmath.gwt.cm_rpc.client.model.WebLinkModel.PublicAvailable;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction.CrudOperation;
 import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksForAdminAction;
@@ -25,6 +24,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.shared.GWT;
@@ -194,7 +194,54 @@ public class WebLinksManager extends GWindow {
         });
         importBtn.setToolTip("Copy selected web link into Our School list");
         _publicLinksPanel.addTool(importBtn);
+        
+        
+        if(adminId == WebLinkModel.WEBLINK_DEBUG_ADMIN) {
+            _publicLinksPanel.addTool(new TextButton("Remove Public", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    removeSelectedLink();
+                }
+            }));
+        }
 
+    }
+
+    protected void removeSelectedLink() {
+        final WebLinkModel model = _grid4PublicLinks.getSelectionModel().getSelectedItem();
+        if (model == null) {
+            CmMessageBox.showAlert("Please select a public link first");
+            return;
+        }
+
+        CmMessageBox.confirm("Remove Public",  "Are you sure your want to remove this public link?", new ConfirmCallback() {
+            @Override
+            public void confirmed(boolean yesNo) {
+                if(yesNo) {
+                    doRemoveLink(model);
+                }
+            }
+        });
+    }
+
+
+    protected void doRemoveLink(final WebLinkModel webLink) {
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId, CrudOperation.DELETE, webLink);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(RpcData data) {
+                Log.info("Web Link was removed");
+                CmBusyManager.setBusy(false);
+                loadGrid4Public();
+            }
+        }.attempt();        
     }
 
     protected void importSelectedWebLink() {
@@ -313,23 +360,20 @@ public class WebLinksManager extends GWindow {
                     // whatever tooltip you want with optional qtitle
                     String tip = "<b>URL:</b> " + link.getUrl();
 
-                    if(link.getPublicAvailability() == PublicAvailable.PUBLIC) {
-                        tip += "<br/><b>Groups: </b>";
-                        if(link.isAllGroups()) {
-                            tip += "For all groups";
-                        }
-                        else {
-                            String groups = "";
-                            for(GroupInfoModel g: link.getLinkGroups()) {
-                                if(groups.length() > 0) {
-                                    groups += ", ";
-                                }
-                                groups += g.getGroupName();
-                            }
-                            tip += "Only for groups: " + groups;
-                        }
+                    tip += "<br/><b>Groups: </b>";
+                    if(link.isAllGroups()) {
+                        tip += "For all groups";
                     }
-                    
+                    else {
+                        String groups = "";
+                        for(GroupInfoModel g: link.getLinkGroups()) {
+                            if(groups.length() > 0) {
+                                groups += ", ";
+                            }
+                            groups += g.getGroupName();
+                        }
+                        tip += "Only for groups: " + groups;
+                    }
                     
                     tip += "<br/><b>Lessons: </b>";
                     if(link.isAllLessons()) {
@@ -448,7 +492,7 @@ public class WebLinksManager extends GWindow {
         TextButton button = new TextButton("Add", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, PublicAvailable.PRIVATE);
+                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, false);
                 new WebLinkEditorDialog(EditType.NEW_OR_EDIT, adminId, webLinkModel, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {

@@ -3,24 +3,21 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.cm.dao.WebLinkDao;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
-import hotmath.gwt.cm_rpc.client.model.WebLinkModel.PublicAvailable;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc_core.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 
 import org.apache.log4j.Logger;
 
 import sb.mail.SbMailManager;
-import sb.template.SbTemplateManager;
 
-public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksCrudOperationAction, RpcData> {
+public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksCrudOperationAction, RpcData>, ActionHandlerManualConnectionManagement {
     
     Logger logger = Logger.getLogger(DoWebLinksCrudOperationCommand.class);
 
@@ -28,34 +25,43 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
     public RpcData execute(Connection conn, DoWebLinksCrudOperationAction action) throws Exception {
         
         switch(action.getOperation()) {
+        
+        
+            case IMPORT_TO_PUBLIC:
+                action.getWebLink().setPublicLink(true);
+                WebLinkDao.getInstance().importWebLink(action.getAdminId(),action.getWebLink());
+                return new RpcData("status=OK");
+        
             case IMPORT_FROM_PUBLIC:
-                WebLinkDao.getInstance().importPublicWebLink(action.getAdminId(),action.getWebLink());
+                action.getWebLink().setPublicLink(false);
+                WebLinkDao.getInstance().importWebLink(action.getAdminId(),action.getWebLink());
                 return new RpcData("status=OK");
         
             case DELETE:
-                deleteWebLink(conn, action.getWebLink());
+                WebLinkDao.getInstance().deleteWebLink(action.getWebLink());
                 return new RpcData("status=OK");
                 
                 
             case UPDATE:
             case ADD:
 
-                boolean sendSuggestEmail= (action.getWebLink().getPublicAvailability() == PublicAvailable.PUBLIC_SUGGESTED)?true:false;
+                boolean sendSuggestEmail= true;
                 if(action.getWebLink().getLinkId() > 0) {
-                    WebLinkModel webLinkModel = WebLinkDao.getInstance().getWebLink(action.getWebLink().getLinkId());
-                    if(webLinkModel != null && webLinkModel.getPublicAvailability() == PublicAvailable.PUBLIC_SUGGESTED) {
-                        // already been sent
-                        sendSuggestEmail=false;
-                    }
-                    deleteWebLink(conn, action.getWebLink());
-                }
-                
-                
-                if(sendSuggestEmail) {
-                    sendWebLinkSuggestionEmail(action.getWebLink());
+                    // WebLinkModel webLinkModel = WebLinkDao.getInstance().getWebLink(action.getWebLink().getLinkId());
+                    WebLinkDao.getInstance().deleteWebLink(action.getWebLink());
                 }
                 
                 WebLinkDao.getInstance().addWebLink(action.getWebLink());
+                
+                if(action.getAdminId() != WebLinkModel.WEBLINK_DEBUG_ADMIN) {
+                    if(sendSuggestEmail) {
+                        sendWebLinkSuggestionEmail(action.getWebLink());
+                    }
+                    
+                    // make a copy for public library by importing
+                    action.getWebLink().setPublicLink(true); 
+                    WebLinkDao.getInstance().importWebLink(action.getAdminId(), action.getWebLink());
+                }
                 
                 return new RpcData("status=OK");
                 
@@ -83,33 +89,6 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
         }
     }
 
-    private void deleteWebLink(final Connection conn, WebLinkModel link) throws Exception {
-        PreparedStatement ps=null;
-        try {
-            String sql = "delete from CM_WEBLINK_LESSONS where link_id = ?";
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1,  link.getLinkId());
-            ps.executeUpdate();
-            ps.close();
-            
-            sql = "delete from CM_WEBLINK_GROUPS where link_id = ?";
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1,  link.getLinkId());
-            
-            ps.executeUpdate();
-            ps.close();
-
-            sql = "delete from CM_WEBLINK where id = ?";
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1,  link.getLinkId());
-            
-            ps.executeUpdate();
-        }
-        finally {
-            SqlUtilities.releaseResources(null, ps,  null);
-        }
-    }
-    
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return DoWebLinksCrudOperationAction.class;
