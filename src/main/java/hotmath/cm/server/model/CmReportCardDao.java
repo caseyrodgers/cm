@@ -15,6 +15,7 @@ import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestRunDao;
+import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -164,8 +165,9 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
              // set "Login Days": the number of distinct days of activity 
 			 setLoginDays(rval, samList);
 
-			 // set Time-on-task
-			 setTimeOnTask(rval, samList);
+			 // set Active Time
+			 setActiveTime(rval, studentUid, beginDate, endDate);
+			 //setTimeOnTask(rval, samList);
 
 			 // load prescribed lesson data for initial through last programs
 			 //loadPrescribedLessons(filteredList, rval, conn);
@@ -189,7 +191,14 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 return rval;
 	 }
 
-	 private String getTestName(StudentUserProgramModel pm) {
+	 private void setActiveTime(StudentReportCardModelI rval,
+			int studentUid, Date beginDate, Date endDate) throws Exception {
+
+		 int activeTime =  HaUserDao.getInstance().getUserActiveTimeForDateRange(studentUid, beginDate, endDate);
+		 rval.getResourceUsage().put("activetime", activeTime);
+	}
+
+	private String getTestName(StudentUserProgramModel pm) {
 	     String name=null;
 	     if(pm.getCustomProgramId() > 0) {
 	         name = "CP: " + pm.getCustomProgramName();	     
