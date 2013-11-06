@@ -4837,7 +4837,7 @@ group by date(busy_time)
 
 .key=USER_ACTIVITY_LOG_FOR_DATE_RANGE
 
-SELECT  date(busy_time) as activity_date, sum(active_minutes)
+SELECT  date(busy_time) as activity_date, sum(active_minutes) as active_minutes
   FROM  CM_USER_BUSY 
  WHERE  uid = ?
    AND  date(busy_time) between ? and ?
