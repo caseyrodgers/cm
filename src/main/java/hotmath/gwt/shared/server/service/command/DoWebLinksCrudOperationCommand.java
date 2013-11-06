@@ -59,8 +59,8 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
                     if(sendSuggestEmail) {
                         sendWebLinkSuggestionEmail(action.getWebLink());
                     }
-                    String linkLabel = createAdminLinkLabel(action.getWebLink());
-                    action.getWebLink().setName(linkLabel);
+                    String linkLabel = createAdminLinkComment(action.getWebLink());
+                    action.getWebLink().setComments(linkLabel);
                     WebLinkDao.getInstance().importWebLink(WebLinkModel.WEBLINK_DEBUG_ADMIN, action.getWebLink());
                 }
                 
@@ -71,10 +71,12 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
     }
 
     
-    private String createAdminLinkLabel(WebLinkModel webLink) {
+    private String createAdminLinkComment(WebLinkModel webLink) throws Exception {
         SimpleDateFormat _labelFormat = new SimpleDateFormat("M-d HH:m");
         
-        String label = webLink.getName() + ": aid=" + webLink.getAdminId() + ", " + _labelFormat.format(new Date());
+        AccountInfoModel adminInfo = CmAdminDao.getInstance().getAccountInfo(webLink.getAdminId());
+        
+        String label = webLink.getComments() + ": (" + adminInfo.getAdminUserName() + ", " + webLink.getAdminId() + ", " + _labelFormat.format(new Date()) + ")";
         return label;
     }
 

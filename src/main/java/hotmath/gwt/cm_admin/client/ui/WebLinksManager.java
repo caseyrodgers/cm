@@ -105,24 +105,34 @@ public class WebLinksManager extends GWindow {
     private GroupCombo _groupCombo;
 
     private void buildUi() {
-        
+
         _groupCombo = new GroupCombo(this.adminId, new Callback() {
             @Override
             public void groupSelected(GroupInfoModel group) {
                 filterByGroup(group);
             }
-            
+
             @Override
             public List<WebLinkModel> getWebLinks() {
                 return _allLinks;
             }
         });
-        
+
         _privateLinksPanel.addTool(_groupCombo.asWidget());
         _privateLinksPanel.addTool(new HTML("&nbsp;&nbsp;"));
         _privateLinksPanel.addTool(createAddButton());
         _privateLinksPanel.addTool(createDelButton());
         _privateLinksPanel.addTool(createEditButton());
+
+        if (adminId == WebLinkModel.WEBLINK_DEBUG_ADMIN) {
+            _privateLinksPanel.addTool(new TextButton("Make Public", new SelectHandler() {
+
+                @Override
+                public void onSelect(SelectEvent event) {
+                    makePublic();
+                }
+            }));
+        }
 
         // _groupCombo.asWidget().getElement().setAttribute("style",
         // "left: 20px");
@@ -144,8 +154,10 @@ public class WebLinksManager extends GWindow {
 
         BorderLayoutContainer blc = new BorderLayoutContainer();
         blc.setCenterWidget(_grid4PublicLinks);
-        blc.setSouthWidget(new HTML("<p style='margin: 5px 0 0 15px;color: #666;font-size: .8em'>To request a change to a public link, email support@hotmath.com.</p>"), new BorderLayoutData(25));
-        
+        blc.setSouthWidget(new HTML(
+                "<p style='margin: 5px 0 0 15px;color: #666;font-size: .8em'>To request a change to a public link, email support@hotmath.com.</p>"),
+                new BorderLayoutData(25));
+
         _publicLinksPanel.setWidget(new DefaultGxtLoadingPanel());
         blc.setCenterWidget(_publicLinksPanel);
         _tabPanel.add(blc, new TabItemConfig("All Schools", false));
@@ -167,8 +179,56 @@ public class WebLinksManager extends GWindow {
 
         setWidget(_tabPanel);
     }
+    
+    protected void makePublic() {
+        
+        final WebLinkModel model = _grid4PrivateLinks.getSelectionModel().getSelectedItem();
+        if (model == null) {
+            CmMessageBox.showAlert("Please select a public link first");
+            return;
+        }
+        
+        CmMessageBox.confirm("Make Public",  "Are you sure you want to make this link public?", new ConfirmCallback() {
+            @Override
+            public void confirmed(boolean yesNo) {
+                if(yesNo) {
+                    doMakePublic(model);
+                }
+            }
+        });
+    }
 
-    protected void importWebLink(WebLinkModel selectionModel) {
+
+    protected void doMakePublic(final WebLinkModel webLink) {
+        CmBusyManager.setBusy(false);
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId,  CrudOperation.IMPORT_TO_PUBLIC, webLink);
+                setAction(action);
+                CmShared.getCmService().execute(action,  this);
+            }
+            
+            @Override
+            public void oncapture(RpcData value) {
+                CmBusyManager.setBusy(false);
+                CmMessageBox.showMessage("Success",  "Web link was succesfully made public");
+            }
+        }.register();
+    }
+
+    
+
+    protected void viewPublicWebLink() {
+        final WebLinkModel model = _grid4PublicLinks.getSelectionModel().getSelectedItem();
+        if (model == null) {
+            CmMessageBox.showAlert("Please select a public link first");
+            return;
+        }
+        viewPublicWebLink(model);
+    }
+
+    protected void viewPublicWebLink(WebLinkModel selectionModel) {
         new WebLinkEditorDialog(EditType.IMPORT, adminId, selectionModel, new CallbackOnComplete() {
             @Override
             public void isComplete() {
@@ -181,7 +241,7 @@ public class WebLinksManager extends GWindow {
         _grid4PublicLinks.addCellDoubleClickHandler(new CellDoubleClickHandler() {
             @Override
             public void onCellClick(CellDoubleClickEvent event) {
-                importSelectedWebLink();
+                viewPublicWebLink();
             }
         });
         _publicLinksPanel.setWidget(_grid4PublicLinks);
@@ -194,9 +254,8 @@ public class WebLinksManager extends GWindow {
         });
         importBtn.setToolTip("Copy selected web link into Our School list");
         _publicLinksPanel.addTool(importBtn);
-        
-        
-        if(adminId == WebLinkModel.WEBLINK_DEBUG_ADMIN) {
+
+        if (adminId == WebLinkModel.WEBLINK_DEBUG_ADMIN) {
             _publicLinksPanel.addTool(new TextButton("Remove Public", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
@@ -214,16 +273,15 @@ public class WebLinksManager extends GWindow {
             return;
         }
 
-        CmMessageBox.confirm("Remove Public",  "Are you sure your want to remove this public link?", new ConfirmCallback() {
+        CmMessageBox.confirm("Remove Public", "Are you sure your want to remove this public link?", new ConfirmCallback() {
             @Override
             public void confirmed(boolean yesNo) {
-                if(yesNo) {
+                if (yesNo) {
                     doRemoveLink(model);
                 }
             }
         });
     }
-
 
     protected void doRemoveLink(final WebLinkModel webLink) {
         new RetryAction<RpcData>() {
@@ -241,16 +299,53 @@ public class WebLinksManager extends GWindow {
                 CmBusyManager.setBusy(false);
                 loadGrid4Public();
             }
-        }.attempt();        
+        }.attempt();
     }
 
     protected void importSelectedWebLink() {
-        WebLinkModel model = _grid4PublicLinks.getSelectionModel().getSelectedItem();
+        final WebLinkModel model = _grid4PublicLinks.getSelectionModel().getSelectedItem();
         if (model == null) {
-            CmMessageBox.showAlert("Please select a public link first");
+            CmMessageBox.showAlert("Please select a link to import first");
             return;
         }
-        importWebLink(model);
+
+        CmMessageBox.confirm("Copy Web Link", "Are you sure you want to copy this web link into your school's private links?", new ConfirmCallback() {
+            @Override
+            public void confirmed(boolean yesNo) {
+                if (yesNo) {
+                    importWebLink(model);
+                }
+            }
+        });
+    }
+
+    private void importWebLink(final WebLinkModel webLinkModel) {
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId, CrudOperation.IMPORT_FROM_PUBLIC, webLinkModel);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(RpcData data) {
+                CmBusyManager.setBusy(false);
+                CmMessageBox.showMessage("Success", "Web link successfully copied");
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                CmBusyManager.setBusy(false);
+                if (error.getMessage().toLowerCase().contains("duplicate")) {
+                    CmMessageBox.showAlert("This web link is already in your private web links.");
+                } else {
+                    CmMessageBox.showAlert(error.getMessage());
+                }
+            }
+
+        }.attempt();
     }
 
     private void loadGrid4Public() {
@@ -276,37 +371,35 @@ public class WebLinksManager extends GWindow {
     private Grid<WebLinkModel> createLinkGrid() {
         ListStore<WebLinkModel> store = new ListStore<WebLinkModel>(gridProps.id());
         List<ColumnConfig<WebLinkModel, ?>> cols = new ArrayList<ColumnConfig<WebLinkModel, ?>>();
-        
+
         ColumnConfig<WebLinkModel, String> nameCol = new ColumnConfig<WebLinkModel, String>(gridProps.name(), 160, "Name");
         cols.add(nameCol);
-        
-        
+
         ColumnConfig<WebLinkModel, AvailableOn> platForm = new ColumnConfig<WebLinkModel, AvailableOn>(gridProps.availableWhen(), 10, "P");
-        platForm.setToolTip(SafeHtmlUtils.fromString("Platform (M=Mobile, D=Desktop, B=Both"));
+        platForm.setToolTip(SafeHtmlUtils.fromString("Platform (i=IPad, D=Desktop, B=Both"));
         AbstractCell<AvailableOn> cell = new AbstractCell<AvailableOn>() {
             @Override
             public void render(com.google.gwt.cell.client.Cell.Context context, AvailableOn value, SafeHtmlBuilder sb) {
-                String text="";
-                switch(value) {
-                    case DESKTOP_AND_MOBILE:
-                        text="B";
-                        break;
-                        
-                    case DESKTOP_ONLY:
-                        text="D";
-                        break;
-                        
-                    case MOBILE_ONLY:
-                        text="M";
-                        break;
+                String text = "";
+                switch (value) {
+                case DESKTOP_AND_MOBILE:
+                    text = "B";
+                    break;
+
+                case DESKTOP_ONLY:
+                    text = "D";
+                    break;
+
+                case MOBILE_ONLY:
+                    text = "i";
+                    break;
                 }
                 sb.appendEscaped(text);
             }
         };
         platForm.setCell(cell);
         cols.add(platForm);
-        
-        
+
         ColumnConfig<WebLinkModel, String> buttonCol = new ColumnConfig<WebLinkModel, String>(gridProps.url(), 40, "Visit");
         TextButtonCell buttonCell = new TextButtonCell() {
             public void render(Cell.Context context, String value, com.google.gwt.safehtml.shared.SafeHtmlBuilder sb) {
@@ -316,21 +409,20 @@ public class WebLinksManager extends GWindow {
         buttonCol.setToolTip(SafeHtmlUtils.fromString("Visit the URL for this web link"));
         buttonCol.setCell(buttonCell);
         buttonCell.addSelectHandler(new SelectHandler() {
-           @Override
-           public void onSelect(SelectEvent event) {
-             Cell.Context c = event.getContext();
-             int row = c.getIndex();
-             WebLinkModel link = _allLinks.get(row);
-             Window.open(link.getUrl(), "WebLink", "");
-           }
-         });
+            @Override
+            public void onSelect(SelectEvent event) {
+                Cell.Context c = event.getContext();
+                int row = c.getIndex();
+                WebLinkModel link = _allLinks.get(row);
+                Window.open(link.getUrl(), "WebLink", "");
+            }
+        });
         buttonCell.setHeight(10);
         buttonCol.setCell(buttonCell);
         cols.add(buttonCol);
-        
+
         cols.add(new ColumnConfig<WebLinkModel, String>(gridProps.comments(), 300, "Comment"));
-        
-        
+
         ColumnModel<WebLinkModel> cm = new ColumnModel<WebLinkModel>(cols);
         Grid<WebLinkModel> grid = new Grid<WebLinkModel>(store, cm);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -344,7 +436,8 @@ public class WebLinksManager extends GWindow {
         return grid;
     }
 
-    /** Create grid view that displays specific tooltip on each row
+    /**
+     * Create grid view that displays specific tooltip on each row
      * 
      * @return
      */
@@ -361,55 +454,52 @@ public class WebLinksManager extends GWindow {
                     String tip = "<b>URL:</b> " + link.getUrl();
 
                     tip += "<br/><b>Groups: </b>";
-                    if(link.isAllGroups()) {
+                    if (link.isAllGroups()) {
                         tip += "For all groups";
-                    }
-                    else {
+                    } else {
                         String groups = "";
-                        for(GroupInfoModel g: link.getLinkGroups()) {
-                            if(groups.length() > 0) {
+                        for (GroupInfoModel g : link.getLinkGroups()) {
+                            if (groups.length() > 0) {
                                 groups += ", ";
                             }
                             groups += g.getGroupName();
                         }
                         tip += "Only for groups: " + groups;
                     }
-                    
+
                     tip += "<br/><b>Lessons: </b>";
-                    if(link.isAllLessons()) {
+                    if (link.isAllLessons()) {
                         tip += "For all lessons";
-                    }
-                    else {
+                    } else {
                         String lessons = "";
-                        for(LessonModel lm: link.getLinkTargets()) {
-                            if(lessons.length() > 0) {
+                        for (LessonModel lm : link.getLinkTargets()) {
+                            if (lessons.length() > 0) {
                                 lessons += ", ";
                             }
                             lessons += lm.getLessonName();
                         }
                         tip += lessons;
                     }
-                    
-                    
+
                     tip += "<br/><b>Platform: </b>";
-                    switch(link.getAvailableWhen()) {
-                        case DESKTOP_AND_MOBILE:
-                            tip += " Desktop and Mobile";
-                            break;
-                             
-                        case DESKTOP_ONLY:
-                            tip += " Desktop Only";
-                            break;
-                            
-                        case MOBILE_ONLY:
-                            tip += "Mobile Only";
-                            break;
+                    switch (link.getAvailableWhen()) {
+                    case DESKTOP_AND_MOBILE:
+                        tip += " Desktop and Mobile";
+                        break;
+
+                    case DESKTOP_ONLY:
+                        tip += " Desktop Only";
+                        break;
+
+                    case MOBILE_ONLY:
+                        tip += "Mobile Only";
+                        break;
                     }
                     row.setAttribute("qtip", tip);
-                    //row.setAttribute("qtitle", "ToolTip&nbsp;Title");
+                    // row.setAttribute("qtitle", "ToolTip&nbsp;Title");
                 }
             }
-        };      
+        };
         return view;
     }
 
@@ -544,7 +634,7 @@ public class WebLinksManager extends GWindow {
     }
 
     public interface GridProperties extends PropertyAccess<String> {
-        @Path("name")
+        @Path("linkId")
         ModelKeyProvider<WebLinkModel> id();
 
         ValueProvider<WebLinkModel, AvailableOn> availableWhen();

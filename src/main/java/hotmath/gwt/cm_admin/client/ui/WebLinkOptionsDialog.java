@@ -105,9 +105,9 @@ public class WebLinkOptionsDialog extends GWindow {
         ListStore<AvailableDevice> store = new ListStore<AvailableDevice>(props.key());
         ComboBox<AvailableDevice> combo = new ComboBox<AvailableDevice>(store, props.device());
         
-        combo.getStore().add(new AvailableDevice("Desktop and Mobile",AvailableOn.DESKTOP_AND_MOBILE));
+        combo.getStore().add(new AvailableDevice("Desktop and iPad",AvailableOn.DESKTOP_AND_MOBILE));
         combo.getStore().add(new AvailableDevice("Desktop Only", AvailableOn.DESKTOP_ONLY));
-        combo.getStore().add(new AvailableDevice("Mobile Only", AvailableOn.MOBILE_ONLY));
+        combo.getStore().add(new AvailableDevice("iPad Only", AvailableOn.MOBILE_ONLY));
         
         combo.setAllowBlank(false);
         combo.setForceSelection(true);

@@ -11,7 +11,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -105,25 +104,14 @@ public class WebLinkEditorDialog extends GWindow {
         }));
         flow.add(hpanel);
         flow.add(new FieldLabel(commentsField,"Comment"));
-        flow.add(new TextButton("Options", new SelectHandler() {
+        
+        TextButton optionsButton = new TextButton("Options", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 new WebLinkOptionsDialog(webLinkModel);
             }
-        }));
-        
-        if(adminId == WebLinkModel.WEBLINK_DEBUG_ADMIN) {
-            if(!webLinkModelIn.isPublicLink()) {
-                addTool(new TextButton("Make Public", new SelectHandler() {
-                    
-                    @Override
-                    public void onSelect(SelectEvent event) {
-                        makePublic();
-                    }
-                }));
-            }
-        }
-
+        });
+        flow.add(optionsButton);
         //flow.add(new MyFieldLabel(_shareLink, "Share Link",100,160));        
         //flow.add(new MyFieldLabel(_availableDevice, "Platform(s)",100,160));
         
@@ -165,13 +153,13 @@ public class WebLinkEditorDialog extends GWindow {
             }
         });
         if(editType == EditType.IMPORT) {
-            saveButton.setText("Import Web Link");
+            saveButton.setText("Copy Web Link");
             _groupsPanel.setEnabled(false);
             urlField.setEnabled(false);
-//            _availableDevice.setEnabled(false);
-//            _shareLink.setValue(_shareLink.getStore().get(0));
-//            _shareLink.setVisible(false);
-//            _shareLink.getParent().setVisible(false);
+            nameField.setEnabled(false);
+            commentsField.setEnabled(false);
+            optionsButton.setEnabled(false);
+            _linkTargetPanel.setEnabled(false);
         }
         addButton(saveButton);
         addCloseButton();
@@ -183,35 +171,6 @@ public class WebLinkEditorDialog extends GWindow {
         setVisible(true);
     }
 
-
-    protected void makePublic() {
-        CmMessageBox.confirm("Make Public",  "Are you sure you want to make this link public?", new ConfirmCallback() {
-            @Override
-            public void confirmed(boolean yesNo) {
-                if(yesNo) {
-                    doMakePublic();
-                }
-            }
-        });
-    }
-
-
-    protected void doMakePublic() {
-        CmBusyManager.setBusy(false);
-        new RetryAction<RpcData>() {
-            @Override
-            public void attempt() {
-                DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId,  CrudOperation.IMPORT_TO_PUBLIC, webLinkModel);
-                setAction(action);
-                CmShared.getCmService().execute(action,  this);
-            }
-            
-            @Override
-            public void oncapture(RpcData value) {
-                CmBusyManager.setBusy(false);
-            }
-        }.register();
-    }
 
 
     private Widget createDeleteGroupButton() {
