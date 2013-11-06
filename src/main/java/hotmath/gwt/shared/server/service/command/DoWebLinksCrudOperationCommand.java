@@ -85,7 +85,7 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
             AccountInfoModel adminRec = CmAdminDao.getInstance().getAccountInfo(webLink.getAdminId());
             
             String subjectText = "Web link suggestion from: " + adminRec.getSchoolUserName() + " (aid=" + webLink.getAdminId() +  ")";
-            String sendTo[] = {"casey@hotmath.com"};
+            String sendTo[] = {"casey@hotmath.com", "support@hotmath.com"};
             
             String emailText = subjectText + "\n\n" +
                "School Name: " + adminRec.getSchoolName() + "\n" +
