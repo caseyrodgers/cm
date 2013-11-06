@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import java.util.Date;
+
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoStatsAction;
 import hotmath.gwt.cm_rpc.client.rpc.UserInfoStats;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
@@ -39,6 +41,11 @@ public class StudentInfoPanel extends Composite{
             @Override
             public void attempt() {
                 GetUserInfoStatsAction action = new GetUserInfoStatsAction(uid);
+                DateRangeWidget dateRange = DateRangeWidget.getInstance();
+                Date fromDate = dateRange.getFromDate();
+                Date toDate = dateRange.getToDate();
+                action.setFromDate(fromDate);
+                action.setToDate(toDate);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
