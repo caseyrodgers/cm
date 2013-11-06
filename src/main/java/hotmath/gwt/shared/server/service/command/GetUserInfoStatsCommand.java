@@ -19,7 +19,7 @@ public class GetUserInfoStatsCommand implements ActionHandler<GetUserInfoStatsAc
 
     @Override
     public UserInfoStats execute(Connection conn, GetUserInfoStatsAction action) throws Exception {
-        return HaUserDao.getInstance().getUserInfoStats(action.getUid());
+        return HaUserDao.getInstance().getUserInfoStats(action.getUid(), action.getFromDate(), action.getToDate());
     }
 
 }

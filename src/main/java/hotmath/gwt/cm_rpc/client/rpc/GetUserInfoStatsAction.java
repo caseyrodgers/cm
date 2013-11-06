@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
+import java.util.Date;
+
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
 
@@ -10,7 +12,11 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
  */
 public class GetUserInfoStatsAction implements Action<UserInfoStats>{
     
+	private static final long serialVersionUID = -2178743709339367928L;
+
     private int uid;
+    private Date fromDate;
+    private Date toDate;
 
     public GetUserInfoStatsAction(){}
     
@@ -26,7 +32,23 @@ public class GetUserInfoStatsAction implements Action<UserInfoStats>{
         this.uid = uid;
     }
 
-    @Override
+    public Date getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public Date getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
+	}
+
+	@Override
     public String toString() {
         return "GetUserInfoStatsAction [uid=" + uid + "]";
     }
