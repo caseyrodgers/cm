@@ -366,24 +366,17 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
             }
         });
         
-        return getUserInfoTutorStats(uid);
+        return getUserInfoTutorStats(uid, null, null);
     }
     
     
     
-    public UserInfoStats getUserInfoStats(int uid) throws Exception {
+    public UserInfoStats getUserInfoStats(int uid, Date fromDate, Date toDate) throws Exception {
         UserInfoStats uStats=null;
         
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_USER_INFO_STATS");
-        Integer activeMinutes = getJdbcTemplate().queryForObject(sql, new Object[] { uid },
-                new RowMapper<Integer>() {
-                    @Override
-                    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return rs.getInt("active_minutes");
-                    }
-                });
-        
-        uStats = new UserInfoStats(uid,  getUserInfoTutorStats(uid), activeMinutes);
+        int activeMinutes = getUserActiveTimeForDateRange(uid, fromDate, toDate);
+
+        uStats = new UserInfoStats(uid,  getUserInfoTutorStats(uid, fromDate, toDate), activeMinutes);
         return uStats;
     }
     
@@ -411,12 +404,13 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
      * @param uid
      * @return
      */
-    public UserTutorWidgetStats getUserInfoTutorStats(int uid) throws Exception {
-    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("TUTOR_WIDGET_ANSWER_PERCENT");
+    public UserTutorWidgetStats getUserInfoTutorStats(int uid, Date fromDate, Date toDate) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("TUTOR_WIDGET_ANSWER_PERCENT_FOR_DATE_RANGE");
 
     	final double totals[] = new double[2];
     	final int TOTAL_WIDGETS=0, COUNT_CORRECT=1;
-    	getJdbcTemplate().query(sql, new Object[] { uid },new RowMapper<Integer>() {
+    	String dates[] = QueryHelper.getDateTimeRange(fromDate, toDate);
+    	getJdbcTemplate().query(sql, new Object[] { uid, dates[0], dates[1] },new RowMapper<Integer>() {
     		@Override
     		public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
     			boolean correct = rs.getInt("correct")!=0;

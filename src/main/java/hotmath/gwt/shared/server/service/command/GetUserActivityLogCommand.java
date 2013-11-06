@@ -17,7 +17,7 @@ public class GetUserActivityLogCommand implements ActionHandler<GetUserActivityL
     @Override
     public CmList<ActivityLogRecord> execute(Connection conn, GetUserActivityLogAction action) throws Exception {
         CmList<ActivityLogRecord> list = new CmArrayList<ActivityLogRecord>();
-        list.addAll(HaUserDao.getInstance().getUserActivityLog(action.getUid()));
+        list.addAll(HaUserDao.getInstance().getUserActivityLog(action.getUid(), action.getFromDate(), action.getToDate()));
         return list;
     }
 

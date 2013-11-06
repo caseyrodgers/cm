@@ -9,10 +9,10 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -25,6 +25,8 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 public class UserActivityLogDialog extends GWindow {
     
     private StudentModelI student;
+
+    DateRangeWidget _dateRangeWidget = DateRangeWidget.getInstance();
 
     Grid<ActivityLogRecord> grid;
     GridProperties props;
@@ -53,7 +55,9 @@ public class UserActivityLogDialog extends GWindow {
         new RetryAction<CmList<ActivityLogRecord>>() {
             @Override
             public void attempt() {
-                GetUserActivityLogAction action = new GetUserActivityLogAction(student.getUid());
+            	Date fromDate = _dateRangeWidget.getFromDate();
+            	Date toDate = _dateRangeWidget.getToDate();
+                GetUserActivityLogAction action = new GetUserActivityLogAction(student.getUid(), fromDate, toDate);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
