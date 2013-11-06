@@ -12,6 +12,8 @@ import hotmath.gwt.cm_rpc_core.server.service.ActionHandlerManualConnectionManag
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 
@@ -57,7 +59,8 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
                     if(sendSuggestEmail) {
                         sendWebLinkSuggestionEmail(action.getWebLink());
                     }
-                    
+                    String linkLabel = createAdminLinkLabel(action.getWebLink());
+                    action.getWebLink().setName(linkLabel);
                     WebLinkDao.getInstance().importWebLink(WebLinkModel.WEBLINK_DEBUG_ADMIN, action.getWebLink());
                 }
                 
@@ -65,6 +68,14 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
                 
         }
         return new RpcData("status=failed");
+    }
+
+    
+    private String createAdminLinkLabel(WebLinkModel webLink) {
+        SimpleDateFormat _labelFormat = new SimpleDateFormat("M-d HH:m");
+        
+        String label = webLink.getName() + ": aid=" + webLink.getAdminId() + ", " + _labelFormat.format(new Date());
+        return label;
     }
 
     private void sendWebLinkSuggestionEmail(WebLinkModel webLink) {
