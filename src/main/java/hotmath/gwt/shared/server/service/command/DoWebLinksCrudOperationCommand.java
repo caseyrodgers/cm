@@ -58,9 +58,7 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
                         sendWebLinkSuggestionEmail(action.getWebLink());
                     }
                     
-                    // make a copy for public library by importing
-                    action.getWebLink().setPublicLink(true); 
-                    WebLinkDao.getInstance().importWebLink(action.getAdminId(), action.getWebLink());
+                    WebLinkDao.getInstance().importWebLink(WebLinkModel.WEBLINK_DEBUG_ADMIN, action.getWebLink());
                 }
                 
                 return new RpcData("status=OK");

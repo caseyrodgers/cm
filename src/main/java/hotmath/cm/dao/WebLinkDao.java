@@ -154,12 +154,6 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         if (adminId == 0) {
             sql = "select * from CM_WEBLINK where is_public = 1 or (admin_id = ?) order by name";   // admin_id is placeholder
         }
-        
-        /** special case for admin of weblinks */
-        if(adminId == WebLinkModel.WEBLINK_DEBUG_ADMIN) {
-            sql = "select * from CM_WEBLINK where is_public = 0 or (-1 = ?) order by date_created desc";  // admin_id is placeholder
-        }
-        
         List<WebLinkModel> links = getJdbcTemplate().query(sql, new Object[] { adminId }, new RowMapper<WebLinkModel>() {
             @Override
             public WebLinkModel mapRow(ResultSet rs, int rowNum) throws SQLException {
