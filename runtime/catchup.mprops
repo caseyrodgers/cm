@@ -4037,11 +4037,6 @@ where run_id = ?
   and item_type = 'practice'
   
   
-  
-  
-  
-  
-  
 .key=TUTOR_WIDGET_ANSWER_PERCENT
 
 SELECT a.pid, a.correct, min(a.answer_time) as answer_time
@@ -4053,8 +4048,17 @@ SELECT a.pid, a.correct, min(a.answer_time) as answer_time
   GROUP  BY a.pid
   ORDER  BY a.pid
   
-  
-  
+.key=TUTOR_WIDGET_ANSWER_PERCENT_FOR_DATE_RANGE
+
+SELECT a.pid, a.correct, min(a.answer_time) as answer_time
+  FROM   HA_TEST t
+  JOIN   HA_TEST_RUN r ON r.test_id = t.test_id
+  JOIN   HA_TEST_RUN_WIDGET_INPUT_ANSWERS a
+    ON   a.run_id = r.run_id
+  WHERE  t.user_id = ?
+    AND  r.run_time between ? and ?
+  GROUP  BY a.pid
+  ORDER  BY a.pid
   
 .key=GLOBAL_CONTEXT_PIDS_TO_PROCESS
   
@@ -4842,7 +4846,7 @@ SELECT  date(busy_time) as activity_date, sum(active_minutes) as active_minutes
  WHERE  uid = ?
    AND  date(busy_time) between ? and ?
 GROUP BY date(busy_time)
-
+ORDER BY busy_time desc
 
 
 .key=GET_STUDENT_ASSIGNMENT_PROBLEM
