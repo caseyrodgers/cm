@@ -49,7 +49,7 @@ public class HighlightsImplActiveTimePanel extends HighlightsImplDetailsPanelBas
         String[][] vals = new String[hd.size()][2];
         for(int i=0;i<hd.size();i++) {
             vals[i][0] = hd.get(i).getName();
-            vals[i][1] = hd.get(i).getTimeOnTask() + "";
+            vals[i][1] = hd.get(i).getActiveTime() + "";
         }
         return vals;
     }

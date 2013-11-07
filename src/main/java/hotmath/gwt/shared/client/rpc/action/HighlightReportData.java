@@ -20,6 +20,7 @@ public class HighlightReportData implements Response {
     int dbCount;
     
     int activeCount;
+    int activeTime;
     int assignmentAverage;
     int assignmentCount;
     int lessonCount;
@@ -28,7 +29,6 @@ public class HighlightReportData implements Response {
     int quizzesPassed;
     int quizAverage;
     int quizCount;
-    int timeOnTask;
     int firstTimeCorrectPercent;
     
     int videosViewed;
@@ -68,8 +68,8 @@ public class HighlightReportData implements Response {
             case ZERO_LOGINS:
             	// nothing to set
             	break;
-            case TIME_ON_TASK:
-            	this.timeOnTask = value[0];
+            case ACTIVE_TIME:
+            	this.activeTime = value[0];
             	break;
             case FIRST_TIME_CORRECT:
             	this.firstTimeCorrectPercent = value[0];
@@ -254,12 +254,12 @@ public class HighlightReportData implements Response {
 		this.quizCount = quizCount;
 	}
 
-	public int getTimeOnTask() {
-		return timeOnTask;
+	public int getActiveTime() {
+		return activeTime;
 	}
 
-	public void setTimeOnTask(int timeOnTask) {
-		this.timeOnTask = timeOnTask;
+	public void setActiveTime(int activeTime) {
+		this.activeTime = activeTime;
 	}
 
 	public int getFirstTimeCorrectPercent() {

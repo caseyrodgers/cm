@@ -828,9 +828,9 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
 
     	Map<Integer, Integer> totMap = new HashMap<Integer, Integer>();
     	for (HighlightReportData tot : totList) {
-    		totMap.put(tot.getUid(), tot.getTimeOnTask());
+    		totMap.put(tot.getUid(), tot.getActiveTime());
     		if (logger.isDebugEnabled())
-    			logger.debug("+++ getActiveTimeMap(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getTimeOnTask());
+    			logger.debug("+++ getActiveTimeMap(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getActiveTime());
     	}
 
     	return totMap;
@@ -841,9 +841,9 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
     	CmList<HighlightReportData> totList = getReportActiveTime(conn, uidList, from, to);
     	Map<Integer, Integer> totMap = new HashMap<Integer, Integer>();
     	for (HighlightReportData tot : totList) {
-    		totMap.put(tot.getUid(), tot.getTimeOnTask());
+    		totMap.put(tot.getUid(), tot.getActiveTime());
     		if (logger.isDebugEnabled())
-    			logger.debug("+++ getActiveTimeMapForUids(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getTimeOnTask());
+    			logger.debug("+++ getActiveTimeMapForUids(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getActiveTime());
     	}
 
     	return totMap;
