@@ -2868,6 +2868,7 @@ JOIN HA_USER u
 WHERE t.uid IN ( $$UID_LIST$$  )
   AND date(busy_time) between ? and ?
 GROUP BY t.uid
+ORDER BY u.user_name asc
 
 
 .key=HIGHLIGHT_REPORT_TIME_ON_TASK

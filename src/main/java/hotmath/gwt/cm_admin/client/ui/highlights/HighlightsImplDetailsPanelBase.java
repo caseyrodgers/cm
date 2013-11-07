@@ -87,7 +87,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
         @Path("dbCount")
         ValueProvider<HighlightReportData, Integer> studentCount();
 
-        ValueProvider<HighlightReportData, Integer> timeOnTask();
+        ValueProvider<HighlightReportData, Integer> activeTime();
 
         @Path("dbCount")
         ValueProvider<HighlightReportData, Integer> total();

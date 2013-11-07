@@ -29,7 +29,7 @@ public class HighlightsImplActiveTimePanel extends HighlightsImplDetailsPanelBas
     	column.setSortable(false);
     	cols.add(column);
 
-        column = new ColumnConfig<HighlightReportData, Integer>(_gridProps.timeOnTask(), 140, "Active Time");
+        column = new ColumnConfig<HighlightReportData, Integer>(_gridProps.activeTime(), 140, "Active Time");
     	column.setWidth(130);
     	column.setSortable(false);
     	cols.add(column);
