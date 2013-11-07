@@ -2811,10 +2811,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         Assignment ass = getAssignment(assignKey);
         String joinPidsSql=null;
         if(ass.isPersonalized()) {
-            joinPidsSql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_PID_ANSWER_STATUS-personalized");
+            joinPidsSql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_STUDENT_STATS-personalized");
         }
         else {
-            joinPidsSql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_PID_ANSWER_STATUS-default");
+            joinPidsSql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_STUDENT_STATS-default");
         }
         sql = SbUtilities.replaceSubString(sql,  "$$JOIN_GET_PIDS$$", joinPidsSql);
         

@@ -4800,13 +4800,16 @@ order by p_.ordinal_number
    JOIN CM_ASSIGNMENT_PIDS p
        on p.assign_key = p_.assign_key and p.pid = p_.pid
       
+   
+      
 .key=ASSIGNMENT_PID_ANSWER_STATUS-personalized
 
    JOIN CM_ASSIGNMENT_PIDS p_
        on p_.assign_key = a.assign_key
-   LEFT JOIN CM_ASSIGNMENT_PIDS_USER p
+   JOIN CM_ASSIGNMENT_PIDS_USER p
       on p.assign_key = a.assign_key and p.uid = u.uid and p.apid_id = p_.id
    
+
 
 
 .key=ASSIGNMENT_STUDENT_STATS
@@ -4828,6 +4831,27 @@ and  u.is_active = 1
 $$LIMIT_TO_SPECIFIED_USERS$$
 
 order by user_name
+
+
+
+.key=ASSIGNMENT_STUDENT_STATS-default
+
+   JOIN CM_ASSIGNMENT_PIDS p_
+       on p_.assign_key = a.assign_key
+   JOIN CM_ASSIGNMENT_PIDS p
+       on p.assign_key = p_.assign_key and p.pid = p_.pid   
+      
+
+
+.key=ASSIGNMENT_STUDENT_STATS-personalized
+
+   JOIN CM_ASSIGNMENT_PIDS p_
+       on p_.assign_key = a.assign_key
+   LEFT JOIN CM_ASSIGNMENT_PIDS_USER p
+      on p.assign_key = a.assign_key and p.uid = u.uid and p.apid_id = p_.id
+
+
+
 
 
 
