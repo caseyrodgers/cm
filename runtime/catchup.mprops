@@ -2858,7 +2858,18 @@ where  u.uid in( $$UID_LIST$$ )
                               and l.login_time between ? and ?)
 order  by u.user_name 
           
-          
+#####
+.key=HIGHLIGHT_REPORT_ACTIVE_TIME
+
+SELECT u.user_name, t.uid, sum(t.active_minutes) as active_minutes
+FROM CM_USER_BUSY t
+JOIN HA_USER u
+  ON u.uid = t.uid
+WHERE t.uid IN ( $$UID_LIST$$  )
+  AND date(busy_time) between ? and ?
+GROUP BY t.uid
+
+
 .key=HIGHLIGHT_REPORT_TIME_ON_TASK
 
 select u.user_name, t.user_id, 'REVIEW' as activity_type, count(*) as activity_count

@@ -408,60 +408,29 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
         return list;
     }
     
-    /*return students' time-on-task
+    /*return students' active time
      * 
      */
-    public CmList<HighlightReportData> getReportTimeOnTask(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
+    public CmList<HighlightReportData> getReportActiveTime(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
 
         String sql =
-        	CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_TIME_ON_TASK", createInListMap(createInList(uids)) );
+        	CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_ACTIVE_TIME", createInListMap(createInList(uids)) );
 
-        CmList<HighlightReportData> list = new CmArrayList<HighlightReportData>();
+        List<HighlightReportData> list;
 
-        PreparedStatement ps=null;
-        try {
-            ps = conn.prepareStatement(sql);
-            String[] vals = QueryHelper.getDateTimeRange(from, to);
-            ps.setString(1, vals[0]);
-            ps.setString(2, vals[1]);
-            ps.setString(3, vals[0]);
-            ps.setString(4, vals[1]);            
-            ps.setString(5, vals[0]);
-            ps.setString(6, vals[1]);            
-            ps.setString(7, vals[0]);
-            ps.setString(8, vals[1]);
-
-            if (__logger.isDebugEnabled()) __logger.debug("report sql: " + ps);
-
-            Map<ActivityTypeEnum, ActivityTime> map = StudentActivityDao.getInstance().getActivityTimeMap();
-            ResultSet rs = ps.executeQuery();
-            int userId = -1;
-            int totalTime = 0;
-            String userName = null;
-            while(rs.next()) {
-            	int count = rs.getInt("activity_count");
-            	String type = rs.getString("activity_type");
-            	ActivityTime at = map.get(ActivityTypeEnum.valueOf(type.toUpperCase()));
-            	int time = (at != null) ? at.timeOnTask : 0;
-                            	
-            	if (userId != rs.getInt("user_id") && userId > 0) {
-            		// new student, add previous and reset total time
-                    list.add(new HighlightReportData(userId, userName, ReportType.TIME_ON_TASK, totalTime));
-                    totalTime = 0;
-            	}
-            	userId = rs.getInt("user_id");
-            	userName = rs.getString("user_name");
-            	totalTime = totalTime + count * time;
+        list = getJdbcTemplate().query(sql, new Object[] {from, to}, new RowMapper<HighlightReportData>() {
+            @Override
+            public HighlightReportData mapRow(ResultSet rs, int rowNum) throws SQLException {
+            	String userName = rs.getString("user_name");
+            	int userId = rs.getInt("uid");
+            	int totalTime = rs.getInt("active_minutes");
+            	return new HighlightReportData(userId, userName, ReportType.ACTIVE_TIME, totalTime);
             }
-            // add last student
-            if (userId != -1)
-                list.add(new HighlightReportData(userId, userName, ReportType.TIME_ON_TASK, totalTime));
+        });
 
-        }
-        finally {
-            SqlUtilities.releaseResources(null,ps,null);
-        }
-        return list;
+        CmList<HighlightReportData> cmList = new CmArrayList<HighlightReportData>();
+        cmList.addAll(list);
+        return cmList;
     }
 
     final int TOTAL_WIDGETS=0, COUNT_CORRECT=1;
@@ -848,33 +817,33 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
         return list;
     }    
    
-    public Map<Integer, Integer> getTimeOnTaskMap(final Connection conn, List<StudentModelI> smList, Date from, Date to) throws Exception {
+    public Map<Integer, Integer> getActiveTimeMap(final Connection conn, List<StudentModelI> smList, Date from, Date to) throws Exception {
 
         List<String> uidList = new ArrayList<String>();
     	for (StudentModelI sm : smList) {
     		uidList.add(sm.getUid().toString());
     	}
-    	
-    	CmList<HighlightReportData> totList = getReportTimeOnTask(conn, uidList, from, to);
+
+    	CmList<HighlightReportData> totList = getReportActiveTime(conn, uidList, from, to);
 
     	Map<Integer, Integer> totMap = new HashMap<Integer, Integer>();
     	for (HighlightReportData tot : totList) {
     		totMap.put(tot.getUid(), tot.getTimeOnTask());
     		if (logger.isDebugEnabled())
-    			logger.debug("+++ getTimeOnTaskMap(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getTimeOnTask());
+    			logger.debug("+++ getActiveTimeMap(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getTimeOnTask());
     	}
 
     	return totMap;
     }
 
-    public Map<Integer, Integer> getTimeOnTaskMapForUids(final Connection conn, List<String> uidList, Date from, Date to) throws Exception {
+    public Map<Integer, Integer> getActiveTimeMapForUids(final Connection conn, List<String> uidList, Date from, Date to) throws Exception {
 
-    	CmList<HighlightReportData> totList = getReportTimeOnTask(conn, uidList, from, to);
+    	CmList<HighlightReportData> totList = getReportActiveTime(conn, uidList, from, to);
     	Map<Integer, Integer> totMap = new HashMap<Integer, Integer>();
     	for (HighlightReportData tot : totList) {
     		totMap.put(tot.getUid(), tot.getTimeOnTask());
     		if (logger.isDebugEnabled())
-    			logger.debug("+++ getTimeOnTaskMap(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getTimeOnTask());
+    			logger.debug("+++ getActiveTimeMapForUids(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getTimeOnTask());
     	}
 
     	return totMap;

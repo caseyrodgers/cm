@@ -193,7 +193,7 @@ public class HighlightsListPanel extends BorderLayoutContainer {
         s.add(new HighlightsReport(new HighlightsImplHighestAverageQuizScores()));
         s.add(new HighlightsReport(new HighlightsImplMostFailuresLatestQuiz()));
         s.add(new HighlightsReport(new HighlightsImplZeroLogins()));
-        s.add(new HighlightsReport(new HighlightsImplTimeOnTask()));
+        s.add(new HighlightsReport(new HighlightsImplActiveTime()));
         s.add(new HighlightsReport(new HighlightsImplFirstAnswersPercent()));
         s.add(new HighlightsReport(new HighlightsImplAssignments()));
         s.add(new HighlightsReport(new HighlightsImplMostCCSSCoverage()));

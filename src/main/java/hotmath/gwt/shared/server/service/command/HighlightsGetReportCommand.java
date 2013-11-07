@@ -92,8 +92,8 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                     list = dao.getReportZeroLogins(conn, uids, fromDate, toDate);
                     break;
 
-                case TIME_ON_TASK:
-                    list = dao.getReportTimeOnTask(conn, uids, fromDate, toDate);
+                case ACTIVE_TIME:
+                    list = dao.getReportActiveTime(conn, uids, fromDate, toDate);
                     break;
 
                 case FIRST_TIME_CORRECT:

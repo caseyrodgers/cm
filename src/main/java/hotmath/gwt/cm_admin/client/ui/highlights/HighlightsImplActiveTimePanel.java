@@ -10,14 +10,14 @@ import java.util.List;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
-public class HighlightsImplTimeOnTaskPanel extends HighlightsImplDetailsPanelBase {
-    public HighlightsImplTimeOnTaskPanel(HighlightsImplBase base) {
+public class HighlightsImplActiveTimePanel extends HighlightsImplDetailsPanelBase {
+    public HighlightsImplActiveTimePanel(HighlightsImplBase base) {
         super(base);
     }
     
     @Override
     public HighlightsGetReportAction.ReportType getReportType() {
-        return HighlightsGetReportAction.ReportType.TIME_ON_TASK;
+        return HighlightsGetReportAction.ReportType.ACTIVE_TIME;
     }
     
     @Override
@@ -29,7 +29,7 @@ public class HighlightsImplTimeOnTaskPanel extends HighlightsImplDetailsPanelBas
     	column.setSortable(false);
     	cols.add(column);
 
-        column = new ColumnConfig<HighlightReportData, Integer>(_gridProps.timeOnTask(), 140, "Time-on-Task");
+        column = new ColumnConfig<HighlightReportData, Integer>(_gridProps.timeOnTask(), 140, "Active Time");
     	column.setWidth(130);
     	column.setSortable(false);
     	cols.add(column);
@@ -40,7 +40,7 @@ public class HighlightsImplTimeOnTaskPanel extends HighlightsImplDetailsPanelBas
     
     @Override
     public String[] getReportColumns() {
-        return new String[] {"Name", "Time-on-Task"};
+        return new String[] {"Name", "Active Time"};
     }
     
     @Override
