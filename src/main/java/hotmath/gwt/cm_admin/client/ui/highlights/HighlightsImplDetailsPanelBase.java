@@ -217,7 +217,6 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
 
     private Grid<HighlightReportData> defineGrid(final ListStore<HighlightReportData> store, ColumnModel<HighlightReportData> cm) {
         final Grid<HighlightReportData> grid = new Grid<HighlightReportData>(store, cm);
-        //grid.setAutoExpandColumn("name");
         grid.setBorders(true);
         //grid.setStripeRows(true);
 
