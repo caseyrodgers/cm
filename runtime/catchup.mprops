@@ -4804,7 +4804,7 @@ order by p_.ordinal_number
 
    JOIN CM_ASSIGNMENT_PIDS p_
        on p_.assign_key = a.assign_key
-   JOIN CM_ASSIGNMENT_PIDS_USER p
+   LEFT JOIN CM_ASSIGNMENT_PIDS_USER p
       on p.assign_key = a.assign_key and p.uid = u.uid and p.apid_id = p_.id
    
 
