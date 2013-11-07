@@ -4761,9 +4761,12 @@ from HA_USER u
        
      JOIN (
          select assign_key, count(*) as cnt_students
-         from HA_USER h
-           JOIN CM_ASSIGNMENT a on a.group_id = h.group_id
+         from HA_USER u
+           JOIN CM_ASSIGNMENT a on a.group_id = u.group_id
          where a.assign_key = ?
+         
+         $$LIMIT_TO_SPECIFIED_USERS$$
+         
          group by assign_key
      ) uc on uc.assign_key = a.assign_key
      

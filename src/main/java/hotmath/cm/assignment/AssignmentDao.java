@@ -765,6 +765,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
     }
 
+    /** Replaces token $$LIMIT_TO_SPECIFIED_USERS$$ with sql IN list
+     *  of specified users for this assignment.
+     *  
+     *  
+     * @param assignKey
+     * @param sql
+     * @return
+     */
     private String getStudentsInAssignmentSqlRestriction(int assignKey, String sql) {
         sql = SbUtilities.replaceSubString(sql, "$$LIMIT_TO_SPECIFIED_USERS$$",
                 (hasAnySpecifiedUsers(assignKey) ? " and u.uid in (select uid from CM_ASSIGNMENT_USERS_SPECIFIED where assign_key = " + assignKey + ")" : ""));
@@ -2749,6 +2757,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             joinPidsSql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_PID_ANSWER_STATUS-default");
         }
         sql = SbUtilities.replaceSubString(sql,  "$$JOIN_GET_PIDS$$", joinPidsSql);
+        
+        
+        /** Add special SQL to limit to just specified users
+         * 
+         */
+        if(hasAnySpecifiedUsers(assignKey)) {
+            sql = getStudentsInAssignmentSqlRestriction(assignKey,sql);   // replace token with SQL to limit users
+        }
+        else {
+            sql = SbUtilities.replaceSubString(sql, "$$LIMIT_TO_SPECIFIED_USERS$$", ""); // remove token  
+        }
+        
+        
         List<PidStats> pidStats = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey, assignKey }, new RowMapper<PidStats>() {
             @Override
             public PidStats mapRow(ResultSet rs, int rowNum) throws SQLException {
