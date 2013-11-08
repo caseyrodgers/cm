@@ -45,7 +45,7 @@ public class ExportStudentsInExcelFormat {
 	
 	private Map<Integer, List<StudentActivitySummaryModel>> sasMap;
 	
-	private Map<Integer, Integer> timeOnTaskMap;
+	private Map<Integer, Integer> totalTimeMap;
 
 	private Map<Integer, List<String>> topicsMap;
 
@@ -86,12 +86,12 @@ public class ExportStudentsInExcelFormat {
 		this.rcList = rcList;
 	}
 
-	public Map<Integer, Integer> getTimeOnTaskMap() {
-		return timeOnTaskMap;
+	public Map<Integer, Integer> getTotalTimeOnTaskMap() {
+		return totalTimeMap;
 	}
 
-	public void setTimeOnTaskMap(Map<Integer, Integer> timeOnTaskMap) {
-		this.timeOnTaskMap = timeOnTaskMap;
+	public void setTotalTimeMap(Map<Integer, Integer> totalTimeMap) {
+		this.totalTimeMap = totalTimeMap;
 	}
 
 	public void setTopicsMap(Map<Integer, List<String>> topicsMap) {
@@ -149,7 +149,7 @@ public class ExportStudentsInExcelFormat {
 	private static String[] headings = {
 		"Student", "Password", "Group", "Current Program", "Status", "% Complete", "Quizzes",
 		"Last Quiz", "Last Login", "Total Lessons", "Quizzes Attempted", "Quizzes Passed",
-		"Passed Quiz Avg Score", "Time-on-Task", "Total Logins", "First Login", "First Program"
+		"Passed Quiz Avg Score", "Total Time", "Total Logins", "First Login", "First Program"
 	};
 	
 	private static String[] headingsSheet2 = {
@@ -304,7 +304,7 @@ public class ExportStudentsInExcelFormat {
 	        if (charCount[col] < quizAvg.length()) charCount[col] = quizAvg.length();
 
 		    cell = row.createCell(++col);
-		    Integer tot = timeOnTaskMap.get(rc.getStudentUid());
+		    Integer tot = totalTimeMap.get(rc.getStudentUid());
 		    String timeOnTask = (tot != null) ? String.format("%d", tot) : "0";
 	        cell.setCellValue(Integer.parseInt(timeOnTask));
 	        cell.setCellStyle(styles.get("data"));

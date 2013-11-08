@@ -208,7 +208,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     	        Calendar now = Calendar.getInstance();
     	        now.add(Calendar.DATE, 1);
 
-    	    	Map<Integer, Integer> totMap = CmHighlightsDao.getInstance().getActiveTimeMapForUids(conn, uidList, fromDate, toDate);
+    	    	Map<Integer, Integer> activeTimeMap = CmHighlightsDao.getInstance().getActiveTimeMapForUids(conn, uidList, fromDate, toDate);
 
     			ByteArrayOutputStream baos = null;
 
@@ -224,7 +224,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			ExportStudentsInExcelFormat exporter = new ExportStudentsInExcelFormat(studentList);
     			exporter.setReportCardList(rcList);
     			exporter.setStudentActivitySummaryMap(sasMap);
-    			exporter.setTimeOnTaskMap(totMap);
+    			exporter.setTotalTimeMap(activeTimeMap);
     			exporter.setTopicsMap(topicMap);
     			exporter.setStandardsMap(stdMap);
     			exporter.setStandardsNotCoveredMap(ccssNotCoveredMap);
