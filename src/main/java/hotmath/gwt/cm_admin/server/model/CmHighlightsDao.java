@@ -417,8 +417,9 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
         	CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_ACTIVE_TIME", createInListMap(createInList(uids)) );
 
         List<HighlightReportData> list;
+        String[] vals = QueryHelper.getDateTimeRange(from, to);
 
-        list = getJdbcTemplate().query(sql, new Object[] {from, to}, new RowMapper<HighlightReportData>() {
+        list = getJdbcTemplate().query(sql, new Object[] {vals[0], vals[1]}, new RowMapper<HighlightReportData>() {
             @Override
             public HighlightReportData mapRow(ResultSet rs, int rowNum) throws SQLException {
             	String userName = rs.getString("user_name");
