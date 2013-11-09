@@ -10,6 +10,7 @@ public class DateUtils4Gwt {
 
     private static DateTimeFormat formatDayOfWeek = DateTimeFormat.getFormat("EEEE");
     private static DateTimeFormat formatNormal = DateTimeFormat.getFormat("MMM d");
+    private static DateTimeFormat formatYearMonthDay = DateTimeFormat.getFormat("yyyy-MM-dd");
     
     public static String getPrettyDateString(Date dueDate) {
         return getPrettyDateString(dueDate, true);
@@ -40,6 +41,10 @@ public class DateUtils4Gwt {
             formatedString = formatNormal.format(dueDate);
         }
         return formatedString;
+    }
+
+    public static String getYearMonthDayString(Date date) {
+    	return formatYearMonthDay.format(date);
     }
 
 }
