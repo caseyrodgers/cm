@@ -2787,17 +2787,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
         sql = SbUtilities.replaceSubString(sql,  "$$JOIN_GET_PIDS$$", joinPidsSql);
         
-        
-        /** Add special SQL to limit to just specified users
-         * 
-         */
-        if(hasAnySpecifiedUsers(assignKey)) {
-            sql = getStudentsInAssignmentSqlRestriction(assignKey,sql);   // replace token with SQL to limit users
-        }
-        else {
-            sql = SbUtilities.replaceSubString(sql, "$$LIMIT_TO_SPECIFIED_USERS$$", ""); // remove token  
-        }
-        
+
+        System.out.println("getAssignmentProblemStatsUsers: \n" + sql);
         
         List<PidStats> pidStats = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey, assignKey }, new RowMapper<PidStats>() {
             @Override
@@ -2850,7 +2841,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         
         sql = getStudentsInAssignmentSqlRestriction(assignKey, sql);
 
-        System.out.println("getAssignmentProblemStatsUsers: \n" + sql);
+        System.out.println("DEBUG: getAssignmentProblemStatsUsers: \n" + sql);
         
         List<StudentStat> studentStatus = getJdbcTemplate().query(sql, new Object[] { assignKey, pid }, new RowMapper<StudentStat>() {
             @Override
