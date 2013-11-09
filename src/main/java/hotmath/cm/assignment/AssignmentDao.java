@@ -445,10 +445,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     private Assignment extractAssignmentFromRs(ResultSet rs) throws SQLException {
 
         boolean allowPastDueSubmits = rs.getInt("close_past_due") == 0;
+        boolean hasSpecifiedUsers = rs.getInt("has_specified_users") != 0;
 
         return new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"),
                 rs.getDate("due_date"), null, rs.getString("status"), allowPastDueSubmits, rs.getInt("is_graded") != 0, rs.getTimestamp("last_modified"),
-                rs.getInt("auto_release_grades") != 0, rs.getInt("is_personalized") != 0, rs.getInt("is_prevent_lesson") != 0);
+                rs.getInt("auto_release_grades") != 0, rs.getInt("is_personalized") != 0, rs.getInt("is_prevent_lesson") != 0, hasSpecifiedUsers);
     }
 
     /**
@@ -482,8 +483,29 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     return ps;
                 }
             });
+            
+            
+            markAssignmentHasSpecifiedUsers(assKey, false);
         }
 
+    }
+
+    /** Mark the assignment as either having specified users or not
+     * 
+     * @param assKey
+     * @param yesNo
+     */
+    private void markAssignmentHasSpecifiedUsers(final int assKey, final boolean yesNo) {
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "update CM_ASSIGNMENT set has_specified_users =  ? where assign_key = ?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setInt(1, yesNo?1:0);
+                ps.setInt(2, assKey);
+                return ps;
+            }
+        });
     }
 
     public void deleteAssignment(final int assKey) {
@@ -516,7 +538,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          * TODO: a way to specified directly in SQL
          */
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_3");
-        sql = getStudentsInAssignmentSqlRestriction(assignKey, sql);
+        //sql = getStudentsInAssignmentSqlRestriction(assignKey, sql);
 
         /**
          * get assignment problem status list for all users
@@ -1078,6 +1100,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 messages += "Error assigning student (" + s.getName() + "): " + e.getMessage() + "\n";
             }
         }
+        
+        markAssignmentHasSpecifiedUsers(assignKey,  true);
+        
         assignmentInfo.setAssigned(assignCount);
         assignmentInfo.setErrors(errorCount);
         assignmentInfo.setMessage(messages);
@@ -1091,6 +1116,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 ps.setInt(1, assignKey);
             }
         });
+        
+        markAssignmentHasSpecifiedUsers(assignKey,  false);
     }
 
     public void unassignStudents(final int assKey, final CmList<StudentAssignment> students) {
@@ -1801,6 +1828,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 ps.setString(4, personalPids.get(i).getPid());
             }
         });
+        
+        markAssignmentHasSpecifiedUsers(assignKey,  true);
 
         return personalPids;
     }

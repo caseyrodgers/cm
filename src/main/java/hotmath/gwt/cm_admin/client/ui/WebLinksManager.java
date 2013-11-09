@@ -376,7 +376,7 @@ public class WebLinksManager extends GWindow {
         cols.add(nameCol);
 
         ColumnConfig<WebLinkModel, AvailableOn> platForm = new ColumnConfig<WebLinkModel, AvailableOn>(gridProps.availableWhen(), 10, "P");
-        platForm.setToolTip(SafeHtmlUtils.fromString("Platform (i=IPad, D=Desktop, B=Both"));
+        platForm.setToolTip(SafeHtmlUtils.fromString("Platform (i=iPad, D=Desktop, B=Both"));
         AbstractCell<AvailableOn> cell = new AbstractCell<AvailableOn>() {
             @Override
             public void render(com.google.gwt.cell.client.Cell.Context context, AvailableOn value, SafeHtmlBuilder sb) {

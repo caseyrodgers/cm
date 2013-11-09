@@ -3799,7 +3799,8 @@ select a.aid, a.assign_key,
        a.last_modified,
        a.auto_release_grades,
        a.is_personalized,
-       a.is_prevent_lesson
+       a.is_prevent_lesson,
+       a.has_specified_users
        
 from   CM_ASSIGNMENT a
        left join (select assign_key,
@@ -3825,7 +3826,8 @@ select a.aid, a.assign_key,
        a.last_modified,
        a.auto_release_grades,
        a.is_personalized,
-       a.is_prevent_lesson
+       a.is_prevent_lesson,
+       a.has_specified_users
 from   CM_ASSIGNMENT a
        left join (select assign_key,
                          Count(*) as problem_count
@@ -3848,6 +3850,7 @@ select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.
 
 from CM_ASSIGNMENT a 
 join HA_USER u on (u.group_id = a.group_id and u.admin_id = a.aid)
+join v_ASSIGNMENT_USERS au on (au.assign_key = a.assign_key and au.uid = u.uid)
 join CM_ASSIGNMENT_PIDS p on p.assign_key=a.assign_key
 
 left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pid and s.uid=u.uid
@@ -3887,8 +3890,6 @@ left join CM_ASSIGNMENT_USER ua on ua.assign_key = a.assign_key and ua.uid = u.u
 
 where a.assign_key = ?
 and   (u.is_active = 1 and u.is_auto_create_template = 0)
-
-$$LIMIT_TO_SPECIFIED_USERS$$    
 
 order by u.user_name, problem_id
 
@@ -4748,7 +4749,7 @@ limit 1
 
 ## NOTE: JOIN_GET_PIDS is created in code
 ## and is made up of one of the two sql fragments
-## follwing this one.
+## following this one.
 .key=ASSIGNMENT_PID_ANSWER_STATUS
 ## all pids in assignment and count of correct/incorrect
 
@@ -4759,13 +4760,11 @@ from HA_USER u
        on a.group_id = u.group_id
        
      JOIN (
-         select assign_key, count(*) as cnt_students
+         select a.assign_key, count(*) as cnt_students
          from HA_USER u
            JOIN CM_ASSIGNMENT a on a.group_id = u.group_id
+           JOIN v_ASSIGNMENT_USERS ua on (ua.assign_key = a.assign_key and ua.uid = u.uid)
          where a.assign_key = ?
-         
-         $$LIMIT_TO_SPECIFIED_USERS$$
-         
          group by assign_key
      ) uc on uc.assign_key = a.assign_key
      
@@ -4817,6 +4816,7 @@ select u.uid, u.user_name, s1.status
 from HA_USER u
     JOIN CM_ASSIGNMENT a  
         on a.group_id = u.group_id
+    JOIN v_ASSIGNMENT_USERS ua on (ua.assign_key = a.assign_key and ua.uid = u.uid)
     
     $$JOIN_GET_PIDS$$    
     
@@ -4826,8 +4826,6 @@ from HA_USER u
 where a.assign_key = ?
 and  p_.pid = ?
 and  u.is_active = 1
-
-$$LIMIT_TO_SPECIFIED_USERS$$
 
 order by user_name
 

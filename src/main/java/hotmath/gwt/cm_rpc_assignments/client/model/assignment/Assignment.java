@@ -6,20 +6,22 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 import java.util.Date;
 
+import com.sencha.gxt.core.client.util.HasUiAttributes;
 
-/** Define a single assignment as defined in CM.
+/**
+ * Define a single assignment as defined in CM.
  * 
  * A assignment is:
  * 
- * 1. a list of PIDS that represent the homework problems
- * 2. a due date when the assignment is to be completed
- * 3. a list of UIDS that represent the users of the assignment.
+ * 1. a list of PIDS that represent the homework problems 2. a due date when the
+ * assignment is to be completed 3. a list of UIDS that represent the users of
+ * the assignment.
  * 
  * 
  * @author casey
- *
+ * 
  */
-public class Assignment implements Response{
+public class Assignment implements Response {
 
     int adminId;
     String assignmentName;
@@ -31,22 +33,26 @@ public class Assignment implements Response{
     String status;
     boolean graded;
     Date modifiedTime;
-    
+
     // might be null indicate not set
     Integer problemCount;
-    
-    // piggy back along with RPC data.  
+
+    // piggy back along with RPC data.
     // TODO: does this belong here?
     AssignmentGradeDetailInfo gradedInfo;
-    
+
     boolean autoRelease;
     private boolean allowPastDueSubmits;
     boolean personalized;
     boolean preventLessonAccess;
+    private boolean hasSpecifiedUsers;
 
-    public Assignment() {}
-    
-    public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, String status, boolean allowPastDueSubmits, boolean graded, Date modifiedTime,boolean autoRelease, boolean isPersonalized,boolean preventLessonAccess) {
+    public Assignment() {
+    }
+
+    public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, String status,
+            boolean allowPastDueSubmits, boolean graded, Date modifiedTime, boolean autoRelease, boolean isPersonalized, boolean preventLessonAccess,
+            boolean hasSpecifiedUsers) {
         this.adminId = adminId;
         this.assignKey = assignKey;
         this.groupId = groupId;
@@ -61,8 +67,16 @@ public class Assignment implements Response{
         this.autoRelease = autoRelease;
         this.personalized = isPersonalized;
         this.preventLessonAccess = preventLessonAccess;
+        this.hasSpecifiedUsers = hasSpecifiedUsers;
     }
 
+    public boolean isHasSpecifiedUsers() {
+        return hasSpecifiedUsers;
+    }
+
+    public void setHasSpecifiedUsers(boolean hasSpecifiedUsers) {
+        this.hasSpecifiedUsers = hasSpecifiedUsers;
+    }
 
     public boolean isPreventLessonAccess() {
         return preventLessonAccess;
@@ -107,7 +121,7 @@ public class Assignment implements Response{
     public int getAdminId() {
         return adminId;
     }
-    
+
     public boolean isClosed() {
         return status.equals("Closed");
     }
@@ -120,38 +134,36 @@ public class Assignment implements Response{
         return getStatus();
     }
 
-
     public String getAssignmentLabel() {
         String label = getComments();
-        
+
         if (!isEditable()) {
             label += " (Closed)";
-        }
-        else {
-            if(isExpired()) {
+        } else {
+            if (isExpired()) {
                 label += " (Past Due";
-            }
-            else {
+            } else {
                 label += " (" + getStatus();
             }
-            
-            label +=  ", Due: " + getDueDate() + ")";;
+
+            label += ", Due: " + getDueDate() + ")";
+            ;
         }
         return label;
     }
-    
-    /** Is this assignment editable at all
+
+    /**
+     * Is this assignment editable at all
      * 
-    * 
+     * 
      * @return
      */
     public boolean isEditable() {
         return !getStatus().equals("Closed");
     }
 
-    /** Determine, based on data
-     * in object if this assignment 
-     * has expired.
+    /**
+     * Determine, based on data in object if this assignment has expired.
      * 
      * Expires the day after the expiration date (inclusive)
      * 
@@ -160,14 +172,13 @@ public class Assignment implements Response{
     public static final int MILLS_IN_DAY = 24 * 60 * 60 * 1000;
 
     static public boolean isExpired(Date date) {
-        if(date != null) {
+        if (date != null) {
             return date.getTime() < (System.currentTimeMillis() - MILLS_IN_DAY);
-        }
-        else {
+        } else {
             return false;
         }
     }
-    
+
     public boolean isExpired() {
         return isExpired(dueDate);
     }
@@ -211,7 +222,6 @@ public class Assignment implements Response{
     public void setAssignmentName(String assignmentName) {
         this.assignmentName = assignmentName;
     }
-    
 
     public String getComments() {
         return comments;
@@ -228,13 +238,14 @@ public class Assignment implements Response{
     public void setProblemCount(Integer problemCount) {
         this.problemCount = problemCount;
     }
+
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
-    }   
+    }
 
     public boolean isGraded() {
         return graded;
@@ -244,7 +255,6 @@ public class Assignment implements Response{
         this.graded = graded;
     }
 
-    
     public AssignmentGradeDetailInfo getGradedInfo() {
         return gradedInfo;
     }
@@ -258,6 +268,7 @@ public class Assignment implements Response{
         return "Assignment [adminId=" + adminId + ", assignmentName=" + assignmentName + ", assignKey=" + assignKey + ", groupId=" + groupId + ", comments="
                 + comments + ", dueDate=" + dueDate + ", pids=" + pids + ", status=" + status + ", graded=" + graded + ", modifiedTime=" + modifiedTime
                 + ", problemCount=" + problemCount + ", gradedInfo=" + gradedInfo + ", autoRelease=" + autoRelease + ", allowPastDueSubmits="
-                + allowPastDueSubmits + "]";
+                + allowPastDueSubmits + ", personalized=" + personalized + ", preventLessonAccess=" + preventLessonAccess + ", hasSpecifiedUsers="
+                + hasSpecifiedUsers + "]";
     }
 }
