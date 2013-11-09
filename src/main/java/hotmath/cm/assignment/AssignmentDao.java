@@ -2850,6 +2850,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         
         sql = getStudentsInAssignmentSqlRestriction(assignKey, sql);
 
+        System.out.println("getAssignmentProblemStatsUsers: \n" + sql);
+        
         List<StudentStat> studentStatus = getJdbcTemplate().query(sql, new Object[] { assignKey, pid }, new RowMapper<StudentStat>() {
             @Override
             public StudentStat mapRow(ResultSet rs, int rowNum) throws SQLException {

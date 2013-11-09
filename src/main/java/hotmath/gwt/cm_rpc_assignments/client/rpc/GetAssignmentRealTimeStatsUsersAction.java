@@ -30,4 +30,11 @@ public class GetAssignmentRealTimeStatsUsersAction implements Action<AssignmentR
     public void setPid(String pid) {
         this.pid = pid;
     }
+
+    @Override
+    public String toString() {
+        return "GetAssignmentRealTimeStatsUsersAction [assignKey=" + assignKey + ", pid=" + pid + "]";
+    }
+    
+    
 }
