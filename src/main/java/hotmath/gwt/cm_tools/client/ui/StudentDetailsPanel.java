@@ -24,7 +24,6 @@ import hotmath.gwt.shared.client.rpc.action.GetStudentActivityAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.AbstractCell;
@@ -100,8 +99,6 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         samGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         // samGrid.getSelectionModel().setFiresEvents(true);
         samGrid.getView().setStripeRows(true);
-        samGrid.getView().setAutoExpandColumn(cm.getColumn(cm.getColumnCount() - 1));
-        samGrid.getView().setAutoFill(true);
 
         samGrid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<StudentActivityModel>() {
             @Override
@@ -155,8 +152,8 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
     }
 
     private Widget createActivityLogButton() {
-        TextButton txt = new TextButton("Time Log");
-        txt.setToolTip("Show student active time log");
+        TextButton txt = new TextButton("Activity");
+        txt.setToolTip("Show student activity log");
         txt.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
@@ -495,7 +492,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 
     private ColumnModel<StudentActivityModel> defineColumns() {
 
-        List<ColumnConfig<StudentActivityModel, ?>> configs = new ArrayList<ColumnConfig<StudentActivityModel, ?>>();
+        ArrayList<ColumnConfig<StudentActivityModel, ?>> configs = new ArrayList<ColumnConfig<StudentActivityModel, ?>>();
 
         configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.useDate(), 75, "Date"));
         configs.get(configs.size() - 1).setSortable(false);
@@ -530,6 +527,10 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 
         configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.result(), 165, "Result"));
         configs.get(configs.size() - 1).setSortable(false);
+        configs.get(configs.size() - 1).setMenuDisabled(true);
+
+        configs.add(new ColumnConfig<StudentActivityModel, Integer>(detailsProps.timeOnTask(), 63, "Time"));
+        configs.get(configs.size() - 1).setSortable(true);
         configs.get(configs.size() - 1).setMenuDisabled(true);
 
         ColumnModel<StudentActivityModel> cm = new ColumnModel<StudentActivityModel>(configs);
@@ -581,7 +582,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
     }
 }
 
-interface DetailsProperties extends PropertyAccess<StudentActivityModel> {
+interface DetailsProperties extends PropertyAccess<String> {
     @Path("id")
     ModelKeyProvider<StudentActivityModel> key();
 
@@ -596,4 +597,6 @@ interface DetailsProperties extends PropertyAccess<StudentActivityModel> {
     ValueProvider<StudentActivityModel, String> activity();
 
     ValueProvider<StudentActivityModel, String> result();
+
+    ValueProvider<StudentActivityModel, Integer> timeOnTask();
 }
