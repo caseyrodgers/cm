@@ -9,9 +9,10 @@ public class ProblemDto extends BaseDto implements Response {
         INPUT_WIDGET, MULTI_CHOICE, WHITEBOARD, UNKNOWN
     };
 
-    public ProblemDto() {}
+    public ProblemDto() {
+    }
 
-    String label, pid;
+    String label, pid, pidReal;
     LessonModel lesson;
     ProblemType problemType = ProblemType.UNKNOWN;
     int assignKey;
@@ -24,6 +25,14 @@ public class ProblemDto extends BaseDto implements Response {
         this.lesson = lesson;
         this.pid = pid;
         this.assignKey = assignKey;
+    }
+
+    public String getPidReal() {
+        return pidReal;
+    }
+
+    public void setPidReal(String pidReal) {
+        this.pidReal = pidReal;
     }
 
     public int getAssignKey() {
@@ -41,7 +50,6 @@ public class ProblemDto extends BaseDto implements Response {
     public void setProblemType(ProblemType problemType) {
         this.problemType = problemType;
     }
-
 
     public String getLabel() {
         return label;
@@ -74,10 +82,11 @@ public class ProblemDto extends BaseDto implements Response {
         this.pid = pid;
     }
 
-
-    /** Return the type tag for problem type
+    /**
+     * Return the type tag for problem type
      * 
      * TODO: move to ProblemType
+     * 
      * @return
      */
     public String getProblemTypeName() {
@@ -105,7 +114,7 @@ public class ProblemDto extends BaseDto implements Response {
     }
 
     public String getLabelWithType() {
-        return  getLabel() + " " + getProblemTypeName();
+        return getLabel() + " " + getProblemTypeName();
     }
 
     public int getOrdinalNumber() {
@@ -116,7 +125,6 @@ public class ProblemDto extends BaseDto implements Response {
         this.ordinalNumber = ordinalNumber;
     }
 
-
     public LessonModel getLesson() {
         return lesson;
     }
@@ -124,21 +132,18 @@ public class ProblemDto extends BaseDto implements Response {
     public void setLesson(LessonModel lesson) {
         this.lesson = lesson;
     }
-    
-    
+
     @Override
     public String toString() {
         return "ProblemDto [label=" + label + ", pid=" + pid + ", lesson=" + lesson + ", problemType=" + problemType + ", assignKey=" + assignKey
                 + ", ordinalNumber=" + ordinalNumber + "]";
     }
-    
 
     public boolean equals(Object obj) {
-        if(obj instanceof ProblemDto && getPid() != null) {
-            return ((ProblemDto)obj).getPid().equals(getPid());
-        }
-        else {
+        if (obj instanceof ProblemDto && getPid() != null) {
+            return ((ProblemDto) obj).getPid().equals(getPid());
+        } else {
             return super.equals(obj);
         }
     }
-    }
+}

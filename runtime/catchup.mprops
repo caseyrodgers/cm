@@ -4744,6 +4744,29 @@ limit 1
 
 
 
+.key=GET_STUDENT_PIDS
+## Return pids used by assignment for a given user
+## note the use of is_personalized to either choose all
+## pids assigned by admin, or personalized versions.
+
+select cp.pid, cp.pid as pidReal, cp.label, cp.lesson, cp.ordinal_number, cp.lesson_file, cp.ordinal_number as ordinal
+from   CM_ASSIGNMENT a
+   JOIN CM_ASSIGNMENT_PIDS cp on cp.assign_key = a.assign_key
+where a.assign_key = ?
+and is_personalized = 0
+
+union 
+
+
+select pu.pid, cp.pid as pidReal, cp.label, cp.lesson, cp.ordinal_number, cp.lesson_file, cp.ordinal_number as ordinal
+from   CM_ASSIGNMENT a
+   JOIN CM_ASSIGNMENT_PIDS cp on cp.assign_key = a.assign_key
+   JOIN CM_ASSIGNMENT_PIDS_USER pu on pu.apid_id = cp.id
+where a.assign_key = ?
+and uid = ?
+and is_personalized = 1
+
+order by ordinal
 
 
 
@@ -4774,12 +4797,8 @@ from HA_USER u
    LEFT JOIN CM_ASSIGNMENT_PID_STATUS ps
        on ps.assign_key = a.assign_key and ps.pid = p.pid
    LEFT JOIN (
-        select ps2.assign_key, pid, count(*) as cnt_correct
-        from   CM_ASSIGNMENT_PID_STATUS ps2
-        where ps2.status = 'Correct'
-        and ps2.assign_key = ? 
-        group by pid
-   )  cp on cp.assign_key = a.assign_key and cp.pid = p.pid
+         $$GET_PID_STATUS_QUERY$$   
+   )  cp on cp.assign_key = a.assign_key and cp.pid = p.pid and cp.uid = u.uid
    LEFT JOIN (
         select assign_key, pid, count(*) / 2 as cnt_half_credit
         from   CM_ASSIGNMENT_PID_STATUS
@@ -4790,6 +4809,30 @@ from HA_USER u
 where p_.assign_key = ?   
 group by p_.assign_key, p_.pid
 order by p_.ordinal_number
+
+
+.key=GET_PID_STATUS
+# Get pid status by either looking base PID or getting
+# the specific pids assigned to this user. 
+      
+select p1.pid as pid1,  p1.pid as pid2, ps.id, ps.uid, p1.assign_key, ps.status,a.is_personalized
+from   CM_ASSIGNMENT a
+    JOIN CM_ASSIGNMENT_PIDS p1 on p1.assign_key = a.assign_key
+    LEFT JOIN CM_ASSIGNMENT_PID_STATUS ps  on (ps.assign_key = p1.assign_key and ps.pid = p1.pid)
+where a.assign_key = $$ASSIGN_KEY$$
+and a.is_personalized = 0
+
+union
+
+select p1.pid as pid1,  p2.pid as pid2, ps.id,ps.uid, p1.assign_key, ps.status,a.is_personalized
+from   CM_ASSIGNMENT a
+    JOIN CM_ASSIGNMENT_PIDS p1 on p1.assign_key = a.assign_key
+    JOIN CM_ASSIGNMENT_PIDS_USER p2 on (p2.assign_key = p1.assign_key and p2.apid_id = p1.id)
+    LEFT JOIN CM_ASSIGNMENT_PID_STATUS ps  on (ps.assign_key = p2.assign_key and ps.pid = p2.pid and ps.uid = p2.uid)
+where a.assign_key = $$ASSIGN_KEY$$
+and     a.is_personalized = 1
+
+
 
 .key=ASSIGNMENT_PID_ANSWER_STATUS-default
 
@@ -4848,6 +4891,15 @@ order by user_name
       on p.assign_key = a.assign_key and p.uid = u.uid and p.apid_id = p_.id
 
 
+
+
+.key=GET_ASSIGNMENT_STUDENTS
+## Get student assigned to a given Assignment
+
+select vu.uid, u.user_name 
+from HA_USER u
+  JOIN v_ASSIGNMENT_USERS vu on vu.uid = u.uid
+where assign_key = ?
 
 
 
