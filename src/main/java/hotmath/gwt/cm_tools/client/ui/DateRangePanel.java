@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 
+import hotmath.gwt.cm_rpc.client.model.DateRange;
 import hotmath.gwt.cm_tools.client.ui.DateRangePickerDialog.FilterOptions;
 
 import java.util.Date;
@@ -23,6 +24,8 @@ public class DateRangePanel extends HorizontalPanel  {
 	
 	static private DateRangePanel _instance;
 
+	DateRange dateRange = DateRange.getInstance();
+
 	Date fromDate, toDate;
 	Date defaultFromDate;
 	static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
@@ -44,7 +47,17 @@ public class DateRangePanel extends HorizontalPanel  {
 	}
 
 	public void setDefaultFromDate(Date date) {
+		if (date.before(dateRange.getMinFromDate())) {
+			date = dateRange.getMinFromDate();
+		}
 		this.defaultFromDate = date;
+	}
+
+	public Date getDefaultFromDate() {
+		if (defaultFromDate == null) {
+			defaultFromDate = dateRange.getMinFromDate();
+		}
+		return defaultFromDate;
 	}
 
 	public boolean isDefault() {
@@ -55,9 +68,14 @@ public class DateRangePanel extends HorizontalPanel  {
 		return StudentSearchInfo.__instance.getFilterOptions();
 	}
 
+	public DateRange getDateRange() {
+		return dateRange;
+	}
+
 	public Date getFromDate() {
 		if (fromDate == null)
-			fromDate = defaultFromDate;
+			fromDate = getDefaultFromDate();
+		dateRange.setFromDate(fromDate);
 		return fromDate;
 	}
 
@@ -66,6 +84,7 @@ public class DateRangePanel extends HorizontalPanel  {
 			toDate = new Date();
 			addDaysToDate(toDate, 1);
 		}
+		dateRange.setToDate(toDate);
 		return toDate;
 	}
 
@@ -131,6 +150,7 @@ public class DateRangePanel extends HorizontalPanel  {
 		DateRangePickerDialog.showSharedInstance(fromDate, toDate, new DateRangePickerDialog.Callback() {
 			@Override
 			public void datePicked(Date from, Date to, FilterOptions filterOptions) {
+				from = (from != null && from.before(getDefaultFromDate())) ? getDefaultFromDate() : from;
 				fromDate = (from != null) ? from : fromDate;
 				toDate = (to != null) ? to : toDate;
 
@@ -151,6 +171,8 @@ public class DateRangePanel extends HorizontalPanel  {
 		fromDate = defaultFromDate;
 		toDate = new Date();
 		addDaysToDate(toDate, 1);
+		dateRange.setFromDate(fromDate);
+		dateRange.setToDate(toDate);
 
 		StudentSearchInfo.__instance.setFilterOptions(null);
 
