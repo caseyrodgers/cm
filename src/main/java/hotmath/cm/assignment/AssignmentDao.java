@@ -2801,6 +2801,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 double correctCount=0.0;                
                 for(StudentDto student: assStudent) {
                     
+                    try {
                     for(StudentProblemDto studentProblem: student.getProblems()) {
                          if(studentProblem.getPid().equals(basePid)) {
                              String status=studentProblem.getStatus();
@@ -2811,6 +2812,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                                  correctCount += .5;
                              }
                          }
+                    }
+                    }
+                    catch(Exception ee) {
+                        ee.printStackTrace();
                     }
                 }
 

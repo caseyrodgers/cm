@@ -12,6 +12,8 @@ public class StudentProblemDto implements Response {
     private boolean assignmentClosed;
     private boolean graded;
     private boolean assignmentGraded;
+    
+    
 
     public StudentProblemDto() {
     }
@@ -61,6 +63,9 @@ public class StudentProblemDto implements Response {
     }
     
     public String getStatus() {
+        if(status == null) {
+            return "Not Viewed";
+        }
         return status;
     }
 
