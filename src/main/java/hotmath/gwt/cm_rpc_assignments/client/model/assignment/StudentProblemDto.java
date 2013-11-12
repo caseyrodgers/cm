@@ -6,6 +6,7 @@ public class StudentProblemDto implements Response {
 
     private int uid;
     private ProblemDto problem;
+    private String basePid;  // pid that points the pid choosen by admin
     private String status;
     private boolean hasShowWork;
     private boolean hasShowWorkAdmin;
@@ -29,6 +30,14 @@ public class StudentProblemDto implements Response {
         this.graded = graded;
     }
 
+
+    public String getBasePid() {
+        return basePid;
+    }
+
+    public void setBasePid(String basePid) {
+        this.basePid = basePid;
+    }
 
     public boolean isHasShowWorkAdmin() {
         return hasShowWorkAdmin;
@@ -114,11 +123,6 @@ public class StudentProblemDto implements Response {
         return status != null && status.equalsIgnoreCase("correct");
     }
 
-	@Override
-    public String toString() {
-        return "StudentProblemDto [uid=" + uid + ", problem=" + problem + ", status=" + status + "]";
-    }
-
 	/** Return true if this student problem is considered 'complete'. 
 	 * 
 	 * Complete means the user has done something with the problem, either
@@ -179,4 +183,13 @@ public class StudentProblemDto implements Response {
         }
         return html;
     }
+
+
+    @Override
+    public String toString() {
+        return "StudentProblemDto [uid=" + uid + ", problem=" + problem + ", basePid=" + basePid + ", status=" + status + ", hasShowWork=" + hasShowWork
+                + ", hasShowWorkAdmin=" + hasShowWorkAdmin + ", assignmentClosed=" + assignmentClosed + ", graded=" + graded + ", assignmentGraded="
+                + assignmentGraded + "]";
+    }
+
 }

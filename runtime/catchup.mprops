@@ -4749,7 +4749,7 @@ limit 1
 ## note the use of is_personalized to either choose all
 ## pids assigned by admin, or personalized versions.
 
-select cp.pid, cp.pid as pidReal, cp.label, cp.lesson, cp.ordinal_number, cp.lesson_file, cp.ordinal_number as ordinal
+select cp.pid, cp.pid as pid_real, cp.label, cp.lesson, cp.ordinal_number, cp.lesson_file, cp.ordinal_number as ordinal
 from   CM_ASSIGNMENT a
    JOIN CM_ASSIGNMENT_PIDS cp on cp.assign_key = a.assign_key
 where a.assign_key = ?

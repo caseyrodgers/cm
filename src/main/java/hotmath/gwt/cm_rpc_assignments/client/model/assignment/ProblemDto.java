@@ -9,14 +9,15 @@ public class ProblemDto extends BaseDto implements Response {
         INPUT_WIDGET, MULTI_CHOICE, WHITEBOARD, UNKNOWN
     };
 
-    public ProblemDto() {
-    }
-
-    String label, pid, pidReal;
+    String label, pid;
     LessonModel lesson;
     ProblemType problemType = ProblemType.UNKNOWN;
     int assignKey;
     private int ordinalNumber;
+
+    public ProblemDto() {
+    }
+
 
     public ProblemDto(int ordinalNumber, int id, LessonModel lesson, String label, String pid, int assignKey) {
         super(id, label);
@@ -25,14 +26,6 @@ public class ProblemDto extends BaseDto implements Response {
         this.lesson = lesson;
         this.pid = pid;
         this.assignKey = assignKey;
-    }
-
-    public String getPidReal() {
-        return pidReal;
-    }
-
-    public void setPidReal(String pidReal) {
-        this.pidReal = pidReal;
     }
 
     public int getAssignKey() {

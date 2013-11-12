@@ -2798,33 +2798,31 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             List<PidStats> pidStats = new ArrayList<PidStats>();
             for (ProblemDto baseProb : basePids) {
                 String basePid = baseProb.getPid();
-                double correctCount=0.0;                
-                for(StudentDto student: assStudent) {
-                    
+                double correctCount = 0.0;
+                for (StudentDto student : assStudent) {
+
                     try {
-                    for(StudentProblemDto studentProblem: student.getProblems()) {
-                         if(studentProblem.getPid().equals(basePid)) {
-                             String status=studentProblem.getStatus();
-                             if(status.equals("Correct")) {
-                                 correctCount += 1;
-                             }
-                             else if(status.equals("Half Correct")) {
-                                 correctCount += .5;
-                             }
-                         }
-                    }
-                    }
-                    catch(Exception ee) {
+                        for (StudentProblemDto studentProblem : student.getProblems()) {
+                            if (studentProblem.getBasePid().equals(basePid)) {
+                                String status = studentProblem.getStatus();
+                                if (status.equals("Correct")) {
+                                    correctCount += 1;
+                                } else if (status.equals("Half Correct")) {
+                                    correctCount += .5;
+                                }
+                            }
+                        }
+                    } catch (Exception ee) {
                         ee.printStackTrace();
                     }
                 }
 
-                int percent=0;
+                int percent = 0;
                 if (correctCount > 0) {
-                     percent = Math.round(((float) correctCount / (float) assStudent.size()) * 100.0f);
+                    percent = Math.round(((float) correctCount / (float) assStudent.size()) * 100.0f);
                 }
-                
-                pidStats.add(new PidStats(basePid,percent));
+
+                pidStats.add(new PidStats(basePid, percent));
             }
             return new AssignmentRealTimeStats(pidStats);
         } catch (Exception e) {
@@ -2875,8 +2873,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 while (rs.next()) {
                     ProblemDto problem = new ProblemDto(rs.getInt("ordinal"), 0, new LessonModel(rs.getString("lesson"), ""), rs.getString("label"),
                             rs.getString("pid"), assignKey);
-                    problem.setPidReal(rs.getString("pidReal"));
-
                     psStatus.setInt(1, assignKey);
                     psStatus.setInt(2, s.getUid());
                     psStatus.setString(3, problem.getPid());
@@ -2886,6 +2882,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         status = rsStatus.getString("status");
                     }
                     StudentProblemDto studentproblem = new StudentProblemDto(s.getUid(), problem, status, false, false, false, false, false);
+                    studentproblem.setBasePid(rs.getString("pid_real"));
                     s.getProblems().add(studentproblem);
                 }
             }
@@ -2915,6 +2912,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     public AssignmentRealTimeStatsUsers getAssignmentProblemStatsUsers(int assignKey, String pid) throws Exception {
 
+          Assignment ass = getAssignment(assignKey);
+//        List<StudentDto> students1 = getStudentsInAssignment(assignKey);
+//        int cntCorrect = 0;
+//        for (StudentDto student : students1) {
+//            for (StudentProblemDto studentProblem : student.getProblems()) {
+//                if (studentProblem.getBasePid().equals(pid)) {
+//                    if (studentProblem.getStatus().equals("Correct")) {
+//                        cntCorrect++;
+//                    }
+//                }
+//            }
+//        }
+
         class StudentStat {
             public StudentStat(int uid, String name, String status) {
                 this.uid = uid;
@@ -2929,7 +2939,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_STUDENT_STATS");
 
-        Assignment ass = getAssignment(assignKey);
         String joinPidsSql = null;
         if (ass.isPersonalized()) {
             joinPidsSql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_STUDENT_STATS-personalized");
