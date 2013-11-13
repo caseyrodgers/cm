@@ -48,7 +48,7 @@ public class AssignmentProblemStatsDialog extends GWindow {
 
     private MyGrid theGrid;
     private CallbackOnComplete callbackOnComplete;
-    
+    private Label _countLabel = new Label();
     public AssignmentProblemStatsDialog(int assignKey, String pid, String label, CallbackOnComplete callbackOnComplete) {
         super(true);
         setResizable(false);
@@ -89,6 +89,7 @@ public class AssignmentProblemStatsDialog extends GWindow {
         
         String html = "<div style='margin: 10px;'><b>Problem:</b> <span>" + label + "</span></div>";
         flow.add(new HTML(html));
+        flow.add(_countLabel);
         
         borderContainer.setNorthWidget(flow, new BorderLayoutData(50));
         borderContainer.setCenterWidget(theGrid);
@@ -154,6 +155,9 @@ public class AssignmentProblemStatsDialog extends GWindow {
 
             public void oncapture(AssignmentRealTimeStatsUsers ai) {
                 updateUi(ai);
+                
+                _countLabel.getElement().setInnerHTML("<div style='margin: 10px;font-size: .8em;'>Correct: " + ai.getCountCorrect() + " out of " + ai.getCountStudents());
+                
                 CmBusyManager.setBusy(false);
             }
         }.register();            

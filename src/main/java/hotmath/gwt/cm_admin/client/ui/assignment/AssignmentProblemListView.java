@@ -618,8 +618,13 @@ public class AssignmentProblemListView extends ContentPanel {
         }
         
         public String getPercentCorrect() {
-            int percent = pidStats!=null?pidStats.getCorrectPercent():0;
-            return (percent<10?" ":"") + percent + "%";  
+            if(pidStats == null) {
+                return "--";
+            }
+            else {
+                int percent = pidStats.getCorrectPercent();
+                return (percent<10?" ":"") + percent + "%";
+            }
         }
 
     }

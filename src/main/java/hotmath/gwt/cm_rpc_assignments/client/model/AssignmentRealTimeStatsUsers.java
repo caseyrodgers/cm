@@ -23,5 +23,19 @@ public class AssignmentRealTimeStatsUsers implements Response {
         this.students = students;
     }
 
+    public int getCountCorrect() {
+        int countCorrect=0;
+        for(StudentAssignmentProblemStat s: students) {
+            if(s.getStatus().equals("Correct") || s.getStatus().equals("Half Credit")) {
+                countCorrect++;
+            }
+        }
+        return countCorrect;
+    }
+
+    public int getCountStudents() {
+        return students.size();
+    }
+
 
 }
