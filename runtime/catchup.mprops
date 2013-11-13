@@ -4151,12 +4151,14 @@ where ca.uid = ?
 
 select  ai.num_students_graded, ag.num_students_in_group, us.num_students_specified
 FROM CM_ASSIGNMENT a
-left join (
-                select assign_key, count(*) as num_students_graded
-                from CM_ASSIGNMENT_USER u
-                where     is_graded = 1
-                group by assign_key
-          ) ai on ai.assign_key = a.assign_key
+left join ( select u.group_id, assign_key, count(*) as num_students_graded
+                from CM_ASSIGNMENT_USER au 
+                   JOIN HA_USER u on u.uid = au.uid
+                where   au.is_graded = 1
+                and u.is_active = 1
+                and is_auto_create_template = 0
+                group by u.group_id, assign_key
+          ) ai on (ai.assign_key = a.assign_key and ai.group_id = a.group_id)
          left join(
                select admin_id, group_id, count(*) as num_students_in_group
                 from HA_USER u
