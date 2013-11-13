@@ -1,195 +1,134 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://ehcache.sf.net/ehcache.xsd">
-<!--  
-   
-   Configuration for ehcache used by 
-   hotmath.cm.util.CmCacheMangager
-   
-   Each cache name should be defined in the 
-   static enum CachName in CmCacheManager 
+	xsi:schemaLocation="http://ehcache.sf.net/ehcache.xsd">
+	<!-- Configuration for ehcache used by hotmath.cm.util.CmCacheMangager Each 
+		cache name should be defined in the static enum CachName in CmCacheManager -->
+	<defaultCache maxElementsInMemory="10000" eternal="false"
+		timeToIdleSeconds="120" />
 
- -->
-<defaultCache
-        maxElementsInMemory="10000"
-        eternal="false"
-        timeToIdleSeconds="120"
-/>
+	<diskStore path="java.io.tmpdir/cm.cache" />
 
-<diskStore path="java.io.tmpdir/cm.cache"/>
+	<!-- For HaTestDef -->
+	<cache name="TEST_DEF" maxElementsInMemory="100" eternal="true"
+		overflowToDisk="false">
+	</cache>
 
-<!--  For HaTestDef -->
-<cache name="TEST_DEF"
-       maxElementsInMemory="100"
-       eternal="true"
-       overflowToDisk="false">
-</cache>
+	<!-- For HaTest -->
+	<cache name="TEST" maxElementsInMemory="100" eternal="true"
+		overflowToDisk="false">
+	</cache>
 
-<!--  For HaTest -->
-<cache name="TEST"
-       maxElementsInMemory="100"
-       eternal="true"
-       overflowToDisk="false">
-</cache>
+	<!-- For Test HTML -->
+	<cache name="TEST_HTML" maxElementsInMemory="100" eternal="true"
+		diskPersistent="false">
+	</cache>
 
-<!--  For Test HTML -->
-<cache name="TEST_HTML"
-       maxElementsInMemory="100"
-       eternal="true"
-       diskPersistent="false">
-</cache>
+	<!-- For Test TEST_HTML_CHECKED, which is the results -->
+	<cache name="TEST_HTML_CHECKED" maxElementsInMemory="50" eternal="false"
+		timeToLiveSeconds="120" overflowToDisk="false">
+	</cache>
 
-<!--  For Test TEST_HTML_CHECKED, which is the results -->
-<cache name="TEST_HTML_CHECKED"
-       maxElementsInMemory="50"
-       eternal="false"
-       timeToLiveSeconds="120"
-       overflowToDisk="false">
-</cache>
+	<!-- Description of HaTestDef including all associated lesson names -->
+	<cache name="TEST_DEF_DESCRIPTION" maxElementsInMemory="50"
+		eternal="true" overflowToDisk="false">
+	</cache>
 
-<!-- Description of HaTestDef including all associated lesson names -->
-<cache name="TEST_DEF_DESCRIPTION"
-       maxElementsInMemory="50"
-       eternal="true"
-       overflowToDisk="false">
-</cache>
+	<!-- For temporary caching of student UIDs needed for Admin Reports -->
+	<cache name="REPORT_ID" maxElementsInMemory="100" eternal="false"
+		timeToLiveSeconds="300" overflowToDisk="false">
+	</cache>
 
-<!-- For temporary caching of student UIDs needed for Admin Reports -->
-<cache name="REPORT_ID"
-       maxElementsInMemory="100"
-       eternal="false"
-       timeToLiveSeconds="300"
-       overflowToDisk="false">
-</cache>
+	<!-- For Subject Chapters -->
+	<cache name="SUBJECT_CHAPTERS" maxElementsInMemory="200" eternal="true"
+		overflowToDisk="false">
+	</cache>
 
-<!--  For Subject Chapters -->
-<cache name="SUBJECT_CHAPTERS"
-       maxElementsInMemory="200"
-       eternal="true"
-       overflowToDisk="false">
-</cache>
-
-<!--  Admin bulk upload file (see BulkRegistrationService) -->
-<cache name="BULK_UPLOAD_FILE"
-       maxElementsInMemory="10"
-       eternal="false"
-       timeToLiveSeconds="120"
-       overflowToDisk="false">
-</cache>
+	<!-- Admin bulk upload file (see BulkRegistrationService) -->
+	<cache name="BULK_UPLOAD_FILE" maxElementsInMemory="10" eternal="false"
+		timeToLiveSeconds="120" overflowToDisk="false">
+	</cache>
 
 
-<!--  Prescription Objects 
-  
-   We want to cache this for a long time to enable the 
-   reuse of the information as the user move back/forward.
-   
-   So, I'm guessing 40 minute sessions. [Casey]
-
--->
-<cache name="PRESCRIPTION"
-       maxElementsInMemory="100"
-       eternal="false"
-       timeToLiveSeconds="2400"
-       overflowToDisk="false">
-</cache>
+	<!-- Prescription Objects We want to cache this for a long time to enable 
+		the reuse of the information as the user move back/forward. So, I'm guessing 
+		40 minute sessions. [Casey] -->
+	<cache name="PRESCRIPTION" maxElementsInMemory="100" eternal="false"
+		timeToLiveSeconds="2400" overflowToDisk="false">
+	</cache>
 
 
-<!-- StudentSummaryGrid paged datasets -->
-<cache name="STUDENT_PAGED_DATA"
-       maxElementsInMemory="30"
-       eternal="false"
-       timeToLiveSeconds="2400"
-       overflowToDisk="false">
-</cache>
+	<!-- StudentSummaryGrid paged datasets -->
+	<cache name="STUDENT_PAGED_DATA" maxElementsInMemory="30"
+		eternal="false" timeToLiveSeconds="2400" overflowToDisk="false">
+	</cache>
 
 
-<cache name="CUSTOM_PROGRAM_LESSONS"
-       maxElementsInMemory="30"
-       eternal="false"
-       timeToLiveSeconds="2400"
-       overflowToDisk="false">
-</cache>
+	<cache name="CUSTOM_PROGRAM_LESSONS" maxElementsInMemory="30"
+		eternal="false" timeToLiveSeconds="2400" overflowToDisk="false">
+	</cache>
 
 
-<cache name="HA_USER"
-       maxElementsInMemory="100"
-       eternal="false"
-       timeToLiveSeconds="300"
-       overflowToDisk="false">
-</cache>
+	<cache name="HA_USER" maxElementsInMemory="100" eternal="false"
+		timeToLiveSeconds="300" overflowToDisk="false">
+	</cache>
 
-<cache name="INMH_ITEMS"
-       maxElementsInMemory="1000"
-       eternal="true"
-       overflowToDisk="false">
-</cache>
+	<cache name="INMH_ITEMS" maxElementsInMemory="1000" eternal="true"
+		overflowToDisk="false">
+	</cache>
 
-<cache name="WOOKBOOK_POOL"
-       maxElementsInMemory="1000"
-       eternal="true"
-       overflowToDisk="false">
-</cache>
+	<cache name="WOOKBOOK_POOL" maxElementsInMemory="1000" eternal="true"
+		overflowToDisk="false">
+	</cache>
 
-<cache name="LESSON_RANKINGS"
-       maxElementsInMemory="1"
-       overflowToDisk="false">
-</cache>
+	<cache name="LESSON_RANKINGS" maxElementsInMemory="1"
+		overflowToDisk="false">
+	</cache>
 
-<cache name="CATEGORY_BOOKS"
-       maxElementsInMemory="20"
-       overflowToDisk="false">
-</cache>
+	<cache name="CATEGORY_BOOKS" maxElementsInMemory="20"
+		overflowToDisk="false">
+	</cache>
 
-<cache name="BOOK_INFO_MODEL"
-       maxElementsInMemory="20"
-       overflowToDisk="false">
-</cache>
+	<cache name="BOOK_INFO_MODEL" maxElementsInMemory="20"
+		overflowToDisk="false">
+	</cache>
 
-<cache name="BOOK_MODEL"
-       maxElementsInMemory="20"
-       overflowToDisk="false">
-</cache>
+	<cache name="BOOK_MODEL" maxElementsInMemory="20" overflowToDisk="false">
+	</cache>
 
-<cache name="PROBLEM_NUMBERS"
-       maxElementsInMemory="50"
-       overflowToDisk="false">
-</cache>
+	<cache name="PROBLEM_NUMBERS" maxElementsInMemory="50"
+		overflowToDisk="false">
+	</cache>
 
-<cache name="ACTIVITY_TIMES"
-       maxElementsInMemory="20"
-       overflowToDisk="false">
-</cache>
+	<cache name="ACTIVITY_TIMES" maxElementsInMemory="20"
+		overflowToDisk="false">
+	</cache>
 
-<cache name="ALL_CUSTOM_PROGRAM_LESSONS"
-       maxElementsInMemory="1"
-       overflowToDisk="false">
-</cache>
+	<cache name="ALL_CUSTOM_PROGRAM_LESSONS" maxElementsInMemory="1"
+		overflowToDisk="false">
+	</cache>
 
-<cache name="ALL_CUSTOM_QUIZ_LESSONS"
-       maxElementsInMemory="1"
-       overflowToDisk="false">
-</cache>
+	<cache name="ALL_CUSTOM_QUIZ_LESSONS" maxElementsInMemory="1"
+		overflowToDisk="false">
+	</cache>
 
-<cache name="TOPIC_SEARCH_PRESCRIPTION"
-       maxElementsInMemory="50"
-       overflowToDisk="false">
-</cache>
+	<cache name="TOPIC_SEARCH_PRESCRIPTION" maxElementsInMemory="50"
+		overflowToDisk="false">
+	</cache>
 
-<cache name="ASSIGNMENT_PROBLEMS"
-       maxElementsInMemory="50"
-       overflowToDisk="false">
-</cache>
+	<cache name="ASSIGNMENT_PROBLEMS" maxElementsInMemory="50"
+		overflowToDisk="false">
+	</cache>
 
-<cache name="ADMIN_INFO"
-       maxElementsInMemory="50"
-       overflowToDisk="false"
-       timeToLiveSeconds="7200">
-</cache>
+	<cache name="ADMIN_INFO" maxElementsInMemory="50" overflowToDisk="false"
+		timeToLiveSeconds="7200">
+	</cache>
 
-<cache name="QUIZ_ALTERNATES"
-      maxElementsInMemory="10"
-      overflowToDisk="false"
-      timeToLiveSeconds="7200">
-</cache>
+	<cache name="QUIZ_ALTERNATES" maxElementsInMemory="10"
+		overflowToDisk="false" timeToLiveSeconds="7200">
+	</cache>
+
+	<cache name="ASSIGNMENT_STUDENTS" maxElementsInMemory="10"
+		overflowToDisk="false" timeToLiveSeconds="60">
+	</cache>
 
 
 </ehcache>

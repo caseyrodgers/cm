@@ -3,12 +3,15 @@ package hotmath.cm.assignment;
 import hotmath.ProblemID;
 import hotmath.cm.exam.ExamDao;
 import hotmath.cm.server.model.StudentAssignmentStatus;
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CompressHelper;
 import hotmath.cm.util.PropertyLoadFileException;
 import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_admin.client.model.GroupCopyModel;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_core.client.model.StudentAssignmentProblemStat;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.AssignmentStatus;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
@@ -40,7 +43,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
@@ -2840,12 +2842,18 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      */
     public List<StudentDto> getStudentsInAssignment(final int assignKey) throws Exception {
 
+        
+        List<StudentDto> students = (List<StudentDto>)CmCacheManager.getInstance().retrieveFromCache(CacheName.ASSIGNMENT_STUDENTS, assignKey);
+        if(students != null) {
+            return students;
+        }
+        
         /**
          * Get all students currently assigned to this assignment
          * 
          */
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENT_STUDENTS");
-        List<StudentDto> students = getJdbcTemplate().query(sql, new Object[] { assignKey }, new RowMapper<StudentDto>() {
+        students = getJdbcTemplate().query(sql, new Object[] { assignKey }, new RowMapper<StudentDto>() {
             @Override
             public StudentDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new StudentDto(rs.getInt("uid"), rs.getString("user_name"));
@@ -2894,6 +2902,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(null, psStatus, conn);
         }
 
+        CmCacheManager.getInstance().addToCache(CacheName.ASSIGNMENT_STUDENTS, assignKey, students);
+        
         return students;
     }
 
@@ -2911,70 +2921,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     public AssignmentRealTimeStatsUsers getAssignmentProblemStatsUsers(int assignKey, String pid) throws Exception {
-
-          Assignment ass = getAssignment(assignKey);
-//        List<StudentDto> students1 = getStudentsInAssignment(assignKey);
-//        int cntCorrect = 0;
-//        for (StudentDto student : students1) {
-//            for (StudentProblemDto studentProblem : student.getProblems()) {
-//                if (studentProblem.getBasePid().equals(pid)) {
-//                    if (studentProblem.getStatus().equals("Correct")) {
-//                        cntCorrect++;
-//                    }
-//                }
-//            }
-//        }
-
-        class StudentStat {
-            public StudentStat(int uid, String name, String status) {
-                this.uid = uid;
-                this.name = name;
-                this.status = status != null ? status : "";
+        List<StudentDto> students1 = getStudentsInAssignment(assignKey);
+        List<StudentAssignmentProblemStat> studentStatus = new ArrayList<StudentAssignmentProblemStat>();
+        for (StudentDto student : students1) {
+            StudentAssignmentProblemStat stat = new StudentAssignmentProblemStat(student.getUid(), student.getName(), null);
+            for (StudentProblemDto studentProblem : student.getProblems()) {
+                if (studentProblem.getBasePid().equals(pid)) {
+                    stat.setStatus(studentProblem.getStatus());
+                    break;
+                }
             }
-
-            int uid;
-            String status;
-            String name;
+            studentStatus.add(stat);
         }
-
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_STUDENT_STATS");
-
-        String joinPidsSql = null;
-        if (ass.isPersonalized()) {
-            joinPidsSql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_STUDENT_STATS-personalized");
-        } else {
-            joinPidsSql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_STUDENT_STATS-default");
-        }
-        sql = SbUtilities.replaceSubString(sql, "$$JOIN_GET_PIDS$$", joinPidsSql);
-
-        sql = getStudentsInAssignmentSqlRestriction(assignKey, sql);
-
-        System.out.println("DEBUG: getAssignmentProblemStatsUsers: \n" + sql);
-
-        List<StudentStat> studentStatus = getJdbcTemplate().query(sql, new Object[] { assignKey, pid }, new RowMapper<StudentStat>() {
-            @Override
-            public StudentStat mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new StudentStat(rs.getInt("uid"), rs.getString("user_name"), rs.getString("status"));
-            }
-        });
-
-        List<StudentModel> students = new ArrayList<StudentModel>();
-
-        for (StudentStat ss : studentStatus) {
-            StudentModel sm = new StudentModel();
-            sm.setUid(ss.uid);
-            sm.setName(ss.name);
-            String sl = ss.status != null ? ss.status.toLowerCase() : "";
-            if (sl.contains("correct") || sl.contains("half") || sl.contains("submitted")) {
-                sm.setStatus(ss.status);
-            } else {
-                sm.setStatus("Unanswered");
-            }
-
-            students.add(sm);
-        }
-
-        return new AssignmentRealTimeStatsUsers(students);
+        return new AssignmentRealTimeStatsUsers(studentStatus);
     }
 
 }

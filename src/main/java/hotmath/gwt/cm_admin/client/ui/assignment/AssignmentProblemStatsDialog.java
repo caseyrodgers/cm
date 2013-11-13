@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_core.client.model.StudentAssignmentProblemStat;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStatsUsers;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
@@ -60,10 +61,10 @@ public class AssignmentProblemStatsDialog extends GWindow {
         
         StudentGridLocalProperties props = GWT.create(StudentGridLocalProperties.class);
         
-        List<ColumnConfig<StudentModel, ?>> cols = new ArrayList<ColumnConfig<StudentModel, ?>>();
-        cols.add(new ColumnConfig<StudentModel, String>(props.name(), 200, "Student Name"));
-        cols.add(new ColumnConfig<StudentModel, String>(props.status(), 75, "Status"));
-        ColumnModel<StudentModel> probColModel = new ColumnModel<StudentModel>(cols);
+        List<ColumnConfig<StudentAssignmentProblemStat, ?>> cols = new ArrayList<ColumnConfig<StudentAssignmentProblemStat, ?>>();
+        cols.add(new ColumnConfig<StudentAssignmentProblemStat, String>(props.name(), 200, "Student Name"));
+        cols.add(new ColumnConfig<StudentAssignmentProblemStat, String>(props.status(), 75, "Status"));
+        ColumnModel<StudentAssignmentProblemStat> probColModel = new ColumnModel<StudentAssignmentProblemStat>(cols);
         
        TextButton grade = new TextButton("Grade Student", new SelectHandler() {
         @Override
@@ -75,7 +76,7 @@ public class AssignmentProblemStatsDialog extends GWindow {
        
      
         
-        theGrid = new MyGrid(new ListStore<StudentModel>(props.id()), probColModel);
+        theGrid = new MyGrid(new ListStore<StudentAssignmentProblemStat>(props.id()), probColModel);
         theGrid.addRowDoubleClickHandler(new RowDoubleClickHandler() {
             @Override
             public void onRowDoubleClick(RowDoubleClickEvent event) {
@@ -107,7 +108,7 @@ public class AssignmentProblemStatsDialog extends GWindow {
 
     protected void loadSelectedStudentGrading() {
         
-        final StudentModel sm = theGrid.getSelectionModel().getSelectedItem();
+        final StudentAssignmentProblemStat sm = theGrid.getSelectionModel().getSelectedItem();
         if(sm == null) {
             return;
         }
@@ -166,18 +167,18 @@ public class AssignmentProblemStatsDialog extends GWindow {
 
     public interface StudentGridLocalProperties extends PropertyAccess<String> {
         @Path("uid")
-        ModelKeyProvider<StudentModel> id();
+        ModelKeyProvider<StudentAssignmentProblemStat> id();
 
-        ValueProvider<StudentModel, String> status();
-        ValueProvider<StudentModel, String> name();
+        ValueProvider<StudentAssignmentProblemStat, String> status();
+        ValueProvider<StudentAssignmentProblemStat, String> name();
     }    
 
 }
 
 
-class MyGrid extends Grid<StudentModel> {
+class MyGrid extends Grid<StudentAssignmentProblemStat> {
 
-    public MyGrid(ListStore<StudentModel> listStore, ColumnModel<StudentModel> probColModel) {
+    public MyGrid(ListStore<StudentAssignmentProblemStat> listStore, ColumnModel<StudentAssignmentProblemStat> probColModel) {
         super(listStore, probColModel);
     }
     

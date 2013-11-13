@@ -1,25 +1,25 @@
 package hotmath.gwt.cm_rpc_assignments.client.model;
 
+import hotmath.gwt.cm_core.client.model.StudentAssignmentProblemStat;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 
 import java.util.List;
 
 public class AssignmentRealTimeStatsUsers implements Response {
     
-    private List<StudentModel> students;
+    private List<StudentAssignmentProblemStat> students;
 
     public AssignmentRealTimeStatsUsers() {}
     
-    public AssignmentRealTimeStatsUsers(List<StudentModel> students ) {
-        this.students = students;
+    public AssignmentRealTimeStatsUsers(List<StudentAssignmentProblemStat> studentStatus ) {
+        this.students = studentStatus;
     }
 
-    public List<StudentModel> getStudents() {
+    public List<StudentAssignmentProblemStat> getStudents() {
         return students;
     }
 
-    public void setStudents(List<StudentModel> students) {
+    public void setStudents(List<StudentAssignmentProblemStat> students) {
         this.students = students;
     }
 

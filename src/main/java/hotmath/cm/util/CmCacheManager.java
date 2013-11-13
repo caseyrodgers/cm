@@ -104,7 +104,13 @@ public class CmCacheManager  {
 		/** List of lists of quiz alternate test ids 
 		 * 
 		 */
-		QUIZ_ALTERNATES 
+		QUIZ_ALTERNATES,
+		
+		/** Assignments, problems,  students and 
+		 * their statuses for each problem.
+		 * 
+		 */
+		ASSIGNMENT_STUDENTS 
 	};
 
 	final static public String KEY_ALL="all";
