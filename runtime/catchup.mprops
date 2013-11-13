@@ -4761,7 +4761,7 @@ union
 select pu.pid, cp.pid as pidReal, cp.label, cp.lesson, cp.ordinal_number, cp.lesson_file, cp.ordinal_number as ordinal
 from   CM_ASSIGNMENT a
    JOIN CM_ASSIGNMENT_PIDS cp on cp.assign_key = a.assign_key
-   JOIN CM_ASSIGNMENT_PIDS_USER pu on pu.apid_id = cp.id
+   LEFT JOIN CM_ASSIGNMENT_PIDS_USER pu on pu.apid_id = cp.id
 where a.assign_key = ?
 and uid = ?
 and is_personalized = 1

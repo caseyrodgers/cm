@@ -127,7 +127,7 @@
 	</cache>
 
 	<cache name="ASSIGNMENT_STUDENTS" maxElementsInMemory="10"
-		overflowToDisk="false" timeToLiveSeconds="60">
+		overflowToDisk="false" timeToLiveSeconds="600">
 	</cache>
 
 

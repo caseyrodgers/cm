@@ -14,7 +14,7 @@ public class StudentAssignmentProblemStat implements Response {
     public StudentAssignmentProblemStat(int uid, String name, String status) {
         this.uid = uid;
         this.name = name;
-        this.status = status != null ? status : "";
+        this.status = status != null ? status : "Not Answered";
     }
 
     public int getUid() {

@@ -72,7 +72,7 @@ public class StudentProblemDto implements Response {
     }
     
     public String getStatus() {
-        if(status == null) {
+        if(status == null || status.length() == 0) {
             return "Not Answered";
         }
         return status;

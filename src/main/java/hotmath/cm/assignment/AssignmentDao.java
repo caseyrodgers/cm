@@ -2893,6 +2893,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     studentproblem.setBasePid(rs.getString("pid_real"));
                     s.getProblems().add(studentproblem);
                 }
+                
+                if(s.getProblems().size() == 0) {
+                    // user has not viewed assignment yet
+                }
+                
             }
         } catch (Exception e) {
             e.printStackTrace();

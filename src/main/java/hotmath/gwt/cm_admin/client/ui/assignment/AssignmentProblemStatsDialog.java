@@ -62,8 +62,8 @@ public class AssignmentProblemStatsDialog extends GWindow {
         StudentGridLocalProperties props = GWT.create(StudentGridLocalProperties.class);
         
         List<ColumnConfig<StudentAssignmentProblemStat, ?>> cols = new ArrayList<ColumnConfig<StudentAssignmentProblemStat, ?>>();
-        cols.add(new ColumnConfig<StudentAssignmentProblemStat, String>(props.name(), 200, "Student Name"));
-        cols.add(new ColumnConfig<StudentAssignmentProblemStat, String>(props.status(), 75, "Status"));
+        cols.add(new ColumnConfig<StudentAssignmentProblemStat, String>(props.name(), 175, "Student Name"));
+        cols.add(new ColumnConfig<StudentAssignmentProblemStat, String>(props.status(), 100, "Status"));
         ColumnModel<StudentAssignmentProblemStat> probColModel = new ColumnModel<StudentAssignmentProblemStat>(cols);
         
        TextButton grade = new TextButton("Grade Student", new SelectHandler() {
@@ -83,7 +83,7 @@ public class AssignmentProblemStatsDialog extends GWindow {
                 loadSelectedStudentGrading();                
             }
         });
-        theGrid.setToolTip("Double click for detailed student history");
+        theGrid.setToolTip("Double click to grade student");
         
         FlowLayoutContainer flow = new FlowLayoutContainer();
         
