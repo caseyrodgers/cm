@@ -4813,7 +4813,7 @@ group by p_.assign_key, p_.pid
 order by p_.ordinal_number
 
 
-.key=GET_PID_STATUS
+.key=GET_ASSIGNMENT_STUDENTS
 # Get pid status by either looking base PID or getting
 # the specific pids assigned to this user. 
       
@@ -4833,64 +4833,6 @@ from   CM_ASSIGNMENT a
     LEFT JOIN CM_ASSIGNMENT_PID_STATUS ps  on (ps.assign_key = p2.assign_key and ps.pid = p2.pid and ps.uid = p2.uid)
 where a.assign_key = $$ASSIGN_KEY$$
 and     a.is_personalized = 1
-
-
-
-.key=ASSIGNMENT_PID_ANSWER_STATUS-default
-
-   JOIN CM_ASSIGNMENT_PIDS p_
-       on p_.assign_key = a.assign_key
-   JOIN CM_ASSIGNMENT_PIDS p
-       on p.assign_key = p_.assign_key and p.pid = p_.pid
-      
-   
-      
-.key=ASSIGNMENT_PID_ANSWER_STATUS-personalized
-
-   JOIN CM_ASSIGNMENT_PIDS p_
-       on p_.assign_key = a.assign_key
-   JOIN CM_ASSIGNMENT_PIDS_USER p
-      on p.assign_key = a.assign_key and p.uid = u.uid and p.apid_id = p_.id
-   
-
-
-
-.key=ASSIGNMENT_STUDENT_STATS
-
-select u.uid, u.user_name, s1.status
-from HA_USER u
-    JOIN CM_ASSIGNMENT a  
-        on a.group_id = u.group_id
-    JOIN v_ASSIGNMENT_USERS ua on (ua.assign_key = a.assign_key and ua.uid = u.uid)
-    
-    $$JOIN_GET_PIDS$$    
-    
-    LEFT JOIN CM_ASSIGNMENT_PID_STATUS s1  
-        on s1.assign_key = p.assign_key and s1.uid = u.uid and s1.pid = p.pid
-        
-where a.assign_key = ?
-and  p_.pid = ?
-and  u.is_active = 1
-
-order by user_name
-
-
-
-.key=ASSIGNMENT_STUDENT_STATS-default
-
-   JOIN CM_ASSIGNMENT_PIDS p_
-       on p_.assign_key = a.assign_key
-   JOIN CM_ASSIGNMENT_PIDS p
-       on p.assign_key = p_.assign_key and p.pid = p_.pid   
-      
-
-
-.key=ASSIGNMENT_STUDENT_STATS-personalized
-
-   JOIN CM_ASSIGNMENT_PIDS p_
-       on p_.assign_key = a.assign_key
-   LEFT JOIN CM_ASSIGNMENT_PIDS_USER p
-      on p.assign_key = a.assign_key and p.uid = u.uid and p.apid_id = p_.id
 
 
 

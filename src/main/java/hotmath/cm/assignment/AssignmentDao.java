@@ -2004,6 +2004,15 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         });
     }
 
+    /** Update the user's problem status for named assignment.  
+     * 
+     * Make sure cache is up to date.
+     * 
+     * @param uid
+     * @param assignKey
+     * @param pid
+     * @param status
+     */
     public void saveAssignmentProblemStatus(final int uid, final int assignKey, final String pid, final String status) {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
@@ -2018,6 +2027,24 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return ps;
             }
         });
+        
+        /** Keep the cache up to date...(?)
+         * 
+         */
+        List<StudentDto> students = (List<StudentDto>)CmCacheManager.getInstance().retrieveFromCache(CacheName.ASSIGNMENT_STUDENTS, assignKey);
+        if(students != null) {
+            for(StudentDto student: students) {
+                if(student.getUid() == uid) {
+                    for(StudentProblemDto problem: student.getProblems()) {
+                        if(problem.getPid().equals(pid)) {
+                            problem.setStatus(status);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        
     }
 
     public void saveTutorInputWidgetAnswer(final int uid, final int assignKey, final String pid, final String value, final boolean correct) {
@@ -2845,6 +2872,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         
         List<StudentDto> students = (List<StudentDto>)CmCacheManager.getInstance().retrieveFromCache(CacheName.ASSIGNMENT_STUDENTS, assignKey);
         if(students != null) {
+            // updateStudentStatuses(assignKey, students);  // not needed, because cache object is updated during save of status
             return students;
         }
         
@@ -2879,8 +2907,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 psPids.setInt(3, s.getUid());
                 ResultSet rs = psPids.executeQuery();
                 while (rs.next()) {
-                    ProblemDto problem = new ProblemDto(rs.getInt("ordinal"), 0, new LessonModel(rs.getString("lesson"), ""), rs.getString("label"),
-                            rs.getString("pid"), assignKey);
+                    ProblemDto problem = new ProblemDto(rs.getInt("ordinal"), 0, new LessonModel(rs.getString("lesson"), ""), rs.getString("label"),rs.getString("pid"), assignKey);
                     psStatus.setInt(1, assignKey);
                     psStatus.setInt(2, s.getUid());
                     psStatus.setString(3, problem.getPid());
@@ -2910,6 +2937,33 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         CmCacheManager.getInstance().addToCache(CacheName.ASSIGNMENT_STUDENTS, assignKey, students);
         
         return students;
+    }
+
+    private void updateStudentStatuses(int assignKey, List<StudentDto> students) throws Exception {
+        String sqlStatus = "select * " + " from CM_ASSIGNMENT_PID_STATUS " + " where assign_key = ? and uid = ? and pid in ? ";
+        Connection conn=null;
+        PreparedStatement ps = null;
+        try {
+            conn = getJdbcTemplate().getDataSource().getConnection();
+            ps = conn.prepareStatement(sqlStatus);
+            
+            for(StudentDto student: students) {
+                ps.setInt(1, assignKey);
+                ps.setInt(2, student.getUid());
+                for(StudentProblemDto problem: student.getProblems()) {
+                    ps.setString(3, problem.getPid());
+                    ResultSet rs = ps.executeQuery();
+                    if(rs.first()) {
+                        problem.setStatus(rs.getString("status"));
+                    }
+                }
+            }
+            
+        }
+        finally {
+            SqlUtilities.releaseResources(null,  ps,  conn);
+        }
+        
     }
 
     static public void main(String as[]) {
