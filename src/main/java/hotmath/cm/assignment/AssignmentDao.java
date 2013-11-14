@@ -2027,10 +2027,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return ps;
             }
         });
-        
-        /** Keep the cache up to date...(?)
-         * 
-         */
+        updateEhCacheIfNecessary(assignKey, uid, pid, status);
+    }
+    
+
+    /** Update the EHCache representation of the student/problem/statuses for this 
+     *  assignment.
+     *  
+     * @param assignKey
+     * @param uid
+     * @param pid
+     * @param status
+     */
+    private void updateEhCacheIfNecessary(int assignKey, int uid, String pid, String status) {
         List<StudentDto> students = (List<StudentDto>)CmCacheManager.getInstance().retrieveFromCache(CacheName.ASSIGNMENT_STUDENTS, assignKey);
         if(students != null) {
             for(StudentDto student: students) {
@@ -2044,7 +2053,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 }
             }
         }
-        
     }
 
     public void saveTutorInputWidgetAnswer(final int uid, final int assignKey, final String pid, final String value, final boolean correct) {
@@ -2186,9 +2194,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         List<Object[]> batch = new ArrayList<Object[]>();
         for (StudentProblemDto sp : studentAssignment.getStudentStatuses().getAssigmentStatuses()) {
-            Object[] values = new Object[] { sp.getStatus(), sp.isGraded() ? 1 : 0, studentAssignment.getAssignment().getAssignKey(), sp.getPid(),
-                    studentAssignment.getUid() };
+            Object[] values = new Object[] { sp.getStatus(), sp.isGraded() ? 1 : 0, studentAssignment.getAssignment().getAssignKey(), sp.getPid(),studentAssignment.getUid() };
             batch.add(values);
+            
+
+            /** Keep Cache up to date */
+            updateEhCacheIfNecessary(studentAssignment.getAssignment().getAssignKey(),studentAssignment.getUid(),sp.getPid(), sp.getStatus());
         }
         SimpleJdbcTemplate template = new SimpleJdbcTemplate(this.getDataSource());
 
@@ -2198,7 +2209,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         if (releaseGrades) {
             markAssignmentAsGraded(studentAssignment.getUid(), studentAssignment.getAssignment().getAssignKey());
         }
-
+        
         return updateCounts;
     }
 
@@ -2937,33 +2948,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         CmCacheManager.getInstance().addToCache(CacheName.ASSIGNMENT_STUDENTS, assignKey, students);
         
         return students;
-    }
-
-    private void updateStudentStatuses(int assignKey, List<StudentDto> students) throws Exception {
-        String sqlStatus = "select * " + " from CM_ASSIGNMENT_PID_STATUS " + " where assign_key = ? and uid = ? and pid in ? ";
-        Connection conn=null;
-        PreparedStatement ps = null;
-        try {
-            conn = getJdbcTemplate().getDataSource().getConnection();
-            ps = conn.prepareStatement(sqlStatus);
-            
-            for(StudentDto student: students) {
-                ps.setInt(1, assignKey);
-                ps.setInt(2, student.getUid());
-                for(StudentProblemDto problem: student.getProblems()) {
-                    ps.setString(3, problem.getPid());
-                    ResultSet rs = ps.executeQuery();
-                    if(rs.first()) {
-                        problem.setStatus(rs.getString("status"));
-                    }
-                }
-            }
-            
-        }
-        finally {
-            SqlUtilities.releaseResources(null,  ps,  conn);
-        }
-        
     }
 
     static public void main(String as[]) {

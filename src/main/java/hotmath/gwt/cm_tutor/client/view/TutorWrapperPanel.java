@@ -408,6 +408,7 @@ public class TutorWrapperPanel extends Composite {
      * @param trueFalse
      */
     private native void enableTutorDebugMode(boolean trueFalse) /*-{
+        $wnd.console.log('Enabling problemDebug mode');
         $wnd.Flashcard_mngr.debugMode=trueFalse;
     }-*/;
     
@@ -565,13 +566,23 @@ public class TutorWrapperPanel extends Composite {
            };
        }
        
-       
        $wnd.gwt_tutorQuestionGuessChanged = function(id,selection,value) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_tutorQuestionGuessChanged(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id,selection,value);
        }
        
        $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext,submitButtonText, indicateWidgetStatus, installCustomSteps);
+       
+       
+       
+       $wnd.Flashcard_mngr.problemGenDebugInfo =  function (code, info) {
+            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_problemGenDebugInfo(Ljava/lang/String;Ljava/lang/String;)(code, info);
+       }      
+       
    }-*/;    
+    
+    private void gwt_problemGenDebugInfo(String code, String info) {
+        Window.alert("gwt_problemGenDebugInfo: code: " + code + ", info: " + info);
+    }
 
     private void gwt_showWhiteBoard() {
         this.tutorCallback.showWhiteboard();
