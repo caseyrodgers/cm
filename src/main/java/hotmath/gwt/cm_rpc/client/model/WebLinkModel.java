@@ -15,6 +15,7 @@ public class WebLinkModel implements Response {
     private int adminId;
     private String comments;
     private boolean publicLink;
+    private WebLinkType linkType;
     
 
     private List<LessonModel> linkTargets = new ArrayList<LessonModel>();
@@ -27,7 +28,7 @@ public class WebLinkModel implements Response {
 
     public WebLinkModel() {}
     
-    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available, boolean publicLink) {
+    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available, boolean publicLink, WebLinkType linkType) {
         this.linkId = linkId;
         this.adminId = adminId;
         this.name = name;
@@ -35,8 +36,8 @@ public class WebLinkModel implements Response {
         this.comments = comments;
         this.availableWhen = available;
         this.publicLink = publicLink;
+        this.linkType = linkType;
     }
-    
 
     public boolean isPublicLink() {
         return publicLink;
@@ -126,10 +127,18 @@ public class WebLinkModel implements Response {
     }
 
 
+    public WebLinkType getLinkType() {
+        return linkType;
+    }
+
+    public void setLinkType(WebLinkType linkType) {
+        this.linkType = linkType;
+    }
+
     @Override
     public String toString() {
-        return "WebLinkModel [url=" + url + ", name=" + name + ", adminId=" + adminId + ", comments=" + comments + ", publicLink=" + publicLink
-                + ", linkTargets=" + linkTargets + ", linkGroups=" + linkGroups + ", linkId=" + linkId + ", availableWhen=" + availableWhen + "]";
+        return "WebLinkModel [url=" + url + ", name=" + name + ", adminId=" + adminId + ", comments=" + comments + ", publicLink=" + publicLink + ", linkType="
+                + linkType + ", linkTargets=" + linkTargets + ", linkGroups=" + linkGroups + ", linkId=" + linkId + ", availableWhen=" + availableWhen + "]";
     }
     
 }

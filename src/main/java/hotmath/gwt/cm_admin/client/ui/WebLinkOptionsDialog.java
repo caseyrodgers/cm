@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
+import hotmath.gwt.cm_rpc.client.model.WebLinkType;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 
 import com.google.gwt.core.shared.GWT;
@@ -21,6 +22,7 @@ import com.sencha.gxt.widget.core.client.form.ComboBox;
 public class WebLinkOptionsDialog extends GWindow {
 
     private ComboBox<AvailableDevice> _availableDevice;
+    private ComboBox<WebLinkType> _linkType;
     private WebLinkModel webLink;
     public WebLinkOptionsDialog(WebLinkModel webLink) {
         super(false);
@@ -50,6 +52,7 @@ public class WebLinkOptionsDialog extends GWindow {
     protected void saveOption() {
         // apply changes to passed in webLink
         webLink.setAvailableWhen(_availableDevice.getValue().getAvailWhen());
+        webLink.setLinkType(_linkType.getCurrentValue());
         hide();
     }
 
@@ -85,6 +88,10 @@ public class WebLinkOptionsDialog extends GWindow {
         _availableDevice.setValue(_availableDevice.getStore().get(ordinal));
         flow.add(new MyFieldLabel(_availableDevice, "Platform(s)",90,160));
         
+        _linkType = createTypeCombo();
+        _linkType.setValue(_linkType.getStore().get(webLink.getLinkType().ordinal()));
+        flow.add(new MyFieldLabel(_linkType, "Type",90,160));
+        
         frame.setWidget(flow);
         setWidget(frame);
     }
@@ -98,6 +105,23 @@ public class WebLinkOptionsDialog extends GWindow {
         public String getShare() {
             return this.share;
         }
+    }
+    
+    private ComboBox<WebLinkType> createTypeCombo() {
+        WebLinkTypeProps props = GWT.create(WebLinkTypeProps.class);
+        ListStore<WebLinkType> store = new ListStore<WebLinkType>(props.key());
+        ComboBox<WebLinkType> combo = new ComboBox<WebLinkType>(store, props.label());
+
+        for(WebLinkType type: WebLinkType.values()) {
+            combo.getStore().add(type);    
+        }
+       
+        combo.setAllowBlank(false);
+        combo.setForceSelection(true);
+        combo.setTriggerAction(TriggerAction.ALL);
+        
+        combo.setToolTip("What type of resource is this link?");
+        return combo;
     }
     
     private ComboBox<AvailableDevice> createAvailableCombo() {
@@ -141,6 +165,7 @@ public class WebLinkOptionsDialog extends GWindow {
             return this.id;
         }
     }
+
     
     interface AvailDeviceProps extends PropertyAccess<String> {
 
@@ -149,6 +174,10 @@ public class WebLinkOptionsDialog extends GWindow {
         ModelKeyProvider<AvailableDevice> key();
     }
     
-    
+    interface WebLinkTypeProps extends PropertyAccess<String> {
+        @Path("value")
+        ModelKeyProvider<WebLinkType> key();
+        LabelProvider<WebLinkType> label();
+    }
     
 }

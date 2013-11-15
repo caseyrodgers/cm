@@ -357,7 +357,7 @@ public class WebLinkEditorDialog extends GWindow {
     }
 
     public static void startTest() {
-        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org", "The Comment", AvailableOn.DESKTOP_AND_MOBILE, false);
+        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org", "The Comment", AvailableOn.DESKTOP_AND_MOBILE, false,null);
         new WebLinkEditorDialog(EditType.NEW_OR_EDIT, 2, model, new CallbackOnComplete() {
             @Override
             public void isComplete() {

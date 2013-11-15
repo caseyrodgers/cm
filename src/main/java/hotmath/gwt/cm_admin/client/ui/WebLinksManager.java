@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
+import hotmath.gwt.cm_rpc.client.model.WebLinkType;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction.CrudOperation;
 import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksForAdminAction;
@@ -399,6 +400,20 @@ public class WebLinksManager extends GWindow {
         };
         platForm.setCell(cell);
         cols.add(platForm);
+        
+        ColumnConfig<WebLinkModel, WebLinkType> linkType = new ColumnConfig<WebLinkModel, WebLinkType>(gridProps.linkType(), 10, "T");
+        linkType.setToolTip(SafeHtmlUtils.fromString("Type (G=Games, V=Video,O=Other"));
+        AbstractCell<WebLinkType> cellType = new AbstractCell<WebLinkType>() {
+            @Override
+            public void render(com.google.gwt.cell.client.Cell.Context context, WebLinkType linkType, SafeHtmlBuilder sb) {
+                String value=linkType.getLabel();
+                String text = (value!=null?value.toUpperCase().substring(0,1):"-");
+                sb.appendEscaped(text);
+            }
+        };
+        linkType.setCell(cellType);
+        cols.add(linkType);
+
 
         ColumnConfig<WebLinkModel, String> buttonCol = new ColumnConfig<WebLinkModel, String>(gridProps.url(), 40, "Visit");
         TextButtonCell buttonCell = new TextButtonCell() {
@@ -582,7 +597,7 @@ public class WebLinksManager extends GWindow {
         TextButton button = new TextButton("Add", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, false);
+                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, false,null);
                 new WebLinkEditorDialog(EditType.NEW_OR_EDIT, adminId, webLinkModel, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {
@@ -636,6 +651,8 @@ public class WebLinksManager extends GWindow {
     public interface GridProperties extends PropertyAccess<String> {
         @Path("linkId")
         ModelKeyProvider<WebLinkModel> id();
+
+        ValueProvider<WebLinkModel, WebLinkType> linkType();
 
         ValueProvider<WebLinkModel, AvailableOn> availableWhen();
 

@@ -5,11 +5,11 @@ import hotmath.cm.util.UserAgentDetect;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
+import hotmath.gwt.cm_rpc.client.model.WebLinkType;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaUserDao;
-import hotmath.util.sql.SqlUtilities;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -198,7 +198,8 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         int available = rs.getInt("platform");
         AvailableOn availableOn = AvailableOn.values()[available];
         boolean publicLink = rs.getInt("is_public")!=0?true:false;
-        WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"), rs.getString("comments"), availableOn,publicLink);
+        WebLinkType linkType =  WebLinkType.values()[rs.getInt("link_type")];
+        WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"), rs.getString("comments"), availableOn,publicLink,linkType);
         return wlm;
     }
 
@@ -263,7 +264,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
-                String sql = "insert into CM_WEBLINK(admin_id, name, url, comments, platform, is_public, date_created)values(?,?,?,?,?,?,now())";
+                String sql = "insert into CM_WEBLINK(admin_id, name, url, comments, platform, is_public, link_type, date_created)values(?,?,?,?,?,?,?,now())";
                 PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                 ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, link.getAdminId());
@@ -272,6 +273,9 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                 ps.setString(4, link.getComments());
                 ps.setInt(5, link.getAvailableWhen().ordinal());
                 ps.setInt(6, link.isPublicLink()?1:0);
+                
+                int typeOrdinal = link.getLinkType() != null?link.getLinkType().ordinal():0;
+                ps.setInt(7, typeOrdinal);
                 return ps;
             }
         }, keyHolder);
