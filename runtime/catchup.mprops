@@ -6,6 +6,12 @@
 #  Contains all static text entries used by Catchup Math
 #
 
+####
+# the default minimum date in CM
+# this date determines the earliest DateRange date that can be defined
+# and used to window CM data  
+####
+.key=DEFAULT_MIN_DATE=2011-07-01
 
 ################
 ## CmStudentDao
@@ -4644,6 +4650,18 @@ SELECT DISTINCT im.title as lesson, ccs.standard_name_new
     ON   ccs.standard_name_new = ins.standard_name_new
  WHERE   cap.assign_key = ?
  ORDER BY im.title, ccs.standard_name_new
+
+####
+.key=GET_CCSS_COVERAGE_FOR_CUSTOM_PROG
+
+SELECT DISTINCT cp.lesson, ccs.standard_name_new
+  FROM   HA_CUSTOM_PROGRAM_LESSON cp
+  JOIN   inmh_standard ins
+    ON   ins.topic = cp.file
+  JOIN   common_core_standards ccs
+    ON   ccs.standard_name_new = ins.standard_name_new
+ WHERE   cp.program_id = ?
+ ORDER BY cp.lesson, ccs.standard_name_new
 
 ####
 .key=GET_CCSS_COVERAGE_FOR_LESSON
