@@ -89,7 +89,8 @@ public class WebLinkOptionsDialog extends GWindow {
         flow.add(new MyFieldLabel(_availableDevice, "Platform(s)",90,160));
         
         _linkType = createTypeCombo();
-        _linkType.setValue(_linkType.getStore().get(webLink.getLinkType().ordinal()));
+        int which=webLink.getLinkType() != null?webLink.getLinkType().ordinal():0;
+        _linkType.setValue(_linkType.getStore().get(which));
         flow.add(new MyFieldLabel(_linkType, "Type",90,160));
         
         frame.setWidget(flow);
