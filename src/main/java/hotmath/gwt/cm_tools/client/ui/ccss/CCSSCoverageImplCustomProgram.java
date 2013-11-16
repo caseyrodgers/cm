@@ -7,9 +7,9 @@ import com.google.gwt.user.client.ui.Widget;
 class CCSSCoverageImplCustomProgram extends CCSSCoverageImplBase {
     static String title = "Custom Program";
     CCSSCoverageImplCustomProgramPanel panel;
-    public CCSSCoverageImplCustomProgram(int assignKey, CallbackOnComplete callback) {
-        super(title, "Displays CCSS coverage for a Custom Program.", assignKey, callback);
-        panel = new CCSSCoverageImplCustomProgramPanel(this, assignKey);
+    public CCSSCoverageImplCustomProgram(int customProgId, CallbackOnComplete callback) {
+        super(title, "Displays CCSS coverage for a Custom Program.", customProgId, callback);
+        panel = new CCSSCoverageImplCustomProgramPanel(this, customProgId);
     }
 
     public Widget prepareWidget() {
