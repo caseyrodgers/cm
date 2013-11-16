@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.CustomProgramAddQuizDialog.Callback;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -8,6 +9,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForCustomProgramWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
@@ -61,6 +63,8 @@ public class CustomProgramDialog extends CmWindow {
 
     CmAdminModel adminModel;
 
+    CustomProgramDialog _instance;
+
     ListView<CustomProgramModel> _listViewCp;
     ListView<CustomLessonModel> _listViewCq;
     boolean _isDebug;
@@ -72,6 +76,7 @@ public class CustomProgramDialog extends CmWindow {
     CheckBoxGroup _includeArchivedChkBoxGrp;
 
     public CustomProgramDialog(CmAdminModel adminModel) {
+    	_instance = this;
         this.adminModel = adminModel;
         setStyleName("custom-prescription-dialog");
         setHeading("Catchup Math Custom Program Definitions");
@@ -183,6 +188,16 @@ public class CustomProgramDialog extends CmWindow {
                 }
             }
         }, "Get information about selected custom item."));
+
+        tb.add(new MyButtonWithTooltip("CCSS", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                if (!isCpTabSelected()) {
+                    displayCCSSForQuiz();
+                } else {
+                    displayCCSSForProgram();
+                }
+            }
+        }, "Display CCSS coverage information for selected custom item."));
 
         tb.add(new MyButtonWithTooltip("Help", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -318,6 +333,30 @@ public class CustomProgramDialog extends CmWindow {
         }
 
         new CustomQuizInfoSubDialog(sel).setVisible(true);
+    }
+
+    private void displayCCSSForProgram() {
+        final CustomProgramModel sel = _listViewCp.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            CmMessageBoxGxt2.showAlert("Select a custom program");
+            return;
+        }
+        this.hide();
+        new CCSSCoverageForCustomProgramWindow(sel, new CallbackOnComplete() {
+            @Override
+            public void isComplete() {
+                _instance.setVisible(true);
+            }
+        });
+    }
+
+    private void displayCCSSForQuiz() {
+        final CustomLessonModel sel = _listViewCq.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            CmMessageBoxGxt2.showAlert("Select a custom program quiz");
+            return;
+        }
+        CmMessageBoxGxt2.showAlert("Not implemented...");
     }
 
     private void editCustomProgram(boolean asCopy) {
