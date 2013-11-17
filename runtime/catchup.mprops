@@ -4664,6 +4664,20 @@ SELECT DISTINCT cp.lesson, ccs.standard_name_new
  ORDER BY cp.lesson, ccs.standard_name_new
 
 ####
+.key=GET_CCSS_COVERAGE_FOR_CUSTOM_QUIZ
+
+SELECT DISTINCT im.title as lesson, ccs.standard_name_new
+  FROM   HA_CUSTOM_QUIZ_IDS cq
+  JOIN   inmh_map im
+    ON   im.guid = cq.pid
+  JOIN   inmh_standard ins
+    ON   ins.topic = im.file
+  JOIN   common_core_standards ccs
+    ON   ccs.standard_name_new = ins.standard_name_new
+ WHERE   cq.qid = ?
+ ORDER BY im.title, ccs.standard_name_new
+
+####
 .key=GET_CCSS_COVERAGE_FOR_LESSON
 
 SELECT DISTINCT ccs.standard_name_new, pl.lesson

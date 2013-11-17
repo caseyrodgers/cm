@@ -101,6 +101,10 @@ public class CCSSCoverageDataCommand implements ActionHandler<CCSSCoverageDataAc
                 	list = toCmList(crDao.getCCSSCoverageForCustomProgram(action.getUID()));
                     break;
 
+                case CUSTOM_QUIZ:
+                	list = toCmList(crDao.getCCSSCoverageForCustomQuiz(action.getUID()));
+                    break;
+
                 default:
                     throw new Exception("Unknown report type: " + action);
             }

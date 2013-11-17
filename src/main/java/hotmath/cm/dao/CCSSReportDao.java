@@ -569,6 +569,26 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	return list;
 	}
 
+	public List<CCSSCoverageData> getCCSSCoverageForCustomQuiz(int cqId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_COVERAGE_FOR_CUSTOM_QUIZ");
+    	List<CCSSCoverageData> list = null;
+    	try {
+    		list = getJdbcTemplate().query(sql, new Object[] { cqId }, new RowMapper<CCSSCoverageData>() {
+    			@Override
+    			public CCSSCoverageData mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				CCSSCoverageData data = new CCSSCoverageData(rs.getString("lesson"), rs.getString("standard_name_new"));
+    				return data;
+    			}
+    		});
+    	}
+    	catch (DataAccessException e) {
+    		LOGGER.error(String.format("getCCSSCoverageForCustomProgram(): cqId: %d", cqId), e);
+    		throw e;
+    	}
+    	if (list == null) list = new ArrayList<CCSSCoverageData>();
+    	return list;
+	}
+
     public List<CCSSDetail> getCCSSDetailForAssignment(int assignKey) throws Exception {
 
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_DETAIL_FOR_ASSIGNMENT");
