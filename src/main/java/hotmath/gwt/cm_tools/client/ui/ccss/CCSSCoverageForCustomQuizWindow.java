@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindowWithNav;
@@ -21,26 +22,26 @@ import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
  * @author bob
  * 
  */
-public class CCSSCoverageForCustomProgramWindow extends GWindow {
+public class CCSSCoverageForCustomQuizWindow extends GWindow {
 
-    private static CCSSCoverageForCustomProgramWindow __instance;
+    private static CCSSCoverageForCustomQuizWindow __instance;
 
     BorderLayoutContainer _container;
 
-    private static final String TITLE = "Custom Program CCSS Coverage";
+    private static final String TITLE = "Custom Quiz CCSS Coverage";
 
     BorderLayoutData _centerData = new BorderLayoutData();
     CCSSCoverageListPanel _CCSSCoverageListPanel;
-    CustomProgramModel _cpModel;
-    int _cpId;
+    CustomLessonModel _clModel;
+    int _cqId;
     int _adminId;
     CallbackOnComplete _callback;
 
-    public CCSSCoverageForCustomProgramWindow(CustomProgramModel cpModel, CallbackOnComplete callback) {
+    public CCSSCoverageForCustomQuizWindow(CustomLessonModel clModel, CallbackOnComplete callback) {
         super(false);
         __instance = this;
-        _cpModel = cpModel;
-        _cpId = cpModel.getProgramId();
+        _clModel = clModel;
+        _cqId = clModel.getQuizId();
         _callback = callback;
 
         setHeadingText(TITLE);
@@ -52,20 +53,20 @@ public class CCSSCoverageForCustomProgramWindow extends GWindow {
 
         _centerData.setSize(300);
 
-        final CCSSCoverageImplCustomProgram impl = new CCSSCoverageImplCustomProgram(_cpId, new CallbackOnComplete() {
+        final CCSSCoverageImplCustomQuiz impl = new CCSSCoverageImplCustomQuiz(_cqId, new CallbackOnComplete() {
 			@Override
 			public void isComplete() {
 		        setWidget(_container);
 		        forceLayout();
 			}
         });
-        displaySummary(cpModel.getProgramName());
+        displaySummary(clModel.getCustomProgramItem());
         _container.setCenterWidget(impl.getWidget(), _centerData);
 /*
         getHeader().addTool(new TextButton("Print Report", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent ce) {
-            	printCustomProgramCCSSCoverageReport();
+            	printCustomQuizCCSSCoverageReport();
             }
         }));
 */
@@ -92,15 +93,9 @@ public class CCSSCoverageForCustomProgramWindow extends GWindow {
         _container.setNorthWidget(flc, bld);
 	}
 
-    private void printCustomProgramCCSSCoverageReport() {
-    	new PdfWindowWithNav(_adminId, "Catchup Math CCSS Report for: " + _cpModel.getProgramName(),
-    			new GeneratePdfAction(PdfType.CUSTOM_PROG_CCSS,
-    			_adminId, Arrays.asList(_cpId), null, null));
-    }
-
-    public static void startTest() {
-        CustomProgramModel cpm = new CustomProgramModel();
-        cpm.setProgramId(3);
-        new CCSSCoverageForCustomProgramWindow(cpm, null);
+    private void printCustomQuizCCSSCoverageReport() {
+    	new PdfWindowWithNav(_adminId, "Catchup Math CCSS Report for: " + _clModel.getCustomProgramItem(),
+    			new GeneratePdfAction(PdfType.CUSTOM_QUIZ_CCSS,
+    			_adminId, Arrays.asList(_cqId), null, null));
     }
 }
