@@ -46,7 +46,6 @@ public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheck
         try {
 
             String quizHtmlTemplate = GetQuizHtmlCommand.readQuizHtmlTemplate();
-            Map<String, Object> map = new HashMap<String, Object>();
 
             HaTest haTest = HaTestDao.getInstance().loadTest( action.getTestId());
             
@@ -61,8 +60,9 @@ public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheck
             }
 
             HaTestSet _testSet = new HaTestSet(autoConn, haTest.getPids());
-
             int testSegment = haTest.getSegment();
+
+            Map<String, Object> map = new HashMap<String, Object>();
             map.put("haTest", haTest);
             map.put("testTitle", testTitle);
             map.put("testSet", _testSet);
