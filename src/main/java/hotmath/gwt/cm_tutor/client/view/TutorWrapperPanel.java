@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tutor.client.view;
 
-import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -367,7 +366,8 @@ public class TutorWrapperPanel extends Composite {
         
         
         
-        if(CmGwtUtils.getQueryParameterValue("problemDebug").equals("true")) {
+        if(CmGwtUtils.getQueryParameterValue("debug_problem").equals("true")) {
+            tutorCallback.debugLogOut("Problem Debug", "Enabling problem debug");
             enableTutorDebugMode(true);
         }
         
@@ -581,7 +581,7 @@ public class TutorWrapperPanel extends Composite {
    }-*/;    
     
     private void gwt_problemGenDebugInfo(String code, String info) {
-        Window.alert("gwt_problemGenDebugInfo: code: " + code + ", info: " + info);
+        tutorCallback.debugLogOut("Problem Debug", "gwt_problemGenDebugInfo: code: " + code + ", info: " + info);
     }
 
     private void gwt_showWhiteBoard() {

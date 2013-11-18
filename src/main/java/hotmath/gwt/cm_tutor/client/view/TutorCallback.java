@@ -124,4 +124,11 @@ public interface TutorCallback {
      * 
      */
     void showWorkHasBeenSubmitted();
+
+    /** Implementation specific admin/debug output
+     * 
+     * @param string
+     * @param string2
+     */
+    void debugLogOut(String string, String string2);
 }

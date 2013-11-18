@@ -79,4 +79,9 @@ public class TutorCallbackDefault implements TutorCallback {
     @Override
     public void showWorkHasBeenSubmitted() {
     }
+    
+    @Override
+    public void debugLogOut(String title, String message) {
+        Log.debug(title, message);
+    }
 }

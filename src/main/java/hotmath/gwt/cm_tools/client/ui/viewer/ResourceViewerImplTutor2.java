@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -125,6 +126,16 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
             public void solutionHasBeenInitialized() {
                  if(getResourceItem().isViewed()) {
                      tutorPanel.unlockSolution();
+                 }
+            }
+             
+             @Override
+            public void debugLogOut(String title, String message) {
+                 if(message.contains("ERROR")) {
+                     Window.alert(message);
+                 }
+                 else {
+                     InfoPopupBox.display(title, message);
                  }
             }
      
