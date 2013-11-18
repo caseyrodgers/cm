@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_rpc.client.model.AvailableDevice;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
 import hotmath.gwt.cm_rpc.client.model.WebLinkType;
@@ -22,7 +23,7 @@ import com.sencha.gxt.widget.core.client.form.ComboBox;
 public class WebLinkOptionsDialog extends GWindow {
 
     private ComboBox<AvailableDevice> _availableDevice;
-    private ComboBox<WebLinkType> _linkType;
+    private ComboBox<WebLinkTypeLocal> _linkType;
     private WebLinkModel webLink;
     public WebLinkOptionsDialog(WebLinkModel webLink) {
         super(false);
@@ -52,7 +53,7 @@ public class WebLinkOptionsDialog extends GWindow {
     protected void saveOption() {
         // apply changes to passed in webLink
         webLink.setAvailableWhen(_availableDevice.getValue().getAvailWhen());
-        webLink.setLinkType(_linkType.getCurrentValue());
+        webLink.setLinkType(_linkType.getCurrentValue().getType());
         hide();
     }
 
@@ -108,13 +109,13 @@ public class WebLinkOptionsDialog extends GWindow {
         }
     }
     
-    private ComboBox<WebLinkType> createTypeCombo() {
+    static public ComboBox<WebLinkTypeLocal> createTypeCombo() {
         WebLinkTypeProps props = GWT.create(WebLinkTypeProps.class);
-        ListStore<WebLinkType> store = new ListStore<WebLinkType>(props.key());
-        ComboBox<WebLinkType> combo = new ComboBox<WebLinkType>(store, props.label());
+        ListStore<WebLinkTypeLocal> store = new ListStore<WebLinkTypeLocal>(props.key());
+        ComboBox<WebLinkTypeLocal> combo = new ComboBox<WebLinkTypeLocal>(store, props.label());
 
         for(WebLinkType type: WebLinkType.values()) {
-            combo.getStore().add(type);    
+            combo.getStore().add(new WebLinkTypeLocal(type, type.getLabel()));    
         }
        
         combo.setAllowBlank(false);
@@ -125,7 +126,7 @@ public class WebLinkOptionsDialog extends GWindow {
         return combo;
     }
     
-    private ComboBox<AvailableDevice> createAvailableCombo() {
+    static public ComboBox<AvailableDevice> createAvailableCombo() {
         AvailDeviceProps props = GWT.create(AvailDeviceProps.class);
         ListStore<AvailableDevice> store = new ListStore<AvailableDevice>(props.key());
         ComboBox<AvailableDevice> combo = new ComboBox<AvailableDevice>(store, props.device());
@@ -141,31 +142,6 @@ public class WebLinkOptionsDialog extends GWindow {
         combo.setToolTip("On what type of devices should this web link be shown?");
         return combo;
     }
-    
-    class AvailableDevice {
-        String device;
-        private int id;
-        private AvailableOn availableWhen;
-        
-        public AvailableDevice(String label, AvailableOn available) {
-            this.availableWhen = available;
-            device = label;
-            id = available.ordinal();
-        }
-        
-        public AvailableOn getAvailWhen() {
-            // TODO Auto-generated method stub
-            return availableWhen;
-        }
-
-        public String getDevice() {
-            return device;
-        }
-        
-        public int getId() {
-            return this.id;
-        }
-    }
 
     
     interface AvailDeviceProps extends PropertyAccess<String> {
@@ -177,8 +153,35 @@ public class WebLinkOptionsDialog extends GWindow {
     
     interface WebLinkTypeProps extends PropertyAccess<String> {
         @Path("value")
-        ModelKeyProvider<WebLinkType> key();
-        LabelProvider<WebLinkType> label();
+        ModelKeyProvider<WebLinkTypeLocal> key();
+        LabelProvider<WebLinkTypeLocal> label();
+    }
+    
+    
+    static public class WebLinkTypeLocal {
+        WebLinkType type;
+        String label;
+        
+        public WebLinkTypeLocal(WebLinkType type, String label) {
+            this.type = type;
+            this.label = label;
+        }
+
+        public WebLinkType getType() {
+            return type;
+        }
+
+        public void setType(WebLinkType type) {
+            this.type = type;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
     }
     
 }

@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_admin.client.ui.GroupCombo.Callback;
 import hotmath.gwt.cm_admin.client.ui.WebLinkEditorDialog.EditType;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.model.AvailableDevice;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
@@ -64,7 +65,7 @@ import com.sencha.gxt.widget.core.client.tips.QuickTip;
 public class WebLinksManager extends GWindow {
 
     int adminId;
-    protected CmList<WebLinkModel> _allLinks;
+    protected CmList<WebLinkModel> _allPrivateLinks;
     ContentPanel _privateLinksPanel = new ContentPanel();
     ContentPanel _publicLinksPanel = new ContentPanel();
 
@@ -74,12 +75,75 @@ public class WebLinksManager extends GWindow {
         setHeadingText("Web Links Manager");
         setPixelSize(500, 350);
         buildUi();
+        
+        addTool(new TextButton("Filter", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                
+                final Grid<WebLinkModel> grid;
+                final List<WebLinkModel> allLinks;
+                if(_tabPanel.getActiveWidget() == _privateLinksPanel) {
+                    grid = _grid4PrivateLinks;
+                    allLinks = _allPrivateLinks;
+                }
+                else {
+                    grid = _grid4PublicLinks;
+                    allLinks = _allPublicLinks;
+                }
+                WebLinkManagerFilterDialog.showSharedInstance(new WebLinkManagerFilterDialog.Callback() {
+                    
+                    @Override
+                    public void doFilter(AvailableDevice device, WebLinkType type, String searchText) {
+                        doFilterAux(allLinks,grid, device, type, searchText);
+                    }
+                });
+            }
+        }));
+        
+        readPrivateWebLinksFromServer(adminId);
+        
         setVisible(true);
-
-        readWebLinksFromServer(adminId);
+    }
+    
+    private void doFilterAux(List<WebLinkModel> allLinks, Grid<WebLinkModel> grid, AvailableDevice device, WebLinkType type, String searchText) {
+        List<WebLinkModel> list = new ArrayList<WebLinkModel>();
+        
+        grid.getStore().clear();
+        
+        for(WebLinkModel l: allLinks) {
+            
+            boolean add=false;
+            if(device == null || device.getAvailWhen() == null) {
+                if(type == null) {
+                    add=true;
+                }
+            }
+            if(!add) {
+                
+                if(device == null || l.getAvailableWhen() == device.getAvailWhen()) {
+                    if(type == null ||l.getLinkType() == type) {
+                        add = true;
+                    }
+                }
+            }
+            
+            if(add) {
+                if(searchText == null || searchText.length() == 0) {
+                }
+                else if(!(l.getName() + l.getComments()).toLowerCase().contains(searchText.toLowerCase())) {
+                    add=false;
+                }
+            }
+            
+            
+            if(add) {
+                list.add(l);
+            }
+        }
+        grid.getStore().addAll(list);
     }
 
-    private void readWebLinksFromServer(final int adminId) {
+    private void readPrivateWebLinksFromServer(final int adminId) {
         new RetryAction<CmList<WebLinkModel>>() {
             @Override
             public void attempt() {
@@ -92,9 +156,9 @@ public class WebLinksManager extends GWindow {
             @Override
             public void oncapture(CmList<WebLinkModel> links) {
                 CmBusyManager.setBusy(false);
-                _allLinks = links;
+                _allPrivateLinks = links;
                 _grid4PrivateLinks.getStore().clear();
-                _grid4PrivateLinks.getStore().addAll(_allLinks);
+                _grid4PrivateLinks.getStore().addAll(_allPrivateLinks);
             }
         }.attempt();
     }
@@ -104,6 +168,7 @@ public class WebLinksManager extends GWindow {
     Grid<WebLinkModel> _grid4PublicLinks;
     GridProperties gridProps = GWT.create(GridProperties.class);
     private GroupCombo _groupCombo;
+    protected CmList<WebLinkModel> _allPublicLinks;
 
     private void buildUi() {
 
@@ -115,7 +180,7 @@ public class WebLinksManager extends GWindow {
 
             @Override
             public List<WebLinkModel> getWebLinks() {
-                return _allLinks;
+                return _allPrivateLinks;
             }
         });
 
@@ -167,13 +232,15 @@ public class WebLinksManager extends GWindow {
             @Override
             public void onSelection(SelectionEvent<Widget> event) {
 
+                WebLinkManagerFilterDialog.getSharedInstance().stopApplyFilter();
+                
                 if (_tabPanel.getActiveWidget() == _tabPanel.getWidget(0)) {
-                    readWebLinksFromServer(adminId);
+                    readPrivateWebLinksFromServer(adminId);
                 } else {
                     if (_grid4PublicLinks == null) {
                         createGrid4Public();
                     }
-                    loadGrid4Public();
+                    readPublicWebLinks();
                 }
             }
         });
@@ -298,7 +365,7 @@ public class WebLinksManager extends GWindow {
             public void oncapture(RpcData data) {
                 Log.info("Web Link was removed");
                 CmBusyManager.setBusy(false);
-                loadGrid4Public();
+                readPublicWebLinks();
             }
         }.attempt();
     }
@@ -349,7 +416,7 @@ public class WebLinksManager extends GWindow {
         }.attempt();
     }
 
-    private void loadGrid4Public() {
+    private void readPublicWebLinks() {
         new RetryAction<CmList<WebLinkModel>>() {
             @Override
             public void attempt() {
@@ -360,10 +427,11 @@ public class WebLinksManager extends GWindow {
             }
 
             @Override
-            public void oncapture(CmList<WebLinkModel> value) {
+            public void oncapture(CmList<WebLinkModel> links) {
+                _allPublicLinks = links;
                 CmBusyManager.setBusy(false);
                 _grid4PublicLinks.getStore().clear();
-                _grid4PublicLinks.getStore().addAll(value);
+                _grid4PublicLinks.getStore().addAll(links);
                 forceLayout();
             }
         }.register();
@@ -428,7 +496,7 @@ public class WebLinksManager extends GWindow {
             public void onSelect(SelectEvent event) {
                 Cell.Context c = event.getContext();
                 int row = c.getIndex();
-                WebLinkModel link = _allLinks.get(row);
+                WebLinkModel link = _allPrivateLinks.get(row);
                 Window.open(link.getUrl(), "WebLink", "");
             }
         });
@@ -522,10 +590,10 @@ public class WebLinksManager extends GWindow {
         List<WebLinkModel> filtered = null;
 
         if (group.getId() == 0) {
-            filtered = _allLinks;
+            filtered = _allPrivateLinks;
         } else {
             filtered = new ArrayList<WebLinkModel>();
-            for (WebLinkModel w : _allLinks) {
+            for (WebLinkModel w : _allPrivateLinks) {
                 for (GroupInfoModel gm : w.getLinkGroups()) {
                     if (gm.getId() == group.getId()) {
                         filtered.add(w);
@@ -569,7 +637,7 @@ public class WebLinksManager extends GWindow {
 
             @Override
             public void isComplete() {
-                readWebLinksFromServer(adminId);
+                readPrivateWebLinksFromServer(adminId);
             }
         });
     }
@@ -601,7 +669,7 @@ public class WebLinksManager extends GWindow {
                 new WebLinkEditorDialog(EditType.NEW_OR_EDIT, adminId, webLinkModel, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {
-                        readWebLinksFromServer(adminId);
+                        readPrivateWebLinksFromServer(adminId);
                     }
                 });
             }
