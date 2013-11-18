@@ -607,13 +607,13 @@ public class WebLinksManager extends GWindow {
     }
 
     private Widget createEditButton() {
-        TextButton button = new TextButton("Edit", new SelectHandler() {
+        TextButton button = new TextButton("View/Edit", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 editCurrent();
             }
         });
-        button.setToolTip("Edit selected web link");
+        button.setToolTip("View or Edit selected web link");
         return button;
     }
 
@@ -651,7 +651,7 @@ public class WebLinksManager extends GWindow {
     }
 
     private Widget createDelButton() {
-        TextButton button = new TextButton("Delete", new SelectHandler() {
+        TextButton button = new TextButton("Del", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 deleteCurrent();
