@@ -24,7 +24,7 @@ public class CalculatorWindowForMobile extends DialogBox {
     public CalculatorWindowForMobile() {
         super(true);
         addStyleName("AboutDialog");
-        setSize("380px", "280px");
+        setSize("360px", "280px");
         setText("Calculator Window");
         setGlassEnabled(true);
         setAnimationEnabled(true);
@@ -53,12 +53,10 @@ public class CalculatorWindowForMobile extends DialogBox {
                 hide();
             }
         });
-        buttonBar.add(close);
-        dock.add(buttonBar, DockPanel.NORTH);
-        
         buttonBar.getElement().setAttribute("style", "margin: 10px");
+        buttonBar.add(close);
+        dock.add(buttonBar, DockPanel.SOUTH);
         dock.add(new CalculatorPanel(), DockPanel.CENTER);
-        mainPanel.add(buttonBar);
         setWidget(dock);
     }
 
