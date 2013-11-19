@@ -449,7 +449,7 @@ public class WebLinksManager extends GWindow {
         cols.add(nameCol);
 
         ColumnConfig<WebLinkModel, AvailableOn> platForm = new ColumnConfig<WebLinkModel, AvailableOn>(gridProps.availableWhen(), 10, "P");
-        platForm.setToolTip(SafeHtmlUtils.fromString("Platform (i=iPad, D=Desktop, B=Both"));
+        platForm.setToolTip(SafeHtmlUtils.fromString("Platform (i=iPad, D=Desktop, B=Both)"));
         AbstractCell<AvailableOn> cell = new AbstractCell<AvailableOn>() {
             @Override
             public void render(com.google.gwt.cell.client.Cell.Context context, AvailableOn value, SafeHtmlBuilder sb) {
@@ -474,7 +474,7 @@ public class WebLinksManager extends GWindow {
         cols.add(platForm);
         
         ColumnConfig<WebLinkModel, WebLinkType> linkType = new ColumnConfig<WebLinkModel, WebLinkType>(gridProps.linkType(), 10, "T");
-        linkType.setToolTip(SafeHtmlUtils.fromString("Type (G=Games, V=Video,O=Other"));
+        linkType.setToolTip(SafeHtmlUtils.fromString("Type (G=Games, V=Video,A=Activity, O=Other)"));
         AbstractCell<WebLinkType> cellType = new AbstractCell<WebLinkType>() {
             @Override
             public void render(com.google.gwt.cell.client.Cell.Context context, WebLinkType linkType, SafeHtmlBuilder sb) {
