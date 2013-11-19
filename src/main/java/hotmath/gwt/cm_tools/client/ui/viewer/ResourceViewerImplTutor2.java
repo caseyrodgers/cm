@@ -172,8 +172,9 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
                 
                 // CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
-                if (CmMainPanel.__lastInstance != null)
+                if (CmMainPanel.__lastInstance != null) {
                     CmMainPanel.__lastInstance._mainContentWrapper.getResourceWrapper().forceLayout();
+                }
             }
         });
         

@@ -1,15 +1,26 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.WebLinkOptionsDialog.WebLinkTypeLocal;
-import hotmath.gwt.cm_rpc.client.model.AvailableDevice;
+import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
+import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
 import hotmath.gwt.cm_rpc.client.model.WebLinkType;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 
+import java.util.List;
+
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.data.shared.LabelProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -25,30 +36,47 @@ public class WebLinkManagerFilterDialog extends GWindow {
         buildUi();
     }
 
-    private ComboBox<AvailableDevice> _availableDevice;
+    private ComboBox<PlatformSearch> _platformDevice;
     private ComboBox<WebLinkTypeLocal> _linkType;
     private TextField _textSearch;
     private ToggleButton _applySearch;
     private Callback callback;
+    private GroupCombo _groupCombo;
+    private int adminId;
+    private MyFieldLabel _groupComboLabel;
+    private boolean _showGroupCombo;
+    
     private void buildUi() {
         setHeadingText("Web Link Filter");
-        setPixelSize(300,200);
-        _availableDevice = WebLinkOptionsDialog.createAvailableCombo();
-        _availableDevice.setEmptyText("-- All Platforms --");
-        _availableDevice.getStore().add(new AvailableDevice("-- All Platforms --", null));
-        _availableDevice.addSelectionHandler(new SelectionHandler<AvailableDevice>() {
+        setPixelSize(300,230);
+        _platformDevice  = createPlatformCombo();
+        _platformDevice.addSelectionHandler(new SelectionHandler<PlatformSearch>() {
             @Override
-            public void onSelection(SelectionEvent<AvailableDevice> event) {
+            public void onSelection(SelectionEvent<PlatformSearch> event) {
                 applyFilter();
             }
         });
-        _availableDevice.setValue(_availableDevice.getStore().get(_availableDevice.getStore().size()-1));
+        _platformDevice.setValue(_platformDevice.getStore().get(0));
         
         
+        _groupCombo = new GroupCombo(adminId, new GroupCombo.Callback() {
+            @Override
+            public void groupSelected(GroupInfoModel group) {
+                if(_applySearch.getValue()) {
+                    applyFilter();
+                }
+            }
+
+            @Override
+            public List<WebLinkModel> getWebLinks() {
+                return callback.getAllPrivateLinks();
+            }
+        });
+
         
         _linkType = WebLinkOptionsDialog.createTypeCombo();
         _linkType.setAllowBlank(false);
-        _linkType.getStore().add(new WebLinkTypeLocal(null, "-- All Types --"));
+        _linkType.getStore().add(new WebLinkTypeLocal(null, "-- Any Type --"));
         _linkType.setValue(_linkType.getStore().get(_linkType.getStore().size()-1));
         _linkType.addSelectionHandler(new SelectionHandler<WebLinkTypeLocal>() {
             @Override
@@ -68,9 +96,12 @@ public class WebLinkManagerFilterDialog extends GWindow {
         FramedPanel frame = new FramedPanel();
         frame.setHeaderVisible(false);
         FlowPanel flow = new FlowPanel();
-        flow.add(new MyFieldLabel(_availableDevice, "Platform(s)",90,160));
+        flow.add(new MyFieldLabel(_platformDevice, "Platform(s)",90,160));
         flow.add(new MyFieldLabel(_linkType, "Type",90,160));
         flow.add(new MyFieldLabel(_textSearch, "Text Search",90,160));
+        
+        _groupComboLabel = new MyFieldLabel(_groupCombo.asWidget(), "Group",90,160);
+        flow.add(_groupComboLabel);
         
         frame.setWidget(flow);
         
@@ -78,6 +109,7 @@ public class WebLinkManagerFilterDialog extends GWindow {
         
         
         _applySearch = new ToggleButton("Apply Filter");
+        _applySearch.setToolTip("Toggle the filter on and off");
         _applySearch.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
@@ -88,13 +120,35 @@ public class WebLinkManagerFilterDialog extends GWindow {
         addCloseButton();
     }
     
+    private ComboBox<PlatformSearch> createPlatformCombo() {
+        PlatformSearchProps props = GWT.create(PlatformSearchProps.class);
+        ListStore<PlatformSearch> store = new ListStore<PlatformSearch>(props.key());
+        ComboBox<PlatformSearch> combo = new ComboBox<PlatformSearch>(store, props.label());
+       
+        combo.getStore().add(new PlatformSearch("-- Any Platform --", new AvailableOn[]{AvailableOn.DESKTOP_AND_MOBILE,AvailableOn.DESKTOP_ONLY,AvailableOn.MOBILE_ONLY}));
+        combo.getStore().add(new PlatformSearch("Desktop", new AvailableOn[]{AvailableOn.DESKTOP_AND_MOBILE,AvailableOn.DESKTOP_ONLY}));
+        combo.getStore().add(new PlatformSearch("Desktop and iPad", new AvailableOn[]{AvailableOn.DESKTOP_AND_MOBILE}));
+        combo.getStore().add(new PlatformSearch("iPad", new AvailableOn[]{AvailableOn.DESKTOP_AND_MOBILE, AvailableOn.MOBILE_ONLY}));
+        
+        combo.setAllowBlank(false);
+        combo.setForceSelection(true);
+        combo.setTriggerAction(TriggerAction.ALL);
+        
+        combo.setToolTip("On what type of devices should this web link be shown?");
+        return combo;
+    }
+    
     private void applyFilter() {
         boolean isPressed =_applySearch.getValue();
         if(isPressed) {
-            callback.doFilter(_availableDevice.getCurrentValue(), _linkType.getCurrentValue().getType(), _textSearch.getText());
+            GroupInfoModel group = null;
+            if(_showGroupCombo) {
+                group = _groupCombo.getSelectedGroup();
+            }
+            callback.doFilter(group, _platformDevice.getCurrentValue().getAvailable(), _linkType.getCurrentValue().getType(), _textSearch.getText());
         }
         else {
-            callback.doFilter(null,null,null);
+            callback.doFilter(null, null,null,null);
         }
     }
     
@@ -103,17 +157,26 @@ public class WebLinkManagerFilterDialog extends GWindow {
     }
     
     public interface Callback {
-        void doFilter(AvailableDevice device, WebLinkType webLinkType, String string);
+        void doFilter(GroupInfoModel groupInfoModel, AvailableOn[] availableOns, WebLinkType webLinkType, String string);
+
+        void filterByGroup(GroupInfoModel group);
+
+        List<WebLinkModel> getAllPrivateLinks();
     }
     
-    public static void showSharedInstance(Callback callback) {
+    public static void showSharedInstance(Callback callback, int adminId, boolean showGroupsFilter) {
         WebLinkManagerFilterDialog instance = getSharedInstance();
-        instance.setCallback(callback);
+        instance.setCallback(callback,adminId, showGroupsFilter);
         instance.setVisible(true);
     }
 
-    private void setCallback(Callback callback) {
+    
+    private void setCallback(Callback callback,int adminId, boolean showGroupCombo) {
         this.callback = callback;
+        this.adminId = adminId;
+        
+        _showGroupCombo = showGroupCombo;
+        _groupComboLabel.setVisible(showGroupCombo);
     }
 
     public static WebLinkManagerFilterDialog getSharedInstance() {
@@ -121,5 +184,33 @@ public class WebLinkManagerFilterDialog extends GWindow {
             __instance = new WebLinkManagerFilterDialog();
         }
         return __instance;
+    }
+    
+    class PlatformSearch {
+        String label;
+        AvailableOn available[];
+        public PlatformSearch(String label, AvailableOn available[]) {
+            this.label = label;
+            this.available = available;
+        }
+        public String getLabel() {
+            return label;
+        }
+        public void setLabel(String label) {
+            this.label = label;
+        }
+        public AvailableOn[] getAvailable() {
+            return available;
+        }
+        public void setAvailable(AvailableOn[] available) {
+            this.available = available;
+        }
+       
+    }
+    
+    interface PlatformSearchProps extends PropertyAccess<String> {
+        @Path("label")
+        ModelKeyProvider<PlatformSearch> key();
+        LabelProvider<PlatformSearch> label();
     }
 }

@@ -16,7 +16,6 @@ import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -34,6 +33,7 @@ public class GroupCombo implements IsWidget {
     GroupComboProperties props = GWT.create(GroupComboProperties.class);
     private int adminId;
 
+    
     interface Callback {
         void groupSelected(GroupInfoModel group);
         List<WebLinkModel> getWebLinks();
@@ -120,5 +120,9 @@ public class GroupCombo implements IsWidget {
         public ModelKeyProvider<GroupInfoModel> key();
 
         public LabelProvider<GroupInfoModel> groupName();
+    }
+
+    public GroupInfoModel getSelectedGroup() {
+        return _combo.getCurrentValue();
     }
 }

@@ -126,7 +126,7 @@ public class WebLinkOptionsDialog extends GWindow {
         return combo;
     }
     
-    static public ComboBox<AvailableDevice> createAvailableCombo() {
+   private ComboBox<AvailableDevice> createAvailableCombo() {
         AvailDeviceProps props = GWT.create(AvailDeviceProps.class);
         ListStore<AvailableDevice> store = new ListStore<AvailableDevice>(props.key());
         ComboBox<AvailableDevice> combo = new ComboBox<AvailableDevice>(store, props.device());

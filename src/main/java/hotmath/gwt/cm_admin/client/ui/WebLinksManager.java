@@ -1,9 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_admin.client.ui.GroupCombo.Callback;
 import hotmath.gwt.cm_admin.client.ui.WebLinkEditorDialog.EditType;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.model.AvailableDevice;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
@@ -82,21 +80,34 @@ public class WebLinksManager extends GWindow {
                 
                 final Grid<WebLinkModel> grid;
                 final List<WebLinkModel> allLinks;
+                boolean showGroupsFilter=false;
                 if(_tabPanel.getActiveWidget() == _privateLinksPanel) {
                     grid = _grid4PrivateLinks;
                     allLinks = _allPrivateLinks;
+                    showGroupsFilter=true;
                 }
                 else {
                     grid = _grid4PublicLinks;
                     allLinks = _allPublicLinks;
+                    showGroupsFilter=false;
                 }
                 WebLinkManagerFilterDialog.showSharedInstance(new WebLinkManagerFilterDialog.Callback() {
                     
                     @Override
-                    public void doFilter(AvailableDevice device, WebLinkType type, String searchText) {
-                        doFilterAux(allLinks,grid, device, type, searchText);
+                    public void doFilter(GroupInfoModel gim, AvailableOn device[], WebLinkType type, String searchText) {
+                        doFilterAux(gim, allLinks,grid, device, type, searchText);
                     }
-                });
+
+                    @Override
+                    public List<WebLinkModel> getAllPrivateLinks() {
+                        return _allPrivateLinks;
+                    }
+
+                    @Override
+                    public void filterByGroup(GroupInfoModel group) {
+                        //doFilterByGroup(group);
+                    }
+                },WebLinksManager.this.adminId, showGroupsFilter);
             }
         }));
         
@@ -105,7 +116,7 @@ public class WebLinksManager extends GWindow {
         setVisible(true);
     }
     
-    private void doFilterAux(List<WebLinkModel> allLinks, Grid<WebLinkModel> grid, AvailableDevice device, WebLinkType type, String searchText) {
+    private void doFilterAux(GroupInfoModel gim, List<WebLinkModel> allLinks, Grid<WebLinkModel> grid, AvailableOn devices[], WebLinkType type, String searchText) {
         List<WebLinkModel> list = new ArrayList<WebLinkModel>();
         
         grid.getStore().clear();
@@ -113,16 +124,19 @@ public class WebLinksManager extends GWindow {
         for(WebLinkModel l: allLinks) {
             
             boolean add=false;
-            if(device == null || device.getAvailWhen() == null) {
+            if(devices == null) {
                 if(type == null) {
                     add=true;
                 }
             }
             if(!add) {
                 
-                if(device == null || l.getAvailableWhen() == device.getAvailWhen()) {
-                    if(type == null ||l.getLinkType() == type) {
-                        add = true;
+                for(AvailableOn device: devices) {
+                    if(device == null || l.getAvailableWhen() == device) {
+                        if(type == null ||l.getLinkType() == type) {
+                            add = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -135,9 +149,14 @@ public class WebLinksManager extends GWindow {
                 }
             }
             
-            
             if(add) {
-                list.add(l);
+                
+                if(gim != null && gim.getId() > 0) {
+                    doFilterByGroup(l, list, gim);
+                }
+                else {
+                    list.add(l);
+                }
             }
         }
         grid.getStore().addAll(list);
@@ -167,24 +186,9 @@ public class WebLinksManager extends GWindow {
     Grid<WebLinkModel> _grid4PrivateLinks;
     Grid<WebLinkModel> _grid4PublicLinks;
     GridProperties gridProps = GWT.create(GridProperties.class);
-    private GroupCombo _groupCombo;
     protected CmList<WebLinkModel> _allPublicLinks;
 
     private void buildUi() {
-
-        _groupCombo = new GroupCombo(this.adminId, new Callback() {
-            @Override
-            public void groupSelected(GroupInfoModel group) {
-                filterByGroup(group);
-            }
-
-            @Override
-            public List<WebLinkModel> getWebLinks() {
-                return _allPrivateLinks;
-            }
-        });
-
-        _privateLinksPanel.addTool(_groupCombo.asWidget());
         _privateLinksPanel.addTool(new HTML("&nbsp;&nbsp;"));
         _privateLinksPanel.addTool(createAddButton());
         _privateLinksPanel.addTool(createDelButton());
@@ -586,24 +590,24 @@ public class WebLinksManager extends GWindow {
         return view;
     }
 
-    protected void filterByGroup(GroupInfoModel group) {
-        List<WebLinkModel> filtered = null;
+    protected void doFilterByGroup(WebLinkModel link,List<WebLinkModel> filteredLinks, GroupInfoModel group) {
+        List<WebLinkModel> inGroup = null;
 
         if (group.getId() == 0) {
-            filtered = _allPrivateLinks;
+            inGroup = filteredLinks;
         } else {
-            filtered = new ArrayList<WebLinkModel>();
-            for (WebLinkModel w : _allPrivateLinks) {
+            inGroup = new ArrayList<WebLinkModel>();
+            for (WebLinkModel w : filteredLinks) {
                 for (GroupInfoModel gm : w.getLinkGroups()) {
                     if (gm.getId() == group.getId()) {
-                        filtered.add(w);
+                        inGroup.add(w);
                         break;
                     }
                 }
             }
         }
-        _grid4PrivateLinks.getStore().clear();
-        _grid4PrivateLinks.getStore().addAll(filtered);
+        filteredLinks.clear();
+        filteredLinks.addAll(inGroup);
     }
 
     private Widget createEditButton() {
