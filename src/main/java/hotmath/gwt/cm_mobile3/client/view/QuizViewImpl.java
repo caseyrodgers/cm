@@ -7,6 +7,7 @@ import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar.Callback;
+import hotmath.gwt.cm_mobile_shared.client.view.SubToolBar;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -76,6 +77,7 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
             }
         });
         _contentPanel.add(uiBinder.createAndBindUi(this));
+        
         initWidget(_contentPanel);
     }
 

@@ -18,7 +18,7 @@ public class CalculatorWindow extends GWindow {
     public CalculatorWindow() {
         super(true);
         setWidth(370);
-        setHeadingHtml("Calculator Window 3");
+        setHeadingHtml("Calculator Window");
         setModal(false);
         setClosable(true);
         setResizable(false);

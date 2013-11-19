@@ -62,6 +62,7 @@ public class QuizPanel extends AbstractPagePanel {
         
         /** do the binding */
         initWidget(uiBinder.createAndBindUi(this));
+        
         mainPanel.add(new HTML("<h2>Quiz loading ...</h2>"));
         
         setQuizTrigger(this);

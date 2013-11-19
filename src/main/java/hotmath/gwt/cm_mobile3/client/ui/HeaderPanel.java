@@ -76,6 +76,7 @@ public class HeaderPanel extends Composite {
     
     
     AssignmentButtonIndicator _assignmentButton = new AssignmentButtonIndicator();
+    private TouchAnchor _calcButton;
     public HeaderPanel(EventBus eventBus) {
         
         basePanel = new FlowPanel();
@@ -109,6 +110,20 @@ public class HeaderPanel extends Composite {
         });
         _logout.setVisible(false);
         basePanel.add(_logout);
+        
+        
+        _calcButton = new TouchAnchor("Calc");
+        _calcButton.addStyleName("calc-button");
+        _logout.addStyleName("about-button");
+        _calcButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                CalculatorWindowForMobile.showSharedInstance();
+            }
+        });
+        _calcButton.setVisible(true);
+        basePanel.add(_calcButton);
+
         
         TouchAnchor about = new TouchAnchor();
         about.addStyleName("about-button");

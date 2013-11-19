@@ -359,13 +359,16 @@ li {
     top: 11px;
 }
 
-.logout-button {
+.calc-button, .logout-button {
     position: absolute;
     right: 45px;
     top: 0px;
     
     color: #edfeab;
     font-weight: bold;
+}
+.calc-button {
+	right: 115px;
 }
 
 /** global CSS loading styles
