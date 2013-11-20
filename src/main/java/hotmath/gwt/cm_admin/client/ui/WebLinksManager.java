@@ -66,58 +66,130 @@ public class WebLinksManager extends GWindow {
     protected CmList<WebLinkModel> _allPrivateLinks;
     ContentPanel _privateLinksPanel = new ContentPanel();
     ContentPanel _publicLinksPanel = new ContentPanel();
+    WebLinkManagerFilterPanel _filterPanel;
 
     public WebLinksManager(int adminId) {
         super(false);
         this.adminId = adminId;
         setHeadingText("Web Links Manager");
-        setPixelSize(500, 350);
+        setPixelSize(550, 450);
         buildUi();
-        
-        addTool(new TextButton("Filter", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                
-                final Grid<WebLinkModel> grid;
-                final List<WebLinkModel> allLinks;
-                boolean showGroupsFilter=false;
-                if(_tabPanel.getActiveWidget() == _privateLinksPanel) {
-                    grid = _grid4PrivateLinks;
-                    allLinks = _allPrivateLinks;
-                    showGroupsFilter=true;
-                }
-                else {
-                    grid = _grid4PublicLinks;
-                    allLinks = _allPublicLinks;
-                    showGroupsFilter=false;
-                }
-                WebLinkManagerFilterDialog.showSharedInstance(new WebLinkManagerFilterDialog.Callback() {
-                    
-                    @Override
-                    public void doFilter(GroupInfoModel gim, AvailableOn device[], WebLinkType type, String searchText) {
-                        doFilterAux(gim, allLinks,grid, device, type, searchText);
-                    }
-
-                    @Override
-                    public List<WebLinkModel> getAllPrivateLinks() {
-                        return _allPrivateLinks;
-                    }
-
-                    @Override
-                    public void filterByGroup(GroupInfoModel group) {
-                        //doFilterByGroup(group);
-                    }
-                },WebLinksManager.this.adminId, showGroupsFilter);
-            }
-        }));
-        
+     
         readPrivateWebLinksFromServer(adminId);
         
         setVisible(true);
     }
     
-    private void doFilterAux(GroupInfoModel gim, List<WebLinkModel> allLinks, Grid<WebLinkModel> grid, AvailableOn devices[], WebLinkType type, String searchText) {
+    private void buildUi() {
+        _privateLinksPanel.addTool(new HTML("&nbsp;&nbsp;"));
+        _privateLinksPanel.addTool(createAddButton());
+        _privateLinksPanel.addTool(createDelButton());
+        _privateLinksPanel.addTool(createEditButton());
+
+        if (adminId == WebLinkModel.WEBLINK_DEBUG_ADMIN) {
+            _privateLinksPanel.addTool(new TextButton("Make Public", new SelectHandler() {
+
+                @Override
+                public void onSelect(SelectEvent event) {
+                    makePublic();
+                }
+            }));
+        }
+
+        // _groupCombo.asWidget().getElement().setAttribute("style",
+        // "left: 20px");
+        // getButtonBar().add(_groupCombo.asWidget());
+        // addButton(_groupCombo.asWidget());
+        addCloseButton();
+
+        _tabPanel = new TabPanel();
+
+        _grid4PrivateLinks = createLinkGrid();
+        _grid4PrivateLinks.addCellDoubleClickHandler(new CellDoubleClickHandler() {
+            @Override
+            public void onCellClick(CellDoubleClickEvent event) {
+                editCurrent();
+            }
+        });
+        _privateLinksPanel.setWidget(_grid4PrivateLinks);
+        _tabPanel.add(_privateLinksPanel, new TabItemConfig("Our School", false));
+
+        BorderLayoutContainer blc = new BorderLayoutContainer();
+        blc.setCenterWidget(_grid4PublicLinks);
+        blc.setSouthWidget(new HTML(
+                "<p style='margin: 5px 0 0 15px;color: #666;font-size: .8em'>To request a change to a public link, email support@hotmath.com.</p>"),
+                new BorderLayoutData(25));
+
+        _publicLinksPanel.setWidget(new DefaultGxtLoadingPanel());
+        blc.setCenterWidget(_publicLinksPanel);
+        _tabPanel.add(blc, new TabItemConfig("All Schools", false));
+
+        _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
+            @Override
+            public void onSelection(SelectionEvent<Widget> event) {
+                //WebLinkManagerFilterDialog.getSharedInstance().stopApplyFilter();
+                if (_tabPanel.getActiveWidget() == _tabPanel.getWidget(0)) {
+                    _filterPanel.enableGroupCombo(true);
+                    readPrivateWebLinksFromServer(adminId);
+                } else {
+                    if (_grid4PublicLinks == null) {
+                        createGrid4Public();
+                    }
+                    
+                    _filterPanel.enableGroupCombo(false);
+                    readPublicWebLinks();
+                }
+            }
+        });
+
+        
+        BorderLayoutContainer mainBord = new BorderLayoutContainer();
+        
+        BorderLayoutData bData = new BorderLayoutData(90);
+        
+        _filterPanel = new WebLinkManagerFilterPanel(new WebLinkManagerFilterPanel.Callback() {
+            
+            @Override
+            public void doFilter(GroupInfoModel gim, AvailableOn device[], WebLinkType type, String searchText) {
+                doFilterAux(gim, device, type, searchText);
+            }
+
+            @Override
+            public List<WebLinkModel> getAllPrivateLinks() {
+                return _allPrivateLinks;
+            }
+
+            @Override
+            public void filterByGroup(GroupInfoModel group) {
+                //doFilterByGroup(group);
+            }
+        },WebLinksManager.this.adminId);
+        
+        mainBord.setSouthWidget(_filterPanel, bData);
+        
+        
+        
+        bData = new BorderLayoutData();
+        bData.setCollapsible(true);
+        bData.setSplit(true);
+        mainBord.setCenterWidget(_tabPanel, bData);
+
+        setWidget(mainBord);
+    }
+    
+    
+    private void doFilterAux(GroupInfoModel gim,  AvailableOn devices[], WebLinkType type, String searchText) {
         List<WebLinkModel> list = new ArrayList<WebLinkModel>();
+        List<WebLinkModel> allLinks=null;
+        Grid<WebLinkModel> grid=null;
+        if(_tabPanel.getActiveWidget() == _privateLinksPanel) {
+            allLinks = _allPrivateLinks;
+            grid = _grid4PrivateLinks;
+        }
+        else {
+            allLinks = _allPublicLinks;
+            grid = _grid4PublicLinks;
+        }
         
         grid.getStore().clear();
         
@@ -178,6 +250,8 @@ public class WebLinksManager extends GWindow {
                 _allPrivateLinks = links;
                 _grid4PrivateLinks.getStore().clear();
                 _grid4PrivateLinks.getStore().addAll(_allPrivateLinks);
+
+                _filterPanel.applyFilter();
             }
         }.attempt();
     }
@@ -188,69 +262,7 @@ public class WebLinksManager extends GWindow {
     GridProperties gridProps = GWT.create(GridProperties.class);
     protected CmList<WebLinkModel> _allPublicLinks;
 
-    private void buildUi() {
-        _privateLinksPanel.addTool(new HTML("&nbsp;&nbsp;"));
-        _privateLinksPanel.addTool(createAddButton());
-        _privateLinksPanel.addTool(createDelButton());
-        _privateLinksPanel.addTool(createEditButton());
-
-        if (adminId == WebLinkModel.WEBLINK_DEBUG_ADMIN) {
-            _privateLinksPanel.addTool(new TextButton("Make Public", new SelectHandler() {
-
-                @Override
-                public void onSelect(SelectEvent event) {
-                    makePublic();
-                }
-            }));
-        }
-
-        // _groupCombo.asWidget().getElement().setAttribute("style",
-        // "left: 20px");
-        // getButtonBar().add(_groupCombo.asWidget());
-        // addButton(_groupCombo.asWidget());
-        addCloseButton();
-
-        _tabPanel = new TabPanel();
-
-        _grid4PrivateLinks = createLinkGrid();
-        _grid4PrivateLinks.addCellDoubleClickHandler(new CellDoubleClickHandler() {
-            @Override
-            public void onCellClick(CellDoubleClickEvent event) {
-                editCurrent();
-            }
-        });
-        _privateLinksPanel.setWidget(_grid4PrivateLinks);
-        _tabPanel.add(_privateLinksPanel, new TabItemConfig("Our School", false));
-
-        BorderLayoutContainer blc = new BorderLayoutContainer();
-        blc.setCenterWidget(_grid4PublicLinks);
-        blc.setSouthWidget(new HTML(
-                "<p style='margin: 5px 0 0 15px;color: #666;font-size: .8em'>To request a change to a public link, email support@hotmath.com.</p>"),
-                new BorderLayoutData(25));
-
-        _publicLinksPanel.setWidget(new DefaultGxtLoadingPanel());
-        blc.setCenterWidget(_publicLinksPanel);
-        _tabPanel.add(blc, new TabItemConfig("All Schools", false));
-
-        _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
-            @Override
-            public void onSelection(SelectionEvent<Widget> event) {
-
-                WebLinkManagerFilterDialog.getSharedInstance().stopApplyFilter();
-                
-                if (_tabPanel.getActiveWidget() == _tabPanel.getWidget(0)) {
-                    readPrivateWebLinksFromServer(adminId);
-                } else {
-                    if (_grid4PublicLinks == null) {
-                        createGrid4Public();
-                    }
-                    readPublicWebLinks();
-                }
-            }
-        });
-
-        setWidget(_tabPanel);
-    }
+//    
     
     protected void makePublic() {
         
@@ -437,6 +449,9 @@ public class WebLinksManager extends GWindow {
                 _grid4PublicLinks.getStore().clear();
                 _grid4PublicLinks.getStore().addAll(links);
                 forceLayout();
+                
+                
+                _filterPanel.applyFilter();
             }
         }.register();
     }
