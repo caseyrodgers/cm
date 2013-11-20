@@ -189,6 +189,7 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 
             public void oncapture(RpcData data) {
                 sectionCombo.updateList(data.getDataAsInt("section_count"));
+    	        setSectionNumberSelection();
             }
         }.register();	    
 	}
@@ -203,10 +204,8 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
  			passCombo.disable();
 
  		boolean sectionSelectAvail=options.isSectionIsSettable();
-		if (! sectionSelectAvail)
+		if (sectionSelectAvail == false)
 			sectionCombo.disable();
-		else
-	        setSectionNumberSelection();
 
 	}
 
@@ -309,11 +308,11 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
                  * return "0" as the selected value.
                  * 
                  */
-                Integer sectionNum = 0;
+                int sectionNum = 0;
                 if(sectionIsSettable && sectionCombo != null) {
 	                SectionNumber sn = sectionCombo.getValue();
-	                sectionNum = sn.getSectionNumber();
-	                if (sectionNum != null && sectionNum == 1 && currentSection == 0) {
+	                sectionNum = (sn != null) ? sn.getSectionNumber() : 0;
+	                if (sectionNum == 1 && currentSection == 0) {
 	                	sectionNum = 0;
 	                }
                 }
