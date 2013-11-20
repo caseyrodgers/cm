@@ -57,6 +57,7 @@ var Whiteboard = function (cont, isStatic) {
     var graphicDataStore = [];
     var selectedObj = null;
     var selectedObjIndex = -1;
+    var selectedObjID = null;
     var lineBound = {};
     var useMQ = false;
     var selectionDragged = false;
@@ -73,6 +74,13 @@ var Whiteboard = function (cont, isStatic) {
     };
     var canvas_drawing_width = 0,
         canvas_drawing_height = 0;
+    var uidSeed = 0;
+    var gidSeed = 0;
+    var objectActions = {};
+    var startSelection = false;
+    var selectedObjects = [];
+    var multiSelection = false;
+    var mSelRect = null;
     //
     var toolArr = [{
         name: 'button_text',
@@ -121,9 +129,14 @@ var Whiteboard = function (cont, isStatic) {
         text: "Clear"
     }, {
         name: 'button_move',
-        title: 'Move',
+        title: 'Select/Move',
         classes: 'big_tool_button button_move',
         text: ""
+    }, {
+        name: 'button_delete',
+        title: 'Delete',
+        classes: 'big_tool_button button_delete',
+        text: "Delete"
     }, {
         name: 'button_undo',
         title: 'Undo',
@@ -131,12 +144,19 @@ var Whiteboard = function (cont, isStatic) {
         text: "Undo"
     }]
 
+        function getNextObjectID() {
+            //var l=uidSeed?uidSeed+1:wb.getUIDSeed();
+            return uidSeed++;
+        }
 
-
-    //
-    /**
-     * methods to create whiteboard gui
-     */
+        function getNextGroupID() {
+            //var l=uidSeed?uidSeed+1:wb.getUIDSeed();
+            return gidSeed++;
+        }
+        //
+        /**
+         * methods to create whiteboard gui
+         */
 
         function createToolBtn(obj) {
             var btn = $('<button/>', {
@@ -241,8 +261,32 @@ var Whiteboard = function (cont, isStatic) {
             context.lineWidth = 4;
             context.strokeStyle = "rgba(0, 0, 255, 0.5)";
             context.translate(scrollPosition.x, scrollPosition.y);
-            context.strokeRect(selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy, obj.brect.w, obj.brect.h)
+            context.strokeRect(selectedObj.brect.xmin + obj.tx, selectedObj.brect.ymin + obj.ty, obj.brect.w, obj.brect.h)
             context.restore()
+        }
+
+        function drawSelectionRect(obj, w, col) {
+            context.save();
+            context.lineWidth = w ? w : 1;
+            context.strokeStyle = col ? col : "rgba(0, 0, 0, 0.75)";
+            //context.translate(scrollPosition.x,scrollPosition.y);
+            context.strokeRect(obj.tx, obj.ty, obj.brect.w, obj.brect.h)
+            context.restore()
+        }
+
+        function drawMultiSelectionRect() {
+
+            if (mSelRect) {
+                multiSelection = true;
+                drawSelectionRect({
+                    tx: mSelRect.xmin,
+                    ty: mSelRect.ymin,
+                    brect: {
+                        w: mSelRect.xmax - mSelRect.xmin,
+                        h: mSelRect.ymax - mSelRect.ymin
+                    }
+                }, 4, "rgba(0, 0, 255, 0.5)");
+            }
         }
 
         function removeBoundRect() {
@@ -267,20 +311,21 @@ var Whiteboard = function (cont, isStatic) {
             }
         }
 
-        function transformObj(obj, dx, dy) {
+        function transformObj(obj, dx, dy, multi) {
             var da = obj.dataArr
-            var sa = selectedObj.dataArr[0]
+            var _selectedObj = multi ? multi : selectedObj
+            var sa = _selectedObj.dataArr[0]
             var sobj = da[0]
             sobj.x = sa.x + dx
             sobj.y = sa.y + dy
             obj.dataArr[0] = sobj;
-            da = selectedObj.brect;
+            da = _selectedObj.brect;
             for (var m in da) {
                 if (m == 'x' || m == 'xmin' || m == 'xmax') {
-                    obj.brect[m] = selectedObj.brect[m] + dx
+                    obj.brect[m] = _selectedObj.brect[m] + dx
                 }
                 if (m == 'y' || m == 'ymin' || m == 'ymax') {
-                    obj.brect[m] = selectedObj.brect[m] + dy
+                    obj.brect[m] = _selectedObj.brect[m] + dy
                 }
             }
             return obj
@@ -303,7 +348,20 @@ var Whiteboard = function (cont, isStatic) {
         function findSelectedObjIndex(xp, yp) {
             var l = graphicDataStore.length
             for (var i = l - 1; i >= 0; i--) {
+
+                if (graphicDataStore[i].type == 'cmd') {
+                    continue
+                }
+                var _objid = graphicDataStore[i].id
+                var isGraph = _objid == 11 || _objid == 12
+                if (isObjDeleted(graphicDataStore[i].uid) || isGraph) {
+                    continue
+                }
                 var rect = cloneObject(graphicDataStore[i].brect);
+                var isTransformed = isObjTransformed(graphicDataStore[i].uid)
+                if (isTransformed) {
+                    rect = cloneObject(isTransformed.trect);
+                }
                 transformRect(rect, scrollPosition.x, scrollPosition.y)
                 selectedObj = null
                 if (!rect) {
@@ -315,6 +373,84 @@ var Whiteboard = function (cont, isStatic) {
                 }
             }
             return -1
+        }
+        //
+        function checkForMultiSelect() {
+            var l = graphicDataStore.length;
+            var _arr = [];
+            mSelRect = null;
+            for (var i = 0; i < l; i++) {
+                var obj = graphicDataStore[i]
+                if (obj.type == 'cmd') {
+                    continue
+                }
+                var _objid = obj.id
+                var isGraph = _objid == 11 || _objid == 12
+
+                if (isObjDeleted(obj.uid) || isGraph) {
+                    continue
+                }
+                if (!obj.isErased) {
+                    var r1 = obj.brect;
+                    var rect = cloneObject(r1);
+                    var isTransformed = isObjTransformed(obj.uid)
+                    if (isTransformed) {
+                        rect = cloneObject(isTransformed.trect);
+                    }
+                    transformRect(rect, scrollPosition.x, scrollPosition.y)
+                    var sel = intersectRect(rect, selectionRect)
+                    if (sel) {
+                        _arr.push(obj)
+                        if (!mSelRect) {
+                            mSelRect = {
+                                xmin: rect.xmin,
+                                ymin: rect.ymin,
+                                xmax: rect.xmax,
+                                ymax: rect.ymax
+                            }
+                        }
+                        mSelRect.xmin = rect.xmin < mSelRect.xmin ? rect.xmin : mSelRect.xmin;
+                        mSelRect.ymin = rect.ymin < mSelRect.ymin ? rect.ymin : mSelRect.ymin;
+                        mSelRect.xmax = rect.xmax > mSelRect.xmax ? rect.xmax : mSelRect.xmax;
+                        mSelRect.ymax = rect.ymax > mSelRect.ymax ? rect.ymax : mSelRect.ymax;
+                    }
+                }
+            }
+            return _arr
+        }
+
+        function updateMultiSelectRect() {
+            var l = selectedObjects.length;
+            mSelRect = null
+            for (var i = 0; i < l; i++) {
+                var obj = selectedObjects[i]
+                if (isObjDeleted(obj.uid)) {
+                    continue
+                }
+                if (!obj.isErased) {
+                    var r1 = obj.brect;
+                    var rect = cloneObject(r1);
+                    var isTransformed = isObjTransformed(obj.uid)
+                    if (isTransformed) {
+                        rect = cloneObject(isTransformed.trect);
+                    }
+                    transformRect(rect, scrollPosition.x, scrollPosition.y);
+                    if (!mSelRect) {
+                        mSelRect = {
+                            xmin: rect.xmin,
+                            ymin: rect.ymin,
+                            xmax: rect.xmax,
+                            ymax: rect.ymax
+                        }
+                    }
+                    mSelRect.xmin = rect.xmin < mSelRect.xmin ? rect.xmin : mSelRect.xmin;
+                    mSelRect.ymin = rect.ymin < mSelRect.ymin ? rect.ymin : mSelRect.ymin;
+                    mSelRect.xmax = rect.xmax > mSelRect.xmax ? rect.xmax : mSelRect.xmax;
+                    mSelRect.ymax = rect.ymax > mSelRect.ymax ? rect.ymax : mSelRect.ymax;
+
+                }
+            }
+
         }
 
         function contains(rect, xp, yp) {
@@ -335,16 +471,27 @@ var Whiteboard = function (cont, isStatic) {
             var l = graphicDataStore.length
             for (var i = 0; i < l; i++) {
                 var obj = graphicDataStore[i]
-
+                if (obj.type == 'cmd') {
+                    continue
+                }
+                if (isObjDeleted(obj.uid)) {
+                    continue
+                }
                 if (!obj.isErased) {
-                    var r1 = obj.brect
+                    var r1 = obj.brect;
+
                     var rect = cloneObject(r1);
+                    var isTransformed = isObjTransformed(obj.uid)
+                    if (isTransformed) {
+                        rect = cloneObject(isTransformed.trect);
+                    }
                     transformRect(rect, scrollPosition.x, scrollPosition.y)
                     obj.isErased = intersectRect(rect, r)
                 }
             }
             //return -1
         }
+
         //
     mq_holder.onload = function () {
 
@@ -808,6 +955,7 @@ var Whiteboard = function (cont, isStatic) {
                 $get_jqElement('#button_clear').text("Clear");
                 $get_jqElement('#button_save').text("Save");
                 $get_jqElement('#button_undo').text("Undo");
+                $get_jqElement('#button_delete').text("Delete");
                 // $get_jqElement('#button_clear').text("CL");
             } else {
                 if (isReadOnly) {
@@ -821,6 +969,7 @@ var Whiteboard = function (cont, isStatic) {
                 $get_jqElement('#button_clear').text("CL");
                 $get_jqElement('#button_save').text("S");
                 $get_jqElement('#button_undo').text("U");
+                $get_jqElement('#button_delete').text("X");
 
             }
 
@@ -1020,6 +1169,7 @@ var Whiteboard = function (cont, isStatic) {
                     $get_jqElement('#button_clear').text("Clear");
                     $get_jqElement('#button_save').text("Save");
                     $get_jqElement('#button_undo').text("Undo");
+                    $get_jqElement('#button_delete').text("Delete");
                 } else {
 
                     if (isReadOnly) {
@@ -1033,6 +1183,7 @@ var Whiteboard = function (cont, isStatic) {
                     $get_jqElement('#button_clear').text("CL");
                     $get_jqElement('#button_save').text("S");
                     $get_jqElement('#button_undo').text("U");
+                    $get_jqElement('#button_delete').text("X");
 
                 }
                 // setTimeout(function(){
@@ -1458,10 +1609,31 @@ var Whiteboard = function (cont, isStatic) {
             }
             if ($get_Element("#button_undo")) {
                 $get_Element("#button_undo").onclick = function (event) {
-                    if (graphicDataStore.length) {
-                        graphicDataStore.pop()
+                    var l = graphicDataStore.length
+                    var c = 1
+                    if (l) {
+                        var item = graphicDataStore[l - 1];
+                        var gid = item.groupid;
+                        if (gid !== undefined) {
+                            for (var i = l - 2; i >= 0; i--) {
+                                var _item = graphicDataStore[i]
+                                if (_item.groupid !== undefined && gid === _item.groupid) {
+                                    c++
+                                } else {
+                                    break
+                                }
+                            }
+                        }
                     }
-                    wb.whiteboardOut('undo', true);
+                    for (var j = 0; j < c; j++) {
+                        wb.whiteboardOut('undo', true);
+                    }
+                };
+            }
+            if ($get_Element("#button_delete")) {
+                $get_Element("#button_delete").onclick = function (event) {
+
+                    wb.deleteSelectedObj();
                 };
             }
 
@@ -1607,6 +1779,134 @@ var Whiteboard = function (cont, isStatic) {
                 $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
             }
             //
+            function initMultiSelection() {
+                var num = selectedObjects.length;
+                if (!num) {
+                    return
+                }
+                var selectedObj
+                selectionDragMode = true;
+                selectionDragged = false;
+
+                for (var i = 0; i < num; i++) {
+                    selectedObj = selectedObjects[i];
+                    if (!objectActions[selectedObj.uid]['move']) {
+                        objectActions[selectedObj.uid]['move'] = []
+                    };
+                    if (!objectActions[selectedObj.uid]['delete']) {
+                        objectActions[selectedObj.uid]['delete'] = [];
+                    };
+                    objectActions[selectedObj.uid]['move'].push({});
+                }
+            }
+
+            function renderMultiSelectionTrans() {
+                var num = selectedObjects.length;
+                if (!num) {
+                    return
+                }
+                var dx = x - clickX;
+                var dy = y - clickY;
+                var selectedObj;
+                selectionDragged = true;
+                for (var i = 0; i < num; i++) {
+                    selectedObj = selectedObjects[i];
+                    var pd = cloneObjectDeep(selectedObj);
+                    var li = objectActions[selectedObj.uid]['move'].length - 1;
+                    var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, true) : false;
+                    var trans = {
+                        tx: dx,
+                        ty: dy,
+                        trect: selectedObj.brect
+                    }
+                    if (isTransformed) {
+                        trans = {
+                            tx: isTransformed.tx + dx,
+                            ty: isTransformed.ty + dy,
+                            trect: isTransformed.trect
+                        }
+                    }
+                    transformObj(pd, trans.tx, trans.ty, selectedObj);
+                    var tdata = {
+                        tx: trans.tx,
+                        ty: trans.ty,
+                        trect: pd.brect
+                    };
+                    objectActions[selectedObj.uid]['move'][li] = tdata;
+
+                }
+                updateCanvas();
+                updateMultiSelectRect()
+                drawMultiSelectionRect();
+            }
+
+            function applyMultiSelectionTrans() {
+                var dx = x - clickX;
+                var dy = y - clickY;
+                var num = selectedObjects.length;
+                if (!num) {
+                    return
+                }
+                var selectedObj
+                if (selectionDragged) {
+                    removeBoundRect();
+                    var gid = getNextGroupID();
+                    for (var i = 0; i < num; i++) {
+                        selectedObj = selectedObjects[i];
+                        var pd = cloneObjectDeep(selectedObj);
+                        var li = objectActions[selectedObj.uid]['move'].length - 1;
+                        var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, true) : false;
+                        var trans = {
+                            tx: dx,
+                            ty: dy,
+                            trect: selectedObj.brect
+                        }
+                        if (isTransformed) {
+                            trans = {
+                                tx: isTransformed.tx + dx,
+                                ty: isTransformed.ty + dy,
+                                trect: isTransformed.trect
+                            }
+                        }
+                        transformObj(pd, trans.tx, trans.ty, selectedObj);
+
+
+
+                        var tdata = {
+                            tx: trans.tx,
+                            ty: trans.ty,
+                            trect: pd.brect
+                        };
+                        objectActions[selectedObj.uid]['move'][li] = tdata;
+                        selectionDragged = false;
+                        var mobj = {
+                            id: selectedObj.id,
+                            uid: selectedObj.uid,
+                            groupid: gid,
+                            type: 'cmd',
+                            cmd: {
+                                name: 'move',
+                                data: tdata
+                            },
+                            dataArr: []
+                        }
+                        updateDataToSERVER(null, mobj);
+                    }
+                    updateCanvas();
+                    updateMultiSelectRect()
+                    drawMultiSelectionRect();
+
+                } else {
+                    for (var i = 0; i < num; i++) {
+                        selectedObj = selectedObjects[i];
+                        objectActions[selectedObj.uid]['move'].pop();
+                    }
+                }
+
+
+            }
+
+            //
             var ev_onmousedown = function (_event) {
                 // alert("MDOWN")
                 if (isReadOnly) {
@@ -1672,38 +1972,89 @@ var Whiteboard = function (cont, isStatic) {
                     clickY = dy;
                     x = dx;
                     y = dy;
-                    lineBound = {}
+                    lineBound = {};
                     if (selectionMode) {
-                        var i = findSelectedObjIndex(x, y);
-                        selectedObjIndex = i
+
+                        //selectionRect=null;
+                        var i
+                        if (multiSelection) {
+                            if (contains(mSelRect, x, y)) {
+                                initMultiSelection();
+                            } else {
+                                multiSelection = false;
+                                mSelRect = null;
+                                selectedObjects = []
+                                selectionRect = {
+                                    x: x,
+                                    y: y,
+                                    xmin: x,
+                                    ymin: y,
+                                    xmax: x,
+                                    ymax: y
+                                }
+                                selectionDragMode = true;
+                                removeBoundRect()
+                            }
+                            if (event.preventDefault) {
+                                event.preventDefault()
+                            } else {
+                                event.returnValue = false
+                            };
+
+
+                            return
+                        }
+                        i = findSelectedObjIndex(x, y);
+                        selectedObjIndex = i;
                         console.log(i)
                         console.log(selectedObj)
                         if (i > -1) {
+
                             if (selectedObj.isErased) {
                                 penDown = !true
                                 wb.removeSelectionMode();
                                 alert("Sorry! Erased objects cannot be moved!!")
                                 return
                             }
-                            //remove selected object from data array and store it temp variable
-                            //rerender object on drawing canvas...
+                            selectedObjID = selectedObj.uid;
                             selectionDragMode = true;
                             selectionDragged = false;
-                            graphicDataStore.splice(i, 1);
                             resetWhiteBoard(false);
-                            graphicDataStore.push(cloneObjectDeep(selectedObj));
-                            //updateWhiteboard(graphicDataStore);
-                            /*for (var j = 0; j < graphicDataStore.length; j++) {
-                                renderObj(graphicDataStore[j], true);
-                            }*/
-                            //drawTempObj(selectedObj, 0, 0);
                             updateCanvas();
-                            drawBoundRect(selectedObj)
+                            var isTransformed = isObjTransformed(selectedObj.uid);
+                            if (isTransformed) {
+                                drawBoundRect({
+                                    tx: isTransformed.tx,
+                                    ty: isTransformed.ty,
+                                    brect: isTransformed.trect
+                                })
+                            } else {
+                                drawBoundRect({
+                                    tx: 0,
+                                    ty: 0,
+                                    brect: selectedObj.brect
+                                });
+                            }
+                            if (!objectActions[selectedObj.uid]['move']) {
+                                objectActions[selectedObj.uid]['move'] = []
+                            };
+                            if (!objectActions[selectedObj.uid]['delete']) {
+                                objectActions[selectedObj.uid]['delete'] = [];
+                            };
+                            objectActions[selectedObj.uid]['move'].push({});
                             penDown = true
                         } else {
-                            penDown = !true
-                            //alert(wb.removeSelectionMode);
-                            wb.removeSelectionMode();
+                            //penDown = !true
+                            //wb.removeSelectionMode();
+                            selectionRect = {
+                                x: x,
+                                y: y,
+                                xmin: x,
+                                ymin: y,
+                                xmax: x,
+                                ymax: y
+                            }
+                            selectionDragMode = true;
                         }
                         if (event.preventDefault) {
                             event.preventDefault()
@@ -1719,6 +2070,8 @@ var Whiteboard = function (cont, isStatic) {
 
                     }
                     graphicData.id = tool_id[currentTool];
+                    graphicData.uid = getNextObjectID();
+                    objectActions[graphicData.uid] = {};
                     console_log("CURRENT_TOOL:" + currentTool);
                     if (currentTool == 'pencil') {
                         context.beginPath();
@@ -1774,26 +2127,85 @@ var Whiteboard = function (cont, isStatic) {
                     return
                 }
                 if (selectionMode) {
+                    var dx = x - clickX;
+                    var dy = y - clickY;
+                    selectionDragMode = false;
+                    if (multiSelection && selectedObjects) {
+                        applyMultiSelectionTrans()
+                        penDown = false;
+                        rendering = false;
+                        return
+                    }
                     if (selectedObj) {
-                        var dx = x - clickX;
-                        var dy = y - clickY;
-                        selectionDragMode = false;
-                        removeBoundRect();
-
-                        updateCanvas();
 
 
-                        //drawTempObj(selectedObj, dx, dy);
-                        //graphicDataStore.push(cloneObject(selectedObj))
-                        var pd = graphicDataStore.pop();
-                        transformObj(pd, dx, dy);
-                        drawBoundRect(pd);
-                        transformObj(selectedObj, dx, dy);
+
                         if (selectionDragged) {
+
+                            removeBoundRect();
+
+                            updateCanvas();
+
+
+                            //drawTempObj(selectedObj, dx, dy);
+                            //graphicDataStore.push(cloneObject(selectedObj))
+
+                            //transformObj(selectedObj, dx, dy);
+                            var pd = cloneObjectDeep(selectedObj);
+                            var li = objectActions[selectedObj.uid]['move'].length - 1;
+                            var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, true) : false;
+                            var trans = {
+                                tx: dx,
+                                ty: dy,
+                                trect: selectedObj.brect
+                            }
+                            if (isTransformed) {
+                                trans = {
+                                    tx: isTransformed.tx + dx,
+                                    ty: isTransformed.ty + dy,
+                                    trect: isTransformed.trect
+                                }
+                            }
+                            transformObj(pd, trans.tx, trans.ty);
+                            drawBoundRect({
+                                tx: trans.tx,
+                                ty: trans.ty,
+                                brect: trans.trect
+                            });
+
+
+                            var tdata = {
+                                tx: trans.tx,
+                                ty: trans.ty,
+                                trect: pd.brect
+                            };
+                            objectActions[selectedObj.uid]['move'][li] = tdata;
                             selectionDragged = false;
-                            updateDataToSERVER(selectedObjIndex, selectedObj);
+                            var mobj = {
+                                id: selectedObj.id,
+                                uid: selectedObj.uid,
+                                type: 'cmd',
+                                cmd: {
+                                    name: 'move',
+                                    data: tdata
+                                },
+                                dataArr: []
+                            }
+                            updateDataToSERVER(selectedObjIndex, mobj);
                         } else {
-                            graphicDataStore.splice(selectedObjIndex, 0, selectedObj);
+                            // graphicDataStore.splice(selectedObjIndex, 0,selectedObj);
+                            objectActions[selectedObj.uid]['move'].pop();
+                        }
+                    } else {
+                        var msel = checkForMultiSelect()
+                        removeBoundRect()
+                        if (msel && msel.length) {
+                            selectedObjects = msel;
+                            drawMultiSelectionRect();
+                        } else {
+                            selectionRect = null;
+                            multiSelection = false
+                            wb.removeSelectionMode();
                         }
                     }
                     penDown = false;
@@ -1924,19 +2336,68 @@ var Whiteboard = function (cont, isStatic) {
                         x = event.clientX - offX
                         y = event.clientY - offY
                     }
-                    if (selectionMode) {
+                    var dx = x - clickX;
+                    var dy = y - clickY;
+                    if (selectionMode && multiSelection && selectedObjects.length) {
+                        renderMultiSelectionTrans()
+                    } else if (selectionMode) {
+
                         if (selectedObj && selectionDragMode) {
                             selectionDragged = true;
-                            var dx = x - clickX;
-                            var dy = y - clickY;
+
                             //drawTempObj(selectedObj, dx, dy)
-                            var pd = graphicDataStore.pop()
+                            //var pd=graphicDataStore.pop();
                             //pd=pd.dataArr[0]
-                            transformObj(pd, dx, dy);
-                            graphicDataStore.push(pd);
+                            var pd = cloneObjectDeep(selectedObj);
+
+                            //transformObj(pd, dx, dy);
+                            var li = objectActions[selectedObj.uid]['move'].length - 1;
+                            //var tdata={tx:dx,ty:dy,trect:pd.brect};
+                            //objectActions[selectedObj.uid]['move'][li]=tdata;
+                            var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, true) : false;
+                            var trans = {
+                                tx: dx,
+                                ty: dy,
+                                trect: selectedObj.brect
+                            }
+                            if (isTransformed) {
+                                trans = {
+                                    tx: isTransformed.tx + dx,
+                                    ty: isTransformed.ty + dy,
+                                    trect: isTransformed.trect
+                                }
+                            }
+
+                            transformObj(pd, trans.tx, trans.ty);
+
+
+                            var tdata = {
+                                tx: trans.tx,
+                                ty: trans.ty,
+                                trect: pd.brect
+                            };
+                            objectActions[selectedObj.uid]['move'][li] = tdata;
+                            //var mobj={id:selectedObj.id,type:'cmd',cmd:{name:'move',data:tdata},dataArr:[]}
+                            //graphicDataStore.push(pd);
 
                             updateCanvas();
-                            drawBoundRect(pd);
+                            //drawBoundRect(pd);
+                            //drawBoundRect({tx:isTransformed.tx+dx,ty:isTransformed.ty+dy,brect:isTransformed.trect});
+                            drawBoundRect({
+                                tx: trans.tx,
+                                ty: trans.ty,
+                                brect: trans.trect
+                            });
+                        } else if (selectionDragMode) {
+                            //selectionDragMode=false;
+                            selectionRect = getBoundRect(selectionRect.x, selectionRect.y, dx, dy)
+                            removeBoundRect();
+                            //console.log(selectionRect.x+":"+selectionRect.y+":"+selectionRect.w+":"+selectionRect.h+":"+selectionRect.xmin+":"+selectionRect.ymin)
+                            drawSelectionRect({
+                                tx: selectionRect.xmin,
+                                ty: selectionRect.ymin,
+                                brect: selectionRect
+                            });
                         }
 
                     } else if (currentTool == 'rect' || currentTool == 'oval') {
@@ -2702,11 +3163,12 @@ var Whiteboard = function (cont, isStatic) {
         var nobj = cloneObject(jsdata)
         nobj.imageData = undefined;
         var jsonStr = convertObjToString(nobj);
-        var rect = nobj.brect;
-        canvas_drawing_width = rect.xmax > canvas_drawing_width ? rect.xmax : canvas_drawing_width;
-        canvas_drawing_height = rect.ymax > canvas_drawing_height ? rect.ymax : canvas_drawing_height;
-        console_log("Sending json string: " + jsonStr);
-
+        if (!nobj.cmd) {
+            var rect = nobj.brect;
+            canvas_drawing_width = rect.xmax > canvas_drawing_width ? rect.xmax : canvas_drawing_width;
+            canvas_drawing_height = rect.ymax > canvas_drawing_height ? rect.ymax : canvas_drawing_height;
+            console_log("Sending json string: " + jsonStr);
+        }
         graphicDataStore.push(cloneObject(jsdata));
         wb.whiteboardOut(jsonStr, true);
 
@@ -2830,6 +3292,28 @@ source: https://gist.github.com/754454
         rect.h = Math.abs(h0)
         return rect
     }
+
+    function isObjDeleted(uid) {
+        if (!objectActions[uid]) {
+            return false
+        }
+        if (!objectActions[uid]['delete']) {
+            return false
+        }
+        return objectActions[uid]['delete'].length
+    }
+
+    function isObjTransformed(uid, skipLast) {
+        if (!objectActions[uid] || !objectActions[uid]['move']) {
+            return false
+        }
+        var l = objectActions[uid]['move'].length
+        if (!l) {
+            return false
+        }
+        var _l = skipLast ? l - 2 : l - 1;
+        return objectActions[uid]['move'][_l]
+    }
     // ### RENDER OBJECT TO WHITEBOARD
 
     function renderObj(obj, boo) {
@@ -2842,6 +3326,29 @@ source: https://gist.github.com/754454
 
     function renderObjAux(obj, boo) {
         graphicData = obj
+        if (obj.type && obj.type == 'cmd') {
+            if (!objectActions[obj.uid][obj.cmd.name]) {
+                objectActions[obj.uid][obj.cmd.name] = []
+            }
+            objectActions[obj.uid][obj.cmd.name].push(obj.cmd.data);
+            /*if(obj.cmd.name='move'){
+		
+		//var li=objectActions[uid].length-1
+		//objectActions[uid][li].isTransformed=true;
+		objectActions[uid][obj.cmd.name].push(obj.cmd.data);
+		//objectActions[uid][li].graphicData=transformObj(cloneObjectDeep(getGraphicObj(uid)),obj.cmd.data.tx,ty);
+		//transformGraphic(uid);
+		}else if(obj.cmd.name='delete'){
+		objectActions[uid].isDeleted=true;
+		}*/
+            graphicDataStore.push(cloneObject(obj));
+            updateCanvas();
+            if (obj.groupid !== undefined) {
+                gidSeed = obj.groupid
+                gidSeed++
+            }
+            return
+        }
         var graphic_id = obj.id;
         var graphic_data = obj.dataArr;
         var line_rgb = obj.lineColor;
@@ -2853,6 +3360,15 @@ source: https://gist.github.com/754454
         drawingLayer = graphic_data[0].layer ? graphic_data[0].layer : drawingLayer;
         drawingLayer = isIE ? '1' : drawingLayer;
         var rect, lineBound;
+        var uid; //=obj.uid!==undefined?obj.uid:getNextObjectID();
+        if (obj.uid === undefined) {
+            uid = getNextObjectID();
+        } else {
+            uidSeed = uid = obj.uid;
+            uidSeed++
+        }
+        obj.uid = uid
+        objectActions[uid] = {}
         if (!boo) {
             rect = {
                 xmin: 1,
@@ -2861,6 +3377,7 @@ source: https://gist.github.com/754454
                 h: 0
             };
         }
+
         if (context.lineWidth != 2) {
             context.lineWidth = 2.0;
         }
@@ -3084,7 +3601,17 @@ source: https://gist.github.com/754454
         var idName;
         var ctx = _ctx ? _ctx : buffercontext;
         var rect, lineBound;
-
+        var uid = obj.uid
+        var isCmd = obj.type === 'cmd'
+        var isDeleted = isObjDeleted(uid);
+        var isTransformed = isObjTransformed(uid);
+        if (isDeleted || isCmd) {
+            return
+        }
+        if (isTransformed) {
+            ctx.save();
+            ctx.translate(isTransformed.tx, isTransformed.ty)
+        }
         if (ctx.lineWidth != 2) {
             ctx.lineWidth = 2.0;
         }
@@ -3172,6 +3699,9 @@ source: https://gist.github.com/754454
             idName = graphic_id == 11 ? "gr2D" : "nL";
             showHideGraph(idName, graphic_data[0].x, graphic_data[0].y, graphic_data[0].addImage, true);
         }
+        if (isTransformed) {
+            ctx.restore();
+        }
     }
     wb.updateWhiteboard_local = function (cmdArray) {
         var oaL = cmdArray.length;
@@ -3188,7 +3718,7 @@ source: https://gist.github.com/754454
                 // make unique to whiteboard, otherwise
                 // other code can override.
                 if (command == 'clear') {
-                    graphicDataStore = [];
+                    resetInternalStore()
                     resetWhiteBoard(false);
                 } else {
                     this[command].apply(scope, arg);
@@ -3204,6 +3734,12 @@ source: https://gist.github.com/754454
         resetArrays()
     }
 
+    function resetInternalStore() {
+        graphicDataStore = [];
+        objectActions = {};
+        uidSeed = 0;
+        gidSeed = 0;
+    }
     /**
      * Map GWT array type to JS Array.
      *
@@ -3292,7 +3828,20 @@ source: https://gist.github.com/754454
 
     wb.whiteboardOut = function (data, boo) {
         //alert('WHITEBOARD: whiteboardOut is going nowhere.  Hook up to external process to save data');
-
+        if (data == 'undo') {
+            if (graphicDataStore.length) {
+                var obj = graphicDataStore.pop()
+                if (obj.type && obj.type == 'cmd') {
+                    if (obj.cmd.name == 'move') {
+                        objectActions[obj.uid]['move'].pop()
+                    }
+                    if (obj.cmd.name == 'delete') {
+                        objectActions[obj.uid]['delete'].pop()
+                    }
+                }
+            }
+            updateCanvas()
+        }
 
     }
 
@@ -3329,7 +3878,10 @@ source: https://gist.github.com/754454
         }
     }
     wb.removeSelectionMode = function () {
-        selectionMode = !true
+        selectionMode = !true;
+        selectedObjects = [];
+        mSelRect = null;
+        multiSelection = false
         removeBoundRect()
         $get_Element("#button_move").style.border = '1px solid #000000';
         currentTool = 'pencil';
@@ -3378,9 +3930,12 @@ source: https://gist.github.com/754454
     //
 
     function updateDataToSERVER(index, jsdata) {
-        wb.whiteboardDelete(index);
+        //wb.whiteboardDelete(index);
         graphicData = jsdata;
-        sendData();
+        //sendData();
+
+        sendDataToSERVER(jsdata)
+        resetArrays()
     }
     //
     wb.isReadOnly = function (boo) {
@@ -3420,6 +3975,43 @@ source: https://gist.github.com/754454
         $get_jqElement('#button_undo').css({
             opacity: 0.3
         });
+    }
+    wb.getUIDSeed = function () {
+        var dat = new Date();
+        return dat.getTime();
+    }
+    wb.deleteSelectedObj = function () {
+        if (!selectedObj && !multiSelection) {
+            alert("Select an object and click delete button!");
+            return
+        }
+        var selObjs = multiSelection ? selectedObjects : [selectedObj];
+        var num = selObjs.length;
+        if (!num) {
+            return
+        }
+        var gid = multiSelection ? getNextGroupID() : null;
+        for (var i = 0; i < num; i++) {
+            var _selectedObj = selObjs[i];
+            objectActions[_selectedObj.uid]['delete'] = [true];
+            var mobj = {
+                id: _selectedObj.id,
+                uid: _selectedObj.uid,
+                type: 'cmd',
+                cmd: {
+                    name: 'delete',
+                    data: null
+                },
+                dataArr: []
+            }
+            if (multiSelection) {
+                mobj.groupid = gid;
+            }
+            updateDataToSERVER(selectedObjIndex, mobj);
+        }
+
+        wb.removeSelectionMode();
+        updateCanvas();
     }
     return wb;
 
