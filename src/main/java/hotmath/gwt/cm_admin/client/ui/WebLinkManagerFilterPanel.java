@@ -25,6 +25,9 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
@@ -72,8 +75,8 @@ public class WebLinkManagerFilterPanel extends Composite {
 
         _linkType = WebLinkOptionsDialog.createTypeCombo();
         _linkType.setAllowBlank(false);
-        _linkType.getStore().add(new WebLinkTypeLocal(null, "-- Any Type --"));
-        _linkType.setValue(_linkType.getStore().get(_linkType.getStore().size() - 1));
+        _linkType.getStore().add(0,new WebLinkTypeLocal(null, "-- Any Type --"));
+        _linkType.setValue(_linkType.getStore().get(0));
         _linkType.addSelectionHandler(new SelectionHandler<WebLinkTypeLocal>() {
             @Override
             public void onSelection(SelectionEvent<WebLinkTypeLocal> event) {
@@ -111,6 +114,13 @@ public class WebLinkManagerFilterPanel extends Composite {
         FlowPanel flow2 = new FlowPanel();
         flow2.add(new MyFieldLabel(_textSearch, "Text Search", 80, 160));
         flow2.add(_groupComboLabel);
+        
+        flow2.add(new TextButton("Reset Filter", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                resetFilter();
+            }
+        }));
 
         HorizontalPanel hPan = new HorizontalPanel();
         hPan.add(flow1);
@@ -122,6 +132,16 @@ public class WebLinkManagerFilterPanel extends Composite {
         frame.setWidget(hPan);
 
         initWidget(frame);
+    }
+
+    protected void resetFilter() {
+        _platformDevice.setValue(_platformDevice.getStore().get(0));
+        _groupCombo.reset();
+        _linkType.setValue(_linkType.getStore().get(0));
+        _textSearch.setValue("");
+        _subjectType.setValue(_subjectType.getStore().get(0));
+        
+        applyFilter();
     }
 
     private ComboBox<SubjectModelLocal> createSubjectCombo() {

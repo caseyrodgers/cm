@@ -125,4 +125,8 @@ public class GroupCombo implements IsWidget {
     public GroupInfoModel getSelectedGroup() {
         return _combo.getCurrentValue();
     }
+
+    public void reset() {
+        _combo.setValue(null);
+    }
 }
