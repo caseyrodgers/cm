@@ -197,7 +197,7 @@ public class WebLinksManager extends GWindow {
 
             /** Check subject */
             if (subject != null && subject.getSubject() != null) {
-                if (l.getSubjectType() == subject.getSubject()) {
+                if (l.getSubjectType().getLevel() >= subject.getSubject().getLevel()) {
                     subjectMatch = true;
                 }
             } else {

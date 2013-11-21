@@ -110,7 +110,7 @@ public class WebLinkManagerFilterPanel extends Composite {
         FlowPanel flow1 = new FlowPanel();
         flow1.add(new MyFieldLabel(_platformDevice, "Platform(s)", 80, 160));
         flow1.add(new MyFieldLabel(_linkType, "Type", 80, 160));
-        flow1.add(new MyFieldLabel(_subjectType, "Subject", 80, 160));
+        flow1.add(new MyFieldLabel(_subjectType, "Lowest Level", 80, 160));
 
         FlowPanel flow2 = new FlowPanel();
         flow2.add(new MyFieldLabel(_textSearch, "Text Search", 80, 160));
@@ -152,7 +152,7 @@ public class WebLinkManagerFilterPanel extends Composite {
         ListStore<SubjectModelLocal> store = new ListStore<SubjectModelLocal>(props.key());
         ComboBox<SubjectModelLocal> combo = new ComboBox<SubjectModelLocal>(store, props.label());
 
-        combo.getStore().add(new SubjectModelLocal("-- Any Subject --"));
+        combo.getStore().add(new SubjectModelLocal("-- Any Level --"));
         for(SubjectType type: SubjectType.values()) {
             combo.getStore().add(new SubjectModelLocal(type));
         }
