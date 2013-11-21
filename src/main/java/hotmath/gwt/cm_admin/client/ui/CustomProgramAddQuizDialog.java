@@ -553,7 +553,7 @@ public class CustomProgramAddQuizDialog extends Window {
 
         _tabPanel = new TabPanel();
 
-        _tabLessons = new TabItem("All Lessons (Click Add to change)");
+        _tabLessons = new TabItem("All Lessons");
         _tabLessons.setLayout(new FitLayout());
         _tabPanel.add(_tabLessons);
 

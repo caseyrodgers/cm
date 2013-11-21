@@ -306,7 +306,7 @@ public class WebLinkEditorDialog extends GWindow {
                     @Override
                     public void targetsAdded(List<LessonModel> targetResults) {
 
-                        if (_grid4LessonTarget.getStore().size() == 1 && _grid4LessonTarget.getStore().get(0).getLessonName().equals("All Lessons")) {
+                        if (_grid4LessonTarget.getStore().size() == 1 && _grid4LessonTarget.getStore().get(0).getLessonName().equals(ALL_LESSONS)) {
                             _grid4LessonTarget.getStore().clear();
                         }
 
@@ -323,6 +323,7 @@ public class WebLinkEditorDialog extends GWindow {
         return btn;
     }
 
+    String ALL_LESSONS="All Lessons (Click Add to change)";
     protected void setEnabledOnOff() {
         // _linkTargetPanel.setEnabled(!linkAlwaysField.getValue());
     }
@@ -345,7 +346,7 @@ public class WebLinkEditorDialog extends GWindow {
 
     private void checkEmptyTargetGrid() {
         if(_grid4LessonTarget.getStore().size() == 0) {
-            _grid4LessonTarget.getStore().add(new LessonModel("All Lessons", null));
+            _grid4LessonTarget.getStore().add(new LessonModel(ALL_LESSONS, null));
         } 
     }
 
