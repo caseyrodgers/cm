@@ -152,7 +152,7 @@ public class WebLinkManagerFilterPanel extends Composite {
         ListStore<SubjectModelLocal> store = new ListStore<SubjectModelLocal>(props.key());
         ComboBox<SubjectModelLocal> combo = new ComboBox<SubjectModelLocal>(store, props.label());
 
-        combo.getStore().add(new SubjectModelLocal("-- Any Subject --"));
+        combo.getStore().add(new SubjectModelLocal("-- Any Level --"));
         for(SubjectType type: SubjectType.values()) {
             combo.getStore().add(new SubjectModelLocal(type));
         }
@@ -161,7 +161,7 @@ public class WebLinkManagerFilterPanel extends Composite {
         combo.setTriggerAction(TriggerAction.ALL);
 
         combo.setValue(combo.getStore().get(0));
-        combo.setToolTip("On what type of devices should this web link be shown?");
+        combo.setToolTip("Lowest level the link will be available");
         return combo;        
     }
 
