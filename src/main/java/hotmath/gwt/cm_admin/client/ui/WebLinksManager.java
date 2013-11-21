@@ -509,7 +509,7 @@ public class WebLinksManager extends GWindow {
         cols.add(platForm);
 
         ColumnConfig<WebLinkModel, WebLinkType> linkType = new ColumnConfig<WebLinkModel, WebLinkType>(gridProps.linkType(), 10, "T");
-        linkType.setToolTip(SafeHtmlUtils.fromString("Type (G=Games, V=Video,A=Activity, O=Other)"));
+        linkType.setToolTip(SafeHtmlUtils.fromString("Type (G=Game, V=Video,A=Activity, O=Other)"));
         AbstractCell<WebLinkType> cellType = new AbstractCell<WebLinkType>() {
             @Override
             public void render(com.google.gwt.cell.client.Cell.Context context, WebLinkType linkType, SafeHtmlBuilder sb) {
@@ -523,7 +523,7 @@ public class WebLinksManager extends GWindow {
 
         ColumnConfig<WebLinkModel, SubjectType> subjectLevel = new ColumnConfig<WebLinkModel, SubjectType>(gridProps.subjectType(), 10, "L");
         subjectLevel.setToolTip(SafeHtmlUtils
-                .fromString("Level (PA=Pre-Algebra, A1=Algebra 1, G=Geometry, A2=Algebra 2, CA=College Elementary Algebra,--=Not Specified"));
+                .fromString("Lowest level (PA=Pre-Algebra, A1=Algebra 1, G=Geometry, A2=Algebra 2, CA=College Elementary Algebra,E=Essentials"));
         AbstractCell<SubjectType> subjectLevelCell = new AbstractCell<SubjectType>() {
             @Override
             public void render(com.google.gwt.cell.client.Cell.Context context, SubjectType linkType, SafeHtmlBuilder sb) {

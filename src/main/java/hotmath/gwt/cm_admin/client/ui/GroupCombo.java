@@ -44,7 +44,7 @@ public class GroupCombo implements IsWidget {
         SafeHtml group(String info, String name);
     }
 
-    public GroupCombo(int adminId, final Callback callback) {
+    public GroupCombo(int adminId, String tooltip, final Callback callback) {
         this.adminId = adminId;
 
         ListStore<GroupInfoModel> store = new ListStore<GroupInfoModel>(props.key());
@@ -77,7 +77,7 @@ public class GroupCombo implements IsWidget {
                 return comboBoxTemplates.group(linkInfo,  group.getGroupName());
             }
         });
-
+        _combo.setToolTip(tooltip);
         _combo.setEmptyText("Filter by Group");
         _combo.addSelectionHandler(new SelectionHandler<GroupInfoModel>() {
             @Override
@@ -104,8 +104,10 @@ public class GroupCombo implements IsWidget {
             public void oncapture(CmList<GroupInfoModel> result) {
                 CmBusyManager.setBusy(false);
                 _combo.getStore().clear();
-                _combo.getStore().add(new GroupInfoModel(0, 0, "-- No Group Filter --", 0, true, false));
+                _combo.getStore().add(0, new GroupInfoModel(0, 0, "-- All Groups --", 0, true, false));
                 _combo.getStore().addAll(result);
+                
+                _combo.setValue(_combo.getStore().get(0));
             }
         }.register();
     }

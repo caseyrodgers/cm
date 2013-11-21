@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_rpc.client.model;
 
 public enum WebLinkType {
-    OTHER("Other"), VIDEO("Video"), GAME("Game"), ACTIVITY("Activity");
+    VIDEO("Video"), GAME("Game"), ACTIVITY("Activity"),OTHER("Other");
     private String label;
 
     private WebLinkType(String label) {

@@ -61,7 +61,7 @@ public class WebLinkManagerFilterPanel extends Composite {
         });
         _platformDevice.setValue(_platformDevice.getStore().get(0));
 
-        _groupCombo = new GroupCombo(adminId, new GroupCombo.Callback() {
+        _groupCombo = new GroupCombo(adminId, "Select Group for search", new GroupCombo.Callback() {
             @Override
             public void groupSelected(GroupInfoModel group) {
                 applyFilter();
@@ -91,6 +91,7 @@ public class WebLinkManagerFilterPanel extends Composite {
                 applyFilter();
             }
         });
+        _textSearch.setToolTip("Search in both title and comment");
         
         _subjectType = createSubjectCombo();
         _subjectType.addSelectionHandler(new SelectionHandler<WebLinkManagerFilterPanel.SubjectModelLocal>() {
@@ -115,12 +116,14 @@ public class WebLinkManagerFilterPanel extends Composite {
         flow2.add(new MyFieldLabel(_textSearch, "Text Search", 80, 160));
         flow2.add(_groupComboLabel);
         
-        flow2.add(new TextButton("Reset Filter", new SelectHandler() {
+        TextButton resetFilter = new TextButton("Reset Filter", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 resetFilter();
             }
-        }));
+        });
+        resetFilter.setToolTip("Reset search to show all Web Links");
+        flow2.add(resetFilter);
 
         HorizontalPanel hPan = new HorizontalPanel();
         hPan.add(flow1);
@@ -178,7 +181,7 @@ public class WebLinkManagerFilterPanel extends Composite {
         combo.setForceSelection(true);
         combo.setTriggerAction(TriggerAction.ALL);
 
-        combo.setToolTip("On what type of devices should this web link be shown?");
+        combo.setToolTip("Devices on which the link operates");
         return combo;
     }
 

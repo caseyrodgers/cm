@@ -122,7 +122,7 @@ public class WebLinkOptionsDialog extends GWindow {
         combo.setForceSelection(true);
         combo.setTriggerAction(TriggerAction.ALL);
         
-        combo.setToolTip("What type of resource is this link?");
+        combo.setToolTip("Type of resource");
         return combo;
     }
     

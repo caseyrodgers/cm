@@ -63,7 +63,7 @@ public class WebLinkEditorGroupsGrid extends ContentPanel {
 
     private void setStore(ListStore<GroupInfoModel> store, List<GroupInfoModel> linkGroups) {
         if(linkGroups.size() == 0) {
-            store.add(new GroupInfoModel(0,0,"All Groups",0,false,false));   
+            store.add(new GroupInfoModel(0,0,"All Groups (Click Add to change)",0,false,false));   
         }
         else {
             store.addAll(linkGroups);
