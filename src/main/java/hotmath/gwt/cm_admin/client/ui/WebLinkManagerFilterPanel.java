@@ -152,7 +152,7 @@ public class WebLinkManagerFilterPanel extends Composite {
         ListStore<SubjectModelLocal> store = new ListStore<SubjectModelLocal>(props.key());
         ComboBox<SubjectModelLocal> combo = new ComboBox<SubjectModelLocal>(store, props.label());
 
-        combo.getStore().add(new SubjectModelLocal("-- Any Level --"));
+        combo.getStore().add(new SubjectModelLocal("-- Any Subject --"));
         for(SubjectType type: SubjectType.values()) {
             combo.getStore().add(new SubjectModelLocal(type));
         }
