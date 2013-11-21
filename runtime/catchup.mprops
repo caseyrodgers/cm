@@ -4846,30 +4846,6 @@ order by p_.ordinal_number
 
 
 .key=GET_ASSIGNMENT_STUDENTS
-# Get pid status by either looking base PID or getting
-# the specific pids assigned to this user. 
-      
-select p1.pid as pid1,  p1.pid as pid2, ps.id, ps.uid, p1.assign_key, ps.status,a.is_personalized
-from   CM_ASSIGNMENT a
-    JOIN CM_ASSIGNMENT_PIDS p1 on p1.assign_key = a.assign_key
-    LEFT JOIN CM_ASSIGNMENT_PID_STATUS ps  on (ps.assign_key = p1.assign_key and ps.pid = p1.pid)
-where a.assign_key = $$ASSIGN_KEY$$
-and a.is_personalized = 0
-
-union
-
-select p1.pid as pid1,  p2.pid as pid2, ps.id,ps.uid, p1.assign_key, ps.status,a.is_personalized
-from   CM_ASSIGNMENT a
-    JOIN CM_ASSIGNMENT_PIDS p1 on p1.assign_key = a.assign_key
-    JOIN CM_ASSIGNMENT_PIDS_USER p2 on (p2.assign_key = p1.assign_key and p2.apid_id = p1.id)
-    LEFT JOIN CM_ASSIGNMENT_PID_STATUS ps  on (ps.assign_key = p2.assign_key and ps.pid = p2.pid and ps.uid = p2.uid)
-where a.assign_key = $$ASSIGN_KEY$$
-and     a.is_personalized = 1
-
-
-
-
-.key=GET_ASSIGNMENT_STUDENTS
 ## Get student assigned to a given Assignment
 
 select vu.uid, u.user_name 
