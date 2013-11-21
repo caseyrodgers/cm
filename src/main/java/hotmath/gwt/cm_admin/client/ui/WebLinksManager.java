@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.WebLinkEditorDialog.EditType;
+import hotmath.gwt.cm_admin.client.ui.WebLinkManagerFilterPanel.SubjectModelLocal;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
+import hotmath.gwt.cm_rpc.client.model.SubjectType;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
 import hotmath.gwt.cm_rpc.client.model.WebLinkType;
@@ -26,7 +28,6 @@ import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
@@ -38,7 +39,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.cell.core.client.TextButtonCell;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -74,16 +74,17 @@ public class WebLinksManager extends GWindow {
         setHeadingText("Web Links Manager");
         setPixelSize(550, 450);
         buildUi();
-     
+
         readPrivateWebLinksFromServer(adminId);
-        
+
         setVisible(true);
     }
-    
+
     private void buildUi() {
         _privateLinksPanel.addTool(new HTML("&nbsp;&nbsp;"));
         _privateLinksPanel.addTool(createAddButton());
         _privateLinksPanel.addTool(createDelButton());
+        _privateLinksPanel.addTool(createVisitButton());
         _privateLinksPanel.addTool(createEditButton());
 
         if (adminId == WebLinkModel.WEBLINK_DEBUG_ADMIN) {
@@ -127,7 +128,7 @@ public class WebLinksManager extends GWindow {
         _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
             @Override
             public void onSelection(SelectionEvent<Widget> event) {
-                //WebLinkManagerFilterDialog.getSharedInstance().stopApplyFilter();
+                // WebLinkManagerFilterDialog.getSharedInstance().stopApplyFilter();
                 if (_tabPanel.getActiveWidget() == _tabPanel.getWidget(0)) {
                     _filterPanel.enableGroupCombo(true);
                     readPrivateWebLinksFromServer(adminId);
@@ -135,23 +136,22 @@ public class WebLinksManager extends GWindow {
                     if (_grid4PublicLinks == null) {
                         createGrid4Public();
                     }
-                    
+
                     _filterPanel.enableGroupCombo(false);
                     readPublicWebLinks();
                 }
             }
         });
 
-        
         BorderLayoutContainer mainBord = new BorderLayoutContainer();
-        
-        BorderLayoutData bData = new BorderLayoutData(90);
-        
+
+        BorderLayoutData bData = new BorderLayoutData(120);
+
         _filterPanel = new WebLinkManagerFilterPanel(new WebLinkManagerFilterPanel.Callback() {
-            
+
             @Override
-            public void doFilter(GroupInfoModel gim, AvailableOn device[], WebLinkType type, String searchText) {
-                doFilterAux(gim, device, type, searchText);
+            public void doFilter(SubjectModelLocal subject, GroupInfoModel gim, AvailableOn device[], WebLinkType type, String searchText) {
+                doFilterAux(subject, gim, device, type, searchText);
             }
 
             @Override
@@ -161,14 +161,12 @@ public class WebLinksManager extends GWindow {
 
             @Override
             public void filterByGroup(GroupInfoModel group) {
-                //doFilterByGroup(group);
+                // doFilterByGroup(group);
             }
-        },WebLinksManager.this.adminId);
-        
+        }, WebLinksManager.this.adminId);
+
         mainBord.setSouthWidget(_filterPanel, bData);
-        
-        
-        
+
         bData = new BorderLayoutData();
         bData.setCollapsible(true);
         bData.setSplit(true);
@@ -176,60 +174,79 @@ public class WebLinksManager extends GWindow {
 
         setWidget(mainBord);
     }
-    
-    
-    private void doFilterAux(GroupInfoModel gim,  AvailableOn devices[], WebLinkType type, String searchText) {
+
+    private void doFilterAux(SubjectModelLocal subject, GroupInfoModel gim, AvailableOn devices[], WebLinkType type, String searchText) {
         List<WebLinkModel> list = new ArrayList<WebLinkModel>();
-        List<WebLinkModel> allLinks=null;
-        Grid<WebLinkModel> grid=null;
-        if(_tabPanel.getActiveWidget() == _privateLinksPanel) {
+        List<WebLinkModel> allLinks = null;
+        Grid<WebLinkModel> grid = null;
+        if (_tabPanel.getActiveWidget() == _privateLinksPanel) {
             allLinks = _allPrivateLinks;
             grid = _grid4PrivateLinks;
-        }
-        else {
+        } else {
             allLinks = _allPublicLinks;
             grid = _grid4PublicLinks;
         }
-        
+
         grid.getStore().clear();
-        
-        for(WebLinkModel l: allLinks) {
-            
-            boolean add=false;
-            if(devices == null) {
-                if(type == null) {
-                    add=true;
+
+        for (WebLinkModel l : allLinks) {
+            boolean subjectMatch = false;
+            boolean deviceMatch = false;
+            boolean textMatch = false;
+            boolean groupMatch = false;
+
+            /** Check subject */
+            if (subject != null && subject.getSubject() != null) {
+                if (l.getSubjectType() == subject.getSubject()) {
+                    subjectMatch = true;
+                }
+            } else {
+                subjectMatch = true;
+            }
+
+            if (subjectMatch) {
+                if (devices == null) {
+                    if (type == null) {
+                        deviceMatch = true;
+                    }
                 }
             }
-            if(!add) {
-                
-                for(AvailableOn device: devices) {
-                    if(device == null || l.getAvailableWhen() == device) {
-                        if(type == null ||l.getLinkType() == type) {
-                            add = true;
+
+            if (subjectMatch && !deviceMatch) {
+                /** Check for specific device */
+                for (AvailableOn device : devices) {
+                    if (device == null || l.getAvailableWhen() == device) {
+                        if (type == null || l.getLinkType() == type) {
+                            deviceMatch = true;
                             break;
                         }
                     }
                 }
             }
-            
-            if(add) {
-                if(searchText == null || searchText.length() == 0) {
-                }
-                else if(!(l.getName() + l.getComments()).toLowerCase().contains(searchText.toLowerCase())) {
-                    add=false;
+
+            /** Check text search */
+            if (subjectMatch && deviceMatch) {
+                if (searchText == null || searchText.length() == 0) {
+                    textMatch = true;
+                } else if ((l.getName() + l.getComments()).toLowerCase().contains(searchText.toLowerCase())) {
+                    textMatch = true;
                 }
             }
-            
-            if(add) {
-                
-                if(gim != null && gim.getId() > 0) {
-                    doFilterByGroup(l, list, gim);
+
+            /** Check group */
+            if (subjectMatch && deviceMatch && textMatch) {
+                if (gim != null && gim.getId() > 0) {
+                    groupMatch = isLinkInGroup(l, gim);
                 }
                 else {
-                    list.add(l);
+                    groupMatch = true;
                 }
             }
+
+            if(subjectMatch && deviceMatch && textMatch && groupMatch) {
+                list.add(l);
+            }
+            
         }
         grid.getStore().addAll(list);
     }
@@ -262,46 +279,43 @@ public class WebLinksManager extends GWindow {
     GridProperties gridProps = GWT.create(GridProperties.class);
     protected CmList<WebLinkModel> _allPublicLinks;
 
-//    
-    
+    //
+
     protected void makePublic() {
-        
+
         final WebLinkModel model = _grid4PrivateLinks.getSelectionModel().getSelectedItem();
         if (model == null) {
             CmMessageBox.showAlert("Please select a public link first");
             return;
         }
-        
-        CmMessageBox.confirm("Make Public",  "Are you sure you want to make this link public?", new ConfirmCallback() {
+
+        CmMessageBox.confirm("Make Public", "Are you sure you want to make this link public?", new ConfirmCallback() {
             @Override
             public void confirmed(boolean yesNo) {
-                if(yesNo) {
+                if (yesNo) {
                     doMakePublic(model);
                 }
             }
         });
     }
 
-
     protected void doMakePublic(final WebLinkModel webLink) {
         CmBusyManager.setBusy(false);
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
-                DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId,  CrudOperation.IMPORT_TO_PUBLIC, webLink);
+                DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId, CrudOperation.IMPORT_TO_PUBLIC, webLink);
                 setAction(action);
-                CmShared.getCmService().execute(action,  this);
+                CmShared.getCmService().execute(action, this);
             }
-            
+
             @Override
             public void oncapture(RpcData value) {
                 CmBusyManager.setBusy(false);
-                CmMessageBox.showMessage("Success",  "Web link was succesfully made public");
+                CmMessageBox.showMessage("Success", "Web link was succesfully made public");
             }
         }.register();
     }
-
-    
 
     protected void viewPublicWebLink() {
         final WebLinkModel model = _grid4PublicLinks.getSelectionModel().getSelectedItem();
@@ -329,6 +343,13 @@ public class WebLinksManager extends GWindow {
             }
         });
         _publicLinksPanel.setWidget(_grid4PublicLinks);
+        _publicLinksPanel.addTool(new TextButton("View", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                viewPublicWebLink();
+            }
+        }));
+        _publicLinksPanel.addTool(createVisitButton());
         TextButton importBtn = new TextButton("Copy", new SelectHandler() {
 
             @Override
@@ -449,8 +470,7 @@ public class WebLinksManager extends GWindow {
                 _grid4PublicLinks.getStore().clear();
                 _grid4PublicLinks.getStore().addAll(links);
                 forceLayout();
-                
-                
+
                 _filterPanel.applyFilter();
             }
         }.register();
@@ -487,41 +507,32 @@ public class WebLinksManager extends GWindow {
         };
         platForm.setCell(cell);
         cols.add(platForm);
-        
+
         ColumnConfig<WebLinkModel, WebLinkType> linkType = new ColumnConfig<WebLinkModel, WebLinkType>(gridProps.linkType(), 10, "T");
         linkType.setToolTip(SafeHtmlUtils.fromString("Type (G=Games, V=Video,A=Activity, O=Other)"));
         AbstractCell<WebLinkType> cellType = new AbstractCell<WebLinkType>() {
             @Override
             public void render(com.google.gwt.cell.client.Cell.Context context, WebLinkType linkType, SafeHtmlBuilder sb) {
-                String value=linkType.getLabel();
-                String text = (value!=null?value.toUpperCase().substring(0,1):"-");
+                String value = linkType.getLabel();
+                String text = (value != null ? value.toUpperCase().substring(0, 1) : "-");
                 sb.appendEscaped(text);
             }
         };
         linkType.setCell(cellType);
         cols.add(linkType);
 
-
-        ColumnConfig<WebLinkModel, String> buttonCol = new ColumnConfig<WebLinkModel, String>(gridProps.url(), 40, "Visit");
-        TextButtonCell buttonCell = new TextButtonCell() {
-            public void render(Cell.Context context, String value, com.google.gwt.safehtml.shared.SafeHtmlBuilder sb) {
-                super.render(context, "   ", sb);
+        ColumnConfig<WebLinkModel, SubjectType> subjectLevel = new ColumnConfig<WebLinkModel, SubjectType>(gridProps.subjectType(), 10, "L");
+        subjectLevel.setToolTip(SafeHtmlUtils
+                .fromString("Level (PA=Pre-Algebra, A1=Algebra 1, G=Geometry, A2=Algebra 2, CA=College Elementary Algebra,--=Not Specified"));
+        AbstractCell<SubjectType> subjectLevelCell = new AbstractCell<SubjectType>() {
+            @Override
+            public void render(com.google.gwt.cell.client.Cell.Context context, SubjectType linkType, SafeHtmlBuilder sb) {
+                String text = linkType == null ? "--" : linkType.getKey();
+                sb.appendEscaped(text);
             }
         };
-        buttonCol.setToolTip(SafeHtmlUtils.fromString("Visit the URL for this web link"));
-        buttonCol.setCell(buttonCell);
-        buttonCell.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                Cell.Context c = event.getContext();
-                int row = c.getIndex();
-                WebLinkModel link = _allPrivateLinks.get(row);
-                Window.open(link.getUrl(), "WebLink", "");
-            }
-        });
-        buttonCell.setHeight(10);
-        buttonCol.setCell(buttonCell);
-        cols.add(buttonCol);
+        subjectLevel.setCell(subjectLevelCell);
+        cols.add(subjectLevel);
 
         cols.add(new ColumnConfig<WebLinkModel, String>(gridProps.comments(), 300, "Comment"));
 
@@ -547,6 +558,8 @@ public class WebLinksManager extends GWindow {
         GridView<WebLinkModel> view = new GridView<WebLinkModel>() {
             @Override
             protected void processRows(int startRow, boolean skipStripe) {
+
+                boolean isPrivate = _tabPanel.getActiveWidget() == _privateLinksPanel;
                 super.processRows(startRow, skipStripe);
                 NodeList<Element> rows = getRows();
                 for (int i = 0, len = rows.getLength(); i < len; i++) {
@@ -555,18 +568,20 @@ public class WebLinksManager extends GWindow {
                     // whatever tooltip you want with optional qtitle
                     String tip = "<b>URL:</b> " + link.getUrl();
 
-                    tip += "<br/><b>Groups: </b>";
-                    if (link.isAllGroups()) {
-                        tip += "For all groups";
-                    } else {
-                        String groups = "";
-                        for (GroupInfoModel g : link.getLinkGroups()) {
-                            if (groups.length() > 0) {
-                                groups += ", ";
+                    if (isPrivate) {
+                        tip += "<br/><b>Groups: </b>";
+                        if (link.isAllGroups()) {
+                            tip += "For all groups";
+                        } else {
+                            String groups = "";
+                            for (GroupInfoModel g : link.getLinkGroups()) {
+                                if (groups.length() > 0) {
+                                    groups += ", ";
+                                }
+                                groups += g.getGroupName();
                             }
-                            groups += g.getGroupName();
+                            tip += "Only for groups: " + groups;
                         }
-                        tip += "Only for groups: " + groups;
                     }
 
                     tip += "<br/><b>Lessons: </b>";
@@ -582,21 +597,9 @@ public class WebLinksManager extends GWindow {
                         }
                         tip += lessons;
                     }
+                    tip += "<br/><b>Comment: </b>";
+                    tip += link.getComments();
 
-                    tip += "<br/><b>Platform: </b>";
-                    switch (link.getAvailableWhen()) {
-                    case DESKTOP_AND_MOBILE:
-                        tip += " Desktop and Mobile";
-                        break;
-
-                    case DESKTOP_ONLY:
-                        tip += " Desktop Only";
-                        break;
-
-                    case MOBILE_ONLY:
-                        tip += "Mobile Only";
-                        break;
-                    }
                     row.setAttribute("qtip", tip);
                     // row.setAttribute("qtitle", "ToolTip&nbsp;Title");
                 }
@@ -605,24 +608,17 @@ public class WebLinksManager extends GWindow {
         return view;
     }
 
-    protected void doFilterByGroup(WebLinkModel link,List<WebLinkModel> filteredLinks, GroupInfoModel group) {
-        List<WebLinkModel> inGroup = null;
-
+    private boolean isLinkInGroup(WebLinkModel link, GroupInfoModel group) {
         if (group.getId() == 0) {
-            inGroup = filteredLinks;
+            return true;
         } else {
-            inGroup = new ArrayList<WebLinkModel>();
-            for (WebLinkModel w : filteredLinks) {
-                for (GroupInfoModel gm : w.getLinkGroups()) {
-                    if (gm.getId() == group.getId()) {
-                        inGroup.add(w);
-                        break;
-                    }
+            for (GroupInfoModel gm : link.getLinkGroups()) {
+                if (gm.getId() == group.getId()) {
+                    return true;
                 }
             }
         }
-        filteredLinks.clear();
-        filteredLinks.addAll(inGroup);
+        return false;
     }
 
     private Widget createEditButton() {
@@ -636,8 +632,8 @@ public class WebLinksManager extends GWindow {
         return button;
     }
 
-    private Widget createViewButton() {
-        TextButton button = new TextButton("Open Link", new SelectHandler() {
+    private Widget createVisitButton() {
+        TextButton button = new TextButton("Visit", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 openCurrent();
@@ -684,7 +680,7 @@ public class WebLinksManager extends GWindow {
         TextButton button = new TextButton("Add", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, false,null);
+                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, false, null, null);
                 new WebLinkEditorDialog(EditType.NEW_OR_EDIT, adminId, webLinkModel, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {
@@ -698,7 +694,15 @@ public class WebLinksManager extends GWindow {
     }
 
     private WebLinkModel getSelectedWebLink(boolean showMessage) {
-        WebLinkModel model = _grid4PrivateLinks.getSelectionModel().getSelectedItem();
+
+        Grid<WebLinkModel> grid = null;
+        if (_tabPanel.getActiveWidget() == _privateLinksPanel) {
+            grid = _grid4PrivateLinks;
+        } else {
+            grid = _grid4PublicLinks;
+        }
+
+        WebLinkModel model = grid.getSelectionModel().getSelectedItem();
         if (model == null && showMessage) {
             CmMessageBox.showAlert("Please select a web link first");
         }
@@ -738,6 +742,8 @@ public class WebLinksManager extends GWindow {
     public interface GridProperties extends PropertyAccess<String> {
         @Path("linkId")
         ModelKeyProvider<WebLinkModel> id();
+
+        ValueProvider<WebLinkModel, SubjectType> subjectType();
 
         ValueProvider<WebLinkModel, WebLinkType> linkType();
 

@@ -16,6 +16,7 @@ public class WebLinkModel implements Response {
     private String comments;
     private boolean publicLink;
     private WebLinkType linkType;
+    SubjectType subjectType;
     
 
     private List<LessonModel> linkTargets = new ArrayList<LessonModel>();
@@ -28,7 +29,7 @@ public class WebLinkModel implements Response {
 
     public WebLinkModel() {}
     
-    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available, boolean publicLink, WebLinkType linkType) {
+    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available, boolean publicLink, WebLinkType linkType, SubjectType subjectType) {
         this.linkId = linkId;
         this.adminId = adminId;
         this.name = name;
@@ -37,6 +38,16 @@ public class WebLinkModel implements Response {
         this.availableWhen = available;
         this.publicLink = publicLink;
         this.linkType = linkType;
+        this.subjectType = subjectType;
+    }
+
+    
+    public SubjectType getSubjectType() {
+        return subjectType;
+    }
+
+    public void setSubjectType(SubjectType subjectType) {
+        this.subjectType = subjectType;
     }
 
     public boolean isPublicLink() {

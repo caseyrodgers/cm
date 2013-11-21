@@ -3,6 +3,7 @@ package hotmath.cm.dao;
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.util.UserAgentDetect;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
+import hotmath.gwt.cm_rpc.client.model.SubjectType;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
 import hotmath.gwt.cm_rpc.client.model.WebLinkType;
@@ -184,6 +185,10 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                 });
                 wl.getLinkTargets().clear();
                 wl.getLinkTargets().addAll(lessons);
+                
+                
+                wl.setSubjectType(lookupLinkSubject(wl));
+
             }
         }
         return links;
@@ -199,10 +204,30 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         AvailableOn availableOn = AvailableOn.values()[available];
         boolean publicLink = rs.getInt("is_public")!=0?true:false;
         WebLinkType linkType =  WebLinkType.values()[rs.getInt("link_type")];
-        WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"), rs.getString("comments"), availableOn,publicLink,linkType);
+        WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"), rs.getString("comments"), availableOn,publicLink,linkType,null);
         return wlm;
     }
 
+    /** Find the subject associated with this link.
+     * 
+     * If multiple links then return the one with the
+     * lowest grade level.
+     * 
+     * @param wlm
+     * @return
+     */
+    private SubjectType lookupLinkSubject(WebLinkModel wlm) {
+        SubjectType type=null;
+        for(LessonModel lesson: wlm.getLinkTargets()) {
+            SubjectType t = SubjectType.lookup(lesson.getSubject());
+            if(type == null || t.getLevel() < type.getLevel() ) {
+                type = t;
+            }
+        }
+        return type;
+    }
+
+    
     public int importWebLink(int adminId, WebLinkModel webLink) throws Exception {
 
         /** if (adminId == webLink.getAdminId()) {

@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.WebLinkOptionsDialog.WebLinkTypeLocal;
+import hotmath.gwt.cm_rpc.client.model.SubjectType;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
 import hotmath.gwt.cm_rpc.client.model.WebLinkType;
@@ -33,6 +34,7 @@ public class WebLinkManagerFilterPanel extends Composite {
 
     private ComboBox<PlatformSearch> _platformDevice;
     private ComboBox<WebLinkTypeLocal> _linkType;
+    private ComboBox<SubjectModelLocal> _subjectType;
     private TextField _textSearch;
     private Callback callback;
     private GroupCombo _groupCombo;
@@ -86,6 +88,14 @@ public class WebLinkManagerFilterPanel extends Composite {
                 applyFilter();
             }
         });
+        
+        _subjectType = createSubjectCombo();
+        _subjectType.addSelectionHandler(new SelectionHandler<WebLinkManagerFilterPanel.SubjectModelLocal>() {
+            @Override
+            public void onSelection(SelectionEvent<SubjectModelLocal> event) {
+                applyFilter();
+            }
+        });
 
         FramedPanel frame = new FramedPanel();
         frame.setHeadingHtml("Filter Web Links");
@@ -96,6 +106,7 @@ public class WebLinkManagerFilterPanel extends Composite {
         FlowPanel flow1 = new FlowPanel();
         flow1.add(new MyFieldLabel(_platformDevice, "Platform(s)", 80, 160));
         flow1.add(new MyFieldLabel(_linkType, "Type", 80, 160));
+        flow1.add(new MyFieldLabel(_subjectType, "Subject", 80, 160));
 
         FlowPanel flow2 = new FlowPanel();
         flow2.add(new MyFieldLabel(_textSearch, "Text Search", 80, 160));
@@ -111,6 +122,24 @@ public class WebLinkManagerFilterPanel extends Composite {
         frame.setWidget(hPan);
 
         initWidget(frame);
+    }
+
+    private ComboBox<SubjectModelLocal> createSubjectCombo() {
+        SubjectTypeProps props = GWT.create(SubjectTypeProps.class);
+        ListStore<SubjectModelLocal> store = new ListStore<SubjectModelLocal>(props.key());
+        ComboBox<SubjectModelLocal> combo = new ComboBox<SubjectModelLocal>(store, props.label());
+
+        combo.getStore().add(new SubjectModelLocal("-- Any Subject --"));
+        for(SubjectType type: SubjectType.values()) {
+            combo.getStore().add(new SubjectModelLocal(type));
+        }
+        combo.setAllowBlank(false);
+        combo.setForceSelection(true);
+        combo.setTriggerAction(TriggerAction.ALL);
+
+        combo.setValue(combo.getStore().get(0));
+        combo.setToolTip("On what type of devices should this web link be shown?");
+        return combo;        
     }
 
     private ComboBox<PlatformSearch> createPlatformCombo() {
@@ -138,12 +167,12 @@ public class WebLinkManagerFilterPanel extends Composite {
         if (_groupComboLabel.isEnabled()) {
             group = _groupCombo.getSelectedGroup();
         }
-        callback.doFilter(group, _platformDevice.getCurrentValue().getAvailable(), _linkType.getCurrentValue().getType(), _textSearch.getText());
+        callback.doFilter(_subjectType.getCurrentValue(),group, _platformDevice.getCurrentValue().getAvailable(), _linkType.getCurrentValue().getType(), _textSearch.getText());
     }
 
 
     public interface Callback {
-        void doFilter(GroupInfoModel groupInfoModel, AvailableOn[] availableOns, WebLinkType webLinkType, String string);
+        void doFilter(SubjectModelLocal subjectModelLocal, GroupInfoModel groupInfoModel, AvailableOn[] availableOns, WebLinkType webLinkType, String string);
 
         void filterByGroup(GroupInfoModel group);
 
@@ -174,7 +203,32 @@ public class WebLinkManagerFilterPanel extends Composite {
         public void setAvailable(AvailableOn[] available) {
             this.available = available;
         }
+    }
+    
+    static public class SubjectModelLocal {
+        SubjectType subject;
+        String label;
 
+        public SubjectModelLocal(SubjectType subject) {
+            this.subject = subject;
+            this.label = subject.getLabel();
+        }
+        public SubjectModelLocal(String label) {
+            this.label = label;
+        }
+        
+        public SubjectType getSubject() {
+            return subject;
+        }
+        public void setSubject(SubjectType subject) {
+            this.subject = subject;
+        }
+        public String getLabel() {
+            return label;
+        }
+        public void setLabel(String label) {
+            this.label = label;
+        }
     }
 
     interface PlatformSearchProps extends PropertyAccess<String> {
@@ -186,5 +240,11 @@ public class WebLinkManagerFilterPanel extends Composite {
 
     public void enableGroupCombo(boolean b) {
         _groupComboLabel.setEnabled(b);
+    }
+    
+    
+    interface SubjectTypeProps extends PropertyAccess<String> {
+        ModelKeyProvider<SubjectModelLocal> key();
+        LabelProvider<SubjectModelLocal> label();
     }
 }

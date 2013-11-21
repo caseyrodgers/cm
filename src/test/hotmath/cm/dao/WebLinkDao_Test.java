@@ -20,7 +20,7 @@ public class WebLinkDao_Test extends TestCase {
     
     public void testAdd() throws Exception {
         String name = "TEST: " + System.currentTimeMillis();
-        WebLinkModel webLink = new WebLinkModel(0, 2, name,"http://test.com","Comment", AvailableOn.DESKTOP_AND_MOBILE,false,null);
+        WebLinkModel webLink = new WebLinkModel(0, 2, name,"http://test.com","Comment", AvailableOn.DESKTOP_AND_MOBILE,false,null,null);
         int linkId = WebLinkDao.getInstance().addWebLink(webLink);
         
         WebLinkModel newWebLink = WebLinkDao.getInstance().getWebLink(linkId);
