@@ -49,13 +49,15 @@ public enum SubjectType {
     }
 
     public static SubjectType lookup(String subject) {
-        String s = subject.toLowerCase();
-        for(SubjectType type: values()) {
-            if(type.getLabel().toLowerCase().equals(s)) {
-                return type;
+        if(subject != null) {
+            String s = subject.toLowerCase();
+            for(SubjectType type: values()) {
+                if(type.getLabel().toLowerCase().equals(s)) {
+                    return type;
+                }
             }
+            System.out.println("Unknown SubjectType: " + subject);
         }
-        System.out.println("Unknown SubjectType: " + subject);
         return null;
     }
 
