@@ -72,9 +72,11 @@ public class WebLinksManager extends GWindow {
         super(false);
         this.adminId = adminId;
         setHeadingText("Web Links Manager");
-        setPixelSize(550, 450);
+        setPixelSize(650, 450);
         buildUi();
 
+        setMaximizable(true);
+        
         readPrivateWebLinksFromServer(adminId);
 
         setVisible(true);
@@ -480,7 +482,7 @@ public class WebLinksManager extends GWindow {
         ListStore<WebLinkModel> store = new ListStore<WebLinkModel>(gridProps.id());
         List<ColumnConfig<WebLinkModel, ?>> cols = new ArrayList<ColumnConfig<WebLinkModel, ?>>();
 
-        ColumnConfig<WebLinkModel, String> nameCol = new ColumnConfig<WebLinkModel, String>(gridProps.name(), 160, "Name");
+        ColumnConfig<WebLinkModel, String> nameCol = new ColumnConfig<WebLinkModel, String>(gridProps.name(), 130, "Name");
         cols.add(nameCol);
 
         ColumnConfig<WebLinkModel, AvailableOn> platForm = new ColumnConfig<WebLinkModel, AvailableOn>(gridProps.availableWhen(), 10, "P");
@@ -541,7 +543,7 @@ public class WebLinksManager extends GWindow {
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         GridView<WebLinkModel> view = createGridView();
-        view.setAutoExpandColumn(grid.getColumnModel().getColumn(1));
+        view.setAutoExpandColumn(cols.get(cols.size()-1));
         view.setAutoFill(true);
         grid.setView(view);
         new QuickTip(grid);

@@ -161,7 +161,7 @@ public class WebLinkManagerFilterPanel extends Composite {
         combo.setTriggerAction(TriggerAction.ALL);
 
         combo.setValue(combo.getStore().get(0));
-        combo.setToolTip("Lowest level the link is available");
+        combo.setToolTip("Lowest level lesson assigned");
         return combo;        
     }
 
