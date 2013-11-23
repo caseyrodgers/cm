@@ -4952,3 +4952,15 @@ and pid in (
 	where l.run_id = ?
 	and lesson_number = ?
 )
+
+
+
+.key=RESET_USER_LESSON_PROBLEM 
+## reset a single problem in a
+## prescription's lesson.
+
+delete
+from HA_SOLUTION_CONTEXT
+where run_id = ?
+and pid = ?
+

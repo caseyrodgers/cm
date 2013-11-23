@@ -174,6 +174,10 @@ public class CmMainPanel extends BorderLayoutContainer {
 	        }
 	    }
 	}
+	
+	public CmResourcePanel getLastResource() {
+	    return _lastResourceViewer;
+	}
 
 	static private boolean _isWhiteboardVisible;
 

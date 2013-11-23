@@ -16,7 +16,9 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CalculatorWindow;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
@@ -148,7 +150,22 @@ public class HelpWindow extends GWindow {
             toolBar.add(new MyOptionButton("Reset Lesson", "Reset the problems for the current lesson.", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
-                    new ResetLessonDialog(UserInfo.getInstance().getUid());
+                    new ResetLessonDialog(UserInfo.getInstance().getUid(), null);
+                }
+            }));
+            toolBar.add(new MyOptionButton("Reset Problem", "Reset the current problem.", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    if(CmMainPanel.__lastInstance != null) {
+                        CmResourcePanel resource = CmMainPanel.__lastInstance.getLastResource();
+                        if(resource instanceof ResourceViewerImplTutor2) {
+                            String pid = ((ResourceViewerImplTutor2)resource).getResourceItem().getFile();
+                            new ResetLessonDialog(UserInfo.getInstance().getUid(), pid);
+                            return;
+                        }
+                    }
+                    
+                    CmMessageBox.showAlert("Make the problem you want to reset is loaded.");
                 }
             }));
             

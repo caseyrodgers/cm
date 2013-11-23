@@ -15,16 +15,25 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 public class ResetLessonDialog extends GWindow {
 
     private int userId;
+    private String pidInLesson;
 
-    public ResetLessonDialog(int userId) {
+    public ResetLessonDialog(int userId, String pidInLesson) {
         super(false);
         this.userId = userId;
+        this.pidInLesson = pidInLesson;
         
         setPixelSize(300,  200);
         
-        setWidget(new HTML("<div style='padding: 10px'>Are you sure want to reset the current lesson?</div>"));
+        String message="";
+        if(pidInLesson == null) {
+            message = "Are you sure you want to reset the current lesson?";
+        }
+        else {
+            message = "Are you sure you want to reset problem '" + pidInLesson + "' in current lesson?";
+        }
+        setWidget(new HTML("<div style='padding: 10px'>" + message + "</div>"));
         
-        addButton(new TextButton("Reset Lesson", new SelectHandler() {
+        addButton(new TextButton("Reset", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 doReset();
@@ -45,7 +54,7 @@ public class ResetLessonDialog extends GWindow {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                ResetUserPrescripionLessonAction action = new ResetUserPrescripionLessonAction(userId);
+                ResetUserPrescripionLessonAction action = new ResetUserPrescripionLessonAction(userId, pidInLesson);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
