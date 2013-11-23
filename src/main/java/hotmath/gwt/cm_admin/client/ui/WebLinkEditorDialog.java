@@ -174,16 +174,18 @@ public class WebLinkEditorDialog extends GWindow {
 
 
     private Widget createDeleteGroupButton() {
-        return new TextButton("Delete", new SelectHandler() {
+        TextButton btn = new TextButton("Delete", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 _gridGroups.removeSelectedGroup();
             }
         });
+        btn.setToolTip("Delete selected line");
+        return btn;
     }
 
     private Widget createAddGroupButton() {
-        return new TextButton("Add", new SelectHandler() {
+        TextButton btn = new TextButton("Add", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 new WebLinkEditorGroupSelectDialog(webLinkModel, new CallbackOnComplete() {
@@ -194,7 +196,8 @@ public class WebLinkEditorDialog extends GWindow {
                 });
             }
         });
-
+        btn.setToolTip("Select one or more group (using Ctrl and/or Shift keys)");
+        return btn;
     }
 
     WebLinkEditorGroupsGrid _gridGroups;
@@ -283,7 +286,7 @@ public class WebLinkEditorDialog extends GWindow {
             public void onSelect(SelectEvent event) {
                 LessonModel lm = _grid4LessonTarget.getSelectionModel().getSelectedItem();
                 if (lm == null) {
-                    CmMessageBox.showAlert("Select a web link first");
+                    CmMessageBox.showAlert("Select a line first");
                 } else {
                     _grid4LessonTarget.getStore().remove(lm);
                     if (_grid4LessonTarget.getStore().size() > 0) {
@@ -294,6 +297,7 @@ public class WebLinkEditorDialog extends GWindow {
                 checkEmptyTargetGrid();
             }
         });
+        btn.setToolTip("Delete selected line");
         return btn;
     }
 
@@ -319,6 +323,7 @@ public class WebLinkEditorDialog extends GWindow {
                 });
             }
         });
+        btn.setToolTip("Select Programs or individual lessons");
 
         return btn;
     }

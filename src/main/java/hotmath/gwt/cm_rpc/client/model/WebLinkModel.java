@@ -41,9 +41,12 @@ public class WebLinkModel implements Response {
         this.subjectType = subjectType;
     }
 
-    
+    /** Get the subject type for this link. Default to Essentials
+     * 
+     * @return
+     */
     public SubjectType getSubjectType() {
-        return subjectType;
+        return subjectType!=null?subjectType:SubjectType.ESSENTIALS;
     }
 
     public void setSubjectType(SubjectType subjectType) {

@@ -482,7 +482,7 @@ public class WebLinksManager extends GWindow {
         ListStore<WebLinkModel> store = new ListStore<WebLinkModel>(gridProps.id());
         List<ColumnConfig<WebLinkModel, ?>> cols = new ArrayList<ColumnConfig<WebLinkModel, ?>>();
 
-        ColumnConfig<WebLinkModel, String> nameCol = new ColumnConfig<WebLinkModel, String>(gridProps.name(), 130, "Name");
+        ColumnConfig<WebLinkModel, String> nameCol = new ColumnConfig<WebLinkModel, String>(gridProps.name(), 100, "Name");
         cols.add(nameCol);
 
         ColumnConfig<WebLinkModel, AvailableOn> platForm = new ColumnConfig<WebLinkModel, AvailableOn>(gridProps.availableWhen(), 10, "P");
@@ -525,11 +525,11 @@ public class WebLinksManager extends GWindow {
 
         ColumnConfig<WebLinkModel, SubjectType> subjectLevel = new ColumnConfig<WebLinkModel, SubjectType>(gridProps.subjectType(), 10, "L");
         subjectLevel.setToolTip(SafeHtmlUtils
-                .fromString("Lowest level (PA=Pre-Algebra, A1=Algebra 1, G=Geometry, A2=Algebra 2, CA=College Elementary Algebra,E=Essentials"));
+                .fromString("Lowest level (E=Essentials, P=Pre-Algebra, A1=Algebra 1, G=Geometry, A2=Algebra 2, CA=College Elementary Algebra"));
         AbstractCell<SubjectType> subjectLevelCell = new AbstractCell<SubjectType>() {
             @Override
             public void render(com.google.gwt.cell.client.Cell.Context context, SubjectType linkType, SafeHtmlBuilder sb) {
-                String text = linkType == null ? "--" : linkType.getKey();
+                String text = linkType == null ? "E" : linkType.getKey();
                 sb.appendEscaped(text);
             }
         };
