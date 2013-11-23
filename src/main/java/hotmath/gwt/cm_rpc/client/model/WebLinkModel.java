@@ -125,11 +125,11 @@ public class WebLinkModel implements Response {
     }
 
     public boolean isAllGroups() {
-        return (linkGroups.size() == 0 || linkGroups.get(0).getGroupName().toLowerCase().equals("all groups"));
+        return (linkGroups.size() == 0 || linkGroups.get(0).getGroupName().toLowerCase().startsWith("all groups"));
     }
 
     public boolean isAllLessons() {
-        return (linkTargets.size() == 0 || linkTargets.get(0).getLessonName().toLowerCase().equals("all lessons"));
+        return (linkTargets.size() == 0 || linkTargets.get(0).getLessonName().toLowerCase().startsWith("all lessons"));
     }
 
     public String getComments() {
