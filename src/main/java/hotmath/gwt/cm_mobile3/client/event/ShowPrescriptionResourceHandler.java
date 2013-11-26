@@ -5,5 +5,5 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import com.google.gwt.event.shared.EventHandler;
 
 public interface ShowPrescriptionResourceHandler extends EventHandler {
-    void showResource(InmhItemData resourceItem);
+    void showResource(InmhItemData resourceItem, boolean spanish);
 }

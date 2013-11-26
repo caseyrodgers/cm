@@ -9,9 +9,12 @@ public class ShowPrescriptionResourceEvent extends GwtEvent<ShowPrescriptionReso
     public static Type<ShowPrescriptionResourceHandler> TYPE = new Type<ShowPrescriptionResourceHandler>();
 
     InmhItemData resourceItem;
+
+    private boolean spanish;
     
-    public ShowPrescriptionResourceEvent(InmhItemData resourceItem) {
+    public ShowPrescriptionResourceEvent(InmhItemData resourceItem, boolean isSpanish) {
         this.resourceItem = resourceItem;
+        this.spanish = isSpanish;
     }
     
     @Override
@@ -21,6 +24,6 @@ public class ShowPrescriptionResourceEvent extends GwtEvent<ShowPrescriptionReso
 
     @Override
     protected void dispatch(ShowPrescriptionResourceHandler handler) {
-        handler.showResource(resourceItem);
+        handler.showResource(resourceItem, this.spanish);
     }
 }

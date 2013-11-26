@@ -42,7 +42,7 @@ public class PrescriptionLessonResourceReviewActivity implements PrescriptionLes
         // MessageBox.showError("Flie: " + file);'
         ClientFactory cf = CatchupMathMobile3.__clientFactory;
         InmhItemData newItem = new InmhItemData(CmResourceType.mapResourceType(type), file,"");
-        cf.getEventBus().fireEvent(new ShowPrescriptionResourceEvent(newItem));        
+        cf.getEventBus().fireEvent(new ShowPrescriptionResourceEvent(newItem, _isSpanish));        
     }
 
     private native void setupJsniHooks(PrescriptionLessonResourceReviewActivity x) /*-{
@@ -55,7 +55,7 @@ public class PrescriptionLessonResourceReviewActivity implements PrescriptionLes
     public void setupView(final PrescriptionLessonResourceReviewView view) {
         
         eventBus.fireEvent(new SystemIsBusyEvent(true));
-        GetReviewHtmlAction action = new GetReviewHtmlAction(resourceItem.getFile());
+        GetReviewHtmlAction action = new GetReviewHtmlAction(resourceItem.getFile(), _isSpanish);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<LessonResult>() {
             @Override
             public void onSuccess(LessonResult result) {
@@ -73,9 +73,10 @@ public class PrescriptionLessonResourceReviewActivity implements PrescriptionLes
     }
 
 
+    static boolean _isSpanish;
     @Override
     public void loadLesson(final PrescriptionLessonResourceReviewViewImpl view, final boolean isSpanish, final CallbackOnComplete callback) {
-        
+        _isSpanish = isSpanish;
         CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(true));
         
         GetReviewHtmlAction action = new GetReviewHtmlAction(resourceItem.getFile(),isSpanish);

@@ -8,6 +8,7 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -20,8 +21,6 @@ public class LessonViewImpl extends Composite implements LessonView {
     FlowPanel _main = new FlowPanel();
     FlowPanel _body = new FlowPanel();
     private String lessonName;
-    private String lessonHtml;
-    
     static SexyButton _languageButton;
     
     public LessonViewImpl() {
@@ -36,7 +35,7 @@ public class LessonViewImpl extends Composite implements LessonView {
                     presenter.loadLesson(LessonViewImpl.this, _languageButton.getText().contains("Spanish"), new CallbackOnComplete() {
                         @Override
                         public void isComplete() {
-                            System.out.println("Complete");
+                            Log.debug("Lesson loaded: " + lessonName);
                         }
                     
                     });
@@ -104,7 +103,6 @@ public class LessonViewImpl extends Composite implements LessonView {
     @Override
     public void loadLesson(String lessonName, String lessonHtml) {
         this.lessonName = lessonName;
-        this.lessonHtml = lessonHtml;
         _body.clear();
         _body.add(new HTML(lessonHtml));
     }

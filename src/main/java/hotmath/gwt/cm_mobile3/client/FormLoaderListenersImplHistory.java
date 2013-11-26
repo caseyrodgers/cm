@@ -55,13 +55,13 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
         eb.addHandler(ShowWelcomeViewEvent.TYPE, new ShowWelcomeViewHandler() {
             @Override
             public void showWelcomeView() {
-                History.newItem("welcome:" + System.currentTimeMillis());
+                History.newItem("welcome|" + System.currentTimeMillis());
             }
         });
         eb.addHandler(ShowLoginViewEvent.TYPE, new ShowLoginViewHandler() {
             @Override
             public void showLoginView() {
-                History.newItem("login:" + System.currentTimeMillis());
+                History.newItem("login|" + System.currentTimeMillis());
             }
         });
         eb.addHandler(ShowQuizViewEvent.TYPE, new ShowQuizViewHandler() {
@@ -78,7 +78,7 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
                 if (pid == null) {
                     pid = "";
                 }
-                History.newItem("show_work|" + pid + ":" + title + ":"  + System.currentTimeMillis());
+                History.newItem("show_work|" + pid + "|" + title + "|"  + System.currentTimeMillis());
             }
         });
         eb.addHandler(ShowPrescriptionLessonViewEvent.TYPE, new ShowPrescriptionLessonViewHandler() {
@@ -89,7 +89,7 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
         });
         eb.addHandler(ShowPrescriptionResourceEvent.TYPE, new ShowPrescriptionResourceHandler() {
             @Override
-            public void showResource(InmhItemData resourceItem) {
+            public void showResource(InmhItemData resourceItem, boolean isSpanish) {
                 History.newItem("resource|" + resourceItem.getType() + "|" + resourceItem.getFile() + "|"
                         + "" + "|"
                         + SharedData.findOrdinalPositionOfResource(resourceItem) + "|" + resourceItem.getTitle() + "|"

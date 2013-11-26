@@ -406,7 +406,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
         }
 
         public String getHistoryTag() {
-            return type + ":" + resourceType + ":" + resourceFile + ":" + resourceConfig;
+            return type + "|" + resourceType + "|" + resourceFile + "|" + resourceConfig;
         }
     }
 }

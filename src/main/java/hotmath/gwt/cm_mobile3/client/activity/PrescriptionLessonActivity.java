@@ -47,7 +47,7 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
 
     @Override
     public void loadResource(InmhItemData resourceItem) {
-        eventBus.fireEvent(new ShowPrescriptionResourceEvent(resourceItem));
+        eventBus.fireEvent(new ShowPrescriptionResourceEvent(resourceItem, false));
     }
 
     @Override

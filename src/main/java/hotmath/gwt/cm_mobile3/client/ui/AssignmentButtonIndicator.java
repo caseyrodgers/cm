@@ -19,7 +19,7 @@ public class AssignmentButtonIndicator extends TouchAnchor {
             @Override
             public void onClick(ClickEvent event) {
                 //CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));
-                History.newItem("assignment_list:" + System.currentTimeMillis());
+                History.newItem("assignment_list|" + System.currentTimeMillis());
             }
         });
         
