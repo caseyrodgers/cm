@@ -382,16 +382,8 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             @Override
             public void onSelect(SelectEvent event) {
                 DateRangePanel dateRange = DateRangePanel.getInstance();
-                Date fromDate = null, toDate = null;
-                if (dateRange != null) {
-                    if (dateRange.isDefault()) {
-                        fromDate = null;
-                        toDate = null;
-                    } else {
-                        fromDate = dateRange.getFromDate();
-                        toDate = dateRange.getToDate();
-                    }
-                }
+                Date fromDate = dateRange != null ? dateRange.getFromDate() : null;
+                Date toDate = dateRange != null ? dateRange.getToDate() : null;
                 new PdfWindow(sm.getAdminUid(), "Catchup Math Details Report for: " + sm.getName(), new GeneratePdfAction(PdfType.STUDENT_DETAIL,
                         sm.getAdminUid(), Arrays.asList(sm.getUid()), fromDate, toDate));
             }
@@ -407,17 +399,8 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             @Override
             public void onSelect(SelectEvent event) {
                 DateRangePanel dateRange = DateRangePanel.getInstance();
-                Date fromDate = null;
-                Date toDate = null;
-                if (dateRange != null) {
-                    if (dateRange.isDefault()) {
-                        fromDate = null;
-                        toDate = null;
-                    } else {
-                        fromDate = dateRange.getFromDate();
-                        toDate = dateRange.getToDate();
-                    }
-                }
+                Date fromDate = dateRange != null ? dateRange.getFromDate() : null;
+                Date toDate = dateRange != null ? dateRange.getToDate() : null;
                 new PdfWindow(sm.getAdminUid(), "Catchup Math Report Card for: " + sm.getName(), new GeneratePdfAction(PdfType.REPORT_CARD, sm.getAdminUid(),
                         Arrays.asList(sm.getUid()), fromDate, toDate));
             }
@@ -560,9 +543,9 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             @Override
             public void attempt() {
                 CmServiceAsync s = CmShared.getCmService();
-                DateRangePanel p = DateRangePanel.getInstance();
-                Date fromDate = p != null ? p.getFromDate() : null;
-                Date toDate = p != null ? p.getToDate() : null;
+                DateRangePanel dateRange = DateRangePanel.getInstance();
+                Date fromDate = dateRange != null ? dateRange.getFromDate() : null;
+                Date toDate = dateRange != null ? dateRange.getToDate() : null;
 
                 GetStudentActivityAction action = new GetStudentActivityAction(sm, fromDate, toDate);
                 setAction(action);
