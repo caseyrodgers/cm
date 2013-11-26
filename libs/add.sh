@@ -14,6 +14,8 @@ mvn install:install-file -DgroupId=jtidy -DartifactId=jtidy -Dversion=r-938 -Dpa
 
 #mvn install:install-file -DgroupId=com.yahoo.platform.yui -DartifactId=yuicompressor -Dversion=2.3.6 -Dpackaging=jar -Dfile=yuicompressor-2.4.2.jar -DgeneratePom=true
 
+mvn install:install-file -DgroupId=lucene -DartifactId=lucene -Dversion=2.1 -Dpackaging=jar -Dfile=lucene-2.1.jar -DgeneratePom=true
+
 mvn install:install-file -DgroupId=com.bramosystems.oss.player -DartifactId=bst-player-api -Dversion=1.2.1 -Dpackaging=jar -Dfile=bst-player-api-1.2.1.jar -DgeneratePom=true
 
 mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-user -Dversion=2.5.0 -Dpackaging=jar -Dfile=gwt-2.5.0/gwt-user.jar -DgeneratePom=true
