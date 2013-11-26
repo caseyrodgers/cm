@@ -449,7 +449,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         boolean isCustomQuiz = (rs.getInt("is_custom_quiz") > 0);
         m.setCustomQuiz(rs.getBoolean("is_custom_quiz"));
         m.setProgramDescr(rs.getString("program"));
-        m.setUseDate((rs.getString("run_date") == null) ? rs.getString("use_date"):rs.getString("run_date"));
+        m.setUseDate(rs.getString("use_date"));
         m.setStart(rs.getString("start_time"));
         m.setStop(rs.getString("stop_time"));
         m.setTestId(rs.getInt("test_id"));
