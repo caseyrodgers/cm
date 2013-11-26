@@ -4,15 +4,19 @@ import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.ClientFactory;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionResourceEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceReviewView;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceReviewViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -66,5 +70,29 @@ public class PrescriptionLessonResourceReviewActivity implements PrescriptionLes
             }
         });
         view.setHeaderTitle(resourceItem.getTitle());
+    }
+
+
+    @Override
+    public void loadLesson(final PrescriptionLessonResourceReviewViewImpl view, final boolean isSpanish, final CallbackOnComplete callback) {
+        
+        CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(true));
+        
+        GetReviewHtmlAction action = new GetReviewHtmlAction(resourceItem.getFile(),isSpanish);
+        
+        CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<LessonResult>() {
+            public void onSuccess(LessonResult lesRes) {
+                CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
+                view.loadLesson(resourceItem.getTitle(), lesRes.getLesson());
+                callback.isComplete();
+            }
+            
+            @Override
+            public void onFailure(Throwable ex) {
+                CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
+                ex.printStackTrace();
+                Log.error("Error reading lesson from server", ex);
+            }
+        });                                
     }
 }

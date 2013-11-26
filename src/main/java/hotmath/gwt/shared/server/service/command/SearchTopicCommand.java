@@ -2,17 +2,17 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
-import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
-import hotmath.util.sql.SqlUtilities;
+import hotmath.search.HMIndexSearcher;
+import hotmath.search.HMIndexWriter;
+import hotmath.search.HMIndexWriterFactory;
+import hotmath.search.Hit;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 import org.apache.log4j.Logger;
 
@@ -36,39 +36,26 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
     @Override
     public CmList<Topic> execute(Connection conn, SearchTopicAction action) throws Exception {
         CmList<Topic> topics = new CmArrayList<Topic>();
-        PreparedStatement ps=null;
         try {
-            String sql = null;
-            
-            String searchString=null;
-            if(action.getSearchType() == SearchType.LESSON_LIKE) {
-                sql = "select distinct lesson, file " +
-                       "from HA_PROGRAM_LESSONS_static " +
-                       "where lesson like ? " +  
-                       "order by lesson";
+            Hit[] results = HMIndexSearcher.getInstance().searchFor("inmh", action.getSearch());
+            for (Hit hit : results) {
                 
-                searchString = "%" + action.getSearch() + "%";
+                topics.add(new Topic(hit.getTitle(), hit.getUrl()));
             }
-            else {
-                sql = "select distinct lesson, file " +
-                        "from HA_PROGRAM_LESSONS_static " +
-                        "where file = ?";
-                
-                searchString = action.getSearch();
-             }
-            ps = conn.prepareStatement(sql);
-            
-            ps.setString(1, searchString);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-                topics.add(new Topic(rs.getString("lesson"), rs.getString("file")));        
-            }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
-        finally {
-            SqlUtilities.releaseResources(null,ps,null);
+
+        return topics;
+    }
+    
+    static public void main(String as[]) {
+        try {
+            HMIndexWriter hmIw = HMIndexWriterFactory.getHMIndexWriter("inmh");
+            hmIw.writeIndex();
         }
-        
-        return topics;        
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }
-

@@ -3,23 +3,61 @@ package hotmath.gwt.cm_mobile3.client.view;
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
+import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewEvent;
+import hotmath.gwt.cm_mobile_shared.client.view.LessonViewImpl;
+import hotmath.gwt.cm_mobile_shared.client.view.SubToolBar;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel implements PrescriptionLessonResourceReviewView {
 
     Presenter presenter;
+    private SexyButton _languageButton;
     
     public PrescriptionLessonResourceReviewViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
+        FlowPanel main = new FlowPanel();
+        SubToolBar subBar = new SubToolBar();
+        main.add(subBar);
+        
+        
+        if(_languageButton == null) {
+            _languageButton = new SexyButton("Spanish", new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    
+                    presenter.loadLesson(PrescriptionLessonResourceReviewViewImpl.this, _languageButton.getText().contains("Spanish"), new CallbackOnComplete() {
+                        @Override
+                        public void isComplete() {
+                            System.out.println("Complete");
+                        }
+                    
+                    });
+                    
+                    if(_languageButton.getText().contains("Spanish")) {
+                        _languageButton.setButtonText("English",null);
+                    }
+                    else {
+                        _languageButton.setButtonText("Spanish",null);
+                    }
+                }
+            });
+        }
+        subBar.add(_languageButton);
+        main.add(uiBinder.createAndBindUi(this));
+        initWidget(main);
     }
 
     interface MyUiBinder extends UiBinder<Widget, PrescriptionLessonResourceReviewViewImpl> {
@@ -63,7 +101,7 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
     @UiField
     DivElement reviewHtml;
 
-    @Override
+    @Override   
     public void setReviewHtml(String html) {
         reviewHtml.setInnerHTML(html);
     }
@@ -78,5 +116,10 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
                 return false;
             }
         };
+    }
+
+    @Override
+    public void loadLesson(String title, String lesson) {
+        reviewHtml.setInnerHTML(lesson);
     }
 }

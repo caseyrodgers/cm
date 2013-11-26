@@ -10,10 +10,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class LessonSearchField extends Composite {
+public class LessonSearchField extends FlowPanel {
     private TextBox _lessonText = new TextBox();
     protected CmList<Topic> _allLessons;
 
@@ -23,14 +25,13 @@ public class LessonSearchField extends Composite {
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
     public LessonSearchField() {
-        initWidget(uiBinder.createAndBindUi(this));
+        add(uiBinder.createAndBindUi(this));
     }
     
     
     @UiHandler("doSearch")
     public void doSearch(ClickEvent ce) {
         LessonSearchPopup popup = new LessonSearchPopup();
-        //asWidget().add(popup);
         popup.show();
     }
 

@@ -18,7 +18,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -26,11 +26,14 @@ import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.RowDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.RowDoubleClickEvent.RowDoubleClickHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -49,18 +52,27 @@ public class LessonSearchPanel extends SimpleContainer {
         BorderLayoutData lData = new BorderLayoutData(50);
         
         FramedPanel frame = new FramedPanel();
-        FlowPanel flow = new FlowPanel();
-        frame.setWidget(flow);
+        HorizontalPanel hPanel = new HorizontalPanel();
+        frame.setWidget(hPanel);
         frame.setHeaderVisible(false);
         _lessonText = new TextField();
-        flow.add(new FieldLabel(_lessonText, "Topic"));
+        hPanel.add(new FieldLabel(_lessonText, "Topic"));
+        hPanel.add(new TextButton("Search", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                getLessonsFromServer();
+            }
+        }));
         main.setNorthWidget(frame, new BorderLayoutData(45));
         _gridOfLessons = createLessonGrid();
 
         _lessonText.addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
-                limitListTo(_lessonText.getText());
+                if(event.getNativeKeyCode() == 13) {
+                    getLessonsFromServer();
+                }
+                //limitListTo(_lessonText.getText());
             }
         });
         
@@ -72,6 +84,10 @@ public class LessonSearchPanel extends SimpleContainer {
     }
 
     protected void limitListTo(String text) {
+        
+        if(_gridOfLessons.getStore().size() == 0) {
+            return;
+        }
         
         List<Topic> listNew = null;
         if(text == null || text.length() == 0) {
@@ -94,7 +110,7 @@ public class LessonSearchPanel extends SimpleContainer {
         new RetryAction<CmList<Topic>>() {
             @Override
             public void attempt() {
-                SearchTopicAction action = new SearchTopicAction(SearchType.LESSON_LIKE,"%");
+                SearchTopicAction action = new SearchTopicAction(SearchType.LESSON_LIKE,"%" + _lessonText.getValue() + "%");
                 setAction(action);
                 CmShared.getCmService().execute(action,  this);
             }
@@ -102,6 +118,7 @@ public class LessonSearchPanel extends SimpleContainer {
             @Override
             public void oncapture(CmList<Topic> value) {
                 _allLessons = value;
+                _gridOfLessons.getStore().clear();
                 _gridOfLessons.getStore().addAll(value);
             }
         }.register();

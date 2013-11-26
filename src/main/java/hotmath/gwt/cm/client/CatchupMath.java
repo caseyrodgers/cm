@@ -31,6 +31,7 @@ import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.search.LessonSearchWindow;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
@@ -159,8 +160,12 @@ public class CatchupMath implements EntryPoint {
             }
         });
 
-        if (CmShared.getQueryParameter("test") != null) {
+        if(CmShared.getQueryParameterValue("test").equals("assignment")) {
             showAssignment(1, null);
+        }
+        else if(CmShared.getQueryParameterValue("test").equals("search")) {
+            new LessonSearchWindow();
+            return;
         }
 
         
