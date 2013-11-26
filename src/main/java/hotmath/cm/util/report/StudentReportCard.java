@@ -80,6 +80,9 @@ public class StudentReportCard {
 
     private String reportName;
 
+    private Date _fromDate;
+    private Date _toDate;
+
     public StudentReportCard() {
     }
 
@@ -87,6 +90,9 @@ public class StudentReportCard {
     public ByteArrayOutputStream makePdf(final Connection conn, String reportId, Integer adminId,
     		Date fromDate, Date toDate) throws Exception {
         ByteArrayOutputStream baos = null;
+
+        _fromDate = fromDate;
+        _toDate = toDate;
 
         List<Integer> studentUids = (List<Integer>) CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
 
@@ -233,6 +239,12 @@ public class StudentReportCard {
 
 		Phrase student = ReportUtils.buildParagraphLabel("Student: ", sm.getName());
 
+		Phrase dateRange = null;
+		if (_fromDate != null && _toDate != null) {
+			String dateStr = String.format("%1$tY-%1$tm-%1$td - %2$tY-%2$tm-%2$td", _fromDate, _toDate);
+			dateRange = ReportUtils.buildParagraphLabel("Date range: ", dateStr);
+		}
+
 		int numberOfColumns = 2;
 		PdfPTable pdfTbl = new PdfPTable(numberOfColumns);
 		pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
@@ -245,7 +257,12 @@ public class StudentReportCard {
 		pdfTbl.addCell(" ");
 
 		pdfTbl.addCell(school);
-		pdfTbl.addCell(" ");
+		if (dateRange != null) {
+			pdfTbl.addCell(dateRange);
+		}
+		else {
+			pdfTbl.addCell(" ");
+		}
 
 		pdfTbl.addCell(" ");
 		pdfTbl.addCell(" ");
