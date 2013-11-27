@@ -59,10 +59,6 @@ public class UpdateStudentCommand implements ActionHandler<UpdateStudentAction, 
         	    info.setActiveRunId(0);
         	    info.setActiveTestId(0);
         	    
-        	    /** TODO:
-        	     *  what is continuePar for?  (is false correct here?)
-        	     *  
-        	     */
         		ppDao.updateProgramAssign(userId, cmProg, false);
 
         	    // passing false marks Program as incomplete

@@ -32,6 +32,7 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.rpc.RetryActionManager;
 import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
 import hotmath.gwt.shared.client.rpc.action.GetChaptersForProgramSubjectAction;
@@ -1012,10 +1013,11 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             public void onFailure(Throwable caught) {
                 CmBusyManager.setBusy(false);
                 if (caught.getMessage().indexOf("already in use") > -1) {
-                	if (caught.getMessage().indexOf("pass") > -1)
+                	if (caught.getMessage().toLowerCase().indexOf("pass") > -1)
                         CmMessageBox.showAlert("Passcode In Use", caught.getMessage());
                 	else if (caught.getMessage().indexOf("name") > -1)
                         CmMessageBox.showAlert("Name In Use", caught.getMessage());
+                	RetryActionManager.getInstance().requestComplete(this);
                     return;
                 }
                 super.onFailure(caught);
