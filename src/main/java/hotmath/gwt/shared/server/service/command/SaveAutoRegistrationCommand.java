@@ -43,7 +43,9 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         
         // Group name cannot be the same as a student password for the current Admin
         student.setPasscode(groupName.trim());
-        Boolean isPasscodeTaken = CmStudentDao.getInstance().checkForDuplicatePasscode(conn, student);
+        int studentUid = (student.getUid() == null) ? -1 : student.getUid();
+        boolean isPasscodeTaken =
+        		CmStudentDao.getInstance().checkForDuplicatePasscode(conn, student.getAdminUid(), studentUid, student.getPasscode());
         if (isPasscodeTaken == true) {
             throw new CmUserException("Group name cannot be the same as the password of an existing student.");
         }

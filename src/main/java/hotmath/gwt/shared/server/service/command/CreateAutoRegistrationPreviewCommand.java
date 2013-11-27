@@ -13,6 +13,8 @@ import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationPreviewAction;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
 import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.util.List;
 
@@ -29,17 +31,20 @@ import java.util.List;
  */
 public class CreateAutoRegistrationPreviewCommand implements ActionHandler<CreateAutoRegistrationPreviewAction, AutoRegistrationSetup> {
 
+	private static final Logger LOGGER = Logger.getLogger(CreateAutoRegistrationPreviewCommand.class);
+
     @Override
     public AutoRegistrationSetup execute(Connection conn, CreateAutoRegistrationPreviewAction action) throws Exception {
-        
+
         StudentModelI studentTemplate = action.getStudentTemplate();
         AutoRegistrationSetup preview = new AutoRegistrationSetup();
-        
 
         CmStudentDao dao = CmStudentDao.getInstance();
-        
-        
+
         BulkRegLoader bulkLoader = (BulkRegLoader)CmCacheManager.getInstance().retrieveFromCache(CacheName.BULK_UPLOAD_FILE, action.getUploadKey());
+        
+        LOGGER.debug("+++ execute(): bulkLoader: " + ((bulkLoader != null)?"not null":"NULL"));
+
         if(bulkLoader == null)
             throw new CmRpcException("Upload file was not found, perhaps timed out");
         
@@ -48,15 +53,20 @@ public class CreateAutoRegistrationPreviewCommand implements ActionHandler<Creat
         /** Create a series of Student records using student model as source for template values
          * 
          */
+        boolean haveErrors = false;
+        int dummyUid = -1;
         for(AutoRegistrationEntry entry: entries) {
             
-            if( dao.checkPasswordInUse(conn, studentTemplate.getAdminUid(), entry.getPassword())) {
+            if( dao.checkForDuplicatePasscode(conn, studentTemplate.getAdminUid(), dummyUid, entry.getPassword())) {
                 entry.setIsError(true);
                 entry.setMessage("Password is already in use");
+                haveErrors = true;
             }
             preview.getEntries().add(entry);
         }
-        
+
+        LOGGER.debug("+++ execute(): haveErrors: " + haveErrors + ", preview.getEntries().size(): " + preview.getEntries().size(), new Exception());
+
         return preview;
     }
     

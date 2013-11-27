@@ -45,7 +45,9 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
             // or the Password for an existing Parallel Program (unless
             // modifying an existing PP)
             student.setPasscode(student.getName().trim());
-            Boolean isPasscodeTaken = CmStudentDao.getInstance().checkForDuplicatePasscode(conn, student);
+            int studentUid = (student.getUid() == null) ? -1 : student.getUid();
+            boolean isPasscodeTaken =
+            		CmStudentDao.getInstance().checkForDuplicatePasscode(conn, student.getAdminUid(), studentUid, student.getPasscode());
             if (isPasscodeTaken == true) {
                 if (action.getParallelProgId() == null
                         || (passwordsMatch(student.getPasscode(), parallelProgId) == false)) {
@@ -107,7 +109,7 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
         }
     }
 
-    private boolean passwordsMatch(String password, Integer parallelProgId) throws Exception {
+    private boolean passwordsMatch(String password, int parallelProgId) throws Exception {
         ParallelProgramDao dao = ParallelProgramDao.getInstance();
         CmParallelProgram pp = dao.getParallelProgramForId(parallelProgId);
         return password.equalsIgnoreCase(pp.getName());

@@ -499,7 +499,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        Boolean isDuplicate = checkForDuplicatePasscode(conn, sm);
+        boolean isDuplicate = checkForDuplicatePasscode(conn, sm.getAdminUid(), -1, sm.getPasscode());
         if (isDuplicate) {
             throw new CmUserException("The passcode you entered is already in use, please try again.");
         }
@@ -755,7 +755,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
             checkForSpecialCases(sm.getUid(), sm.getPasscode());
 
-            if (checkForDuplicatePasscode(conn, sm)) {
+            if (checkForDuplicatePasscode(conn, sm.getAdminUid(), sm.getUid(), sm.getPasscode())) {
                 throw new CmUserException("The passcode you entered is already in use, please try again.");
             }
         }
@@ -834,28 +834,29 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     // TODO: assumes a single Admin per school
     private static final String CHECK_DUPLICATE_PASSCODE_SQL = "CHECK_DUPLICATE_PASSCODE";
 
-    public Boolean checkForDuplicatePasscode(final Connection conn, StudentModelI sm) throws Exception {
+    public Boolean checkForDuplicatePasscode(final Connection conn, int adminUid, int studentUid, String passcode) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(CHECK_DUPLICATE_PASSCODE_SQL));
-            ps.setString(1, sm.getPasscode());
-            ps.setInt(2, (sm.getUid() != null) ? sm.getUid() : -1);
-            ps.setInt(3, sm.getAdminUid());
-            ps.setInt(4, sm.getAdminUid());
-            ps.setString(5, sm.getPasscode());
-            ps.setInt(6, sm.getAdminUid());
-            ps.setInt(7, sm.getAdminUid());
-            ps.setString(8, sm.getPasscode());
-            ps.setInt(9, sm.getAdminUid());
-            ps.setString(10, sm.getPasscode());
+            ps.setString(1, passcode);
+            ps.setInt(2, studentUid);
+            ps.setInt(3, adminUid);
+            ps.setInt(4, adminUid);
+            ps.setString(5, passcode);
+            ps.setInt(6, adminUid);
+            ps.setInt(7, adminUid);
+            ps.setString(8, passcode);
+            ps.setInt(9, adminUid);
+            ps.setString(10, passcode);
 
             rs = ps.executeQuery();
             return (rs.next());
         } catch (Exception e) {
-            __logger.error(String.format("*** Error checking passcode for student with uid: %d", sm.getUid()), e);
-            throw new Exception(String.format("*** Error checking passcode for student: %s ***", sm.getName()));
+            __logger.error(String.format("*** Error checking passcode for studentUid: %d, adminUid: %d, passcode: %s",
+            		studentUid, adminUid, passcode), e);
+            throw new Exception(String.format("*** Error checking passcode: %s ***", passcode));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
@@ -886,27 +887,6 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
-    }
-
-    /**
-     * Return true if this admin has a user with password
-     * 
-     * @param conn
-     * @param adminId
-     * @param password
-     * @return
-     */
-    public Boolean checkPasswordInUse(final Connection conn, Integer adminId, String password) throws Exception {
-
-        Statement stmt = null;
-        try {
-            stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select 1 from HA_USER where admin_id = " + adminId + " and user_passcode = '" + password + "'");
-            return rs.first();
-        } finally {
-            SqlUtilities.releaseResources(null, stmt, null);
-        }
-
     }
 
     /**
