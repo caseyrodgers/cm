@@ -1017,6 +1017,11 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                         CmMessageBox.showAlert("Passcode In Use", caught.getMessage());
                 	else if (caught.getMessage().indexOf("name") > -1)
                         CmMessageBox.showAlert("Name In Use", caught.getMessage());
+                	
+                	/** reset the RetryManager, otherwise other async operations 
+                	 * will not be executed. 
+                	 * 
+                	 */
                 	RetryActionManager.getInstance().requestComplete(this);
                     return;
                 }

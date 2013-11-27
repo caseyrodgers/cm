@@ -409,7 +409,6 @@ public class HaTestDefDao extends SimpleJdbcDaoSupport {
             if (chapter == null) {
                 chapter = config.getChapters().get(0);
             }
-
             sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_IDS_FOR_CHAPTER_PROGRAM");
         } else {
             sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_IDS_FOR_PROGRAM");
