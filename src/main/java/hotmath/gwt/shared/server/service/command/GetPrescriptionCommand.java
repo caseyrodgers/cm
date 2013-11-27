@@ -323,7 +323,6 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 { "Video", CmResourceType.VIDEO.label(), "Math Video(s)" },
                 { "Activities", CmResourceType.ACTIVITY.label(), "Math activities and games related to the current topic" },
                 { null, CmResourceType.PRACTICE.label(), "Practice problems you must complete before advancing" },
-                { "Extra Practice", CmResourceType.CMEXTRA.label(), "More practice" },
                 { "Quiz Results", CmResourceType.RESULTS.label(), "Quiz results"  },
                 { "Web Links", CmResourceType.WEBLINK.label(), "External Web Link" }};
 
