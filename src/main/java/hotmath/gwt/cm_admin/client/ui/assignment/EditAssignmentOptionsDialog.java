@@ -85,10 +85,14 @@ public class EditAssignmentOptionsDialog extends GWindow {
         _autoReleaseGrades.setValue(assignment.isAutoRelease());        
         fieldSet.addThing(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 140, 20));
         
-        
         _personalizeAssignment = new CheckBox();
-        _personalizeAssignment.setToolTip("Multiple choice questions will be randomly selected for each student.");
+        _personalizeAssignment.setToolTip("Similar multiple choice problems will be individually assigned.");
         _personalizeAssignment.setValue(assignment.isPersonalized());
+
+        
+        if(!assignment.isDraft()) {
+            _personalizeAssignment.setEnabled(false);
+        }
 
         fieldSet.addThing(new MyFieldLabel(_personalizeAssignment, "Individualize Problems", 140, 20));
         

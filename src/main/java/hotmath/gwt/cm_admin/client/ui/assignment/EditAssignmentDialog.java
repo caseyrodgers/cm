@@ -226,7 +226,7 @@ public class EditAssignmentDialog {
 
 
         if(assignment.isPersonalized()) {
-            HTML html = new HTML("<span style='margin-right: 20px;color: red'>* indicates individualized problem");
+            HTML html = new HTML("<span style='margin-right: 20px;color: red'>*=Individualized: representative question shown in right panel");
             new ToolTip(html, new ToolTipConfig("Individualized problems might be different for each student"));
             window.getButtonBar().add(html);
         }
