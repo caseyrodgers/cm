@@ -125,6 +125,10 @@ public class Assignment implements Response {
     public boolean isClosed() {
         return status.equals("Closed");
     }
+    
+    public boolean isDraft() {
+        return status.equals("Draft");
+    }
 
     public void setAdminId(int adminId) {
         this.adminId = adminId;

@@ -192,6 +192,12 @@ public class AssignmentsContentPanel extends ContentPanel {
             CmMessageBox.showAlert("You need to select an assignment first.");
             return;
         }
+        
+        if(assignment.isDraft()) {
+            CmMessageBox.showAlert("You cannot release the grades of a Draft assignment");
+            return;
+        }
+        
 
         CmBusyManager.setBusy(true);
 
