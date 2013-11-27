@@ -42,7 +42,8 @@ public enum CmProgram {
     OTHER_ALG2(51,"Algebra 2, Other", "Alg 2", "Other", false, 1),
     ASSIGNMENTS_ONLY(53,"Assignments Only", "Assignments Only", "Assignments Only", true, 0),
     ELEMALG(54,"ElemAlg", "ElemAlg", "Prof", true, 9),
-    ELEMALG_CHAP(55,"ElemAlg - Chapters", "ElemAlg", "Chap",true, 2);
+    ELEMALG_CHAP(55,"ElemAlg - Chapters", "ElemAlg", "Chap",true, 2),
+    BASICMATH(56,"BasicMath", "BasicMath", "Prof", true, 11);
 
     private final int     defId;
     private final String  title;

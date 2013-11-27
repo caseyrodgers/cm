@@ -88,9 +88,12 @@ public class EndOfProgramHandler {
                 || programCurr.getTestDefId() == CmProgram.ELEMALG.getDefId() ) {
             // reset/repeat
             updateProgram(conn, CmProgram.ELEMALG.getSubject(), CmProgram.ELEMALG.getProgramType(),null);
+        }
+        else if( programCurr.getTestDefId() == CmProgram.BASICMATH.getDefId() 
+                || programCurr.getTestDefId() == CmProgram.BASICMATH.getDefId() ) {
+            // reset/repeat
+            updateProgram(conn, CmProgram.ESSENTIALS.getSubject(), CmProgram.ESSENTIALS.getProgramType(),null);
         }  
-    	
-    	
     	else if(programCurr.getTestDefId() == CmProgram.TAKS.getDefId()) {
     		// reset/repeat
     		updateProgram(conn, CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
