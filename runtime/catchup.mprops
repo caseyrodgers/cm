@@ -740,6 +740,11 @@ select 'parallel-program' as dup
 from   CM_PARALLEL_PROGRAM p
 where  p.admin_id = ?
   and  p.password = ?
+union
+select 'admin' as dup
+from   HA_ADMIN a
+where  a.aid = ?
+  and  a.passcode = ?
   
 
 .key=CHECK_DUPLICATE_NAME

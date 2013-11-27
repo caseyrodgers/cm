@@ -848,6 +848,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             ps.setInt(6, sm.getAdminUid());
             ps.setInt(7, sm.getAdminUid());
             ps.setString(8, sm.getPasscode());
+            ps.setInt(9, sm.getAdminUid());
+            ps.setString(10, sm.getPasscode());
 
             rs = ps.executeQuery();
             return (rs.next());
