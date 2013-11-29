@@ -2012,7 +2012,7 @@ var Whiteboard = function (cont, isStatic) {
 
                             if (selectedObj.isErased) {
                                 penDown = !true
-                                wb.removeSelectionMode();
+                                wb.removeSelectionMode(true);
                                 alert("Sorry! Erased objects cannot be moved!!")
                                 return
                             }
@@ -2137,9 +2137,6 @@ var Whiteboard = function (cont, isStatic) {
                         return
                     }
                     if (selectedObj) {
-
-
-
                         if (selectionDragged) {
 
                             removeBoundRect();
@@ -2205,7 +2202,7 @@ var Whiteboard = function (cont, isStatic) {
                         } else {
                             selectionRect = null;
                             multiSelection = false
-                            wb.removeSelectionMode();
+                            wb.removeSelectionMode(true);
                         }
                     }
                     penDown = false;
@@ -3896,15 +3893,17 @@ source: https://gist.github.com/754454
             removeBoundRect()
         }
     }
-    wb.removeSelectionMode = function () {
+    wb.removeSelectionMode = function (boo) {
         selectionMode = !true;
         selectedObjects = [];
         mSelRect = null;
         multiSelection = false
         removeBoundRect()
+		if(!boo){
         $get_Element("#button_move").style.border = '1px solid #000000';
         currentTool = 'pencil';
         buttonHighlite(currentTool)
+		}
     }
     wb.whiteboardDelete = function (n) {
 
@@ -4029,7 +4028,7 @@ source: https://gist.github.com/754454
             updateDataToSERVER(selectedObjIndex, mobj);
         }
 
-        wb.removeSelectionMode();
+        wb.removeSelectionMode(true);
         updateCanvas();
     }
     return wb;
