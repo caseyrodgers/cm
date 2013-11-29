@@ -3894,12 +3894,13 @@ source: https://gist.github.com/754454
         }
     }
     wb.removeSelectionMode = function (boo) {
-        selectionMode = !true;
+        
         selectedObjects = [];
         mSelRect = null;
         multiSelection = false
         removeBoundRect()
 		if(!boo){
+		selectionMode = !true;
         $get_Element("#button_move").style.border = '1px solid #000000';
         currentTool = 'pencil';
         buttonHighlite(currentTool)
