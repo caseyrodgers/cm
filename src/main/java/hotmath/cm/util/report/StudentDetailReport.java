@@ -78,17 +78,16 @@ public class StudentDetailReport {
 
 			document.add(Chunk.NEWLINE);
 
-			Table tbl = new Table(6);
+			Table tbl = new Table(5);
 			tbl.setWidth(100.0f);
 			tbl.setBorder(Table.BOTTOM);
 			tbl.setBorder(Table.TOP);
 
 			addHeader("Date", "10%", tbl);
-			addHeader("Program", "15%", tbl);
-			addHeader("Prog-Type", "15%", tbl);
+			addHeader("Program", "20%", tbl);
+			addHeader("Prog-Type", "20%", tbl);
 			addHeader("Activity-Section", "20%", tbl);
 			addHeader("Result", "30%", tbl);
-			addHeader("Time", "10%", tbl);
 
 			tbl.endHeaders();
 
@@ -99,7 +98,6 @@ public class StudentDetailReport {
 				addCell(sam.getProgramType(), tbl, i);
 				addCell(sam.getActivity(), tbl, i);
 				addCell(sam.getResult(), tbl, i);
-				addCell(String.valueOf(sam.getTimeOnTask()), tbl, i);
 			}
 
 			document.add(tbl);
