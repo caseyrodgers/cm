@@ -55,7 +55,7 @@ public class AssignmentListActivity implements AssignmentListView.Presenter {
         studentAssignmentInfo.setChanged(false);
         checkIfAnyChanges();
         
-        History.newItem("assignment:" + studentAssignmentInfo.getAssignKey() + ":" + System.currentTimeMillis());
+        History.newItem("assignment|" + studentAssignmentInfo.getAssignKey() + "|" + System.currentTimeMillis());
     }
     
     

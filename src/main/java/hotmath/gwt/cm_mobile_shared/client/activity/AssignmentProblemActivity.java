@@ -59,7 +59,7 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
 
     @Override
     public void gotoAssignment() {
-        History.newItem("assignment:" + __lastAssignKey + ":" + System.currentTimeMillis());
+        History.newItem("assignment|" + __lastAssignKey + "|" + System.currentTimeMillis());
     }
 
     @Override
