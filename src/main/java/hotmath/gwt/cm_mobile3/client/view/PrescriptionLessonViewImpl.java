@@ -87,15 +87,16 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
         
         for(PrescriptionSessionDataResource resource: lessonData.getInmhResources()) {
             
-            if(resource.getType().equals("activity"))
+            if(resource.getType() == CmResourceType.ACTIVITY)
                 continue;
+
             
-            if(resource.getItems().size() == 0) {
+            if(resource.getType() == CmResourceType.CMEXTRA) {
                 continue;
             }
-            
-            if(resource.getType().equals("cmextra")) {
-            	continue;
+
+            if(resource.getItems().size() == 0) {
+                continue;
             }
             
             ListItem li = new ListItem();
@@ -103,7 +104,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
             li.add(new HTMLPanel("<b>" + resource.getLabel() + "</b><span> -- " + resource.getDescription() + "</span>"));
             listItems.add(li);
             
-            boolean isRpp = resource.getType().equals(CmResourceType.PRACTICE)?true:false;
+            boolean isRpp = resource.getType() == CmResourceType.PRACTICE?true:false;
             
             int cnt=0;
             for(InmhItemData itemData: resource.getItems()) {
