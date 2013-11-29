@@ -112,6 +112,7 @@ public class ResourceViewerFactory {
             break;
             
         case WEBLINK:
+        case WEBLINK_EXTERNAL:   
             rp = new ResourceViewerImplWebLink();
             break;
             

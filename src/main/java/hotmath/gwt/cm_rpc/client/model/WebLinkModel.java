@@ -23,13 +23,24 @@ public class WebLinkModel implements Response {
     private List<GroupInfoModel> linkGroups = new ArrayList<GroupInfoModel>();
     private int linkId;
     private AvailableOn availableWhen;
+
+
     
     
     public enum AvailableOn {DESKTOP_AND_MOBILE, DESKTOP_ONLY, MOBILE_ONLY};
-
+    
+    /** How should the link be opened, either internal cm resource
+     *  or external web window.
+     *  
+     * @author casey
+     *
+     */
+    public enum LinkViewer{INTERNAL, EXTERNAL_WINDOW};
+    private LinkViewer linkViewer=LinkViewer.INTERNAL;
+    
     public WebLinkModel() {}
     
-    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available, boolean publicLink, WebLinkType linkType, SubjectType subjectType) {
+    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available, boolean publicLink, WebLinkType linkType, SubjectType subjectType, LinkViewer linkViewer) {
         this.linkId = linkId;
         this.adminId = adminId;
         this.name = name;
@@ -39,6 +50,15 @@ public class WebLinkModel implements Response {
         this.publicLink = publicLink;
         this.linkType = linkType;
         this.subjectType = subjectType;
+        this.linkViewer = linkViewer;
+    }
+
+    public LinkViewer getLinkViewer() {
+        return linkViewer;
+    }
+
+    public void setLinkViewer(LinkViewer linkViewer) {
+        this.linkViewer = linkViewer;
     }
 
     /** Get the subject type for this link. Default to Essentials
@@ -152,7 +172,7 @@ public class WebLinkModel implements Response {
     @Override
     public String toString() {
         return "WebLinkModel [url=" + url + ", name=" + name + ", adminId=" + adminId + ", comments=" + comments + ", publicLink=" + publicLink + ", linkType="
-                + linkType + ", linkTargets=" + linkTargets + ", linkGroups=" + linkGroups + ", linkId=" + linkId + ", availableWhen=" + availableWhen + "]";
+                + linkType + ", subjectType=" + subjectType + ", linkTargets=" + linkTargets + ", linkGroups=" + linkGroups + ", linkId=" + linkId
+                + ", availableWhen=" + availableWhen + ", linkViewer=" + linkViewer + "]";
     }
-    
 }

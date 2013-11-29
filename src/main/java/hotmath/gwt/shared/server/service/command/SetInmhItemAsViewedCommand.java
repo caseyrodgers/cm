@@ -38,7 +38,7 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
              * 
              */
             boolean shouldAdd=true;
-            if(action.getType().equals(CmResourceType.PRACTICE)) {
+            if(action.getType() == CmResourceType.PRACTICE) {
                 PreparedStatement stCheck=null;
                 try {
                 	String sql = CmMultiLinePropertyReader.getInstance().getProperty("COUNT_PRACTICE_INMH_USE");

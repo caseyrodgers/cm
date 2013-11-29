@@ -9,6 +9,7 @@ import hotmath.cm.dao.WebLinkDao;
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
+import hotmath.gwt.cm_rpc.client.model.WebLinkModel.LinkViewer;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
@@ -249,7 +250,11 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             customResource.setType(CmResourceType.WEBLINK);
             customResource.setLabel("External Web Links");
             for(WebLinkModel wl: webLinks) {
-                customResource.getItems().add(new InmhItemData(customResource.getType(),wl.getUrl(), wl.getName()) );
+                InmhItemData wlItem = new InmhItemData(customResource.getType(),wl.getUrl(), wl.getName());
+                if(wl.getLinkViewer() == LinkViewer.EXTERNAL_WINDOW) {
+                    wlItem.setType(CmResourceType.WEBLINK_EXTERNAL);
+                }
+                customResource.getItems().add(wlItem);
             }
             sessionData.getInmhResources().add(customResource);            
         }

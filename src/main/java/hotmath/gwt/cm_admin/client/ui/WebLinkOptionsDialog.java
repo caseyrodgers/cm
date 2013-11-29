@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_rpc.client.model.AvailableDevice;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
+import hotmath.gwt.cm_rpc.client.model.WebLinkModel.LinkViewer;
 import hotmath.gwt.cm_rpc.client.model.WebLinkType;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 
@@ -18,12 +19,14 @@ import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
 public class WebLinkOptionsDialog extends GWindow {
 
     private ComboBox<AvailableDevice> _availableDevice;
     private ComboBox<WebLinkTypeLocal> _linkType;
+    private CheckBox _openInExternalWindow;
     private WebLinkModel webLink;
     public WebLinkOptionsDialog(WebLinkModel webLink) {
         super(false);
@@ -54,6 +57,7 @@ public class WebLinkOptionsDialog extends GWindow {
         // apply changes to passed in webLink
         webLink.setAvailableWhen(_availableDevice.getValue().getAvailWhen());
         webLink.setLinkType(_linkType.getCurrentValue().getType());
+        webLink.setLinkViewer(_openInExternalWindow.getValue()?LinkViewer.EXTERNAL_WINDOW:LinkViewer.INTERNAL);
         hide();
     }
 
@@ -63,19 +67,7 @@ public class WebLinkOptionsDialog extends GWindow {
         ModelKeyProvider<ShareLink> key();
         LabelProvider<ShareLink> share();
     }
-    
-    private ComboBox<ShareLink> createShareLinkCombo() {
-        ShareLinkProps shareLinkProps = GWT.create(ShareLinkProps.class);
-        ListStore<ShareLink> store = new ListStore<ShareLink>(shareLinkProps.key());
-        store.add(new ShareLink("Our school only"));
-        store.add(new ShareLink("All Catchup Math schools"));
-        ComboBox<ShareLink> cb = new ComboBox<ShareLink>(store, shareLinkProps.share());
-        cb.setAllowBlank(false);
-        cb.setForceSelection(true);
-        cb.setTriggerAction(TriggerAction.ALL);
-        cb.setToolTip("Should this link be shared with other schools?");
-        return cb;
-    }
+
 
     private void drawGui() {
         FramedPanel frame = new FramedPanel();
@@ -94,6 +86,12 @@ public class WebLinkOptionsDialog extends GWindow {
         _linkType.setValue(_linkType.getStore().get(which));
         flow.add(new MyFieldLabel(_linkType, "Type",90,160));
         
+        _openInExternalWindow = new CheckBox();
+        _openInExternalWindow.setToolTip("Should this link be opened in an external browser window");
+        if(webLink.getLinkViewer() == LinkViewer.EXTERNAL_WINDOW) {
+            _openInExternalWindow.setValue(true);
+        }
+        flow.add(new MyFieldLabel(_openInExternalWindow, "New Window", 90, 10));
         frame.setWidget(flow);
         setWidget(frame);
     }

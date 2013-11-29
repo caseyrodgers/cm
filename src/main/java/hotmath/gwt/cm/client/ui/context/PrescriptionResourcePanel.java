@@ -53,7 +53,6 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
         clear();
         
         //setScrollMode(ScrollMode.NONE);
-        VerticalLayoutContainer  vertPanelResources = new VerticalLayoutContainer();
         addStyleName("prescription-cm-gui-definition-resource-panel");
 
         boolean isCustomProgram = UserInfo.getInstance().isCustomProgram();
