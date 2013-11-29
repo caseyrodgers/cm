@@ -2338,8 +2338,18 @@ var Whiteboard = function (cont, isStatic) {
                     }
                     var dx = x - clickX;
                     var dy = y - clickY;
+					var bool = isMultitouch_gesture(_event);
                     if (selectionMode && multiSelection && selectedObjects.length) {
-                        renderMultiSelectionTrans()
+                        renderMultiSelectionTrans();
+						
+                if (bool) {
+                    return true
+                }
+                if (event.preventDefault) {
+                    event.preventDefault()
+                } else {
+                    event.returnValue = false
+                };
                     } else if (selectionMode) {
 
                         if (selectedObj && selectionDragMode) {
@@ -2399,6 +2409,15 @@ var Whiteboard = function (cont, isStatic) {
                                 brect: selectionRect
                             });
                         }
+						bool = isMultitouch_gesture(_event);
+                if (bool) {
+                    return true
+                }
+                if (event.preventDefault) {
+                    event.preventDefault()
+                } else {
+                    event.returnValue = false
+                };
 
                     } else if (currentTool == 'rect' || currentTool == 'oval') {
 
