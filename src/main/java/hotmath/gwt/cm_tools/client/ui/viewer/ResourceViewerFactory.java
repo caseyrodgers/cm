@@ -80,6 +80,7 @@ public class ResourceViewerFactory {
             break;
 
         case ACTIVITY:
+        case ACTIVITY_STANDARD:
             rp = new ResourceViewerImplActivity();
             break;
 
