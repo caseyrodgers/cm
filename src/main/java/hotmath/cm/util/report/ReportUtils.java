@@ -52,6 +52,13 @@ public class ReportUtils {
         return phrase;
     }
     
+    public static Phrase buildPhraseLabel(String label, Phrase content) {
+        Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD,
+                new Color(0, 0, 0))));
+        phrase.add(content);
+        return phrase;
+    }
+
     public static Paragraph buildParagraphLabel(String label, String value) {
         return buildParagraphLabel(label, value, true);
     }
@@ -111,7 +118,7 @@ public class ReportUtils {
 
 		/*
 		 * School: Casey Test School Group: a_test_group
-Date range: 2009-02-01 to 2013-07-13 Date: 2013-07-12
+         * Date range: 2009-02-01 to 2013-07-13 Date: 2013-07-12
 		 */
         Phrase school = buildPhraseLabel("School: ", nz(info.getSchoolName()));
         Phrase admin = buildPhraseLabel("Administrator: ", nz(info.getSchoolUserName()));
@@ -137,41 +144,71 @@ Date range: 2009-02-01 to 2013-07-13 Date: 2013-07-12
         return header;
     }
 
-    public static HeaderFooter getBriefGroupReportHeader(AccountInfoModel info, String groupName, String filterDescription, String title)
-            throws Exception {
-            Paragraph heading = new Paragraph();
+	public static HeaderFooter getBriefGroupReportHeader(AccountInfoModel info,
+			String groupName, String filterDescription, String title)
+			throws Exception {
 
-    		Image cmLogo = ReportUtils.getCatchupMathLogo();
-    		Paragraph titleP = ReportUtils.buildTitle((title != null) ? title : " ");
+		Paragraph heading = getBriefGroupReportHeading(info, groupName, filterDescription, title);
 
-    		heading.add(cmLogo);
-            heading.add(Chunk.NEWLINE);
-    		heading.add(titleP);
+		HeaderFooter header = new HeaderFooter(heading, false);
+		header.setBorder(Rectangle.NO_BORDER);
 
-            if (groupName != null) {
-            	Phrase group = buildPhraseLabel("Group: ", groupName);
-        		heading.add(group);
-                heading.add(Chunk.NEWLINE);
-            }
-            Phrase school = buildPhraseLabel("School: ", nz(info.getSchoolName()));
-    		heading.add(school);
-            heading.add(Chunk.NEWLINE);
-            if (filterDescription != null && filterDescription.length() > 0) {
-                Phrase filterDescr = buildPhraseLabel("Filter: ", filterDescription);
-                heading.add(filterDescr);
-                heading.add(Chunk.NEWLINE);
-            }
-    		String printDate = String.format("%1$tY-%1$tm-%1$td", Calendar.getInstance());
-    		Phrase date = buildPhraseLabel("Date: ", printDate);
-    		heading.add(date);
-            heading.add(Chunk.NEWLINE);
+		return header;
+	}
 
+	public static HeaderFooter getAssignmentReportHeader(AccountInfoModel info,
+			String groupName, String filterDescription, String title, Color inProgress, Color readyToGrade)
+			throws Exception {
 
-            HeaderFooter header = new HeaderFooter(heading, false);
-            header.setBorder(Rectangle.NO_BORDER);
+		Paragraph heading = getBriefGroupReportHeading(info, groupName, filterDescription, title);
+		
+		Phrase phrase = new Phrase(new Chunk("  In progress  ", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, inProgress)));
+		phrase.add(new Chunk("  Ready to grade", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, readyToGrade)));
+		Phrase legend = buildPhraseLabel("Legend: ", phrase);
+		heading.add(legend);
 
-            return header;
-        }
+		heading.add(Chunk.NEWLINE);
+
+		HeaderFooter header = new HeaderFooter(heading, false);
+		header.setBorder(Rectangle.NO_BORDER);
+
+		return header;
+	}
+
+	private static Paragraph getBriefGroupReportHeading(AccountInfoModel info,
+			String groupName, String filterDescription, String title)
+			throws Exception {
+		Paragraph heading = new Paragraph();
+
+		Image cmLogo = ReportUtils.getCatchupMathLogo();
+		Paragraph titleP = ReportUtils
+				.buildTitle((title != null) ? title : " ");
+
+		heading.add(cmLogo);
+		heading.add(Chunk.NEWLINE);
+		heading.add(titleP);
+
+		if (groupName != null) {
+			Phrase group = buildPhraseLabel("Group: ", groupName);
+			heading.add(group);
+			heading.add(Chunk.NEWLINE);
+		}
+		Phrase school = buildPhraseLabel("School: ", nz(info.getSchoolName()));
+		heading.add(school);
+		heading.add(Chunk.NEWLINE);
+		if (filterDescription != null && filterDescription.length() > 0) {
+			Phrase filterDescr = buildPhraseLabel("Filter: ", filterDescription);
+			heading.add(filterDescr);
+			heading.add(Chunk.NEWLINE);
+		}
+		String printDate = String.format("%1$tY-%1$tm-%1$td",
+				Calendar.getInstance());
+		Phrase date = buildPhraseLabel("Date: ", printDate);
+		heading.add(date);
+		heading.add(Chunk.NEWLINE);
+
+		return heading;
+	}
 
     public static HeaderFooter getBasicReportHeader(AccountInfoModel info, String label) {
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

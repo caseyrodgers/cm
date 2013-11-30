@@ -133,7 +133,7 @@ public class GroupGradebookReport {
 			sb.append("CM-GroupGradebookReport");
 
 			title = String.format("Group Gradebook Report for %s", groupName);
-			HeaderFooter header = ReportUtils.getBriefGroupReportHeader(info, null, dateRange, title);
+			HeaderFooter header = ReportUtils.getAssignmentReportHeader(info, null, dateRange, title, RED, BLUE);
 			HeaderFooter footer = ReportUtils.getFooter();
 			document.setHeader(header);
 			document.setFooter(footer);
