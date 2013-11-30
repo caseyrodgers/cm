@@ -37,6 +37,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -665,7 +666,12 @@ public class WebLinksManager extends GWindow {
             return;
         }
 
-        new WebLinkPreviewPanel(webLink);
+        if(CmShared.getQueryParameter("debug") != null) {
+            new WebLinkPreviewPanel(webLink);
+        }
+        else {
+            Window.open(webLink.getUrl(),"CmWebLink","location=yes,status=yes,resizable=yes,scrollbars=yes");
+        }
     }
 
     private Widget createDelButton() {

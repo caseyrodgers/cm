@@ -46,7 +46,9 @@ public class WebLinkPreviewPanel extends GWindow {
             @Override
             public void onSelect(SelectEvent event) {
                 Window.open(webLink.getUrl(),  "CmWebLink",  null);
-                new WebLinkPreviewPanelOptionDialog(webLink);
+                if(!webLink.isPublicLink()) {
+                    new WebLinkPreviewPanelOptionDialog(webLink);
+                }
                 hide();
             }
         }));

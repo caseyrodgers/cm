@@ -100,7 +100,13 @@ public class WebLinkEditorDialog extends GWindow {
         hpanel.add(new TextButton("Visit", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                Window.open(urlField.getValue(),"WebLink","");
+                
+                if(CmShared.getQueryParameter("debug") != null) {
+                    new WebLinkPreviewPanel(webLinkModel);
+                }
+                else {
+                    Window.open(webLinkModel.getUrl(),"CmWebLink","location=yes,status=yes,resizable=yes,scrollbars=yes");
+                }
             }
         }));
         flow.add(hpanel);
