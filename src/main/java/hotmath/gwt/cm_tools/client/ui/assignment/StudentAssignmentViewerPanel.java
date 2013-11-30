@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
@@ -243,12 +244,14 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         header.setSouthWidget(buttonBar, bData);
         
         ContentPanel cpHeader = new ContentPanel();
-        cpHeader.addTool(new TextButton("Print", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                printAssignment();
-            }
-        }));
+        if(CmShared.getQueryParameter("debug") != null) {
+            cpHeader.addTool(new TextButton("Print", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    printAssignment();
+                }
+            }));
+        }
         cpHeader.setWidget(header);
         
         return cpHeader;

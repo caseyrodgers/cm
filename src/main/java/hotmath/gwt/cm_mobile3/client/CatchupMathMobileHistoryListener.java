@@ -46,7 +46,6 @@ import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -235,15 +234,13 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 view.setPresenter(activity);
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
             }
-            else if(resourceType == CmResourceType.WEBLINK) {
+            else if(resourceType == CmResourceType.WEBLINK || resourceType == CmResourceType.WEBLINK_EXTERNAL) {
                 PrescriptionLessonResourceWebLinkActivity activity = new PrescriptionLessonResourceWebLinkActivity(eb, itemData);
                 PrescriptionLessonResourceWebLinkView view = cf.getPrescriptionLessonResourceWebLinkView();
                 view.setPresenter(activity);
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
             }
-            else if(resourceType == CmResourceType.WEBLINK_EXTERNAL) {
-                CmMessageBox.showAlert("EXTERNAL WEB LINK: " + itemData);
-            } else {
+            else {
                 PrescriptionLessonResourceActivity activity = new PrescriptionLessonResourceActivity(eb, itemData);
                 PrescriptionLessonResourceView view = cf.getPrescriptionLessonResourceView();
                 view.setPresenter(activity);
