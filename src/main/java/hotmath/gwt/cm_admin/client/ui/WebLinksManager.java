@@ -37,7 +37,6 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -639,7 +638,7 @@ public class WebLinksManager extends GWindow {
         TextButton button = new TextButton("Visit", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                openCurrent();
+                visitCurrentLink();
             }
         });
         button.setToolTip("Open selected web link in a new browser window");
@@ -660,12 +659,13 @@ public class WebLinksManager extends GWindow {
         });
     }
 
-    protected void openCurrent() {
+    protected void visitCurrentLink() {
         final WebLinkModel webLink = getSelectedWebLink(true);
         if (webLink == null) {
             return;
         }
-        Window.open(webLink.getUrl(), "WebLink", "");
+
+        new WebLinkPreviewPanel(webLink);
     }
 
     private Widget createDelButton() {
@@ -683,7 +683,7 @@ public class WebLinksManager extends GWindow {
         TextButton button = new TextButton("Add", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, false, null, null, LinkViewer.INTERNAL);
+                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, false, null, null, LinkViewer.INTERNAL, false);
                 new WebLinkEditorDialog(EditType.NEW_OR_EDIT, adminId, webLinkModel, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {

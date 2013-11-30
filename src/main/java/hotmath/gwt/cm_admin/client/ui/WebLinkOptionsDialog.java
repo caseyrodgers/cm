@@ -27,10 +27,11 @@ public class WebLinkOptionsDialog extends GWindow {
     private ComboBox<AvailableDevice> _availableDevice;
     private ComboBox<WebLinkTypeLocal> _linkType;
     private CheckBox _openInExternalWindow;
+    private CheckBox _offline;
     private WebLinkModel webLink;
     public WebLinkOptionsDialog(WebLinkModel webLink) {
         super(false);
-        setPixelSize(302, 176);
+        setPixelSize(302, 220);
         this.webLink = webLink;
         setHeadingText("Web Link Options");
         drawGui();
@@ -58,6 +59,7 @@ public class WebLinkOptionsDialog extends GWindow {
         webLink.setAvailableWhen(_availableDevice.getValue().getAvailWhen());
         webLink.setLinkType(_linkType.getCurrentValue().getType());
         webLink.setLinkViewer(_openInExternalWindow.getValue()?LinkViewer.EXTERNAL_WINDOW:LinkViewer.INTERNAL);
+        webLink.setOffline(_offline.getValue());
         hide();
     }
 
@@ -92,6 +94,12 @@ public class WebLinkOptionsDialog extends GWindow {
             _openInExternalWindow.setValue(true);
         }
         flow.add(new MyFieldLabel(_openInExternalWindow, "New Window", 90, 10));
+        
+        _offline = new CheckBox();
+        _offline.setValue(webLink.isOffline());
+        _offline.setToolTip("If checked this web link will not be shown to students");
+        flow.add(new MyFieldLabel(_offline, "Offline", 90, 10));
+        
         frame.setWidget(flow);
         setWidget(frame);
     }

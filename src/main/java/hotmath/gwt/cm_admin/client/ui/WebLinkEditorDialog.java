@@ -229,6 +229,8 @@ public class WebLinkEditorDialog extends GWindow {
 
         webLinkModel.getLinkGroups().clear();
         webLinkModel.getLinkGroups().addAll(_gridGroups._grid4Groups.getStore().getAll());
+        
+        
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
@@ -364,7 +366,7 @@ public class WebLinkEditorDialog extends GWindow {
     }
 
     public static void startTest() {
-        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org", "The Comment", AvailableOn.DESKTOP_AND_MOBILE, false,null,null, LinkViewer.INTERNAL);
+        WebLinkModel model = new WebLinkModel(1, 2, "New Link", "http://math.org", "The Comment", AvailableOn.DESKTOP_AND_MOBILE, false,null,null, LinkViewer.INTERNAL, false);
         new WebLinkEditorDialog(EditType.NEW_OR_EDIT, 2, model, new CallbackOnComplete() {
             @Override
             public void isComplete() {

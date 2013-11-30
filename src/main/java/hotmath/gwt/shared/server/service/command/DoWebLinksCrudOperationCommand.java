@@ -51,6 +51,8 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
                 if(action.getWebLink().getLinkId() > 0) {
                     // WebLinkModel webLinkModel = WebLinkDao.getInstance().getWebLink(action.getWebLink().getLinkId());
                     WebLinkDao.getInstance().deleteWebLink(action.getWebLink());
+                    
+                    sendSuggestEmail=false;
                 }
                 
                 WebLinkDao.getInstance().addWebLink(action.getWebLink());

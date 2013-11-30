@@ -16,6 +16,7 @@ public class WebLinkModel implements Response {
     private String comments;
     private boolean publicLink;
     private WebLinkType linkType;
+    boolean offline;
     SubjectType subjectType;
     
 
@@ -40,7 +41,7 @@ public class WebLinkModel implements Response {
     
     public WebLinkModel() {}
     
-    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available, boolean publicLink, WebLinkType linkType, SubjectType subjectType, LinkViewer linkViewer) {
+    public WebLinkModel(int linkId, int adminId, String name, String url, String comments, AvailableOn available, boolean publicLink, WebLinkType linkType, SubjectType subjectType, LinkViewer linkViewer, boolean offline) {
         this.linkId = linkId;
         this.adminId = adminId;
         this.name = name;
@@ -51,6 +52,16 @@ public class WebLinkModel implements Response {
         this.linkType = linkType;
         this.subjectType = subjectType;
         this.linkViewer = linkViewer;
+        this.offline = offline;
+    }
+
+    
+    public boolean isOffline() {
+        return offline;
+    }
+
+    public void setOffline(boolean offline) {
+        this.offline = offline;
     }
 
     public LinkViewer getLinkViewer() {
@@ -172,7 +183,8 @@ public class WebLinkModel implements Response {
     @Override
     public String toString() {
         return "WebLinkModel [url=" + url + ", name=" + name + ", adminId=" + adminId + ", comments=" + comments + ", publicLink=" + publicLink + ", linkType="
-                + linkType + ", subjectType=" + subjectType + ", linkTargets=" + linkTargets + ", linkGroups=" + linkGroups + ", linkId=" + linkId
-                + ", availableWhen=" + availableWhen + ", linkViewer=" + linkViewer + "]";
+                + linkType + ", offline=" + offline + ", subjectType=" + subjectType + ", linkTargets=" + linkTargets + ", linkGroups=" + linkGroups
+                + ", linkId=" + linkId + ", availableWhen=" + availableWhen + ", linkViewer=" + linkViewer + "]";
     }
+
 }

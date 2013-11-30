@@ -70,7 +70,10 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                     } else if (!isMobile && device != AvailableOn.DESKTOP_ONLY) {
                         continue; // skip it
                     }
-                activeLinks.add(l);
+                
+                if(!l.isOffline()) {
+                    activeLinks.add(l);
+                }
             }
         }
         return activeLinks;
@@ -154,7 +157,9 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
     public Collection<? extends WebLinkModel> getAllWebLinksDefinedForAdmin(int adminId, boolean readGroupsAndLessons) {
         String sql = "select * from CM_WEBLINK where admin_id = ? and is_public = 0 order by name";
         if (adminId == 0) {
-            sql = "select * from CM_WEBLINK where is_public = 1 or (admin_id = ?) order by name";   // admin_id is placeholder
+            sql = "select * from CM_WEBLINK where is_public = 1 or (admin_id = ?) order by name"; // admin_id
+                                                                                                  // is
+                                                                                                  // placeholder
         }
         List<WebLinkModel> links = getJdbcTemplate().query(sql, new Object[] { adminId }, new RowMapper<WebLinkModel>() {
             @Override
@@ -165,8 +170,8 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
 
         if (readGroupsAndLessons) {
             for (final WebLinkModel wl : links) {
-                sql = "select wg.*, g.admin_id, g.name as group_name " + "from    CM_WEBLINK_GROUPS wg " + "JOIN CM_GROUP g on g.id = wg.group_id " + "where link_id = ? "
-                        + " order by group_name ";
+                sql = "select wg.*, g.admin_id, g.name as group_name " + "from    CM_WEBLINK_GROUPS wg " + "JOIN CM_GROUP g on g.id = wg.group_id "
+                        + "where link_id = ? " + " order by group_name ";
 
                 List<GroupInfoModel> groups = getJdbcTemplate().query(sql, new Object[] { wl.getLinkId() }, new RowMapper<GroupInfoModel>() {
                     @Override
@@ -186,8 +191,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                 });
                 wl.getLinkTargets().clear();
                 wl.getLinkTargets().addAll(lessons);
-                
-                
+
                 wl.setSubjectType(lookupLinkSubject(wl));
 
             }
@@ -195,7 +199,6 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         return links;
     }
 
-    
     protected GroupInfoModel extractWebLinkGroup(ResultSet rs) throws SQLException {
         return new GroupInfoModel(rs.getInt("admin_id"), rs.getInt("group_id"), rs.getString("group_name"), 0, true, false);
     }
@@ -203,46 +206,47 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
     protected WebLinkModel extractWebLinkModel(ResultSet rs) throws SQLException {
         int available = rs.getInt("platform");
         AvailableOn availableOn = AvailableOn.values()[available];
-        boolean publicLink = rs.getInt("is_public")!=0?true:false;
-        WebLinkType linkType =  WebLinkType.values()[rs.getInt("link_type")];
+        boolean publicLink = rs.getInt("is_public") != 0 ? true : false;
+        WebLinkType linkType = WebLinkType.values()[rs.getInt("link_type")];
         LinkViewer linkViewer = LinkViewer.values()[rs.getInt("link_viewer")];
-        WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"), rs.getString("comments"), availableOn,publicLink,linkType,null,linkViewer);
+
+        boolean isOffline = rs.getInt("offline") != 0 ? true : false;
+        WebLinkModel wlm = new WebLinkModel(rs.getInt("id"), rs.getInt("admin_id"), rs.getString("name"), rs.getString("url"), rs.getString("comments"),
+                availableOn, publicLink, linkType, null, linkViewer, isOffline);
         return wlm;
     }
 
-    /** Find the subject associated with this link.
+    /**
+     * Find the subject associated with this link.
      * 
-     * If multiple links then return the one with the
-     * lowest grade level.
+     * If multiple links then return the one with the lowest grade level.
      * 
      * @param wlm
      * @return
      */
     private SubjectType lookupLinkSubject(WebLinkModel wlm) {
-        SubjectType type=null;
-        for(LessonModel lesson: wlm.getLinkTargets()) {
+        SubjectType type = null;
+        for (LessonModel lesson : wlm.getLinkTargets()) {
             SubjectType t = SubjectType.lookup(lesson.getSubject());
-            if(type == null || t.getLevel() < type.getLevel() ) {
+            if (type == null || t.getLevel() < type.getLevel()) {
                 type = t;
             }
         }
         return type;
     }
 
-    
     public int importWebLink(int adminId, WebLinkModel webLink) throws Exception {
 
-        /** if (adminId == webLink.getAdminId()) {
-            throw new CmException("This weblink is already in your private links");
-        }
-        */
+        /**
+         * if (adminId == webLink.getAdminId()) { throw new
+         * CmException("This weblink is already in your private links"); }
+         */
         webLink.setLinkId(0); // make sure it is new
         webLink.setAdminId(adminId);
         webLink.getLinkGroups().clear();
-        
+
         return addWebLink(webLink);
     }
-    
 
     public void deleteWebLink(final WebLinkModel link) throws Exception {
         getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -253,31 +257,31 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                 ps.setInt(1, link.getAdminId());
                 return ps;
             }
-        });            
+        });
 
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
                 String sql = "delete from CM_WEBLINK_GROUPS where link_id = ?";
                 PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setInt(1,  link.getLinkId());
+                ps.setInt(1, link.getLinkId());
                 return ps;
             }
-        });            
+        });
 
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
                 String sql = "delete from CM_WEBLINK where id = ?";
                 PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setInt(1,  link.getLinkId());
+                ps.setInt(1, link.getLinkId());
                 return ps;
             }
         });
     }
-    
 
-    /** Add new weblink and return new link_id
+    /**
+     * Add new weblink and return new link_id
      * 
      * @param link
      * @return
@@ -286,12 +290,12 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
     public int addWebLink(final WebLinkModel link) throws Exception {
 
         validateWebLink(link.getUrl());
-        
+
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
-                String sql = "insert into CM_WEBLINK(admin_id, name, url, comments, platform, is_public, link_type, link_viewer, date_created)values(?,?,?,?,?,?,?,?,now())";
+                String sql = "insert into CM_WEBLINK(admin_id, name, url, comments, platform, is_public, link_type, link_viewer, offline, date_created)values(?,?,?,?,?,?,?,?,?,now())";
                 PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                 ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, link.getAdminId());
@@ -299,12 +303,14 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                 ps.setString(3, link.getUrl());
                 ps.setString(4, link.getComments());
                 ps.setInt(5, link.getAvailableWhen().ordinal());
-                ps.setInt(6, link.isPublicLink()?1:0);
-                
-                int typeOrdinal = link.getLinkType() != null?link.getLinkType().ordinal():0;
+                ps.setInt(6, link.isPublicLink() ? 1 : 0);
+
+                int typeOrdinal = link.getLinkType() != null ? link.getLinkType().ordinal() : 0;
                 ps.setInt(7, typeOrdinal);
-                
+
                 ps.setInt(8, link.getLinkViewer().ordinal());
+
+                ps.setInt(9, link.isOffline() ? 1 : 0);
 
                 return ps;
             }
@@ -350,26 +356,24 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                 }
             });
         }
-        
+
         return webLinkId;
     }
-    
-    
 
     private void validateWebLink(String urlString) throws Exception {
         try {
-            URL u = new URL(urlString); 
-            HttpURLConnection huc =  (HttpURLConnection)  u.openConnection(); 
-            huc.setRequestMethod("GET"); 
-            huc.connect(); 
+            URL u = new URL(urlString);
+            HttpURLConnection huc = (HttpURLConnection) u.openConnection();
+            huc.setRequestMethod("GET");
+            huc.connect();
             int rc = huc.getResponseCode();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             throw new CmException("Link URL does not exist: " + urlString);
         }
     }
 
-    /** Looks up the weblink and returns it or returns null if not found
+    /**
+     * Looks up the weblink and returns it or returns null if not found
      * 
      * @param linkId
      * @return
@@ -382,11 +386,10 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                 return extractWebLinkModel(rs);
             }
         });
-        if(links.size() > 0) {
-            assert(links.size() < 2);
+        if (links.size() > 0) {
+            assert (links.size() < 2);
             return links.get(0);
-        }
-        else {
+        } else {
             return null;
         }
     }
