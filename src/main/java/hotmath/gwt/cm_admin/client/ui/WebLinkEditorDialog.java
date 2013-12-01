@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -100,13 +101,7 @@ public class WebLinkEditorDialog extends GWindow {
         hpanel.add(new TextButton("Visit", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                
-                if(CmShared.getQueryParameter("debug") != null) {
-                    new WebLinkPreviewPanel(webLinkModel);
-                }
-                else {
-                    Window.open(webLinkModel.getUrl(),"CmWebLink","location=yes,status=yes,resizable=yes,scrollbars=yes");
-                }
+                WebLinksManager.previewLink(webLinkModel);
             }
         }));
         flow.add(hpanel);
@@ -215,6 +210,18 @@ public class WebLinkEditorDialog extends GWindow {
     }
 
     protected void saveWebLink() {
+        String message = "Be sure to Visit the Link before Saving";
+        CmMessageBox.confirm("Save Web Link?", message, new ConfirmCallback() {
+            @Override
+            public void confirmed(boolean yesNo) {
+                if(yesNo) {
+                    doSaveWebLink();
+                }
+            }
+        });
+    }
+    
+    protected void doSaveWebLink() {
         try {
             validateForm();
         } catch (Exception e) {

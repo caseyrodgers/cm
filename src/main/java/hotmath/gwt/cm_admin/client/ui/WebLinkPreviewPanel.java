@@ -41,7 +41,7 @@ public class WebLinkPreviewPanel extends GWindow {
         
         
         header.getElement().setAttribute("style",  "font-weight: bold;margin: 15px");
-        header.add(new HTML("<div style='margin-bottom: 15px'>Does the page look correct? If not, click below</a>"));
+        header.add(new HTML("<div style='margin-bottom: 15px'>Does the page look correct? If not, click below.</a>"));
         header.add(new TextButton("Alternate Display Method", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {

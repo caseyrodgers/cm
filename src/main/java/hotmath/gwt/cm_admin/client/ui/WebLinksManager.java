@@ -665,13 +665,7 @@ public class WebLinksManager extends GWindow {
         if (webLink == null) {
             return;
         }
-
-        if(CmShared.getQueryParameter("debug") != null) {
-            new WebLinkPreviewPanel(webLink);
-        }
-        else {
-            Window.open(webLink.getUrl(),"CmWebLink","location=yes,status=yes,resizable=yes,scrollbars=yes");
-        }
+        previewLink(webLink);
     }
 
     private Widget createDelButton() {
@@ -767,5 +761,19 @@ public class WebLinksManager extends GWindow {
 
     public static void startTest() {
         new WebLinksManager(2);
+    }
+
+    public static void previewLink(WebLinkModel webLinkModel) {
+        if(CmShared.getQueryParameter("debug") != null) {
+            if(webLinkModel.getLinkViewer() == LinkViewer.EXTERNAL_WINDOW) {
+                Window.open(webLinkModel.getUrl(),"CmWebLink","location=yes,status=yes,resizable=yes,scrollbars=yes");
+            }
+            else {
+                new WebLinkPreviewPanel(webLinkModel);
+            }
+        }
+        else {
+            Window.open(webLinkModel.getUrl(),"CmWebLink","location=yes,status=yes,resizable=yes,scrollbars=yes");
+        }        
     }
 }

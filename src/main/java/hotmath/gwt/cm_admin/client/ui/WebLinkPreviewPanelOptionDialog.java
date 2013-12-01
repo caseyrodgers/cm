@@ -48,8 +48,8 @@ public class WebLinkPreviewPanelOptionDialog extends GWindow {
     OpenTypeProps props = GWT.create(OpenTypeProps.class);
     private void buildUi() {
         ListStore<OpenType> store = new ListStore<OpenType>(props.key());
-        store.add(new OpenType("Link looks best in a new browser window", LinkViewer.EXTERNAL_WINDOW));
-        store.add(new OpenType("Link still does not look correct.  Mark it offline.",null));
+        store.add(new OpenType("Yes, Use this method", LinkViewer.EXTERNAL_WINDOW));
+        store.add(new OpenType("No, I will edit the link",null));
         _combo = new ComboBox<OpenType>(store,props.type());
         _combo.setValue(store.get(0));
         _combo.setWidth(300);
@@ -76,7 +76,7 @@ public class WebLinkPreviewPanelOptionDialog extends GWindow {
             }
         }));
         
-        addButton(new TextButton("Cancel", new SelectHandler() {
+        addButton(new TextButton("Close", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 hide();
@@ -93,7 +93,7 @@ public class WebLinkPreviewPanelOptionDialog extends GWindow {
             webLink.setLinkViewer(linkViewer);
         }
         else {
-            webLink.setOffline(true);
+            webLink.setLinkViewer(LinkViewer.INTERNAL);
         }
         
         new RetryAction<RpcData>() {
