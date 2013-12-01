@@ -49,7 +49,7 @@ public class WebLinkPreviewPanelOptionDialog extends GWindow {
     private void buildUi() {
         ListStore<OpenType> store = new ListStore<OpenType>(props.key());
         store.add(new OpenType("Yes, Use this method", LinkViewer.EXTERNAL_WINDOW));
-        store.add(new OpenType("No, I will edit the link",null));
+        store.add(new OpenType("No, I will edit the link",LinkViewer.INTERNAL));
         _combo = new ComboBox<OpenType>(store,props.type());
         _combo.setValue(store.get(0));
         _combo.setWidth(300);
@@ -69,17 +69,10 @@ public class WebLinkPreviewPanelOptionDialog extends GWindow {
         
         
         
-        addButton(new TextButton("Save", new SelectHandler() {
+        addButton(new TextButton("OK", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 doSave();
-            }
-        }));
-        
-        addButton(new TextButton("Close", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                hide();
             }
         }));
     }
@@ -88,13 +81,7 @@ public class WebLinkPreviewPanelOptionDialog extends GWindow {
         OpenType openType = _combo.getCurrentValue();
         
         LinkViewer linkViewer = openType.getLinkViewer();
-        
-        if(linkViewer != null) {
-            webLink.setLinkViewer(linkViewer);
-        }
-        else {
-            webLink.setLinkViewer(LinkViewer.INTERNAL);
-        }
+        webLink.setLinkViewer(linkViewer);
         
         new RetryAction<RpcData>() {
             @Override

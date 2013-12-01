@@ -58,6 +58,7 @@ public class WebLinkEditorDialog extends GWindow {
     private WebLinkModel webLinkModel;
     private CallbackOnComplete callbackOnComplete;
     private ContentPanel _groupsPanel;
+    private boolean visited=false;
     
     
     private EditType editType;
@@ -101,7 +102,8 @@ public class WebLinkEditorDialog extends GWindow {
         hpanel.add(new TextButton("Visit", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                WebLinksManager.previewLink(webLinkModel);
+                visited=true;
+                WebLinksManager.previewLink(webLinkModel, true);
             }
         }));
         flow.add(hpanel);
@@ -210,7 +212,10 @@ public class WebLinkEditorDialog extends GWindow {
     }
 
     protected void saveWebLink() {
-        String message = "Be sure to Visit the Link before Saving";
+        String message = "<p>Save changes?</p>";
+        if(!visited) {
+            message += "<p style='font-weight: bold'>Be sure to Visit the Link before Saving</p>";
+        }
         CmMessageBox.confirm("Save Web Link?", message, new ConfirmCallback() {
             @Override
             public void confirmed(boolean yesNo) {

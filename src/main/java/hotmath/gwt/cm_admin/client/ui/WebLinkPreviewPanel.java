@@ -17,12 +17,14 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 public class WebLinkPreviewPanel extends GWindow {
     
     private WebLinkModel webLink;
+    private boolean showAlternative;
 
-    public WebLinkPreviewPanel(WebLinkModel webLink) {
+    public WebLinkPreviewPanel(WebLinkModel webLink, boolean showAlternative) {
         super(true);
         setPixelSize(800,  600);
         setResizable(true);
         this.webLink = webLink;
+        this.showAlternative=showAlternative;
         
         setModal(true);
         setMaximizable(true);
@@ -33,32 +35,36 @@ public class WebLinkPreviewPanel extends GWindow {
     }
     
     private void buildUi() {
-        final BorderLayoutContainer borderPanel = new BorderLayoutContainer();
-        FlowPanel header = new FlowPanel();
-        
-        FramedPanel framedPanel = new FramedPanel();
-        framedPanel.setHeaderVisible(false);
-        
-        
-        header.getElement().setAttribute("style",  "font-weight: bold;margin: 15px");
-        header.add(new HTML("<div style='margin-bottom: 15px'>Does the page look correct? If not, click below.</a>"));
-        header.add(new TextButton("Alternate Display Method", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                Window.open(webLink.getUrl(),  "CmWebLink",  null);
-                if(!webLink.isPublicLink()) {
-                    new WebLinkPreviewPanelOptionDialog(webLink);
-                }
-                hide();
-            }
-        }));
-        framedPanel.setWidget(header);
-        borderPanel.setNorthWidget(framedPanel, new BorderLayoutData(90));
-        
-        
         Frame frame = new Frame(webLink.getUrl());
-        borderPanel.setCenterWidget(frame);
-        setWidget(borderPanel);
+        if(showAlternative) {
+            final BorderLayoutContainer borderPanel = new BorderLayoutContainer();
+            FlowPanel header = new FlowPanel();
+            
+            FramedPanel framedPanel = new FramedPanel();
+            framedPanel.setHeaderVisible(false);
+            
+            
+            header.getElement().setAttribute("style",  "font-weight: bold;margin: 15px");
+            header.add(new HTML("<div style='margin-bottom: 15px'>Does the page look correct?</a>"));
+            header.add(new TextButton("Alternate Display Method", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    Window.open(webLink.getUrl(),  "CmWebLink",  null);
+                    if(!webLink.isPublicLink()) {
+                        new WebLinkPreviewPanelOptionDialog(webLink);
+                    }
+                    hide();
+                }
+            }));
+            framedPanel.setWidget(header);
+            borderPanel.setNorthWidget(framedPanel, new BorderLayoutData(90));
+            
+            borderPanel.setCenterWidget(frame);
+            setWidget(borderPanel);
+        }
+        else {
+            setWidget(frame);
+        }
     }
 
 }

@@ -665,7 +665,7 @@ public class WebLinksManager extends GWindow {
         if (webLink == null) {
             return;
         }
-        previewLink(webLink);
+        previewLink(webLink, false);
     }
 
     private Widget createDelButton() {
@@ -763,13 +763,13 @@ public class WebLinksManager extends GWindow {
         new WebLinksManager(2);
     }
 
-    public static void previewLink(WebLinkModel webLinkModel) {
+    public static void previewLink(WebLinkModel webLinkModel, boolean showAlternative) {
         if(CmShared.getQueryParameter("debug") != null) {
-            if(webLinkModel.getLinkViewer() == LinkViewer.EXTERNAL_WINDOW) {
+            if(!showAlternative && webLinkModel.getLinkViewer() == LinkViewer.EXTERNAL_WINDOW) {
                 Window.open(webLinkModel.getUrl(),"CmWebLink","location=yes,status=yes,resizable=yes,scrollbars=yes");
             }
             else {
-                new WebLinkPreviewPanel(webLinkModel);
+                new WebLinkPreviewPanel(webLinkModel, showAlternative);
             }
         }
         else {
