@@ -26,7 +26,7 @@ public class WebLinkPreviewPanel extends GWindow {
         
         setModal(true);
         setMaximizable(true);
-        setHeadingText("Web Link Preview Dialog");
+        setHeadingText("View Link Preview");
         buildUi();
         
         setVisible(true);
@@ -41,8 +41,8 @@ public class WebLinkPreviewPanel extends GWindow {
         
         
         header.getElement().setAttribute("style",  "font-weight: bold;margin: 15px");
-        header.add(new HTML("<div style='margin-bottom: 15px'>Does the page look correct?  If not you might have to show it in a new browser window.</a>"));
-        header.add(new TextButton("Open In New Window", new SelectHandler() {
+        header.add(new HTML("<div style='margin-bottom: 15px'>Does the page look correct? If not, click below</a>"));
+        header.add(new TextButton("Alternate Display Method", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 Window.open(webLink.getUrl(),  "CmWebLink",  null);
