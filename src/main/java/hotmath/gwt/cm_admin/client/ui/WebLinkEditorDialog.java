@@ -64,10 +64,10 @@ public class WebLinkEditorDialog extends GWindow {
     private EditType editType;
     private int adminId;
 
-    public WebLinkEditorDialog(EditType editType, int adminId, WebLinkModel webLinkModelIn, CallbackOnComplete callbackOnComplete) {
+    public WebLinkEditorDialog(EditType editTypeIn, int adminId, WebLinkModel webLinkModelIn, CallbackOnComplete callbackOnComplete) {
         super(false);
         this.adminId = adminId;
-        this.editType = editType;
+        this.editType = editTypeIn;
         this.callbackOnComplete = callbackOnComplete;
 
         this.webLinkModel = webLinkModelIn;
@@ -103,7 +103,8 @@ public class WebLinkEditorDialog extends GWindow {
             @Override
             public void onSelect(SelectEvent event) {
                 visited=true;
-                WebLinksManager.previewLink(webLinkModel, true);
+                boolean allowChangeAlternative = editType == EditType.NEW_OR_EDIT;
+                WebLinksManager.previewLink(webLinkModel, allowChangeAlternative);
             }
         }));
         flow.add(hpanel);
