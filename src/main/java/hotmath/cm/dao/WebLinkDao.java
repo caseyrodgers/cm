@@ -1,6 +1,7 @@
 package hotmath.cm.dao;
 
 import hotmath.cm.login.ClientEnvironment;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.UserAgentDetect;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.SubjectType;
@@ -31,6 +32,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+
+import sb.util.SbFile;
 
 public class WebLinkDao extends SimpleJdbcDaoSupport {
 
@@ -290,6 +293,8 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
     public int addWebLink(final WebLinkModel link) throws Exception {
 
         validateWebLink(link.getUrl());
+        
+        performLinkConversion(link);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -360,6 +365,27 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         return webLinkId;
     }
 
+
+    LinkConvert linkConversions[] = {new LinkConvertImplKahn(), new LinkConvertImplNoHTTP()};
+    
+    /** perform any URL conversion by checking for known
+     *  patterns .. then convert to best link. 
+     *  
+     *  For example, convert high level kahn videos to 
+     *  internal embedded video urls
+     *  
+     */
+    private void performLinkConversion(WebLinkModel link) throws Exception {
+        //String conversions = new SbFile(CatchupMathProperties.getInstance().getCatchupRuntime() + "/weblink_conversion.txt").getFileContents().toString("\n");
+        for(LinkConvert lc: linkConversions) {
+            String convertedUrl = lc.doConversion(link.getUrl());
+            if(convertedUrl != null) {
+                validateWebLink(convertedUrl);
+                link.setUrl(convertedUrl);
+            }
+        }
+    }
+
     private void validateWebLink(String urlString) throws Exception {
         try {
             URL u = new URL(urlString);
@@ -393,5 +419,13 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
             return null;
         }
     }
+}
 
+interface LinkConvert {
+    /** return converted string if converted, otherwise return null
+     * 
+     * @param url
+     * @return
+     */
+    String doConversion(String url);
 }
