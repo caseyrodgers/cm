@@ -20,7 +20,7 @@ public class WebLinkPreviewPanel extends GWindow {
     private boolean showAlternative;
 
     public WebLinkPreviewPanel(WebLinkModel webLink, boolean showAlternative) {
-        super(true);
+        super(false);
         setPixelSize(800,  600);
         setResizable(true);
         this.webLink = webLink;
@@ -46,6 +46,12 @@ public class WebLinkPreviewPanel extends GWindow {
             
             header.getElement().setAttribute("style",  "font-weight: bold;margin: 15px");
             header.add(new HTML("<div style='margin-bottom: 15px'>Does the page look correct?</a>"));
+            header.add(new TextButton("OK", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    hide();
+                }
+            }));
             header.add(new TextButton("Alternate Display Method", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
@@ -58,13 +64,34 @@ public class WebLinkPreviewPanel extends GWindow {
             }));
             framedPanel.setWidget(header);
             borderPanel.setNorthWidget(framedPanel, new BorderLayoutData(90));
-            
+
             borderPanel.setCenterWidget(frame);
+            
+            
+            addButton(new TextButton("Cancel", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    hide();
+                }
+            }));
+            
+
             setWidget(borderPanel);
         }
         else {
+            
+            addButton(new TextButton("Close", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    hide();
+                }
+            }));
+            
+            
             setWidget(frame);
         }
+        
+        
     }
 
 }
