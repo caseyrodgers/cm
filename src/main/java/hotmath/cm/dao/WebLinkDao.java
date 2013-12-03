@@ -1,7 +1,6 @@
 package hotmath.cm.dao;
 
 import hotmath.cm.login.ClientEnvironment;
-import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.UserAgentDetect;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.SubjectType;
@@ -32,8 +31,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-
-import sb.util.SbFile;
 
 public class WebLinkDao extends SimpleJdbcDaoSupport {
 
@@ -157,7 +154,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         return false;
     }
 
-    public Collection<? extends WebLinkModel> getAllWebLinksDefinedForAdmin(int adminId, boolean readGroupsAndLessons) {
+    public List<? extends WebLinkModel> getAllWebLinksDefinedForAdmin(int adminId, boolean readGroupsAndLessons) {
         String sql = "select * from CM_WEBLINK where admin_id = ? and is_public = 0 order by name";
         if (adminId == 0) {
             sql = "select * from CM_WEBLINK where is_public = 1 or (admin_id = ?) order by name"; // admin_id
