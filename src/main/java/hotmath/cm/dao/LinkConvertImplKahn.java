@@ -15,6 +15,11 @@ public class LinkConvertImplKahn implements LinkConvert {
     @Override
     public String doConversion(String url) {
         try {
+            
+            if(url.indexOf("kahn") == -1) {
+                return null;
+            }
+            
             URL u = new URL(url);
             HttpURLConnection huc = (HttpURLConnection) u.openConnection();
             huc.setRequestMethod("GET");

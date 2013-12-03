@@ -16,14 +16,15 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class WebLinkPreviewPanel extends GWindow {
     
-    private WebLinkModel webLink;
     private boolean showAlternative;
-
-    public WebLinkPreviewPanel(WebLinkModel webLink, boolean showAlternative) {
+    private String webLinkUrl;
+    private WebLinkModel webLinkModel;
+    public WebLinkPreviewPanel(WebLinkModel webLinkModel, String url, boolean showAlternative) {
         super(false);
+        this.webLinkModel = webLinkModel;
+        this.webLinkUrl = url;
         setPixelSize(800,  600);
         setResizable(true);
-        this.webLink = webLink;
         this.showAlternative=showAlternative;
         
         setModal(true);
@@ -35,14 +36,13 @@ public class WebLinkPreviewPanel extends GWindow {
     }
     
     private void buildUi() {
-        Frame frame = new Frame(webLink.getUrl());
+        Frame frame = new Frame(webLinkUrl);
         if(showAlternative) {
             final BorderLayoutContainer borderPanel = new BorderLayoutContainer();
             FlowPanel header = new FlowPanel();
             
             FramedPanel framedPanel = new FramedPanel();
             framedPanel.setHeaderVisible(false);
-            
             
             header.getElement().setAttribute("style",  "font-weight: bold;margin: 15px");
             header.add(new HTML("<div style='margin-bottom: 15px'>Does the page look correct?</a>"));
@@ -55,9 +55,9 @@ public class WebLinkPreviewPanel extends GWindow {
             header.add(new TextButton("Alternate Display Method", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
-                    Window.open(webLink.getUrl(),  "CmWebLink",  null);
-                    if(!webLink.isPublicLink()) {
-                        new WebLinkPreviewPanelOptionDialog(webLink);
+                    Window.open(webLinkUrl,  "CmWebLink",  null);
+                    if(!webLinkModel.isPublicLink()) {
+                        new WebLinkPreviewPanelOptionDialog(webLinkModel);
                     }
                     hide();
                 }

@@ -637,7 +637,7 @@ public class WebLinksManager extends GWindow {
     }
 
     private Widget createVisitButton() {
-        TextButton button = new TextButton("Visit", new SelectHandler() {
+        TextButton button = new TextButton("Preview ", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 visitCurrentLink();
@@ -666,7 +666,7 @@ public class WebLinksManager extends GWindow {
         if (webLink == null) {
             return;
         }
-        previewLink(webLink, false);
+        previewLink(webLink, false, webLink.getUrl());
     }
 
     private Widget createDelButton() {
@@ -772,7 +772,7 @@ public class WebLinksManager extends GWindow {
      * @param webLinkModel
      * @param showAlternative
      */
-    public static void previewLink(final WebLinkModel webLinkModel, final boolean showAlternative) {
+    public static void previewLink(final WebLinkModel webLinkModel, final boolean showAlternative,final String urlToPreview) {
 
         if(!showAlternative) {
             doPreviewLink(webLinkModel, showAlternative, webLinkModel.getUrl());
@@ -782,7 +782,7 @@ public class WebLinksManager extends GWindow {
                 @Override
                 public void attempt() {
                     CmBusyManager.setBusy(true);
-                    GetWebLinksConvertedUrlAction action = new GetWebLinksConvertedUrlAction(webLinkModel.getUrl());
+                    GetWebLinksConvertedUrlAction action = new GetWebLinksConvertedUrlAction(urlToPreview);
                     setAction(action);
                     CmShared.getCmService().execute(action, this);
                 }
@@ -791,8 +791,18 @@ public class WebLinksManager extends GWindow {
                 public void oncapture(WebLinkConvertedUrlModel data) {
                     CmBusyManager.setBusy(false);
                     String convertedUrl = data.getConvertedUrl();
-                   
                     doPreviewLink(webLinkModel, showAlternative, convertedUrl);
+                }
+                
+                public void onFailure(Throwable error) {
+                    CmBusyManager.setBusy(false);
+                    String message = error.getMessage();
+                    if(message.contains("not exist")) {
+                        CmMessageBox.showAlert("Link URL does not exist");
+                    }
+                    else {
+                        super.onFailure(error);
+                    }
                 }
     
             }.attempt();
@@ -806,7 +816,7 @@ public class WebLinksManager extends GWindow {
                 Window.open(webLinkModel.getUrl(),"CmWebLink","location=yes,status=yes,resizable=yes,scrollbars=yes");
             }
             else {
-                new WebLinkPreviewPanel(webLinkModel, showAlternative);
+                new WebLinkPreviewPanel(webLinkModel, convertedUrl, showAlternative);
             }
         }
         else {

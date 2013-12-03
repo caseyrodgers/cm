@@ -99,12 +99,12 @@ public class WebLinkEditorDialog extends GWindow {
         
         HorizontalPanel hpanel = new HorizontalPanel();
         hpanel.add(new MyFieldLabel(urlField, "URL",100,370));
-        hpanel.add(new TextButton("Visit", new SelectHandler() {
+        hpanel.add(new TextButton("Preview", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 visited=true;
                 boolean allowChangeAlternative = editType == EditType.NEW_OR_EDIT;
-                WebLinksManager.previewLink(webLinkModel, allowChangeAlternative);
+                WebLinksManager.previewLink(webLinkModel, allowChangeAlternative,urlField.getCurrentValue());
             }
         }));
         flow.add(hpanel);
@@ -213,10 +213,13 @@ public class WebLinkEditorDialog extends GWindow {
     }
 
     protected void saveWebLink() {
-        String message = "<p>Save changes?</p>";
+        
+        String message = "";
         if(!visited) {
-            message += "<p style='font-weight: bold'>Be sure to Visit the Link before Saving</p>";
+            message = "<p>Be sure to Preview the Link before Saving.</p>";
         }
+        message += "<p>Save changes?</p>";
+
         CmMessageBox.confirm("Save Web Link?", message, new ConfirmCallback() {
             @Override
             public void confirmed(boolean yesNo) {
