@@ -79,8 +79,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
         
         buildGui();
 
-        /** if debug mode, the always allow edit */
+        /** if debug mode, the always allow edit
         boolean isDebug = CmShared.getQueryParameter("debug")!=null;
+         */
         
         if(customProgram != null) {
             loadCustomProgramDefinition(customProgram);
@@ -242,9 +243,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
         CustomLessonModel autoQuiz = new CustomLessonModel(0,"Auto Quiz", true, false, false, null);
         _listSelected.getStore().add(autoQuiz);
     }
+ 
     
-    
-    /** Sets up a ledgend in the button bar showing the various subject levels
+    /** Sets up a legend in the button bar showing the various subject levels
      * 
      * @param bar
      */
@@ -333,6 +334,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
     
     
     static CmList<CustomLessonModel> __allLessons;
+
     private void getAllLessonData() {
         if(__allLessons != null) {
             _listAll.getStore().removeAll();
@@ -452,7 +454,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             }
         }.attempt();
     }
-    
+
     private void loadCustomQuizDefinitions() {
 
             new RetryAction<CmList<CustomQuizDef>>() {
@@ -478,8 +480,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 }
             }.register();        
     }
-    
-    
+
     private void removeCustomQuiz(final CustomQuizDef def) {
 
         new RetryAction<RpcData>() {
@@ -568,6 +569,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
     }
     
     static class MyFilterBox extends TextField<String> {
+    	
+        List<CustomLessonModel> selectedLessons = new ArrayList<CustomLessonModel>();
         
         int lastChecked=0;
         MyFilterBox(final ListView<CustomLessonModel>  listView) {
@@ -579,27 +582,19 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 public void handleEvent(BaseEvent be) {
                     String value = getValue();
                     if(value == null || value.length() == 0) {
-                        lastChecked=0; // reset
+                        listView.getStore().removeAll();
+                        listView.getStore().add(__allLessons);
                         return;
                     }
-                    
-                    int cnt = listView.getStore().getCount();
-                    CustomLessonModel lesson = listView.getSelectionModel().getSelectedItem();
-                    if(lastChecked+1 > cnt)
-                        lastChecked = 0;
-                    
-                    for(int i=lastChecked;i<cnt;i++) {
-                        CustomLessonModel model = listView.getStore().getAt(i);
-                        lastChecked=i;
+
+                    selectedLessons.clear();
+                    for (CustomLessonModel model : __allLessons) {
                         if(model.getCustomProgramItem().toLowerCase().indexOf(value.toLowerCase()) > -1) {
-                            if(lesson != null && lesson.getCustomProgramItem().equals(model.getCustomProgramItem()))
-                                continue;
-                            
-                            listView.getSelectionModel().select(listView.getStore().getAt(i),false);
-                            listView.getElement(i).scrollIntoView();
-                            return;
+                        	selectedLessons.add(model);
                         }
                     }
+                    listView.getStore().removeAll();
+                    listView.getStore().add(selectedLessons);
                 }
             });
         }
