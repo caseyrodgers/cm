@@ -16,7 +16,7 @@ public class LinkConvertImplKahn implements LinkConvert {
     public String doConversion(String url) {
         try {
             
-            if(url.indexOf("kahn") == -1) {
+            if(url.indexOf("khan") == -1) {
                 return null;
             }
             

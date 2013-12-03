@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.WebLinkAddTargetsDialog.Callback;
+import hotmath.gwt.cm_admin.client.ui.WebLinksManager.CallbackOnConvertedUrl;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
@@ -103,8 +104,15 @@ public class WebLinkEditorDialog extends GWindow {
             @Override
             public void onSelect(SelectEvent event) {
                 visited=true;
-                boolean allowChangeAlternative = editType == EditType.NEW_OR_EDIT;
-                WebLinksManager.previewLink(webLinkModel, allowChangeAlternative,urlField.getCurrentValue());
+                boolean allowChangeAlternative = (editType == EditType.NEW_OR_EDIT);
+                WebLinksManager.previewLink(webLinkModel, allowChangeAlternative,urlField.getCurrentValue(), new CallbackOnConvertedUrl() {
+                    
+                    @Override
+                    public void wasConverted(String url) {
+                        CmMessageBox.showAlert("Link URL was converted for use in Catchupmath.com.");
+                        urlField.setValue(url);
+                    }
+                });
             }
         }));
         flow.add(hpanel);

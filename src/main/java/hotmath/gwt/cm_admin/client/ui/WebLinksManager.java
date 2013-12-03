@@ -414,7 +414,7 @@ public class WebLinksManager extends GWindow {
     protected void importSelectedWebLink() {
         final WebLinkModel model = _grid4PublicLinks.getSelectionModel().getSelectedItem();
         if (model == null) {
-            CmMessageBox.showAlert("Please select a link to import first");
+            CmMessageBox.showAlert("Please select a link to Copy first");
             return;
         }
 
@@ -666,7 +666,7 @@ public class WebLinksManager extends GWindow {
         if (webLink == null) {
             return;
         }
-        previewLink(webLink, false, webLink.getUrl());
+        previewLink(webLink, false, webLink.getUrl(), null);
     }
 
     private Widget createDelButton() {
@@ -766,13 +766,17 @@ public class WebLinksManager extends GWindow {
     }
 
     
+
+    public interface CallbackOnConvertedUrl {
+        void wasConverted(String url);
+    }
     /** Preview the link, but make sure we do the conversion first
      * 
      * @param adminId
      * @param webLinkModel
      * @param showAlternative
      */
-    public static void previewLink(final WebLinkModel webLinkModel, final boolean showAlternative,final String urlToPreview) {
+    public static void previewLink(final WebLinkModel webLinkModel, final boolean showAlternative,final String urlToPreview, final CallbackOnConvertedUrl convertedCallback) {
 
         if(!showAlternative) {
             doPreviewLink(webLinkModel, showAlternative, webLinkModel.getUrl());
@@ -791,6 +795,12 @@ public class WebLinksManager extends GWindow {
                 public void oncapture(WebLinkConvertedUrlModel data) {
                     CmBusyManager.setBusy(false);
                     String convertedUrl = data.getConvertedUrl();
+                    
+                    if(convertedCallback != null) {
+                        if(data.getConvertedUrl() != data.getOriginalUrl()) {
+                            convertedCallback.wasConverted(data.getConvertedUrl());
+                        }
+                    }
                     doPreviewLink(webLinkModel, showAlternative, convertedUrl);
                 }
                 
