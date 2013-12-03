@@ -1,4 +1,4 @@
-package hotmath.gwt.shared.client.rpc.action;
+package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.dao.WebLinkDao;
 import hotmath.gwt.cm_core.client.model.WebLinkConvertedUrlModel;
