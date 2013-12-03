@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.WebLinkEditorDialog.EditType;
 import hotmath.gwt.cm_admin.client.ui.WebLinkManagerFilterPanel.SubjectModelLocal;
+import hotmath.gwt.cm_core.client.model.WebLinkConvertedUrlModel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.SubjectType;
@@ -10,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.LinkViewer;
 import hotmath.gwt.cm_rpc.client.model.WebLinkType;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksConvertedUrlAction;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction.CrudOperation;
 import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksForAdminAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksForAdminAction.TypeOfGet;
@@ -77,7 +79,7 @@ public class WebLinksManager extends GWindow {
         buildUi();
 
         setMaximizable(true);
-        
+
         readPrivateWebLinksFromServer(adminId);
 
         setVisible(true);
@@ -240,16 +242,15 @@ public class WebLinksManager extends GWindow {
             if (subjectMatch && deviceMatch && textMatch) {
                 if (gim != null && gim.getId() > 0) {
                     groupMatch = isLinkInGroup(l, gim);
-                }
-                else {
+                } else {
                     groupMatch = true;
                 }
             }
 
-            if(subjectMatch && deviceMatch && textMatch && groupMatch) {
+            if (subjectMatch && deviceMatch && textMatch && groupMatch) {
                 list.add(l);
             }
-            
+
         }
         grid.getStore().addAll(list);
     }
@@ -544,7 +545,7 @@ public class WebLinksManager extends GWindow {
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         GridView<WebLinkModel> view = createGridView();
-        view.setAutoExpandColumn(cols.get(cols.size()-1));
+        view.setAutoExpandColumn(cols.get(cols.size() - 1));
         view.setAutoFill(true);
         grid.setView(view);
         new QuickTip(grid);
@@ -683,7 +684,8 @@ public class WebLinksManager extends GWindow {
         TextButton button = new TextButton("Add", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, false, null, null, LinkViewer.INTERNAL, false);
+                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, false, null, null,
+                        LinkViewer.INTERNAL, false);
                 new WebLinkEditorDialog(EditType.NEW_OR_EDIT, adminId, webLinkModel, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {
@@ -763,7 +765,42 @@ public class WebLinksManager extends GWindow {
         new WebLinksManager(2);
     }
 
-    public static void previewLink(WebLinkModel webLinkModel, boolean showAlternative) {
+    
+    /** Preview the link, but make sure we do the conversion first
+     * 
+     * @param adminId
+     * @param webLinkModel
+     * @param showAlternative
+     */
+    public static void previewLink(final WebLinkModel webLinkModel, final boolean showAlternative) {
+
+        if(!showAlternative) {
+            doPreviewLink(webLinkModel, showAlternative, webLinkModel.getUrl());
+        }
+        else {
+            new RetryAction<WebLinkConvertedUrlModel>() {
+                @Override
+                public void attempt() {
+                    CmBusyManager.setBusy(true);
+                    GetWebLinksConvertedUrlAction action = new GetWebLinksConvertedUrlAction(webLinkModel.getUrl());
+                    setAction(action);
+                    CmShared.getCmService().execute(action, this);
+                }
+    
+                @Override
+                public void oncapture(WebLinkConvertedUrlModel data) {
+                    CmBusyManager.setBusy(false);
+                    String convertedUrl = data.getConvertedUrl();
+                   
+                    doPreviewLink(webLinkModel, showAlternative, convertedUrl);
+                }
+    
+            }.attempt();
+        }
+    }
+    
+
+    static private void doPreviewLink(WebLinkModel webLinkModel, boolean showAlternative, String convertedUrl) {
         if(CmShared.getQueryParameter("debug") != null) {
             if(!showAlternative && webLinkModel.getLinkViewer() == LinkViewer.EXTERNAL_WINDOW) {
                 Window.open(webLinkModel.getUrl(),"CmWebLink","location=yes,status=yes,resizable=yes,scrollbars=yes");
@@ -773,7 +810,8 @@ public class WebLinksManager extends GWindow {
             }
         }
         else {
-            Window.open(webLinkModel.getUrl(),"CmWebLink","location=yes,status=yes,resizable=yes,scrollbars=yes");
-        }        
+            Window.open(convertedUrl,"CmWebLink","location=yes,status=yes,resizable=yes,scrollbars=yes");
+        }                
     }
+
 }

@@ -294,7 +294,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
 
         validateWebLink(link.getUrl());
         
-        performLinkConversion(link);
+        link.setUrl(performLinkConversion(link.getUrl()));
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -375,15 +375,16 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
      *  internal embedded video urls
      *  
      */
-    private void performLinkConversion(WebLinkModel link) throws Exception {
+    public String performLinkConversion(String url) throws Exception {
         //String conversions = new SbFile(CatchupMathProperties.getInstance().getCatchupRuntime() + "/weblink_conversion.txt").getFileContents().toString("\n");
         for(LinkConvert lc: linkConversions) {
-            String convertedUrl = lc.doConversion(link.getUrl());
+            String convertedUrl = lc.doConversion(url);
             if(convertedUrl != null) {
                 validateWebLink(convertedUrl);
-                link.setUrl(convertedUrl);
+                return convertedUrl;
             }
         }
+        return url;
     }
 
     private void validateWebLink(String urlString) throws Exception {
