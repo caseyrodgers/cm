@@ -1,7 +1,14 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
+import hotmath.gwt.cm_rpc.client.model.WebLinkModel.LinkViewer;
+import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
+import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction.CrudOperation;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -49,6 +56,10 @@ public class WebLinkPreviewPanel extends GWindow {
             header.add(new TextButton("OK", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
+                    if(webLinkModel.getLinkViewer() == LinkViewer.EXTERNAL_WINDOW) {
+                        webLinkModel.setLinkViewer(LinkViewer.INTERNAL);
+                        saveWebLink(webLinkModel);
+                    }
                     hide();
                 }
             }));
@@ -92,6 +103,25 @@ public class WebLinkPreviewPanel extends GWindow {
         }
         
         
+    }
+
+    public static void saveWebLink(final WebLinkModel webLink) {
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                CrudOperation actionToDo = CrudOperation.ADD;
+                DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(webLink.getAdminId(), actionToDo, webLink);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(RpcData data) {
+                CmBusyManager.setBusy(false);
+            }
+            
+        }.attempt();        
     }
 
 }

@@ -84,22 +84,7 @@ public class WebLinkPreviewPanelOptionDialog extends GWindow {
         webLink.setLinkViewer(linkViewer);
         
         if(webLink.getLinkId() > 0) {
-            new RetryAction<RpcData>() {
-                @Override
-                public void attempt() {
-                    CmBusyManager.setBusy(true);
-                    CrudOperation actionToDo = CrudOperation.ADD;
-                    DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(webLink.getAdminId(), actionToDo, webLink);
-                    setAction(action);
-                    CmShared.getCmService().execute(action, this);
-                }
-    
-                @Override
-                public void oncapture(RpcData data) {
-                    CmBusyManager.setBusy(false);
-                }
-                
-            }.attempt();
+            WebLinkPreviewPanel.saveWebLink(webLink);
         }
         hide();
     }
