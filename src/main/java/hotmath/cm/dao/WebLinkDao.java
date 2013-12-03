@@ -154,7 +154,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         return false;
     }
 
-    public List<? extends WebLinkModel> getAllWebLinksDefinedForAdmin(int adminId, boolean readGroupsAndLessons) {
+    public Collection<? extends WebLinkModel> getAllWebLinksDefinedForAdmin(int adminId, boolean readGroupsAndLessons) {
         String sql = "select * from CM_WEBLINK where admin_id = ? and is_public = 0 order by name";
         if (adminId == 0) {
             sql = "select * from CM_WEBLINK where is_public = 1 or (admin_id = ?) order by name"; // admin_id
