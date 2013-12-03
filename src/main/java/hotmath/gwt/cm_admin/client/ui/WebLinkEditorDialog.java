@@ -109,7 +109,7 @@ public class WebLinkEditorDialog extends GWindow {
                     
                     @Override
                     public void wasConverted(String url) {
-                        CmMessageBox.showAlert("Link URL was converted for use in Catchupmath.com.");
+                        CmMessageBox.showAlert("Link URL was converted for use in catchupmath.com.");
                         urlField.setValue(url);
                     }
                 });
