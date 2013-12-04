@@ -12,10 +12,12 @@ import hotmath.gwt.cm_rpc.client.model.WebLinkModel.LinkViewer;
 import hotmath.gwt.cm_rpc.client.model.WebLinkType;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksConvertedUrlAction;
+import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction.CrudOperation;
 import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksForAdminAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksForAdminAction.TypeOfGet;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
@@ -340,6 +342,7 @@ public class WebLinksManager extends GWindow {
 
     private void createGrid4Public() {
         _grid4PublicLinks = createLinkGrid();
+        _grid4PublicLinks.getSelectionModel().setSelectionMode(SelectionMode.MULTI);
         _grid4PublicLinks.addCellDoubleClickHandler(new CellDoubleClickHandler() {
             @Override
             public void onCellClick(CellDoubleClickEvent event) {
@@ -358,7 +361,7 @@ public class WebLinksManager extends GWindow {
 
             @Override
             public void onSelect(SelectEvent event) {
-                importSelectedWebLink();
+                importSelectedWebLinks();
             }
         });
         importBtn.setToolTip("Copy selected web link into Our School list");
@@ -411,35 +414,42 @@ public class WebLinksManager extends GWindow {
         }.attempt();
     }
 
-    protected void importSelectedWebLink() {
+    protected void importSelectedWebLinks() {
         final WebLinkModel model = _grid4PublicLinks.getSelectionModel().getSelectedItem();
         if (model == null) {
-            CmMessageBox.showAlert("Please select a link to Copy first");
+            CmMessageBox.showAlert("Please select at least one link to Copy first");
             return;
         }
-
+        
+        final List<WebLinkModel> selectedLinks = _grid4PublicLinks.getSelectionModel().getSelectedItems();
         CmMessageBox.confirm("Copy Web Link", "Are you sure you want to copy this web link into your school's private links?", new ConfirmCallback() {
             @Override
             public void confirmed(boolean yesNo) {
                 if (yesNo) {
-                    importWebLink(model);
+                    importWebLinks(selectedLinks);
                 }
             }
         });
     }
 
-    private void importWebLink(final WebLinkModel webLinkModel) {
-        new RetryAction<RpcData>() {
+    private void importWebLinks(final List<WebLinkModel> webLinksToCopy) {
+        
+        final MultiActionRequestAction multiAction = new MultiActionRequestAction();
+        for(WebLinkModel linkModel: webLinksToCopy) {
+            DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId, CrudOperation.IMPORT_FROM_PUBLIC,linkModel);
+            multiAction.getActions().add(action);
+        }
+        
+        new RetryAction<CmList<Response>>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId, CrudOperation.IMPORT_FROM_PUBLIC, webLinkModel);
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
+                setAction(multiAction);
+                CmShared.getCmService().execute(multiAction, this);
             }
 
             @Override
-            public void oncapture(RpcData data) {
+            public void oncapture(CmList<Response> responses) {
                 CmBusyManager.setBusy(false);
                 CmMessageBox.showMessage("Success", "Web link successfully copied");
             }
@@ -453,7 +463,6 @@ public class WebLinksManager extends GWindow {
                     CmMessageBox.showAlert(error.getMessage());
                 }
             }
-
         }.attempt();
     }
 
@@ -720,6 +729,31 @@ public class WebLinksManager extends GWindow {
             return;
         }
 
+        WebLinkModel wl = _grid4PrivateLinks.getSelectionModel().getSelectedItem();
+        int cnt=0;
+        for(WebLinkModel wm: _grid4PrivateLinks.getStore().getAll()) {
+            if(wm == wl) {
+                break;
+            }
+            cnt++;
+        }
+        
+        final WebLinkModel selectModel;
+        int sz=_grid4PrivateLinks.getStore().size();
+        if(sz > 1) {
+            if(cnt+1 < sz) {
+                selectModel = _grid4PrivateLinks.getStore().get(cnt+1);
+            }
+            else {
+                selectModel = _grid4PrivateLinks.getStore().get(cnt-1);
+            }
+        }
+        else {
+            selectModel = null;
+        }
+        
+        
+        
         CmMessageBox.confirm("Delete Web Link", "Are you sure you want to remove this web link?", new ConfirmCallback() {
             @Override
             public void confirmed(boolean yesNo) {
@@ -737,6 +771,10 @@ public class WebLinksManager extends GWindow {
                         public void oncapture(RpcData data) {
                             CmBusyManager.setBusy(false);
                             _grid4PrivateLinks.getStore().remove(webLink);
+                            
+                            if(selectModel != null) {
+                                _grid4PrivateLinks.getSelectionModel().select(false,  selectModel);
+                            }
                         }
                     }.attempt();
                 }

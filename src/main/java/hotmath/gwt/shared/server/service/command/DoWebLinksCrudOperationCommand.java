@@ -23,6 +23,8 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
     
     Logger logger = Logger.getLogger(DoWebLinksCrudOperationCommand.class);
 
+    int TEST_ADMIN = -2;
+    
     @Override
     public RpcData execute(Connection conn, DoWebLinksCrudOperationAction action) throws Exception {
         
@@ -57,7 +59,7 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
                 
                 WebLinkDao.getInstance().addWebLink(action.getWebLink());
                 
-                if(action.getAdminId() != WebLinkModel.WEBLINK_DEBUG_ADMIN) {
+                if(action.getAdminId() != WebLinkModel.WEBLINK_DEBUG_ADMIN && action.getAdminId() != TEST_ADMIN) {
                     if(sendSuggestEmail) {
                         sendWebLinkSuggestionEmail(action.getWebLink());
                     }
@@ -82,8 +84,18 @@ public class DoWebLinksCrudOperationCommand implements ActionHandler<DoWebLinksC
         return label;
     }
 
+    /** Send info email about updates, only if the link is new
+     * 
+     * @param webLink
+     */
     private void sendWebLinkSuggestionEmail(WebLinkModel webLink) {
         try {
+            
+            if(WebLinkDao.getInstance().doesWebLinkExistInPublic(webLink)) {
+                return; // do not send email for already existing links
+            }
+            
+            
             AccountInfoModel adminRec = CmAdminDao.getInstance().getAccountInfo(webLink.getAdminId());
             
             String subjectText = "Web link suggestion from: " + adminRec.getSchoolUserName() + " (aid=" + webLink.getAdminId() +  ")";

@@ -417,6 +417,17 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
             return null;
         }
     }
+
+    public boolean doesWebLinkExistInPublic(WebLinkModel webLink) {
+        String sql = "select count(*) as cnt from CM_WEBLINK where is_public = 1 and url = ?";
+        int countMatches = getJdbcTemplate().queryForObject(sql, new Object[] { webLink.getUrl() }, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("cnt");
+            }
+        });
+        return countMatches>0;
+    }
 }
 
 interface LinkConvert {
