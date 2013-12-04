@@ -363,7 +363,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
     }
 
 
-    LinkConvert linkConversions[] = {new LinkConvertImplKahn(), new LinkConvertImplNoHTTP()};
+    LinkConvert linkConversions[] = {new LinkConvertImplKahn(), new LinkConvertImplYouTube(), new LinkConvertImplNoHTTP()};
     
     /** perform any URL conversion by checking for known
      *  patterns .. then convert to best link. 

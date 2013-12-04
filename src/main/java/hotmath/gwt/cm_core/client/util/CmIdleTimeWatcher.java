@@ -44,7 +44,7 @@ public class CmIdleTimeWatcher {
         if(diffKeyboard > MAX_IDLE_TIME) {
             if(idle == false) {
                 Log.info("Catchup Math is idle: " + diffKeyboard);
-                idle=true;
+                setToIdle();
             }
         }
         else {
@@ -90,10 +90,13 @@ public class CmIdleTimeWatcher {
             }
         }
         finally {
-            // reset
-            activeMinutes = new boolean[activeMinutes.length];
-            idle = true;
+            setToIdle();
         }
+    }
+    
+    private void setToIdle() {
+        activeMinutes = new boolean[activeMinutes.length];
+        idle = true;
     }
 
     public boolean isIdle() {
