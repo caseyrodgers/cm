@@ -808,7 +808,7 @@ public class WebLinksManager extends GWindow {
                     CmBusyManager.setBusy(false);
                     String message = error.getMessage();
                     if(message.contains("not exist")) {
-                        CmMessageBox.showAlert("Link URL does not exist");
+                        CmMessageBox.showAlert("Link URL is invalid");
                     }
                     else {
                         super.onFailure(error);

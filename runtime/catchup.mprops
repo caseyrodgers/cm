@@ -3906,6 +3906,8 @@ order by u.user_name, problem_id
 
 
 
+
+
   
 ##
 .key=GET_ASSIGNMENT_WORK_FOR_STUDENT
@@ -4049,7 +4051,7 @@ select * from CM_ASSIGNMENT where assign_key = ?
 .key=INSERT_INMH_USE
 
 insert into HA_TEST_RUN_INMH_USE (run_id, item_type, item_file, view_time, session_number)
- values(?,?,?,?,?)
+ values(?,?,substr(?, 0,100),?,?)
  
 .key=COUNT_PRACTICE_INMH_USE
 

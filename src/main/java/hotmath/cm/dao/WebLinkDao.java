@@ -392,7 +392,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
             huc.connect();
             int rc = huc.getResponseCode();
         } catch (Exception e) {
-            throw new CmException("Link URL does not exist: " + urlString);
+            throw new CmException("Link URL is invalid: " + urlString);
         }
     }
 
