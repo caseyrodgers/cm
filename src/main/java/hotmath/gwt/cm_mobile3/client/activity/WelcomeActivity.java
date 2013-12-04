@@ -83,7 +83,7 @@ public class WelcomeActivity implements WelcomeView.Presenter{
             
             @Override
             public void isReady() {
-                History.newItem("assignment_list:" + SharedData.getMobileUser().getUserId() + ":" + System.currentTimeMillis());
+                History.newItem("assignment_list|" + SharedData.getMobileUser().getUserId() + "|" + System.currentTimeMillis());
             }
         });
 

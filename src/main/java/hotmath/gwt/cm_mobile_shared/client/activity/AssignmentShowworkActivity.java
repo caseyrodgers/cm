@@ -46,7 +46,7 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
 
     @Override
     public void gotoTutorView() {
-        History.newItem("assignment_problem:" + assignKey + ":" + pid + ":" + System.currentTimeMillis());
+        History.newItem("assignment_problem|" + assignKey + "|" + pid + "|" + System.currentTimeMillis());
     }
 
     

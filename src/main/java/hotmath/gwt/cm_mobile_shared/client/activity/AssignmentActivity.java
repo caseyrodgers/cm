@@ -121,13 +121,13 @@ public class AssignmentActivity implements AssignmentView.Presenter {
 
     @Override
     public void showProblem(StudentProblemDto problem) {
-        History.newItem("assignment_problem:" + assignKey + ":" + problem.getPid() + ":" + System.currentTimeMillis());
+        History.newItem("assignment_problem|" + assignKey + "|" + problem.getPid() + "|" + System.currentTimeMillis());
     }
     
     
     @Override
     public void gotoAssignmentList() {
-        History.newItem("assignment_list:" + System.currentTimeMillis());
+        History.newItem("assignment_list|" + System.currentTimeMillis());
     }
     
 
