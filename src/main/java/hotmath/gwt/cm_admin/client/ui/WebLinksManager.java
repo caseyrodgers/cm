@@ -458,7 +458,7 @@ public class WebLinksManager extends GWindow {
             @Override
             public void oncapture(CmList<Response> responses) {
                 CmBusyManager.setBusy(false);
-                CmMessageBox.showMessage("Success", "Web link successfully copied");
+                CmMessageBox.showMessage("Success", "Web links successfully copied");
             }
 
             @Override
