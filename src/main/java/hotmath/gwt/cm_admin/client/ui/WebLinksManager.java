@@ -422,7 +422,14 @@ public class WebLinksManager extends GWindow {
         }
         
         final List<WebLinkModel> selectedLinks = _grid4PublicLinks.getSelectionModel().getSelectedItems();
-        CmMessageBox.confirm("Copy Web Link", "Are you sure you want to copy this web link into your school's private links?", new ConfirmCallback() {
+        String message="";
+        if(selectedLinks.size() == 1) {
+            message = "this web link";
+        }
+        else {
+            message = "these " + selectedLinks.size() + " web links";
+        }
+        CmMessageBox.confirm("Copy Web Link", "Are you sure you want to copy " + message + " into your school's private links?", new ConfirmCallback() {
             @Override
             public void confirmed(boolean yesNo) {
                 if (yesNo) {
