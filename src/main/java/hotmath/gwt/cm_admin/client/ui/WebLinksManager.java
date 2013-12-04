@@ -765,23 +765,23 @@ public class WebLinksManager extends GWindow {
         new WebLinksManager(2);
     }
 
-    
-
     public interface CallbackOnConvertedUrl {
         void wasConverted(String url);
     }
-    /** Preview the link, but make sure we do the conversion first
+
+    /**
+     * Preview the link, but make sure we do the conversion first
      * 
      * @param adminId
      * @param webLinkModel
      * @param showAlternative
      */
-    public static void previewLink(final WebLinkModel webLinkModel, final boolean showAlternative,final String urlToPreview, final CallbackOnConvertedUrl convertedCallback) {
+    public static void previewLink(final WebLinkModel webLinkModel, final boolean showAlternative, final String urlToPreview,
+            final CallbackOnConvertedUrl convertedCallback) {
 
-        if(!showAlternative) {
+        if (!showAlternative) {
             doPreviewLink(webLinkModel, showAlternative, webLinkModel.getUrl());
-        }
-        else {
+        } else {
             new RetryAction<WebLinkConvertedUrlModel>() {
                 @Override
                 public void attempt() {
@@ -790,48 +790,40 @@ public class WebLinksManager extends GWindow {
                     setAction(action);
                     CmShared.getCmService().execute(action, this);
                 }
-    
+
                 @Override
                 public void oncapture(WebLinkConvertedUrlModel data) {
                     CmBusyManager.setBusy(false);
                     String convertedUrl = data.getConvertedUrl();
-                    
-                    if(convertedCallback != null) {
-                        if(data.getConvertedUrl() != data.getOriginalUrl()) {
+
+                    if (convertedCallback != null) {
+                        if (data.getConvertedUrl() != data.getOriginalUrl()) {
                             convertedCallback.wasConverted(data.getConvertedUrl());
                         }
                     }
                     doPreviewLink(webLinkModel, showAlternative, convertedUrl);
                 }
-                
+
                 public void onFailure(Throwable error) {
                     CmBusyManager.setBusy(false);
                     String message = error.getMessage();
-                    if(message.contains("not exist")) {
+                    if (message.contains("not exist")) {
                         CmMessageBox.showAlert("Link URL is invalid");
-                    }
-                    else {
+                    } else {
                         super.onFailure(error);
                     }
                 }
-    
+
             }.attempt();
         }
     }
-    
 
     static private void doPreviewLink(WebLinkModel webLinkModel, boolean showAlternative, String convertedUrl) {
-        if(CmShared.getQueryParameter("debug") != null) {
-            if(!showAlternative && webLinkModel.getLinkViewer() == LinkViewer.EXTERNAL_WINDOW) {
-                Window.open(webLinkModel.getUrl(),"CmWebLink","location=yes,status=yes,resizable=yes,scrollbars=yes");
-            }
-            else {
-                new WebLinkPreviewPanel(webLinkModel, convertedUrl, showAlternative);
-            }
+        if (!showAlternative && webLinkModel.getLinkViewer() == LinkViewer.EXTERNAL_WINDOW) {
+            Window.open(webLinkModel.getUrl(), "CmWebLink", "location=yes,status=yes,resizable=yes,scrollbars=yes");
+        } else {
+            new WebLinkPreviewPanel(webLinkModel, convertedUrl, showAlternative);
         }
-        else {
-            Window.open(convertedUrl,"CmWebLink","location=yes,status=yes,resizable=yes,scrollbars=yes");
-        }                
     }
 
 }
