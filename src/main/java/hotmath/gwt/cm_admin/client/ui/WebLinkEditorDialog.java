@@ -389,7 +389,7 @@ public class WebLinkEditorDialog extends GWindow {
     }
 
     interface Grid4LessonsProperties extends PropertyAccess<String> {
-        @Path("lessonMame")
+        @Path("lessonName")
         ModelKeyProvider<LessonModel> key();
 
         ValueProvider<LessonModel, String> lessonName();

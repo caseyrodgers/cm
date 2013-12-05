@@ -234,7 +234,7 @@ class ResourceMenuButton extends TextButton {
                      */
                     Integer ordinalPosition=-1;
                     for(int i=0,t=resource.getItems().size();i<t;i++) {
-                        if(resource.getItems().get(i).getFile().equals(id.getFile())) {
+                        if(resource.getItems().get(i).getTitle().equals(id.getTitle())) {
                             ordinalPosition=i;
                             break;
                         }
