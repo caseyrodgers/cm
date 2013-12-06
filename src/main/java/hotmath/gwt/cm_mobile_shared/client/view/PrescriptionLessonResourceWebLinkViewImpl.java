@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 public class PrescriptionLessonResourceWebLinkViewImpl extends Composite implements PrescriptionLessonResourceWebLinkView {
@@ -42,6 +43,7 @@ public class PrescriptionLessonResourceWebLinkViewImpl extends Composite impleme
     
     @Override
     public BackAction getBackAction() {
+        _main.setWidget(new HTML(""));
         return null;
     }
     
