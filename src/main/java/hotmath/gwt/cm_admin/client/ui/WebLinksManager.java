@@ -778,6 +778,7 @@ public class WebLinksManager extends GWindow {
                         public void oncapture(RpcData data) {
                             CmBusyManager.setBusy(false);
                             _grid4PrivateLinks.getStore().remove(webLink);
+                            _allPrivateLinks.remove(webLink);
                             
                             if(selectModel != null) {
                                 _grid4PrivateLinks.getSelectionModel().select(false,  selectModel);

@@ -234,11 +234,15 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 view.setPresenter(activity);
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
             }
-            else if(resourceType == CmResourceType.WEBLINK || resourceType == CmResourceType.WEBLINK_EXTERNAL) {
+            else if(resourceType == CmResourceType.WEBLINK) {
                 PrescriptionLessonResourceWebLinkActivity activity = new PrescriptionLessonResourceWebLinkActivity(eb, itemData);
                 PrescriptionLessonResourceWebLinkView view = cf.getPrescriptionLessonResourceWebLinkView();
                 view.setPresenter(activity);
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
+            }
+            else if(resourceType == CmResourceType.WEBLINK_EXTERNAL) {
+                PopupMessageBox.showMessage("Web Link '" + itemData.getTitle() + " opened in new window");
+                Window.open(itemData.getFile(), "CmWebLink", "");
             }
             else {
                 PrescriptionLessonResourceActivity activity = new PrescriptionLessonResourceActivity(eb, itemData);
