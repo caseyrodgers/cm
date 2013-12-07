@@ -25,6 +25,7 @@ SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_em
        ifnull(s.limit_games, 0) as limit_games, ifnull(s.show_work_required, 0) as show_work_required,
        ifnull(s.stop_at_program_end, 0) as stop_at_program_end, ifnull(s.tutoring_available, 0) as tutoring_available,
        ifnull(s.disable_calculator_always, 0) as disable_calculator_always, ifnull(s.disable_calculator_quizzes, 0) as disable_calculator_quizzes,
+       ifnull(s.no_public_weblinks, 0) as no_public_weblinks,
        trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
        ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, g.is_active, g.is_self_reg,
        cp.id as custom_program_id, cp.name as custom_program_name,q.qid as custom_quiz_id, q.name as custom_quiz_name,
@@ -4971,3 +4972,26 @@ from HA_SOLUTION_CONTEXT
 where run_id = ?
 and pid = ?
 
+
+
+
+.key=GET_ADMIN_WEBLINKS
+
+select *
+from CM_WEBLINK
+where admin_id = ?
+and is_public = 0
+
+union 
+
+select *
+from CM_WEBLINK w
+where is_public = 1
+and exists (
+     select 'x'
+     from   CM_GROUP g
+        join HA_USER u on u.group_id = g.id
+      where u.admin_id  = ?
+      and g.no_public_weblinks = 0)
+
+order by name      
