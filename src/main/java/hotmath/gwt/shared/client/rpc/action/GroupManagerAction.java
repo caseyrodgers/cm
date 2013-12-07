@@ -23,6 +23,7 @@ public class GroupManagerAction implements Action<RpcData>{
     Boolean stopAtProgramEnd;
     Boolean disableCalcAlways;
     Boolean disableCalcQuizzes;
+    boolean noPublicWebLinks;
     Integer passPercent;
     Integer isSelfReg;
 
@@ -31,6 +32,14 @@ public class GroupManagerAction implements Action<RpcData>{
     public GroupManagerAction(ActionType actionType,Integer adminId) {
         this.adminId = adminId;
         this.actionType = actionType;        
+    }
+
+    public boolean isNoPublicWebLinks() {
+        return noPublicWebLinks;
+    }
+
+    public void setNoPublicWebLinks(boolean noPublicWebLinks) {
+        this.noPublicWebLinks = noPublicWebLinks;
     }
 
     public Boolean getDisallowTutoring() {

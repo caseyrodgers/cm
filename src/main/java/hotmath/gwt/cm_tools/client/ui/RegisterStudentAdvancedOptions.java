@@ -42,6 +42,7 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 	private CheckBox isStopAtProgramEnd;
 	private CheckBox isDisableCalcAlways;
 	private CheckBox isDisableCalcQuizzes;
+	private CheckBox isNoPublicWebLinks;
 
 	private ComboBox <PassPercent> passCombo;
 	private SectionNumberCombo sectionCombo;
@@ -125,7 +126,18 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
         isGamesLimited.setValue(options.getSettings().getLimitGames());
         isGamesLimited.setToolTip("If checked, then no Games can be played.");
         
-		advOptions.addThing(new MyFieldLabel(isGamesLimited, "Disallow Games", LABEL_LEN, 10)); 
+		advOptions.addThing(new MyFieldLabel(isGamesLimited, "Disallow Games", LABEL_LEN, 10));
+		
+
+		isNoPublicWebLinks = new CheckBox();
+		isNoPublicWebLinks.setId("isNoPublicWebLinks");
+		isNoPublicWebLinks.setValue(options.getSettings().isNoPublicWebLinks());
+		isNoPublicWebLinks.setToolTip("If checked, then no public web links will be shown to this student");
+        
+        advOptions.addThing(new MyFieldLabel(isNoPublicWebLinks, "Disallow All School's Web Links", LABEL_LEN, 10));
+
+		
+		
 
         isStopAtProgramEnd = new CheckBox();
         isStopAtProgramEnd.setId("stop_at_program_end");
@@ -301,6 +313,7 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
                 ssm.setLimitGames(isGamesLimited.getValue());
                 ssm.setDisableCalcAlways(isDisableCalcAlways.getValue());
                 ssm.setDisableCalcQuizzes(isDisableCalcQuizzes.getValue());
+                ssm.setNoPublicWebLinks(isNoPublicWebLinks.getValue());
 
                 /*
                  * don't want to place "0" in the section number list...

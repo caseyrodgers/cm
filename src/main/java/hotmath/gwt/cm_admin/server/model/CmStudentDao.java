@@ -1000,6 +1000,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
                 mdl.setDisableCalcAlways(rs.getInt("diasable_calculator_always") > 0);
                 mdl.setDisableCalcQuizzes(rs.getInt("disable_calculator_quizzes") > 0);
+                mdl.setNoPublicWebLinks(rs.getInt("no_public_weblinks") > 0);
             }
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
@@ -1010,7 +1011,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     public void updateStudentSettings(final Connection conn, StudentModelI sm, Integer passPercent) throws Exception {
         StudentSettingsModel ssm = sm.getSettings();
         updateStudentSettings(conn, sm.getUid(), ssm.getShowWorkRequired(), ssm.getTutoringAvailable(), ssm.getLimitGames(), ssm.getStopAtProgramEnd(),
-                passPercent, ssm.getDisableCalcAlways(), ssm.getDisableCalcQuizzes());
+                passPercent, ssm.getDisableCalcAlways(), ssm.getDisableCalcQuizzes(), ssm.isNoPublicWebLinks());
     }
 
     /**
@@ -1026,41 +1027,43 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public void updateStudentSettings(final Connection conn, Integer uid, Boolean showWorkRequired, Boolean tutoringAvailable, Boolean limitGames,
-            Boolean stopAtProgramEnd, Integer passPercent, Boolean disableCalcAlways, Boolean disableCalcQuizzes) throws Exception {
+            Boolean stopAtProgramEnd, Integer passPercent, Boolean disableCalcAlways, Boolean disableCalcQuizzes, boolean isNoPublicWeblinks) throws Exception {
 
-        PreparedStatement ps = null;
+        PreparedStatement ps1 = null;
+        PreparedStatement ps2 = null;
         ResultSet rs = null;
 
         try {
 
-            String insertSql = "insert into HA_USER_SETTINGS (limit_games, show_work_required, stop_at_program_end, tutoring_available, disable_calculator_always, disable_calculator_quizzes, user_id) values (?, ?, ?, ?, ?, ?, ?)";
-            String updateSql = "update HA_USER_SETTINGS set limit_games=?, show_work_required=?, stop_at_program_end=?, tutoring_available=?, disable_calculator_always=?, disable_calculator_quizzes=? where user_id=?";
+            String insertSql = "insert into HA_USER_SETTINGS (limit_games, show_work_required, stop_at_program_end, tutoring_available, disable_calculator_always, disable_calculator_quizzes, no_limit_weblinksuser_id) values (?, ?, ?, ?, ?, ?, ?, ?)";
+            String updateSql = "update HA_USER_SETTINGS set limit_games=?, show_work_required=?, stop_at_program_end=?, tutoring_available=?, disable_calculator_always=?, disable_calculator_quizzes=?, no_public_weblinks=? where user_id=?";
 
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("SETTINGS_SELECT_SQL"));
-            ps.setInt(1, uid);
-            rs = ps.executeQuery();
+            ps1 = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("SETTINGS_SELECT_SQL"));
+            ps1.setInt(1, uid);
+            rs = ps1.executeQuery();
 
             if (rs.next()) {
                 // perform update
-                ps = conn.prepareStatement(updateSql);
+                ps2 = conn.prepareStatement(updateSql);
             } else {
                 // perform insert
-                ps = conn.prepareStatement(insertSql);
+                ps2 = conn.prepareStatement(insertSql);
             }
-            ps.setInt(1, (limitGames) ? 1 : 0);
-            ps.setInt(2, (showWorkRequired) ? 1 : 0);
-            ps.setInt(3, (stopAtProgramEnd) ? 1 : 0);
-            ps.setInt(4, (tutoringAvailable) ? 1 : 0);
+            ps2.setInt(1, (limitGames) ? 1 : 0);
+            ps2.setInt(2, (showWorkRequired) ? 1 : 0);
+            ps2.setInt(3, (stopAtProgramEnd) ? 1 : 0);
+            ps2.setInt(4, (tutoringAvailable) ? 1 : 0);
             int disable = (disableCalcAlways == null || disableCalcAlways == false) ? 0 : 1;
-            ps.setInt(5, disable);
+            ps2.setInt(5, disable);
             disable = (disableCalcQuizzes == null || disableCalcQuizzes == false) ? 0 : 1;
-            ps.setInt(6, disable);
-            ps.setInt(7, uid);
+            ps2.setInt(6, disable);
+            ps2.setInt(7,  isNoPublicWeblinks?1:0);
+            ps2.setInt(8, uid);
 
-            int cnt = ps.executeUpdate();
+            int cnt = ps2.executeUpdate();
 
             if (cnt != 1) {
-                __logger.warn(String.format("updateStudentOptions(): update failed for uid: %d, sql: %s", uid, ps.toString()));
+                __logger.warn(String.format("updateStudentOptions(): update failed for uid: %d, sql: %s", uid, ps2.toString()));
             }
 
             /**
@@ -1074,7 +1077,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             }
 
         } finally {
-            SqlUtilities.releaseResources(null, ps, null);
+            SqlUtilities.releaseResources(null, ps1, null);
+            SqlUtilities.releaseResources(null, ps2, null);
         }
     }
 
@@ -2066,6 +2070,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
             mdl.setDisableCalcAlways(rs.getInt("disable_calculator_always") > 0);
             mdl.setDisableCalcQuizzes(rs.getInt("disable_calculator_quizzes") > 0);
+            mdl.setNoPublicWebLinks(rs.getInt("no_public_weblinks")!=0?true:false);
 
             sm.setLastQuiz(rs.getString("last_quiz"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));

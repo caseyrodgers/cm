@@ -473,6 +473,7 @@ class GroupManagerGlobalSettings extends GWindow {
     CheckBox stopAtProgramEnd;
     CheckBox disableCalcAlways;
     CheckBox disableCalcQuizzes;
+    CheckBox isNoPublicWebLinks;
     ComboBox <PassPercent> passCombo;
 
     CmAdminModel cm;
@@ -521,6 +522,12 @@ class GroupManagerGlobalSettings extends GWindow {
         disableCalcQuizzes.setBoxLabel("");
         fs.addThing(new MyFieldLabel(disableCalcQuizzes,"Disable whiteboard calculator for quizzes", 290));
 
+
+        isNoPublicWebLinks = new CheckBox();
+        isNoPublicWebLinks.setBoxLabel("");
+        fs.addThing(new MyFieldLabel(isNoPublicWebLinks,"Disallow All School's Web Links", 290));
+
+        
         passCombo = new PassPercentCombo(false);
         passCombo.enable();
         passCombo.setEmptyText("---");
@@ -572,6 +579,7 @@ class GroupManagerGlobalSettings extends GWindow {
                 action.setLimitGames(limitGames.getValue());
                 action.setDisableCalcAlways(disableCalcAlways.getValue());
                 action.setDisableCalcQuizzes(disableCalcQuizzes.getValue());
+                action.setNoPublicWebLinks(isNoPublicWebLinks.getValue());
                 PassPercent passPercent = passCombo.getValue();
                 if (passPercent != null) {
                 	String percentStr = passPercent.getPercent();

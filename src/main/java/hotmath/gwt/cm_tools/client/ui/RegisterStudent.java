@@ -443,6 +443,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             ssm.setTutoringAvailable(stuSettingsMdl.getTutoringAvailable());
             ssm.setDisableCalcAlways(stuSettingsMdl.getDisableCalcAlways());
             ssm.setDisableCalcQuizzes(stuSettingsMdl.getDisableCalcQuizzes());
+            ssm.setNoPublicWebLinks(stuSettingsMdl.isNoPublicWebLinks());
         } else {
             /** use account data to set tutoring available */
             if (acctInfoMdl != null) {

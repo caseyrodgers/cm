@@ -17,7 +17,12 @@ public class GetWebLinksForAdminCommand implements ActionHandler<GetWebLinksForA
     public CmList<WebLinkModel> execute(Connection conn, GetWebLinksForAdminAction action) throws Exception {
         
         CmList<WebLinkModel> models = new CmArrayList<WebLinkModel>();
-        models.addAll(WebLinkDao.getInstance().getAllWebLinksDefinedForAdmin(action.getAdminId(), true));
+        if(action.getAdminId() == 0) {
+            models.addAll(WebLinkDao.getInstance().getAllWebLinksDefinedForAdminPublic(action.getAdminId()));
+        }
+        else {
+            models.addAll(WebLinkDao.getInstance().getAllWebLinksDefinedForAdminPrivate(action.getAdminId(), false));
+        }
         return models;
     }
 

@@ -5,17 +5,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 /**
  * <code>StudentSettingsModel</code> represents the settings for a single student
  * 
- * 
- * KC: I changed to use native boolean instead of the Boolean wrapper to get around
- * NullPointer problems when reading (autoboxing) from null values.   For example, if limitGames
- * is null an error will be generated in JDBC due to Java's autoboxing feature ...
- * (ie, it wants a boolean .. so it does a ((Boolean)val).toString() .. which 
- * generates a NullPointer.  So, using the native types we are insulated from having
- * to constantly check for null.
- * 
- * 
- * 
- * @author bob
  *
  */
 
@@ -27,6 +16,7 @@ public class StudentSettingsModel implements Response {
 	boolean stopAtProgramEnd;
 	boolean disableCalcAlways;
 	boolean disableCalcQuizzes;
+	boolean noPublicWebLinks;
 
 	public StudentSettingsModel() {}
 	
@@ -77,5 +67,20 @@ public class StudentSettingsModel implements Response {
 	public void setDisableCalcQuizzes(boolean disableCalcQuizzes) {
 		this.disableCalcQuizzes = disableCalcQuizzes;
 	}
+
+    public boolean isNoPublicWebLinks() {
+        return noPublicWebLinks;
+    }
+
+    public void setNoPublicWebLinks(boolean noPublicWebLinks) {
+        this.noPublicWebLinks = noPublicWebLinks;
+    }
+
+    @Override
+    public String toString() {
+        return "StudentSettingsModel [tutoringAvailable=" + tutoringAvailable + ", showWorkRequired=" + showWorkRequired + ", limitGames=" + limitGames
+                + ", stopAtProgramEnd=" + stopAtProgramEnd + ", disableCalcAlways=" + disableCalcAlways + ", disableCalcQuizzes=" + disableCalcQuizzes
+                + ", noPublicWebLinks=" + noPublicWebLinks + "]";
+    }
 
 }

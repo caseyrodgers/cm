@@ -1,6 +1,7 @@
 package hotmath.cm.dao;
 
 import hotmath.cm.login.ClientEnvironment;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.UserAgentDetect;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.SubjectType;
@@ -47,7 +48,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
 
     public List<WebLinkModel> getWebLinksFor(int userId, int adminId, int groupId, String topic) throws Exception {
 
-        Collection<? extends WebLinkModel> links = getAllWebLinksDefinedForAdmin(adminId, true);
+        Collection<? extends WebLinkModel> links = getAllWebLinksDefinedForAdminPrivate(adminId, true);
 
         ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(userId);
         UserAgentDetect userAgent = new UserAgentDetect(clientEnvironment.getUserAgent(), "");
@@ -70,8 +71,8 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                     } else if (!isMobile && device != AvailableOn.DESKTOP_ONLY) {
                         continue; // skip it
                     }
-                
-                if(!l.isOffline()) {
+
+                if (!l.isOffline()) {
                     activeLinks.add(l);
                 }
             }
@@ -125,8 +126,11 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
      * @return
      */
     private boolean isWebLinkActiveInLessonSubject(String subject, String topic) {
-        String sql = "select distinct s.name as subject " + " from   HA_PROGRAM_LESSONS_static ls " + " JOIN SUBJECT s on s.subj_id = ls.subject "
-                + " where lesson = ? " + " order by grade_level ";
+        String sql = "select distinct s.name as subject " + 
+                     " from   HA_PROGRAM_LESSONS_static ls " + 
+                     " JOIN SUBJECT s on s.subj_id = ls.subject " + 
+                     " where lesson = ? " + 
+                     " order by grade_level ";
         List<String> subjects = getJdbcTemplate().query(sql, new Object[] { topic }, new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -154,49 +158,82 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         return false;
     }
 
-    public Collection<? extends WebLinkModel> getAllWebLinksDefinedForAdmin(int adminId, boolean readGroupsAndLessons) {
-        String sql = "select * from CM_WEBLINK where admin_id = ? and is_public = 0 order by name";
-        if (adminId == 0) {
-            sql = "select * from CM_WEBLINK where is_public = 1 or (admin_id = ?) order by name"; // admin_id
-                                                                                                  // is
-                                                                                                  // placeholder
-        }
-        List<WebLinkModel> links = getJdbcTemplate().query(sql, new Object[] { adminId }, new RowMapper<WebLinkModel>() {
+    public Collection<? extends WebLinkModel> getAllWebLinksDefinedForAdminPublic(int adminId) throws Exception {
+
+        String sql = "select * from CM_WEBLINK where is_public = 1 order by name";
+
+        List<WebLinkModel> links = getJdbcTemplate().query(sql, new Object[] {  }, new RowMapper<WebLinkModel>() {
             @Override
             public WebLinkModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return extractWebLinkModel(rs);
             }
         });
 
-        if (readGroupsAndLessons) {
-            for (final WebLinkModel wl : links) {
-                sql = "select wg.*, g.admin_id, g.name as group_name " + "from    CM_WEBLINK_GROUPS wg " + "JOIN CM_GROUP g on g.id = wg.group_id "
-                        + "where link_id = ? " + " order by group_name ";
+        return processWebLinks(links);
+    }
 
-                List<GroupInfoModel> groups = getJdbcTemplate().query(sql, new Object[] { wl.getLinkId() }, new RowMapper<GroupInfoModel>() {
-                    @Override
-                    public GroupInfoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return extractWebLinkGroup(rs);
-                    }
-                });
-                wl.getLinkGroups().clear();
-                wl.getLinkGroups().addAll(groups);
+    private Collection<? extends WebLinkModel> processWebLinks(List<WebLinkModel> links) {
+        for (final WebLinkModel wl : links) {
+            String sql = "select wg.*, g.admin_id, g.name as group_name " +
+                    "from    CM_WEBLINK_GROUPS wg " +
+                    "JOIN CM_GROUP g on g.id = wg.group_id " +
+                    "where link_id = ? " + " order by group_name ";
 
-                sql = "select * from CM_WEBLINK_LESSONS where link_id = ? order by id";
-                List<LessonModel> lessons = getJdbcTemplate().query(sql, new Object[] { wl.getLinkId() }, new RowMapper<LessonModel>() {
-                    @Override
-                    public LessonModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new LessonModel(rs.getString("lesson_name"), rs.getString("lesson_file"), rs.getString("lesson_subject"));
-                    }
-                });
-                wl.getLinkTargets().clear();
-                wl.getLinkTargets().addAll(lessons);
+            List<GroupInfoModel> groups = getJdbcTemplate().query(sql, new Object[] { wl.getLinkId() }, new RowMapper<GroupInfoModel>() {
+                @Override
+                public GroupInfoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return extractWebLinkGroup(rs);
+                }
+            });
+            wl.getLinkGroups().clear();
+            wl.getLinkGroups().addAll(groups);
 
-                wl.setSubjectType(lookupLinkSubject(wl));
+            sql = "select * from CM_WEBLINK_LESSONS where link_id = ? order by id";
+            List<LessonModel> lessons = getJdbcTemplate().query(sql, new Object[] { wl.getLinkId() }, new RowMapper<LessonModel>() {
+                @Override
+                public LessonModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return new LessonModel(rs.getString("lesson_name"), rs.getString("lesson_file"), rs.getString("lesson_subject"));
+                }
+            });
+            wl.getLinkTargets().clear();
+            wl.getLinkTargets().addAll(lessons);
 
-            }
+            wl.setSubjectType(lookupLinkSubject(wl));
+
         }
         return links;
+    }
+
+    public Collection<? extends WebLinkModel> getAllWebLinksDefinedForAdminPrivate(int adminId, boolean includePublic) throws Exception {
+
+        String sql = "select * from CM_WEBLINK where is_public = 0 and admin_id = ? and admin_id = ? order by name";
+        if (includePublic) {
+            sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ADMIN_WEBLINKS");
+        }
+
+        List<WebLinkModel> links = getJdbcTemplate().query(sql, new Object[] { adminId, adminId }, new RowMapper<WebLinkModel>() {
+            @Override
+            public WebLinkModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return extractWebLinkModel(rs);
+            }
+        });
+        
+        /** private will be first, so it should override public
+         * 
+         */
+        List<WebLinkModel> linksNoDups = new ArrayList<WebLinkModel>();
+        List<String> urlsNoDups = new ArrayList<String>();
+        for(WebLinkModel wlm: links) {
+            if(!urlsNoDups.contains(wlm.getUrl())) {
+                // add it
+                urlsNoDups.add(wlm.getUrl());
+                linksNoDups.add(wlm);
+            }
+            else {
+                __logger.warn("Duplicate web link: " + wlm);
+            }
+        }
+        return processWebLinks(linksNoDups);
     }
 
     protected GroupInfoModel extractWebLinkGroup(ResultSet rs) throws SQLException {
@@ -290,7 +327,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
     public int addWebLink(final WebLinkModel link) throws Exception {
 
         validateWebLink(link.getUrl());
-        
+
         link.setUrl(performLinkConversion(link.getUrl()));
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -362,21 +399,23 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         return webLinkId;
     }
 
+    LinkConvert linkConversions[] = { new LinkConvertImplKahn(), new LinkConvertImplYouTube(), new LinkConvertImplNoHTTP() };
 
-    LinkConvert linkConversions[] = {new LinkConvertImplKahn(), new LinkConvertImplYouTube(), new LinkConvertImplNoHTTP()};
-    
-    /** perform any URL conversion by checking for known
-     *  patterns .. then convert to best link. 
-     *  
-     *  For example, convert high level kahn videos to 
-     *  internal embedded video urls
-     *  
+    /**
+     * perform any URL conversion by checking for known patterns .. then convert
+     * to best link.
+     * 
+     * For example, convert high level kahn videos to internal embedded video
+     * urls
+     * 
      */
     public String performLinkConversion(String url) throws Exception {
-        //String conversions = new SbFile(CatchupMathProperties.getInstance().getCatchupRuntime() + "/weblink_conversion.txt").getFileContents().toString("\n");
-        for(LinkConvert lc: linkConversions) {
+        // String conversions = new
+        // SbFile(CatchupMathProperties.getInstance().getCatchupRuntime() +
+        // "/weblink_conversion.txt").getFileContents().toString("\n");
+        for (LinkConvert lc : linkConversions) {
             String convertedUrl = lc.doConversion(url);
-            if(convertedUrl != null) {
+            if (convertedUrl != null) {
                 validateWebLink(convertedUrl);
                 return convertedUrl;
             }
@@ -426,12 +465,13 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                 return rs.getInt("cnt");
             }
         });
-        return countMatches>0;
+        return countMatches > 0;
     }
 }
 
 interface LinkConvert {
-    /** return converted string if converted, otherwise return null
+    /**
+     * return converted string if converted, otherwise return null
      * 
      * @param url
      * @return
