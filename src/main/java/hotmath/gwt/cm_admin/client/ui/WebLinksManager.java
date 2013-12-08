@@ -700,7 +700,7 @@ public class WebLinksManager extends GWindow {
         TextButton button = new TextButton("Add", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, false, null, null,
+                WebLinkModel webLinkModel = new WebLinkModel(0, adminId, "New Web Link", "http://", "", AvailableOn.DESKTOP_AND_MOBILE, false, WebLinkType.ACTIVITY, null,
                         LinkViewer.INTERNAL, false);
                 new WebLinkEditorDialog(EditType.NEW_OR_EDIT, adminId, webLinkModel, new CallbackOnComplete() {
                     @Override
