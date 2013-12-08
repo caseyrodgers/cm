@@ -1836,8 +1836,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
 
-        markAssignmentHasSpecifiedUsers(assignKey, true);
-
         return personalPids;
     }
 
