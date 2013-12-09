@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.fx.client.FxElement;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 
 /**
  * Defines the main accordion widget containing the resources
@@ -76,7 +75,6 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
                 }
             }
             
-            String l = resource.getLabel();
             ResourceMenuButton btnResource = new ResourceMenuButton(resource);
 
             resourceButtons.put(resource.getType().label(), btnResource);
@@ -179,7 +177,8 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
          *  Also update DB via RPC when Lesson is complete
          */
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
-            public void handleEvent(CmEvent event) {
+            @SuppressWarnings("incomplete-switch")
+			public void handleEvent(CmEvent event) {
             	
             	switch(event.getEventType()) {
             	case EVENT_TYPE_REQUIRED_COMPLETE:
