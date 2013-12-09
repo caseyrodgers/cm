@@ -1,0 +1,72 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    xmlns:cm="urn:import:hotmath.gwt.cm_mobile_shared.client.ui">
+
+    <ui:style>
+       .main {
+           font-size: 1.1em;
+           background: white;
+           padding: 10px;
+       }
+       
+       .main li {
+           margin-bottom: 15px;
+       }
+    </ui:style>
+
+    <g:HTMLPanel styleName="{style.main}">
+            <p>
+                We include web resources within student lessons via their Web Links
+                resource menu.
+            </p>
+            
+            <p>
+                The Our School tab shows links for your account. Links may be
+                correlated with specific lessons and assigned to specific groups. To
+                see details or make a change, select the link and use View/Edit.
+            </p>
+        
+            <p>
+               The All Schools tab shows links that are used for all accounts.
+            </p>
+        
+            <p>
+               For more information, please see our Training Videos.
+            </p>
+        
+               
+           <ul>
+              <li>
+                  <b>Tip-1</b>: To restrict an All Schools link, Copy the link from the All
+                  Schools tab and then make changes in the Our School tab. The version
+                  of the link in Our School takes precedence. To disable the entire All
+                  Schools links, use Mange Groups > Group Settings.
+              </li>
+        
+              <li><b>Tip-2</b>: When creating a link, there are two ways to display it for
+                  students. One may work better than the other. If you choose the
+                  "Alternate" method, the link will open for students in a new browser
+                  window rather than be shown centered within Catchup Math. If a
+                  particular link behaves poorly, set the New Window checkbox in
+                  Options.
+              </li>
+        
+              <li><b>Tip-3</b>: You can turn an Our School link on and off in real time using
+                 the Offline selection in View/Edit > Options. You might use this to
+                 allow games as a reward at the end of a class period.
+              </li>
+        
+              <li>
+                 <b>Tip-4</b>: For some commonly used links such as Khan Academy and YouTube,
+                  we make a link conversions automatically for optimal display.
+              </li>    
+        
+              <li>
+                 <b>Tip-5</b>: Let us know at support@hotmath.com if you have suggestions!
+              </li>
+                 
+           </ul>
+
+</g:HTMLPanel>
+    
+</ui:UiBinder> 

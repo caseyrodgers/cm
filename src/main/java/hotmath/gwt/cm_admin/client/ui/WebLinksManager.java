@@ -83,6 +83,14 @@ public class WebLinksManager extends GWindow {
         setMaximizable(true);
 
         readPrivateWebLinksFromServer(adminId);
+        
+        
+        addTool(new TextButton("Web Links Guide", new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
+                new WebLinksGuideDialog();            }
+        } ));
 
         setVisible(true);
     }
