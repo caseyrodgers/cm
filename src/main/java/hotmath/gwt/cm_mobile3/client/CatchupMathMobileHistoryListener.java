@@ -241,7 +241,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
             }
             else if(resourceType == CmResourceType.WEBLINK_EXTERNAL) {
-                PopupMessageBox.showMessage("Web Link '" + itemData.getTitle() + " opened in new window");
+                PopupMessageBox.showMessage("Web Link '" + itemData.getTitle() + "' opened in new window");
                 Window.open(itemData.getFile(), "CmWebLink", "");
             }
             else {

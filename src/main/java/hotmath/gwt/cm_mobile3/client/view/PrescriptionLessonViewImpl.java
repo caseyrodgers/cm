@@ -13,6 +13,7 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,8 +74,32 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
         }
     };
     
+    
+
+    /** Do any fudging for mobile prescription resources.
+     * 
+     *  - make sure any youtube video is marked as WEBLINK_EXTERNAL
+     *  
+     * @param lessonData2
+     */
+    protected void fixupLessonData(PrescriptionSessionData lessonData) {
+        
+        for(PrescriptionSessionDataResource resource: lessonData.getInmhResources()) {
+            for(InmhItemData item: resource.getItems()) {
+                if(item.getType() == CmResourceType.WEBLINK) {
+                    if(item.getFile().contains("youtube")) {
+                        item.setType(CmResourceType.WEBLINK_EXTERNAL);
+                    }
+                }
+            }
+        }
+    }
+    
     @Override
     public void setLesson(PrescriptionSessionData lessonData) {
+        
+        fixupLessonData(lessonData);
+        
         
         listItems.clear();
         this.lessonData = lessonData;
@@ -98,6 +123,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
             if(resource.getItems().size() == 0) {
                 continue;
             }
+            
             
             ListItem li = new ListItem();
             li.setStyleName("resourceType");

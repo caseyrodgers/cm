@@ -109,7 +109,6 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<PrescriptionSessionResponse>() {
             public void onSuccess(PrescriptionSessionResponse result) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
-
                 /**
                  * install new data ..
                  * 
@@ -129,6 +128,7 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
         });
 
     }
+
 
     @Override
     public void showLessonChooser() {
