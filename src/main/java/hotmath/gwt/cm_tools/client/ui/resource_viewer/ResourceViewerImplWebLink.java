@@ -134,7 +134,7 @@ public class ResourceViewerImplWebLink extends SimpleContainer implements CmReso
     @Override
     public List<Widget> getContainerTools() {
         List<Widget> tools = new ArrayList<Widget>();
-        TextButton openExternal = new TextButton("Open External", new SelectHandler() {
+        TextButton openExternal = new TextButton("Alternative View", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 showExternalLink();
