@@ -60,6 +60,7 @@ public class CmShared implements EntryPoint {
 
                 try {
                     String nameAndTime = getClass().getName() + ": Uncaught exception: " + new Date();
+                    /**
                     CmShared.getCmService().execute(
 
                             new LogRetryActionFailedAction("uncaught exception", UserInfo.getInstance().getUid(), nameAndTime, null, CmShared
@@ -75,6 +76,7 @@ public class CmShared implements EntryPoint {
                                         Window.alert("Error sending info about uncaught exception: " + exe);
                                 }
                             });
+                   */                            
                 } catch (Exception x) {
                     CmLogger.error("Uncaught exception: " + x.getMessage(), x);
                 }
