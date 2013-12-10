@@ -4,14 +4,18 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 
 /** 
@@ -91,15 +95,12 @@ public class ResourceViewerImplWebLink extends SimpleContainer implements CmReso
         return ResourceViewerState.MAXIMIZED;
     }
 
+    
 
     @Override
     public Widget getResourcePanel() {
         if(item.getType() == CmResourceType.WEBLINK_EXTERNAL) {
-            Window.open(item.getFile(), "CmWebLink", null);
-            
-            CenterLayoutContainer clc = new CenterLayoutContainer();
-            clc.setWidget(new HTML("<span style='font-size: 1.5em;font-weight:bold;background: transparent'>'" + item.getTitle() + "' opened in external window</span>"));
-            addResource(clc, item.getTitle());
+            showExternalLink();
         }
         else {
             Frame frame = new Frame();
@@ -110,6 +111,14 @@ public class ResourceViewerImplWebLink extends SimpleContainer implements CmReso
         }
         return this;
     }
+
+    private void showExternalLink() {
+        Window.open(item.getFile(), "CmWebLink", null);
+        CenterLayoutContainer clc = new CenterLayoutContainer();
+        clc.setWidget(new HTML("<span style='font-size: 1.5em;font-weight:bold;background: transparent'>'" + item.getTitle() + "' opened in external window</span>"));
+        addResource(clc, item.getTitle());
+    }
+
 
     @Override
     public void removeResourcePanel() {
@@ -124,7 +133,17 @@ public class ResourceViewerImplWebLink extends SimpleContainer implements CmReso
     
     @Override
     public List<Widget> getContainerTools() {
-        return null;
+        List<Widget> tools = new ArrayList<Widget>();
+        TextButton openExternal = new TextButton("Open External", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                showExternalLink();
+                forceLayout();
+            }
+        });
+        openExternal.setToolTip("Open web link in a external web window");
+        tools.add(openExternal);
+        return tools;
     }
     
     @Override
