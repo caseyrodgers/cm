@@ -659,7 +659,7 @@ public class WebLinksManager extends GWindow {
                 editCurrent();
             }
         });
-        button.setToolTip("View or Edit selected web link");
+        button.setToolTip("For lesson list items: show the level of the lessons as can be confusing for two lessons with the same name (e.g. Adding and Subtracting Fractions)");
         return button;
     }
 

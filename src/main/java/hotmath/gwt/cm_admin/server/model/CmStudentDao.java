@@ -1035,7 +1035,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
         try {
 
-            String insertSql = "insert into HA_USER_SETTINGS (limit_games, show_work_required, stop_at_program_end, tutoring_available, disable_calculator_always, disable_calculator_quizzes, no_limit_weblinksuser_id) values (?, ?, ?, ?, ?, ?, ?, ?)";
+            String insertSql = "insert into HA_USER_SETTINGS (limit_games, show_work_required, stop_at_program_end, tutoring_available, disable_calculator_always, disable_calculator_quizzes, no_public_weblinks, user_id) values (?, ?, ?, ?, ?, ?, ?, ?)";
             String updateSql = "update HA_USER_SETTINGS set limit_games=?, show_work_required=?, stop_at_program_end=?, tutoring_available=?, disable_calculator_always=?, disable_calculator_quizzes=?, no_public_weblinks=? where user_id=?";
 
             ps1 = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("SETTINGS_SELECT_SQL"));
