@@ -358,12 +358,15 @@ public class WebLinksManager extends GWindow {
             }
         });
         _publicLinksPanel.setWidget(_grid4PublicLinks);
+        
+        /**
         _publicLinksPanel.addTool(new TextButton("View", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 viewPublicWebLink();
             }
         }));
+        */
         _publicLinksPanel.addTool(createVisitButton());
         TextButton importBtn = new TextButton("Copy", new SelectHandler() {
 
