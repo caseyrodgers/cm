@@ -18,6 +18,9 @@ public class LogRetryActionFailedCommand implements ActionHandler<LogRetryAction
     
     @Override
     public RpcData execute(Connection conn, LogRetryActionFailedAction action) throws Exception {
+        if(true) {
+            return new RpcData("status=OK");
+        }
         PreparedStatement pstat=null;
         try {
             String sql = "insert into HA_ACTION_FAIL_LOG(uid, class_name, action_info,stack_trace, log_type, fail_date)values(?,?,?,?,?,now())";
