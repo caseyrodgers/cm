@@ -79,6 +79,15 @@ public class LoginService extends HttpServlet {
     boolean _isMobileOverride;
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	    
+	    String address = req.getRemoteAddr();
+	    if(address != null) {
+	        if(address.equals("66.195.91.181")) {
+	            LOGGER.info("Address rejected due to abuse!: " + address);
+	            return;
+	        }
+	    }
+	    
 		String user = req.getParameter("user");
 		String pwd = req.getParameter("pwd");
 		String action = req.getParameter("action");
