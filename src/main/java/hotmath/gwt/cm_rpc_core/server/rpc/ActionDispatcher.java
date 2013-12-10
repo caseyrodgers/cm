@@ -347,7 +347,7 @@ public class ActionDispatcher {
 				incrementActionsException(actionType);
 				totalMonitorData.monitorCountActionsException++;
 
-				sendEmailNotifications(e, clientInfo);
+				//sendEmailNotifications(e, clientInfo);
 
 				failed = true;
 				errMsg = e.getMessage();
