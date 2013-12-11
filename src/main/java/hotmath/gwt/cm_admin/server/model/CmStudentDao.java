@@ -496,7 +496,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     }
 
     public StudentModelI addStudent(Connection conn, StudentModelI sm) throws Exception {
-        return addStudent(conn, sm);
+        return addStudent(conn, sm, true);
     }
     public StudentModelI addStudent(final Connection conn, StudentModelI sm, boolean checkForDups) throws Exception {
         PreparedStatement ps = null;
