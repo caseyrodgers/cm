@@ -290,6 +290,11 @@ function showTeacherVideo(name) {
         closeFoot;
             title = 'Student How To';
        }
+       else if (name == 'weblinks-quick') {
+            html = '<iframe src="/training-videos/embedded-weblinks.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
+        closeFoot;
+            title = 'Web Links Quick Overview';
+       }
 
     var head = '<a href="#" onclick="closeTeacherVideo();return false" class="close"><span>close</span> X</a>' + title;
 
