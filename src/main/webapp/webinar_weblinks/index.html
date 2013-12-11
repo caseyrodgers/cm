@@ -45,6 +45,7 @@ pageTracker._trackPageview();
   }
 </style>
 <!-- InstanceBeginEditable name="head" --> 
+<script type="text/javascript" src="/assets/flowplayer/flowplayer-3.1.4.min.js"></script>
         
         <meta name="DC.title" content="catchupmath" /> 
         <script type="text/javascript"> 
@@ -157,6 +158,26 @@ pageTracker._trackPageview();
                         <!-- InstanceBeginEditable name="main-content-left" --> 
                         <h1>Web Links Overview</h1> 
        <div id='video-wrapper' class='round-corners-1'> 
+
+
+        <div id="media">
+		<!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
+		<a  
+			 href="http://catchupmath.com/assets/webinar_weblinks/WebLinksQuick.mp4"  
+			 style="display:block;width:520px;height:400px"  
+			 id="player"> 
+		</a> 
+        
+    	<!-- this will install flowplayer inside previous A- tag. -->
+		<script>
+		    var params = {};
+		    params.key = '$a12fd4b15a588479e9e';
+			flowplayer("player", "/assets/flowplayer/flowplayer.commercial-3.1.5.swf",params);
+		</script>
+        </div>
+
+
+<!--
         <div id="media"> 
             <object classid="clsid:22D6F312-B0F6-11D0-94AB-0080C74C7E95" width="480" height="360" codebase="http://www.microsoft.com/Windows/MediaPlayer/"> 
             <param name="Filename" value="http://catchupmath.com/assets/webinar_weblinks/WebLinksQuick.mp4"> 
@@ -171,6 +192,7 @@ pageTracker._trackPageview();
                               CODEBASE="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,0,0,0" width="480" height="360"></embed> 
             </object>        
         </div> 
+ -->
      </div> 
     <!-- InstanceEndEditable -->
                     </div>
