@@ -1077,6 +1077,10 @@ var Whiteboard = function (cont, isStatic) {
 
     function showNavigator(x, y) {
         var cont = $get_jqElement('#drawsection'); //$("[name='drawsection']")
+		var wlim= cont.width()-17
+		var hlim= cont.height()-17
+		nav_width=Math.min(300,wlim);
+		nav_height=Math.min(300,hlim);
         var navig = '<div name="navigator" class="navigator" style="width: 200px; height: 200px; border: 2px solid white; position: absolute; right: 0px;top: 0px;background-color: rgba(200,200,200,0.95);box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);"><div class="navThumb_cont" name="navThumb_cont" style="border: 1px solid blue; left: 0px; top: 0px; position: absolute;"><div name="navThumb" style="border: 1px solid red; left: 0px; top: 0px; "></div><span style="font-size:10px;color:gray;display: block;cursor: default;" unselectable="on">Drag me</span></div></div>';
         cont.append(navig)
         $get_jqElement("#navigator").width(nav_width);
