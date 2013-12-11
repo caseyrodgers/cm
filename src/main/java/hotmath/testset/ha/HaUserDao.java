@@ -96,6 +96,7 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("HA_USER_LOOKUP_USER",
                 new String[] { "WHERE_CLAUSE|where u.uid = ?" });
 
+        
         user = getJdbcTemplate().queryForObject(sql, new Object[] { uid }, new RowMapper<HaUser>() {
             @Override
             public HaUser mapRow(ResultSet rs, int rowNum) throws SQLException {
