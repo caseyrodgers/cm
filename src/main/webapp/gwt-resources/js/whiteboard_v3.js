@@ -81,8 +81,8 @@ var Whiteboard = function (cont, isStatic) {
     var selectedObjects = [];
     var multiSelection = false;
     var mSelRect = null;
-	var hitW=IS_TOUCH_ONLY?10:5;
-	var hitH=IS_TOUCH_ONLY?10:5;
+    var hitW = IS_TOUCH_ONLY ? 10 : 5;
+    var hitH = IS_TOUCH_ONLY ? 10 : 5;
     //
     var toolArr = [{
         name: 'button_text',
@@ -185,18 +185,35 @@ var Whiteboard = function (cont, isStatic) {
 
             var wbc = $('<div></div>').attr('name', 'wb-container').addClass("wb-container").appendTo(parentDiv);
             var toolCont = buildTools([{
-        name: 'toggleMenu',
-        title: 'Show/Hide Tools',
-        classes: 'big_tool_button',
-        text: "Tools"
-    }]).appendTo(wbc);
-	
+                name: 'toggleMenu',
+                title: 'Show/Hide Tools',
+                classes: 'big_tool_button',
+                text: "Tools"
+            }]).appendTo(wbc);
+
             var canvasCont = buildCanvasLayers().appendTo(wbc);
             //buildInputTextBox().appendTo(canvasCont);
             var vScroll = buildScrollBar('v').appendTo(wbc);
             var hScroll = buildScrollBar('h').appendTo(wbc);
-			var toolMenu=buildToolMenu(toolArr).appendTo(wbc);
-			$get_jqElement("#toggleMenu").on("click",function(){$get_jqElement("#wb_menu").toggle()});
+            var toolMenu = buildToolMenu(toolArr).appendTo(wbc);
+            $get_jqElement("#toggleMenu").on("click", function (e) {
+                positionToolMenu('t', e.originalEvent);
+                $get_jqElement("#wb_menu").toggle();
+            });
+            $get_jqElement("#toggleMenu").on("mouseover", function (e) {
+                positionToolMenu('t', e.originalEvent);
+                $get_jqElement("#wb_menu").show()
+            });
+            $get_jqElement("#wb_menu").on("mouseleave", function (e) {
+                $get_jqElement("#wb_menu").hide()
+            });
+            $(document).on("contextmenu", function (e) {
+                e.preventDefault();
+                positionToolMenu('mouse', e.originalEvent);
+                $get_jqElement("#wb_menu").show();
+                return false;
+            });
+
         }
 
         function buildTools(arr) {
@@ -210,34 +227,82 @@ var Whiteboard = function (cont, isStatic) {
             }
             return divObj
         }
-		function buildToolMenu(arr) {
+
+        function buildToolMenu(arr) {
             var divObj = $("<div name='wb_menu' class='wb_menu' style='position:absolute;width:215px;top:36px;left:5px;background-color:#eeeeee;padding:5px;-webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);display:none;'></div>");
             var tool
             for (var k = 0; k < arr.length; k++) {
                 tool = createToolBtn(arr[k])
-                tool.appendTo(divObj).css("margin","4px");
+                tool.appendTo(divObj).css("margin", "4px");
             }
             return divObj
         }
-function resizeToolMenu(cl){
-var w,t,rcl,acl
-if(cl=='small_tool_button'){
-acl=cl;
-rcl='big_tool_button';
-w='135px';
-t='31px';
-}else{
-acl=cl;
-rcl='small_tool_button';
-w='215px';
-t='36px';
-}
-$get_jqElement("#toggleMenu").removeClass(rcl).addClass(acl)
-$get_jqElement("#wb_menu").css({"width":w,"top":t})
-if(cl=='small_tool_button'){
-$get_jqElement("#toggleMenu").width(45);
-}
-}
+
+        function positionToolMenu(flag, _event) {
+            var isTouchEnabled = _event.type.indexOf('touch') > -1
+            if (flag == 'mouse' && !isTouchEnabled) {
+                var l, t
+                var event = _event ? _event : window.event;
+                var off = getoffset();
+                var dx, dy
+                if (event.pageX != undefined) {
+                    dx = event.pageX;
+                    dy = event.pageY;
+                } else {
+                    dx = event.clientX;
+                    dy = event.clientY;
+                }
+                var wlim = $get_jqElement("#drawsection").width();
+                var hlim = $get_jqElement("#drawsection").height() + $get_jqElement("#tools").outerHeight();
+                var wd = $get_jqElement("#wb_menu").outerWidth();
+                var ht = $get_jqElement("#wb_menu").outerHeight();
+                l = dx + wd > wlim ? wlim - wd : dx
+                t = dy + ht > hlim ? hlim - ht : dy
+                $get_jqElement("#wb_menu").css({
+                    "left": l + 'px',
+                    "top": t + "px"
+                })
+            } else {
+                $get_jqElement("#wb_menu").css({
+                    "left": '5px',
+                    "top": $get_jqElement("#tools").outerHeight() + "px"
+                })
+            }
+        }
+
+        function resizeToolMenu(cl) {
+            var w, t, rcl, acl
+            if (cl == 'small_tool_button') {
+                acl = cl;
+                rcl = 'big_tool_button';
+                w = '135px';
+                t = '31px';
+            } else {
+                acl = cl;
+                rcl = 'small_tool_button';
+                w = '215px';
+                t = '36px';
+            }
+            $get_jqElement("#toggleMenu").removeClass(rcl).addClass(acl)
+            $get_jqElement("#wb_menu").css({
+                "width": w,
+                "top": t
+            })
+            if (cl == 'small_tool_button') {
+                $get_jqElement("#toggleMenu").width(45);
+            }
+        }
+    var event_rightclick = false
+
+        function isRightClick(e) {
+            e = e || window.event;
+            if (!e.which && e.button !== undefined) {
+                e.which = (e.button & 1 ? 1 : (e.button & 2 ? 3 : (e.button & 4 ? 2 : 0)));
+            }
+            event_rightclick = e.which === 3
+            return event_rightclick;
+        }
+
         function buildCanvasLayers() {
             var divObj = $("<div/>", {
                 name: 'drawsection'
@@ -390,7 +455,7 @@ $get_jqElement("#toggleMenu").width(45);
         function findSelectedObjIndex(xp, yp) {
             var l = graphicDataStore.length
             for (var i = l - 1; i >= 0; i--) {
-var __obj=graphicDataStore[i];
+                var __obj = graphicDataStore[i];
                 if (graphicDataStore[i].type == 'cmd') {
                     continue
                 }
@@ -409,18 +474,23 @@ var __obj=graphicDataStore[i];
                 if (!rect) {
                     return -1
                 }
-				var sel=contains(rect, xp, yp)
-				var hasShape=false
-				if(sel){
-				  hasShape=getShapeHit(__obj,{xmin:xp-hitW,ymin:yp-hitW,xmax:xp+hitH,ymax:yp+hitH})
-				}
-                if (sel&&hasShape) {
+                var sel = contains(rect, xp, yp)
+                var hasShape = false
+                if (sel) {
+                    hasShape = getShapeHit(__obj, {
+                        xmin: xp - hitW,
+                        ymin: yp - hitW,
+                        xmax: xp + hitH,
+                        ymax: yp + hitH
+                    })
+                }
+                if (sel && hasShape) {
                     selectedObj = graphicDataStore[i];
-					updateBuffer()
+                    updateBuffer()
                     return i;
                 }
             }
-			updateBuffer()
+            updateBuffer()
             return -1
         }
         //
@@ -448,11 +518,11 @@ var __obj=graphicDataStore[i];
                     }
                     transformRect(rect, scrollPosition.x, scrollPosition.y)
                     var sel = intersectRect(rect, selectionRect)
-					var hasShape=false
-				if(sel){
-				  hasShape=getShapeHit(obj,getIntRect(rect,selectionRect))
-				}
-                    if (sel&&hasShape) {
+                    var hasShape = false
+                    if (sel) {
+                        hasShape = getShapeHit(obj, getIntRect(rect, selectionRect))
+                    }
+                    if (sel && hasShape) {
                         _arr.push(obj)
                         if (!mSelRect) {
                             mSelRect = {
@@ -469,7 +539,7 @@ var __obj=graphicDataStore[i];
                     }
                 }
             }
-			updateBuffer()
+            updateBuffer()
             return _arr
         }
 
@@ -520,36 +590,43 @@ var __obj=graphicDataStore[i];
                 r2.ymin > r1.ymax ||
                 r2.ymax < r1.ymin);
         }
-		function getIntRect(r1, r2) {
-            var xmin=Math.max(r1.xmin,r2.xmin);
-			var xmax=Math.min(r1.xmax,r2.xmax);
-			var ymin=Math.max(r1.ymin,r2.ymin);
-			var ymax=Math.min(r1.ymax,r2.ymax);
-			return {xmin:xmin,ymin:ymin,xmax:xmax,ymax:ymax};
+
+        function getIntRect(r1, r2) {
+            var xmin = Math.max(r1.xmin, r2.xmin);
+            var xmax = Math.min(r1.xmax, r2.xmax);
+            var ymin = Math.max(r1.ymin, r2.ymin);
+            var ymax = Math.min(r1.ymax, r2.ymax);
+            return {
+                xmin: xmin,
+                ymin: ymin,
+                xmax: xmax,
+                ymax: ymax
+            };
         }
-		function getShapeHit(obj,rect){
-		buffercontext.clearRect(0, 0, buffercanvas.width, buffercanvas.height);
-        buffercanvas.width = canvas.width;
-        buffercanvas.height = canvas.height;
-        buffercontext.save();
-        buffercontext.translate(scrollPosition.x, scrollPosition.y);        
-        renderToBuffer(obj, buffercontext);
-		var __w=rect.xmax-rect.xmin;
-		var __h=rect.ymax-rect.ymin;
-		__w=Math.max(__w,hitW*2);
-		__h=Math.max(__h,hitH*2);
-        var imgd = buffercontext.getImageData(rect.xmin, rect.ymin, __w, __h);
-		var pix = imgd.data;
-		var hasColorData=false;
-		for (var i = 0, n = pix.length; i < n; i += 4) {
-			if(pix[i+3]>0){
-			hasColorData=true
-			break
-			}
-		}
-        buffercontext.restore();
-		return hasColorData
-		}
+
+        function getShapeHit(obj, rect) {
+            buffercontext.clearRect(0, 0, buffercanvas.width, buffercanvas.height);
+            buffercanvas.width = canvas.width;
+            buffercanvas.height = canvas.height;
+            buffercontext.save();
+            buffercontext.translate(scrollPosition.x, scrollPosition.y);
+            renderToBuffer(obj, buffercontext);
+            var __w = rect.xmax - rect.xmin;
+            var __h = rect.ymax - rect.ymin;
+            __w = Math.max(__w, hitW * 2);
+            __h = Math.max(__h, hitH * 2);
+            var imgd = buffercontext.getImageData(rect.xmin, rect.ymin, __w, __h);
+            var pix = imgd.data;
+            var hasColorData = false;
+            for (var i = 0, n = pix.length; i < n; i += 4) {
+                if (pix[i + 3] > 0) {
+                    hasColorData = true
+                    break
+                }
+            }
+            buffercontext.restore();
+            return hasColorData
+        }
 
         function checkForObjectErase(r) {
             var l = graphicDataStore.length
@@ -822,13 +899,13 @@ var __obj=graphicDataStore[i];
         $get_Element("#button_rect").style.border = '1px solid #000000';
         $get_Element("#button_oval").style.border = '1px solid #000000';
         $get_Element("#button_eraser").style.border = '1px solid #000000';
-		$get_Element("#button_nav").style.border = '1px solid #000000';
+        $get_Element("#button_nav").style.border = '1px solid #000000';
         if ($get_Element("#button_move")) {
             $get_Element("#button_move").style.border = '1px solid #000000';
         }
-		if(currentTool!='nav'){
-		hideNavigator();
-		}
+        if (currentTool != 'nav') {
+            hideNavigator();
+        }
         //
     }
 
@@ -969,300 +1046,348 @@ var __obj=graphicDataStore[i];
     var isIE = ieVer != -1 && ieVer < 9;
     console.log('iIE: ' + isIE + ', version: ' + ieVer);
 
-function doRightScroll(dx) {
-                var currPos = scrollPosition.x;
-                currPos = currPos ? currPos : 0;
-                currPos =  dx;
-                currPos = currPos > 0 ? 0 : currPos
-                currPos = currPos < -(scroll_window.width - screen_width) ? -(scroll_window.width - screen_width) : currPos;
-                var scrub = (scroll_window.width - screen_width) / (screen_width - 30)
-                $get_Element('#hscroll_thumb').style.left = (-currPos / scrub) + "px";
-                scrollPosition['x'] = currPos;
-				
-            }
+    function doRightScroll(dx) {
+        var currPos = scrollPosition.x;
+        currPos = currPos ? currPos : 0;
+        currPos = dx;
+        currPos = currPos > 0 ? 0 : currPos
+        currPos = currPos < -(scroll_window.width - screen_width) ? -(scroll_window.width - screen_width) : currPos;
+        var scrub = (scroll_window.width - screen_width) / (screen_width - 30)
+        $get_Element('#hscroll_thumb').style.left = (-currPos / scrub) + "px";
+        scrollPosition['x'] = currPos;
 
-            function doUpScroll(dy) {
-                var currPos = scrollPosition.y;
-                currPos = currPos ? currPos : 0;
-                currPos = dy;
-                currPos = currPos > 0 ? 0 : currPos
-                currPos = currPos < -(scroll_window.height - screen_height) ? -(scroll_window.height - screen_height) : currPos;
-                var scrub = (scroll_window.height - screen_height) / (screen_height - 30)
-                $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
-                scrollPosition['y'] = currPos;
-            }
-			//--NAVIGATOR CODE BEGIN--
-			var mpos
-var nav_width = 300;
-var nav_height = 300;
-var ipos
-var navClicked = false;
-function showNavigator(x, y) {
-    var cont = $get_jqElement('#drawsection');//$("[name='drawsection']")
-    var navig = '<div name="navigator" class="navigator" style="width: 200px; height: 200px; border: 2px solid white; position: absolute; right: 0px;top: 0px;background-color: rgba(200,200,200,0.95);box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);"><div class="navThumb_cont" name="navThumb_cont" style="border: 1px solid blue; left: 0px; top: 0px; position: absolute;"><div name="navThumb" style="border: 1px solid red; left: 0px; top: 0px; "></div><span style="font-size:10px;color:gray;display: block;cursor: default;" unselectable="on">Drag me</span></div></div>';
-    cont.append(navig)
-    $get_jqElement("#navigator").width(nav_width);
-    $get_jqElement("#navigator").height(nav_height);
-    var ratW = nav_width / scroll_window.width;
-    var ratH = nav_height / scroll_window.height;
-    var navTW = cont.width() * ratW;
-    var navTH = cont.height() * ratH;
-    $get_jqElement("#navThumb").width(navTW);
-    $get_jqElement("#navThumb").height(navTH);
-	//$(".navThumb").width(navTW);
-	$get_jqElement("#navThumb_cont").height(navTH+50);
-    updateNavThumb(x, y);
-    ipos = $get_jqElement("#navThumb_cont").position()
-    $get_jqElement("#navThumb_cont").on('mousedown', initNavTBDrag);
-	$get_jqElement("#navThumb_cont").on('touchstart', removeDrag);
-    $get_jqElement("#navThumb_cont").on('touchstart', initNavTBDrag);
-    $get_jqElement("#navigator").on('mousedown', registerNavClick);
-	$get_jqElement("#navigator").on('mouseup', movetoNavClick);
-    $get_jqElement("#navigator").on('touchstart', registerNavClick);    
-}
-function hideNavigator() {
-    $get_jqElement("#navigator").remove();
-}
-function showHideNavigator(arr, pos) {
-    if ($get_jqElement("#navigator").length) {
-        hideNavigator()
-        return 'hide'
-    } else {
-        showNavigator(pos.x, pos.y)
-        updateNavigator(arr, pos.x, pos.y)
-        return 'show'
     }
-}
-function addPix(x, y, boo) {
-    var ratW = nav_width / scroll_window.width
-    var ratH = nav_height / scroll_window.height
-    var xp = x * ratW
-    var yp = y * ratH
-    if (boo) {
+
+    function doUpScroll(dy) {
+        var currPos = scrollPosition.y;
+        currPos = currPos ? currPos : 0;
+        currPos = dy;
+        currPos = currPos > 0 ? 0 : currPos
+        currPos = currPos < -(scroll_window.height - screen_height) ? -(scroll_window.height - screen_height) : currPos;
+        var scrub = (scroll_window.height - screen_height) / (screen_height - 30)
+        $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
+        scrollPosition['y'] = currPos;
+    }
+    //--NAVIGATOR CODE BEGIN--
+    var mpos
+    var nav_width = 300;
+    var nav_height = 300;
+    var ipos
+    var navClicked = false;
+
+    function showNavigator(x, y) {
+        var cont = $get_jqElement('#drawsection'); //$("[name='drawsection']")
+        var navig = '<div name="navigator" class="navigator" style="width: 200px; height: 200px; border: 2px solid white; position: absolute; right: 0px;top: 0px;background-color: rgba(200,200,200,0.95);box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);"><div class="navThumb_cont" name="navThumb_cont" style="border: 1px solid blue; left: 0px; top: 0px; position: absolute;"><div name="navThumb" style="border: 1px solid red; left: 0px; top: 0px; "></div><span style="font-size:10px;color:gray;display: block;cursor: default;" unselectable="on">Drag me</span></div></div>';
+        cont.append(navig)
+        $get_jqElement("#navigator").width(nav_width);
+        $get_jqElement("#navigator").height(nav_height);
+        var ratW = nav_width / scroll_window.width;
+        var ratH = nav_height / scroll_window.height;
+        var navTW = cont.width() * ratW;
+        var navTH = cont.height() * ratH;
+        $get_jqElement("#navThumb").width(navTW);
+        $get_jqElement("#navThumb").height(navTH);
+        //$(".navThumb").width(navTW);
+        $get_jqElement("#navThumb_cont").height(navTH + 50);
+        updateNavThumb(x, y);
+        ipos = $get_jqElement("#navThumb_cont").position()
+        $get_jqElement("#navThumb_cont").on('mousedown', initNavTBDrag);
+        $get_jqElement("#navThumb_cont").on('touchstart', removeDrag);
+        $get_jqElement("#navThumb_cont").on('touchstart', initNavTBDrag);
+        $get_jqElement("#navigator").on('mousedown', registerNavClick);
+        $get_jqElement("#navigator").on('mouseup', movetoNavClick);
+        $get_jqElement("#navigator").on('touchstart', registerNavClick);
+    }
+
+    function hideNavigator() {
+        $get_jqElement("#navigator").remove();
+    }
+
+    function showHideNavigator(arr, pos) {
+        if ($get_jqElement("#navigator").length) {
+            hideNavigator()
+            return 'hide'
+        } else {
+            showNavigator(pos.x, pos.y)
+            updateNavigator(arr, pos.x, pos.y)
+            return 'show'
+        }
+    }
+
+    function reloadNavigator() {
+
+        if ($get_jqElement("#navigator").length) {
+            hideNavigator()
+            var pos = scrollPosition;
+            var arr = graphicDataStore
+            showNavigator(pos.x, pos.y)
+            updateNavigator(arr, pos.x, pos.y)
+        }
+    }
+
+    function addPix(x, y, boo) {
+        var ratW = nav_width / scroll_window.width
+        var ratH = nav_height / scroll_window.height
+        var xp = x * ratW
+        var yp = y * ratH
+        if (boo) {
+            $("<div/>", {
+                "class": "inline"
+            }).appendTo($get_jqElement("#navigator")).css({
+                "position": "absolute",
+                "left": xp + "px",
+                "top": yp + "px",
+                "background-color": "white",
+                "width": "4px",
+                "height": "4px"
+            })
+            return
+        }
         $("<div/>", {
             "class": "inline"
         }).appendTo($get_jqElement("#navigator")).css({
             "position": "absolute",
             "left": xp + "px",
             "top": yp + "px",
-            "background-color": "white",
+            "background-color": "black",
             "width": "4px",
             "height": "4px"
-        })
-        return
+        });
     }
-    $("<div/>", {
-        "class": "inline"
-    }).appendTo($get_jqElement("#navigator")).css({
-        "position": "absolute",
-        "left": xp + "px",
-        "top": yp + "px",
-        "background-color": "black",
-        "width": "4px",
-        "height": "4px"
-    });
-}
-function updateNavigator(arr, x, y) {
-    var l = arr.length;
-    for (var i = 0; i < l; i++) {
-        var obj = arr[i];
-        if (obj.id == 11 || obj.id == 12 || obj.id === 0) {
-            continue
+
+    function updateNavigator(arr, x, y) {
+        var l = arr.length;
+        for (var i = 0; i < l; i++) {
+            var obj = arr[i];
+            if (obj.id == 11 || obj.id == 12 || obj.id === 0) {
+                continue
+            }
+            var b = obj.brect
+            addPix(b.xmin, b.ymin, obj.isErased)
         }
-        var b = obj.brect
-        addPix(b.xmin, b.ymin, obj.isErased)
+        if ($get_jqElement("#graph_cont").length) {
+            var el = $get_jqElement("#graph_cont");
+            var pos = el.position()
+            var ratW = nav_width / scroll_window.width
+            var ratH = nav_height / scroll_window.height
+            var xp = pos.left - x
+            var yp = pos.top - y
+            addPix(xp, yp)
+        }
     }
-    if ($get_jqElement("#graph_cont").length) {
-        var el = $get_jqElement("#graph_cont");
-        var pos = el.position()
+
+    function updateNavThumb(x, y) {
         var ratW = nav_width / scroll_window.width
         var ratH = nav_height / scroll_window.height
-        var xp = pos.left - x
-        var yp = pos.top - y
-        addPix(xp, yp)
+        var nx = x * ratW
+        var ny = y * ratH
+        $get_jqElement("#navThumb_cont").css({
+            "left": -nx + 'px',
+            'top': -ny + 'px'
+        })
     }
-}
-function updateNavThumb(x, y) {
-    var ratW = nav_width / scroll_window.width
-    var ratH = nav_height / scroll_window.height
-    var nx = x * ratW
-    var ny = y * ratH
-    $get_jqElement("#navThumb_cont").css({
-        "left": -nx + 'px',
-        'top': -ny + 'px'
-    })
-}
-function doNavTBDrag(_event) {
-    navClicked = false;
-    var event = _event ? _event.originalEvent : window.event;
-    var isTouchEnabled = event.type.indexOf('touch') > -1
-    event = isTouchEnabled ? event.changedTouches[0] : event;    
-    var pos = getMousePos(event)
-    var dx = -ipos.left + mpos.x - pos.x;
-    var dy = -ipos.top + mpos.y - pos.y;
-	var nvt_cont=$get_jqElement("#navThumb_cont");
-	var nvt=$get_jqElement("#navThumb")
-    var parentOffset = nvt_cont.parent().offset();
-    var limitW = nav_width;
-    var limitH = nav_height;
-    //console.log(ipos.left + ":" + dx)
-    dx = -dx + nvt.width() > limitW ? -(limitW - nvt.width()) : dx;
-    dy = -dy + nvt.height() > limitH ? -(limitH - nvt.height()) : dy;
-    dx = dx > 0 ? 0 : dx
-    dy = dy > 0 ? 0 : dy
-    nvt_cont.css({
-        "left": -dx + 'px',
-        'top': -dy + 'px'
-    })
-    var ratW = scroll_window.width / nav_width;
-    var ratH = scroll_window.height / nav_height;
 
-    wb.scrollScreen(dx * ratW, dy * ratH);
-	if (_event.preventDefault) {
-        _event.preventDefault();
-    } else {
-        _event.returnValue = false;
-    }
-}
-function getMousePos(event) {
-    var dx, dy;
+    function doNavTBDrag(_event) {
+        navClicked = false;
+        var event = _event ? _event.originalEvent : window.event;
+        var isTouchEnabled = event.type.indexOf('touch') > -1
+        event = isTouchEnabled ? event.changedTouches[0] : event;
+        var pos = getMousePos(event)
+        var dx = -ipos.left + mpos.x - pos.x;
+        var dy = -ipos.top + mpos.y - pos.y;
+        var nvt_cont = $get_jqElement("#navThumb_cont");
+        var nvt = $get_jqElement("#navThumb")
+        var parentOffset = nvt_cont.parent().offset();
+        var limitW = nav_width;
+        var limitH = nav_height;
+        //console.log(ipos.left + ":" + dx)
+        dx = -dx + nvt.width() > limitW ? -(limitW - nvt.width()) : dx;
+        dy = -dy + nvt.height() > limitH ? -(limitH - nvt.height()) : dy;
+        dx = dx > 0 ? 0 : dx
+        dy = dy > 0 ? 0 : dy
+        nvt_cont.css({
+            "left": -dx + 'px',
+            'top': -dy + 'px'
+        })
+        var ratW = scroll_window.width / nav_width;
+        var ratH = scroll_window.height / nav_height;
 
-    if (event.pageX != undefined) {
-        dx = event.pageX;
-        dy = event.pageY;
-    } else {
-        dx = event.clientX
-        dy = event.clientY
+        wb.scrollScreen(dx * ratW, dy * ratH);
+        if (_event.preventDefault) {
+            _event.preventDefault();
+        } else {
+            _event.returnValue = false;
+        }
     }
-    var parentOffset = $get_jqElement("#navThumb_cont").parent().offset();
-    var relX = dx - parentOffset.left;
-    var relY = dy - parentOffset.top;
-    return {
-        x: relX,
-        y: relY
-    }
-}
-function stopNavTBDrag() {
-    $(document).off('mousemove', doNavTBDrag);
-    $(document).off('mouseup', stopNavTBDrag);
-    $(document).off('touchmove', doNavTBDrag);
-    $(document).off('touchend', stopNavTBDrag);
-    $get_jqElement("#navigator").off('touchend', movetoNavClick);
-	$get_jqElement("#navigator").off('touchmove', removeDrag);
-}
-function initNavTBDrag(_event) {
-    var event = _event ? _event.originalEvent : window.event;
-    var isTouchEnabled = event.type.indexOf('touch') > -1;
-	try{
-    event = isTouchEnabled ? event.changedTouches[0] : event;
-	}catch(e){
-	alert(e)
-	}
-	var nvt_cont=$get_jqElement("#navThumb_cont");
-	var nvt=$get_jqElement("#navThumb")
-    if (isTouchEnabled) {
-        //
-        nvt_cont.off('mousedown', initNavTBDrag)
-		$get_jqElement("#navigator").off('touchend', movetoNavClick)
-        $(document).on('touchmove', doNavTBDrag)
-        $(document).on('touchend', stopNavTBDrag)
-    } else {
-        $(document).on('mousemove', doNavTBDrag)
-        $(document).on('mouseup', stopNavTBDrag)
-    }    
-    var cp = getMousePos(event)
-    ipos = nvt_cont.position()
-    var parentOffset = nvt_cont.parent().offset();
-    mpos = cp
-    navClicked = true;
-	if (_event.preventDefault) {
-        _event.preventDefault();
-    } else {
-        _event.returnValue = false;
-    }
-}
-function movetoNavClick(_event) {
 
-    if (!navClicked) {
-        return
-    }
-	
-    var event = _event ? _event.originalEvent : window.event;
-    var isTouchEnabled = event.type.indexOf('touch') > -1
-    event = isTouchEnabled ? event.changedTouches[0] : event;
+    function getMousePos(event) {
+        var dx, dy;
 
-    if (_event.preventDefault) {
-        _event.preventDefault();
-    } else {
-        _event.returnValue = false;
+        if (event.pageX != undefined) {
+            dx = event.pageX;
+            dy = event.pageY;
+        } else {
+            dx = event.clientX
+            dy = event.clientY
+        }
+        var parentOffset = $get_jqElement("#navThumb_cont").parent().offset();
+        var relX = dx - parentOffset.left;
+        var relY = dy - parentOffset.top;
+        return {
+            x: relX,
+            y: relY
+        }
     }
-	var nvt_cont=$get_jqElement("#navThumb_cont");
-	var nvt=$get_jqElement("#navThumb")
-    var pos = getMousePos(event)
-	var diffX=nvt.width()/2
-	var diffY=nvt.height()/2
-    var dx =  -pos.x+diffX
-    var dy =  - pos.y+diffY
-    var parentOffset = nvt_cont.parent().offset();
-    var limitW = nav_width;
-    var limitH = nav_height;
-    console.log(ipos.left + ":" + dx)
-    dx = -dx + nvt.width() > limitW ? -(limitW - nvt.width()) : dx
-    dy = -dy + nvt.height() > limitH ? -(limitH - nvt.height()) : dy
-    dx = dx > 0 ? 0 : dx
-    dy = dy > 0 ? 0 : dy
-	nvt_cont.css({
-        "left": -dx + 'px',
-        'top': -dy + 'px'
-    })
-    var ratW = scroll_window.width / nav_width;
-    var ratH = scroll_window.height / nav_height;
 
-    wb.scrollScreen(dx * ratW, dy * ratH)
-ipos = nvt_cont.position()
-stopNavTBDrag()
-}
-function getNavPos() {
-                var box = $get_Element("#navigator").getBoundingClientRect();
-                var body = document.body;
-                var docElem = document.documentElement;
-                var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
-                var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
-                var clientTop = docElem.clientTop || body.clientTop || 0;
-                var clientLeft = docElem.clientLeft || body.clientLeft || 0;
-                var top = box.top + scrollTop - clientTop;
-                var left = box.left + scrollLeft - clientLeft;
-                offX = Math.round(left);
-                offY = Math.round(top);
-                return {
-                    top: offY,
-                    left: offX
-                }
-            }
-			function removeDrag(_event) {
-	if (_event.originalEvent.preventDefault) {
-        _event.originalEvent.preventDefault();
-    } else {
-        _event.originalEvent.returnValue = false;
+    function stopNavTBDrag() {
+        $(document).off('mousemove', doNavTBDrag);
+        $(document).off('mouseup', stopNavTBDrag);
+        $(document).off('touchmove', doNavTBDrag);
+        $(document).off('touchend', stopNavTBDrag);
+        $get_jqElement("#navigator").off('touchend', movetoNavClick);
+        $get_jqElement("#navigator").off('touchmove', removeDrag);
     }
-}
-function registerNavClick(_event) {
-    navClicked = true;
-	 var event = _event ? _event.originalEvent : window.event;
-    var isTouchEnabled = event.type.indexOf('touch') > -1
-	if (_event.preventDefault) {
-        _event.preventDefault();
-    } else {
-        _event.returnValue = false;
+
+    function initNavTBDrag(_event) {
+        var event = _event ? _event.originalEvent : window.event;
+        var isTouchEnabled = event.type.indexOf('touch') > -1;
+        try {
+            event = isTouchEnabled ? event.changedTouches[0] : event;
+        } catch (e) {
+            alert(e)
+        }
+        var nvt_cont = $get_jqElement("#navThumb_cont");
+        var nvt = $get_jqElement("#navThumb")
+        if (isTouchEnabled) {
+            //
+            nvt_cont.off('mousedown', initNavTBDrag)
+            $get_jqElement("#navigator").off('touchend', movetoNavClick)
+            $(document).on('touchmove', doNavTBDrag)
+            $(document).on('touchend', stopNavTBDrag)
+        } else {
+            $(document).on('mousemove', doNavTBDrag)
+            $(document).on('mouseup', stopNavTBDrag)
+        }
+        var cp = getMousePos(event)
+        ipos = nvt_cont.position()
+        var parentOffset = nvt_cont.parent().offset();
+        mpos = cp
+        navClicked = true;
+        if (_event.preventDefault) {
+            _event.preventDefault();
+        } else {
+            _event.returnValue = false;
+        }
     }
-	if (isTouchEnabled) {
-	 $get_jqElement("#navigator").off('mousedown', registerNavClick)
-	$get_jqElement("#navigator").off('mouseup', movetoNavClick)
-        $get_jqElement("#navigator").on('touchend', movetoNavClick)
-	$get_jqElement("#navigator").on('touchmove', removeDrag)
-    }  
-}
-			//--NAVIGATOR CODE END ---
+
+    function movetoNavClick(_event) {
+
+        if (!navClicked) {
+            return
+        }
+
+        var event = _event ? _event.originalEvent : window.event;
+        var isTouchEnabled = event.type.indexOf('touch') > -1
+        event = isTouchEnabled ? event.changedTouches[0] : event;
+
+        if (_event.preventDefault) {
+            _event.preventDefault();
+        } else {
+            _event.returnValue = false;
+        }
+        var nvt_cont = $get_jqElement("#navThumb_cont");
+        var nvt = $get_jqElement("#navThumb")
+        var pos = getMousePos(event)
+        var diffX = nvt.width() / 2
+        var diffY = nvt.height() / 2
+        var dx = -pos.x + diffX
+        var dy = -pos.y + diffY
+        var parentOffset = nvt_cont.parent().offset();
+        var limitW = nav_width;
+        var limitH = nav_height;
+        console.log(ipos.left + ":" + dx)
+        dx = -dx + nvt.width() > limitW ? -(limitW - nvt.width()) : dx
+        dy = -dy + nvt.height() > limitH ? -(limitH - nvt.height()) : dy
+        dx = dx > 0 ? 0 : dx
+        dy = dy > 0 ? 0 : dy
+        nvt_cont.css({
+            "left": -dx + 'px',
+            'top': -dy + 'px'
+        })
+        var ratW = scroll_window.width / nav_width;
+        var ratH = scroll_window.height / nav_height;
+
+        wb.scrollScreen(dx * ratW, dy * ratH)
+        ipos = nvt_cont.position()
+        stopNavTBDrag()
+    }
+
+    function getNavPos() {
+        var box = $get_Element("#navigator").getBoundingClientRect();
+        var body = document.body;
+        var docElem = document.documentElement;
+        var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+        var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+        var clientTop = docElem.clientTop || body.clientTop || 0;
+        var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+        var top = box.top + scrollTop - clientTop;
+        var left = box.left + scrollLeft - clientLeft;
+        offX = Math.round(left);
+        offY = Math.round(top);
+        return {
+            top: offY,
+            left: offX
+        }
+    }
+
+    function removeDrag(_event) {
+        if (_event.originalEvent.preventDefault) {
+            _event.originalEvent.preventDefault();
+        } else {
+            _event.originalEvent.returnValue = false;
+        }
+    }
+
+    function registerNavClick(_event) {
+        navClicked = true;
+        var event = _event ? _event.originalEvent : window.event;
+        var isTouchEnabled = event.type.indexOf('touch') > -1
+        if (_event.preventDefault) {
+            _event.preventDefault();
+        } else {
+            _event.returnValue = false;
+        }
+        if (isTouchEnabled) {
+            $get_jqElement("#navigator").off('mousedown', registerNavClick)
+            $get_jqElement("#navigator").off('mouseup', movetoNavClick)
+            $get_jqElement("#navigator").on('touchend', movetoNavClick)
+            $get_jqElement("#navigator").on('touchmove', removeDrag)
+        }
+    }
+    //--NAVIGATOR CODE END ---
+    //
+    function getoffset() {
+        console_log("getCanvasPos processing!");
+        var box = canvas.getBoundingClientRect();
+        // console_log("canvas bound= top: " + box.top + " left:" + box.left);
+        var body = document.body;
+        var docElem = document.documentElement;
+        var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+        var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+        var clientTop = docElem.clientTop || body.clientTop || 0;
+        var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+        //console_log("offset_datas: scrollTop=" + scrollTop + " scrollLeft=" + scrollLeft + " clientTop=" + clientTop + " clientLeft=" + clientLeft);
+        var top = box.top + scrollTop - clientTop;
+        var left = box.left + scrollLeft - clientLeft;
+        var offX = Math.round(left);
+        var offY = Math.round(top);
+        // console_log("OFFSET: top=" + offY + " left=" + offX);
+        return {
+            top: offY,
+            left: offX
+        }
+    }
+    //
     wb.initWhiteboard = function (mainDocIn) {
         console_log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
         canvas_drawing_width = 0;
@@ -1331,16 +1456,17 @@ function registerNavClick(_event) {
                     //$get_jqElement('#tools').css('height', '35px');
                 }
                 //$("div#" + contDiv + " [name='tools'] button").removeClass('small_tool_button').addClass("big_tool_button");
-				$("div#" + contDiv + " .wb_menu button").removeClass('small_tool_button').addClass("big_tool_button");
+                $("div#" + contDiv + " .wb_menu button").removeClass('small_tool_button').addClass("big_tool_button");
                 $get_jqElement('#button_clear').css('width', '45px');
                 $get_jqElement('#button_clear').css('height', '30px');
                 $get_jqElement('#button_clear').text("Clear");
                 $get_jqElement('#button_save').text("Save");
                 $get_jqElement('#button_undo').text("Undo");
                 $get_jqElement('#button_delete').text("Delete");
-				//$get_jqElement('#button_nav').text("Navigator");
+                //$get_jqElement('#button_nav').text("Navigator");
                 // $get_jqElement('#button_clear').text("CL");
-				resizeToolMenu('big_tool_button')
+                resizeToolMenu('big_tool_button');
+                reloadNavigator()
             } else {
                 if (isReadOnly) {
                     $get_jqElement('#tools').css('height', '15px');
@@ -1348,15 +1474,16 @@ function registerNavClick(_event) {
                     //$get_jqElement('#tools').css('height', '28px');
                 }
                 //$("div#" + contDiv + " [name='tools'] button").removeClass('big_tool_button').addClass("small_tool_button");
-				$("div#" + contDiv + " .wb_menu button").removeClass('big_tool_button').addClass("small_tool_button");
+                $("div#" + contDiv + " .wb_menu button").removeClass('big_tool_button').addClass("small_tool_button");
                 $get_jqElement('#button_clear').css('width', '25px');
                 $get_jqElement('#button_clear').css('height', '25px');
                 $get_jqElement('#button_clear').text("CL");
                 $get_jqElement('#button_save').text("S");
                 $get_jqElement('#button_undo').text("U");
                 $get_jqElement('#button_delete').text("X");
-				//$get_jqElement('#button_nav').text("N");
-resizeToolMenu('small_tool_button');
+                //$get_jqElement('#button_nav').text("N");
+                resizeToolMenu('small_tool_button');
+                reloadNavigator();
             }
 
             var off_left = $get_Element("#tools").offsetLeft;
@@ -1525,6 +1652,28 @@ resizeToolMenu('small_tool_button');
                 }
             }
 
+            function getCanvasPos() {
+                console_log("getCanvasPos processing!");
+                var box = canvas.getBoundingClientRect();
+                console_log("canvas bound= top: " + box.top + " left:" + box.left);
+                var body = mainDoc.body;
+                var docElem = mainDoc.documentElement;
+                var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+                var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+                var clientTop = docElem.clientTop || body.clientTop || 0;
+                var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+                console_log("offset_datas: scrollTop=" + scrollTop + " scrollLeft=" + scrollLeft + " clientTop=" + clientTop + " clientLeft=" + clientLeft);
+                var top = box.top + scrollTop - clientTop;
+                var left = box.left + scrollLeft - clientLeft;
+                offX = Math.round(left);
+                offY = Math.round(top);
+                console_log("OFFSET: top=" + offY + " left=" + offX);
+                return {
+                    top: offY,
+                    left: offX
+                }
+            }
+
             function resize_wb() {
                 console_log("INTERNAL CALL::WINDOW_RESIZE::")
                 adjustToolbar()
@@ -1549,16 +1698,17 @@ resizeToolMenu('small_tool_button');
                     } else {
                         //$get_jqElement('#tools').css('height', '35px');
                     }
-                   // $("div#" + contDiv + " [name='tools'] button").removeClass('small_tool_button').addClass("big_tool_button");
-				    $("div#" + contDiv + " .wb_menu button").removeClass('small_tool_button').addClass("big_tool_button");
+                    // $("div#" + contDiv + " [name='tools'] button").removeClass('small_tool_button').addClass("big_tool_button");
+                    $("div#" + contDiv + " .wb_menu button").removeClass('small_tool_button').addClass("big_tool_button");
                     $get_jqElement('#button_clear').css('width', '45px');
                     $get_jqElement('#button_clear').css('height', '30px');
                     $get_jqElement('#button_clear').text("Clear");
                     $get_jqElement('#button_save').text("Save");
                     $get_jqElement('#button_undo').text("Undo");
                     $get_jqElement('#button_delete').text("Delete");
-					//$get_jqElement('#button_nav').text("Navigator");
-					resizeToolMenu('big_tool_button')
+                    //$get_jqElement('#button_nav').text("Navigator");
+                    resizeToolMenu('big_tool_button');
+                    reloadNavigator();
                 } else {
 
                     if (isReadOnly) {
@@ -1567,16 +1717,16 @@ resizeToolMenu('small_tool_button');
                         //$get_jqElement('#tools').css('height', '25px');
                     }
                     //$("div#" + contDiv + " [name='tools'] button").removeClass('big_tool_button').addClass("small_tool_button");
-					$("div#" + contDiv + " .wb_menu button").removeClass('big_tool_button').addClass("small_tool_button");
+                    $("div#" + contDiv + " .wb_menu button").removeClass('big_tool_button').addClass("small_tool_button");
                     $get_jqElement('#button_clear').css('width', '25px');
                     $get_jqElement('#button_clear').css('height', '25px');
                     $get_jqElement('#button_clear').text("CL");
                     $get_jqElement('#button_save').text("S");
                     $get_jqElement('#button_undo').text("U");
                     $get_jqElement('#button_delete').text("X");
-					//$get_jqElement('#button_nav').text("N");
-					resizeToolMenu('small_tool_button');
-
+                    //$get_jqElement('#button_nav').text("N");
+                    resizeToolMenu('small_tool_button');
+                    reloadNavigator();
                 }
                 // setTimeout(function(){
                 var off_left = $get_Element("#tools").offsetLeft;
@@ -1764,7 +1914,7 @@ resizeToolMenu('small_tool_button');
                     $get_Element('#' + scroll + 'scroll_thumb').style[pos] = newpos + "px";
                     //$get_Element('#canvas-container').style[pos] = currPos + "px";
                     scrollPosition[coo] = currPos;
-					updateNavThumb(scrollPosition['x'],scrollPosition['y'])
+                    updateNavThumb(scrollPosition['x'], scrollPosition['y'])
                     updateCanvas();
                 }
 
@@ -2029,18 +2179,18 @@ resizeToolMenu('small_tool_button');
                     wb.deleteSelectedObj();
                 };
             }
-if ($get_Element("#button_nav")) {
+            if ($get_Element("#button_nav")) {
                 $get_Element("#button_nav").onclick = function (event) {
 
-                    
-				var a=showHideNavigator(graphicDataStore,scrollPosition)
-				if(a=='show'){
-				currentTool = 'nav'
-                buttonHighlite(currentTool)
-				}else{
-				currentTool = 'pencil'
-                buttonHighlite(currentTool)
-				}
+
+                    var a = showHideNavigator(graphicDataStore, scrollPosition)
+                    if (a == 'show') {
+                        currentTool = 'nav'
+                        buttonHighlite(currentTool)
+                    } else {
+                        currentTool = 'pencil'
+                        buttonHighlite(currentTool)
+                    }
                 };
             }
             if ($get_Element("#button_save")) {
@@ -2161,7 +2311,7 @@ if ($get_Element("#button_nav")) {
                 }
             }
 
-            
+
             //
             function initMultiSelection() {
                 var num = selectedObjects.length;
@@ -2293,8 +2443,8 @@ if ($get_Element("#button_nav")) {
             //
             var ev_onmousedown = function (_event) {
                 // alert("MDOWN")
-				$get_jqElement("#wb_menu").hide();
-                if (isReadOnly||currentTool=='nav') {
+                $get_jqElement("#wb_menu").hide();
+                if (isReadOnly || currentTool == 'nav' || isRightClick(_event)) {
                     return
                 }
                 var event = _event ? _event : window.event;
@@ -2508,7 +2658,8 @@ if ($get_Element("#button_nav")) {
             };
 
             var ev_onmouseup = function (_event) {
-                if (isReadOnly||currentTool=='nav') {
+                if (isReadOnly || currentTool == 'nav' || event_rightclick) {
+                    event_rightclick = false;
                     return
                 }
                 if (selectionMode) {
@@ -2690,7 +2841,7 @@ if ($get_Element("#button_nav")) {
             };
 
             var ev_onmousemove = function (_event) {
-                if (isReadOnly||currentTool=='nav') {
+                if (isReadOnly || currentTool == 'nav' || event_rightclick) {
                     return
                 }
                 var event = _event ? _event : window.event;
@@ -2720,18 +2871,18 @@ if ($get_Element("#button_nav")) {
                     }
                     var dx = x - clickX;
                     var dy = y - clickY;
-					var bool = isMultitouch_gesture(_event);
+                    var bool = isMultitouch_gesture(_event);
                     if (selectionMode && multiSelection && selectedObjects.length) {
                         renderMultiSelectionTrans();
-						
-                if (bool) {
-                    return true
-                }
-                if (event.preventDefault) {
-                    event.preventDefault()
-                } else {
-                    event.returnValue = false
-                };
+
+                        if (bool) {
+                            return true
+                        }
+                        if (event.preventDefault) {
+                            event.preventDefault()
+                        } else {
+                            event.returnValue = false
+                        };
                     } else if (selectionMode) {
 
                         if (selectedObj && selectionDragMode) {
@@ -2791,15 +2942,15 @@ if ($get_Element("#button_nav")) {
                                 brect: selectionRect
                             });
                         }
-						bool = isMultitouch_gesture(_event);
-                if (bool) {
-                    return true
-                }
-                if (event.preventDefault) {
-                    event.preventDefault()
-                } else {
-                    event.returnValue = false
-                };
+                        bool = isMultitouch_gesture(_event);
+                        if (bool) {
+                            return true
+                        }
+                        if (event.preventDefault) {
+                            event.preventDefault()
+                        } else {
+                            event.returnValue = false
+                        };
 
                     } else if (currentTool == 'rect' || currentTool == 'oval') {
 
@@ -3073,7 +3224,7 @@ if ($get_Element("#button_nav")) {
                 //$get_Element('#canvas-container').style.top = currPos + "px";
                 $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
                 scrollPosition['y'] = currPos;
-				updateNavThumb(scrollPosition['x'],scrollPosition['y'])
+                updateNavThumb(scrollPosition['x'], scrollPosition['y'])
                 updateCanvas();
                 // console.log("AFTER:"+currPos+":"+(currPos/scrub));
                 // moving the position of the object
@@ -3378,7 +3529,8 @@ if ($get_Element("#button_nav")) {
         context.beginPath();
 
     }
-function updateBuffer() {
+
+    function updateBuffer() {
         buffercontext.clearRect(0, 0, buffercanvas.width, buffercanvas.height);
         buffercanvas.width = canvas.width;
         buffercanvas.height = canvas.height;
@@ -3388,9 +3540,10 @@ function updateBuffer() {
         for (var i = 0; i < l; i++) {
             renderToBuffer(graphicDataStore[i], buffercontext);
         }
-        buffercontext.restore();       
+        buffercontext.restore();
 
     }
+
     function reRenderCanvas() {
 
         if (isIE) {
@@ -4265,7 +4418,7 @@ source: https://gist.github.com/754454
     }
 
     wb.whiteboardIsReady = function () {
-	
+
         alert('This is the default whiteboardIsReady, it should be overridden in GWT');
     }
     /**
@@ -4293,17 +4446,17 @@ source: https://gist.github.com/754454
         }
     }
     wb.removeSelectionMode = function (boo) {
-        
+
         selectedObjects = [];
         mSelRect = null;
         multiSelection = false
         removeBoundRect()
-		if(!boo){
-		selectionMode = !true;
-        $get_Element("#button_move").style.border = '1px solid #000000';
-        currentTool = 'pencil';
-        buttonHighlite(currentTool)
-		}
+        if (!boo) {
+            selectionMode = !true;
+            $get_Element("#button_move").style.border = '1px solid #000000';
+            currentTool = 'pencil';
+            buttonHighlite(currentTool)
+        }
     }
     wb.whiteboardDelete = function (n) {
 
@@ -4359,10 +4512,15 @@ source: https://gist.github.com/754454
     wb.isReadOnly = function (boo) {
         isReadOnly = boo
         if (boo) {
-            $("div#" + contDiv + " [name='tools'] button").hide()
+            //$("div#" + contDiv + " [name='tools'] button").hide()
+			 $("div#" + contDiv + " .wb_menu button").hide()
+			 $("div#" + contDiv + " [name='toggleMenu']").hide()
         } else {
-            $("div#" + contDiv + " [name='tools'] button").show()
+            //$("div#" + contDiv + " [name='tools'] button").show()
+			$("div#" + contDiv + " .wb_menu button").show()
+			$("div#" + contDiv + " [name='toggleMenu']").show()
         }
+		 adjustToolbar()
     }
 
     wb.releaseResources = function () {
@@ -4431,17 +4589,17 @@ source: https://gist.github.com/754454
         wb.removeSelectionMode(true);
         updateCanvas();
     }
-	wb.scrollRight=function(p){
-	doRightScroll(p)
-	}
-	wb.scrollTop=function(p){
-	doUpScroll(p)
-	}
-	wb.scrollScreen=function(x,y){
-	doRightScroll(x)
-	doUpScroll(y)
-	updateCanvas();
-	}
+    wb.scrollRight = function (p) {
+        doRightScroll(p)
+    }
+    wb.scrollTop = function (p) {
+        doUpScroll(p)
+    }
+    wb.scrollScreen = function (x, y) {
+        doRightScroll(x)
+        doUpScroll(y)
+        updateCanvas();
+    }
     return wb;
 
 };
