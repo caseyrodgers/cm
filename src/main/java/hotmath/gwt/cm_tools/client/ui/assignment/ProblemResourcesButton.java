@@ -43,7 +43,7 @@ public class ProblemResourcesButton extends TextButton {
                 }
                 else if(event.getSource() instanceof MyMenuItem) {
                     MyMenuItem mi = (MyMenuItem)event.getSource();
-                    if(mi.getResource() != null && mi.getResource().getType().equals("video")) {
+                    if(mi.getResource() != null && mi.getResource().getType() == CmResourceType.VIDEO) {
                         new ResourceViewerWindow(new VideoResourceView(mi.getResource(),_problem));
                     }
                 }
