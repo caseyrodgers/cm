@@ -92,7 +92,7 @@ public class EndOfProgramHandler {
         else if( programCurr.getTestDefId() == CmProgram.BASICMATH.getDefId() 
                 || programCurr.getTestDefId() == CmProgram.BASICMATH.getDefId() ) {
             // reset/repeat
-            updateProgram(conn, CmProgram.ESSENTIALS.getSubject(), CmProgram.ESSENTIALS.getProgramType(),null);
+            updateProgram(conn, CmProgram.ELEMALG.getSubject(), CmProgram.ELEMALG.getProgramType(),null);
         }  
     	else if(programCurr.getTestDefId() == CmProgram.TAKS.getDefId()) {
     		// reset/repeat

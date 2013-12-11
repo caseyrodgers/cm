@@ -141,7 +141,7 @@ public class CatchupSignupServlet extends HttpServlet {
                  try {
                      conn = HMConnectionPool.getConnection();
                      CmStudentDao csd = CmStudentDao.getInstance();
-                     student = csd.addStudent(conn, student);
+                     student = csd.addStudent(conn, student, false);
                  }
                  finally {
                      SqlUtilities.releaseResources(null,null,conn);

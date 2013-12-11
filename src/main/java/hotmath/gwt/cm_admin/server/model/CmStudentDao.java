@@ -495,17 +495,22 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         return l;
     }
 
-    public StudentModelI addStudent(final Connection conn, StudentModelI sm) throws Exception {
+    public StudentModelI addStudent(Connection conn, StudentModelI sm) throws Exception {
+        return addStudent(conn, sm);
+    }
+    public StudentModelI addStudent(final Connection conn, StudentModelI sm, boolean checkForDups) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        boolean isDuplicate = checkForDuplicatePasscode(conn, sm.getAdminUid(), -1, sm.getPasscode());
-        if (isDuplicate) {
-            throw new CmUserException("The passcode you entered is already in use, please try again.");
-        }
-        isDuplicate = checkForDuplicateName(conn, sm);
-        if (isDuplicate) {
-            throw new CmUserException("The name you entered is already in use, please try again.");
+        if(checkForDups) {
+            boolean isDuplicate = checkForDuplicatePasscode(conn, sm.getAdminUid(), -1, sm.getPasscode());
+            if (isDuplicate) {
+                throw new CmUserException("The passcode you entered is already in use, please try again.");
+            }
+            isDuplicate = checkForDuplicateName(conn, sm);
+            if (isDuplicate) {
+                throw new CmUserException("The name you entered is already in use, please try again.");
+            }
         }
 
         try {
@@ -838,6 +843,10 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
+        if(studentUid == -1) {
+            //return false;
+        }
+        
         try {
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(CHECK_DUPLICATE_PASSCODE_SQL));
             ps.setString(1, passcode);
