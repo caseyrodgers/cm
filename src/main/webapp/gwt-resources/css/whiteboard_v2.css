@@ -233,7 +233,11 @@
 	background-repeat: no-repeat;
 	background-position: center;
 }
-
+.button_nav {
+	background-image: url(/gwt-resources/images/whiteboard/nav.png);
+	background-repeat: no-repeat;
+	background-position: center;
+}
 
 .static_whiteboard {
     position: absolute;
