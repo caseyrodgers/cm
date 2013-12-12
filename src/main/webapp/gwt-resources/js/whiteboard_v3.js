@@ -246,11 +246,11 @@ var Whiteboard = function (cont, isStatic) {
                 var off = getoffset();
                 var dx, dy
                 if (event.pageX != undefined) {
-                    dx = event.pageX;
-                    dy = event.pageY;
+                    dx = event.pageX-off.left;
+                    dy = event.pageY-off.top+ $get_jqElement("#tools").outerHeight();
                 } else {
-                    dx = event.clientX;
-                    dy = event.clientY;
+                    dx = event.clientX-off.left;
+                    dy = event.clientY-off.top+ $get_jqElement("#tools").outerHeight();
                 }
                 var wlim = $get_jqElement("#drawsection").width();
                 var hlim = $get_jqElement("#drawsection").height() + $get_jqElement("#tools").outerHeight();
