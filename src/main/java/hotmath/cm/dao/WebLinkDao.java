@@ -221,7 +221,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         /** private will be first, so it should override public
          * 
          */
-        if(true) {
+        if(false) {
             List<WebLinkModel> linksNoDups = new ArrayList<WebLinkModel>();
             List<String> urlsNoDups = new ArrayList<String>();
             for(WebLinkModel wlm: links) {
