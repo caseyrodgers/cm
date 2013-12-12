@@ -221,19 +221,21 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         /** private will be first, so it should override public
          * 
          */
-        List<WebLinkModel> linksNoDups = new ArrayList<WebLinkModel>();
-        List<String> urlsNoDups = new ArrayList<String>();
-        for(WebLinkModel wlm: links) {
-            if(!urlsNoDups.contains(wlm.getUrl())) {
-                // add it
-                urlsNoDups.add(wlm.getUrl());
-                linksNoDups.add(wlm);
-            }
-            else {
-                __logger.warn("Duplicate web link: " + wlm);
+        if(true) {
+            List<WebLinkModel> linksNoDups = new ArrayList<WebLinkModel>();
+            List<String> urlsNoDups = new ArrayList<String>();
+            for(WebLinkModel wlm: links) {
+                if(!urlsNoDups.contains(wlm.getUrl())) {
+                    // add it
+                    urlsNoDups.add(wlm.getUrl());
+                    linksNoDups.add(wlm);
+                }
+                else {
+                    __logger.warn("Duplicate web link: " + wlm);
+                }
             }
         }
-        return processWebLinks(linksNoDups);
+        return processWebLinks(links);
     }
 
     protected GroupInfoModel extractWebLinkGroup(ResultSet rs) throws SQLException {
