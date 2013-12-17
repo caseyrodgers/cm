@@ -1,4 +1,5 @@
 /** CM related tutor widget CSS */
+/*
 @font-face {
   font-family: Symbola;
   src: url(font/Symbola.eot);
@@ -6,15 +7,16 @@
     url(font/Symbola.ttf) format("truetype"),
     url(font/Symbola.otf) format("opentype")
 }
+*/
 #hm_widget_form input[type='text']{
-font-family: Symbola,Times New Roman,Times,serif;
+font-family: Times New Roman,Times,serif;
 font-size: 17pt;
 font-weight:bold;
 border:1px inset;
 }
 
 #hm_widget_form .input_units{
-font-family: Symbola,Times New Roman,Times,serif;
+font-family: Times New Roman,Times,serif;
 font-size: 17pt;
 font-weight:bold;
 }
