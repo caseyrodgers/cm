@@ -23,13 +23,29 @@ import java.util.List;
 import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Status;
+import com.extjs.gxt.ui.client.widget.Viewport;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -37,19 +53,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.Status;
-import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
-import com.sencha.gxt.widget.core.client.container.Viewport;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.TextArea;
-import com.sencha.gxt.widget.core.client.menu.Menu;
-import com.sencha.gxt.widget.core.client.menu.MenuItem;
+
 
 public class SolutionEditor implements EntryPoint {
 
@@ -67,153 +71,153 @@ public class SolutionEditor implements EntryPoint {
         UserInfo.setInstance(userInfo);
         RetryActionManager.getInstance();
 
-        HorizontalLayoutContainer toolbarPanel = new HorizontalLayoutContainer();
+        mainPort.setScrollMode(Scroll.AUTOY);
+        LayoutContainer toolbarPanel = new HorizontalPanel();
         toolbarPanel.add(createToolbar());
+        _mainPanel.setLayout(new BorderLayout());
 
-        BorderLayoutContainer borderContainer = new BorderLayoutContainer();
-
-        _mainPanel.setWidget(borderContainer);
-
-        borderContainer.setNorthWidget(createToolbar(), new BorderLayoutData(30));
-        borderContainer.setSouthWidget(__status, new BorderLayoutData(25));
-        borderContainer.setCenterWidget(_stepEditorViewer);
-
-        mainPort.setWidget(_mainPanel);
+        _mainPanel.add(createToolbar(), new BorderLayoutData(LayoutRegion.NORTH,30));
+        _mainPanel.add(__status,new BorderLayoutData(LayoutRegion.SOUTH,25));
+        _mainPanel.add(_stepEditorViewer, new BorderLayoutData(LayoutRegion.CENTER));
+        mainPort.setLayout(new FitLayout());
+        mainPort.add(_mainPanel);
 
         __pidToLoad = SolutionEditor.getQueryParameter("pid");
-        if (__pidToLoad == null)
+        if(__pidToLoad == null)
             __pidToLoad = Cookies.getCookie("last_pid");
+
 
         EventBus.getInstance().addEventListener(new CmEventListener() {
             @Override
             public void handleEvent(CmEvent event) {
-                if (event.getEventType().equals(EventTypes.SOLUTION_LOAD_COMPLETE)) {
-                    _mainPanel.setHeadingText("Loaded: " + event.getEventData());
+                if(event.getEventType().equals(EventTypes.SOLUTION_LOAD_COMPLETE)) {
+                    _mainPanel.setHeading("Loaded: " + event.getEventData());
                 }
             }
         });
         RootPanel.get("main-content").add(mainPort);
-        if (__pidToLoad != null) {
-            _stepEditorViewer.loadSolution(__pidToLoad.split("$")[0]); // strip
-                                                                       // off
-                                                                       // any
-                                                                       // context
-                                                                       // reference
+        if(__pidToLoad != null) {
+            _stepEditorViewer.loadSolution(__pidToLoad.split("$")[0]);  // strip off any context reference
         }
     }
 
     private Widget createToolbar() {
 
-        HorizontalLayoutContainer tb = new HorizontalLayoutContainer();
+        HorizontalPanel tb = new HorizontalPanel();
+        TableData td = new TableData();
+        td.setMargin(5);
 
-        tb.add(new TextButton("Create", new SelectHandler() {
+
+        tb.add(new Button("Create",new SelectionListener<ButtonEvent>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void componentSelected(ButtonEvent ce) {
                 addSolutionIntoEditor();
             }
-        }));
+        }),td);
 
-        tb.add(new TextButton("Load", new SelectHandler() {
+
+        tb.add(new Button("Load",new SelectionListener<ButtonEvent>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void componentSelected(ButtonEvent ce) {
                 loadSolutionIntoEditor();
             }
-        }));
+        }),td);
 
-        tb.add(new TextButton("Delete", new SelectHandler() {
-
+        tb.add(new Button("Delete",new SelectionListener<ButtonEvent>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void componentSelected(ButtonEvent ce) {
                 deleteThisSolution();
             }
-        }));
+        }),td);
 
-        tb.add(new TextButton("Refresh", new SelectHandler() {
+        tb.add(new Button("Refresh",new SelectionListener<ButtonEvent>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void componentSelected(ButtonEvent ce) {
                 _stepEditorViewer.loadSolution(__pidToLoad);
             }
-        }));
+        }),td);
 
-        _saveButton = new TextButton("Save", new SelectHandler() {
+        _saveButton = new Button("Save",new SelectionListener<ButtonEvent>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void componentSelected(ButtonEvent ce) {
                 saveSolutionLoaded();
             }
         });
-
         _saveButton.addStyleName("solution-editor-save-button");
-        tb.add(_saveButton, new HorizontalLayoutData(5, 5));
+        tb.add(_saveButton,td);
 
-        tb.add(new TextButton("Save As", new SelectHandler() {
-
+        tb.add(new Button("Save As",new SelectionListener<ButtonEvent>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void componentSelected(ButtonEvent ce) {
                 SaveSolutionAsDialog.getSharedInstance().setCallback(new hotmath.gwt.solution_editor.client.SaveSolutionAsDialog.Callback() {
                     @Override
                     public void saveSolutionAs(String pid) {
                         _stepEditorViewer.saveStepChanges(pid);
                     }
-                }, __pidToLoad);
+                },__pidToLoad);
             }
-        }));
+        }),td);
+
+
 
         tb.add(createGenerateContextButton());
 
         Menu viewMenu = new Menu();
-        MenuItem mi = new MenuItem("Tutor", new SelectionHandler<MenuItem>() {
-
-            @Override
-            public void onSelection(SelectionEvent<MenuItem> event) {
+        MenuItem mi = new MenuItem("Tutor",new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
                 showTutorView();
             }
         });
         viewMenu.add(mi);
-
-        mi = new MenuItem("XML (on server)", new SelectionHandler<MenuItem>() {
-            @Override
-            public void onSelection(SelectionEvent<MenuItem> event) {
+        mi = new MenuItem("XML (on server)",new SelectionListener<MenuEvent>() {
+            public void componentSelected(MenuEvent ce) {
                 showSolutionXml(__pidToLoad);
             }
         });
         viewMenu.add(mi);
 
-        TextButton viewBtn = new TextButton("View");
+        Button viewBtn = new Button("View");
         viewBtn.setMenu(viewMenu);
-        tb.add(viewBtn);
+        tb.add(viewBtn,td);
 
-        tb.add(new TextButton("Resources", new SelectHandler() {
+
+        tb.add(new Button("Resources",new SelectionListener<ButtonEvent>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void componentSelected(ButtonEvent ce) {
                 showAllResources();
             }
-        }));
+        }),td);
 
-        tb.add(new TextButton("Help", new SelectHandler() {
+        tb.add(new Button("Help",new SelectionListener<ButtonEvent>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void componentSelected(ButtonEvent ce) {
                 new ShowHelpWindow();
             }
         }));
 
+
         isActiveCheckBox.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED, _stepEditorViewer._meta));
+                EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED,_stepEditorViewer._meta));
             }
         });
+
+
+
         return tb;
     }
 
+
     protected void deleteThisSolution() {
-        if (__pidToLoad == null) {
+        if(__pidToLoad == null) {
             CmMessageBox.showAlert("No solution loaded");
             return;
         }
-        CmMessageBox.confirm("Delete Solution", "Are you sure you want to delete this problem?", new ConfirmCallback() {
+        CmMessageBox.confirm("Delete Solution",  "Are you sure you want to delete this problem?", new ConfirmCallback() {
             @Override
             public void confirmed(boolean yesNo) {
-                if (yesNo) {
+                if(yesNo) {
                     deleteSolutionOnServer();
                 }
             }
@@ -226,7 +230,6 @@ public class SolutionEditor implements EntryPoint {
             public void onSuccess(RpcData data) {
                 CmMessageBox.showAlert("Solution was deleted successfully");
             }
-
             @Override
             public void onFailure(Throwable arg0) {
                 Log.error("Error deleting solution: " + arg0);
@@ -236,9 +239,9 @@ public class SolutionEditor implements EntryPoint {
     }
 
     private Widget createGenerateContextButton() {
-        TextButton Button = new TextButton("Variable Contexts", new SelectHandler() {
+        Button Button = new Button("Variable Contexts", new SelectionListener<ButtonEvent>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void componentSelected(ButtonEvent ce) {
                 generateContexts();
             }
         });
@@ -259,14 +262,13 @@ public class SolutionEditor implements EntryPoint {
     }
 
     private void showSolutionXml(final String pid) {
-        GetSolutionAdminAction action = new GetSolutionAdminAction(Type.GET, pid);
+        GetSolutionAdminAction action = new GetSolutionAdminAction(Type.GET,pid);
         __status.setBusy("Loading solution ...");
         SolutionEditor.getCmService().execute(action, new AsyncCallback<SolutionAdminResponse>() {
             public void onSuccess(SolutionAdminResponse solutionResponse) {
                 __status.clearStatus("");
-                new ShowValueWindow("Raw XML From Server", solutionResponse.getXml(), false);
+                new ShowValueWindow("Raw XML From Server", solutionResponse.getXml(),false);
             }
-
             @Override
             public void onFailure(Throwable arg0) {
                 __status.clearStatus("");
@@ -276,22 +278,23 @@ public class SolutionEditor implements EntryPoint {
         });
     }
 
+
     private void showTutorView() {
-        if (__pidToLoad != null) {
+        if(__pidToLoad!=null) {
             new SolutionViewerFrame(__pidToLoad);
         }
     }
 
+
     private void addSolutionIntoEditor() {
-        GetSolutionAdminAction action = new GetSolutionAdminAction(Type.CREATE, null);
+        GetSolutionAdminAction action = new GetSolutionAdminAction(Type.CREATE,null);
         __status.setBusy("Loading solution ...");
         SolutionEditor.getCmService().execute(action, new AsyncCallback<SolutionAdminResponse>() {
             public void onSuccess(SolutionAdminResponse solutionResponse) {
                 _stepEditorViewer.loadSolution(solutionResponse.getPid());
                 __status.clearStatus("");
-                _mainPanel.setHeadingText("Loaded Solution: " + solutionResponse.getPid());
+                _mainPanel.setHeading("Loaded Solution: " + solutionResponse.getPid());
             }
-
             @Override
             public void onFailure(Throwable arg0) {
                 __status.clearStatus("");
@@ -301,15 +304,16 @@ public class SolutionEditor implements EntryPoint {
         });
     }
 
+
+
     private void saveSolutionLoaded() {
         _stepEditorViewer.saveStepChanges(__pidToLoad);
     }
 
-    /**
-     * Static routines used throughout app
-     * 
-     * TODO: move to separate module
-     * 
+    /** Static routines used throughout app
+     *
+     *  TODO: move to separate module
+     *
      * @return
      */
     static CmServiceAsync getCmService() {
@@ -327,16 +331,16 @@ public class SolutionEditor implements EntryPoint {
         ((ServiceDefTarget) _cmService).setServiceEntryPoint(point + "services/cmService");
     }
 
+
     static {
         setupServices();
         _queryParameters = readQueryString();
     }
-
     /**
      * Return the parameter passed on query string
-     * 
+     *
      * returns null if parameter not set
-     * 
+     *
      * @param name
      * @return
      */
@@ -347,9 +351,10 @@ public class SolutionEditor implements EntryPoint {
     static public int getQueryParameterInt(String name) {
         try {
             String val = getQueryParameter(name);
-            if (val != null)
+            if(val != null)
                 return Integer.parseInt(val);
-        } catch (Exception e) {
+        }
+        catch(Exception e) {
             /* silent */
         }
         return 0;
@@ -357,10 +362,9 @@ public class SolutionEditor implements EntryPoint {
 
     /**
      * Convert string+list to string+string of all URL parameters
-     * 
+     *
      */
     static Map<String, String> _queryParameters;
-
     static private Map<String, String> readQueryString() {
         Map<String, String> m = new HashMap<String, String>();
         Map<String, List<String>> query = Window.Location.getParameterMap();
@@ -375,67 +379,60 @@ public class SolutionEditor implements EntryPoint {
     SolutionStepEditor _stepEditorViewer = new SolutionStepEditor();
     CheckBox isActiveCheckBox = new CheckBox();
 
-    TextButton _saveButton;
+    Button _saveButton;
 
     static public Status __status = new Status();
     static SolutionEditor __instance;
 
-    /*
-     * all global definitions
+    /* all global definitions
+     *
      */
     static public String __pidToLoad;
+
 
     static {
         EventBus.getInstance().addEventListener(new CmEventListener() {
             @Override
             public void handleEvent(CmEvent event) {
-                /**
-                 * Track globally each time a new solution is loaded
+                /** Track globally each time a new solution is loaded
                  */
-                if (event.getEventType().equals(EventTypes.SOLUTION_LOAD_COMPLETE)) {
-                    __pidToLoad = (String) event.getEventData();
+                if(event.getEventType().equals(EventTypes.SOLUTION_LOAD_COMPLETE)) {
+                    __pidToLoad = (String)event.getEventData();
                     Cookies.setCookie("last_pid", __pidToLoad);
                     __instance._saveButton.setEnabled(false);
-                } else if (event.getEventType().equals(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED)) {
+                }
+                else if(event.getEventType().equals(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED)) {
                     __instance._saveButton.setEnabled(true);
-                } else if (event.getEventType().equals(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_SAVED)) {
+                }
+                else if(event.getEventType().equals(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_SAVED)) {
                     __instance._saveButton.setEnabled(false);
                 }
             }
         });
     }
 
+
     static public void tutorWidgetClicked_gwt() {
         SolutionStepEditor.__instance.showWidgetEditor();
     }
 
     native void publishNative(SolutionEditor se) /*-{
-                                                 $wnd.tutorWidgetClicked_gwt =   @hotmath.gwt.solution_editor.client.SolutionEditor::tutorWidgetClicked_gwt();
-                                                 }-*/;
+       $wnd.tutorWidgetClicked_gwt =   @hotmath.gwt.solution_editor.client.SolutionEditor::tutorWidgetClicked_gwt();
+    }-*/;
+
+
 
     private void generateContexts() {
         new SolutionContextCreatorDialog(__pidToLoad);
     }
 }
 
-class SolutionResourceModel extends BaseModel{
-    private String file;
-    private String url;
+
+class SolutionResourceModel extends BaseModel {
     public SolutionResourceModel(SolutionResource resource) {
-        this.file = resource.getFile();
-        this.url = resource.getUrlPath();
+        set("file", resource.getFile());
+        set("url", resource.getUrlPath());
     }
-    public String getFile() {
-        return file;
-    }
-    public void setFile(String file) {
-        this.file = file;
-    }
-    public String getUrl() {
-        return url;
-    }
-    public void setUrl(String url) {
-        this.url = url;
-    }
-    
+
 }
+

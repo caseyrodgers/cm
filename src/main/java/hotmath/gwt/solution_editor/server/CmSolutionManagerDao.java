@@ -48,7 +48,7 @@ public class CmSolutionManagerDao {
         try {
 
             if(!solutionExists(conn, pid)) {
-                createNewSolution(conn, pid,null);
+                createNewSolution(conn, pid);
             }
 
             String sql = "update SOLUTIONS set local_edit = 1, solutionxml = ?, active = ?  where problemindex = ?";
@@ -63,7 +63,7 @@ public class CmSolutionManagerDao {
 
             String outputBase = CatchupMathProperties.getInstance().getSolutionBase() + HotMathProperties.getInstance().getStaticSolutionsDir();
 
-            StaticWriter.writeSolutionFile(conn,__creator, pid, __tutorProps, outputBase, false, null);            
+            StaticWriter.writeSolutionFile(conn,__creator, pid, __tutorProps, outputBase, false, null);
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -74,7 +74,7 @@ public class CmSolutionManagerDao {
     }
 
     /** return true if the named solution already exists
-     * 
+     *
      * @param conn
      * @param pid
      * @return
@@ -95,29 +95,29 @@ public class CmSolutionManagerDao {
 
     /** Create a brand spanking new solutions with just the
      * problem set defined.
-     * 
+     *
      * @param conn
      * @throws Exception
      */
     public String createNewSolution(final Connection conn) throws Exception {
-        return createNewSolution(conn,"test_chap0_s-new_ps-new_" + "pb-" + System.currentTimeMillis() + "_1", null);
+        return createNewSolution(conn,"test_chap0_s-new_ps-new_" + "pb-" + System.currentTimeMillis() + "_1");
     }
 
-    public String createNewSolution(final Connection conn, String newSolutionPid, String problemStatementHtml) throws Exception {
+    public String createNewSolution(final Connection conn, String newSolutionPid) throws Exception {
         PreparedStatement ps=null;
         try {
             String createdBy="auto";
 
             /** TODO: get meta data from command line
-             * 
+             *
              */
 
             /** create new problem
-             * 
+             *
              */
             SolutionDef solution = new SolutionDef(newSolutionPid);
 
-            String sql = 
+            String sql =
                 "INSERT INTO SOLUTIONS(LOCAL_EDIT, " +
                 "      PROBLEMINDEX,BOOKTITLE,CHAPTERTITLE,SECTIONTITLE,PROBLEMSET,PROBLEMNUMBER," +
                 "      PAGENUMBER,SOLUTIONXML,INPUTTER,CREATEDBY,CREATEDATE,ACTIVE)" +
@@ -131,7 +131,7 @@ public class CmSolutionManagerDao {
             ps.setString(5,solution.getProblemSet());
             ps.setString(6,solution.getProblemNumber());
             ps.setInt(7,solution.getPage());
-            ps.setString(8,solution.getCreateNewXml(createdBy, problemStatementHtml));
+            ps.setString(8,solution.getCreateNewXml(createdBy));
             ps.setString(9,createdBy);
             ps.setString(10,createdBy);
 
@@ -156,7 +156,7 @@ public class CmSolutionManagerDao {
         PreparedStatement ps=null;
         try {
             String sql = "select problemindex,active from SOLUTIONS where problemindex like ? and solutionXML like '%" + searchFullText + "%' ";
-            
+
             if(!includeInactive) {
                 sql += " and active = 1 ";
             }
@@ -177,7 +177,7 @@ public class CmSolutionManagerDao {
         PreparedStatement ps=null;
         try {
             String sql = "select s.problemindex, s.solutionxml, s.active, d.tutor_define " +
-                         " from   SOLUTIONS s " + 
+                         " from   SOLUTIONS s " +
                          " left join SOLUTION_DYNAMIC d on d.pid = s.problemindex " +
                          " where s.problemindex = ?";
             ps = conn.prepareStatement(sql);
@@ -190,7 +190,7 @@ public class CmSolutionManagerDao {
             TutorSolution ts = TutorSolution.parse(rs.getString("solutionxml"));
             ts.setActive(rs.getInt("active")==1?true:false);
             ts.setTutorDefine(rs.getString("tutor_define"));
-            
+
             return ts;
         }
         finally {
