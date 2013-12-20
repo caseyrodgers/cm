@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
 import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
+import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
@@ -452,10 +454,9 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         toolbar.add(createEditAssignmentButton());
         
         toolbar.add(createWebLinksButton());
-        
-        if(CmShared.getQueryParameter("dev") != null) {
-            toolbar.add(createManageCustomProblemsButton());
-        }
+
+        toolbar.add(createManageCustomProblemsButton());
+
         toolbar.add(new FillToolItem());
 
         toolbar.add(displayPrintableReportToolItem(_grid));
@@ -800,13 +801,13 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
     
     private Widget createManageCustomProblemsButton() {
-        return new TextButton("Problems",new SelectHandler() {
+        return new TextButton("Custom Problems",new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
-                        new CustomProblemManagerDialog(_cmAdminMdl.getUid());
+                        new CustomProblemManager(new TeacherIdentity(_cmAdminMdl.getUid(), ""));
                     }
                 });                
             }});
