@@ -319,7 +319,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
              */
             _showWorkPanel = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
                 @Override
-                public void showWorkIsReady() {
+                public void showWorkIsReady(ShowWorkPanel2 showWork) {
                     whiteboardIsReady();
                 }
                 

@@ -580,6 +580,18 @@
 			<version>3.3</version>
 			<scope>compile</scope>
 		</dependency>
+		
+		<!--
+		<dependency>
+			<groupId>lucene</groupId>
+			<artifactId>lucene</artifactId>
+			<version>2.1</version>
+			<scope>compile</scope>
+		</dependency>
+		-->
+		
+		
+		
 
 	</dependencies>
 

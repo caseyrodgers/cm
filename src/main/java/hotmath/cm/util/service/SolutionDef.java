@@ -43,7 +43,11 @@ public class SolutionDef extends ProblemID {
                
     }
     
-    public String getCreateNewXml(String createdBy) {
+    public String getCreateNewXml(String createdBy, String problemStatementHtml) {
+        
+        if(problemStatementHtml == null) {
+            problemStatementHtml = "<h1>Problem Statement</h1>";
+        }
         Map<String,String> map = new HashMap<String,String>();
         map.put("DATE", SbUtilities.getDateStamp());
         map.put("CREATEDBY", createdBy);
@@ -54,6 +58,7 @@ public class SolutionDef extends ProblemID {
         map.put("PROBLEM",getProblemNumber());
         map.put("PAGE",Integer.toString(getPage()));
         map.put("PAGE",Integer.toString(getPage()));
+        map.put("PROBLEM_STATEMENT", problemStatementHtml);
         
         String result = SbUtilities.replaceTokens(newSolutionXml, map);
         return result;
@@ -64,7 +69,7 @@ public class SolutionDef extends ProblemID {
         "  <hmsl version=\"2.0\" date=\"$$DATE$$\">" +
         "     <problem createdby=\"$$CREATEDBY$$\">" +
         "        <identification book=\"$$BOOK$$\" chapter=\"$$CHAPTER$$\" section=\"$$SECTION$$\" set=\"$$SET$$\" problemnumber=\"$$PROBLEM$$\" page=\"$$PAGE$$\" />" +
-        "           <statement>The Problem Statement</statement>" +
+        "           <statement>$$PROBLEM_STATEMENT$$</statement>" +
         "     </problem>" +
         "  </hmsl>";
     

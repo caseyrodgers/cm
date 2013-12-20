@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tutor.client.view;
 
 import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.model.WhiteboardModel;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoEvent;
@@ -21,6 +22,7 @@ import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteEvent;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorCallback.WidgetStatusIndication;
 
 import java.util.HashMap;
@@ -354,8 +356,7 @@ public class TutorWrapperPanel extends Composite {
     private void initializeTutor(Widget instance, final String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) {
         
         Log.debug("Solution loading: " + pid);
-        
-        _wasWidgetAnswered = false;
+                _wasWidgetAnswered = false;
         widgetCorrectInfo.setClassName("widget_correct_info_hide");
         setProblemStatusControl("");
         
@@ -394,15 +395,27 @@ public class TutorWrapperPanel extends Composite {
             _wasWidgetAnswered = true;
         }
         
-        
-        //loadStaticWhiteboards(getElement());
-        
+        if(_solutionInfo.getWhiteboards().size() > 0) {
+            for(WhiteboardModel a: _solutionInfo.getWhiteboards()){
+                loadStaticWhiteboard(instance, a);    
+            }
+        }
         
         
         CmRpcCore.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
     }
     
     
+    private void loadStaticWhiteboard(final Widget widget, final WhiteboardModel wbModel) {
+        ShowWorkPanelCallbackDefault callBack = new ShowWorkPanelCallbackDefault() {
+            @Override
+            public void showWorkIsReady(ShowWorkPanel2 showWork) {
+                showWork.loadWhiteboard(wbModel.getCommands());
+            }
+        };
+        new ShowWorkPanel2(callBack, true, false, wbModel.getWhiteboardId(), 350, widget);
+    }
+
     /** Enable or disable the tutor loading/problem set debug mode
      * 
      * @param trueFalse
@@ -410,15 +423,6 @@ public class TutorWrapperPanel extends Composite {
     private native void enableTutorDebugMode(boolean trueFalse) /*-{
         $wnd.console.log('Enabling problemDebug mode');
         $wnd.Flashcard_mngr.debugMode=trueFalse;
-    }-*/;
-    
-    private native void loadStaticWhiteboards(Element e) /*-{
-        alert('attempt setting wb up');
-        if(typeof($wnd.setupStaticWhiteboards) == typeof(Function)) {
-            alert('setting wb up');
-            $wnd.setupStaticWhiteboards(e);
-        }
-        alert('done');
     }-*/;
 
     @Override

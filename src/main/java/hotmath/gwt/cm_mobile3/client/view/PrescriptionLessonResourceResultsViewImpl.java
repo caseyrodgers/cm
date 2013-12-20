@@ -163,7 +163,7 @@ public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel
             }
 
             @Override
-            public void showWorkIsReady() {
+            public void showWorkIsReady(ShowWorkPanel2 showWork) {
                 presenter.loadWhiteboard(_showWork, _lastPid);                
             }
 

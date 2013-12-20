@@ -16,14 +16,13 @@ import hotmath.gwt.cm_tutor.client.CmTutor;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -50,23 +49,30 @@ public class ShowWorkPanel2 extends Composite {
 
     private boolean _teacherMode;
 
-    interface MyUiBinder extends UiBinder<Widget, ShowWorkPanel2> {
-    }
+    private String whiteboardId;
 
-    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+    private int whiteboardHeight;
+    
+    private Widget parentWidget;
+
 
     public ShowWorkPanel2(ShowWorkPanel2Callback whiteboardOutCallback) {
         this(whiteboardOutCallback, true);
     }
 
     public ShowWorkPanel2(ShowWorkPanel2Callback whiteboardOutCallback, boolean setupWhiteboardNow) {
-        this(whiteboardOutCallback,setupWhiteboardNow,true);
+        this(whiteboardOutCallback,setupWhiteboardNow,true, "whiteboard-1", 0, null);
     }
     
-    public ShowWorkPanel2(ShowWorkPanel2Callback whiteboardOutCallback, boolean setupWhiteboardNow, boolean isInteractive) {
+    public ShowWorkPanel2(ShowWorkPanel2Callback whiteboardOutCallback, boolean setupWhiteboardNow, boolean isInteractive, String whiteboardId, int height, Widget parentWidget) {
         this._whiteboardOutCallback = whiteboardOutCallback;
         this._interactive = isInteractive;
-        initWidget(uiBinder.createAndBindUi(this));
+        this.whiteboardId = whiteboardId;
+        this.whiteboardHeight = height;  // if zero, calculate based on parent
+        this.parentWidget = parentWidget; // if null, get parent
+        
+        String html = "<div id='" + this.whiteboardId + "'></div>";
+        initWidget(new HTML(html));
         
         addStyleName("ShowWorkPanel2");
 
@@ -92,6 +98,11 @@ public class ShowWorkPanel2 extends Composite {
         }
     }
 
+    
+    private Widget getParentWidget() {
+        return parentWidget != null?parentWidget:getWidget();
+    }
+    
     /**
      * Call after the whiteboard had been inserted into DOM
      * 
@@ -101,13 +112,13 @@ public class ShowWorkPanel2 extends Composite {
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
-                Log.debug("Calling initializeWhiteboard with element: " + getWidget().getElement());
+                Log.debug("Calling initializeWhiteboard with element: " + getParentWidget().getElement());
 
                 // call initialization. This will call
                 // whiteboardIsReady, which will then do
                 // the callback. This way we know the whiteboard
                 // is 100% ready.
-                jsni_initializeWhiteboard(getWidget().getElement(),!_interactive);
+                jsni_initializeWhiteboard(whiteboardId, getParentWidget().getElement(),!_interactive, whiteboardHeight);
 
                 Log.debug("Calling showWorkIsReady");
                 isReady = true;
@@ -117,7 +128,7 @@ public class ShowWorkPanel2 extends Composite {
 
     private void whiteboardIsReady() {
         Log.debug("whiteboardIsReady called from external JS");
-       _whiteboardOutCallback.showWorkIsReady();
+       _whiteboardOutCallback.showWorkIsReady(this);
     }
 
     public boolean isReady() {
@@ -139,7 +150,7 @@ public class ShowWorkPanel2 extends Composite {
     }
 
     public void resizeWhiteboard() {
-        jnsi_resizeWhiteboard(getWidget().getElement());
+        jnsi_resizeWhiteboard(getParentWidget().getElement(), whiteboardHeight);
         _whiteboardOutCallback.windowResized();
     }
 
@@ -283,7 +294,9 @@ public class ShowWorkPanel2 extends Composite {
     }-*/;
 
     /**
-     * Provide generate way to load data externally
+     * Provide generate way to load data externally.
+     * 
+     * Always clears before processing
      * 
      * @param commands
      */
@@ -346,7 +359,7 @@ public class ShowWorkPanel2 extends Composite {
     }
     
 
-    private native void jsni_initializeWhiteboard(Element ele, boolean isStatic)/*-{
+    private native void jsni_initializeWhiteboard(String whiteboardId, Element ele, boolean isStatic, int heightIn)/*-{
     
         var that = this;
         $wnd.requireJsLoad_whiteboard(function(wb) {
@@ -357,7 +370,6 @@ public class ShowWorkPanel2 extends Composite {
                     alert('Whiteboard JS is not loaded');
                     return;
                 }
-                                                              
 
                 // create a single global object for now.
                 // TODO: add support for multiple whiteboards
@@ -369,20 +381,29 @@ public class ShowWorkPanel2 extends Composite {
                 }
                 
                 //new $wnd.Whiteboard();
-                $wnd._theWhiteboardDiv = $doc.getElementById("whiteboard-1");
+                $wnd._theWhiteboardDiv = $doc.getElementById(whiteboardId);
                 if($wnd._theWhiteboardDiv == null) {
-                    alert('no whiteboard-1 div');
+                    alert('no ' + whiteboardId + ' div');
                     return;
                 }
                 
-                $wnd._theWhiteboard = new $wnd.Whiteboard('whiteboard-1', isStatic);
-                
+                $wnd._theWhiteboard = new $wnd.Whiteboard(whiteboardId, isStatic);
                 $wnd._theWhiteboard.initWhiteboard($doc);
 
+
                 // tell the Whiteboard object the size of the parent container
-                var height = Number($wnd.grabComputedHeight(ele)) + 15;
+                // if height is passed in use it, otherwise calculate based on parent
+                  
+                var height=0;
+                if(heightIn) {
+                    height = heightIn;
+                }
+                else {
+                    height = Number($wnd.grabComputedHeight(ele)) + 15;
+                }
                 var width = Number($wnd.grabComputedWidth(ele)) + 15;
-                //console.log('setting whiteboard size: ' + height + ', ' + width);
+                
+                //alert('setting whiteboard size: ' + height + ', ' + width);
                 $wnd._theWhiteboard.setWhiteboardViewPort(width, height);
 
                 // overide methods in the Whiteboard instance
@@ -402,7 +423,6 @@ public class ShowWorkPanel2 extends Composite {
                    // callback into Java 
                    that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardIsReady()();
                 }
-
             } catch (e) {
                 alert('error initializing whiteboard: ' + e);
                 return;
@@ -410,14 +430,22 @@ public class ShowWorkPanel2 extends Composite {
         });
     }-*/;
 
-    private native void jnsi_resizeWhiteboard(Element ele)/*-{
+    private native void jnsi_resizeWhiteboard(Element ele, int heightIn)/*-{
         if (typeof $wnd.Whiteboard == 'undefined') {
             $wnd.console.log('jnsi_resizeWhiteboard: Whiteboard not defined');
             return;
         }
                                                           
         // tell the Whiteboard object the size of the parent container
-        var height = Number($wnd.grabComputedHeight(ele)) + 15;
+         
+        
+        var height=0;
+        if(heightIn == 0) {
+            height = Number($wnd.grabComputedHeight(ele)) + 15;
+        }
+        else {
+            height = heightIn;
+        }
         var width = Number($wnd.grabComputedWidth(ele)) + 15;
                                                           
         $wnd._theWhiteboard.setWhiteboardViewPort(width, height);
@@ -461,7 +489,7 @@ public class ShowWorkPanel2 extends Composite {
          * Indicate the whiteboard is ready for operation
          * 
          */
-        void showWorkIsReady();
+        void showWorkIsReady(ShowWorkPanel2 showWork);
 
         /**
          * Fired when the window has been resized
@@ -486,7 +514,7 @@ public class ShowWorkPanel2 extends Composite {
         }
 
         @Override
-        public void showWorkIsReady() {
+        public void showWorkIsReady(ShowWorkPanel2 showWork) {
             Log.debug("Show Work Panel is ready");
         }
 

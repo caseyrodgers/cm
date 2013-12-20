@@ -311,7 +311,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             }
 
             @Override
-            public void showWorkIsReady() {
+            public void showWorkIsReady(ShowWorkPanel2 showWork) {
                 presenter.showWhiteboard(_showWork);
             }
 

@@ -201,7 +201,7 @@ public class CatchupMathTest implements EntryPoint {
             }
 
             @Override
-            public void showWorkIsReady() {
+            public void showWorkIsReady(ShowWorkPanel2 showWork) {
                 _showWork.loadWhiteboard(result);
 
                 logMessage(getWhiteboardSize() + "\t" + message);

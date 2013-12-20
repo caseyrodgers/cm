@@ -28,3 +28,8 @@ line-height: 2px;
 border-left:1px inset #000000;
 border-right:1px inset #000000;
 }
+
+
+.cm_whiteboard {
+	margin-bottom: 40px;
+}

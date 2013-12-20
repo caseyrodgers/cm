@@ -154,7 +154,7 @@ public class StudentShowWorkWindow extends GWindow {
             
             _showWorkPanel = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
                 @Override
-                public void showWorkIsReady() {
+                public void showWorkIsReady(ShowWorkPanel2 showWork) {
                     new RetryAction<CmList<WhiteboardCommand>>() {
                         @Override
                         public void attempt() {
@@ -256,7 +256,7 @@ public class StudentShowWorkWindow extends GWindow {
             
             _showWorkPanel = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
                 @Override
-                public void showWorkIsReady() {
+                public void showWorkIsReady(ShowWorkPanel2 showWork) {
                     new RetryAction<CmList<WhiteboardCommand>>() {
                         @Override
                         public void attempt() {

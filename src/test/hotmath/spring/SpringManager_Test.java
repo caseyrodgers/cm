@@ -13,6 +13,7 @@ import hotmath.gwt.cm_admin.server.model.CmHighlightsDao;
 import hotmath.gwt.cm_admin.server.model.CmQuizzesDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_admin.server.model.GradeBookDao;
+import hotmath.testset.ha.CustomProblemDao;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRunDao;
@@ -20,6 +21,7 @@ import hotmath.testset.ha.HaTestRunHomeWorkDao;
 import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.HaUserExtendedDao;
 import hotmath.testset.ha.SolutionDao;
+import hotmath.testset.ha.WhiteboardDao;
 import junit.framework.TestCase;
 
 public class SpringManager_Test extends TestCase{
@@ -165,4 +167,16 @@ public class SpringManager_Test extends TestCase{
         assertNotNull(testDao);
     }
 
+    public void testWhiteBoardDao() throws Exception {
+        SpringManager manager = SpringManager.getInstance();
+        WhiteboardDao testDao = (WhiteboardDao)manager.getBeanFactory().getBean(WhiteboardDao.class.getName());
+        assertNotNull(testDao);
+    }
+    
+    public void testCustomProblemDao() throws Exception {
+        SpringManager manager = SpringManager.getInstance();
+        CustomProblemDao testDao = (CustomProblemDao)manager.getBeanFactory().getBean(CustomProblemDao.class.getName());
+        assertNotNull(testDao);
+    }
+    
 }

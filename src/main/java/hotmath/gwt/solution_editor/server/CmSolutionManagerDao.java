@@ -48,7 +48,7 @@ public class CmSolutionManagerDao {
         try {
 
             if(!solutionExists(conn, pid)) {
-                createNewSolution(conn, pid);
+                createNewSolution(conn, pid,null);
             }
 
             String sql = "update SOLUTIONS set local_edit = 1, solutionxml = ?, active = ?  where problemindex = ?";
@@ -100,10 +100,10 @@ public class CmSolutionManagerDao {
      * @throws Exception
      */
     public String createNewSolution(final Connection conn) throws Exception {
-        return createNewSolution(conn,"test_chap0_s-new_ps-new_" + "pb-" + System.currentTimeMillis() + "_1");
+        return createNewSolution(conn,"test_chap0_s-new_ps-new_" + "pb-" + System.currentTimeMillis() + "_1", null);
     }
 
-    public String createNewSolution(final Connection conn, String newSolutionPid) throws Exception {
+    public String createNewSolution(final Connection conn, String newSolutionPid, String problemStatementHtml) throws Exception {
         PreparedStatement ps=null;
         try {
             String createdBy="auto";
@@ -131,7 +131,7 @@ public class CmSolutionManagerDao {
             ps.setString(5,solution.getProblemSet());
             ps.setString(6,solution.getProblemNumber());
             ps.setInt(7,solution.getPage());
-            ps.setString(8,solution.getCreateNewXml(createdBy));
+            ps.setString(8,solution.getCreateNewXml(createdBy, problemStatementHtml));
             ps.setString(9,createdBy);
             ps.setString(10,createdBy);
 

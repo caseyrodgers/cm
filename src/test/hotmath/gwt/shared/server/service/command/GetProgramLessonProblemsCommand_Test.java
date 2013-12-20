@@ -13,7 +13,7 @@ public class GetProgramLessonProblemsCommand_Test extends TestCase {
     }
     
     public void testCreate() throws Exception {
-        GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction("Absolute Value", "topics/absolute-value.html","Ess");
+        GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction(2, "Absolute Value", "topics/absolute-value.html","Ess");
         CmList<ProblemDto> data = new GetProgramLessonProblemsCommand().execute(HMConnectionPool.getConnection(),action);
         assertTrue(data.size() > 0);
     }

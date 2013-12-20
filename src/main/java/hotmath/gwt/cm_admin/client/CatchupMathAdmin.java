@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client;
 
+import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
+import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesigner;
 import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
 import hotmath.gwt.cm_admin.client.ui.AssignmentManagerDialog2;
 import hotmath.gwt.cm_admin.client.ui.AssignmentStatusDialog;
@@ -9,6 +11,7 @@ import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
 import hotmath.gwt.cm_admin.client.ui.WebLinkEditorDialog;
 import hotmath.gwt.cm_admin.client.ui.WebLinksManager;
+import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentQuestionViewerPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.EditAssignmentDialog;
 import hotmath.gwt.cm_admin.client.ui.assignment.FinalExamCreationManager;
@@ -168,6 +171,21 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             LessonSearchWindow.startTest();
             return;
         }
+        else if(CmShared.getQueryParameterValue("test").equals("custom")) {
+            new ProblemDesigner.GwtTestUi().startTest();
+            return;
+        }
+        else if(CmShared.getQueryParameterValue("test").equals("custom_manager")) {
+            CustomProblemManager.startTest();
+            return;
+        }
+        else if(CmShared.getQueryParameterValue("test").equals("assignment_add_problem")) {
+            AddProblemDialog.startTest();
+            return;
+        }
+
+        
+
 
         new MessageOfTheDayDialog(new CallbackGeneric() {
             @Override

@@ -115,7 +115,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
             }
             
             @Override
-            public void showWorkIsReady() {
+            public void showWorkIsReady(ShowWorkPanel2 showWork) {
                 loadAssignmentWhiteboardData(_uid, _assignKey, _problem.getPid());
             }
         });

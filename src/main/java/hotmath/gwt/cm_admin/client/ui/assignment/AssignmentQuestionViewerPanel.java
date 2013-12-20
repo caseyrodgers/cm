@@ -129,7 +129,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
         if(_showWork == null) {
             _showWork = new ShowWorkPanel2(new ShowWorkPanelCallbackDefault(){
                 @Override
-                public void showWorkIsReady() {
+                public void showWorkIsReady(ShowWorkPanel2 showWork) {
                     loadShowWork();
                     
                     _showWork.setAsTeacherMode(true);

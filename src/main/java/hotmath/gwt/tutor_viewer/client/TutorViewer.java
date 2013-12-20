@@ -65,8 +65,6 @@ import com.google.gwt.user.client.ui.RootPanel;
             else {
                 RootPanel.get().add(new TutorViewerPanelSimple(pid));
             }
-            
-            
         }
         
         Window.addResizeHandler(new ResizeHandler() {

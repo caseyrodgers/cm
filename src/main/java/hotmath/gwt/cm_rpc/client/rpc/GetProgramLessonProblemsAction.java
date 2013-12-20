@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
+import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -14,12 +15,22 @@ public class GetProgramLessonProblemsAction implements Action<CmList<ProblemDto>
     String lesson;
     String file;
     String subject;
+    int adminId;
     
     public GetProgramLessonProblemsAction() {}
-    public GetProgramLessonProblemsAction(String lesson, String file, String subject) {
+    public GetProgramLessonProblemsAction(int adminId, String lesson, String file, String subject) {
+        this.adminId = adminId;
         this.lesson = lesson;
         this.file = file;
         this.subject = subject;
+    }
+    
+
+    public int getAdminId() {
+        return adminId;
+    }
+    public void setAdminId(int adminId) {
+        this.adminId = adminId;
     }
     public String getFile() {
         return file;
@@ -41,7 +52,7 @@ public class GetProgramLessonProblemsAction implements Action<CmList<ProblemDto>
     }
     @Override
     public String toString() {
-        return "GetProgramLessonProblemsAction [lesson=" + lesson + ", file=" + file + ", subject=" + subject + "]";
+        return "GetProgramLessonProblemsAction [lesson=" + lesson + ", file=" + file + ", subject=" + subject + ", adminId=" + adminId + "]";
     }
 
 }

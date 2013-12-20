@@ -276,6 +276,11 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         for(LessonDto l: lessons) {
             children.add(makeLesson(l));  // new LessonDto(autoId++,0,"All",l.getLessonName()));
         }
+        
+        LessonDto customNodes = new LessonDto(++BaseDto.autoId, 0, "Custom Problems", "Custom Problems",null);
+        children.add(customNodes);
+        
+        
         _root.setChildren(children);
         
         FolderDto root = _root;
@@ -285,6 +290,7 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
             processFolder(treeStore, (FolderDto) base);
           }
         }
+
         return treeStore;
     }
 

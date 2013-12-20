@@ -15,6 +15,7 @@ import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.SolutionDao;
+import hotmath.testset.ha.WhiteboardDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -92,6 +93,13 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             if(action.getRunId() > 0) {
                 solutionInfo.setWidgetResult(HaTestRunDao.getInstance().getRunTutorWidgetValue(action.getRunId(), action.getPid()));
             }
+            
+            
+            /** Read any static whiteboards that have been defined for this solution
+             * 
+             */
+            solutionInfo.getWhiteboards().addAll(WhiteboardDao.getInstance().getStaticWhiteboards(action.getPid()));
+            
             
             return solutionInfo;
         } catch (Exception e) {

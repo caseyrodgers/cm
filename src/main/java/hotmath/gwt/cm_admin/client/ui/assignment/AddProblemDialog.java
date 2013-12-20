@@ -29,6 +29,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -83,10 +84,11 @@ public class AddProblemDialog extends GWindow {
     CCSSTreeLessonListPanel _treePanelCCSS;
 
     BorderLayoutContainer _mainContainer;
-    
+
     TreeStore<BaseDto> _treeStore;
     AssignmentTreeAllLessonsListingPanel _treeFlatPanel;
-    TabPanel _tabPanel; 
+    TabPanel _tabPanel;
+
     public AddProblemDialog() {
         super(false);
 
@@ -94,14 +96,14 @@ public class AddProblemDialog extends GWindow {
         setPixelSize(700, 480);
         setMaximizable(true);
         addButton(createAddSelectionButton());
-        
+
         TextButton btnClose = new TextButton("Cancel", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                if(getActiveTree().getCheckedSelection().size() > 0) {
-                    CmMessageBox.confirm("Really Close?", "There are items checked.  Are you sure you want to cancel?",new ConfirmCallback() {
+                if (getActiveTree().getCheckedSelection().size() > 0) {
+                    CmMessageBox.confirm("Really Close?", "There are items checked.  Are you sure you want to cancel?", new ConfirmCallback() {
                         public void confirmed(boolean yesNo) {
-                            if(yesNo) {
+                            if (yesNo) {
                                 hide();
                             }
                         }
@@ -116,26 +118,26 @@ public class AddProblemDialog extends GWindow {
 
         _treePanelProgram = new ContentPanel();
         _mainContainer = new BorderLayoutContainer();
-        
+
         _treeFlatPanel = new AssignmentTreeAllLessonsListingPanel(new CallbackOnSelectedLesson() {
             @Override
             public void lessonWasSelected() {
                 Window.alert("Lesson was selected");
             }
+
             @Override
             public void nodeWasChecked() {
                 setCheckMessageTask.delay(100);
             }
         });
         _treeFlatPanel.refreshData();
-        
-        
+
         _treePanelSubjectChapter = new AssignmentTreeSubjectChapterListingPanel(new CallbackOnSelectedLesson() {
             @Override
             public void lessonWasSelected() {
                 Window.alert("Lesson was selected");
             }
-            
+
             @Override
             public void nodeWasChecked() {
                 setCheckMessageTask.delay(100);
@@ -147,7 +149,7 @@ public class AddProblemDialog extends GWindow {
             public void lessonWasSelected() {
                 Window.alert("Lesson was selected");
             }
-            
+
             @Override
             public void nodeWasChecked() {
                 setCheckMessageTask.delay(100);
@@ -156,63 +158,63 @@ public class AddProblemDialog extends GWindow {
 
         CenterLayoutContainer centered = new CenterLayoutContainer();
         centered.setWidget(new Label("Loading data ..."));
-        _treePanelProgram.setWidget(centered);        
-        
+        _treePanelProgram.setWidget(centered);
+
         _tabPanel = new TabPanel();
         _tabPanel.add(_treeFlatPanel, new TabItemConfig("All Lessons", false));
         _tabPanel.add(_treePanelSubjectChapter, new TabItemConfig("By Subject", false));
         _tabPanel.add(_treePanelProgram, new TabItemConfig("By Program", false));
         _tabPanel.add(_treePanelCCSS, new TabItemConfig("By CCSS", false));
-        
+
         _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
             @Override
             public void onSelection(SelectionEvent<Widget> event) {
-                if(_tabPanel.getActiveWidget() == _treeFlatPanel) {
-                    if(_treeFlatPanel._tree == null) {
+                if (_tabPanel.getActiveWidget() == _treeFlatPanel) {
+                    if (_treeFlatPanel._tree == null) {
                         // is flat tree
                         updateFlattenTree();
                     }
                 }
-                else if(_tabPanel.getActiveWidget() == _treePanelSubjectChapter) {
-                    if(_treePanelSubjectChapter._tree == null) {
+                else if (_tabPanel.getActiveWidget() == _treePanelSubjectChapter) {
+                    if (_treePanelSubjectChapter._tree == null) {
                         _treePanelSubjectChapter.refreshData();
                     }
                 }
-                else if(_tabPanel.getActiveWidget() == _treePanelCCSS) {
-                    if(_treePanelCCSS._tree == null) {
+                else if (_tabPanel.getActiveWidget() == _treePanelCCSS) {
+                    if (_treePanelCCSS._tree == null) {
                         _treePanelCCSS.refreshData();
                     }
                 }
-             
-                if(getActiveTree() != null) {
+
+                if (getActiveTree() != null) {
                     unselectAllProblems(getActiveTree());
                 }
             }
         });
-        
+
         BorderLayoutData data = new BorderLayoutData();
         data.setSize(.50);
         data.setSplit(true);
         data.setCollapsible(true);
 
-        _mainContainer.setCenterWidget(_tabPanel, data);        
-        
+        _mainContainer.setCenterWidget(_tabPanel, data);
+
         addHideHandler(new HideHandler() {
             @Override
             public void onHide(HideEvent event) {
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_QUESTION_VIEWER_CLOSED));
             }
         });
-        
-        //setupViewerGui();
-        
+
+        // setupViewerGui();
+
         QuestionViewerPanel.getInstance().removeQuestion();
-        
+
         setWidget(_mainContainer);
 
         readDataAndBuildTree();
     }
-    
+
     private void updateFlattenTree() {
         _treeFlatPanel.refreshData();
     }
@@ -223,35 +225,35 @@ public class AddProblemDialog extends GWindow {
         eastData.setSplit(true);
         eastData.setCollapsible(true);
 
-        _mainContainer.setEastWidget(QuestionViewerPanel.getInstance(),eastData);
+        _mainContainer.setEastWidget(QuestionViewerPanel.getInstance(), eastData);
     }
-    
+
     private Widget createAddSelectionButton() {
         TextButton btn = new TextButton("Add Checked Problems", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                
-                if(getActiveTree().getCheckedSelection().size() == 0) {
+
+                if (getActiveTree().getCheckedSelection().size() == 0) {
                     CmMessageBox.showAlert("There are no checked problems.");
                     return;
                 }
-                makeSureLessonProblemsReadMaybeAsync(true, true,getActiveTree(), _callbackOnComplete);
+                makeSureLessonProblemsReadMaybeAsync(true, true, getActiveTree(), _callbackOnComplete);
                 hide();
             }
         });
         btn.setToolTip("Add all checked problems to current assignment.");
         return btn;
     }
-    
+
     protected Tree<BaseDto, String> getActiveTree() {
-        Tree<BaseDto, String> activeTree=null;
-        if(_tabPanel.getActiveWidget() == _treePanelProgram) {
+        Tree<BaseDto, String> activeTree = null;
+        if (_tabPanel.getActiveWidget() == _treePanelProgram) {
             activeTree = _tree;
         }
-        else if(_tabPanel.getActiveWidget() == _treePanelSubjectChapter) {
+        else if (_tabPanel.getActiveWidget() == _treePanelSubjectChapter) {
             activeTree = _treePanelSubjectChapter._tree;
         }
-        else if(_tabPanel.getActiveWidget() == _treePanelCCSS) {
+        else if (_tabPanel.getActiveWidget() == _treePanelCCSS) {
             activeTree = _treePanelCCSS._tree;
         }
         else {
@@ -260,27 +262,29 @@ public class AddProblemDialog extends GWindow {
         return activeTree;
     }
 
-    /** Some lessons might not have had their problems read from the server.
-     * We do not want to make the user manually expand the problems to see them.
+    /**
+     * Some lessons might not have had their problems read from the server. We
+     * do not want to make the user manually expand the problems to see them.
      * 
      * @param callback
      */
-    static public void makeSureLessonProblemsReadMaybeAsync(boolean sort, boolean unselectSelections,  Tree<BaseDto, String> tree, final AddProblemsCallback callback) {
+    static public void makeSureLessonProblemsReadMaybeAsync(boolean sort, boolean unselectSelections, Tree<BaseDto, String> tree,
+            final AddProblemsCallback callback) {
         final List<ProblemDto> problems = new ArrayList<ProblemDto>();
         List<BaseDto> checked = tree.getCheckedSelection();
         List<LessonDto> lessonsNeeded = new ArrayList<LessonDto>();
         for (BaseDto d : checked) {
-            if(d instanceof LessonDto) {
-                if(d.getChildren() == null || d.getChildren().size() == 0) {
-                    lessonsNeeded.add((LessonDto)d);
+            if (d instanceof LessonDto) {
+                if (d.getChildren() == null || d.getChildren().size() == 0) {
+                    lessonsNeeded.add((LessonDto) d);
                 }
             }
-            else if(d instanceof ProblemDto) {
-                problems.add((ProblemDto)d);
+            else if (d instanceof ProblemDto) {
+                problems.add((ProblemDto) d);
             }
         }
-        
-        if(sort) {
+
+        if (sort) {
             Collections.sort(problems, new Comparator<BaseDto>() {
 
                 @Override
@@ -289,27 +293,26 @@ public class AddProblemDialog extends GWindow {
                 }
             });
         }
-        
-        if(lessonsNeeded.size() > 0) {
-           readProblemsForLessonsAndCallBack(unselectSelections, tree, lessonsNeeded,callback,problems);
+
+        if (lessonsNeeded.size() > 0) {
+            readProblemsForLessonsAndCallBack(unselectSelections, tree, lessonsNeeded, callback, problems);
         }
         else {
-            
-            // no need for async
-            callBackToServer(unselectSelections, tree, callback,problems);
-        }
-    }    
-    
-    
 
-    static private void readProblemsForLessonsAndCallBack(final boolean uncheckSelections, final Tree<BaseDto, String> tree, final List<LessonDto> lessonsNeeded, final AddProblemsCallback callback, final List<ProblemDto> problems) {
+            // no need for async
+            callBackToServer(unselectSelections, tree, callback, problems);
+        }
+    }
+
+    static private void readProblemsForLessonsAndCallBack(final boolean uncheckSelections, final Tree<BaseDto, String> tree,
+            final List<LessonDto> lessonsNeeded, final AddProblemsCallback callback, final List<ProblemDto> problems) {
         new RetryAction<CmList<Response>>() {
             @Override
             public void attempt() {
-                
-                MultiActionRequestAction mAction = new  MultiActionRequestAction();
-                for(LessonDto l: lessonsNeeded) {
-                    GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction(l.getLessonName(), l.getLessonFile(),l.getSubject());
+
+                MultiActionRequestAction mAction = new MultiActionRequestAction();
+                for (LessonDto l : lessonsNeeded) {
+                    GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction(UserInfoBase.getInstance().getUid(),l.getLessonName(), l.getLessonFile(), l.getSubject());
                     mAction.getActions().add(action);
                 }
                 setAction(mAction);
@@ -319,43 +322,43 @@ public class AddProblemDialog extends GWindow {
             @Override
             public void oncapture(CmList<Response> responses) {
                 List<ProblemDto> data = new ArrayList<ProblemDto>();
-                
-                for(Response r: responses) {
-                    List<ProblemDto> probs = (CmList<ProblemDto>)r;
+
+                for (Response r : responses) {
+                    List<ProblemDto> probs = (CmList<ProblemDto>) r;
                     for (int i = 0, t = probs.size(); i < t; i++) {
                         ProblemDto pt = probs.get(i);
                         pt.setId(++BaseDto.autoId);
-                        
-                        boolean found=false;
-                        for(ProblemDto d: problems) {
-                            if(d.getPid().equals(pt.getPid())) {
-                                found=true;
+
+                        boolean found = false;
+                        for (ProblemDto d : problems) {
+                            if (d.getPid().equals(pt.getPid())) {
+                                found = true;
                                 break;
                             }
                         }
-                        if(!found) {
+                        if (!found) {
                             data.add(pt);
                         }
                     }
                 }
                 problems.addAll(data);
-                callBackToServer(uncheckSelections, tree, callback,problems);
+                callBackToServer(uncheckSelections, tree, callback, problems);
             }
 
-        }.register();        
+        }.register();
     }
 
     static private void callBackToServer(boolean uncheckSelections, Tree<BaseDto, String> tree, AddProblemsCallback callback, List<ProblemDto> problems) {
-        
+
         Log.debug("Problems added: " + problems.size());
         callback.problemsAdded(problems);
-  
-        if(uncheckSelections) {
+
+        if (uncheckSelections) {
             unselectAllProblems(tree);
         }
-  
+
     }
-    
+
     static private void unselectAllProblems(Tree<BaseDto, String> tree) {
         for (BaseDto d : tree.getCheckedSelection()) {
             tree.setChecked(d, CheckState.UNCHECKED);
@@ -386,7 +389,6 @@ public class AddProblemDialog extends GWindow {
         }
     }
 
-    
     final DelayedTask setCheckMessageTask = new DelayedTask() {
         @Override
         public void onExecute() {
@@ -394,11 +396,11 @@ public class AddProblemDialog extends GWindow {
             setWindowTitleCountSelectedProblems();
         }
     };
-    
+
     Tree<BaseDto, String> _tree;
 
     public Widget makeTree() {
-        
+
         _treeStore = new TreeStore<BaseDto>(new KeyProvider());
 
         RpcProxy<BaseDto, List<BaseDto>> proxy = new RpcProxy<BaseDto, List<BaseDto>>() {
@@ -418,7 +420,7 @@ public class AddProblemDialog extends GWindow {
                 }
 
                 else {
-                    if(loadConfig instanceof StandardNode) {
+                    if (loadConfig instanceof StandardNode) {
                         List<BaseDto> base = new ArrayList<BaseDto>();
                         for (StandardStateDto so : ((StandardNode) loadConfig).getStates()) {
                             base.add(so);
@@ -442,13 +444,15 @@ public class AddProblemDialog extends GWindow {
                         callback.onSuccess(base);
                     } else if (loadConfig instanceof LessonDto) {
                         Window.alert("AddProblemDialog: should not get here");
-//                        List<BaseDto> base = new ArrayList<BaseDto>();
-//
-//                        ((LessonDto) loadConfig).getProblems().add(new ProblemDto(10, "Lesson", "Pid Label 1", "Pid1"));
-//                        for (LessonDto so : ((SectionDto) loadConfig).getLessons()) {
-//                            base.add(so);
-//                        }
-//                        callback.onSuccess(base);
+                        // List<BaseDto> base = new ArrayList<BaseDto>();
+                        //
+                        // ((LessonDto) loadConfig).getProblems().add(new
+                        // ProblemDto(10, "Lesson", "Pid Label 1", "Pid1"));
+                        // for (LessonDto so : ((SectionDto)
+                        // loadConfig).getLessons()) {
+                        // base.add(so);
+                        // }
+                        // callback.onSuccess(base);
                     }
 
                 }
@@ -461,7 +465,7 @@ public class AddProblemDialog extends GWindow {
                 return parent instanceof FolderDto;
             }
         };
-        
+
         loader.addLoadHandler(new ChildTreeStoreBinding<BaseDto>(_treeStore));
 
         for (BaseDto base : _root.getChildren()) {
@@ -475,8 +479,8 @@ public class AddProblemDialog extends GWindow {
 
             @Override
             public String getValue(BaseDto object) {
-                if(object instanceof ProblemDto) {
-                    return ((ProblemDto)object).getLabelWithType();
+                if (object instanceof ProblemDto) {
+                    return ((ProblemDto) object).getLabelWithType();
                 }
                 else {
                     return object.getName();
@@ -496,7 +500,7 @@ public class AddProblemDialog extends GWindow {
         _tree.setWidth(350);
         _tree.setCheckable(true);
         _tree.setCheckStyle(CheckCascade.TRI);
-        //_tree.setAutoSelect(true);
+        // _tree.setAutoSelect(true);
 
         _tree.addCheckChangedHandler(new CheckChangedHandler<BaseDto>() {
             @Override
@@ -513,9 +517,9 @@ public class AddProblemDialog extends GWindow {
                 if ("click".equals(event.getType())) {
                     BaseDto base = _tree.getSelectionModel().getSelectedItem();
                     if (base instanceof ProblemDto) {
-                        ProblemDto p = (ProblemDto)base;
+                        ProblemDto p = (ProblemDto) base;
                         Log.debug("View Question", "Viewing " + p.getLabel());
-                        
+
                         QuestionViewerPanel.getInstance().viewQuestion(p, false);
                     }
                     else {
@@ -527,23 +531,22 @@ public class AddProblemDialog extends GWindow {
         };
 
         _tree.setCell(cell);
-   
+
         return _tree;
     }
-    
+
     private void setWindowTitleCountSelectedProblems() {
-        makeSureLessonProblemsReadMaybeAsync(false, false,getActiveTree(),new AddProblemsCallback() {
+        makeSureLessonProblemsReadMaybeAsync(false, false, getActiveTree(), new AddProblemsCallback() {
             @Override
             public void problemsAdded(List<ProblemDto> problemsAdded) {
                 String title = problemsAdded.size() + " problem(s) checked";
-                
-                ContentPanel cp = (ContentPanel)_tabPanel.getActiveWidget();
+
+                ContentPanel cp = (ContentPanel) _tabPanel.getActiveWidget();
                 cp.setHeadingText(title);
             }
         });
-                
+
     }
-    
 
     private void getLessonItemsRPC(final int testDefId, final String subject, final int sectionNumber,
             final AsyncCallback<List<BaseDto>> callback) {
@@ -580,7 +583,7 @@ public class AddProblemDialog extends GWindow {
             @Override
             public void attempt() {
                 CatchupMathTools.setBusy(true);
-                GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction(lesson, file, subject);
+                GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction(UserInfoBase.getInstance().getUid(),lesson, file, subject);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -594,19 +597,18 @@ public class AddProblemDialog extends GWindow {
                     data.add(pt);
                 }
                 callback.onSuccess(data);
-                if(callbackOnComplete != null) {
-                    /** inform the caller when the async 
-                     *  request is complete
+                if (callbackOnComplete != null) {
+                    /**
+                     * inform the caller when the async request is complete
                      */
                     callbackOnComplete.isComplete();
                 }
-            	CatchupMathTools.setBusy(false);
+                CatchupMathTools.setBusy(false);
             }
 
         }.register();
     }
 
-    
     public static void showDialog(AddProblemsCallback callbackOnComplete) {
         if (__sharedInstance == null) {
             __sharedInstance = new AddProblemDialog();
@@ -623,8 +625,6 @@ public class AddProblemDialog extends GWindow {
         theReturn.setChildren((List<BaseDto>) new ArrayList<BaseDto>());
         return theReturn;
     }
-
-
 
     ProgramListing _programListing;
 
@@ -669,8 +669,6 @@ public class AddProblemDialog extends GWindow {
 
             children.add(subjectDto);
         }
-        
-        
         //children.add(new StandardNode());
         
         
@@ -694,6 +692,16 @@ public class AddProblemDialog extends GWindow {
     
     public interface AddProblemsCallback {
         void problemsAdded(List<ProblemDto> problemsAdded);
+    }
+    
+    static public void startTest() {
+        showDialog(new AddProblemsCallback() {
+            @Override
+            public void problemsAdded(List<ProblemDto> problemsAdded) {
+                // TODO Auto-generated method stub
+                
+            }
+        });
     }
 }
 

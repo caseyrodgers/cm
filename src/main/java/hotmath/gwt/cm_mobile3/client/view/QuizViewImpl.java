@@ -113,7 +113,7 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
             }
 
             @Override
-            public void showWorkIsReady() {
+            public void showWorkIsReady(ShowWorkPanel2 showWork) {
                 presenter.loadWhiteboard(_showWork, _lastPid);                
             }
 
