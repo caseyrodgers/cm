@@ -126,6 +126,10 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
      */
     private void setupShowWorkIfRequired() {
         
+        if(_showWork != null) {
+            _showWork = null;
+        }
+        
         if(_showWork == null) {
             _showWork = new ShowWorkPanel2(new ShowWorkPanelCallbackDefault(){
                 @Override
