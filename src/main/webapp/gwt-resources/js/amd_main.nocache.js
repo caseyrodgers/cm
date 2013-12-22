@@ -7,15 +7,8 @@ require.config({
  */
 // load all code required to run the whiteboard
 function requireJsLoad_whiteboard(funcToCall) {
-    console.log('REQUIREJS loading whiteboard dependencies');
-    try {
-        require(['whiteboard_v3'], function(x) {
-            funcToCall(x);
-        });
-    }
-    catch(ex) {
-        alert(ex);
-    }
+    alert('REQUIREJS loading whiteboard dependencies: NOT USED, include whiteboard.js');
+    funcToCall();
 }
 
 function requireJsLoad_calculator(calcContainer, funcToCall) {

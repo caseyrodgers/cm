@@ -27,12 +27,13 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderL
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
-/** Manages the student's assignment view of
- *  a single tutor and its associated whiteboard
+/**
+ * Manages the student's assignment view of a single tutor and its associated
+ * whiteboard
  * 
  * 
  * @author casey
- *
+ * 
  */
 public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
 
@@ -40,31 +41,34 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     AssignmentTutorPanel _tutorPanel;
     AssignmentStudentTutorAndShowWorkPanelCallback _callBack;
     StudentProblemDto _problem;
-    
+
     interface AssignmentStudentTutorAndShowWorkPanelCallback {
-         void tutorWidgetValueUpdated(String value, boolean correct);
+        void tutorWidgetValueUpdated(String value, boolean correct);
 
         void whiteboardUpdated();
     }
-    
+
     BorderLayoutContainer _container;
     private ToggleButton _showWhiteboardButton;
-    public AssignmentStudentTutorAndShowWorkPanel(String title, final int uid, StudentAssignment assignment, final StudentProblemDto problem, AssignmentStudentTutorAndShowWorkPanelCallback callBack) {
+
+    public AssignmentStudentTutorAndShowWorkPanel(String title, final int uid, StudentAssignment assignment, final StudentProblemDto problem,
+            AssignmentStudentTutorAndShowWorkPanelCallback callBack) {
         _callBack = callBack;
         _uid = uid;
         _assignKey = assignment.getAssignment().getAssignKey();
         _problem = problem;
 
-        
-        /** create callback to pass along when tutor widget value changed
-         *  
-         */
-        boolean iEditable = assignment.isEditable();
-        /** Multi Choice problems do not have steps so
-         *  we cannot show the buttonbar.
+        /**
+         * create callback to pass along when tutor widget value changed
          * 
          */
-        _tutorPanel = new AssignmentTutorPanel(iEditable,problem.getProblem(),assignment.isGraded(), new AssignmentTutorPanelCallback() {
+        boolean iEditable = assignment.isEditable();
+        /**
+         * Multi Choice problems do not have steps so we cannot show the
+         * buttonbar.
+         * 
+         */
+        _tutorPanel = new AssignmentTutorPanel(iEditable, problem.getProblem(), assignment.isGraded(), new AssignmentTutorPanelCallback() {
             @Override
             public void tutorWidgetValueUpdated(String value, boolean correct) {
                 _callBack.tutorWidgetValueUpdated(value, correct);
@@ -75,45 +79,46 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
                 _callBack.whiteboardUpdated();
             }
         });
-        
+
         _container = new BorderLayoutContainer();
-        
+
         BorderLayoutData bd = new BorderLayoutData();
         bd.setSplit(true);
         bd.setCollapsible(true);
         bd.setMargins(new Margins(5, 10, 5, 5));
         _container.setCenterWidget(_tutorPanel, bd);
-        
+
         _showWhiteboardButton = createShowWhiteboardButton();
         addTool(_showWhiteboardButton);
-        
-        if(!assignment.getAssignment().isPreventLessonAccess()) {
+
+        if (!assignment.getAssignment().isPreventLessonAccess()) {
             addTool(createShowLessonButton());
         }
         else {
             Log.info("Lesson access prevented on assignment!");
         }
-        
-        if(_whiteboardShown || problem.getProblem().getProblemType() == ProblemType.WHITEBOARD) {
+
+        if (_whiteboardShown || problem.getProblem().getProblemType() == ProblemType.WHITEBOARD) {
             _showWhiteboardButton.setValue(true);
             showWhiteboard();
         }
-        
+
         setWidget(_container);
-        
+
         loadTutor(title, uid, _assignKey, problem);
     }
 
     static boolean _whiteboardShown;
     ContentPanel _showWorkWrapper;
+
     private void showWhiteboard() {
-        
+
         _showWork = new ShowWorkPanel2(new ShowWorkPanelCallbackDefault() {
             @Override
             public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
                 return createWhiteBoardSaveAction(pid, commandType, data);
             }
-            
+
             @Override
             public void showWorkIsReady(ShowWorkPanel2 showWork) {
                 loadAssignmentWhiteboardData(_uid, _assignKey, _problem.getPid());
@@ -123,43 +128,41 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         BorderLayoutData bd = new BorderLayoutData(.50);
         bd.setSplit(true);
         bd.setCollapsible(true);
-
-        
         _showWorkWrapper = new ContentPanel();
         _showWorkWrapper.setWidget(_showWork);
-        _container.setEastWidget(_showWorkWrapper,  bd);
-        
+        _container.setEastWidget(_showWorkWrapper, bd);
+
         _container.forceLayout();
-        
-        _whiteboardShown=true;
+
+        _whiteboardShown = true;
     }
-    
+
     private Widget createShowLessonButton() {
         return new ProblemResourcesButton(_problem.getProblem());
     }
-    
+
     private ToggleButton createShowWhiteboardButton() {
         final ToggleButton showLesson = new ToggleButton("Show/Hide Whiteboard");
         showLesson.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                if(showLesson.getValue()) {
+                if (showLesson.getValue()) {
                     showWhiteboard();
-                    loadAssignmentWhiteboardData(_uid,_assignKey,_problem.getPid());
+                    loadAssignmentWhiteboardData(_uid, _assignKey, _problem.getPid());
                 }
                 else {
                     _container.remove(_showWorkWrapper);
                     forceLayout();
-                    
-                    _whiteboardShown=false;
+
+                    _whiteboardShown = false;
                 }
             }
         });
         return showLesson;
     }
-    
-    
+
     int _uid, _assignKey;
+
     private void loadAssignmentWhiteboardData(int uid, int assignKey, String pid) {
         // always use zero for run_id
         GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(uid, pid, assignKey);
@@ -168,9 +171,10 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
                 Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                     @Override
                     public void execute() {
-                        if(_showWork != null) {
-                            _showWork.loadWhiteboard(data.getCommands());                    }
+                        if (_showWork != null) {
+                            _showWork.loadWhiteboard(data.getCommands());
                         }
+                    }
                 });
             }
 
@@ -178,16 +182,16 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
                 Log.error("Error getting whiteboard data: " + caught.toString(), caught);
             };
         });
-    }    
+    }
 
     private Action<? extends Response> createWhiteBoardSaveAction(String pid, CommandType comamndType, String commandData) {
-        return new SaveAssignmentWhiteboardDataAction(_uid,_assignKey, _problem.getPid(),comamndType, commandData, false);        
+        return new SaveAssignmentWhiteboardDataAction(_uid, _assignKey, _problem.getPid(), comamndType, commandData, false);
     }
 
     private void loadTutor(String title, int uid, int assignKey, StudentProblemDto problem) {
         setHeadingText(title);
         _tutorPanel.loadSolution(uid, assignKey, problem);
 
-        loadAssignmentWhiteboardData(uid,assignKey,problem.getPid());
+        //loadAssignmentWhiteboardData(uid, assignKey, problem.getPid());
     }
 }

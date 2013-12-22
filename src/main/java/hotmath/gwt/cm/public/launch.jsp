@@ -63,6 +63,8 @@
 
         <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main.nocache"></script>
         
+        <script src='/gwt-resources/js/whiteboard_v3.js'></script>
+        
         
         <!-- 
         <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>

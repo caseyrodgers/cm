@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 
 import java.util.List;
@@ -119,15 +120,13 @@ public class ShowWorkPanel2 extends Composite {
                 // the callback. This way we know the whiteboard
                 // is 100% ready.
                 jsni_initializeWhiteboard(whiteboardId, getParentWidget().getElement(),!_interactive, whiteboardHeight);
-
-                Log.debug("Calling showWorkIsReady");
-                isReady = true;
             }
         });
     }
 
     private void whiteboardIsReady() {
         Log.debug("whiteboardIsReady called from external JS");
+        isReady = true;
        _whiteboardOutCallback.showWorkIsReady(this);
     }
 
@@ -179,7 +178,21 @@ public class ShowWorkPanel2 extends Composite {
      * 
      * Each element in array is a command and an array of data.
      */
-    private native void jsni_updateWhiteboard(String flashId, String command, String commandData) /*-{
+    private void jsni_updateWhiteboard(String flashId, String command, String commandData) {
+        if(!isReady()) {
+            CmMessageBox.showAlert("Whiteboard is not ready");
+            return;
+        }
+        jsni_updateWhiteboardAux(flashId, command, commandData);
+    }
+    
+    private native void jsni_updateWhiteboardAux(String flashId, String command, String commandData) /*-{
+             
+         if(!$wnd._theWhiteboard) {
+             alert('_theWhiteboard is null in ShowWorkPanel2');
+             return;
+         }
+         
          var cmdArray = [];
          if (command == 'draw') {
              cmdArray = [['draw', [commandData]]];
@@ -362,72 +375,69 @@ public class ShowWorkPanel2 extends Composite {
     private native void jsni_initializeWhiteboard(String whiteboardId, Element ele, boolean isStatic, int heightIn)/*-{
     
         var that = this;
-        $wnd.requireJsLoad_whiteboard(function(wb) {
-           // after all wb related dependencies are loaded
-           //
-            try {
-                if (typeof $wnd.Whiteboard == 'undefined') {
-                    alert('Whiteboard JS is not loaded');
-                    return;
-                }
-
-                // create a single global object for now.
-                // TODO: add support for multiple whiteboards
-                //
-                
-                if($wnd._theWhiteboard) {
-                   $wnd._theWhiteboard.releaseResources();
-                   $wnd._theWhiteboard = null;
-                }
-                
-                //new $wnd.Whiteboard();
-                $wnd._theWhiteboardDiv = $doc.getElementById(whiteboardId);
-                if($wnd._theWhiteboardDiv == null) {
-                    alert('no ' + whiteboardId + ' div');
-                    return;
-                }
-                
-                $wnd._theWhiteboard = new $wnd.Whiteboard(whiteboardId, isStatic);
-                $wnd._theWhiteboard.initWhiteboard($doc);
-
-
-                // tell the Whiteboard object the size of the parent container
-                // if height is passed in use it, otherwise calculate based on parent
-                  
-                var height=0;
-                if(heightIn) {
-                    height = heightIn;
-                }
-                else {
-                    height = Number($wnd.grabComputedHeight(ele)) + 15;
-                }
-                var width = Number($wnd.grabComputedWidth(ele)) + 15;
-                
-                //alert('setting whiteboard size: ' + height + ', ' + width);
-                $wnd._theWhiteboard.setWhiteboardViewPort(width, height);
-
-                // overide methods in the Whiteboard instance
-                $wnd._theWhiteboard.whiteboardOut = function (data, boo) {
-                   that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
-                }
+        try {
+            $wnd.console.log('Initializing whiteboard: ' + whiteboardId);
             
-                $wnd._theWhiteboard.whiteboardDelete = function (indexToDelete) {
-                   that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardDelete_Gwt(I)(indexToDelete);
-                }
-            
-                $wnd._theWhiteboard.saveWhiteboard = function () {
-                   that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardSave_Gwt()();
-                }
-                                                              
-                $wnd._theWhiteboard.whiteboardIsReady = function() {
-                   // callback into Java 
-                   that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardIsReady()();
-                }
-            } catch (e) {
-                alert('error initializing whiteboard: ' + e);
+            if (typeof $wnd.Whiteboard == 'undefined') {
+                alert('Whiteboard JS is not loaded');
                 return;
             }
-        });
+
+            // create a single global object for now.
+            // TODO: add support for multiple whiteboards
+            //
+            
+            if($wnd._theWhiteboard) {
+              // $wnd._theWhiteboard.releaseResources();
+               $wnd._theWhiteboard = null;
+            }
+            
+            //new $wnd.Whiteboard();
+            $wnd._theWhiteboardDiv = $doc.getElementById(whiteboardId);
+            if($wnd._theWhiteboardDiv == null) {
+                alert('no ' + whiteboardId + ' div');
+                return;
+            }
+            
+            $wnd._theWhiteboard = new $wnd.Whiteboard(whiteboardId, isStatic);
+            $wnd._theWhiteboard.initWhiteboard($doc);
+
+
+            // tell the Whiteboard object the size of the parent container
+            // if height is passed in use it, otherwise calculate based on parent
+              
+            var height=0;
+            if(heightIn) {
+                height = heightIn;
+            }
+            else {
+                height = Number($wnd.grabComputedHeight(ele)) + 15;
+            }
+            var width = Number($wnd.grabComputedWidth(ele)) + 15;
+            
+            //alert('setting whiteboard size: ' + height + ', ' + width);
+            $wnd._theWhiteboard.setWhiteboardViewPort(width, height);
+
+            // overide methods in the Whiteboard instance
+            $wnd._theWhiteboard.whiteboardOut = function (data, boo) {
+               that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
+            }
+        
+            $wnd._theWhiteboard.whiteboardDelete = function (indexToDelete) {
+               that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardDelete_Gwt(I)(indexToDelete);
+            }
+        
+            $wnd._theWhiteboard.saveWhiteboard = function () {
+               that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardSave_Gwt()();
+            }
+                                                          
+            $wnd._theWhiteboard.whiteboardIsReady = function() {
+               that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardIsReady()();
+            }
+        } catch (e) {
+            alert('error initializing whiteboard: ' + e);
+            return;
+        }
     }-*/;
 
     private native void jnsi_resizeWhiteboard(Element ele, int heightIn)/*-{

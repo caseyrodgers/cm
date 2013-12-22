@@ -62,6 +62,8 @@
    <script type="text/javascript" language="javascript" src="/cm_admin/cm_admin.nocache.js"></script>
     
    <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main.nocache"></script>
+   
+   <script src='/gwt-resources/js/whiteboard_v3.js'></script>
     
     
     <!-- 

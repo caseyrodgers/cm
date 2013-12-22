@@ -3386,6 +3386,12 @@ var Whiteboard = function (cont, isStatic) {
     }
 
     function resetWhiteBoard(boo) {
+    	
+    	if(!canvas) {
+    		alert('resetWhiteBoard: canvas is null!');
+    		return;
+    	}
+    	
         penDown = false;
         graphMode = '';
         // origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width
