@@ -3,15 +3,30 @@
 	  
 	  haveError = false;
 	  fld = $get('fld_title');
-	  alert('fld_title: ' + fld);
 	  if(fld.value == "none") {
 	      if(showError(fld, "Please specify your title.")) {
 	          haveError = true;
 	      }
 	  }
-	  fld = $get('fld_name');
+	  fld = $get('fld_first_name');
+	  var missingFirstName = false;
 	  if(fld.value == "") {
-	      if(showError(fld, "Please specify your name.")) {
+		  missingFirstName = true;
+	  }
+	  fld = $get('fld_last_name');
+	  var missingLastName = false;
+	  if(fld.value == "") {
+		  missingLastName = true;
+	  }
+	  if (missingLastName == true || missingFirstName == true) {
+		  var msg = "Please specify your ";
+		  if (missingFirstName == true && missingLastName == false)
+			  msg += "first name.";
+		  else if (missingFirstName == false && missingLastName == true)
+			  msg += "last name.";
+		  else
+			  msg += "first and last names.";
+	      if(showError(fld, msg)) {
 	          haveError = true;
 	      }
 	  }

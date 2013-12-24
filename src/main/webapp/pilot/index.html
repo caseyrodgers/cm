@@ -141,44 +141,45 @@ pageTracker._trackPageview();
             <div class='section'>
                 <div id='registration_div' class='signup_section' style='width: 540px;'>
                   <div id='institution_div'>
-                      K-12: <input type="radio" name="institution" value="K12" onclick='radioClicked("k12")' />
-                      <span style='margin-left:20px;'>College/University: <input type="radio" name="institution" value="College-University" onclick='radioClicked("college")' /></span>
+                      K-12: <input type="radio" name="institution" value="K12" onclick='radioClicked("k12")' tabindex='1' />
+                      <span style='margin-left:20px;'>College/University: <input type="radio" name="institution" value="College-University" onclick='radioClicked("college")' tabindex='2'/></span>
                   </div>
                   <div name='title_div' id='title_div'>Title<br/>
-                    <select type='text' name='fld_title' id='fld_title' class='input_field' tabindex="1">
+                    <select type='text' name='fld_title' id='fld_title' class='input_field' tabindex="3">
                         <option value='none'>--- select title ---</option>
                     </select>
                     <div class='input_error'> &nbsp; </div>
                   </div>
                   <div id='name_div' class='form_field'>
-                    Your First and Last Name<br/>
-                    <input type='text'  name='fld_name' id='fld_name' class='input_field' tabindex="2"/>
+                    First Name<span style='margin-left: 67px;'>Last Name</span><br/>
+                    <input type='text'  name='fld_first_name' id='fld_first_name' class='input_field_small' tabindex="4"/>
+                    <input type='text'  name='fld_last_name'  id='fld_last_name' class='input_field_small' tabindex="5"/>
                     <div class='input_error'> &nbsp; </div> 
                   </div>
                    <div id='school_div' class='form_field'>
                     Name of School<br/>
-                    <input type='text'  name='fld_school' id='fld_school' class='input_field' tabindex="3"/>
+                    <input type='text'  name='fld_school' id='fld_school' class='input_field' tabindex="6"/>
                     <div class='input_error'> &nbsp; </div> 
                   </div>
                    <div id='student_count_div' class='form_field'>
-                    Approximate Total School Population<br/>
-                    <input type='text'  name='fld_student_count' id='fld_student_count' class='input_field' tabindex="4"/>
+                    Approximate Total Institution Population<br/>
+                    <input type='text'  name='fld_student_count' id='fld_student_count' class='input_field' tabindex="7"/>
                     <div class='input_error'> &nbsp; </div> 
                   </div>
                    <div id='zip_div' class='form_field'>
-                    School Zip Code (use 99999 if outside U.S.)<br/>
-                    <input type='text'  name='fld_zip' id='fld_zip' class='input_field' tabindex="5"/>
+                    Institution Zip Code (use 99999 if outside U.S.)<br/>
+                    <input type='text'  name='fld_zip' id='fld_zip' class='input_field' tabindex="8"/>
                     <div class='input_error'> &nbsp; </div> 
                   </div>  
                    <div id='email_div' class='form_field'>
-                    Email Address at School<br/>
-                    <input type='text'  name='fld_email' id='fld_email' class='input_field' tabindex="6"/>
+                    Email Address at Institution<br/>
+                    <input type='text'  name='fld_email' id='fld_email' class='input_field' tabindex="9"/>
                     <div class='input_error'> &nbsp; </div> 
                   </div>
                    <div id='phone_div' class='form_field'>
-                    School or Cell Phone (e.g., 555-123-1234 ext 123)
-                    <input type='text'  name='fld_phone' id='fld_phone' class='input_field' style='width: 40%' tabindex="7"/>
-                    <select name='fld_phone_when' tabindex="8">
+                    Work or Cell Phone (e.g., 555-123-1234 ext 123)
+                    <input type='text'  name='fld_phone' id='fld_phone' class='input_field' style='width: 40%' tabindex="10"/>
+                    <select name='fld_phone_when' tabindex="11">
                        <option  value=''>--when--</option>
                        <option  value='7am'> 7am</option>
                        <option  value='8am'> 8am</option>
@@ -195,25 +196,25 @@ pageTracker._trackPageview();
                     <div class='input_error'> &nbsp; </div>
                   </div>
                   <div id='password_prefix_div' class='form_field'>
-                    Pick 3 or 4 letters for student/teacher login prefix (e.g. JKHS)<br/>
-                    <input type='text' name='fld_password_prefix' id='fld_password_prefix' class='input_field' tabindex="9"/>
+                    Pick 3 or 4 letters for student login prefix (e.g. JKHS)<br/>
+                    <input type='text' name='fld_password_prefix' id='fld_password_prefix' class='input_field' tabindex="12"/>
 					<div class='input_error'> &nbsp; </div>                    
                   </div>
                   
                   <div id='comments_div' class='form_field'>
                     What are your top 3 math challenges?<br/>
-                    <textarea rows='5' name='fld_comments' id='fld_comments' class='input_area' tabindex="10"></textarea>
+                    <textarea rows='5' name='fld_comments' id='fld_comments' class='input_area' tabindex="13"></textarea>
                   </div>   
                   
                   <div id='addl_email_div' class='form_field'>
-                     Email addresses of additional teachers for this account, one per line<br />
-                    <textarea rows='7' name='fld_additional_emails' id='fld_additional_emails' class='input_area' tabindex="11"></textarea>                      
+                     Email addresses of additional faculty for this account, one per line<br />
+                    <textarea rows='7' name='fld_additional_emails' id='fld_additional_emails' class='input_area' tabindex="14"></textarea>                      
                     <div class='input_error'> &nbsp; </div>
                   </div>
                   
                   <div id='motivation_div' class='form_field'>
                     What is your motivation for piloting Catchup Math?<br/>
-                    <textarea rows='5' name='fld_motivation' id='fld_motivation' class='input_area' tabindex="12"></textarea>
+                    <textarea rows='5' name='fld_motivation' id='fld_motivation' class='input_area' tabindex="15"></textarea>
                   </div>   
                   
 
