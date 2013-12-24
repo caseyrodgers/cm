@@ -347,7 +347,8 @@ public class CmPilotCreate {
             	subCcomments = String.format("%s Catchup Math online pilot request CM_pilot_HM (approx student count: %d) %s",
                 		_dateFormat.format(new Date()), studentCount, NEW_LINE);
             }
-
+        	boolean isCollegePilot = (userComments != null && userComments.indexOf("cm-college") >= 0);
+        	if (isCollegePilot == true) subCcomments += " cm-college" + NEW_LINE;
             
             Representative salesPerson = SalesZone.getSalesRepresentativeByZip(conn, zip);
             
@@ -373,7 +374,8 @@ public class CmPilotCreate {
 	             * 
 	             */
 	            try {
-	                String emailTemplate = "CM Pilot " + salesPerson.getRepId();
+	                String emailTemplate = (isCollegePilot != true) ?
+	                		                   "CM Pilot " + salesPerson.getRepId() : "CM Pilot College";
 	                sub.sendEmailConfirmation(emailTemplate, ccEmails);
 	            }
 	            catch(Exception e) {
