@@ -375,7 +375,7 @@ public class CmPilotCreate {
 	             */
 	            try {
 	                String emailTemplate = (isCollegePilot != true) ?
-	                		                   "CM Pilot " + salesPerson.getRepId() : "CM Pilot College";
+	                		                   "CM Pilot " + salesPerson.getRepId() : "CM College";
 	                sub.sendEmailConfirmation(emailTemplate, ccEmails);
 	            }
 	            catch(Exception e) {
