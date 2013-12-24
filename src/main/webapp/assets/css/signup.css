@@ -94,6 +94,12 @@ div.field_value {
 	font-size: 1.1em;
 }
 
+.input_field_small {
+    width: 120px;
+	font-size: 1.1em;
+	margin-right: 10px;
+}
+
 .input_area {
     width: 360px;
 	font-size: 1.1em;
