@@ -3,6 +3,7 @@
 	  
 	  haveError = false;
 	  fld = $get('fld_title');
+	  alert('fld_title: ' + fld);
 	  if(fld.value == "none") {
 	      if(showError(fld, "Please specify your title.")) {
 	          haveError = true;
@@ -103,7 +104,6 @@
 	  window.scroll(0,0);
   }
 
-
   function doSignup() {
 	   var formObject = document.getElementById('signup_form'); 
 	   YAHOO.util.Connect.setForm(formObject); 
@@ -138,7 +138,37 @@
 			  if(errMsg != null) {
 				  return errMsg + ": " + emailArray[i];
 			  }
-		  } 
+		  }
 	  }
 	  return null;
   }
+
+  var k12Select = "Title<br/>" +
+                  "<select type='text' name='fld_title' id='fld_title' class='input_field' tabindex='1'>" +
+                  "    <option value='none'>--- select title ---</option>" +
+                  "    <option value='Math Teacher'>Math Teacher</option>" +
+                  "    <option value='Intervention/RTI Specialist'>Intervention/RTI Specialist</option>" +
+                  "    <option value='Special Ed Teacher'>Special Ed Teacher</option>" +
+                  "    <option value='School Administrator'>School Administrator</option>" +
+                  "    <option value='District Administrator'>District Administrator</option>" +
+                  "    <option value='Other K-12'>Other</option>"+
+                  "</select>";
+
+  var collegeSelect =  "Title<br/>" +
+  	                   "<select type='text' name='fld_title' id='fld_title' class='input_field' tabindex='1'>" +
+                       "    <option value='none'>--- select title ---</option>" +
+                       "    <option 'Math Professor/Instructor'>Math Professor/Instructor</option>" +
+                       "    <option value='Learning Center Administrator'>Learning Center Administratorr</option>" +
+                       "    <option value='Other K-12'>Other</option>"+
+                       "</select>";
+
+  function radioClicked(type) {
+	  var e = $get("title_div");
+	  if (type == 'k12') {
+		  e.innerHTML = k12Select;
+	  }
+	  else {
+		  e.innerHTML = collegeSelect;
+	  }
+  }
+

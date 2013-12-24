@@ -126,34 +126,29 @@ pageTracker._trackPageview();
                         <!-- InstanceBeginEditable name="main-content" -->&nbsp;
 		    <a href='#top'></a>
 		    <div id='signup_panel' style='display: block'>
-            <h1>Sign up for a free teacher or school account!</h1>
+            <h1>Sign up for a free school or college pilot!</h1>
             <p>
-               Sign up for a free, 60-day unlimited pilot. Your pilot may be used with all students who are taking
-               or who need to review Grades 6-7 Math, Pre-Algebra, Algebra 1, Geometry, and/or Algebra 2.
+               Sign up below for a free, 60-day unlimited pilot.
             </p>
             <p>
-               After 60 days, we hope your school will purchase a school license.
+                You may sign up for your entire institution or try with your own students. 
+            </p>
+            <p>
+                We will be very responsive to your email or phone questions. We suggest that you schedule a phone
+                demonstration after receiving your account information.
             </p>
             <form id='signup_form' class='signup_container' onsubmit="checkForm();return false;" method='POST'>
             <div class='section'>
                 <div id='registration_div' class='signup_section' style='width: 540px;'>
-                  <div id='title_div'>Title<br/>
+                  <div id='institution_div'>
+                      K-12: <input type="radio" name="institution" value="K12" onclick='radioClicked("k12")' />
+                      <span style='margin-left:20px;'>College/University: <input type="radio" name="institution" value="College-University" onclick='radioClicked("college")' /></span>
+                  </div>
+                  <div name='title_div' id='title_div'>Title<br/>
                     <select type='text' name='fld_title' id='fld_title' class='input_field' tabindex="1">
                         <option value='none'>--- select title ---</option>
-                        <option value='Math Teacher'>Math Teacher</option>
-                        <option value='Math Professor'>Math Professor</option>
-                        <option value='Special Ed Teacher'>Special Ed Teacher</option>
-                        <option value='Dept Chairperson'>Dept. Chairperson</option>
-                        <option value='Intervention/RTI Specialist'>Intervention/RTI Specialist</option>
-                        <option value='Principal'>Principal</option>
-                        <option value='Asst Principal'>Asst. Principal</option>
-                        <option value='Curriculum Instruction'>Curriculum & Instruction</option>
-                        <option value='Superintendent'>Superintendent</option>
-                        <option value='Asst Superintendent'>Asst. Superintendent</option>
-                        <option value='Technology'>Technology</option>
-                        <option value='Other'>Other</option>
                     </select>
-                    <div class='input_error'> &nbsp; </div>          
+                    <div class='input_error'> &nbsp; </div>
                   </div>
                   <div id='name_div' class='form_field'>
                     Your First and Last Name<br/>
