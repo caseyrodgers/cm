@@ -159,7 +159,7 @@
                        "    <option value='none'>--- select title ---</option>" +
                        "    <option 'Math Professor/Instructor'>Math Professor/Instructor</option>" +
                        "    <option value='Learning Center Administrator'>Learning Center Administratorr</option>" +
-                       "    <option value='Other K-12'>Other</option>"+
+                       "    <option value='Other College/University'>Other</option>"+
                        "</select>";
 
   function radioClicked(type) {
