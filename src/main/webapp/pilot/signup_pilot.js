@@ -1,9 +1,18 @@
-  function checkForm() {
+var institution_val = null;
+
+function checkForm() {
 	  clearErrorMessages();
 	  
 	  haveError = false;
+
+	  fld = $get('institution1');
+	  if(institution_val == null) {
+	      if(showError(fld, "Please select K-12 or College/University.")) {
+	          haveError = true;
+	      }
+	  }
 	  fld = $get('fld_title');
-	  if(fld.value == "none") {
+	  if(fld.value == "none" || fld.value.indexOf("K-12 or College") > -1) {
 	      if(showError(fld, "Please specify your title.")) {
 	          haveError = true;
 	      }
@@ -167,17 +176,20 @@
                   "    <option value='School Administrator'>School Administrator</option>" +
                   "    <option value='District Administrator'>District Administrator</option>" +
                   "    <option value='Other K-12'>Other</option>"+
-                  "</select>";
+                  "</select>" +
+                  "<div class='input_error'> &nbsp; </div>";
 
   var collegeSelect =  "Title<br/>" +
   	                   "<select type='text' name='fld_title' id='fld_title' class='input_field' tabindex='1'>" +
                        "    <option value='none'>--- select title ---</option>" +
                        "    <option 'Math Professor/Instructor'>Math Professor/Instructor</option>" +
-                       "    <option value='Learning Center Administrator'>Learning Center Administratorr</option>" +
+                       "    <option value='Learning Center Administrator'>Learning Center Administrator</option>" +
                        "    <option value='Other College/University'>Other</option>"+
-                       "</select>";
+                       "</select>" +
+                       "<div class='input_error'> &nbsp; </div>";
 
   function radioClicked(type) {
+	  institution_val = type;
 	  var e = $get("title_div");
 	  if (type == 'k12') {
 		  e.innerHTML = k12Select;

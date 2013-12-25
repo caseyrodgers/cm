@@ -141,8 +141,9 @@ pageTracker._trackPageview();
             <div class='section'>
                 <div id='registration_div' class='signup_section' style='width: 540px;'>
                   <div id='institution_div'>
-                      K-12: <input type="radio" name="institution" value="K12" onclick='radioClicked("k12")' tabindex='1' />
-                      <span style='margin-left:20px;'>College/University: <input type="radio" name="institution" value="College-University" onclick='radioClicked("college")' tabindex='2'/></span>
+                      K-12: <input type="radio" id='institution1' name="institution1" value="K12" onclick='radioClicked("k12")' tabindex='1' />
+                      <span style='margin-left:20px;'>College/University: <input type="radio" id='institution2' name="institution2" value="College-University" onclick='radioClicked("college")' tabindex='2'/></span>
+                    <div class='input_error'> &nbsp; </div>
                   </div>
                   <div name='title_div' id='title_div'>Title<br/>
                     <input disabled type='text'  name='fld_title' id='fld_title' class='input_field' tabindex="3"
