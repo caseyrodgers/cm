@@ -145,9 +145,8 @@ pageTracker._trackPageview();
                       <span style='margin-left:20px;'>College/University: <input type="radio" name="institution" value="College-University" onclick='radioClicked("college")' tabindex='2'/></span>
                   </div>
                   <div name='title_div' id='title_div'>Title<br/>
-                    <select type='text' name='fld_title' id='fld_title' class='input_field' tabindex="3">
-                        <option value='none'>--- select title ---</option>
-                    </select>
+                    <input disabled type='text'  name='fld_title' id='fld_title' class='input_field' tabindex="3"
+                        value='* Select K-12 or College above *' style='color: red'/>
                     <div class='input_error'> &nbsp; </div>
                   </div>
                   <div id='name_div' class='form_field'>
