@@ -296,12 +296,12 @@ public class CmPilotCreate {
     
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneWhen, String schoolPrefix,int studentCount) throws Exception {
-        return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true,studentCount,null,null,"");
+        return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true, studentCount,null,null,"", false);
     }
 
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
-            String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation,int studentCount, CmPartner partner,
-            String additionalEmails,  String motivation) throws Exception {
+            String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation, int studentCount, CmPartner partner,
+            String additionalEmails, String motivation, boolean isCollegePilot) throws Exception {
 
         
         // create a new Subscriber record based on this email
@@ -347,7 +347,6 @@ public class CmPilotCreate {
             	subCcomments = String.format("%s Catchup Math online pilot request CM_pilot_HM (approx student count: %d) %s",
                 		_dateFormat.format(new Date()), studentCount, NEW_LINE);
             }
-        	boolean isCollegePilot = (userComments != null && userComments.indexOf("cm-college") >= 0);
         	if (isCollegePilot == true) subCcomments += " cm-college" + NEW_LINE;
             
             Representative salesPerson = SalesZone.getSalesRepresentativeByZip(conn, zip);
@@ -385,7 +384,9 @@ public class CmPilotCreate {
 	            /** send tracking email to admin people
 	             * 
 	             */
-	            String txt = "A request for a Catchup Math Pilot was created by:"
+	            String txt = "A request for a Catchup Math "
+	            		+ ((isCollegePilot == true) ? "College " : "") 
+	                    + "Pilot was created by:"
 	                    + "\nSubscriber ID: " + idToUse
 	                    + "\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip
 	                    + "\nEmail: " + email + "\nPhone: " + phone +  "\nPhone When: " + phoneWhen 
@@ -394,8 +395,18 @@ public class CmPilotCreate {
 	                    + "\nsalesZone: " + salesPerson.getRepId();
 	            try {
 	                
-	                /** send to sales rep, chuck, and tina */
-	                String sendTo[] = {salesPerson.getEmail(), "cgrant.hotmath@gmail.com", "thamilton@hotmath.com"};
+	                /** send to sales rep, chuck, and tina if NOT College Pilot request, 
+	                    otherwise just sent to chuck and lincoln */
+	            	String sendTo[] = new String[3];
+	            	if (isCollegePilot != true) {
+	            		sendTo[0] = salesPerson.getEmail();
+	            		sendTo[1] = "cgrant.hotmath@gmail.com";
+	            		sendTo[2] = "thamilton@hotmath.com";
+	            	}
+	            	else {
+	            		sendTo[0] = "lincoln@hotmath.com";
+	            		sendTo[1] = "cgrant.hotmath@gmail.com";
+	            	}
 	                SbMailManager.getInstance().
 	                    sendMessage("Catchup Math Pilot Request", txt, sendTo, "registration@hotmath.com", "text/plain");
 	            } catch (Exception e) {

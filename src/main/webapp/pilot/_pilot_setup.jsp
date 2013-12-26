@@ -7,6 +7,8 @@
     String zip = request.getParameter("fld_zip");
     String email = request.getParameter("fld_email").trim();
     email = (email != null) ? email.trim() : "";
+    String institution = request.getParameter("institution");
+    boolean isCollegePilot = (institution != null && institution.toLowerCase().indexOf("college") > -1);
     String phone = request.getParameter("fld_phone");
     String comments = request.getParameter("fld_comments") + " cm-college";
     String phoneWhen = request.getParameter("fld_phone_when");
@@ -15,6 +17,6 @@
     String additionalEmails = request.getParameter("fld_additional_emails");
     String motivation = request.getParameter("fld_motivation");
 
-    CmPilotCreate.addPilotRequest(title, name, school, zip, email, phone, comments, 
-                                  phoneWhen, schoolPrefix, true, studentCount, null, additionalEmails,motivation);
+    CmPilotCreate.addPilotRequest(title, name, school, zip, email, phone, comments, phoneWhen, schoolPrefix,
+                                  true, studentCount, null, additionalEmails,motivation, isCollegePilot);
 %>
