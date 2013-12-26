@@ -52,8 +52,8 @@ function checkForm() {
 	      }
 	  }
 	  if(isNaN(fld.value) || fld.value < 1 || (10*parseInt(fld.value,10) != parseInt(10*fld.value,10)) ||
-	     Number(fld.value) < 200) {
-	      if(showError(fld, "Sorry, Catchup Math pilots are only available to schools and colleges with total enrollment of 200 or more.")) {
+	     Number(fld.value) < 100) {
+	      if(showError(fld, "Sorry, Catchup Math pilots are only available to schools and colleges with total enrollment of 100 or more.")) {
 	          haveError = true;
 	      }
 	  }
