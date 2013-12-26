@@ -202,7 +202,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 			@Override
 			public void execute() {
 			    String context = solution.getContext() != null?solution.getContext().getContextJson():null;
-				tutorPanel.externallyLoadedTutor(solution, getWidget(),solution.getPid(), null, solution.getJs(), solution.getHtml(), _title, false, false, context);
+				tutorPanel.externallyLoadedTutor(solution, getWidget(), null,_title, false, false, context);
 				
 				tutorPanel.setVisible(true);				
 			}

@@ -84,7 +84,7 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView {
         
         SolutionInfo info = new SolutionInfo(problem.getPid(), solution.getTutorHtml(), solution.getSolutionData(),false);
 
-        tutor.externallyLoadedTutor(info, getWidget(), info.getPid(), null, info.getJs(), info.getHtml(), problem.getLabel(), false, false, null);
+        tutor.externallyLoadedTutor(info, getWidget(),  null,  problem.getLabel(), false, false, null);
         
         headerPanel.setHeaderTitle(title);
         

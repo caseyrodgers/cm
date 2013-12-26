@@ -122,7 +122,7 @@ public class TutorWithWhiteboardViewer extends Composite {
 
             InmhItemData item = new InmhItemData(CmResourceType.PRACTICE, problem.getInfo().getPid(), resourceTitle);
 
-            _tutorPanel.externallyLoadedTutor(problem.getInfo(),getWidget(), item.getFile(), item.getWidgetJsonArgs(), problem.getInfo().getJs(),problem.getInfo().getHtml(), resourceTitle, true, false, variableContext);
+            _tutorPanel.externallyLoadedTutor(problem.getInfo(),getWidget(), item.getWidgetJsonArgs(), resourceTitle, true, false, variableContext);
             
             
             if(problem.getLastUserWidgetValue() != null) {

@@ -203,7 +203,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
                         variableContext = solInfo.getContext().getContextJson();
                     }
                     
-                    _tutorPanel.externallyLoadedTutor(solInfo, getWidget(), problem.getPid(), null, solInfo.getJs(), solInfo.getHtml(), problem.getProblem().getLabel(), false, false, variableContext);
+                    _tutorPanel.externallyLoadedTutor(solInfo, getWidget(),  null, problem.getProblem().getLabel(), false, false, variableContext);
                     _tutorPanel.setVisible(true);
                     
                     if(assignmentProblem.getLastUserWidgetValue() != null) {

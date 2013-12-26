@@ -346,9 +346,9 @@ public class TutorWrapperPanel extends Composite {
      * @param shouldExpandSolution
      * @param solutionContext
      */
-    public void externallyLoadedTutor(SolutionInfo info, Widget instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) {
+    public void externallyLoadedTutor(SolutionInfo info, Widget instance, String jsonConfig, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) {
         _solutionInfo = info;
-        initializeTutor(instance, pid, jsonConfig, solutionDataJs,solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext);
+        initializeTutor(instance, info.getPid(), jsonConfig, info.getJs(),info.getHtml(), title, hasShowWork, shouldExpandSolution, solutionContext);
     }
     
     

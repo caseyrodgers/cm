@@ -269,8 +269,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             public void execute() {
 
                 String context = solution.getInfo().getContext() != null ? solution.getInfo().getContext().getContextJson() : null;
-                tutor.externallyLoadedTutor(problem.getInfo(), (Widget) AssignmentProblemViewImpl.this, problem.getInfo().getPid(), null, problem.getInfo()
-                        .getJs(), problem.getInfo().getHtml(), problem.getInfo().getPid(), false, false, context);
+                tutor.externallyLoadedTutor(problem.getInfo(), (Widget) AssignmentProblemViewImpl.this, null, problem.getInfo().getPid(), false, false, context);
 
                 tutor.setupButtonBar(new ButtonBarSetup(presenter.isAssignmentGraded(), true, true, "New Problem"));
 
