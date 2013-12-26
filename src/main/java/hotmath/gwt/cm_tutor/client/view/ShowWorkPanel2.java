@@ -11,7 +11,6 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 
 import java.util.List;
@@ -180,7 +179,7 @@ public class ShowWorkPanel2 extends Composite {
      */
     private void jsni_updateWhiteboard(String flashId, String command, String commandData) {
         if(!isReady()) {
-            CmMessageBox.showAlert("Whiteboard is not ready");
+            Window.alert("Whiteboard is not ready");
             return;
         }
         jsni_updateWhiteboardAux(flashId, command, commandData);
