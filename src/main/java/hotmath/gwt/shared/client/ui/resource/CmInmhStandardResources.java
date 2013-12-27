@@ -142,8 +142,6 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
 				"/learning_activities/interactivities/flashcard_muti_frac.swf?lang=es"));
 		spanishFlashcardList.add(new FlashcardModel("SP", "Fracciones", "Dividiendo fracciones",
 				"/learning_activities/interactivities/flashcard_div_frac.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Fracciones", "Converting Improper Fracciones",
-				"/learning_activities/interactivities/flashcard_convert_improper.swf?lang=es"));
 		spanishFlashcardList.add(new FlashcardModel("SP", "Fracciones", "Convirtiendo n&uacute;meros mixtos",
 				"/learning_activities/interactivities/flashcard_convert_mixed.swf?lang=es"));
 		spanishFlashcardList.add(new FlashcardModel("SP", "Fracciones", "Reduciendo fracciones",
