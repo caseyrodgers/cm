@@ -207,7 +207,7 @@ var Whiteboard = function (cont, isStatic) {
             $get_jqElement("#wb_menu").on("mouseleave", function (e) {
                 $get_jqElement("#wb_menu").hide()
             });
-            $('canvas').on("contextmenu", function (e) {
+             $get_jqElement('#canvas').on("contextmenu", function (e) {
 			if(!isReadOnly){
                 e.preventDefault();
                 positionToolMenu('mouse', e.originalEvent);
