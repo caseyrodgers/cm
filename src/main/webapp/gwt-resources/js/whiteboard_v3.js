@@ -183,7 +183,7 @@ var Whiteboard = function (cont, isStatic) {
                 return;
             }
 
-            var wbc = $('<div></div>').attr('name', 'wb-container').addClass("wb-container").appendTo(parentDiv);
+            var wbc = $('<div style="display:inline-block"></div>').attr('name', 'wb-container').addClass("wb-container").appendTo(parentDiv);
             var toolCont = buildTools([{
                 name: 'toggleMenu',
                 title: 'Show/Hide Tools',
@@ -207,11 +207,13 @@ var Whiteboard = function (cont, isStatic) {
             $get_jqElement("#wb_menu").on("mouseleave", function (e) {
                 $get_jqElement("#wb_menu").hide()
             });
-            $(document).on("contextmenu", function (e) {
+            $('canvas').on("contextmenu", function (e) {
+			if(!isReadOnly){
                 e.preventDefault();
                 positionToolMenu('mouse', e.originalEvent);
                 $get_jqElement("#wb_menu").show();
                 return false;
+				}
             });
 
         }
@@ -925,18 +927,42 @@ var Whiteboard = function (cont, isStatic) {
     var _docWidth = 0;
     var _docHeight = 0;
     var _viewPort = null;
-    wb.setWhiteboardViewPort = function (width, height) {
+    wb.setWhiteboardViewPort = function (width, height,flag) {
         console_log("EXTERNAL CALL::setWhiteboardViewPort:: " + width + ":" + height)
         _viewPort = {
             width: width,
             height: height
         };
+		if(flag&&flag=='fixed'){
+		wb.setSizeOfWhiteboard(width, height)
+		}
     }
     wb.resizeWhiteboard = function () {
         console_log("EXTERNAL CALL::resizeWhiteboard::")
         adjustToolbar()
     }
-
+function resizeWhiteboardTo(match,minW,minH){
+			var w,h
+				if(match=='content'){
+					w=canvas_drawing_width
+					h=canvas_drawing_height
+				}else if(match=='custom'){
+				w=minW?minW:300;
+				h=minH?minH:300;
+				}
+				var off_left = $get_Element("#tools").offsetLeft;
+                var off_top = $get_Element("#tools").offsetTop;
+                var off_ht = $get_Element("#tools").offsetHeight;
+                var topOff = off_ht + off_top 
+                var leftOff = off_left;
+				var margin=5
+				var scroller=15
+				w=w+leftOff+scroller+margin
+				h=h+topOff+scroller+margin
+				wb.setSizeOfWhiteboard(w,h);
+				wb.setWhiteboardViewPort(w,h);
+				wb.resizeWhiteboard();
+			}
     function viewport_testpage() {
         var e = window,
             a = 'inner';
@@ -1075,7 +1101,7 @@ var Whiteboard = function (cont, isStatic) {
     var ipos
     var navClicked = false;
 
-    function showNavigator(x, y) {
+    function showNavigator(x, y) {	    
         var cont = $get_jqElement('#drawsection'); //$("[name='drawsection']")
 		var wlim= cont.width()-17
 		var hlim= cont.height()-17
@@ -1513,17 +1539,28 @@ var Whiteboard = function (cont, isStatic) {
             $get_jqElement("#canvas-container").css('height', vHeight + 'px');
 
             console_log('off_ht_1: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").offsetLeft + ":" + $get_Element("#tools").offsetTop)
-            if (IS_IPHONE || docWidth <= 600) {
-                dox = IS_IPHONE ? 5 : 19
-                doy = IS_IPHONE ? 5 : 19
-            } else {
-                dox = 19
-                doy = 19
-            }
-            if (IS_IOS) {
-                dox = 15;
-                doy = 0;
-            }
+            var addScrollerH=scroll_window['width']>docWidth
+				var addScrollerV=scroll_window['height']>docHeight
+				var addScroller=addScrollerH||addScrollerV
+                //
+                if (IS_IPHONE || docWidth <= 600) {
+                    dox = IS_IPHONE ? 5 : 19
+                    doy = IS_IPHONE ? 5 : 19
+                } else {
+                    dox = 19;
+                    doy = 19;
+                }
+                // dox=doy=0;
+                if (IS_IOS) {
+                    dox = 15;
+                    doy = 15;
+                }
+				if(!addScrollerH){
+				dox=0
+				}
+				if(!addScrollerV){
+				doy=0
+				}
             try {
                 if (typeof G_vmlCanvasManager != "undefined") {
                     var parent_cont = $get_Element("#canvas-container")
@@ -1561,7 +1598,7 @@ var Whiteboard = function (cont, isStatic) {
             console_log('off_ht_2: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").style.height + ":" + $get_jqElement("#tools").height())
             $get_Element('#drawsection').style.width = (screen_width) + 'px';
             $get_Element('#drawsection').style.height = (screen_height) + 'px';
-            if (true) {
+            if (addScroller) {
                 $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
                 $get_Element('#vscroller').style.left = (screen_width + 3 + off_left) + 'px';
                 $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
@@ -1581,7 +1618,18 @@ var Whiteboard = function (cont, isStatic) {
                 posData += "hscroller-off-top:" + $get_Element('#hscroller').style.top + "\n";
                 posData += "hscroller-off-left:" + $get_Element('#hscroller').style.left + "\n";
                 //console_log(posData);
-            }
+            }else{
+				$get_jqElement('#vscroller').css({
+                    'display': 'none'
+
+                });
+                $get_jqElement('#hscroller').css({
+                    'display': 'none'
+
+                });
+				$get_jqElement("#tools").removeClass('tools');
+				$get_jqElement("#tools").css('height','0px');
+				}
             var cmd_keys = {};
             var nav_keys = {};
             cmd_keys["frac"] = "/";
@@ -1682,6 +1730,7 @@ var Whiteboard = function (cont, isStatic) {
                 console_log("INTERNAL CALL::WINDOW_RESIZE::")
                 adjustToolbar()
             }
+			
             //window.onresize=resize_wb;
             $(window).resize(resize_wb);
 
@@ -1746,6 +1795,9 @@ var Whiteboard = function (cont, isStatic) {
                 var ccnt = $get_Element("#canvas-container");
                 $get_jqElement("#canvas-container").css('width', vWidth + 'px');
                 $get_jqElement("#canvas-container").css('height', vHeight + 'px');
+				var addScrollerH=scroll_window['width']>docWidth
+				var addScrollerV=scroll_window['height']>docHeight
+				var addScroller=addScrollerH||addScrollerV
                 //
                 if (IS_IPHONE || docWidth <= 600) {
                     dox = IS_IPHONE ? 5 : 19
@@ -1756,15 +1808,21 @@ var Whiteboard = function (cont, isStatic) {
                 }
                 // dox=doy=0;
                 if (IS_IOS) {
-                    dox = 15
-                    doy = 0;
+                    dox = 15;
+                    doy = 15;
                 }
+				if(!addScrollerH){
+				dox=0
+				}
+				if(!addScrollerV){
+				doy=0
+				}
                 screen_width = docWidth - leftOff - dox;
                 screen_height = docHeight - topOff - doy;
                 console_log('off_ht_2: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").style.height + ":" + $get_jqElement("#tools").height())
                 $get_Element('#drawsection').style.width = (screen_width) + 'px';
                 $get_Element('#drawsection').style.height = (screen_height) + 'px';
-                if (true) {
+                if (addScroller) {
                     $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
                     $get_Element('#vscroller').style.left = (screen_width + 3 + off_left) + 'px';
                     $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
@@ -1785,7 +1843,18 @@ var Whiteboard = function (cont, isStatic) {
                     posData += "hscroller-off-left:" + $get_Element('#hscroller').style.left + "\n";
                     //console_log(posData);
                     positionScroller();
-                }
+                }else{
+				$get_jqElement('#vscroller').css({
+                    'display': 'none'
+
+                });
+                $get_jqElement('#hscroller').css({
+                    'display': 'none'
+
+                });
+				$get_jqElement("#tools").removeClass('tools');
+				$get_jqElement("#tools").css('height','0px');
+				}
                 scrollPosition = {
                     x: 0,
                     y: 0
@@ -3386,12 +3455,12 @@ var Whiteboard = function (cont, isStatic) {
     }
 
     function resetWhiteBoard(boo) {
-    	
+	    	
     	if(!canvas) {
     		alert('resetWhiteBoard: canvas is null!');
     		return;
     	}
-    	
+ 
         penDown = false;
         graphMode = '';
         // origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width
@@ -4541,6 +4610,9 @@ source: https://gist.github.com/754454
     wb.getSizeOfWhiteboard = function () {
         return canvas_drawing_width + ", " + canvas_drawing_height;
     }
+	wb.getContentSizeOfWhiteboard = function () {
+        return [canvas_drawing_width,canvas_drawing_height];
+    }
     wb.setSizeOfWhiteboard = function (w, h) {
         cwi = w;
         cht = h;
@@ -4610,6 +4682,9 @@ source: https://gist.github.com/754454
         doUpScroll(y)
         updateCanvas();
     }
+	wb.resizeWhiteboardTo=function(match,width,height){
+		resizeWhiteboardTo(match,width,height)
+	}
     return wb;
 
 };
