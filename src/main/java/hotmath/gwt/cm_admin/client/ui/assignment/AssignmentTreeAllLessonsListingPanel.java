@@ -212,8 +212,7 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
             }
         };
         _tree.setCell(cell);
-        
-        
+
         _tree.addCheckChangedHandler(new CheckChangedHandler<BaseDto>() {
             @Override
             public void onCheckChanged(CheckChangedEvent<BaseDto> event) {
