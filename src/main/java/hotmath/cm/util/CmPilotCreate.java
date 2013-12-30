@@ -317,7 +317,7 @@ public class CmPilotCreate {
         try {
             
             
-            String sql = "insert into HA_ADMIN_PILOT_REQUEST(title,name,school,zip,email,phone,request_date,cc_emails,enrollment,comments,motivation,subscriber_id, is_college)values(?,?,?,?,?,?,now(),?,?,?,?,?)";
+            String sql = "insert into HA_ADMIN_PILOT_REQUEST(title,name,school,zip,email,phone,request_date,cc_emails,enrollment,comments,motivation,subscriber_id, is_college)values(?,?,?,?,?,?,now(),?,?,?,?,?,?)";
             conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(sql);
             ps.setString(1, title);
