@@ -290,7 +290,7 @@ public class CmPilotCreate {
      */
     
     static public void test() throws Exception {
-        HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(null,null,null,null,null,null);        
+        HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(null,null,null,null,null,null,false);        
     }
     
     
@@ -352,7 +352,7 @@ public class CmPilotCreate {
             
             Representative salesPerson = SalesZone.getSalesRepresentativeByZip(conn, zip);
             
-            HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, subCcomments,new Date());
+            HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, subCcomments,new Date(), isCollegePilot);
             sub.setResponsibleName(name);
             sub.setStatus("A");
             
