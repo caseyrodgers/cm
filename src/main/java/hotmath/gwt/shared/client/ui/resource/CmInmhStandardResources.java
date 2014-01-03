@@ -132,83 +132,83 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
 	static {
 		spanishFlashcardList = new ArrayList<FlashcardModel>();
 
-		spanishFlashcardList.add(new FlashcardModel("SP", "Fracciones", "Sumando fracciones semejantes",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Fracciones", "Sumando fracciones semejantes",
 				"/learning_activities/interactivities/flashcard_addfrac_like.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Fracciones", "Sumando fracciones no semejantes",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Fracciones", "Sumando fracciones no semejantes",
 				"/learning_activities/interactivities/flashcard_addfrac_unlike.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Fracciones", "Multiplicando una fracci&oacute;n por un entero",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Fracciones", "Multiplicando una fracci&oacute;n por un entero",
 				"/learning_activities/interactivities/flashcard_multi_frac_int.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Fracciones", "Multiplicando Fracciones",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Fracciones", "Multiplicando Fracciones",
 				"/learning_activities/interactivities/flashcard_muti_frac.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Fracciones", "Dividiendo fracciones",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Fracciones", "Dividiendo fracciones",
 				"/learning_activities/interactivities/flashcard_div_frac.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Fracciones", "Convirtiendo n&uacute;meros mixtos",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Fracciones", "Convirtiendo n&uacute;meros mixtos",
 				"/learning_activities/interactivities/flashcard_convert_mixed.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Fracciones", "Reduciendo fracciones",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Fracciones", "Reduciendo fracciones",
 				"/learning_activities/interactivities/flashcard_reducingFracciones.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Fracciones", "Convirtiendo fracciones en decimales",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Fracciones", "Convirtiendo fracciones en decimales",
 				"/learning_activities/interactivities/flashcard_convert_fractodeci.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Fracciones", "Rec&iacute;procos",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Fracciones", "Rec&iacute;procos",
 				"/learning_activities/interactivities/flashcard_reciprocals.swf?lang=es"));
 
-		spanishFlashcardList.add(new FlashcardModel("SP", "Decimales", "Sumando decimales",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Decimales", "Sumando decimales",
 				"/learning_activities/interactivities/flashcard_add_sub_deci.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Decimales", "Convirtiendo decimales en fracciones",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Decimales", "Convirtiendo decimales en fracciones",
 				"/learning_activities/interactivities/flashcard_convert_decitofrac.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Decimales", "Multiplicando decimales",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Decimales", "Multiplicando decimales",
 				"/learning_activities/interactivities/flashcard_multi_deci.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Decimales", "Dividiendo decimales",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Decimales", "Dividiendo decimales",
 				"/learning_activities/interactivities/flashcard_div_deci.swf?lang=es"));
 
-		spanishFlashcardList.add(new FlashcardModel("SP", "Porcentajes", "Porcentajes: Nivel 1",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Porcentajes", "Porcentajes: Nivel 1",
 				"/learning_activities/interactivities/flashcard_percents_level1.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Porcentajes", "Porcentajes: Nivel 2",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Porcentajes", "Porcentajes: Nivel 2",
 				"/learning_activities/interactivities/flashcard_percents_level2.swf?lang=es"));
 
-		spanishFlashcardList.add(new FlashcardModel("SP", "Negativos", "Sumas con negativos",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Negativos", "Sumas con negativos",
 				"/learning_activities/interactivities/flashcard_add_sub_neg.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Negativos", "Multiplicando con negativos",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Negativos", "Multiplicando con negativos",
 				"/learning_activities/interactivities/flashcard_multi_div_neg.swf?lang=es"));
 
-		spanishFlashcardList.add(new FlashcardModel("SP", "Orden de las operaciones", "Orden de las operaciones: Nivel 1",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Orden de las operaciones", "Orden de las operaciones: Nivel 1",
 				"/learning_activities/interactivities/flashcard_oops_level1.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Orden de las operaciones", "Orden de las operaciones: Nivel 2",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Orden de las operaciones", "Orden de las operaciones: Nivel 2",
 				"/learning_activities/interactivities/flashcard_oops_level2.swf?lang=es"));
 
-		spanishFlashcardList.add(new FlashcardModel("SP", null, "Comparando cantidades",
+		spanishFlashcardList.add(new FlashcardModel("ES", null, "Comparando cantidades",
 				"/learning_activities/interactivities/flashcard_comparing_quantities.swf?lang=es"));
 
-		spanishFlashcardList.add(new FlashcardModel("SP", "Multiplicaci&oacute;n", "Hechos de la multiplicaci&oacute;n",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Multiplicaci&oacute;n", "Hechos de la multiplicaci&oacute;n",
 				"/learning_activities/interactivities/flashcard_multi.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Multiplicaci&oacute;n", "La propiedad distributiva",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Multiplicaci&oacute;n", "La propiedad distributiva",
 				"/learning_activities/interactivities/flashcard_dist_prop.swf?lang=es"));
 
-		spanishFlashcardList.add(new FlashcardModel("SP", null, "Factorizaci&oacute;n prima",
+		spanishFlashcardList.add(new FlashcardModel("ES", null, "Factorizaci&oacute;n prima",
 				"/learning_activities/interactivities/prime_factorization.swf?lang=es"));
 
-		spanishFlashcardList.add(new FlashcardModel("SP", null, "Factores comunes m&aacute;s grandes",
+		spanishFlashcardList.add(new FlashcardModel("ES", null, "Factores comunes m&aacute;s grandes",
 				"/learning_activities/interactivities/flashcard_gcf.swf?lang=es"));
 
-		spanishFlashcardList.add(new FlashcardModel("SP", "Exponentes", "Exponentes: Nivel 1",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Exponentes", "Exponentes: Nivel 1",
 				"/learning_activities/interactivities/flashcard_exponents_level1.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Exponentes", "Exponentes: Nivel 2",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Exponentes", "Exponentes: Nivel 2",
 				"/learning_activities/interactivities/flashcard_exponents_level2.swf?lang=es"));
-		spanishFlashcardList.add(new FlashcardModel("SP", "Exponentes", "Propiedades de los exponentes",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Exponentes", "Propiedades de los exponentes",
 				"/learning_activities/interactivities/flashcard_props_exponents.swf?lang=es"));
 
-		spanishFlashcardList.add(new FlashcardModel("SP", "Graficando", "Desigualdad con una variable",
+		spanishFlashcardList.add(new FlashcardModel("ES", "Graficando", "Desigualdad con una variable",
 				"/learning_activities/interactivities/inequality_one_variable.swf?lang=es"));
-		//spanishFlashcardList.add(new FlashcardModel("SP", "Graficando", "Graficando coordenadas",
+		//spanishFlashcardList.add(new FlashcardModel("ES", "Graficando", "Graficando coordenadas",
 		//		"/learning_activities/interactivities/plot_coordplane.swf?lang=es"));
-		//spanishFlashcardList.add(new FlashcardModel("SP", "Graficando", "Pendiente",
+		//spanishFlashcardList.add(new FlashcardModel("ES", "Graficando", "Pendiente",
 		//		"/learning_activities/interactivities/slope.swf?lang=es"));
-		//spanishFlashcardList.add(new FlashcardModel("SP", "Graficando", "F&oacute;rmula de la distancia",
+		//spanishFlashcardList.add(new FlashcardModel("ES", "Graficando", "F&oacute;rmula de la distancia",
 		//		"/learning_activities/interactivities/distance_formula.swf?lang=es"));
 
-		spanishFlashcardList.add(new FlashcardModel("SP", null, "Problemas con palabras",
+		spanishFlashcardList.add(new FlashcardModel("ES", null, "Problemas con palabras",
 				"/learning_activities/interactivities/flashcard_wordproblems_level1.swf?lang=es"));
 
-		spanishFlashcardList.add(new FlashcardModel("SP", null, "Combinar como t&eacute;rminos",
+		spanishFlashcardList.add(new FlashcardModel("ES", null, "Combinar como t&eacute;rminos",
 				"/learning_activities/interactivities/flashcard_combine_liketerms.swf?lang=es"));		
 	}
 
