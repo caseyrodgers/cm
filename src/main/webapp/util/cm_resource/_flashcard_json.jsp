@@ -6,6 +6,7 @@
 <%@ page isErrorPage="false" %>
 <%
 	String json = "";
+    String exceptionMsg = null;
 	JSONStringer jsonStr = new JSONStringer();
 	try {
     	jsonStr.array();
@@ -22,11 +23,11 @@
     		jsonStr.key("location").value(model.getLocation()).endObject();
     	}
     	jsonStr.endArray();
+    	json = jsonStr.toString().replaceAll("\\{", "<br/>\\{");
 	}
-    catch (JSONException e) {
-    	System.out.println("Exception: " + e.getMessage());
+    catch (Exception e) {
+    	exceptionMsg = "Exception: " + e.getMessage();
     }
-	json = jsonStr.toString();
 %>
 <head>
 </head>
@@ -34,6 +35,9 @@
 <h1>CM Flashcard Resource JSON</h1>
 <br/>
 <br/>
-<%= json %> 
+<%= json %>
+<%if (exceptionMsg != null) { %>
+  <%= exceptionMsg %>
+<%}%>  
 </body>
 </html>
