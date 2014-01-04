@@ -10,7 +10,7 @@
     String institution = request.getParameter("institution");
     boolean isCollegePilot = (institution != null && institution.toLowerCase().indexOf("college") > -1);
     String phone = request.getParameter("fld_phone");
-    String comments = request.getParameter("fld_comments") + " cm-college";
+    String comments = request.getParameter("fld_comments");
     String phoneWhen = request.getParameter("fld_phone_when");
     String schoolPrefix = request.getParameter("fld_password_prefix");
     int studentCount = SbUtilities.getInt(request.getParameter("fld_student_count"));
