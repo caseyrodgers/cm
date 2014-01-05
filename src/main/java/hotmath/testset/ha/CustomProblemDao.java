@@ -61,6 +61,24 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
     public SolutionInfo createNewCustomProblem(final CustomProblemModel problem) throws Exception {
 
         SolutionInfo solution = null;
+        
+        
+        /** If teacher_id not set, try to look up before search
+         * 
+         */
+        if(problem.getTeacher().getTeacherId() == 0) {
+            String sql = "select teacher_id from CM_CUSTOM_PROBLEM_TEACHER where admin_id = ? and teacher_name = ?";
+            List<Integer> tIds = getJdbcTemplate().query(sql, new Object[] { problem.getTeacher().getAdminId(), problem.getTeacher().getTeacherName() }, new RowMapper<Integer>() {
+                @Override
+                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return rs.getInt("teacher_id");
+                }
+            });
+            if(tIds.size() > 0) {
+                problem.getTeacher().setTeacherId(tIds.get(0));
+            }
+        }
+        
         /**
          * get unique identifier for this teacher
          * 
@@ -191,7 +209,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                         " from   CM_CUSTOM_PROBLEM cp " +
                         " JOIN CM_CUSTOM_PROBLEM_TEACHER ct " +
                         " on ct.teacher_id = cp.teacher_id " +
-                        " where  ct.admin_id = ? " +
+                        " where  (ct.admin_id = ? or 1 = 1) " +  /** GET ALL */
                         " order  by teacher_problem_number ";
 
         List<CustomProblemModel> problems = getJdbcTemplate().query(sql, new Object[] { teacher.getAdminId() }, new RowMapper<CustomProblemModel>() {

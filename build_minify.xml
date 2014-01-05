@@ -29,6 +29,8 @@
 		CatchupMath-min.js
 		swfobject/swfobject.js
         	../../../../../../hotmath2/web/js/hm_mathjax-min.js
+
+                whiteboard_static.js
               " />
         </concat>
     </target>
@@ -57,6 +59,8 @@
                    mobile_core.js
                                      
                    CatchupMathMobile3-min.js
+
+                   whiteboard_static.js
               " />
         </concat>
     </target>

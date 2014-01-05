@@ -4,6 +4,7 @@ import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.CreateCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
@@ -86,6 +87,9 @@ public class CustomProblemPropertyEditor extends GWindow {
         new RetryAction<SolutionInfo>() {
             @Override
             public void attempt() {
+                CmBusyManager.setBusy(true);
+                
+
                 CreateCustomProblemAction action = new CreateCustomProblemAction(problem);
                 setAction(action);
                 CmShared.getCmService().execute(action,  this);
@@ -93,8 +97,8 @@ public class CustomProblemPropertyEditor extends GWindow {
 
             @Override
             public void oncapture(SolutionInfo solution) {
+                CmBusyManager.setBusy(false);
                 InfoPopupBox.display("Problem Created",  "New custom problem created: " + solution.getPid());
-                
                 hide();
                 callback.isComplete();
             }

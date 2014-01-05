@@ -947,8 +947,8 @@ function resizeWhiteboardTo(match,minW,minH){
 					w=canvas_drawing_width
 					h=canvas_drawing_height
 				}else if(match=='custom'){
-				w=minW?minW:300;
-				h=minH?minH:300;
+				    w=minW?minW:300;
+				    h=minH?minH:300;
 				}
 				var off_left = $get_Element("#tools").offsetLeft;
                 var off_top = $get_Element("#tools").offsetTop;

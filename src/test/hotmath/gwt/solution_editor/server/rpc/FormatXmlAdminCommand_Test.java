@@ -1,8 +1,8 @@
 package hotmath.gwt.solution_editor.server.rpc;
 
+import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.solution_editor.client.rpc.FormatXmlAdminAction;
-import hotmath.gwt.solution_editor.client.rpc.SolutionAdminResponse;
 import junit.framework.TestCase;
 
 public class FormatXmlAdminCommand_Test extends TestCase {

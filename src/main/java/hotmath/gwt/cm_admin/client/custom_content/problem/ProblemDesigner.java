@@ -236,7 +236,9 @@ public class ProblemDesigner extends Composite {
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             native public void execute() /*-{
-                $wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue();
+                if($wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue) {
+                    $wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue();
+                }
             }-*/;
         });
     }

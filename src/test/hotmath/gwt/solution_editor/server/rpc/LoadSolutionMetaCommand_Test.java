@@ -1,8 +1,8 @@
 package hotmath.gwt.solution_editor.server.rpc;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
-import hotmath.gwt.solution_editor.client.rpc.LoadSolutionMetaAction;
-import hotmath.gwt.solution_editor.client.rpc.SolutionMeta;
+import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
+import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 
 public class LoadSolutionMetaCommand_Test extends CmDbTestCase {
     

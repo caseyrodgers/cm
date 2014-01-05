@@ -8,8 +8,8 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction.SaveType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -153,6 +153,9 @@ public class ProblemDesignerEditorWidget extends GWindow {
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
+                CmBusyManager.setBusy(true);
+                
+
                 SaveCustomProblemAction action = new SaveCustomProblemAction(_solutionInfo.getPid(), SaveType.WIDGET, widgetJson);
                 setAction(action);
                 CmShared.getCmService().execute(action,  this);
@@ -160,6 +163,9 @@ public class ProblemDesignerEditorWidget extends GWindow {
 
             @Override
             public void oncapture(RpcData value) {
+                CmBusyManager.setBusy(false);
+                
+
                 _callback.isComplete();
                 hide();
             }

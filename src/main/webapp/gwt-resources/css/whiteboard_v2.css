@@ -56,6 +56,10 @@
 	overflow: hidden;
 }
 
+ .cm_whiteboard .drawsection {
+	border: none;
+}
+
 .ocanvas {
 	
 }

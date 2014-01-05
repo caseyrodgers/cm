@@ -74,7 +74,7 @@ var TutorManager = {
     solutionTitle: null,
     context: null,
     solutionVariableContext:null,
-    initializeTutor : function(pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, expand, solutionVariableContext, submitButtonText, indicateWidgetStatus, installCustomSteps) {
+    initializeTutor : function(pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, shouldExpandSolution, solutionVariableContext, submitButtonText, indicateWidgetStatus, installCustomSteps) {
         TutorManager.pid = pid;
         TutorManager.jsonConfig = jsonConfig;
         TutorManager.currentRealStep = -1;
@@ -107,10 +107,27 @@ var TutorManager = {
         }
         
         
+        setupStaticWhiteboards();
+        
+        
         /** hookup any question steps */
         // HmEvents.eventTutorInitialized.fire();
         TutorManager.context = createNewSolutionMessageContext(pid, jsonConfig);
         TutorDynamic.initializeTutor(TutorManager.context);
+        
+        
+        if(shouldExpandSolution) {
+        	var maxStepUnits = 100;
+    		var stepCount = 0;
+            for ( stepCount = 0; stepCount < maxStepUnits; stepCount++) {
+                var stepUnit = _getStepUnit(stepCount);
+                if (stepUnit == null)
+                    break; // done
+                
+                stepUnit.style.display = 'block';
+            }
+        }
+        
     },
     
     
