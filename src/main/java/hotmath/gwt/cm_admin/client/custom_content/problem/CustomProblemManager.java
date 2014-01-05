@@ -49,6 +49,7 @@ public class CustomProblemManager extends GWindow {
         this.teacher = teacher;
         setHeadingText("Custom Problem Manager");
         setPixelSize(800, 600);
+        setMaximizable(true);
         
         buildGui();
         readFromServer();
@@ -99,7 +100,6 @@ public class CustomProblemManager extends GWindow {
                 });
             }
         }));
-        gridPanel.addTool(new TextButton("Edit"));
         gridPanel.addTool(new TextButton("Del", new SelectHandler() {
             
             @Override
@@ -197,7 +197,7 @@ public class CustomProblemManager extends GWindow {
     }
     
     public static void startTest() {
-        new CustomProblemManager(new TeacherIdentity(2, null    ));
+        new CustomProblemManager(new TeacherIdentity(2, null,0));
     }
 
 }

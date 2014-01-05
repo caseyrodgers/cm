@@ -1,6 +1,7 @@
 package hotmath.gwt.solution_editor.client;
 
 import hotmath.gwt.cm_core.client.JSOModel;
+import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,48 +185,6 @@ public class WidgetListDialog extends Window {
             return 0;
         }
     }
-    
-    
-    /** Extract just the widget JSON 
-     * 
-     * @param html
-     * @return
-     */
-    static public String extractWidgetJson(String html) {
-
-       String START_TOKEN="hm_flash_widget_def";
-       
-       int startPos = html.indexOf(START_TOKEN);
-       if(startPos == -1) {
-           return null;
-       }
-       
-       startPos = html.indexOf("{", startPos);
-       int endPos = html.indexOf("}", startPos);
-       String json = html.substring(startPos, endPos+1);
-       
-       return json;
-    }
-    
-    /** Return html without any widget definition 
-     * 
-     * @param html
-     * @return
-     */
-    static public String stripWidgetFromHtml(String html) {
-        String START_TOKEN="<div id='hm_flash_widget'";
-        int startPos = html.indexOf(START_TOKEN);
-        if(startPos == -1) {
-            return html;
-        }
-        int endPos = html.indexOf("</div>", startPos);
-        endPos = html.indexOf("</div>", endPos+1);
-
-        String htmlNew = html.substring(0, startPos);
-        htmlNew += html.substring(endPos+6);
-        
-        return htmlNew;    
-    }   
 
 
     

@@ -2,6 +2,8 @@ package hotmath.gwt.cm_admin.client;
 
 import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesigner;
+import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditorHintStep;
+import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditorWidget;
 import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
 import hotmath.gwt.cm_admin.client.ui.AssignmentManagerDialog2;
 import hotmath.gwt.cm_admin.client.ui.AssignmentStatusDialog;
@@ -126,64 +128,67 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     private void completeLoginProcess(final int uid) {
         
         Log.debug("CatchupMathAdmin: login complete, is Mobile: " + UserInfoBase.getInstance().isMobile());
-        
-        if(CmShared.getQueryParameterValue("test").equals("final")) {
+        String test = CmShared.getQueryParameterValue("test");
+        if(test.equals("final")) {
             FinalExamCreationManager.startTest();
             return;
         }
-        else if(CmShared.getQueryParameterValue("test").equals("assignments")) {
+        else if(test.equals("assignments")) {
             AssignmentManagerDialog2.startTest();
             return;
         }
-        else if(CmShared.getQueryParameterValue("test").equals("assignment_status")) {
+        else if(test.equals("assignment_status")) {
             AssignmentStatusDialog.startTest();
             return;
         }
-        else if(CmShared.getQueryParameterValue("test").equals("assignment_edit")) {
+        else if(test.equals("assignment_edit")) {
             EditAssignmentDialog.startTest();
             return;
         }
-        else if(CmShared.getQueryParameterValue("test").equals("ccss")) {
+        else if(test.equals("ccss")) {
             CCSSCoverageWindow.startTest();
             return;
         }
-        else if(CmShared.getQueryParameterValue("test").equals("highlights")) {
+        else if(test.equals("highlights")) {
             HighlightsDataWindow.getSharedInstance(2).setVisible(true);
             return;
         }
-        else if(CmShared.getQueryParameterValue("test").equals("register")) {
+        else if(test.equals("register")) {
             RegisterStudent.startTest();
             return;
         }
-        else if(CmShared.getQueryParameterValue("test").equals("activity")) {
+        else if(test.equals("activity")) {
             UserActivityLogDialog.startTest();
             return;
         }
-        else if(CmShared.getQueryParameterValue("test").equals("weblinks")) {
+        else if(test.equals("weblinks")) {
             WebLinksManager.startTest();
             return;
         }
-        else if(CmShared.getQueryParameterValue("test").equals("weblinkeditor")) {
+        else if(test.equals("weblinkeditor")) {
             WebLinkEditorDialog.startTest();
             return;
         }        
-        else if(CmShared.getQueryParameterValue("test").equals("search")) {
+        else if(test.equals("search")) {
             LessonSearchWindow.startTest();
             return;
         }
-        else if(CmShared.getQueryParameterValue("test").equals("custom")) {
-            new ProblemDesigner.GwtTestUi().startTest();
-            return;
-        }
-        else if(CmShared.getQueryParameterValue("test").equals("custom_manager")) {
+        else if(test.equals("custom_manager")) {
             CustomProblemManager.startTest();
             return;
         }
-        else if(CmShared.getQueryParameterValue("test").equals("assignment_add_problem")) {
+        else if(test.equals("assignment_add_problem")) {
             AddProblemDialog.startTest();
             return;
         }
-
+        else if(test.equals("widget_editor")) {
+            ProblemDesignerEditorWidget.doTest();
+            return;
+        }
+        else if(test.equals("hint_editor")) {
+            ProblemDesignerEditorHintStep.doTest();
+            return;
+        }
         
 
 

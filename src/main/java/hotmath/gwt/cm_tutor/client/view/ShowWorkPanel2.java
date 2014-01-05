@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tutor.client.view;
 
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
@@ -177,38 +178,14 @@ public class ShowWorkPanel2 extends Composite {
      * 
      * Each element in array is a command and an array of data.
      */
-    private void jsni_updateWhiteboard(String flashId, String command, String commandData) {
+    private void jsni_updateWhiteboard(String whiteboardId, String command, String commandData) {
         if(!isReady()) {
             Window.alert("Whiteboard is not ready");
             return;
         }
-        jsni_updateWhiteboardAux(flashId, command, commandData);
+        CmGwtUtils.jsni_updateWhiteboardAux(null, command, commandData);
     }
-    
-    private native void jsni_updateWhiteboardAux(String flashId, String command, String commandData) /*-{
-             
-         if(!$wnd._theWhiteboard) {
-             alert('_theWhiteboard is null in ShowWorkPanel2');
-             return;
-         }
-         
-         var cmdArray = [];
-         if (command == 'draw') {
-             cmdArray = [['draw', [commandData]]];
-         } else if (command == 'clear') {
-             cmdArray = [['clear', []]];                                                                                                  
-         }
-
-
-         var realArray = [];
-         for (var i = 0, t = cmdArray.length; i < t; i++) {
-             var ele = [];
-             ele[0] = cmdArray[i][0];
-             ele[1] = cmdArray[i][1];
-             realArray[i] = ele;
-         }
-         $wnd._theWhiteboard.updateWhiteboard(realArray);
-    }-*/;
+  
 
     protected void whiteboardSave_Gwt() {
         saveWhiteboardToServer();
@@ -315,9 +292,8 @@ public class ShowWorkPanel2 extends Composite {
     public void loadWhiteboard(List<WhiteboardCommand> commands) {
         _lastCommands = commands;
         Log.debug("Loading whiteboard with " + commands.size() + " commands");
-        final String flashId = "";
         try {
-            jsni_updateWhiteboard(flashId, "clear", null);
+            //jsni_updateWhiteboard(flashId, "clear", null);
         } catch (Exception e) {
             Log.debug("Error clearing whiteboard: " + e);
         }
@@ -325,7 +301,7 @@ public class ShowWorkPanel2 extends Composite {
             try {
                 // Log.debug("processing whiteboard command: " +
                 // commands.get(i));
-                jsni_updateWhiteboard(flashId, commands.get(i).getCommand(), commands.get(i).getData());
+                jsni_updateWhiteboard(this.whiteboardId, commands.get(i).getCommand(), commands.get(i).getData());
             } catch (Exception e) {
                 Log.error("Error processing whiteboard command: " + e.getMessage(), e);
             }
@@ -385,16 +361,16 @@ public class ShowWorkPanel2 extends Composite {
             // create a single global object for now.
             // TODO: add support for multiple whiteboards
             //
-            
+            var _theWhiteboard;
             if($wnd._theWhiteboard) {
               // $wnd._theWhiteboard.releaseResources();
-               $wnd._theWhiteboard = null;
+              $wnd._theWhiteboard = null;
             }
             
             //new $wnd.Whiteboard();
             $wnd._theWhiteboardDiv = $doc.getElementById(whiteboardId);
             if($wnd._theWhiteboardDiv == null) {
-                alert('no ' + whiteboardId + ' div');
+                alert('whiteboard not found: ' + whiteboardId);
                 return;
             }
             

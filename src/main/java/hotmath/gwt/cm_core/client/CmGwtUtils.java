@@ -295,4 +295,45 @@ public class CmGwtUtils {
         $wnd.print();
     }-*/;
     
+    
+    /** White to a whiteboard object.
+     * 
+     *  If whiteboard is null, then the last created whitebaord
+     *  which is stored in _theWhiteboard is used.  Otherwise,
+     *  we update the whiteboard 'whiteboardId'.
+     *  
+     * @param whiteboardId
+     * @param command
+     * @param commandData
+     */
+    static public native void jsni_updateWhiteboardAux(String whiteboardId, String command, String commandData) /*-{
+    
+        var theWhiteboard = whiteboardId == null?$wnd._theWhiteboard: $wnd._cmWhiteboards[whiteboardId];
+        if(!theWhiteboard) {
+            alert('whiteboard ' + whiteboardId + ' cannot be found in jsni_updateWhiteboardAux');
+            return;
+        }
+        
+        var cmdArray = [];
+        if (command == 'draw') {
+            cmdArray = [['draw', [commandData]]];
+        } else if (command == 'clear') {
+            cmdArray = [['clear', []]];                                                                                                  
+        }
+    
+    
+        var realArray = [];
+        for (var i = 0, t = cmdArray.length; i < t; i++) {
+            var ele = [];
+            ele[0] = cmdArray[i][0];
+            ele[1] = cmdArray[i][1];
+            realArray[i] = ele;
+        }
+        
+        theWhiteboard.updateWhiteboard(realArray);
+    }-*/;
+    
+    
+    
+    
 }

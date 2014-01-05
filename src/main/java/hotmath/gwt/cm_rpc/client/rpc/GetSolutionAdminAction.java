@@ -1,5 +1,6 @@
-package hotmath.gwt.solution_editor.client.rpc;
+package hotmath.gwt.cm_rpc.client.rpc;
 
+import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
 public class GetSolutionAdminAction implements Action<SolutionAdminResponse> {

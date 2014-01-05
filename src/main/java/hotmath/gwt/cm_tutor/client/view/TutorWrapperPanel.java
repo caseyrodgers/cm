@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
+import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
@@ -22,7 +23,6 @@ import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteEvent;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorCallback.WidgetStatusIndication;
 
 import java.util.HashMap;
@@ -366,7 +366,6 @@ public class TutorWrapperPanel extends Composite {
         boolean installCustomSteps = tutorCallback.installCustomSteps();
         
         
-        
         if(CmGwtUtils.getQueryParameterValue("debug_problem").equals("true")) {
             tutorCallback.debugLogOut("Problem Debug", "Enabling problem debug");
             enableTutorDebugMode(true);
@@ -383,8 +382,6 @@ public class TutorWrapperPanel extends Composite {
             }
         });
         
-        
-        
         /** If there was an answer entered
          * 
          */
@@ -394,26 +391,7 @@ public class TutorWrapperPanel extends Composite {
             jsni_moveToFirstStep();
             _wasWidgetAnswered = true;
         }
-        
-        if(_solutionInfo.getWhiteboards().size() > 0) {
-            for(WhiteboardModel a: _solutionInfo.getWhiteboards()){
-                loadStaticWhiteboard(instance, a);    
-            }
-        }
-        
-        
         CmRpcCore.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
-    }
-    
-    
-    private void loadStaticWhiteboard(final Widget widget, final WhiteboardModel wbModel) {
-        ShowWorkPanelCallbackDefault callBack = new ShowWorkPanelCallbackDefault() {
-            @Override
-            public void showWorkIsReady(ShowWorkPanel2 showWork) {
-                showWork.loadWhiteboard(wbModel.getCommands());
-            }
-        };
-        new ShowWorkPanel2(callBack, true, false, wbModel.getWhiteboardId(), 350, widget);
     }
 
     /** Enable or disable the tutor loading/problem set debug mode
@@ -435,6 +413,7 @@ public class TutorWrapperPanel extends Composite {
          */
         setupReadonlyMask(_readOnly);
     }
+    
     private void setupReadonlyMask(boolean readOnly) {
         _readOnly=readOnly;
         Log.debug("Setting readonly mask: " + readOnly);
@@ -463,21 +442,23 @@ public class TutorWrapperPanel extends Composite {
         tutorCallback.tutorWidgetCompleteDenied(null, false);
     }
     
-    private void gwt_enableTutorButton(String btnName, boolean enableYesNo) {
-        if(true)
+    
+    private void gwt_loadStaticWhiteboardCommands(String wbId) {
+        if(wbId == null) {
             return;
-       
-        
-        if(btnName.equals("steps_next")) {
-            stepNext.setEnabled(enableYesNo);
         }
-        else if(btnName.equals("steps_prev")) {
-            stepPrev.setEnabled(enableYesNo);
+        for(WhiteboardModel wbModel: this._solutionInfo.getWhiteboards()) {
+            if(wbModel.getWhiteboardId().equals(wbId)) {
+                for(WhiteboardCommand wc: wbModel.getCommands()) {
+                    CmGwtUtils.jsni_updateWhiteboardAux(wbId, wc.getCommand(), wc.getData());
+                }
+                return;
+            }
         }
-        
-       Log.debug("Showing btnName: " + btnName);
+        Window.alert("Static whiteboard not found: " + wbId);
     }
     
+
     /** initialize external tutor JS/HTML and provide glue between external JS
      * methods and GWT.
      * 
@@ -487,10 +468,6 @@ public class TutorWrapperPanel extends Composite {
             boolean shouldExpandSolution,String solutionContext, String submitButtonText, String indicateWidgetStatus, boolean installCustomSteps) /*-{
         
         var that = this;
-        
-        $wnd.gwt_enableTutorButton = function(btnName, enabledYesNo) {
-            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_enableTutorButton(Ljava/lang/String;Z)(btnName,enabledYesNo);
-        }
         
         $wnd.solutionSetComplete = function(numCorrect, limit) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_solutionSetComplete(II)(numCorrect,limit);
@@ -518,10 +495,10 @@ public class TutorWrapperPanel extends Composite {
            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::tutorWidgetCompleteAux(Z)(yesNo);
         }
         
-        
         $wnd.tutorWidgetComplete = function(inputValue,yesNo) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::tutorWidgetComplete(Ljava/lang/String;Z)(inputValue, yesNo);
         }
+
         
         $wnd.gwt_scrollToBottomOfScrollPanel = function(top) {
            $wnd.scrollTo(0,top);
@@ -540,6 +517,9 @@ public class TutorWrapperPanel extends Composite {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_showWhiteBoard()();
         }
         
+        $wnd.gwt_loadStaticWhiteboardCommands = function(id) {
+            return that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_loadStaticWhiteboardCommands(Ljava/lang/String;)(id);
+        }
         
         $wnd.gwt_tutorIsReadonlyMessage = function() {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_tutorIsReadonlyMessage()();
@@ -859,5 +839,55 @@ public class TutorWrapperPanel extends Composite {
             
             setProblemStatusControl(msg);
         }
+    
+        native public void processStaticWhiteboards() /*-{
+            $wnd.setupStaticWhiteboards();
+        }-*/;
+        
+        
+        
+        
+        
+        /** Extract just the widget JSON 
+         * 
+         * @param html
+         * @return
+         */
+        static public String extractWidgetJson(String html) {
 
+           String START_TOKEN="hm_flash_widget_def";
+           
+           int startPos = html.indexOf(START_TOKEN);
+           if(startPos == -1) {
+               return null;
+           }
+           
+           startPos = html.indexOf("{", startPos);
+           int endPos = html.indexOf("}", startPos);
+           String json = html.substring(startPos, endPos+1);
+           
+           return json;
+        }
+        
+        /** Return html without any widget definition 
+         * 
+         * @param html
+         * @return
+         */
+        static public String stripWidgetFromHtml(String html) {
+            String START_TOKEN="<div id='hm_flash_widget'";
+            int startPos = html.indexOf(START_TOKEN);
+            if(startPos == -1) {
+                return html;
+            }
+            int endPos = html.indexOf("</div>", startPos);
+            endPos = html.indexOf("</div>", endPos+1);
+
+            String htmlNew = html.substring(0, startPos);
+            htmlNew += html.substring(endPos+6);
+            
+            return htmlNew;    
+        }   
+        
+        
 }

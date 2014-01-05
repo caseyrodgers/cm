@@ -30,7 +30,7 @@ public class GetProgramLessonProblemsCommand implements ActionHandler<GetProgram
         List<ProblemDto> problems=null;
         if(action.getFile() == null) {
             // is custom?
-            List<CustomProblemModel> custProbs = CustomProblemDao.getInstance().getCustomProblemsFor(new TeacherIdentity(action.getAdminId(),null));
+            List<CustomProblemModel> custProbs = CustomProblemDao.getInstance().getCustomProblemsFor(new TeacherIdentity(action.getAdminId(),null, 0));
             problems = new ArrayList<ProblemDto>();
             for(CustomProblemModel cm: custProbs) {
                 problems.add(new ProblemDto(cm.getProblemNumber(),0, new LessonModel("",""), cm.getTeacher().getTeacherName() + " " + cm.getProblemNumber(),cm.getPid(),0));

@@ -1,6 +1,6 @@
 package hotmath.gwt.solution_editor.client;
 
-import hotmath.gwt.solution_editor.client.rpc.SolutionMetaStep;
+import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
 
 import com.google.gwt.user.client.ui.Widget;
 

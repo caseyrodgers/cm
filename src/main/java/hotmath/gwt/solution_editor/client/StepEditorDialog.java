@@ -3,9 +3,9 @@ package hotmath.gwt.solution_editor.client;
 import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
+import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
 import hotmath.gwt.solution_editor.client.SolutionResourceListDialog.Callback;
 import hotmath.gwt.solution_editor.client.rpc.FormatXmlAdminAction;
-import hotmath.gwt.solution_editor.client.rpc.SolutionAdminResponse;
 import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
 import com.extjs.gxt.ui.client.Style.Scroll;

@@ -1,6 +1,6 @@
 package hotmath.gwt.solution_editor.client;
 
-import hotmath.gwt.solution_editor.client.rpc.SolutionMeta;
+import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.BoxComponentEvent;

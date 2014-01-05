@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 
 
-/** Standarized Tutor viewer 
+/** Standardized Tutor viewer 
  * 
  *  Loads JS directly, not using compressed JS to allow debugging.
  *  

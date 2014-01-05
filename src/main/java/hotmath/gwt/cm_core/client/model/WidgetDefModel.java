@@ -1,4 +1,4 @@
-package hotmath.gwt.solution_editor.client;
+package hotmath.gwt.cm_core.client.model;
 
 import hotmath.gwt.cm_core.client.JSOBaseModel;
 import hotmath.gwt.cm_core.client.JSOModel;

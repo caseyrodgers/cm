@@ -2,8 +2,8 @@ package hotmath.gwt.solution_editor.client;
 
 import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.EventBus;
-import hotmath.gwt.solution_editor.client.rpc.SolutionMeta;
-import hotmath.gwt.solution_editor.client.rpc.SolutionMetaStep;
+import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
+import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;

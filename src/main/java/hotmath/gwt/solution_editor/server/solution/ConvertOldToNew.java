@@ -1,10 +1,10 @@
 package hotmath.gwt.solution_editor.server.solution;
 
 import hotmath.cm.util.service.SolutionDef;
+import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
+import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
+import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.solution_editor.client.StepUnitPair;
-import hotmath.gwt.solution_editor.client.rpc.LoadSolutionMetaAction;
-import hotmath.gwt.solution_editor.client.rpc.SolutionMeta;
-import hotmath.gwt.solution_editor.client.rpc.SolutionMetaStep;
 import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;
 import hotmath.gwt.solution_editor.server.rpc.LoadSolutionMetaCommand;
 import hotmath.util.HMConnectionPool;

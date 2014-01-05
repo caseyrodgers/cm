@@ -7,12 +7,14 @@ import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
+import hotmath.gwt.cm_core.client.model.WidgetDefModel;
+import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
+import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
+import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.solution_editor.client.WidgetListDialog.Callback;
-import hotmath.gwt.solution_editor.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.solution_editor.client.rpc.SaveSolutionStepsAdminAction;
-import hotmath.gwt.solution_editor.client.rpc.SolutionMeta;
-import hotmath.gwt.solution_editor.client.rpc.SolutionMetaStep;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,14 +146,14 @@ public class SolutionStepEditor extends ContentPanel {
     
     public void showWidgetEditor() {
         String problemStatement = _meta.getProblemStatement();
-        String widgetJson = WidgetListDialog.extractWidgetJson(problemStatement);
+        String widgetJson = TutorWrapperPanel.extractWidgetJson(problemStatement);
         WidgetListDialog.showWidgetListDialog(new Callback() {
             @Override
             public void resourceSelected(WidgetDefModel widget) {
                 if(widget == null)
                     return;
                 
-                String ps = WidgetListDialog.stripWidgetFromHtml(_meta.getProblemStatement());
+                String ps = TutorWrapperPanel.stripWidgetFromHtml(_meta.getProblemStatement());
                 ps += widget.getWidgetHtml();
                 _meta.setProblemStatement(ps);
                 buildSolutionEditor(_meta);
