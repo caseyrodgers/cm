@@ -17,13 +17,14 @@ public class HtmlEditorApplet extends LayoutContainer {
         registerCallback();
         
         _isReady = false;
-        String appletHtml  = "<applet MAYSCRIPT width='100%' height='100%' " + 
-        "id='html_editor' archive='html_editor.jar'  " +
-        "code='hotmath.editor.HtmlEditorApp.class'  " +
-        "codebase='/gwt-resources/solution_editor'> " +
-        "<param value='16' name='fontSize'> " +
-        "<param value='false' name='codebase_lookup'> " + 
-        "</applet>";
+        String appletHtml  = 
+                "<applet MAYSCRIPT width='100%' height='100%' " + 
+                    "id='html_editor' archive='html_editor.jar'  " +
+                    "code='hotmath.editor.HtmlEditorApp.class'  " +
+                    "codebase='/gwt-resources/solution_editor'> " +
+                    "<param value='16' name='fontSize'> " +
+                    "<param value='false' name='codebase_lookup'> " + 
+                 "</applet>";
         
         Html html = new Html(appletHtml);
         
