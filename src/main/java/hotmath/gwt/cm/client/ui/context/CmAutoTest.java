@@ -1,8 +1,10 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.history.CmHistoryManager;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 
@@ -54,6 +56,15 @@ public class CmAutoTest {
             else {
                 AutoTestWindow.getInstance().addLogMessage("Loading (" + resourcesToRun.size() + "): " + resource + ", "  + resource.which);
                 CmHistoryManager.loadResourceIntoHistory(resource.item.getType().label(),Integer.toString(resource.which));
+                
+                if(resource.item.getType() == CmResourceType.PRACTICE) {
+                    PrescriptionCmGuiDefinition.markResourceAsViewed(resource.item, new CallbackOnComplete() {
+                        @Override
+                        public void isComplete() {
+                            // do nothing
+                        }
+                    });
+                }
             }
         }    
     }    

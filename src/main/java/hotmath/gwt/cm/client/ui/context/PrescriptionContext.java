@@ -207,15 +207,17 @@ public class PrescriptionContext implements CmContext {
 
         for (String rt : PrescriptionCmGuiDefinition._registeredResources.keySet()) {
             final String resourceType = rt;
+            
+            CmResourceType type = CmResourceType.mapResourceType(rt.toLowerCase());
             List<InmhItemData> resources = PrescriptionCmGuiDefinition._registeredResources.get(resourceType);
             int which = 0;
             boolean onlyRpp = CmShared.getQueryParameter("test_rpp_only") != null;
             for (final InmhItemData r : resources) {
 
-                if (!r.getType().equals(resourceType))
+                if (r.getType() != type)
                     continue;
 
-                if (onlyRpp && r.getType() == CmResourceType.PRACTICE)
+                if (onlyRpp && r.getType() != CmResourceType.PRACTICE)
                     continue;
 
                 CmAutoTest.ResourceObject ro = new CmAutoTest.ResourceObject(r, which++);

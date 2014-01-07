@@ -6,6 +6,7 @@ import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.EndOfProgramPanel;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -225,6 +226,16 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         if (UserInfo.getInstance().getRunId() == 0)
             CmLogger.error("PrescriptionCmGuiDefinition: run_id is null!");
 
+
+        markResourceAsViewed(resourceItem, new CallbackOnComplete() {
+            @Override
+            public void isComplete() {
+                _guiWidget.updateCheckMarks(resourceItem.getType());
+            }
+        });
+    }
+    
+    static public void markResourceAsViewed(final InmhItemData resourceItem, final CallbackOnComplete callback) {
         /**
          * 
          * mark this INMH resource item as being viewed
@@ -262,7 +273,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
                 resourceItem.setViewed(true);
                 
-                _guiWidget.updateCheckMarks(resourceItem.getType());
+                callback.isComplete();
             }
 
         }.register();
