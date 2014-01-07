@@ -385,7 +385,13 @@ pageTracker._trackPageview();
 		CmPage.sticky = [6,5];
 
 		redirectIfMobile();
+		
+		if(getQueryStringParameter('view')) {
+		    showTeacherVideo(getQueryStringParameter('view'));
+		 }
+		    
         </script>
+        
 		<!-- InstanceEndEditable -->
     </body>
 <!-- InstanceEnd --></html>
