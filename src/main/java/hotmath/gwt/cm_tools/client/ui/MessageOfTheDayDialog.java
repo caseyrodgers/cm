@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_rpc.client.rpc.GetMessageOfTheDayAction;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -45,7 +46,7 @@ public class MessageOfTheDayDialog extends GWindow {
         });
         addButton(okBtn);
         
-        CmShared.getCmService().execute(new GetMessageOfTheDayAction(), new AsyncCallback<StringHolder>() {
+        CmShared.getCmService().execute(new GetMessageOfTheDayAction(UserInfoBase.getInstance().getUid()), new AsyncCallback<StringHolder>() {
             
             public void onSuccess(StringHolder result) {
                 if(result.getResponse() == null || result.getResponse().length() == 0) {

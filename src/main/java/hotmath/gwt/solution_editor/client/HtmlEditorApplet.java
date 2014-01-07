@@ -15,7 +15,7 @@ public class HtmlEditorApplet extends LayoutContainer {
         __lastInstance=this;
         System.out.println("Starting up Editor Applet");
         registerCallback();
-        
+        /*test*/
         _isReady = false;
         String appletHtml  = 
                 "<applet MAYSCRIPT width='100%' height='100%' " + 

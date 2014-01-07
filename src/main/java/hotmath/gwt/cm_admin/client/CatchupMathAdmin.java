@@ -189,8 +189,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             ProblemDesignerEditorHintStep.doTest();
             return;
         }
-        
-
 
         new MessageOfTheDayDialog(new CallbackGeneric() {
             @Override
