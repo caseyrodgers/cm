@@ -295,6 +295,12 @@ function showTeacherVideo(name) {
         closeFoot;
             title = 'Web Links Quick Overview';
        }
+       else if (name == 'student_registration-quick') {
+           html = '<iframe src="/training-videos/embedded-student_registration.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
+       closeFoot;
+           title = 'Web Links Quick Overview';
+      }
+        
 
     var head = '<a href="#" onclick="closeTeacherVideo();return false" class="close"><span>close</span> X</a>' + title;
 
