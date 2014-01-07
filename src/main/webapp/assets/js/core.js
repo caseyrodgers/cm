@@ -298,7 +298,7 @@ function showTeacherVideo(name) {
        else if (name == 'student_registration-quick') {
            html = '<iframe src="/training-videos/embedded-student_registration.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
        closeFoot;
-           title = 'Web Links Quick Overview';
+           title = 'Student Registration - Quick Start';
       }
         
 
