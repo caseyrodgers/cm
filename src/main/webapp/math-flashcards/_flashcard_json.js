@@ -1,3 +1,63 @@
+var _fcContent = '<div class="yui3-g" id="bd"><div class="yui3-u" id="main"><div id="flashcards" class="yui3-menu yui3-menu-horizontal" role="menu"><div class="yui3-menu-content" role="presentation" id="flashcard_content2"><ul class="first-of-type" role="presentation" id="flashcard_menu2">';
+
+var _lang = "";
+var _category = "";
+var _langLabel;
+var _index = 0;
+var _categIndex = 0;
+
+function listFlashcards() {
+	for (var i=0; i < _flashcardJSON.length; i++) {
+		if (_lang == null || _lang.localeCompare(_flashcardJSON[i].lang) != 0) {
+			// starting a new lang (EN or ES)
+			if (_lang.localeCompare("") != 0) {
+				_fcContent += '</ul></div></div></li></ul></div></div></li>';
+				//alert("starting new lang: " + _flashcardJSON[i].lang);
+				_categIndex = 0;
+			}
+			_index++;
+			_lang = _flashcardJSON[i].lang;
+			if (_lang.localeCompare("EN") == 0) {
+				_langLabel = 'English';
+			}
+			else if (_lang.localeCompare("ES") == 0) {
+				_langLabel = "Spanish";
+			}
+			_fcContent += '<li role="presentation" id="flashcard_menu_' + _index + '">';
+			_fcContent += '<div class="yui3-menu-label" id="flashcard_menu_' + _langLabel + '" role="menuitem" aria-haspopup="true" tabindex="-1">' + _langLabel + '</div>';
+			_fcContent += '<div id="' + _langLabel + '-div" class="yui3-menu yui3-menu-hidden" role="menu" aria-hidden="true" style="height: 184px; width: 155px;">';
+            _fcContent += '<div class="yui3-menu-content" role="presentation" id="' + _langLabel + '-menu-div">';
+            _fcContent += '<ul role="presentation" class="first-of-type" id="' + _langLabel + '-menu-list">';
+		}
+
+		if (_category.localeCompare("") == 0 || _category.localeCompare(_flashcardJSON[i].category) != 0) {
+			// TODO: include null categories
+			if (_flashcardJSON[i].category == null) continue;
+
+			// starting a new category
+			if (_category.localeCompare("") != 0 && _categIndex > 0) {
+				_fcContent += '</ul></div></div></li>';
+			}
+			_categIndex++;
+			_category = _flashcardJSON[i].category;
+			_fcContent += '<li role="presentation" id="' + _langLabel + '-menu-item-' + _categIndex + '">';
+			_fcContent += '<div class="yui3-menu-label" id="' + _category + '_label" role="menuitem" aria-haspopup="true">' + _category + '</div>';
+			_fcContent += '<div id="' + _category + '" class="yui3-menu yui3-menu-hidden" role="menu" aria-hidden="true" style="height: 154px; width: 121px;">';
+			_fcContent += '<div class="yui3-menu-content" role="presentation">';
+			_fcContent += '<ul role="presentation" class="first-of-type">';
+		}
+
+		// add the item
+		_fcContent += '<li class="yui3-menuitem" role="presentation"><a class="yui3-menuitem-content" href="http://catchupmath.com';
+		_fcContent += _flashcardJSON[i].location + '" target="_blank" role="menuitem">';
+		_fcContent += _flashcardJSON[i].description + '</a></li>';
+ 	}
+	_fcContent += '</ul></div></div></li></ul></div></div></li></ul></div></div></div></div>';
+	//alert(_fcContent);
+	var elem = document.getElementById("math-flashcard-content");
+	elem.innerHTML = _fcContent;
+}
+
 var _flashcardJSON =
 [
   {"lang":"EN","category":"Fractions","description":"Adding Like Fractions","location":"/learning_activities/interactivities/flashcard_addfrac_like.swf"},
