@@ -296,12 +296,16 @@ function showTeacherVideo(name) {
             title = 'Web Links Quick Overview';
        }
        else if (name == 'student_registration-quick') {
-           html = '<iframe src="/training-videos/embedded-student_registration.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
+           html = '<iframe src="/training-videos/embedded-student_registration-quick.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
        closeFoot;
            title = 'Student Registration - Quick Start';
       }
-        
-
+      else if (name == 'student_registration') {
+           html = '<iframe src="/training-videos/embedded-student_registration-groups.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
+       closeFoot;
+           title = 'Registering Groups and Classes';
+      }
+        	
     var head = '<a href="#" onclick="closeTeacherVideo();return false" class="close"><span>close</span> X</a>' + title;
 
     var tail = '<a href="#" onclick="closeTeacherVideo();return false" class="close" style="background-color: white"><span>close</span> X</a>';
