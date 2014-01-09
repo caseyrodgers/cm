@@ -202,6 +202,8 @@ public class ProblemDesigner extends Composite {
           $wnd.gwt_editPart('hint', stepId);
        });
        
+       $wnd.$('.hint').addClass("drag");
+       
        $wnd.$('.step').dblclick(function() {
           $wnd.gwt_editPart('step', whiteboardId);
        });
@@ -239,6 +241,8 @@ public class ProblemDesigner extends Composite {
                 if($wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue) {
                     $wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue();
                 }
+                
+                $wnd._setupTutorDragAndDrop();
             }-*/;
         });
     }

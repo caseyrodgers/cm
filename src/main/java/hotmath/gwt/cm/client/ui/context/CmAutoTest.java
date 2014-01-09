@@ -7,6 +7,9 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +53,7 @@ public class CmAutoTest {
         }
         
         private void loadNextResource() {
-            ResourceObject resource = resourcesToRun.getLocation();
+            final ResourceObject resource = resourcesToRun.getLocation();
             if(resource == null)
                 finished = true;
             else {
@@ -58,12 +61,18 @@ public class CmAutoTest {
                 CmHistoryManager.loadResourceIntoHistory(resource.item.getType().label(),Integer.toString(resource.which));
                 
                 if(resource.item.getType() == CmResourceType.PRACTICE) {
+                    
                     PrescriptionCmGuiDefinition.markResourceAsViewed(resource.item, new CallbackOnComplete() {
                         @Override
                         public void isComplete() {
-                            // do nothing
+                            
+                            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE, resource.item));
+                            // PrescriptionResourcePanel.setLessonCompleted(resource.item.getFile());
                         }
                     });
+                    
+                    
+                    PrescriptionResourcePanel.__instance.updateCheckMarks(CmResourceType.PRACTICE);
                 }
             }
         }    
