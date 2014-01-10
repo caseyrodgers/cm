@@ -5,16 +5,20 @@ var _category = "";
 var _langLabel;
 var _index = 0;
 var _categIndex = 0;
+var _noSubMenu = false;
 
 function listFlashcards() {
 	for (var i=0; i < _flashcardJSON.length; i++) {
 		if (_lang == null || _lang.localeCompare(_flashcardJSON[i].lang) != 0) {
 			// starting a new lang (EN or ES)
 			if (_lang.localeCompare("") != 0) {
-				_fcContent += '</ul></div></div></li></ul></div></div></li>';
-				//alert("starting new lang: " + _flashcardJSON[i].lang);
+				_fcContent += '</ul></div></div></li>';
+				if (_noSubMenu == false) {
+					_fcContent += '</ul></div></div></li>';
+				}
 				_categIndex = 0;
 			}
+			_noSubMenu = false;
 			_index++;
 			_lang = _flashcardJSON[i].lang;
 			if (_lang.localeCompare("EN") == 0) {
@@ -31,31 +35,40 @@ function listFlashcards() {
 		}
 
 		if (_category.localeCompare("") == 0 || _category.localeCompare(_flashcardJSON[i].category) != 0) {
-			// TODO: include null categories
-			if (_flashcardJSON[i].category == null) continue;
 
-			// starting a new category
-			if (_category.localeCompare("") != 0 && _categIndex > 0) {
-				_fcContent += '</ul></div></div></li>';
+			if (_flashcardJSON[i].category != null) {
+				// starting a new category
+				if (_category.localeCompare("") != 0 && _categIndex > 0 && _noSubMenu == false) {
+					_fcContent += '</ul></div></div></li>';
+				}
+				_noSubMenu = false;
+				_categIndex++;
+				_category = _flashcardJSON[i].category;
+				_fcContent += '<li role="presentation" id="' + _langLabel + '-menu-item-' + _categIndex + '">';
+				_fcContent += '<div class="yui3-menu-label" id="' + _category + '_label" role="menuitem" aria-haspopup="true">' + _category + '</div>';
+				_fcContent += '<div id="' + _category + '" class="yui3-menu yui3-menu-hidden" role="menu" aria-hidden="true" style="height: 154px; width: 121px;">';
+				_fcContent += '<div class="yui3-menu-content" role="presentation">';
+				_fcContent += '<ul role="presentation" class="first-of-type">';
 			}
-			_categIndex++;
-			_category = _flashcardJSON[i].category;
-			_fcContent += '<li role="presentation" id="' + _langLabel + '-menu-item-' + _categIndex + '">';
-			_fcContent += '<div class="yui3-menu-label" id="' + _category + '_label" role="menuitem" aria-haspopup="true">' + _category + '</div>';
-			_fcContent += '<div id="' + _category + '" class="yui3-menu yui3-menu-hidden" role="menu" aria-hidden="true" style="height: 154px; width: 121px;">';
-			_fcContent += '<div class="yui3-menu-content" role="presentation">';
-			_fcContent += '<ul role="presentation" class="first-of-type">';
+			else {
+				if (_noSubMenu == false) {
+					_fcContent += '</ul></div></div></li>';
+				}
+				_noSubMenu = true;
+			}
 		}
-
-		// add the item
-		_fcContent += '<li class="yui3-menuitem" role="presentation"><a class="yui3-menuitem-content" href="http://catchupmath.com';
-		_fcContent += _flashcardJSON[i].location + '" target="_blank" role="menuitem">';
-		_fcContent += _flashcardJSON[i].description + '</a></li>';
+		addMenuItem(_flashcardJSON[i].location, _flashcardJSON[i].description);
  	}
 	_fcContent += '</ul></div></div></li></ul></div></div></li></ul></div></div></div></div>';
-	//alert(_fcContent);
 	var elem = document.getElementById("math-flashcard-content");
 	elem.innerHTML = _fcContent;
+}
+
+function addMenuItem(location, description) {
+	// add the item
+	_fcContent += '<li class="yui3-menuitem" role="presentation"><a class="yui3-menuitem-content" href="http://catchupmath.com';
+	_fcContent += location + '" target="_blank" role="menuitem">';
+	_fcContent += description + '</a></li>';	
 }
 
 var _flashcardJSON =
