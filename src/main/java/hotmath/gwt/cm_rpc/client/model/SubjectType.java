@@ -12,7 +12,8 @@ public enum SubjectType {
     ALGEBRA1("Algebra 1", "A1", 10),
     GEOMETRY("Geometry", "G", 11),
     ALGEBRA2("Algebra 2","A2", 12),
-    COLLEGE_ELE_ALGEBRA("College Elementary Algebra", "CA", 13);
+    COLLEGE_ELE_ALGEBRA("College Elementary Algebra", "CA", 15),
+    COLLEGE_BASIC_MATH("College Basic Math", "CM", 16);
     
     private String label;
     private int level;

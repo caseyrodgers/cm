@@ -30,35 +30,3 @@ function setupStaticWhiteboards() {
 		alert('error loading static whiteboards: ' + e);
 	}
 }
-
-
-window._setupTutorDragAndDrop = function() {
-	var $div = $('#tutor_output');
-	$('.drag')
-	.drag("start",function( ev, dd ){
-		alert('start drag ...');
-		dd.attr = $( ev.target ).prop("className");
-		console.log(dd.attr);
-		dd.limit = $div.offset();
-		dd.limit.bottom = dd.limit.top + $div.outerHeight() - $( this ).outerHeight();
-		dd.limit.right = dd.limit.left + $div.outerWidth() - $( this ).outerWidth();
-		dd.width = $(this).width();
-		dd.height = $(this).height();
-	})
-	.drag(function( ev, dd ){
-		var properties = {};
-		if(dd.attr == 'drag'){
-	
-			$(this).css({
-				top: Math.min( dd.limit.bottom, Math.max( dd.limit.top, dd.offsetY ) ),
-				left: Math.min( dd.limit.right, Math.max( dd.limit.left, dd.offsetX ) ),
-			}); 
-			
-		}else if(dd.attr == 'handle'){
-			$(this).css({
-				width: Math.max( 40, Math.min(dd.width + dd.deltaX, $div.width() - dd.limit.left )),
-				height: Math.max( 40, Math.min(dd.height + dd.deltaY, $div.height() - dd.limit.top ))
-			}); 
-		}
-	});
-}	

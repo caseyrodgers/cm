@@ -197,15 +197,9 @@ public class ProblemDesigner extends Composite {
           $wnd.gwt_editPart('widget', whiteboardId);
        });
        
-       $wnd.$('.hint').prepend("<button onclick='window.gwt_editPart(\"hint\",window.gwt_getHintNumber(this))'>Click to Edit</button><button onclick='window.gwt_editPart(\"hint-remove\",window.gwt_getHintNumber(this))'>Click to Remove</button>").dblclick(function() {
+       $wnd.$('.hint-step').prepend("<button onclick='window.gwt_editPart(\"hint\",window.gwt_getHintNumber(this))'>Click to Edit</button><button onclick='window.gwt_editPart(\"hint-remove\",window.gwt_getHintNumber(this))'>Click to Remove</button>").dblclick(function() {
           var stepId = getStepId(this);
           $wnd.gwt_editPart('hint', stepId);
-       });
-       
-       $wnd.$('.hint').addClass("drag");
-       
-       $wnd.$('.step').dblclick(function() {
-          $wnd.gwt_editPart('step', whiteboardId);
        });
     }-*/;
     

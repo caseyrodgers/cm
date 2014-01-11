@@ -46,6 +46,25 @@
   </servlet>
 
   <servlet>
+    <servlet-name>SolutionService</servlet-name>
+    <servlet-class>hotmath.cm.util.service.SolutionService</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SolutionService</servlet-name>
+    <url-pattern>/cm_admin/solution_service</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>SolutionService</servlet-name>
+    <url-pattern>/cm_student/solution_service</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>SolutionService</servlet-name>
+    <url-pattern>/solution_service</url-pattern>
+  </servlet-mapping>  
+  
+  
+  
+  <servlet>
     <servlet-name>BulkRegisterService</servlet-name>
     <servlet-class>hotmath.cm.util.service.BulkRegisterService</servlet-class>
   </servlet>
