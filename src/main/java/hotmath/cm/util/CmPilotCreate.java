@@ -52,6 +52,8 @@ public class CmPilotCreate {
 	
 	private static String NEW_LINE = System.getProperty("line.separator");
 
+	private static String COLLEGE_SALES_REP = "lincoln";
+
     List<String> messages = new ArrayList<String>();
     Integer aid;
     
@@ -328,8 +330,8 @@ public class CmPilotCreate {
             ps.setString(6, phone);
             ps.setString(7, ccEmails);
             ps.setInt(8, studentCount);
-            ps.setString(9,userComments);
-            ps.setString(10,motivation);
+            ps.setString(9, userComments);
+            ps.setString(10, motivation);
             ps.setString(11, idToUse);
             ps.setInt(12, (isCollegePilot)?1:0);
 
@@ -357,7 +359,7 @@ public class CmPilotCreate {
             sub.setStatus("A");
             
             sub.setZip(zip);
-            sub.setSalesZone(salesPerson.getRepId());
+            sub.setSalesZone((isCollegePilot == false) ? salesPerson.getRepId() : COLLEGE_SALES_REP);
             sub.saveChanges();
             List<PurchasePlan> plans = new ArrayList<PurchasePlan>();
             plans.add(new PurchasePlan("TYPE_SERVICE_CATCHUP_PILOT"));
@@ -392,6 +394,7 @@ public class CmPilotCreate {
 	                    + "\nTitle: " + title + "\nName: " + name + "\nSchool: " + school + "\nZip: " + zip
 	                    + "\nEmail: " + email + "\nPhone: " + phone +  "\nPhone When: " + phoneWhen 
 	                    + "\nStudent count: " + studentCount + "\nComments: " + userComments
+	                    + "\nMotivation: " + motivation 
 	                    + "\nCC emails: " + ccEmailText
 	                    + "\nsalesZone: " + salesPerson.getRepId();
 	            try {
