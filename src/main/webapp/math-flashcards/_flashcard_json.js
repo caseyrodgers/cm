@@ -21,13 +21,15 @@ function listFlashcards() {
 			_noSubMenu = false;
 			_index++;
 			_lang = _flashcardJSON[i].lang;
+			_fcContent += '<li role="presentation" id="flashcard_menu_' + _index + '">';
 			if (_lang.localeCompare("EN") == 0) {
 				_langLabel = 'English';
+				_fcContent += '<li role="presentation" class="menu-label-spacer" id="flashcard_menu_' + _index + '">';
 			}
 			else if (_lang.localeCompare("ES") == 0) {
-				_langLabel = "Spanish";
+				_langLabel = 'Spanish';
+				_fcContent += '<li role="presentation" id="flashcard_menu_' + _index + '">';
 			}
-			_fcContent += '<li role="presentation" id="flashcard_menu_' + _index + '">';
 			_fcContent += '<div class="yui3-menu-label" id="flashcard_menu_' + _langLabel + '" role="menuitem" aria-haspopup="true" tabindex="-1">' + _langLabel + '</div>';
 			_fcContent += '<div id="' + _langLabel + '-div" class="yui3-menu yui3-menu-hidden" role="menu" aria-hidden="true" style="height: 184px; width: 155px;">';
             _fcContent += '<div class="yui3-menu-content" role="presentation" id="' + _langLabel + '-menu-div">';
