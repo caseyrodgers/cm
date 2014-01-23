@@ -66,28 +66,11 @@ public class CmIdleTimeWatcher {
     
     public int getActiveMinutes() {
         try {
-            int low=-1,high=-1;
-            // find low number
-            for(int i=0;i<activeMinutes.length;i++) {
-                if(activeMinutes[i]) {
-                    low=i;
-                    break;
-                }
-            }
-            if(low==-1) {
-                Log.warn("Idle low value not found!");
-                return 0; // not busy
-            }
-            else {
-                // find high number
-                for(int i=activeMinutes.length;i >-1;i--) {
-                    if(activeMinutes[i-1]) {
-                        high=i;
-                        break;
-                    }
-                }
-                return (high-low)+1;
-            }
+        	int count = 0;
+        	for (boolean active : activeMinutes) {
+        		count += (active == true) ? 1 : 0;
+        	}
+        	return count;
         }
         finally {
             setToIdle();
@@ -95,7 +78,9 @@ public class CmIdleTimeWatcher {
     }
     
     private void setToIdle() {
-        activeMinutes = new boolean[activeMinutes.length];
+    	for (int i=0; i < activeMinutes.length; i++) {
+    		activeMinutes[i] = false;
+    	}
         idle = true;
     }
 
