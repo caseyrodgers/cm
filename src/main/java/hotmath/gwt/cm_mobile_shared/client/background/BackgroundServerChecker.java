@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_mobile_shared.client.background;
 
+/** Info: 
+ * http://stackoverflow.com/questions/6543325/what-happens-to-javascript-execution-settimeout-etc-when-iphone-android-goes
+ */
 import hotmath.gwt.cm_core.client.event.CmLogoutEvent;
 import hotmath.gwt.cm_core.client.event.CmLogoutHandler;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
@@ -17,6 +20,7 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** Display a message from central server
@@ -29,7 +33,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class BackgroundServerChecker {
 
-    static final int CHECK_EVERY = 1000 * 60 * 15;
+    static final int CHECK_EVERY = 1000 * 60 * 5;
     private int uid;
     
     static private BackgroundServerChecker __instance;
@@ -68,14 +72,15 @@ public class BackgroundServerChecker {
     
     /** Call server and look for new messages.
      * 
-     * Only call server if window is not currently being displayed.
      */
     public void checkForUpdate(final boolean doFullCheck) {
         if(this.uid == 0) {
             return;
         }
+
         
-        Log.debug("Checking for server changes...");
+        Log.debug("BackgroundServerChecker: checking for changes");
+        
         /** handle as separate request to keep errors 
          * silent in case of temp offline
          * 
@@ -141,7 +146,39 @@ public class BackgroundServerChecker {
                 __instance.checkForUpdate(false);
             }
         });
+        
+        setupSleepChecker();
     }
+    
+    static private void gwt_jsWentToSleep(int secs) {
+        Log.debug("JS WENT TO SLEEP: " + secs);
+        if(__instance != null) {
+            if(__instance._timer!=null) {
+                Log.debug("Canceling timer event");
+                stopInstance();
+            }
+            
+            /** force any current changes to be flushed
+             * 
+             */
+            __instance.checkForUpdate(false);
+        }
+    }
+    
+    static native private void setupSleepChecker() /*-{
+        $wnd.sleepCheck = function() {
+            $wnd.console.log('JS sleep check');
+            var now = new Date().getTime();
+            var diff = now - lastCheck;
+            if (diff > 3000) {
+                $wnd.console.log('JS Went To Sleep!: " + took ' + diff + 'ms');
+                @hotmath.gwt.cm_mobile_shared.client.background.BackgroundServerChecker::gwt_jsWentToSleep(I)(diff);
+            }
+            lastCheck = now;
+        }
+        lastCheck = new Date().getTime();
+        setInterval($wnd.sleepCheck, 1000);
+    }-*/;
 
 
     public static void stopInstance() {
