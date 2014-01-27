@@ -36,6 +36,12 @@ public class CmIdleTimeWatcher {
     }
 
     boolean idle=true;
+    
+    static int NO_BASE_INDEX=-1;
+    int _baseIndex=NO_BASE_INDEX;
+    int _lastIndex=NO_BASE_INDEX;
+    
+    
     private void checkIfIdle() {
         long timeNow = System.currentTimeMillis();
         long diffKeyboard = timeNow - _lastKeyBoardActivity;
@@ -61,16 +67,44 @@ public class CmIdleTimeWatcher {
         
         @SuppressWarnings("deprecation")
         int min = new Date().getMinutes();
+        
+        if(_baseIndex == NO_BASE_INDEX) {
+            _baseIndex = min;
+        }
+        _lastIndex = min;
         activeMinutes[min] = true;
     }
     
+    /** Determine how many minutes the user has been active.
+     * 
+     *  This will be the interval between the first and last activity minute.
+     *  
+     * 
+     * 
+     * 
+     * @return
+     */
     public int getActiveMinutes() {
+        
         try {
-        	int count = 0;
-        	for (boolean active : activeMinutes) {
-        		count += (active == true) ? 1 : 0;
-        	}
-        	return count;
+            if(_baseIndex == NO_BASE_INDEX) {
+                return 0;
+            }
+            
+            /** now determine interval distance 
+             * 
+             * 'wrap' around minutes if interval 
+             * crosses hour boundary.
+             * 
+             * */
+            int interval;
+            if(_baseIndex > _lastIndex) {
+                interval = (activeMinutes.length - _baseIndex) + _lastIndex;
+            }
+            else {
+                interval = _lastIndex - _baseIndex;
+            }
+        	return interval + 1;
         }
         finally {
             setToIdle();
@@ -81,6 +115,8 @@ public class CmIdleTimeWatcher {
     	for (int i=0; i < activeMinutes.length; i++) {
     		activeMinutes[i] = false;
     	}
+    	_baseIndex=NO_BASE_INDEX;
+    	_lastIndex = NO_BASE_INDEX;
         idle = true;
     }
 
