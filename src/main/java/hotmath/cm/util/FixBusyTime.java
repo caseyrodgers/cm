@@ -64,12 +64,12 @@ public class FixBusyTime {
     			}
     			currTime = rs.getTimestamp("busy_time").getTime();
     			activeMinutes = rs.getInt("active_minutes");
-    			float mins = (currTime - prevTime)/60000L;
-    			int diffMinutes = Math.round(mins);
+    			double mins = ((double)(currTime - prevTime))/60000.00;
+    			long diffMinutes = Math.round(mins);
     			System.out.println(String.format("prevTime: %d,  currTime: %d, mins: %.2f, diffMinutes: %d", prevTime, currTime, mins, diffMinutes ));
     			if (diffMinutes < activeMinutes) {
     				int id = rs.getInt("id");
-    				psUpdate.setInt(1, diffMinutes);
+    				psUpdate.setLong(1, diffMinutes);
     				psUpdate.setInt(2, id);
     				psUpdate.executeUpdate();
     				count++;
