@@ -66,7 +66,9 @@ public class FixBusyTime {
     			activeMinutes = rs.getInt("active_minutes");
     			long prevMsec = prevTime.getTime();
     			long currMsec = currTime.getTime();
-    			int diffMinutes = (int)((currMsec - prevMsec)/60000L);
+    			float mins = (currMsec - prevMsec)/60000L;
+    			int diffMinutes = Math.round(mins);
+    			System.out.println(String.format("prevMec: %d,  currMsec: %d, mins: %f.2, diffMinutes: %d", prevMsec, currMsec, mins, diffMinutes ));
     			if (diffMinutes < activeMinutes) {
     				int id = rs.getInt("id");
     				psUpdate.setInt(1, diffMinutes);
