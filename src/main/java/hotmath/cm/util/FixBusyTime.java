@@ -71,7 +71,7 @@ public class FixBusyTime {
     				int id = rs.getInt("id");
     				psUpdate.setInt(1, id);
     				psUpdate.setInt(2, diffMinutes);
-    				ps.executeUpdate();
+    				psUpdate.executeUpdate();
     				count++;
     				totalAdjustment += (activeMinutes - diffMinutes);
     			}
@@ -81,7 +81,7 @@ public class FixBusyTime {
     	finally {
             SqlUtilities.releaseResources(rs, null, null);
     	}
-    	this.__logger.info(String.format("UID: %d, count: %d, totalAdjustment: %d", uid, count, totalAdjustment));
+    	System.out.println(String.format("UID: %d, count: %d, totalAdjustment: %d", uid, count, totalAdjustment));
 		
 	}
 
