@@ -107,9 +107,9 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
          GetUserSyncAction action = new GetUserSyncAction(UserInfo.getInstance().getUid());
          action.setFullSyncCheck(doFullCheck);
          if(!CmIdleTimeWatcher.getInstance().isIdle()) {
-             action.setUserActiveMinutes(CmIdleTimeWatcher.getInstance().getActiveMinutes());
+             action.setUserActiveMinutes(CmIdleTimeWatcher.getInstance().getActiveMinutes(true));
          }
-         
+         Log.debug("SystemSyncChecker: " + action.toString());
          
          CmShared.getCmService().execute(action, new AsyncCallback<UserSyncInfo>() {
              @Override

@@ -19,13 +19,13 @@ public class UserProgramStatusPanel extends Composite {
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
     @UiField
-    SpanElement gradedRppCount, gradedRppPercent;
+    SpanElement gradedRppCount, gradedRppPercent, currentActive;
     
     public UserProgramStatusPanel() {
         initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public UserProgramStatusPanel(int uid, int viewCount, UserTutorWidgetStats tutorInputWidgetStats) {
+    public UserProgramStatusPanel(int uid, int viewCount, UserTutorWidgetStats tutorInputWidgetStats, int activeMinutes) {
         this();
         this.uid = uid;
         this.viewCount = viewCount;
@@ -33,6 +33,7 @@ public class UserProgramStatusPanel extends Composite {
 
         gradedRppCount.setInnerHTML(viewCount + "");
         gradedRppPercent.setInnerHTML(tutorInputWidgetStats.getCorrectPercent() + "");
+        currentActive.setInnerHTML(activeMinutes + "");
     }
 
     @Override

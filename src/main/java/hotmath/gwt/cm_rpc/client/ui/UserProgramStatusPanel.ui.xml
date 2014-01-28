@@ -28,6 +28,10 @@
              <p>
              The practice problem total and score is separate from your work in Assignments.
              </p>
+             
+             <p>
+             Current activity minutes: <span ui:field='currentActive'/>
+             </p>
         </div>
     </g:HTMLPanel>
 </ui:UiBinder> 

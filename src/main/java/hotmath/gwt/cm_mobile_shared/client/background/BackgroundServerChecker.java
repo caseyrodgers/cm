@@ -20,7 +20,6 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** Display a message from central server
@@ -78,19 +77,19 @@ public class BackgroundServerChecker {
             return;
         }
 
-        
-        Log.debug("BackgroundServerChecker: checking for changes");
-        
         /** handle as separate request to keep errors 
          * silent in case of temp offline
          * 
          */
          GetUserSyncAction action = new GetUserSyncAction(uid);
-         action.setUserActiveMinutes(CmIdleTimeWatcher.getInstance().getActiveMinutes());
+         action.setUserActiveMinutes(CmIdleTimeWatcher.getInstance().getActiveMinutes(true));
+         
+         Log.debug("BackgroundServerChecker", "UserSyncAction: " + action.toString());
+         
          CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<UserSyncInfo>() {
              @Override
             public void onSuccess(UserSyncInfo info) {
-                 Log.debug("Check complete");
+                 Log.debug("BackgroundServerChecker", "Check complete");
                  
                  if(!doFullCheck) {
                      return;
