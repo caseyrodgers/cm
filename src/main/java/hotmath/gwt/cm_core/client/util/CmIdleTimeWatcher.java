@@ -1,5 +1,9 @@
 package hotmath.gwt.cm_core.client.util;
 
+import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
+import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckHandler;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+
 import java.util.Date;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -51,7 +55,9 @@ public class CmIdleTimeWatcher {
         if (diffKeyboard > MAX_IDLE_TIME) {
             if (idle == false) {
                 Log.info("Catchup Math is idle: " + diffKeyboard);
-                setToIdle();
+                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
+                _baseIndex = NO_BASE_INDEX;
+                _lastIndex = NO_BASE_INDEX;
             }
         }
         else {
