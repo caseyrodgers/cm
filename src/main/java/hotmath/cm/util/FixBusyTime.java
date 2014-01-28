@@ -66,7 +66,7 @@ public class FixBusyTime {
     			activeMinutes = rs.getInt("active_minutes");
     			double mins = ((double)(currTime - prevTime))/60000.00;
     			long diffMinutes = Math.round(mins);
-    			System.out.println(String.format("prevTime: %d,  currTime: %d, mins: %.2f, diffMinutes: %d", prevTime, currTime, mins, diffMinutes ));
+    			//System.out.println(String.format("prevTime: %d,  currTime: %d, mins: %.2f, diffMinutes: %d", prevTime, currTime, mins, diffMinutes ));
     			if (diffMinutes < activeMinutes) {
     				int id = rs.getInt("id");
     				psUpdate.setLong(1, diffMinutes);
@@ -81,7 +81,8 @@ public class FixBusyTime {
     	finally {
             SqlUtilities.releaseResources(rs, null, null);
     	}
-    	System.out.println(String.format("UID: %d, count: %d, totalAdjustment: %d", uid, count, totalAdjustment));
+    	if (count > 0)
+        	System.out.println(String.format("UID: %d, count: %d, totalAdjustment: %d", uid, count, totalAdjustment));
 		
 	}
 
