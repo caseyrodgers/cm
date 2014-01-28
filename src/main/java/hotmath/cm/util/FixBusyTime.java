@@ -20,7 +20,7 @@ public class FixBusyTime {
 
     public FixBusyTime() throws Exception {
     	String sql0 = "select distinct uid from CM_USER_BUSY_TMP limit 3";
-        String sql1 = "select * from CM_USER_BUSY_TMP where uid = ? order by id";
+        String sql1 = "select * from CM_USER_BUSY_TMP where uid = ? order by busy_time asc";
         String sql2 = "update CM_USER_BUSY_TMP set active_minutes = ? where id = ?";
 
         Connection conn = null;
