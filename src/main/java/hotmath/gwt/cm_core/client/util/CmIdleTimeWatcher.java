@@ -20,7 +20,7 @@ public class CmIdleTimeWatcher {
         return __instance;
     }
 
-    static final int MAX_IDLE_TIME = 3600000; // 1 HOUR
+    static final int MAX_IDLE_TIME =  1000 * 60 * 10; // 10 minutes
     static final int CHECK_IDLE_EVERY = 5000;
 
     long _lastKeyBoardActivity;
