@@ -48,8 +48,8 @@ public class FixBusyTime {
 
     private void fixBusyTimeForUid(int uid) throws Exception {
     	ResultSet rs = null;
-    	Date prevTime = null;
-    	Date currTime = null;
+    	long prevTime = 0;
+    	long currTime = 0;
     	int activeMinutes;
     	int count = 0;
     	int totalAdjustment = 0;
@@ -58,17 +58,15 @@ public class FixBusyTime {
         	ps.setInt(1,  uid);
     		rs = ps.executeQuery();
     		while (rs.next()) {
-    			if (prevTime == null) {
-    				prevTime = rs.getDate("busy_time");
+    			if (prevTime == 0) {
+    				prevTime = rs.getTimestamp("busy_time").getTime();
     				continue;
     			}
-    			currTime = rs.getDate("busy_time");
+    			currTime = rs.getTimestamp("busy_time").getTime();
     			activeMinutes = rs.getInt("active_minutes");
-    			long prevMsec = prevTime.getTime();
-    			long currMsec = currTime.getTime();
-    			float mins = (currMsec - prevMsec)/60000L;
+    			float mins = (currTime - prevTime)/60000L;
     			int diffMinutes = Math.round(mins);
-    			System.out.println(String.format("prevMec: %d,  currMsec: %d, mins: %f.2, diffMinutes: %d", prevMsec, currMsec, mins, diffMinutes ));
+    			System.out.println(String.format("prevTime: %d,  currTime: %d, mins: %f.2, diffMinutes: %d", prevTime, currTime, mins, diffMinutes ));
     			if (diffMinutes < activeMinutes) {
     				int id = rs.getInt("id");
     				psUpdate.setInt(1, diffMinutes);
