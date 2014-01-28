@@ -54,7 +54,7 @@ public class CmIdleTimeWatcher {
 
         if (diffKeyboard > MAX_IDLE_TIME) {
             if (idle == false) {
-                Log.info("Catchup Math is idle: " + diffKeyboard);
+                Log.debug("Catchup Math is idle: " + diffKeyboard);
                 CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
                 _baseIndex = NO_BASE_INDEX;
                 _lastIndex = NO_BASE_INDEX;
