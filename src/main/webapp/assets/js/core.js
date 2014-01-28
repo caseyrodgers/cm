@@ -230,6 +230,34 @@ function closeTeacherVideo() {
     _videoOverlay = null;
 }
 
+
+function showTeacherVideo2(ele, videoUrl) {
+	
+	var title = ele.innerHTML;
+	html = '<iframe src="/training-videos/embedded-wrapper.html?video=' + videoUrl + '"  width="630" height="525px" scrolling="no" frameborder="no"></iframe>';
+	
+	var head = '<a href="#" onclick="closeTeacherVideo();return false" class="close"><span>close</span> X</a>' + title;
+    var tail = '<a href="#" onclick="closeTeacherVideo();return false" class="close" style="background-color: white"><span>close</span> X</a>';
+
+    YUI().use('anim','overlay',
+                    function(Y) {
+                        _videoOverlay = new Y.Overlay(
+                                {
+                                    id:"training-video",
+                                    width : "642px",
+                                    height: "562px",
+                                    centered : true,
+                                    fixedcenter : true,
+                                    headerContent : head,
+                                    bodyContent : html + tail,
+                                    zIndex : 2,
+                                    visible:true
+                                });
+
+                       _videoOverlay.render();
+    });
+}
+
 function showTeacherVideo(name) {
         if (_videoOverlay != null) {
                 showDialog('Sorry, only one video may be viewed at a time', 'Training Video Message', 4);
@@ -304,6 +332,9 @@ function showTeacherVideo(name) {
            html = '<iframe src="/training-videos/embedded-student_registration-groups.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
        closeFoot;
            title = 'Registering Groups and Classes';
+      }
+      else if(name === 'overview-reports') {
+    	  
       }
         	
     var head = '<a href="#" onclick="closeTeacherVideo();return false" class="close"><span>close</span> X</a>' + title;
