@@ -122,8 +122,7 @@ public class CmIdleTimeWatcher {
         for (int i = 0; i < activeMinutes.length; i++) {
             activeMinutes[i] = false;
         }
-        _baseIndex = NO_BASE_INDEX;
-        _lastIndex = NO_BASE_INDEX;
+        _baseIndex = _lastIndex;
         idle = true;
     }
 

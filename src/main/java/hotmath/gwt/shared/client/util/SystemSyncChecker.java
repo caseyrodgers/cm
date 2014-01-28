@@ -35,7 +35,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  */
 public class SystemSyncChecker extends StandardSystemRefreshWindow {
 
-    static final int CHECK_EVERY = 1000 * 60 * 15;
+    static final int CHECK_EVERY = 1000 * 60 * 1; // 15;
     static SystemSyncChecker _theWindow;
 
     public SystemSyncChecker() {
