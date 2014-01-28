@@ -19,7 +19,7 @@ public class FixBusyTime {
     PreparedStatement psUpdate = null;
 
     public FixBusyTime() throws Exception {
-    	String sql0 = "select distinct uid from CM_USER_BUSY_TMP limit 3";
+    	String sql0 = "select distinct uid from CM_USER_BUSY_TMP";
         String sql1 = "select * from CM_USER_BUSY_TMP where uid = ? order by busy_time asc";
         String sql2 = "update CM_USER_BUSY_TMP set active_minutes = ? where id = ?";
 
