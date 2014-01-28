@@ -69,8 +69,8 @@ public class FixBusyTime {
     			int diffMinutes = (int)((currMsec - prevMsec)/60000L);
     			if (diffMinutes < activeMinutes) {
     				int id = rs.getInt("id");
-    				psUpdate.setInt(1, id);
-    				psUpdate.setInt(2, diffMinutes);
+    				psUpdate.setInt(1, diffMinutes);
+    				psUpdate.setInt(2, id);
     				psUpdate.executeUpdate();
     				count++;
     				totalAdjustment += (activeMinutes - diffMinutes);
