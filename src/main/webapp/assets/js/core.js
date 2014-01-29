@@ -244,9 +244,8 @@ function showTeacherVideo2(ele, videoUrl) {
 	var title = ele.innerHTML;
 	var html = '<iframe src="/training-videos/embedded-wrapper.html?video=' + videoUrl + '"  width="630" height="525px" scrolling="no" frameborder="no"></iframe>';
 	
-	var head = '<a href="#" onclick="javascript:closeTeacherVideo()" class="close"><span>close</span> X</a>' + title;
-    var tail = '<a href="#" onclick="javascript:closeTeacherVideo()" class="close" style="background-color: white"><span>close</span> X</a>';
-
+	var head = '<a href="#" onclick="closeTeacherVideo();return false;" class="close"><span>close</span> X</a>' + title;
+        var tail = '<a href="#" onclick="coseTeacherVideo();return false;" class="close" style="background-color: white"><span>close</span> X</a>';
     unique++;
     YUI().use('anim','overlay',
                     function(Y) {
@@ -346,9 +345,9 @@ function showTeacherVideo(name) {
     	  
       }
         	
-    var head = '<a href="#" onclick="javascript:closeTeacherVideo();" class="close"><span>close</span> X</a>' + title;
+    var head = '<a href="#" onclick="closeTeacherVideo();return false;" class="close"><span>close</span> X</a>' + title;
 
-    var tail = '<a href="#" onclick="javascript:closeTeacherVideo();" class="close" style="background-color: white"><span>close</span> X</a>';
+    var tail = '<a href="#" onclick="closeTeacherVideo();return false;" class="close" style="background-color: white"><span>close</span> X</a>';
 
     YUI().use('anim','overlay',
                     function(Y) {
