@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_core.client.util;
 
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
-import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckHandler;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import java.util.Date;
@@ -55,6 +54,9 @@ public class CmIdleTimeWatcher {
         if (diffKeyboard > MAX_IDLE_TIME) {
             if (idle == false) {
                 Log.debug("Catchup Math is idle: " + diffKeyboard);
+                
+                // force a flush of any pending time 
+                // and then reset fully
                 CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
                 _baseIndex = NO_BASE_INDEX;
                 _lastIndex = NO_BASE_INDEX;

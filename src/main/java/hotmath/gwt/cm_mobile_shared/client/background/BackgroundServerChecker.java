@@ -20,6 +20,7 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** Display a message from central server
@@ -73,6 +74,8 @@ public class BackgroundServerChecker {
      * 
      */
     public void checkForUpdate(final boolean doFullCheck) {
+        
+        //Window.alert("checkForUpdate called!");
         if(this.uid == 0) {
             return;
         }
@@ -82,7 +85,11 @@ public class BackgroundServerChecker {
          * 
          */
          GetUserSyncAction action = new GetUserSyncAction(uid);
-         action.setUserActiveMinutes(CmIdleTimeWatcher.getInstance().getActiveMinutes(true));
+         int minutes = CmIdleTimeWatcher.getInstance().getActiveMinutes(true);
+         if(minutes == 0 && doFullCheck == false) {
+             return;
+         }
+         action.setUserActiveMinutes(minutes);
          
          Log.debug("BackgroundServerChecker", "UserSyncAction: " + action.toString());
          
@@ -169,7 +176,7 @@ public class BackgroundServerChecker {
             $wnd.console.log('JS sleep check');
             var now = new Date().getTime();
             var diff = now - lastCheck;
-            if (diff > 3000) {
+            if (diff > 10000) {
                 $wnd.console.log('JS Went To Sleep!: " + took ' + diff + 'ms');
                 @hotmath.gwt.cm_mobile_shared.client.background.BackgroundServerChecker::gwt_jsWentToSleep(I)(diff);
             }

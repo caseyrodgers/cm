@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_mobile3.client;
 
 import hotmath.gwt.cm_core.client.CmGwtUtils;
-import hotmath.gwt.cm_core.client.event.CmLogoutEvent;
+import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEvent;
@@ -57,8 +57,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -67,6 +65,8 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -82,6 +82,8 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
     final static public ClientFactory __clientFactory = GWT.create(ClientFactory.class);
     FormLoaderListeners formLoaders = new FormLoaderListenersImplHistory();
+
+    private boolean __isLoggingOut;
 
     public CatchupMathMobile3() {
         /*
@@ -224,14 +226,14 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         }, MouseDownEvent.getType());
         CmIdleTimeWatcher.getInstance();
         
-        Window.addCloseHandler(new CloseHandler<Window>() {
-            @Override
-            public void onClose(CloseEvent<Window> event) {
-                CmRpcCore.EVENT_BUS.fireEvent(new CmLogoutEvent());
+        
+        Window.addWindowClosingHandler(new Window.ClosingHandler() {
+            public void onWindowClosing(Window.ClosingEvent closingEvent) {
+                if(!__isLoggingOut) {
+                    closingEvent.setMessage("You should logout to make sure any changes are saved!");
+                }
             }
-        });
-
-
+          });
         Log.info("Catchup Math Mobile Initialized");
     }
     
@@ -395,7 +397,8 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         eb.addHandler(UserLogoutEvent.TYPE, new UserLogoutHandler() {
             @Override
             public void userLogout() {
-                // CmRpcCore.EVENT_BUS.fireEvent(new ShowLoginViewEvent());
+                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
+                __isLoggingOut = true;
                 Window.Location.replace("/index.html");
             }
         });
