@@ -223,6 +223,7 @@ function showAssignmentsWebinar() {
 }
 
 var _videoOverlay=null;
+var _videoOverlay2=null;
 
 function closeTeacherVideo() {
     _videoOverlay.set("bodyContent", "");  // make sure video stops
@@ -230,20 +231,28 @@ function closeTeacherVideo() {
     _videoOverlay = null;
 }
 
+function closeTeacherVideo2() {
+	alert('test');
+    _videoOverlay2.set("bodyContent", "");  // make sure video stops
+    _videoOverlay2.hide();
+    _videoOverlay2 = null;
+}
 
+var unique=0;
 function showTeacherVideo2(ele, videoUrl) {
 	
 	var title = ele.innerHTML;
-	html = '<iframe src="/training-videos/embedded-wrapper.html?video=' + videoUrl + '"  width="630" height="525px" scrolling="no" frameborder="no"></iframe>';
+	var html = '<iframe src="/training-videos/embedded-wrapper.html?video=' + videoUrl + '"  width="630" height="525px" scrolling="no" frameborder="no"></iframe>';
 	
-	var head = '<a href="#" onclick="closeTeacherVideo();return false" class="close"><span>close</span> X</a>' + title;
-    var tail = '<a href="#" onclick="closeTeacherVideo();return false" class="close" style="background-color: white"><span>close</span> X</a>';
+	var head = '<a href="#" onclick="javascript:closeTeacherVideo()" class="close"><span>close</span> X</a>' + title;
+    var tail = '<a href="#" onclick="javascript:closeTeacherVideo()" class="close" style="background-color: white"><span>close</span> X</a>';
 
+    unique++;
     YUI().use('anim','overlay',
                     function(Y) {
                         _videoOverlay = new Y.Overlay(
                                 {
-                                    id:"training-video",
+                                    id:"training-video-" + unique,
                                     width : "642px",
                                     height: "562px",
                                     centered : true,
@@ -337,9 +346,9 @@ function showTeacherVideo(name) {
     	  
       }
         	
-    var head = '<a href="#" onclick="closeTeacherVideo();return false" class="close"><span>close</span> X</a>' + title;
+    var head = '<a href="#" onclick="javascript:closeTeacherVideo();" class="close"><span>close</span> X</a>' + title;
 
-    var tail = '<a href="#" onclick="closeTeacherVideo();return false" class="close" style="background-color: white"><span>close</span> X</a>';
+    var tail = '<a href="#" onclick="javascript:closeTeacherVideo();" class="close" style="background-color: white"><span>close</span> X</a>';
 
     YUI().use('anim','overlay',
                     function(Y) {
