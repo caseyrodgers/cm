@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_core.client.util;
 
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import java.util.Date;
@@ -20,7 +21,7 @@ public class CmIdleTimeWatcher {
     }
 
     static final int MAX_IDLE_TIME =  1000 * 60 * 10; // 10 minutes
-    static final int CHECK_IDLE_EVERY = 5000;
+    static final int CHECK_IDLE_EVERY = 5000; // 30000;
 
     long _lastKeyBoardActivity;
     Timer _timer;
@@ -57,7 +58,13 @@ public class CmIdleTimeWatcher {
                 
                 // force a flush of any pending time 
                 // and then reset fully
-                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
+                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent(true, new CallbackOnComplete() {
+                    
+                    @Override
+                    public void isComplete() {
+                        Log.debug("ForceSystemSyncCheckEvent: complete ");
+                    }
+                }));
                 _baseIndex = NO_BASE_INDEX;
                 _lastIndex = NO_BASE_INDEX;
             }

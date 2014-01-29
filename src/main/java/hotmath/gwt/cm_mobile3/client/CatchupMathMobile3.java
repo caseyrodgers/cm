@@ -65,8 +65,6 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ClosingEvent;
-import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -397,11 +395,19 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         eb.addHandler(UserLogoutEvent.TYPE, new UserLogoutHandler() {
             @Override
             public void userLogout() {
-                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
-                __isLoggingOut = true;
-                Window.Location.replace("/index.html");
+                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent(false, new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        exitApplication();                        
+                    }
+                }));
             }
         });
+    }
+    
+    private void exitApplication() {
+        __isLoggingOut = true;
+        Window.Location.replace("/index.html");        
     }
 
     public int getScrollPositionForLast() {

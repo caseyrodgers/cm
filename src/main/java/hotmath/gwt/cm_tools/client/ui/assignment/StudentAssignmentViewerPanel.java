@@ -352,10 +352,10 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
                 CatchupMathTools.setBusy(false);
                 loadAssignment(assignment,pidToLoad);
                 
-                /** Make sure system is in sync after viewing an assingment
+                /** Make sure system is in sync after viewing an assignment
                  * 
                  */
-                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
+                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent(true, null));
             }
         }.register();          
     }

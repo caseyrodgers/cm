@@ -182,8 +182,8 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
 
     static {
         CmRpcCore.EVENT_BUS.addHandler(ForceSystemSyncCheckEvent.TYPE, new ForceSystemSyncCheckHandler() {
-            public void forceSyncCheck() {
-                checkForUpdate(true, null);
+            public void forceSyncCheck(boolean doFullCheck, CallbackOnComplete callback) {
+                checkForUpdate(doFullCheck, callback);
             }
         });
         CmRpcCore.EVENT_BUS.addHandler(CmLogoutEvent.TYPE, new CmLogoutHandler() {

@@ -66,7 +66,7 @@ public class StudentAssignmentButton extends TextButton {
         addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
+                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent(true, null));
             }
         });
     }

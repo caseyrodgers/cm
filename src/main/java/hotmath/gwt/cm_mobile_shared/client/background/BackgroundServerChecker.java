@@ -13,6 +13,7 @@ import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
 import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_assignments.client.event.UpdateAssignmentViewEvent;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
@@ -20,7 +21,6 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** Display a message from central server
@@ -63,7 +63,7 @@ public class BackgroundServerChecker {
         _timer = new Timer() {
             @Override
             public void run() {
-                checkForUpdate(true);
+                checkForUpdate(true, null);
             }
         };
         _timer.scheduleRepeating(CHECK_EVERY);
@@ -71,9 +71,10 @@ public class BackgroundServerChecker {
     
     
     /** Call server and look for new messages.
+     * @param callback 
      * 
      */
-    public void checkForUpdate(final boolean doFullCheck) {
+    public void checkForUpdate(final boolean doFullCheck, final CallbackOnComplete callback) {
         
         //Window.alert("checkForUpdate called!");
         if(this.uid == 0) {
@@ -86,9 +87,6 @@ public class BackgroundServerChecker {
          */
          GetUserSyncAction action = new GetUserSyncAction(uid);
          int minutes = CmIdleTimeWatcher.getInstance().getActiveMinutes(true);
-         if(minutes == 0 && doFullCheck == false) {
-             return;
-         }
          action.setUserActiveMinutes(minutes);
          
          Log.debug("BackgroundServerChecker", "UserSyncAction: " + action.toString());
@@ -96,17 +94,24 @@ public class BackgroundServerChecker {
          CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<UserSyncInfo>() {
              @Override
             public void onSuccess(UserSyncInfo info) {
-                 Log.debug("BackgroundServerChecker", "Check complete");
-                 
-                 if(!doFullCheck) {
-                     return;
+                 try {
+                     Log.debug("BackgroundServerChecker", "Check complete");
+                     
+                     if(!doFullCheck) {
+                         return;
+                     }
+                     
+                     
+                     CatchupMathVersion version = info.getVersionInfo();
+                     
+                     if(info.getAssignmentInfo().isAdminUsingAssignments()) {
+                         fireAppropriateEvent(info.getAssignmentInfo());
+                     }
                  }
-                 
-                 
-                 CatchupMathVersion version = info.getVersionInfo();
-                 
-                 if(info.getAssignmentInfo().isAdminUsingAssignments()) {
-                     fireAppropriateEvent(info.getAssignmentInfo());
+                 finally {
+                     if(callback != null) {
+                         callback.isComplete();
+                     }
                  }
             }
              @Override
@@ -141,15 +146,15 @@ public class BackgroundServerChecker {
 
     static {
         CmRpcCore.EVENT_BUS.addHandler(ForceSystemSyncCheckEvent.TYPE, new ForceSystemSyncCheckHandler() {
-            public void forceSyncCheck() {
-                __instance.checkForUpdate(true);
+            public void forceSyncCheck(boolean doFullCheck, CallbackOnComplete callback) {
+                __instance.checkForUpdate(doFullCheck, callback);
             }
         });
         
         CmRpcCore.EVENT_BUS.addHandler(CmLogoutEvent.TYPE, new CmLogoutHandler() {
             @Override
             public void userLogOut() {
-                __instance.checkForUpdate(false);
+                __instance.checkForUpdate(false, null);
             }
         });
         
@@ -167,7 +172,7 @@ public class BackgroundServerChecker {
             /** force any current changes to be flushed
              * 
              */
-            __instance.checkForUpdate(false);
+            __instance.checkForUpdate(false, null);
         }
     }
     
@@ -175,14 +180,14 @@ public class BackgroundServerChecker {
         $wnd.sleepCheck = function() {
             $wnd.console.log('JS sleep check');
             var now = new Date().getTime();
-            var diff = now - lastCheck;
+            var diff = now - window.lastCheck;
             if (diff > 10000) {
                 $wnd.console.log('JS Went To Sleep!: " + took ' + diff + 'ms');
                 @hotmath.gwt.cm_mobile_shared.client.background.BackgroundServerChecker::gwt_jsWentToSleep(I)(diff);
             }
             lastCheck = now;
         }
-        lastCheck = new Date().getTime();
+        window.lastCheck = new Date().getTime();
         setInterval($wnd.sleepCheck, 1000);
     }-*/;
 

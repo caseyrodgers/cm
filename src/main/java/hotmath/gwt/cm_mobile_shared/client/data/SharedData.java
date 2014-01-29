@@ -179,8 +179,9 @@ public class SharedData {
             CmRpcCore.EVENT_BUS.fireEvent(new UserLoginEvent(result));
         }
         
-        
-        CmRpcCore.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(result.getAssignmentInfo()));
+        if(result != null) {
+            CmRpcCore.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(result.getAssignmentInfo()));
+        }
     }
 
     private static void setMobileUser(CmMobileUser result) {
