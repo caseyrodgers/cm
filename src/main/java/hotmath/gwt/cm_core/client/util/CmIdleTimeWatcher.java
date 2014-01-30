@@ -131,7 +131,7 @@ public class CmIdleTimeWatcher {
             setToIdle();
         }
         
-        return interval + 1;
+        return interval;
     }
 
     private void setToIdle() {
