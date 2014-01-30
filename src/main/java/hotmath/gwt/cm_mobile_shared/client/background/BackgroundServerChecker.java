@@ -185,7 +185,7 @@ public class BackgroundServerChecker {
                 $wnd.console.log('JS Went To Sleep!: " + took ' + diff + 'ms');
                 @hotmath.gwt.cm_mobile_shared.client.background.BackgroundServerChecker::gwt_jsWentToSleep(I)(diff);
             }
-            lastCheck = now;
+            window.lastCheck = now;
         }
         window.lastCheck = new Date().getTime();
         setInterval($wnd.sleepCheck, 1000);

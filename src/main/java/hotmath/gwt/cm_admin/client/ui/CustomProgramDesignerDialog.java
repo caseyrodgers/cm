@@ -271,6 +271,12 @@ public class CustomProgramDesignerDialog extends CmWindow {
      *  is it enabled.
      */
     private void enableForm(boolean yn) {
+        
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            yn = true;
+        }
+
         if(yn) {
             new ListViewDragSource(_listAll);
             new ListViewDragSource(_listSelected);

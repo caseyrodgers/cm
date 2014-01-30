@@ -224,14 +224,13 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         }, MouseDownEvent.getType());
         CmIdleTimeWatcher.getInstance();
         
-        
-        Window.addWindowClosingHandler(new Window.ClosingHandler() {
-            public void onWindowClosing(Window.ClosingEvent closingEvent) {
-                if(!__isLoggingOut) {
-                    closingEvent.setMessage("You should logout to make sure any changes are saved!");
-                }
-            }
-          });
+//        Window.addWindowClosingHandler(new Window.ClosingHandler() {
+//            public void onWindowClosing(Window.ClosingEvent closingEvent) {
+//                if(!__isLoggingOut) {
+//                    closingEvent.setMessage("You should logout to make sure any changes are saved!");
+//                }
+//            }
+//          });
         Log.info("Catchup Math Mobile Initialized");
     }
     
