@@ -123,6 +123,9 @@ public class CmIdleTimeWatcher {
         if (_baseIndex > _lastIndex) {
             interval = (activeMinutes.length - _baseIndex) + _lastIndex;
         }
+        else if(_baseIndex == _lastIndex) {
+            interval = 1;
+        }
         else {
             interval = _lastIndex - _baseIndex;
         }
