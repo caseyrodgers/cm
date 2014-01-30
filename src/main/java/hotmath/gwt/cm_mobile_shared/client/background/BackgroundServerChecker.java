@@ -20,6 +20,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.allen_sauer.gwt.log.client.Logger;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -161,6 +162,10 @@ public class BackgroundServerChecker {
         setupSleepChecker();
     }
     
+    static private void gwt_log(String message) {
+        Log.info("JSNI: " + message);    
+    }
+    
     static private void gwt_jsWentToSleep(int secs) {
         Log.debug("JS WENT TO SLEEP: " + secs);
         if(__instance != null) {
@@ -177,6 +182,7 @@ public class BackgroundServerChecker {
     }
     
     static native private void setupSleepChecker() /*-{
+        @hotmath.gwt.cm_core.client.CmGwtUtils::gwt_log(Ljava/lang/String;)("Setting up JS Sleep Checker");
         $wnd.sleepCheck = function() {
             $wnd.console.log('JS sleep check');
             var now = new Date().getTime();
@@ -184,6 +190,7 @@ public class BackgroundServerChecker {
             if (diff > 10000) {
                 $wnd.console.log('JS Went To Sleep!: " + took ' + diff + 'ms');
                 @hotmath.gwt.cm_mobile_shared.client.background.BackgroundServerChecker::gwt_jsWentToSleep(I)(diff);
+                @hotmath.gwt.cm_core.client.CmGwtUtils::gwt_log(Ljava/lang/String;)("lastCheck: " + window.lastCheck);
             }
             window.lastCheck = now;
         }

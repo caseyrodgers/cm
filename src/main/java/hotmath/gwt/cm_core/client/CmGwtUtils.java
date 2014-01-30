@@ -333,7 +333,14 @@ public class CmGwtUtils {
         theWhiteboard.updateWhiteboard(realArray);
     }-*/;
     
-    
+
+    /** Called from JSNI to insert into main log
+     * 
+     * @param message
+     */
+    static public void gwt_log(String message) {
+        Log.info("JSNI: " + message);
+    }
     
     
 }
