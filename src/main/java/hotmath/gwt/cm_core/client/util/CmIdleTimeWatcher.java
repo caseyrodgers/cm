@@ -36,6 +36,10 @@ public class CmIdleTimeWatcher {
                 checkIfIdle();
             }
         };
+        
+        // start off active
+        didKeyBoardActivity();
+        
         _timer.schedule(CHECK_IDLE_EVERY);
     }
 
