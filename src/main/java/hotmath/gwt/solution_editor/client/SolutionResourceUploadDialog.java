@@ -3,6 +3,9 @@ package hotmath.gwt.solution_editor.client;
 import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
+import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -19,10 +22,12 @@ public class SolutionResourceUploadDialog extends Window {
 
     String pid;
     Callback callback;
+    private CmList<SolutionResource> resources;
 
-    public SolutionResourceUploadDialog(String pid, Callback callback) {
+    public SolutionResourceUploadDialog(String pid, Callback callback, CmList<SolutionResource> resources) {
         this.pid = pid;
         this.callback = callback;
+        this.resources = resources;
         setSize(500, 150);
         setHeading("Upload Solution Resource");
         add(createUploadForm());
@@ -30,7 +35,7 @@ public class SolutionResourceUploadDialog extends Window {
     }
 
     private LayoutContainer createUploadForm() {
-        FileUploadField fileUpload = new FileUploadField();
+        final FileUploadField fileUpload = new FileUploadField();
         final FormPanel form = new FormPanel();
         form.setEncoding(FormPanel.Encoding.MULTIPART);
         form.setMethod(FormPanel.Method.POST);
@@ -67,14 +72,42 @@ public class SolutionResourceUploadDialog extends Window {
                 new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent ce) {
-                        EventBus.getInstance().fireEvent(
-                                new CmEvent(EventTypes.STATUS_MESSAGE, "Uploading resource ..."));
-                        form.submit();
+                        String fileName = fileUpload.getValue();
+                        String p[] = fileName.split("\\\\");  // try ms first
+                        if(p.length == 1) {
+                            p = fileName.split("/");  // then mac
+                        }
+                        fileName = p[p.length-1];
+                        
+                        boolean doesExist=false;
+                        for(SolutionResource r: resources) {
+                            String file = r.getFile();
+                            String path = r.getUrlPath();
+
+                            if(fileName.equals(file)) {
+                                doesExist = true;
+                                break;
+                            }
+                        }
+                        
+                        boolean confirm=true;
+                        if(doesExist) {
+                            confirm = com.google.gwt.user.client.Window.confirm("This resource already exists, do you want overwrite?");
+                        }
+
+                        if(confirm) {
+                            doSubmit(form);
+                        }
                     }
                 }));
 
         return lc;
 
+    }
+    
+    private void doSubmit(FormPanel form) {
+        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.STATUS_MESSAGE, "Uploading resource ..."));
+        form.submit();
     }
 
     public interface Callback {

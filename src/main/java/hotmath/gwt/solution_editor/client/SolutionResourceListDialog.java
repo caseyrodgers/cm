@@ -104,7 +104,7 @@ public class SolutionResourceListDialog extends Window {
                     public void resourceAdded() {
                         getDataFromServer();
                     }
-                });
+                }, __resources);
             }
         }));
         
@@ -236,6 +236,7 @@ public class SolutionResourceListDialog extends Window {
     
 
     SolutionResourcePanel _selectedResource;
+    protected CmList<SolutionResource> __resources;
     private void showResources(CmList<SolutionResource> resources) {
         
         TabItem tabItem = _tabPanel.getSelectedItem();
@@ -298,6 +299,7 @@ public class SolutionResourceListDialog extends Window {
         GetSolutionResourcesAdminAction action = new GetSolutionResourcesAdminAction(pid, resourceType);
         SolutionEditor.getCmService().execute(action, new AsyncCallback<CmList<SolutionResource>>() {
             public void onSuccess(CmList<SolutionResource> resources) {
+                __resources = resources;
                 SolutionEditor.__status.setText("");
                 showResources(resources);
             }
