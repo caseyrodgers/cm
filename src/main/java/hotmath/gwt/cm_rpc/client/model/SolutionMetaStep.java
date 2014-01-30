@@ -60,16 +60,6 @@ public class SolutionMetaStep implements Response {
         this.figure = figure;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if(obj instanceof SolutionMetaStep) {
-            SolutionMetaStep sms = (SolutionMetaStep)obj;
-            return sms.getHint().equals(getHint()) && sms.getText().equals(getText());
-        }
-        else {
-            return super.equals(obj);
-        }
-    }
 
     @Override
     public String toString() {
