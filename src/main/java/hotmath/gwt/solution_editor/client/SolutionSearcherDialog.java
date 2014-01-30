@@ -37,7 +37,7 @@ import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
-public class SolutionSearcherDialog extends Window {
+public class SolutionSearcherDialog {
     Callback callBack;
     String pid;
     Label _matches = new Label();
@@ -51,9 +51,22 @@ public class SolutionSearcherDialog extends Window {
 
     private SolutionSearcherDialog() {
         pid = Cookies.getCookie("last_pid");
-        setSize(500, 400);
-        addStyleName("solution-searcher-dialog");
-        setHeading("Solution Searcher Dialog");
+    }
+
+    
+    public void showWindow() {
+        if(_window == null) {
+            buildWindow();
+        }
+        _window.setVisible(true);
+    }
+
+    Window _window;
+    private void buildWindow() {
+        _window = new Window();
+        _window.setSize(500, 400);
+        _window.addStyleName("solution-searcher-dialog");
+        _window.setHeading("Solution Searcher Dialog");
 
         TabItem tabItem = new TabItem("Search");
         tabItem.setLayout(new BorderLayout());
@@ -66,7 +79,7 @@ public class SolutionSearcherDialog extends Window {
         HorizontalPanel hp = new HorizontalPanel();
         hp.add(new Label("Include Inactive: "));
         hp.add(_includeInActive);
-        getButtonBar().add(hp);        
+        _window.getButtonBar().add(hp);        
         fPanel.getButtonBar().add(hp);
         
         fPanel.addButton(new Button("Search", new SelectionListener<ButtonEvent>() {
@@ -119,7 +132,7 @@ public class SolutionSearcherDialog extends Window {
 
         
         
-        addButton(new Button("Select", new SelectionListener<ButtonEvent>() {
+        _window.addButton(new Button("Select", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (_tabPanel.getSelectedItem().getText().equals("Recent")) {
@@ -130,19 +143,15 @@ public class SolutionSearcherDialog extends Window {
             }
         }));
 
-        addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
+        _window.addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                hide();
+                _window.hide();
             }
         }));
         
-        
-        
-        
-        
 
-        setLayout(new FitLayout());
+        _window.setLayout(new FitLayout());
         _tabPanel.add(tabItem);
 
         tabItem = new TabItem("Recent");
@@ -152,7 +161,7 @@ public class SolutionSearcherDialog extends Window {
 
         _tabPanel.add(tabItem);
 
-        add(_tabPanel);
+        _window.add(_tabPanel);
 
         _tabPanel.addListener(Events.Select, new Listener<BaseEvent>() {
             @Override
@@ -162,10 +171,7 @@ public class SolutionSearcherDialog extends Window {
                 }
             }
         });
-
-        setVisible(true);
     }
-
     private void setCallback(Callback callBack) {
         this.callBack = callBack;
     }
@@ -173,7 +179,7 @@ public class SolutionSearcherDialog extends Window {
     ListView<SolutionSearchModel> _listResults = new ListView<SolutionSearchModel>();
     public void doSelect(String pid) {
         this.callBack.solutionSelected(pid);
-        this.hide();
+        this._window.hide();
     }
 
     private void doSearch() {
@@ -206,7 +212,7 @@ public class SolutionSearcherDialog extends Window {
         _listResults.getStore().removeAll();
         _listResults.getStore().add(models);
 
-        layout();
+        _window.layout();
     }
 
     static public native String getTemplate() /*-{ 
@@ -223,13 +229,33 @@ public class SolutionSearcherDialog extends Window {
 
     static SolutionSearcherDialog __searcherDialog;
 
-    static public void showSharedDialog(Callback callback) {
+    static public SolutionSearcherDialog getInstance(Callback callback) {
         if (__searcherDialog == null) {
             __searcherDialog = new SolutionSearcherDialog();
         }
-        __searcherDialog.setCallback(callback);
-        __searcherDialog.setVisible(true);
+        if(callback != null) {
+            __searcherDialog.setCallback(callback);
+        }
+        
+        return __searcherDialog;
     }
+    
+    
+    
+
+    static {
+        EventBus.getInstance().addEventListener(new CmEventListener() {
+            @Override
+            public void handleEvent(CmEvent event) {
+                if (event.getEventType().equals(EventTypes.SOLUTION_LOAD_COMPLETE)) {
+                    RecentPidStack pidStack = new RecentPidStack();
+                    pidStack.addPid(SolutionEditor.__pidToLoad);
+                    pidStack.save();
+                }
+            }
+        });
+    }    
+    
 }
 
 class RecentTab extends LayoutContainer {
@@ -278,18 +304,6 @@ class RecentTab extends LayoutContainer {
         return models;
     }
 
-    static {
-        EventBus.getInstance().addEventListener(new CmEventListener() {
-            @Override
-            public void handleEvent(CmEvent event) {
-                if (event.getEventType().equals(EventTypes.SOLUTION_LOAD_COMPLETE)) {
-                    RecentPidStack pidStack = new RecentPidStack();
-                    pidStack.addPid(SolutionEditor.__pidToLoad);
-                    pidStack.save();
-                }
-            }
-        });
-    }
 }
 
 /**

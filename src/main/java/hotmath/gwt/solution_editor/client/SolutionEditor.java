@@ -95,6 +95,9 @@ public class SolutionEditor implements EntryPoint {
                 }
             }
         });
+        
+        SolutionSearcherDialog.getInstance(null);
+        
         RootPanel.get("main-content").add(mainPort);
         if(__pidToLoad != null) {
             _stepEditorViewer.loadSolution(__pidToLoad.split("$")[0]);  // strip off any context reference
@@ -249,12 +252,12 @@ public class SolutionEditor implements EntryPoint {
     }
 
     private void loadSolutionIntoEditor() {
-        SolutionSearcherDialog.showSharedDialog(new Callback() {
+        SolutionSearcherDialog.getInstance(new Callback() {
             @Override
             public void solutionSelected(String pid) {
                 _stepEditorViewer.loadSolution(pid);
             }
-        });
+        }).showWindow();
     }
 
     private void showAllResources() {
