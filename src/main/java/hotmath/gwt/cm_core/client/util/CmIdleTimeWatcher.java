@@ -21,7 +21,9 @@ public class CmIdleTimeWatcher {
     }
 
     static final int MAX_IDLE_TIME =  1000 * 60 * 10; // 10 minutes
-    static final int CHECK_IDLE_EVERY = 30000;
+    static final int CHECK_IDLE_EVERY = 5000; // 30000;
+    final static int MAX_BUSY_TIME = 15; // minutes
+
 
     long _lastKeyBoardActivity;
     Timer _timer;
@@ -97,22 +99,24 @@ public class CmIdleTimeWatcher {
         
         Log.debug("CmIdleTimeWatcher", "activity occurred at " + min);
     }
-
+    
+    
     /**
      * Determine how many minutes the user has been active.
      * 
      * This will be the interval between the first and last activity minute.
      * 
      * 
+     * Never return any value > MAX_BUSY_TIME
      * 
      * 
      * @return
      */
     public int getActiveMinutes(boolean doSetToIdle) {
-        if (_baseIndex == NO_BASE_INDEX) {
+        if (_baseIndex == NO_BASE_INDEX || _lastIndex == NO_BASE_INDEX) {
             return 0;
         }
-
+        
         /**
          * now determine interval distance
          * 
@@ -134,10 +138,10 @@ public class CmIdleTimeWatcher {
             setToIdle();
         }
         
-        return interval;
+        return (interval<MAX_BUSY_TIME)?interval:MAX_IDLE_TIME;
     }
 
-    private void setToIdle() {
+    public void setToIdle() {
 
         Log.debug("CmIdleTimeWatcher", "set to idle");
 
@@ -145,11 +149,19 @@ public class CmIdleTimeWatcher {
             activeMinutes[i] = false;
         }
         _baseIndex = _lastIndex;
+        _lastIndex = NO_BASE_INDEX;
         idle = true;
     }
 
     public boolean isIdle() {
         return idle;
+    }
+    
+    public void reset() {
+        _baseIndex = NO_BASE_INDEX;
+        _lastIndex = NO_BASE_INDEX;
+        
+        activeMinutes = new boolean[60];
     }
 
 }

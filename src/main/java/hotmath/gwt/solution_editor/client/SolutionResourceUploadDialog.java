@@ -82,8 +82,6 @@ public class SolutionResourceUploadDialog extends Window {
                         boolean doesExist=false;
                         for(SolutionResource r: resources) {
                             String file = r.getFile();
-                            String path = r.getUrlPath();
-
                             if(fileName.equals(file)) {
                                 doesExist = true;
                                 break;

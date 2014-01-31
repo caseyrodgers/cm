@@ -39,9 +39,9 @@ public class CustomProblemPropertyEditor extends GWindow {
         
         this.problem = problem;
         this.callback = callback;
-        
-        setPixelSize(400, 300);
-        setHeadingText("Problem Properties");
+        setResizable(false);
+        setPixelSize(400, 240);
+        setHeadingText("Create New Solution");
         
         
         _teacherNameFromCookie = Cookies.getCookie("teacher_name");
@@ -128,7 +128,7 @@ public class CustomProblemPropertyEditor extends GWindow {
 
         VerticalLayoutContainer form = new VerticalLayoutContainer();
         form.add(new MyFieldLabel(_teacherName, "Teacher", 100));
-        form.add(new MyFieldLabel(_comments, "Comment", 100, 200));
+        form.add(new MyFieldLabel(_comments, "Comment", 100, 270));
         //form.add(new MyFieldLabel(_problemNumber, "Number", 100, 40));
         
         

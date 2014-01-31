@@ -165,7 +165,7 @@ public class SharedData {
             SharedData.setFlowAction(null);
             
             
-            BackgroundServerChecker.stopInstance();
+            BackgroundServerChecker.stopInstanceTimer();
         }
         else {
             SharedData.setMobileUser(result);

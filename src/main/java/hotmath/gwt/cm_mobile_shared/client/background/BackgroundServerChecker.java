@@ -20,7 +20,6 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.allen_sauer.gwt.log.client.Logger;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -167,11 +166,14 @@ public class BackgroundServerChecker {
     }
     
     static private void gwt_jsWentToSleep(int secs) {
+        
         Log.debug("JS WENT TO SLEEP: " + secs);
         if(__instance != null) {
             if(__instance._timer!=null) {
+                stopInstanceTimer(); 
                 Log.debug("Canceling timer event");
-                stopInstance();
+                __instance.checkForUpdate(false, null);
+                CmIdleTimeWatcher.getInstance().reset();
             }
             
             /** force any current changes to be flushed
@@ -199,7 +201,7 @@ public class BackgroundServerChecker {
     }-*/;
 
 
-    public static void stopInstance() {
+    public static void stopInstanceTimer() {
         if(__instance != null) {
             if(__instance._timer != null) {
                 __instance._timer.cancel();

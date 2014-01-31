@@ -120,25 +120,43 @@ public class ProblemDesigner extends Composite {
             new ProblemDesignerEditorWidget(_solutionInfo,widgetJson, callback);
         }
         else if(partType.equals("hint")) {
-            int which = Integer.parseInt(data.split("-")[1]);
-            if(which > 0) {
-                which = (which / 2);
-            }
+            int which = Integer.parseInt(data);
             new ProblemDesignerEditorHintStep(_solutionInfo,_solutionMeta, which, callback);
         }
         else if(partType.equals("hint-remove")) {
-            int which = Integer.parseInt(data.split("-")[1]);
-            if(which > 0) {
-                which = (which / 2);
-            }
-            
+            int which = Integer.parseInt(data);
             removeSolutionHintStep(which);
         }
+        else if(partType.equals("hint-moveDown")) {
+            int which = Integer.parseInt(data);
+            moveSolutionHintStep(which, which+1);
+        }
+        else if(partType.equals("hint-moveUp")) {
+            int which = Integer.parseInt(data);
+            moveSolutionHintStep(which, which-1);
+        }
+        
         else {
             Window.alert("UNKNOWN EDIT GWT PART: " + partType + " data: " + data);
         }
     }
     
+    private void moveSolutionHintStep(int which, int toWhere) {
+        
+        if(toWhere < 0 || toWhere > _solutionMeta.getSteps().size()-1) {
+            CmMessageBox.showAlert("Cannot move hint/step");
+        }
+        else {
+            SolutionMetaStep hintToMove = _solutionMeta.getSteps().get(which);
+            if(hintToMove != null) {
+                _solutionMeta.getSteps().remove(which);
+                _solutionMeta.getSteps().add(toWhere,  hintToMove);
+                
+                saveSolutionToServer();
+            }
+        }
+    }
+
     private void removeSolutionHintStep(final int which) {
         SolutionMetaStep hintToRemove = _solutionMeta.getSteps().get(which);
         if(hintToRemove != null) {
@@ -154,10 +172,15 @@ public class ProblemDesigner extends Composite {
     }
 
     protected void doRemoveHintStep(final int which) {
+        _solutionMeta.getSteps().remove(which);
+        saveSolutionToServer();
+    }
+    
+    
+    private void saveSolutionToServer() {
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
-                _solutionMeta.getSteps().remove(which);
                 SaveCustomProblemAction action = new SaveCustomProblemAction(_solutionInfo.getPid(), SaveType.HINTSTEP, _solutionMeta);
                 setAction(action);
                 CmShared.getCmService().execute(action,  this);
@@ -178,7 +201,7 @@ public class ProblemDesigner extends Composite {
        var that = this;
        
        $wnd.gwt_getHintNumber = function(o) {
-          return o.parentElement.getAttribute("id");
+          return o.parentElement.getAttribute("hint_step_num");
        }
        
        $wnd.gwt_getWidgetJson = function(o) {
@@ -197,7 +220,13 @@ public class ProblemDesigner extends Composite {
           $wnd.gwt_editPart('widget', whiteboardId);
        });
        
-       $wnd.$('.hint-step').prepend("<button onclick='window.gwt_editPart(\"hint\",window.gwt_getHintNumber(this))'>Click to Edit</button><button onclick='window.gwt_editPart(\"hint-remove\",window.gwt_getHintNumber(this))'>Click to Remove</button>").dblclick(function() {
+       
+       var clickDef = "<button onclick='window.gwt_editPart(\"hint\",window.gwt_getHintNumber(this))'>Click to Edit</button>" +
+                      "<button onclick='window.gwt_editPart(\"hint-remove\",window.gwt_getHintNumber(this))'>Click to Remove</button>" +
+                      "<button onclick='window.gwt_editPart(\"hint-moveUp\",window.gwt_getHintNumber(this))'>^</button>" +
+                      "<button onclick='window.gwt_editPart(\"hint-moveDown\",window.gwt_getHintNumber(this))'>v</button>";
+                      
+       $wnd.$('.hint-step').prepend(clickDef).dblclick(function() {
           var stepId = getStepId(this);
           $wnd.gwt_editPart('hint', stepId);
        });
@@ -235,8 +264,6 @@ public class ProblemDesigner extends Composite {
                 if($wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue) {
                     $wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue();
                 }
-                
-                $wnd._setupTutorDragAndDrop();
             }-*/;
         });
     }

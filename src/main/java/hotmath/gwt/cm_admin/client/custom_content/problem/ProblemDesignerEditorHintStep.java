@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction.SaveType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
@@ -16,9 +17,12 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import com.allen_sauer.gwt.log.client.Log;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 
 public class ProblemDesignerEditorHintStep extends GWindow {
@@ -85,11 +89,13 @@ public class ProblemDesignerEditorHintStep extends GWindow {
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
+                CmBusyManager.setBusy(true);
                 SaveCustomProblemAction action = new SaveCustomProblemAction(_solution.getPid(), SaveType.HINTSTEP, _solutionMeta);
                 setAction(action);
                 CmShared.getCmService().execute(action,  this);
             }
             public void oncapture(RpcData value) {
+                CmBusyManager.setBusy(false);
                 Log.info("Hint saved");
                 callback.isComplete();
                 hide();
@@ -101,7 +107,7 @@ public class ProblemDesignerEditorHintStep extends GWindow {
 
     private TextArea _hintField = new TextArea();
     private TextArea _stepField = new TextArea();
-    private void buildUi() {
+    private void buildUi2() {
        VerticalLayoutContainer vert = new VerticalLayoutContainer();
        _hintField.setHeight(100);
        _stepField.setHeight(100);
@@ -109,8 +115,8 @@ public class ProblemDesignerEditorHintStep extends GWindow {
        _hintField.setValue(this._hintStep.getHint());
        _stepField.setValue(this._hintStep.getText());
        
-       vert.add(new MyFieldLabel(_hintField, "Hint Text", 100, 350));
-       vert.add(new MyFieldLabel(_stepField, "Step Text", 100, 350));
+       vert.add(new FieldLabel(_hintField, "Hint Text"));
+       vert.add(new FieldLabel(_stepField, "Step Text"));
        
        FramedPanel fp = new FramedPanel();
        fp.setHeaderVisible(false);
@@ -119,6 +125,27 @@ public class ProblemDesignerEditorHintStep extends GWindow {
        
        setWidget(fp);
     }
+    
+    
+    private void buildUi() {
+        
+        BorderLayoutContainer bC = new BorderLayoutContainer();
+        _hintField.setValue(this._hintStep.getHint());
+        _stepField.setValue(this._hintStep.getText());
+        
+        BorderLayoutData bD = new BorderLayoutData(.30);
+        bD.setSplit(true);
+        bC.setNorthWidget(new MyFieldLabel(_hintField, "Hint Text", 100), bD);
+        bC.setCenterWidget(new MyFieldLabel(_stepField, "Step Text", 100));
+        
+        FramedPanel fp = new FramedPanel();
+        fp.setHeaderVisible(false);
+        
+        fp.setWidget(bC);
+        
+        setWidget(fp);
+     }
+
 
 
 
