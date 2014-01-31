@@ -455,7 +455,9 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         
         toolbar.add(createWebLinksButton());
 
-        toolbar.add(createManageCustomProblemsButton());
+        if(CmShared.getQueryParameter("debug") != null) {
+            toolbar.add(createManageCustomProblemsButton());
+        }
 
         toolbar.add(new FillToolItem());
 
