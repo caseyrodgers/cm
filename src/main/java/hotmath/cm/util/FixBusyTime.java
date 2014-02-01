@@ -17,11 +17,12 @@ public class FixBusyTime {
     PreparedStatement ps = null;
     PreparedStatement psUids = null;
     PreparedStatement psUpdate = null;
+    int uidCount = 0;
 
     public FixBusyTime() throws Exception {
-    	String sql0 = "select distinct uid from CM_USER_BUSY_TMP";
-        String sql1 = "select * from CM_USER_BUSY_TMP where uid = ? order by busy_time asc";
-        String sql2 = "update CM_USER_BUSY_TMP set active_minutes = ? where id = ?";
+    	String sql0 = "select distinct uid from CM_USER_BUSY";
+        String sql1 = "select * from CM_USER_BUSY where uid = ? order by busy_time asc";
+        String sql2 = "update CM_USER_BUSY set active_minutes = ? where id = ?";
 
         Connection conn = null;
         ResultSet rsUids = null;
@@ -82,8 +83,8 @@ public class FixBusyTime {
             SqlUtilities.releaseResources(rs, null, null);
     	}
     	if (count > 0)
-        	System.out.println(String.format("UID: %d, count: %d, totalAdjustment: %d", uid, count, totalAdjustment));
-		
+        	System.out.println(String.format("UID[%d]: %d, count: %d, totalAdjustment: %d", uidCount, uid, count, totalAdjustment));	
+    	uidCount++;
 	}
 
 	static public void main(String as[]) {
