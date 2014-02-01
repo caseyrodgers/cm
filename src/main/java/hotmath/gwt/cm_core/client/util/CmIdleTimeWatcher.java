@@ -138,7 +138,7 @@ public class CmIdleTimeWatcher {
             setToIdle();
         }
         
-        return (interval<MAX_BUSY_TIME)?interval:MAX_IDLE_TIME;
+        return (interval<MAX_BUSY_TIME)?interval:MAX_BUSY_TIME;
     }
 
     public void setToIdle() {
