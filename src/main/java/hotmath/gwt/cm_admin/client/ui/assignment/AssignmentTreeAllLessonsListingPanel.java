@@ -276,8 +276,10 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
             children.add(makeLesson(l));  // new LessonDto(autoId++,0,"All",l.getLessonName()));
         }
         
-        LessonDto customNodes = new LessonDto(++BaseDto.autoId, 0, "Custom Problems", "Custom Problems",null);
-        children.add(customNodes);
+        if(CmShared.getQueryParameter("debug") != null) {
+            LessonDto customNodes = new LessonDto(++BaseDto.autoId, 0, "Custom Problems", "Custom Problems",null);
+            children.add(customNodes);
+        }
         
         
         _root.setChildren(children);
