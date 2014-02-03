@@ -50,7 +50,7 @@ public class FixupPrematureTestAdvanced {
             List<Integer[]> list = new ArrayList<Integer[]>();
             
             
-            SimpleDateFormat format = new SimpleDateFormat("MMdd");
+            SimpleDateFormat format = new SimpleDateFormat("yyyMMdd");
             
             while(rs.next()) {
                 testId = rs.getInt("test_id");
