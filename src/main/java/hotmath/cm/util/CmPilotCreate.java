@@ -406,15 +406,15 @@ public class CmPilotCreate {
 	            		sendTo = new String[3];
 	            		sendTo[0] = salesPerson.getEmail();
 	            		sendTo[1] = "cgrant.hotmath@gmail.com";
-	            		sendTo[2] = "thamilton@hotmath.com";
+	            		sendTo[2] = "thamilton@catchupmath.com";
 	            	}
 	            	else {
 	            		sendTo = new String[2];
-	            		sendTo[0] = "lincoln@hotmath.com";
+	            		sendTo[0] = "lincoln@catchupmath.com";
 	            		sendTo[1] = "cgrant.hotmath@gmail.com";
 	            	}
 	                SbMailManager.getInstance().
-	                    sendMessage("Catchup Math Pilot Request", txt, sendTo, "registration@hotmath.com", "text/plain");
+	                    sendMessage("Catchup Math Pilot Request", txt, sendTo, "registration@catchupmath.com", "text/plain");
 	            } catch (Exception e) {
 	            	logger.error(String.format("*** problem sending pilot request email: %s", txt), e);
 	            }
