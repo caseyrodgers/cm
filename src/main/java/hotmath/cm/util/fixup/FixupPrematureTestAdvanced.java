@@ -6,6 +6,7 @@ import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,10 @@ public class FixupPrematureTestAdvanced {
             int unanswered = 0;
             
             List<Integer[]> list = new ArrayList<Integer[]>();
+            
+            
+            SimpleDateFormat format = new SimpleDateFormat("MMdd");
+            
             while(rs.next()) {
                 testId = rs.getInt("test_id");
                 lastRunId = rs.getInt("run_id");
@@ -57,7 +62,7 @@ public class FixupPrematureTestAdvanced {
                 unanswered = rs.getInt("not_answered");
                 test_question_count = rs.getInt("test_question_count");
                 
-                Integer vals[] = {answered_correct, answered_correct, unanswered, testId, lastRunId, segment, test_question_count};
+                Integer vals[] = {answered_correct, answered_correct, unanswered, testId, lastRunId, segment, test_question_count, Integer.parseInt(format.format(rs.getDate("run_time")))};
                 list.add(vals);
                 
                 
