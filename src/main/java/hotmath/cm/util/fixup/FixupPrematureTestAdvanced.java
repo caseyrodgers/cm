@@ -83,7 +83,7 @@ public class FixupPrematureTestAdvanced {
                     int incor = vals[1];
                     int una = vals[2];
                     int cntProbs = vals[6];
-                    int date = vals[7]
+                    int date = vals[7];
                     
                     /** if moved forward
                      * 
