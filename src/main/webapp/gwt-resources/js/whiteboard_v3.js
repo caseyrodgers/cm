@@ -19,6 +19,7 @@ if (typeof console == "undefined") {
 var console_log = function (txt) {
     console.log(txt)
 }
+var transMode = 'move'
 var Whiteboard = function (cont, isStatic) {
     var wb = this;
     var contDiv = cont;
@@ -51,7 +52,9 @@ var Whiteboard = function (cont, isStatic) {
     var enable_calc = true;
     var isReadOnly = isStatic ? isStatic : false;
     var lastGesture = null;
+
     //
+    var clickR = 0;
     var selectionMode = false;
     var selectionDragMode = false;
     var graphicDataStore = [];
@@ -83,6 +86,19 @@ var Whiteboard = function (cont, isStatic) {
     var mSelRect = null;
     var hitW = IS_TOUCH_ONLY ? 10 : 5;
     var hitH = IS_TOUCH_ONLY ? 10 : 5;
+    var loadedImgTemps = {};
+    var loadedTemps = 0;
+    var totalTempsloaded = 0;
+    //
+    var opts = {
+        "templates": [{
+            "type": "img",
+            "path": "./",
+            "icon": "tn-",
+            "list": ["nL.png", "gr2D.png"]
+        }]
+    }
+    wb.options = opts;
     //
     var toolArr = [{
         name: 'button_text',
@@ -149,6 +165,11 @@ var Whiteboard = function (cont, isStatic) {
         title: 'Navigator',
         classes: 'big_tool_button button_nav',
         text: ""
+    }, {
+        name: 'button_temp',
+        title: 'Templates',
+        classes: 'big_tool_button button_temp',
+        text: "Temp"
     }]
 
         function getNextObjectID() {
@@ -196,24 +217,28 @@ var Whiteboard = function (cont, isStatic) {
             var vScroll = buildScrollBar('v').appendTo(wbc);
             var hScroll = buildScrollBar('h').appendTo(wbc);
             var toolMenu = buildToolMenu(toolArr).appendTo(wbc);
+            var tempMenu = buildTempMenu().appendTo(wbc);
             $get_jqElement("#toggleMenu").on("click", function (e) {
+                hideTemplates()
                 positionToolMenu('t', e.originalEvent);
                 $get_jqElement("#wb_menu").toggle();
             });
             $get_jqElement("#toggleMenu").on("mouseover", function (e) {
+                hideTemplates()
                 positionToolMenu('t', e.originalEvent);
                 $get_jqElement("#wb_menu").show()
             });
             $get_jqElement("#wb_menu").on("mouseleave", function (e) {
                 $get_jqElement("#wb_menu").hide()
             });
-             $get_jqElement('#canvas').on("contextmenu", function (e) {
-			if(!isReadOnly){
-                e.preventDefault();
-                positionToolMenu('mouse', e.originalEvent);
-                $get_jqElement("#wb_menu").show();
-                return false;
-				}
+            $get_jqElement('#canvas').on("contextmenu", function (e) {
+                hideTemplates()
+                if (!isReadOnly) {
+                    e.preventDefault();
+                    positionToolMenu('mouse', e.originalEvent);
+                    $get_jqElement("#wb_menu").show();
+                    return false;
+                }
             });
 
         }
@@ -248,11 +273,11 @@ var Whiteboard = function (cont, isStatic) {
                 var off = getoffset();
                 var dx, dy
                 if (event.pageX != undefined) {
-                    dx = event.pageX-off.left;
-                    dy = event.pageY-off.top+ $get_jqElement("#tools").outerHeight();
+                    dx = event.pageX - off.left;
+                    dy = event.pageY - off.top + $get_jqElement("#tools").outerHeight();
                 } else {
-                    dx = event.clientX-off.left;
-                    dy = event.clientY-off.top+ $get_jqElement("#tools").outerHeight();
+                    dx = event.clientX - off.left;
+                    dy = event.clientY - off.top + $get_jqElement("#tools").outerHeight();
                 }
                 var wlim = $get_jqElement("#drawsection").width();
                 var hlim = $get_jqElement("#drawsection").height() + $get_jqElement("#tools").outerHeight();
@@ -363,14 +388,131 @@ var Whiteboard = function (cont, isStatic) {
         }
         //
 
-        function drawBoundRect(obj) {
+        function drawBoundRect(obj, boo) {
             var dx = x - clickX
             var dy = y - clickY
             context.save();
             context.lineWidth = 4;
             context.strokeStyle = "rgba(0, 0, 255, 0.5)";
             context.translate(scrollPosition.x, scrollPosition.y);
-            context.strokeRect(selectedObj.brect.xmin + obj.tx, selectedObj.brect.ymin + obj.ty, obj.brect.w, obj.brect.h)
+            var isMoved = isObjTransformed(selectedObj.uid, 'move');
+            var isScaled = isObjTransformed(selectedObj.uid, 'scale');
+            var isRotated = isObjTransformed(selectedObj.uid, 'rotate');
+            var x0, y0, w0, h0, sx, sy;
+            if (transMode == 'move') {
+                if (boo) {
+                    obj = isMoved ? isMoved : {
+                        tx: 0,
+                        ty: 0
+                    }
+                }
+                x0 = selectedObj.brect.xmin + obj.tx;
+                y0 = selectedObj.brect.ymin + obj.ty;
+                w0 = selectedObj.brect.w;
+                h0 = selectedObj.brect.h;
+                if (isScaled) {
+
+                    sx = isScaled.tx;
+                    sy = isScaled.ty;
+                    if (isRotated) {
+                        /*var nr0=getScaleRatio(sx,sy,isRotated.tr)
+			sx=nr0.w
+			sy=nr0.h*/
+                    }
+                    x0 = x0 - sx
+                    y0 = y0 - sy
+                    w0 = selectedObj.brect.w + (sx * 2)
+                    h0 = selectedObj.brect.h + (sy * 2)
+                }
+                if (isRotated) {
+                    x0 = x0 ? x0 : selectedObj.brect.xmin
+                    y0 = y0 ? y0 : selectedObj.brect.ymin
+                    w0 = w0 ? w0 : selectedObj.brect.w
+                    h0 = h0 ? h0 : selectedObj.brect.h
+                    var cx = x0 + (w0 / 2) - scrollPosition.x;
+                    var cy = y0 + (h0 / 2) - scrollPosition.y;
+                    context.translate(cx, cy);
+                    context.rotate(isRotated.tr);
+                    context.translate(-cx, -cy);
+                }
+                context.strokeRect(x0, y0, w0, h0)
+            } else if (transMode == 'scale') {
+                if (boo) {
+                    obj = isScaled ? isScaled : {
+                        tx: 0,
+                        ty: 0
+                    }
+                }
+                sx = obj.tx;
+                sy = obj.ty;
+                if (isRotated) {
+                    /*var nr0=getScaleRatio(sx,sy,isRotated.tr)
+			sx=nr0.w
+			sy=nr0.h*/
+                }
+                x0 = selectedObj.brect.xmin - sx;
+                y0 = selectedObj.brect.ymin - sy;
+
+
+                w0 = selectedObj.brect.w + (sx * 2);
+                h0 = selectedObj.brect.h + (sy * 2);
+                if (isMoved) {
+                    x0 = x0 + isMoved.tx
+                    y0 = y0 + isMoved.ty
+                    //w0=obj.brect.w+(isScaled.tx*2)
+                    //h0=obj.brect.h+(isScaled.ty*2)
+                }
+                if (isRotated) {
+                    x0 = x0 ? x0 : selectedObj.brect.xmin
+                    y0 = y0 ? y0 : selectedObj.brect.ymin
+                    w0 = w0 ? w0 : selectedObj.brect.w
+                    h0 = h0 ? h0 : selectedObj.brect.h
+                    var cx = x0 + (w0 / 2) - scrollPosition.x;
+                    var cy = y0 + (h0 / 2) - scrollPosition.y;
+                    context.translate(cx, cy);
+                    context.rotate(isRotated.tr);
+                    context.translate(-cx, -cy);
+                }
+                context.strokeRect(x0, y0, w0, h0)
+            } else if (transMode == 'rotate') {
+                if (boo) {
+                    obj = isRotated ? isRotated : {
+                        tx: 0,
+                        tr: 0
+                    }
+                }
+                console.log("ROTATION:::" + obj.tr);
+                x0 = selectedObj.brect.xmin;
+                y0 = selectedObj.brect.ymin;
+                w0 = selectedObj.brect.w;
+                h0 = selectedObj.brect.h;
+                if (isMoved) {
+                    x0 = x0 + isMoved.tx
+                    y0 = y0 + isMoved.ty
+                    //w0=obj.brect.w+(isScaled.tx*2)
+                    //h0=obj.brect.h+(isScaled.ty*2)
+                }
+                if (isScaled) {
+                    x0 = x0 - isScaled.tx
+                    y0 = y0 - isScaled.ty
+                    w0 = selectedObj.brect.w + (isScaled.tx * 2)
+                    h0 = selectedObj.brect.h + (isScaled.ty * 2)
+                }
+                x0 = x0 ? x0 : selectedObj.brect.xmin
+                y0 = y0 ? y0 : selectedObj.brect.ymin
+                w0 = w0 ? w0 : selectedObj.brect.w
+                h0 = h0 ? h0 : selectedObj.brect.h
+                var cx = x0 + (w0 / 2) - scrollPosition.x;
+                var cy = y0 + (h0 / 2) - scrollPosition.y;
+                context.translate(cx, cy);
+                context.rotate(obj.tr);
+                context.translate(-cx, -cy);
+                context.strokeRect(x0, y0, w0, h0)
+            }
+            context.fillStyle = 'blue';
+            context.fillRect(x0 + w0 - 10, y0 + h0 - 10, 20, 20);
+            context.arc(x0 + w0, y0, 10, 0, 2 * Math.PI, false);
+            context.fill()
             context.restore()
         }
 
@@ -403,6 +545,73 @@ var Whiteboard = function (cont, isStatic) {
             reRenderCanvas();
         }
 
+        function getScaleRatio(w, h, radians, boo) {
+            var a = (Math.cos(radians)),
+                b = (Math.sin(radians));
+            if (boo) {
+                a = Math.abs(a)
+                b = Math.abs(b)
+            }
+            console.log("scaleRatio:" + w + ":" + h + "||" + a + ":" + b)
+            return {
+                h: -(h * a + w * b),
+                w: h * b + w * a
+            }
+        }
+
+        function getRPoint(cx, cy, px, py, rad) {
+
+            var x, y, ds, dx, dy;
+            dx = px - cx;
+            dy = py - cy;
+            ds = Math.sqrt(dx * dx + dy * dy);
+            rad += Math.atan2(dy, dx);
+            x = cx + ds * Math.cos(rad);
+            y = cy + ds * Math.sin(rad);
+
+            return {
+                x: x,
+                y: y
+            };
+        }
+
+        function getObjCenter(obj) {
+            var rect = [obj.xmin, obj.ymin, obj.w, obj.h];
+            return {
+                x: rect[0] + rect[2] / 2,
+                y: rect[1] + rect[3] / 2
+            }
+        }
+
+        function getBoundingBox(obj, tr, _cx, _cy) {
+            var c1, c2, c3, c4,
+                bx1, by1, bx2, by2;
+
+            var rect = [obj.xmin, obj.ymin, obj.w, obj.h];
+            var rad = tr;
+            var cx = _cx ? _cx : rect[0] + rect[2] / 2;
+            var cy = _cy ? _cy : rect[1] + rect[3] / 2;
+            c1 = getRPoint(cx, cy, rect[0], rect[1], rad);
+            c2 = getRPoint(cx, cy, rect[0] + rect[2], rect[1], rad);
+            c3 = getRPoint(cx, cy, rect[0] + rect[2], rect[1] + rect[3], rad);
+            c4 = getRPoint(cx, cy, rect[0], rect[1] + rect[3], rad);
+            bx1 = Math.min(c1.x, c2.x, c3.x, c4.x);
+            by1 = Math.min(c1.y, c2.y, c3.y, c4.y);
+            bx2 = Math.max(c1.x, c2.x, c3.x, c4.x);
+            by2 = Math.max(c1.y, c2.y, c3.y, c4.y);
+            var bounds = [bx1, by1, bx2 - bx1, by2 - by1];
+            return {
+                x: bx1,
+                y: by1,
+                xmin: bx1,
+                ymin: by1,
+                xmax: bx2,
+                ymax: by2,
+                w: bounds[2],
+                h: bounds[3]
+            }
+        }
+
         function drawTempObj(selectedObj, dx, dy) {
             //console.log("DRAW_TEMP_OBJ")
             //console.log(selectedObj)
@@ -420,7 +629,46 @@ var Whiteboard = function (cont, isStatic) {
             }
         }
 
+        function applyAllTrans(obj) {
+            var isMoved = isObjTransformed(selectedObj.uid, 'move');
+            var isScaled = isObjTransformed(selectedObj.uid, 'scale');
+            var isRotated = isObjTransformed(selectedObj.uid, 'rotate');
+            if (isMoved) {
+                translateObj(obj, isMoved.tx, isMoved.ty)
+            }
+            if (isScaled) {
+                scaleObj(obj, isScaled.tx, isScaled.ty)
+            }
+            if (isRotated) {
+                rotateObj(obj, isRotated.trect.rot)
+            }
+        }
+
         function transformObj(obj, dx, dy, multi) {
+
+            // var isMoved =  isObjTransformed(selectedObj.uid, 'move');		
+            // var isScaled =  isObjTransformed(selectedObj.uid, 'scale');
+            // var isRotated =  isObjTransformed(selectedObj.uid, 'rotate')
+            if (transMode == 'move') {
+
+                translateObj(obj, dx, dy, multi)
+
+            }
+            if (transMode == 'scale') {
+
+                scaleObj(obj, dx, dy, multi)
+
+            }
+            if (transMode == 'rotate') {
+
+                rotateObj(obj, dx, dy, multi)
+
+            }
+            return obj
+
+        }
+
+        function translateObj(obj, dx, dy, multi) {
             var da = obj.dataArr
             var _selectedObj = multi ? multi : selectedObj
             var sa = _selectedObj.dataArr[0]
@@ -441,17 +689,130 @@ var Whiteboard = function (cont, isStatic) {
 
         }
 
-        function transformRect(obj, dx, dy) {
-            for (var m in obj) {
-                if (m == 'x' || m == 'xmin' || m == 'xmax') {
-                    obj[m] = obj[m] + dx
+        function scaleObj(obj, dx, dy, multi) {
+            var da = obj.dataArr
+            var _selectedObj = multi ? multi : selectedObj
+            var sa = _selectedObj.dataArr[0]
+            var sobj = da[0]
+            sobj.x = sa.x + dx
+            sobj.y = sa.y + dy
+            obj.dataArr[0] = sobj;
+            da = _selectedObj.brect;
+            for (var m in da) {
+                if (m == 'x' || m == 'xmin') {
+                    obj.brect[m] = _selectedObj.brect[m] - dx
                 }
-                if (m == 'y' || m == 'ymin' || m == 'ymax') {
-                    obj[m] = obj[m] + dy
+                if (m == 'y' || m == 'ymin') {
+                    obj.brect[m] = _selectedObj.brect[m] - dy
+                }
+                if (m == 'xmax') {
+                    obj.brect[m] = _selectedObj.brect[m] + dx
+                }
+                if (m == 'ymax') {
+                    obj.brect[m] = _selectedObj.brect[m] + dy
+                }
+                if (m == 'w') {
+                    obj.brect[m] = _selectedObj.brect[m] + (dx * 2)
+                }
+                if (m == 'h') {
+                    obj.brect[m] = _selectedObj.brect[m] + (dy * 2)
                 }
             }
             return obj
 
+        }
+
+        function rotateObj(obj, rot) {
+            obj.tr = obj.tr ? obj.tr + rot : rot;
+            obj.brect.tr = obj.tr;
+            return obj
+        }
+
+        function transformRect(obj, dx, dy, mode, pa) {
+            var _selectedObj = selectedObj;
+            if (!mode) {
+                //mode=transMode;
+
+            }
+            if (mode == 'rotate') {
+                var c = pa ? getObjCenter(pa) : {}
+                var _obj = getBoundingBox(obj, dx, c.x, c.y)
+                for (var m in obj) {
+                    obj[m] = _obj[m] ? _obj[m] : obj[m];
+                }
+                return obj
+            }
+            for (var m in obj) {
+                if (mode == 'scale') {
+                    if (m == 'x' || m == 'xmin') {
+                        obj[m] = obj[m] - dx
+                    }
+                    if (m == 'y' || m == 'ymin') {
+                        obj[m] = obj[m] - dy
+                    }
+                    if (m == 'xmax') {
+                        obj[m] = obj[m] + dx
+                    }
+                    if (m == 'ymax') {
+                        obj[m] = obj[m] + dy
+                    }
+                    if (m == 'w') {
+                        obj[m] = obj[m] + (dx * 2)
+                    }
+                    if (m == 'h') {
+                        obj[m] = obj[m] + (dy * 2)
+                    }
+                } else {
+
+
+
+                    if (m == 'x' || m == 'xmin' || m == 'xmax') {
+                        obj[m] = obj[m] + dx
+                    }
+                    if (m == 'y' || m == 'ymin' || m == 'ymax') {
+                        obj[m] = obj[m] + dy
+                    }
+                }
+            }
+            return obj
+
+        }
+
+        function getMoveNode(r) {
+            var obj = {}
+            obj.x = r.xmax - 10;
+            obj.y = r.ymax - 10;
+            obj.xmin = r.xmax - 10;
+            obj.ymin = r.ymax - 10;
+            obj.xmax = r.xmax + 10;
+            obj.ymax = r.ymax + 10;
+            obj.w = 20;
+            obj.h = 20;
+            return obj
+        }
+
+        function getRotateNode(r) {
+            var obj = {}
+            obj.x = r.xmax - 10;
+            obj.y = r.ymin - 10;
+            obj.xmin = r.xmax - 10;
+            obj.ymin = r.ymin - 10;
+            obj.xmax = r.xmax + 10;
+            obj.ymax = r.ymin + 10;
+            obj.w = 20;
+            obj.h = 20;
+            return obj
+        }
+
+        function findObjIndex(obj) {
+            var l = graphicDataStore.length
+            for (var i = l - 1; i >= 0; i--) {
+                var __obj = graphicDataStore[i];
+                if (__obj.uid == obj.uid) {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         function findSelectedObjIndex(xp, yp) {
@@ -467,16 +828,52 @@ var Whiteboard = function (cont, isStatic) {
                     continue
                 }
                 var rect = cloneObject(graphicDataStore[i].brect);
-                var isTransformed = isObjTransformed(graphicDataStore[i].uid)
+                var rectM = getMoveNode(rect);
+                var rectR = getRotateNode(rect);
+                var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
+                var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
+                var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
+                var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(graphicDataStore[i].uid)
                 if (isTransformed) {
-                    rect = cloneObject(isTransformed.trect);
+                    if (isMoved) {
+                        rect = cloneObject(isMoved.trect);
+                        rectM = getMoveNode(rect);
+                        rectR = getRotateNode(rect);
+                    }
+                    if (isScaled) {
+                        transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
+                        transformRect(rectM, isScaled.tx, isScaled.ty, 'move')
+                        transformRect(rectR, isScaled.tx, -isScaled.ty, 'move')
+                    }
+                    if (isRotated) {
+                        transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+                        transformRect(rectM, isRotated.tx, isRotated.ty, 'rotate', rect)
+                        transformRect(rectR, isRotated.tx, isRotated.ty, 'rotate', rect)
+                        console.log(rect);
+                    }
+
+
                 }
                 transformRect(rect, scrollPosition.x, scrollPosition.y)
-                selectedObj = null
+                transformRect(rectR, scrollPosition.x, scrollPosition.y)
+                transformRect(rectM, scrollPosition.x, scrollPosition.y)
+                //selectedObj = null
                 if (!rect) {
+                    selectedObj = null
                     return -1
                 }
                 var sel = contains(rect, xp, yp)
+                var selR = contains(rectR, xp, yp)
+                var selM = contains(rectM, xp, yp)
+                console.log(selR)
+                console.log(selM)
+                if (selR || selM) {
+                    i = selectedObjIndex
+                    transMode = selM ? 'scale' : 'rotate'
+                    return i;
+                }
+                console.log(rect);
+                console.log(sel)
                 var hasShape = false
                 if (sel) {
                     hasShape = getShapeHit(__obj, {
@@ -492,6 +889,7 @@ var Whiteboard = function (cont, isStatic) {
                     return i;
                 }
             }
+            selectedObj = null
             updateBuffer()
             return -1
         }
@@ -514,9 +912,36 @@ var Whiteboard = function (cont, isStatic) {
                 if (!obj.isErased) {
                     var r1 = obj.brect;
                     var rect = cloneObject(r1);
-                    var isTransformed = isObjTransformed(obj.uid)
-                    if (isTransformed) {
+                    var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
+                    var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
+                    var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
+                    var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(obj.uid)
+                    /* if (isTransformed) {
                         rect = cloneObject(isTransformed.trect);
+                    }*/
+                    if (isTransformed) {
+                        if (isMoved) {
+                            rect = cloneObject(isMoved.trect);
+
+                        }
+                        if (isScaled) {
+                            var dw = isScaled.tx
+                            var dh = isScaled.ty
+                            if (isRotated) {
+                                /*var nr0=getScaleRatio(isScaled.tx,isScaled.ty,isRotated.tr)
+			dw=nr0.w
+			dh=nr0.h*/
+                            }
+                            transformRect(rect, dw, dh, 'scale')
+                            //transformRect(rect, isScaled.tx, isScaled.ty,'scale') 
+
+                        }
+                        if (isRotated) {
+                            transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+
+                        }
+
+
                     }
                     transformRect(rect, scrollPosition.x, scrollPosition.y)
                     var sel = intersectRect(rect, selectionRect)
@@ -556,9 +981,39 @@ var Whiteboard = function (cont, isStatic) {
                 if (!obj.isErased) {
                     var r1 = obj.brect;
                     var rect = cloneObject(r1);
-                    var isTransformed = isObjTransformed(obj.uid)
+                    /* var isTransformed = isObjTransformed(obj.uid,transMode)
                     if (isTransformed) {
                         rect = cloneObject(isTransformed.trect);
+                    }*/
+                    var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
+                    var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
+                    var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
+                    var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(obj.uid)
+                    /* if (isTransformed) {
+                        rect = cloneObject(isTransformed.trect);
+                    }*/
+                    if (isTransformed) {
+                        if (isMoved) {
+                            rect = cloneObject(isMoved.trect);
+
+                        }
+                        if (isScaled) {
+                            var dw = isScaled.tx
+                            var dh = isScaled.ty
+                            if (isRotated) {
+                                /*var nr0=getScaleRatio(isScaled.tx,isScaled.ty,isRotated.tr)
+			dw=nr0.w
+			dh=nr0.h*/
+                            }
+                            transformRect(rect, dw, dh, 'scale')
+
+                        }
+                        if (isRotated) {
+                            transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+
+                        }
+
+
                     }
                     transformRect(rect, scrollPosition.x, scrollPosition.y);
                     if (!mSelRect) {
@@ -644,11 +1099,30 @@ var Whiteboard = function (cont, isStatic) {
                     var r1 = obj.brect;
 
                     var rect = cloneObject(r1);
-                    var isTransformed = isObjTransformed(obj.uid)
+                    var isMoved = isObjTransformed(obj.uid, 'move');
+                    var isScaled = isObjTransformed(obj.uid, 'scale');
+                    var isRotated = isObjTransformed(obj.uid, 'rotate');
+                    var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(graphicDataStore[i].uid)
                     if (isTransformed) {
-                        rect = cloneObject(isTransformed.trect);
+                        // rect = cloneObject(isTransformed.trect);
+                    }
+                    if (isTransformed) {
+                        if (isMoved) {
+                            rect = cloneObject(isMoved.trect);
+                        }
+                        if (isScaled) {
+                            transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
+                        }
+                        if (isRotated) {
+                            transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+                        }
+
+
                     }
                     transformRect(rect, scrollPosition.x, scrollPosition.y)
+                    // var isTransformed = isObjTransformed(obj.uid,transMode)
+
+                    // transformRect(rect, scrollPosition.x, scrollPosition.y,transMode)
                     obj.isErased = intersectRect(rect, r)
                 }
             }
@@ -902,11 +1376,15 @@ var Whiteboard = function (cont, isStatic) {
         $get_Element("#button_oval").style.border = '1px solid #000000';
         $get_Element("#button_eraser").style.border = '1px solid #000000';
         $get_Element("#button_nav").style.border = '1px solid #000000';
+        $get_Element("#button_temp").style.border = '1px solid #000000';
         if ($get_Element("#button_move")) {
             $get_Element("#button_move").style.border = '1px solid #000000';
         }
         if (currentTool != 'nav') {
             hideNavigator();
+        }
+        if (currentTool != 'temps') {
+            hideTemplates();
         }
         //
     }
@@ -927,42 +1405,44 @@ var Whiteboard = function (cont, isStatic) {
     var _docWidth = 0;
     var _docHeight = 0;
     var _viewPort = null;
-    wb.setWhiteboardViewPort = function (width, height,flag) {
+    wb.setWhiteboardViewPort = function (width, height, flag) {
         console_log("EXTERNAL CALL::setWhiteboardViewPort:: " + width + ":" + height)
         _viewPort = {
             width: width,
             height: height
         };
-		if(flag&&flag=='fixed'){
-		wb.setSizeOfWhiteboard(width, height)
-		}
+        if (flag && flag == 'fixed') {
+            wb.setSizeOfWhiteboard(width, height)
+        }
     }
     wb.resizeWhiteboard = function () {
         console_log("EXTERNAL CALL::resizeWhiteboard::")
         adjustToolbar()
     }
-function resizeWhiteboardTo(match,minW,minH){
-			var w,h
-				if(match=='content'){
-					w=canvas_drawing_width
-					h=canvas_drawing_height
-				}else if(match=='custom'){
-				    w=minW?minW:300;
-				    h=minH?minH:300;
-				}
-				var off_left = $get_Element("#tools").offsetLeft;
-                var off_top = $get_Element("#tools").offsetTop;
-                var off_ht = $get_Element("#tools").offsetHeight;
-                var topOff = off_ht + off_top 
-                var leftOff = off_left;
-				var margin=5
-				var scroller=15
-				w=w+leftOff+scroller+margin
-				h=h+topOff+scroller+margin
-				wb.setSizeOfWhiteboard(w,h);
-				wb.setWhiteboardViewPort(w,h);
-				wb.resizeWhiteboard();
-			}
+
+    function resizeWhiteboardTo(match, minW, minH) {
+        var w, h
+        if (match == 'content') {
+            w = canvas_drawing_width
+            h = canvas_drawing_height
+        } else if (match == 'custom') {
+            w = minW ? minW : 300;
+            h = minH ? minH : 300;
+        }
+        var off_left = $get_Element("#tools").offsetLeft;
+        var off_top = $get_Element("#tools").offsetTop;
+        var off_ht = $get_Element("#tools").offsetHeight;
+        var topOff = off_ht + off_top
+        var leftOff = off_left;
+        var margin = 5
+        var scroller = 15
+        w = w + leftOff + scroller + margin
+        h = h + topOff + scroller + margin
+        wb.setSizeOfWhiteboard(w, h);
+        wb.setWhiteboardViewPort(w, h);
+        wb.resizeWhiteboard();
+    }
+
     function viewport_testpage() {
         var e = window,
             a = 'inner';
@@ -1094,6 +1574,208 @@ function resizeWhiteboardTo(match,minW,minH){
         $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
         scrollPosition['y'] = currPos;
     }
+    //--Templates Code begin
+    function showHideTemplates() {
+        var cont = $get_jqElement("#temp_cont");
+        if (cont.is(":visible")) {
+            hideTemplates()
+        } else {
+            showTemplates()
+        }
+    }
+
+    function hideTemplates() {
+        hideTemplatesCont()
+    }
+
+    function showTemplates() {
+        var wbm = $get_jqElement("#wb_menu")
+        var x = wbm.css("left")
+        var y = wbm.css("top")
+        wbm.hide()
+        showTemplatesCont()
+        posTemplatesCont(x, y)
+    }
+
+    function posTemplatesCont(x, y) {
+        var cont = $get_jqElement("#temp_cont");
+        cont.css({
+            'left': x,
+            'top': y
+        });
+    }
+
+    function showTemplatesCont() {
+        var cont = $get_jqElement("#temp_cont");
+        cont.show()
+    }
+
+    function hideTemplatesCont() {
+        var cont = $get_jqElement("#temp_cont");
+        cont.hide()
+    }
+
+    function prepareTemplatesMenu(jsn) {
+        var opts = jsn ? eval(jsn) : eval(wb.options);
+        var tempsD = jsn ? [opts] : opts["templates"]
+        var temps = []
+        var temp;
+        for (var i = 0; i < tempsD.length; i++) {
+            temp = tempsD[i]
+            var list = temp.list
+            var path = temp.path
+            var icon = temp.icon ? temp.icon : "tn-"
+            for (var j = 0; j < list.length; j++) {
+                var obj = {}
+                obj.icon = path + icon + list[j]
+                obj.url = path + list[j]
+                obj.name = obj.title = list[j].split(".")[0]
+                temps.push(obj);
+            }
+        }
+        return temps
+    }
+
+    function buildTempMenu() {
+        var arr = prepareTemplatesMenu()
+
+        var divObj = $("<div name='temp_cont' class='temp_cont' style='position:absolute;width:235px;max-height:225px;top:36px;left:5px;background-color:#eeeeee;padding:5px;-webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);display:none;overflow:auto;'></div>");
+        var temp
+        for (var k = 0; k < arr.length; k++) {
+            temp = createTempBtn(arr[k])
+            temp.appendTo(divObj).css("margin", "4px");
+        }
+        return divObj
+
+    }
+
+    function updateTempMenu(json) {
+        var arr = prepareTemplatesMenu(json)
+
+        var divObj = $get_jqElement("#temp_cont");
+        var temp
+        for (var k = 0; k < arr.length; k++) {
+            temp = createTempBtn(arr[k])
+            temp.appendTo(divObj).css("margin", "4px");
+        }
+        return divObj
+
+    }
+
+    function createTempBtn(obj) {
+        var btn = $('<button/>', {
+            title: obj.title ? obj.title : "Template",
+            name: obj.name,
+            path: obj.url,
+            text: ""
+        }).addClass('big_tool_button')
+            .css({
+                "background-image": "url(" + obj.icon + ")",
+                "background-repeat": "no-repeat",
+                "background-position": "center"
+            }).on("click", function () {
+                var temp = $(this)
+                var name = temp.attr('name');
+                var path = temp.attr('path');
+                loadTemplate({
+                    name: name,
+                    path: path
+                });
+            });
+        return btn;
+    }
+
+    function loadTemplate(obj, x, y, boo, data) {
+        var img
+        if (loadedImgTemps[obj.name]) {
+            img = loadedImgTemps[obj.name]
+            addTemplate(obj, x, y, img, boo, data)
+        } else {
+            loadedImgTemps[obj.name] = new Image()
+            loadedImgTemps[obj.name].onload = function () {
+                addTemplate(obj, x, y, this, boo, data);
+            }
+            loadedImgTemps[obj.name].src = obj.path;
+        }
+    }
+
+    function addTemplate(temp, x, y, img, boo, data) {
+        //alert("ADD "+temp.name+" from "+temp.path)
+        if (!boo) {
+            graphicData.dataArr = [];
+            graphicData.id = 'template';
+            graphicData.uid = getNextObjectID();
+            objectActions[graphicData.uid] = {};
+        } else {
+            graphicData = data
+        }
+        var uid = graphicData.uid
+        var w = img.width;
+        var h = img.height;
+        var gr, xp, yp, xs, ys
+        var cposX = parseInt($get_Element("#canvas-container").style.left);
+        var cposY = parseInt($get_Element("#canvas-container").style.top);
+        cposX = cposX ? cposX : 0;
+        cposY = cposY ? cposY : 0;
+        var sw = (screen_width - w) / 2
+        var sh = (screen_height - h) / 2
+        xp = x ? x : sw - cposX
+        yp = y ? y : sh - cposY
+        xs = x ? x : sw - cposX
+        ys = y ? y : sh - cposY
+        context.drawImage(img, xp, yp);
+        //graphcontext.drawImage(gr, xp, yp);
+
+
+
+
+        if (!boo) {
+            graphicData.dataArr.push({
+                x: xs - scrollPosition.x,
+                y: ys - scrollPosition.y,
+                w: w,
+                h: h,
+                name: temp.name,
+                url: temp.path
+            });
+            graphicData.brect = getBoundRect(xs, ys, w, h);
+            sendData();
+            if (!selectionMode) {
+                selectionMode = true;
+            }
+            buttonHighlite('move');
+
+            setObjSelected(graphicDataStore[graphicDataStore.length - 1]);
+        } else {
+            loadedTemps++
+            //if(loadedTemps>=totalTempsloaded){}
+
+            var isDeleted = isObjDeleted(uid);
+            var isMoved = isObjTransformed(uid, 'move');
+            var isScaled = isObjTransformed(uid, 'scale');
+            var isRotated = isObjTransformed(uid, 'rotate');
+            var isModified = isMoved || isScaled || isRotated || isDeleted; //isObjTransformed(uid);
+            if (isModified) {
+                updateCanvas();
+            }
+
+        }
+    }
+
+    function setObjSelected(obj) {
+        var index = findObjIndex(obj);
+        if (index > -1) {
+            selectedObj = obj;
+            selectedObjIndex = index;
+            drawBoundRect({
+                tx: 0,
+                ty: 0,
+                tr: 0,
+                brect: selectedObj.brect
+            });
+        }
+    }
+    //--Templates Code end
     //--NAVIGATOR CODE BEGIN--
     var mpos
     var nav_width = 300;
@@ -1101,12 +1783,12 @@ function resizeWhiteboardTo(match,minW,minH){
     var ipos
     var navClicked = false;
 
-    function showNavigator(x, y) {	    
+    function showNavigator(x, y) {
         var cont = $get_jqElement('#drawsection'); //$("[name='drawsection']")
-		var wlim= cont.width()-17
-		var hlim= cont.height()-17
-		nav_width=Math.min(300,wlim);
-		nav_height=Math.min(300,hlim);
+        var wlim = cont.width() - 17
+        var hlim = cont.height() - 17
+        nav_width = Math.min(300, wlim);
+        nav_height = Math.min(300, hlim);
         var navig = '<div name="navigator" class="navigator" style="width: 200px; height: 200px; border: 2px solid white; position: absolute; right: 0px;top: 0px;background-color: rgba(200,200,200,0.95);box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);"><div class="navThumb_cont" name="navThumb_cont" style="border: 1px solid blue; left: 0px; top: 0px; position: absolute;"><div name="navThumb" style="border: 1px solid red; left: 0px; top: 0px; "></div><span style="font-size:10px;color:gray;display: block;cursor: default;" unselectable="on">Drag me</span></div></div>';
         cont.append(navig)
         $get_jqElement("#navigator").width(nav_width);
@@ -1539,28 +2221,28 @@ function resizeWhiteboardTo(match,minW,minH){
             $get_jqElement("#canvas-container").css('height', vHeight + 'px');
 
             console_log('off_ht_1: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").offsetLeft + ":" + $get_Element("#tools").offsetTop)
-            var addScrollerH=scroll_window['width']>docWidth
-				var addScrollerV=scroll_window['height']>docHeight
-				var addScroller=addScrollerH||addScrollerV
-                //
-                if (IS_IPHONE || docWidth <= 600) {
-                    dox = IS_IPHONE ? 5 : 19
-                    doy = IS_IPHONE ? 5 : 19
-                } else {
-                    dox = 19;
-                    doy = 19;
-                }
-                // dox=doy=0;
-                if (IS_IOS) {
-                    dox = 15;
-                    doy = 15;
-                }
-				if(!addScrollerH){
-				dox=0
-				}
-				if(!addScrollerV){
-				doy=0
-				}
+            var addScrollerH = scroll_window['width'] > docWidth
+            var addScrollerV = scroll_window['height'] > docHeight
+            var addScroller = addScrollerH || addScrollerV
+            //
+            if (IS_IPHONE || docWidth <= 600) {
+                dox = IS_IPHONE ? 5 : 19
+                doy = IS_IPHONE ? 5 : 19
+            } else {
+                dox = 19;
+                doy = 19;
+            }
+            // dox=doy=0;
+            if (IS_IOS) {
+                dox = 15;
+                doy = 15;
+            }
+            if (!addScrollerH) {
+                dox = 0
+            }
+            if (!addScrollerV) {
+                doy = 0
+            }
             try {
                 if (typeof G_vmlCanvasManager != "undefined") {
                     var parent_cont = $get_Element("#canvas-container")
@@ -1618,8 +2300,8 @@ function resizeWhiteboardTo(match,minW,minH){
                 posData += "hscroller-off-top:" + $get_Element('#hscroller').style.top + "\n";
                 posData += "hscroller-off-left:" + $get_Element('#hscroller').style.left + "\n";
                 //console_log(posData);
-            }else{
-				$get_jqElement('#vscroller').css({
+            } else {
+                $get_jqElement('#vscroller').css({
                     'display': 'none'
 
                 });
@@ -1627,9 +2309,11 @@ function resizeWhiteboardTo(match,minW,minH){
                     'display': 'none'
 
                 });
-				$get_jqElement("#tools").removeClass('tools');
-				$get_jqElement("#tools").css('height','0px');
-				}
+                if (isReadOnly) {
+                    $get_jqElement("#tools").removeClass('tools');
+                    $get_jqElement("#tools").css('height', '0px');
+                }
+            }
             var cmd_keys = {};
             var nav_keys = {};
             cmd_keys["frac"] = "/";
@@ -1730,7 +2414,7 @@ function resizeWhiteboardTo(match,minW,minH){
                 console_log("INTERNAL CALL::WINDOW_RESIZE::")
                 adjustToolbar()
             }
-			
+
             //window.onresize=resize_wb;
             $(window).resize(resize_wb);
 
@@ -1795,9 +2479,9 @@ function resizeWhiteboardTo(match,minW,minH){
                 var ccnt = $get_Element("#canvas-container");
                 $get_jqElement("#canvas-container").css('width', vWidth + 'px');
                 $get_jqElement("#canvas-container").css('height', vHeight + 'px');
-				var addScrollerH=scroll_window['width']>docWidth
-				var addScrollerV=scroll_window['height']>docHeight
-				var addScroller=addScrollerH||addScrollerV
+                var addScrollerH = scroll_window['width'] > docWidth
+                var addScrollerV = scroll_window['height'] > docHeight
+                var addScroller = addScrollerH || addScrollerV
                 //
                 if (IS_IPHONE || docWidth <= 600) {
                     dox = IS_IPHONE ? 5 : 19
@@ -1811,12 +2495,12 @@ function resizeWhiteboardTo(match,minW,minH){
                     dox = 15;
                     doy = 15;
                 }
-				if(!addScrollerH){
-				dox=0
-				}
-				if(!addScrollerV){
-				doy=0
-				}
+                if (!addScrollerH) {
+                    dox = 0
+                }
+                if (!addScrollerV) {
+                    doy = 0
+                }
                 screen_width = docWidth - leftOff - dox;
                 screen_height = docHeight - topOff - doy;
                 console_log('off_ht_2: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").style.height + ":" + $get_jqElement("#tools").height())
@@ -1843,18 +2527,20 @@ function resizeWhiteboardTo(match,minW,minH){
                     posData += "hscroller-off-left:" + $get_Element('#hscroller').style.left + "\n";
                     //console_log(posData);
                     positionScroller();
-                }else{
-				$get_jqElement('#vscroller').css({
-                    'display': 'none'
+                } else {
+                    $get_jqElement('#vscroller').css({
+                        'display': 'none'
 
-                });
-                $get_jqElement('#hscroller').css({
-                    'display': 'none'
+                    });
+                    $get_jqElement('#hscroller').css({
+                        'display': 'none'
 
-                });
-				$get_jqElement("#tools").removeClass('tools');
-				$get_jqElement("#tools").css('height','0px');
-				}
+                    });
+                    if (isReadOnly) {
+                        $get_jqElement("#tools").removeClass('tools');
+                        $get_jqElement("#tools").css('height', '0px');
+                    }
+                }
                 scrollPosition = {
                     x: 0,
                     y: 0
@@ -2266,6 +2952,11 @@ function resizeWhiteboardTo(match,minW,minH){
                     }
                 };
             }
+            if ($get_Element("#button_temp")) {
+                $get_Element("#button_temp").onclick = function (event) {
+                    var a = showHideTemplates();
+                };
+            }
             if ($get_Element("#button_save")) {
                 $get_Element("#button_save").onclick = function (event) {
                     wb.saveWhiteboard();
@@ -2419,8 +3110,8 @@ function resizeWhiteboardTo(match,minW,minH){
                 for (var i = 0; i < num; i++) {
                     selectedObj = selectedObjects[i];
                     var pd = cloneObjectDeep(selectedObj);
-                    var li = objectActions[selectedObj.uid]['move'].length - 1;
-                    var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, true) : false;
+                    var li = objectActions[selectedObj.uid][transMode].length - 1;
+                    var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, transMode, true) : false;
                     var trans = {
                         tx: dx,
                         ty: dy,
@@ -2439,7 +3130,7 @@ function resizeWhiteboardTo(match,minW,minH){
                         ty: trans.ty,
                         trect: pd.brect
                     };
-                    objectActions[selectedObj.uid]['move'][li] = tdata;
+                    objectActions[selectedObj.uid][transMode][li] = tdata;
 
                 }
                 updateCanvas();
@@ -2461,8 +3152,8 @@ function resizeWhiteboardTo(match,minW,minH){
                     for (var i = 0; i < num; i++) {
                         selectedObj = selectedObjects[i];
                         var pd = cloneObjectDeep(selectedObj);
-                        var li = objectActions[selectedObj.uid]['move'].length - 1;
-                        var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, true) : false;
+                        var li = objectActions[selectedObj.uid][transMode].length - 1;
+                        var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, transMode, true) : false;
                         var trans = {
                             tx: dx,
                             ty: dy,
@@ -2484,7 +3175,7 @@ function resizeWhiteboardTo(match,minW,minH){
                             ty: trans.ty,
                             trect: pd.brect
                         };
-                        objectActions[selectedObj.uid]['move'][li] = tdata;
+                        objectActions[selectedObj.uid][transMode][li] = tdata;
                         selectionDragged = false;
                         var mobj = {
                             id: selectedObj.id,
@@ -2492,7 +3183,7 @@ function resizeWhiteboardTo(match,minW,minH){
                             groupid: gid,
                             type: 'cmd',
                             cmd: {
-                                name: 'move',
+                                name: transMode,
                                 data: tdata
                             },
                             dataArr: []
@@ -2506,7 +3197,7 @@ function resizeWhiteboardTo(match,minW,minH){
                 } else {
                     for (var i = 0; i < num; i++) {
                         selectedObj = selectedObjects[i];
-                        objectActions[selectedObj.uid]['move'].pop();
+                        objectActions[selectedObj.uid][transMode].pop();
                     }
                 }
 
@@ -2517,6 +3208,8 @@ function resizeWhiteboardTo(match,minW,minH){
             var ev_onmousedown = function (_event) {
                 // alert("MDOWN")
                 $get_jqElement("#wb_menu").hide();
+                hideTemplates();
+                transMode = 'move'
                 if (isReadOnly || currentTool == 'nav' || isRightClick(_event)) {
                     return
                 }
@@ -2629,27 +3322,61 @@ function resizeWhiteboardTo(match,minW,minH){
                             selectionDragged = false;
                             resetWhiteBoard(false);
                             updateCanvas();
-                            var isTransformed = isObjTransformed(selectedObj.uid);
+                            var isTransformed = isObjTransformed(selectedObj.uid, transMode);
+                            var isMoved = isObjTransformed(selectedObj.uid, 'move');
+                            var isScaled = isObjTransformed(selectedObj.uid, 'scale');
+                            var isRotated = isObjTransformed(selectedObj.uid, 'rotate');
+                            if (transMode == 'rotate') {
+                                //var isMoved =  isObjTransformed(selectedObj.uid, 'move');
+                                //var isScaled =  isObjTransformed(selectedObj.uid, 'scale');
+                                var rect = cloneObject(selectedObj.brect)
+                                if (isMoved) {
+                                    transformRect(rect, isMoved.tx, isMoved.ty, 'move')
+                                }
+                                if (isScaled) {
+                                    transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
+                                }
+                                var cx = rect.xmin + rect.w / 2
+                                var cy = rect.ymin + rect.h / 2
+                                var dsx = x - cx
+                                var dsy = y - cy
+                                clickR = Math.atan2(dsy, dsx)
+                            }
                             if (isTransformed) {
                                 drawBoundRect({
                                     tx: isTransformed.tx,
                                     ty: isTransformed.ty,
+                                    tr: isTransformed.tr,
                                     brect: isTransformed.trect
                                 })
                             } else {
                                 drawBoundRect({
                                     tx: 0,
                                     ty: 0,
+                                    tr: 0,
                                     brect: selectedObj.brect
                                 });
                             }
                             if (!objectActions[selectedObj.uid]['move']) {
                                 objectActions[selectedObj.uid]['move'] = []
                             };
+                            if (!objectActions[selectedObj.uid]['scale']) {
+                                objectActions[selectedObj.uid]['scale'] = []
+                            };
+                            if (!objectActions[selectedObj.uid]['rotate']) {
+                                objectActions[selectedObj.uid]['rotate'] = []
+                            };
                             if (!objectActions[selectedObj.uid]['delete']) {
                                 objectActions[selectedObj.uid]['delete'] = [];
                             };
-                            objectActions[selectedObj.uid]['move'].push({});
+
+                            if (transMode == 'scale') {
+                                objectActions[selectedObj.uid]['scale'].push({});
+                            } else if (transMode == 'rotate') {
+                                objectActions[selectedObj.uid]['rotate'].push({});
+                            } else {
+                                objectActions[selectedObj.uid]['move'].push({});
+                            }
                             penDown = true
                         } else {
                             //penDown = !true
@@ -2758,24 +3485,62 @@ function resizeWhiteboardTo(match,minW,minH){
 
                             //transformObj(selectedObj, dx, dy);
                             var pd = cloneObjectDeep(selectedObj);
-                            var li = objectActions[selectedObj.uid]['move'].length - 1;
-                            var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, true) : false;
+                            var li = objectActions[selectedObj.uid][transMode].length - 1;
+                            var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, transMode, true) : false;
+                            var dr = 0
+                            var isMoved = isObjTransformed(selectedObj.uid, 'move');
+                            var isScaled = isObjTransformed(selectedObj.uid, 'scale');
+                            var isRotated = isObjTransformed(selectedObj.uid, 'rotate');
+                            if (transMode == 'rotate') {
+
+                                var rect = cloneObject(selectedObj.brect)
+                                if (isMoved) {
+                                    transformRect(rect, isMoved.tx, isMoved.ty, 'move')
+                                }
+                                if (isScaled) {
+                                    transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
+                                }
+                                var cx = rect.xmin + rect.w / 2
+                                var cy = rect.ymin + rect.h / 2
+                                var dsx = x - cx
+                                var dsy = y - cy
+                                dr = -clickR + Math.atan2(dsy, dsx)
+                            }
+                            if (transMode == 'scale' && isRotated) {
+                                var nr0 = getScaleRatio(dx, dy, isRotated.tr)
+                                dx = nr0.w
+                                dy = nr0.h
+                            }
                             var trans = {
-                                tx: dx,
-                                ty: dy,
+                                tx: transMode == 'rotate' ? dr : dx,
+                                ty: transMode == 'rotate' ? dr : dy,
+                                tr: transMode == 'rotate' ? dr : 0,
                                 trect: selectedObj.brect
                             }
                             if (isTransformed) {
-                                trans = {
-                                    tx: isTransformed.tx + dx,
-                                    ty: isTransformed.ty + dy,
-                                    trect: isTransformed.trect
+                                if (transMode == 'rotate') {
+                                    //var dr=Math.atan2(dy,dx);
+                                    trans = {
+                                        tx: isTransformed.tr + dr,
+                                        ty: isTransformed.tr + dr,
+                                        tr: isTransformed.tr + dr,
+                                        trect: isTransformed.trect
+                                    }
+                                } else {
+
+                                    trans = {
+                                        tx: isTransformed.tx + dx,
+                                        ty: isTransformed.ty + dy,
+                                        tr: 0,
+                                        trect: isTransformed.trect
+                                    }
                                 }
                             }
                             transformObj(pd, trans.tx, trans.ty);
                             drawBoundRect({
                                 tx: trans.tx,
                                 ty: trans.ty,
+                                tr: trans.tr,
                                 brect: trans.trect
                             });
 
@@ -2783,16 +3548,17 @@ function resizeWhiteboardTo(match,minW,minH){
                             var tdata = {
                                 tx: trans.tx,
                                 ty: trans.ty,
+                                tr: trans.tr,
                                 trect: pd.brect
                             };
-                            objectActions[selectedObj.uid]['move'][li] = tdata;
+                            objectActions[selectedObj.uid][transMode][li] = tdata;
                             selectionDragged = false;
                             var mobj = {
                                 id: selectedObj.id,
                                 uid: selectedObj.uid,
                                 type: 'cmd',
                                 cmd: {
-                                    name: 'move',
+                                    name: transMode,
                                     data: tdata
                                 },
                                 dataArr: []
@@ -2800,14 +3566,31 @@ function resizeWhiteboardTo(match,minW,minH){
                             updateDataToSERVER(selectedObjIndex, mobj);
                         } else {
                             // graphicDataStore.splice(selectedObjIndex, 0,selectedObj);
-                            objectActions[selectedObj.uid]['move'].pop();
+                            objectActions[selectedObj.uid][transMode].pop();
                         }
                     } else {
                         var msel = checkForMultiSelect()
                         removeBoundRect()
                         if (msel && msel.length) {
-                            selectedObjects = msel;
-                            drawMultiSelectionRect();
+                            if (msel.length == 1) {
+                                selectionRect = null;
+                                multiSelection = false;
+                                selectedObj = msel[0];
+                                var index = findObjIndex(selectedObj);
+                                selectedObjIndex = index
+
+
+                                drawBoundRect({
+                                    tx: 0,
+                                    ty: 0,
+                                    tr: 0,
+                                    brect: selectedObj.brect
+                                }, true);
+
+                            } else {
+                                selectedObjects = msel;
+                                drawMultiSelectionRect();
+                            }
                         } else {
                             selectionRect = null;
                             multiSelection = false
@@ -2967,20 +3750,62 @@ function resizeWhiteboardTo(match,minW,minH){
                             var pd = cloneObjectDeep(selectedObj);
 
                             //transformObj(pd, dx, dy);
-                            var li = objectActions[selectedObj.uid]['move'].length - 1;
+                            var li = objectActions[selectedObj.uid][transMode].length - 1;
                             //var tdata={tx:dx,ty:dy,trect:pd.brect};
-                            //objectActions[selectedObj.uid]['move'][li]=tdata;
-                            var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, true) : false;
+                            //objectActions[selectedObj.uid][transMode][li]=tdata;
+                            var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, transMode, true) : false;
+                            var isMoved = isObjTransformed(selectedObj.uid, 'move');
+                            var isScaled = isObjTransformed(selectedObj.uid, 'scale');
+                            var isRotated = isObjTransformed(selectedObj.uid, 'rotate');
+                            if (transMode == 'rotate') {
+                                var rect = cloneObject(selectedObj.brect)
+                                if (isMoved) {
+                                    transformRect(rect, isMoved.tx, isMoved.ty, 'move')
+                                }
+                                if (isScaled) {
+                                    transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
+                                }
+                                var cx = rect.xmin + rect.w / 2
+                                var cy = rect.ymin + rect.h / 2
+                                var dsx = x - cx
+                                var dsy = y - cy
+                                dr = -clickR + Math.atan2(dsy, dsx)
+                            }
+                            if (transMode == 'scale' && isRotated) {
+                                var nr0 = getScaleRatio(dx, dy, isRotated.tr)
+                                dx = nr0.w
+                                dy = nr0.h
+                            }
                             var trans = {
-                                tx: dx,
-                                ty: dy,
+                                tx: transMode == 'rotate' ? dr : dx,
+                                ty: transMode == 'rotate' ? dr : dy,
+                                tr: transMode == 'rotate' ? dr : 0,
                                 trect: selectedObj.brect
                             }
-                            if (isTransformed) {
+                            /*if (isTransformed) {
                                 trans = {
                                     tx: isTransformed.tx + dx,
                                     ty: isTransformed.ty + dy,
                                     trect: isTransformed.trect
+                                }
+                            }*/
+                            if (isTransformed) {
+                                if (transMode == 'rotate') {
+
+                                    trans = {
+                                        tx: isTransformed.tr + dr,
+                                        ty: isTransformed.tr + dr,
+                                        tr: isTransformed.tr + dr,
+                                        trect: isTransformed.trect
+                                    }
+                                } else {
+
+                                    trans = {
+                                        tx: isTransformed.tx + dx,
+                                        ty: isTransformed.ty + dy,
+                                        tr: 0,
+                                        trect: isTransformed.trect
+                                    }
                                 }
                             }
 
@@ -2990,9 +3815,10 @@ function resizeWhiteboardTo(match,minW,minH){
                             var tdata = {
                                 tx: trans.tx,
                                 ty: trans.ty,
+                                tr: trans.tr,
                                 trect: pd.brect
                             };
-                            objectActions[selectedObj.uid]['move'][li] = tdata;
+                            objectActions[selectedObj.uid][transMode][li] = tdata;
                             //var mobj={id:selectedObj.id,type:'cmd',cmd:{name:'move',data:tdata},dataArr:[]}
                             //graphicDataStore.push(pd);
 
@@ -3002,6 +3828,7 @@ function resizeWhiteboardTo(match,minW,minH){
                             drawBoundRect({
                                 tx: trans.tx,
                                 ty: trans.ty,
+                                tr: trans.tr,
                                 brect: trans.trect
                             });
                         } else if (selectionDragMode) {
@@ -3455,12 +4282,12 @@ function resizeWhiteboardTo(match,minW,minH){
     }
 
     function resetWhiteBoard(boo) {
-	    	
-    	if(!canvas) {
-    		alert('resetWhiteBoard: canvas is null!');
-    		return;
-    	}
- 
+
+        if (!canvas) {
+            alert('resetWhiteBoard: canvas is null!');
+            return;
+        }
+
         penDown = false;
         graphMode = '';
         // origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width
@@ -3479,8 +4306,10 @@ function resizeWhiteboardTo(match,minW,minH){
             $get_jqElement("#graph_cont").remove()
         }
         if (boo) {
+            loadedImgTemps = {};
             graphicDataStore = [];
             wb.clearWhiteboard(true);
+
         }
     }
 
@@ -3949,16 +4778,16 @@ source: https://gist.github.com/754454
         return objectActions[uid]['delete'].length
     }
 
-    function isObjTransformed(uid, skipLast) {
-        if (!objectActions[uid] || !objectActions[uid]['move']) {
+    function isObjTransformed(uid, mode, skipLast) {
+        if (!objectActions[uid] || !objectActions[uid][mode]) {
             return false
         }
-        var l = objectActions[uid]['move'].length
+        var l = objectActions[uid][mode].length
         if (!l) {
             return false
         }
         var _l = skipLast ? l - 2 : l - 1;
-        return objectActions[uid]['move'][_l]
+        return objectActions[uid][mode][_l]
     }
     // ### RENDER OBJECT TO WHITEBOARD
 
@@ -4224,6 +5053,17 @@ source: https://gist.github.com/754454
             rect = getBoundRect(graphic_data[0].x, graphic_data[0].y, 300, (idName == 'gr2D' ? 300 : 150));
             obj = _obj;
         }
+        if (graphic_id === 'template') {
+            totalTempsloaded++
+            var _obj = cloneObject(obj)
+            loadTemplate({
+                name: graphic_data[0].name,
+                path: graphic_data[0].url
+            }, graphic_data[0].x, graphic_data[0].y, true, !boo ? obj : undefined);
+            rect = getBoundRect(graphic_data[0].x, graphic_data[0].y, graphic_data[0].w, graphic_data[0].h);
+            obj = _obj;
+            doUpdateCanvas = true;
+        }
         if (!boo) {
 
             obj.brect = rect
@@ -4250,13 +5090,65 @@ source: https://gist.github.com/754454
         var uid = obj.uid
         var isCmd = obj.type === 'cmd'
         var isDeleted = isObjDeleted(uid);
-        var isTransformed = isObjTransformed(uid);
+        var isMoved = isObjTransformed(uid, 'move');
+        var isScaled = isObjTransformed(uid, 'scale');
+        var isRotated = isObjTransformed(uid, 'rotate');
+        var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(uid);
         if (isDeleted || isCmd) {
             return
         }
+        var cx = 0
+        var cy = 0
         if (isTransformed) {
             ctx.save();
-            ctx.translate(isTransformed.tx, isTransformed.ty)
+            var transRect = cloneObject(obj.brect)
+            if (isMoved) {
+                ctx.translate(isMoved.tx, isMoved.ty)
+            }
+            if (isRotated) {
+                var dw = isRotated.tx
+                var dh = isRotated.ty
+                var r = isRotated.tr
+                var o = obj.brect
+
+                var cx = o.xmin + (o.w / 2)
+                var cy = o.ymin + (o.h / 2)
+                ctx.translate(cx, cy)
+                ctx.rotate(r);
+                ctx.translate(-cx, -cy)
+                //ctx.translate(isTransformed.tx, isTransformed.ty)
+                cx = 0
+                cy = 0
+            }
+            if (isScaled) {
+                var dw = isScaled.tx
+                var dh = isScaled.ty
+                var r = isScaled.trect
+                var o = obj.brect
+                var w0 = o.w
+                var h0 = o.h
+                if (isRotated && transMode != 'rotate') {
+                    /*var nr0=getScaleRatio(dw,dh,isRotated.tr)
+			dw=nr0.w
+			dh=nr0.h*/
+                }
+                var w = w0 + (dw * 2)
+                var h = h0 + (dh * 2)
+
+                var rw = w / o.w
+                var rh = h / o.h
+
+                var cx = o.xmin + (o.w / 2)
+                var cy = o.ymin + (o.h / 2)
+                ctx.translate(cx, cy)
+                ctx.scale(rw, rh);
+                ctx.translate(-cx, -cy)
+                //ctx.translate(isTransformed.tx, isTransformed.ty)
+                cx = 0
+                cy = 0
+            }
+
+
         }
         if (ctx.lineWidth != 2) {
             ctx.lineWidth = 2.0;
@@ -4271,8 +5163,8 @@ source: https://gist.github.com/754454
         if (graphic_id === 0) {
             for (var i = 0; i < dLength; i++) {
 
-                x1 = graphic_data[i].x;
-                y1 = graphic_data[i].y;
+                x1 = graphic_data[i].x - cx;
+                y1 = graphic_data[i].y - cy;
                 deb += x1 + ":" + y1 + "||"
                 erase(x1, y1, ctx);
 
@@ -4286,8 +5178,8 @@ source: https://gist.github.com/754454
             }
 
             for (i = 0; i < dLength; i++) {
-                x1 = graphic_data[i].x;
-                y1 = graphic_data[i].y;
+                x1 = graphic_data[i].x - cx;
+                y1 = graphic_data[i].y - cy;
                 if (graphic_data[i].id == "move") {
                     ctx.beginPath();
                     ctx.moveTo(x1, y1);
@@ -4310,8 +5202,8 @@ source: https://gist.github.com/754454
             for (i = 0; i < dLength; i++) {
 
                 if (graphic_data[i].text != "" || graphic_data[i].text != undefined) {
-                    x0 = graphic_data[i].x;
-                    y0 = graphic_data[i].y;
+                    x0 = graphic_data[i].x - cx;
+                    y0 = graphic_data[i].y - cy;
                     // context.fillText(graphic_data[i].text, x0, y0);
                     xt = graphic_data[i].text;
                     xt = unescape(decodeURI(xt));
@@ -4337,7 +5229,7 @@ source: https://gist.github.com/754454
                 y0 = yd < 0 ? graphic_data[i].y + graphic_data[i].h : graphic_data[i].y
                 w0 = graphic_data[i].w * xd
                 h0 = graphic_data[i].h * yd
-                fName(x0, y0, w0, h0, col, ctx);
+                fName(x0 - cx, y0 - cy, w0, h0, col, ctx);
             }
 
         }
@@ -4345,8 +5237,15 @@ source: https://gist.github.com/754454
             idName = graphic_id == 11 ? "gr2D" : "nL";
             showHideGraph(idName, graphic_data[0].x, graphic_data[0].y, graphic_data[0].addImage, true);
         }
+        if (graphic_id === 'template') {
+            var img = loadedImgTemps[graphic_data[0].name]
+            ctx.drawImage(img, graphic_data[0].x, graphic_data[0].y);
+
+        }
         if (isTransformed) {
+            //ctx.translate(-cx,-cy)
             ctx.restore();
+
         }
     }
     wb.updateWhiteboard_local = function (cmdArray) {
@@ -4382,6 +5281,7 @@ source: https://gist.github.com/754454
 
     function resetInternalStore() {
         graphicDataStore = [];
+        loadedImgTemps = {};
         objectActions = {};
         uidSeed = 0;
         gidSeed = 0;
@@ -4478,8 +5378,8 @@ source: https://gist.github.com/754454
             if (graphicDataStore.length) {
                 var obj = graphicDataStore.pop()
                 if (obj.type && obj.type == 'cmd') {
-                    if (obj.cmd.name == 'move') {
-                        objectActions[obj.uid]['move'].pop()
+                    if (obj.cmd.name != 'delete') {
+                        objectActions[obj.uid][obj.cmd.name].pop()
                     }
                     if (obj.cmd.name == 'delete') {
                         objectActions[obj.uid]['delete'].pop()
@@ -4488,7 +5388,7 @@ source: https://gist.github.com/754454
             }
             updateCanvas()
         }
-
+        console.log(data)
     }
 
     wb.disconnectWhiteboard = function (documentObject) {
@@ -4592,26 +5492,27 @@ source: https://gist.github.com/754454
         isReadOnly = boo
         if (boo) {
             //$("div#" + contDiv + " [name='tools'] button").hide()
-			 $("div#" + contDiv + " .wb_menu button").hide()
-			 $("div#" + contDiv + " [name='toggleMenu']").hide()
+            $("div#" + contDiv + " .wb_menu button").hide()
+            $("div#" + contDiv + " [name='toggleMenu']").hide()
         } else {
             //$("div#" + contDiv + " [name='tools'] button").show()
-			$("div#" + contDiv + " .wb_menu button").show()
-			$("div#" + contDiv + " [name='toggleMenu']").show()
+            $("div#" + contDiv + " .wb_menu button").show()
+            $("div#" + contDiv + " [name='toggleMenu']").show()
         }
-		 adjustToolbar()
+        adjustToolbar()
     }
 
     wb.releaseResources = function () {
         wb.clearMemory();
         graphicDataStore = [];
+        loadedImgTemps = {};
 
     }
     wb.getSizeOfWhiteboard = function () {
         return canvas_drawing_width + ", " + canvas_drawing_height;
     }
-	wb.getContentSizeOfWhiteboard = function () {
-        return [canvas_drawing_width,canvas_drawing_height];
+    wb.getContentSizeOfWhiteboard = function () {
+        return [canvas_drawing_width, canvas_drawing_height];
     }
     wb.setSizeOfWhiteboard = function (w, h) {
         cwi = w;
@@ -4682,9 +5583,65 @@ source: https://gist.github.com/754454
         doUpScroll(y)
         updateCanvas();
     }
-	wb.resizeWhiteboardTo=function(match,width,height){
-		resizeWhiteboardTo(match,width,height)
-	}
+    wb.resizeWhiteboardTo = function (match, width, height) {
+        resizeWhiteboardTo(match, width, height)
+    }
+    wb.saveSelToImage = function () {
+        if (IS_IE8) {
+            alert('Not supported')
+            return
+        }
+        var obj = selectedObj;
+        var dcan = $('<canvas width="300" height="300"/>')[0];
+        var rect = cloneObjectDeep(obj.brect);
+        //
+        var isMoved = isObjTransformed(obj.uid, 'move');
+        var isScaled = isObjTransformed(obj.uid, 'scale');
+        var isRotated = isObjTransformed(obj.uid, 'rotate');
+        var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(graphicDataStore[i].uid)
+        if (isTransformed) {
+            if (isMoved) {
+                rect = cloneObject(isMoved.trect);
+            }
+            if (isRotated) {
+                transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+            }
+            if (isScaled) {
+                var dw = isScaled.tx
+                var dh = isScaled.ty
+                if (isRotated && transMode != 'rotate') {
+                    /*var nr0=getScaleRatio(isScaled.tx,isScaled.ty,isRotated.tr)
+			dw=nr0.w
+			dh=nr0.h*/
+                }
+                transformRect(rect, dw, dh, 'scale')
+            }
+
+        }
+        //
+        dcan.width = rect.w + 4;
+        dcan.height = rect.h + 4;
+        var dcontext = dcan.getContext('2d');
+        removeBoundRect()
+        var imageData = context.getImageData(rect.xmin - 2, rect.ymin - 2, rect.w + 4, rect.h + 4);
+        drawBoundRect(obj)
+        dcontext.putImageData(imageData, 0, 0);
+        var dataURL = dcan.toDataURL();
+        $('#canvasImg')[0].src = dataURL;
+    }
+    wb.setTransModeScale = function () {
+        transMode = transMode == 'scale' ? 'move' : 'scale';
+    }
+    wb.setTransModeRotate = function () {
+        transMode = transMode == 'rotate' ? 'move' : 'rotate';
+    }
+    wb.appendTemplates = function (temp) {
+        wb.options['templates'].push(temp);
+        var divObj = $get_jqElement("#temp_cont")
+        if (divObj.length) {
+            updateTempMenu(temp)
+        }
+    }
     return wb;
 
 };
