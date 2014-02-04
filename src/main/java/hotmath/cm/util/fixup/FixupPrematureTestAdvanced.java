@@ -27,13 +27,13 @@ public class FixupPrematureTestAdvanced {
         while(rs.next()) {
             int uid = rs.getInt("uid");
             int progId = rs.getInt("user_prog_id");
-            lookForErrorsInUser(uid, progId, doUpdate);
+            lookForErrorsInUser(adminId, uid, progId, doUpdate);
         }
         
         System.out.println("Admin check complete\n");
     }
 
-    private void lookForErrorsInUser(int uid, int progId, boolean doUpdate) {
+    private void lookForErrorsInUser(int adminId, int uid, int progId, boolean doUpdate) {
         try {
             // System.out.println("UID: " + uid + ", " + progId);
             
@@ -98,7 +98,7 @@ public class FixupPrematureTestAdvanced {
                             int thisRunId = vals[4];
                             int segToReturnTo = vals[5];
                             
-                            System.out.println("Error Found -> " + " uid: " + uid + ", date: " + date + ", test_id: " + thisTestId + ", test_run: " + thisRunId + ", percent: " + percent + ", Segment To Return: " + segToReturnTo);
+                            System.out.println("Error Found -> aid: " + adminId + " uid: " + uid + ", date: " + date + ", test_id: " + thisTestId + ", test_run: " + thisRunId + ", percent: " + percent + ", Segment To Return: " + segToReturnTo);
                             
                             if(doUpdate) {
                                 fixIt(uid, segToReturnTo);
