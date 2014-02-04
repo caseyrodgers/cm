@@ -172,7 +172,7 @@ public class FixupPrematureTestAdvanced {
                 ResultSet rs = conn.createStatement().executeQuery("select aid from HA_ADMIN ORDER BY aid desc");
                 while(rs.next()) {
                     int adminId = rs.getInt("aid");
-                    fte.findTestErrorsFor(adminId, false);
+                    fte.findTestErrorsFor(adminId, true);
                 }
             }
         }
