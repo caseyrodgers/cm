@@ -27,6 +27,8 @@ public class FixupPrematureTestAdvanced {
         while(rs.next()) {
             int uid = rs.getInt("uid");
             int progId = rs.getInt("user_prog_id");
+            int activeTestRun = rs.getInt("active_run_id");
+            
             lookForErrorsInUser(adminId, uid, progId, doUpdate);
         }
         
@@ -101,7 +103,8 @@ public class FixupPrematureTestAdvanced {
                             System.out.println("Error Found -> aid: " + adminId + " uid: " + uid + ", date: " + date + ", test_id: " + thisTestId + ", test_run: " + thisRunId + ", percent: " + percent + ", Segment To Return: " + segToReturnTo);
                             
                             if(doUpdate) {
-                                fixIt(uid, segToReturnTo);
+                                int testIdToDelete = valsLast[3];
+                                fixIt(uid, testIdToDelete, segToReturnTo);
                             }
                         }
                     }
@@ -115,12 +118,26 @@ public class FixupPrematureTestAdvanced {
     }
 
 
-    private void fixIt(int uid, int segToReturnTo) throws Exception {
+    private void fixIt(int uid, int testIdToDelete, int segToReturnTo) throws Exception {
         try {
             String sql = "update HA_USER set active_run_id = 0, active_test_id = 0, active_segment = " + segToReturnTo + " where uid = " + uid;
             int res = conn.createStatement().executeUpdate(sql);
             if(res != 1) {
                 System.out.println("Update was not successful");
+            }
+            
+
+            sql = "delete from HA_TEST_RUN where test_id = " + testIdToDelete;
+            res = conn.createStatement().executeUpdate(sql);
+            if(res != 1) {
+                System.out.println("test_run was not delete");
+            }
+            
+            
+            sql = "delete from HA_TEST where test_id = " + testIdToDelete;
+            res = conn.createStatement().executeUpdate(sql);
+            if(res != 1) {
+                System.out.println("test was not delete");
             }
             
         }
@@ -149,7 +166,7 @@ public class FixupPrematureTestAdvanced {
             FixupPrematureTestAdvanced fte = new FixupPrematureTestAdvanced(conn);
             
             if(adminIdToCheck > 0) {
-                fte.findTestErrorsFor(adminIdToCheck, false);
+                fte.findTestErrorsFor(adminIdToCheck, true);
             }
             else {
                 ResultSet rs = conn.createStatement().executeQuery("select aid from HA_ADMIN ORDER BY aid desc");
