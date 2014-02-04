@@ -374,6 +374,17 @@ public class ShowWorkPanel2 extends Composite {
                 return;
             }
             
+            
+            try {
+                var templates = {"type":"img","path":"./","icon":"tn-","list":["temp_integral.png"]};
+                $wnd._theWhiteboard.appendTemplates(templates);
+            }
+            catch(e) {
+                alert('error assigning whiteboard templates');
+            }
+            
+            
+            
             $wnd._theWhiteboard = new $wnd.Whiteboard(whiteboardId, isStatic);
             $wnd._theWhiteboard.initWhiteboard($doc);
 
