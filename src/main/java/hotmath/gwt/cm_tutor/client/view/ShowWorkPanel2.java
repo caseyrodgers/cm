@@ -28,12 +28,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * TODO: replace ShowWorkPanel
- * 
+ *
  * Provides an overlay over existing tutor panel.
- * 
- * 
+ *
+ *
  * @author casey
- * 
+ *
  */
 public class ShowWorkPanel2 extends Composite {
     static public ShowWorkPanel2 __lastInstance;
@@ -53,7 +53,7 @@ public class ShowWorkPanel2 extends Composite {
     private String whiteboardId;
 
     private int whiteboardHeight;
-    
+
     private Widget parentWidget;
 
 
@@ -64,17 +64,17 @@ public class ShowWorkPanel2 extends Composite {
     public ShowWorkPanel2(ShowWorkPanel2Callback whiteboardOutCallback, boolean setupWhiteboardNow) {
         this(whiteboardOutCallback,setupWhiteboardNow,true, "whiteboard-1", 0, null);
     }
-    
+
     public ShowWorkPanel2(ShowWorkPanel2Callback whiteboardOutCallback, boolean setupWhiteboardNow, boolean isInteractive, String whiteboardId, int height, Widget parentWidget) {
         this._whiteboardOutCallback = whiteboardOutCallback;
         this._interactive = isInteractive;
         this.whiteboardId = whiteboardId;
         this.whiteboardHeight = height;  // if zero, calculate based on parent
         this.parentWidget = parentWidget; // if null, get parent
-        
+
         String html = "<div id='" + this.whiteboardId + "'></div>";
         initWidget(new HTML(html));
-        
+
         addStyleName("ShowWorkPanel2");
 
         if (setupWhiteboardNow) {
@@ -99,14 +99,14 @@ public class ShowWorkPanel2 extends Composite {
         }
     }
 
-    
+
     private Widget getParentWidget() {
         return parentWidget != null?parentWidget:getWidget();
     }
-    
+
     /**
      * Call after the whiteboard had been inserted into DOM
-     * 
+     *
      */
     public void setupWhiteboard() {
         /** execute initialize only after HTML is loaded */
@@ -175,7 +175,7 @@ public class ShowWorkPanel2 extends Composite {
 
     /**
      * send an array of commands to whiteboard.
-     * 
+     *
      * Each element in array is a command and an array of data.
      */
     private void jsni_updateWhiteboard(String whiteboardId, String command, String commandData) {
@@ -185,7 +185,7 @@ public class ShowWorkPanel2 extends Composite {
         }
         CmGwtUtils.jsni_updateWhiteboardAux(null, command, commandData);
     }
-  
+
 
     protected void whiteboardSave_Gwt() {
         saveWhiteboardToServer();
@@ -222,11 +222,11 @@ public class ShowWorkPanel2 extends Composite {
             }
             commandType = CommandType.CLEAR;
         } else if (json.equals("undo")) {
-            
+
             jsni_enableWhiteboardUndo(false);
-            
+
             Log.debug("Whiteboard Undo: disabling undo button");
-            
+
             commandType = CommandType.UNDO;
 
             if (_lastCommands != null && _lastCommands.size() > 0) {
@@ -237,7 +237,7 @@ public class ShowWorkPanel2 extends Composite {
                     return;
                 }
                 _lastCommands.remove(_lastCommands.size() - 1); // remove last
-                
+
                 Log.debug("Whiteboard Undo: _lastCommands size == " + _lastCommands.size());
                                                                 // element
                 loadWhiteboard(_lastCommands);
@@ -279,14 +279,14 @@ public class ShowWorkPanel2 extends Composite {
         }
         else {
             $wnd._theWhiteboard.disableUndo();
-        }    
+        }
     }-*/;
 
     /**
      * Provide generate way to load data externally.
-     * 
+     *
      * Always clears before processing
-     * 
+     *
      * @param commands
      */
     public void loadWhiteboard(List<WhiteboardCommand> commands) {
@@ -311,7 +311,7 @@ public class ShowWorkPanel2 extends Composite {
     private void saveWhiteboardToServer() {
 
         Log.debug("saveWhiteboardToServer: actions=" + whiteboardActions.getActions().size());
-        
+
         if (whiteboardActions.getActions().size() == 0)
             return;
 
@@ -321,7 +321,7 @@ public class ShowWorkPanel2 extends Composite {
 
                 Log.debug("saveWhiteboardToServer: complete");
                 whiteboardActions.getActions().clear();
-                
+
                 jsni_enableWhiteboardUndo(true);
             }
 
@@ -333,26 +333,26 @@ public class ShowWorkPanel2 extends Composite {
             }
         });
     }
-    
-    
+
+
     private void whiteboardDelete_Gwt(int index) {
         _lastCommands.remove(index);
-        
-        /** callback to get needed indexing information 
+
+        /** callback to get needed indexing information
          * (ie, each app will have different needs)
          */
         SaveWhiteboardDataAction action = (SaveWhiteboardDataAction)_whiteboardOutCallback.createWhiteboardSaveAction(pid,  CommandType.DELETE, index + "");
         action.setIndex(index);
         whiteboardActions.getActions().add(action);
     }
-    
+
 
     private native void jsni_initializeWhiteboard(String whiteboardId, Element ele, boolean isStatic, int heightIn)/*-{
-    
+
         var that = this;
         try {
             $wnd.console.log('Initializing whiteboard: ' + whiteboardId);
-            
+
             if (typeof $wnd.Whiteboard == 'undefined') {
                 alert('Whiteboard JS is not loaded');
                 return;
@@ -366,32 +366,34 @@ public class ShowWorkPanel2 extends Composite {
               // $wnd._theWhiteboard.releaseResources();
               $wnd._theWhiteboard = null;
             }
-            
+
             //new $wnd.Whiteboard();
             $wnd._theWhiteboardDiv = $doc.getElementById(whiteboardId);
             if($wnd._theWhiteboardDiv == null) {
                 alert('whiteboard not found: ' + whiteboardId);
                 return;
             }
-            
-            
-            try {
-                var templates = {"type":"img","path":"./","icon":"tn-","list":["temp_integral.png"]};
-                $wnd._theWhiteboard.appendTemplates(templates);
-            }
-            catch(e) {
-                alert('error assigning whiteboard templates');
-            }
-            
-            
-            
+
+
+
+
             $wnd._theWhiteboard = new $wnd.Whiteboard(whiteboardId, isStatic);
             $wnd._theWhiteboard.initWhiteboard($doc);
 
 
+            try {
+                //var templates = {"type":"img","path":"./","icon":"tn-","list":["temp_integral.png"]};
+                //$wnd._theWhiteboard.appendTemplates(templates);
+            }
+            catch(e) {
+                //alert('error assigning whiteboard templates: ' + e);
+            }
+
+
+
             // tell the Whiteboard object the size of the parent container
             // if height is passed in use it, otherwise calculate based on parent
-              
+
             var height=0;
             if(heightIn) {
                 height = heightIn;
@@ -400,7 +402,7 @@ public class ShowWorkPanel2 extends Composite {
                 height = Number($wnd.grabComputedHeight(ele)) + 15;
             }
             var width = Number($wnd.grabComputedWidth(ele)) + 15;
-            
+
             //alert('setting whiteboard size: ' + height + ', ' + width);
             $wnd._theWhiteboard.setWhiteboardViewPort(width, height);
 
@@ -408,15 +410,15 @@ public class ShowWorkPanel2 extends Composite {
             $wnd._theWhiteboard.whiteboardOut = function (data, boo) {
                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
             }
-        
+
             $wnd._theWhiteboard.whiteboardDelete = function (indexToDelete) {
                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardDelete_Gwt(I)(indexToDelete);
             }
-        
+
             $wnd._theWhiteboard.saveWhiteboard = function () {
                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardSave_Gwt()();
             }
-                                                          
+
             $wnd._theWhiteboard.whiteboardIsReady = function() {
                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardIsReady()();
             }
@@ -431,10 +433,10 @@ public class ShowWorkPanel2 extends Composite {
             $wnd.console.log('jnsi_resizeWhiteboard: Whiteboard not defined');
             return;
         }
-                                                          
+
         // tell the Whiteboard object the size of the parent container
-         
-        
+
+
         var height=0;
         if(heightIn == 0) {
             height = Number($wnd.grabComputedHeight(ele)) + 15;
@@ -443,7 +445,7 @@ public class ShowWorkPanel2 extends Composite {
             height = heightIn;
         }
         var width = Number($wnd.grabComputedWidth(ele)) + 15;
-                                                          
+
         $wnd._theWhiteboard.setWhiteboardViewPort(width, height);
         $wnd._theWhiteboard.resizeWhiteboard();
      }-*/;
@@ -473,9 +475,9 @@ public class ShowWorkPanel2 extends Composite {
         /**
          * Create the appropriate action added to list of commands saved for
          * this whiteboard
-         * 
+         *
          * Return null for no save operation.
-         * 
+         *
          * @param commandType
          * @param data
          */
@@ -483,13 +485,13 @@ public class ShowWorkPanel2 extends Composite {
 
         /**
          * Indicate the whiteboard is ready for operation
-         * 
+         *
          */
         void showWorkIsReady(ShowWorkPanel2 showWork);
 
         /**
          * Fired when the window has been resized
-         * 
+         *
          */
         void windowResized();
 
@@ -497,9 +499,9 @@ public class ShowWorkPanel2 extends Composite {
 
     /**
      * no op dummy proxy
-     * 
+     *
      * @author casey
-     * 
+     *
      */
     static public class ShowWorkPanelCallbackDefault implements ShowWorkPanel2Callback {
 
