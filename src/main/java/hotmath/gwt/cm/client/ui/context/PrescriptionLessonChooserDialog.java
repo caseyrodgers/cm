@@ -4,6 +4,7 @@ import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
+import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
@@ -11,6 +12,8 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -23,6 +26,7 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -31,6 +35,7 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -287,6 +292,32 @@ public class PrescriptionLessonChooserDialog extends GWindow {
         CmLogger.debug("Correct percent: " + correctPercent + ", " + passPercentRequired);
 
         if (UserInfo.getInstance().isCustomProgram() || correctPercent >= passPercentRequired) {
+            
+            
+            /** DEBUGGING ... save state on each each move to next segment
+             * 
+             */
+            String comments = "Correct percent: " + correctPercent + ", " + passPercentRequired;
+            comments += ", isCustom: " + UserInfo.getInstance().isCustomProgram();
+            
+            SaveFeedbackAction action = new SaveFeedbackAction(comments, "move_next_quiz_segment", "uid: " + UserInfo.getInstance().getUid() );
+            CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
+                @Override
+                public void onSuccess(RpcData result) {
+                    Log.info("Debug message saved");
+                }
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    Log.error("Error saving debug message", caught);
+                }
+            });
+            ////
+            // END DEBUGGING /////
+            ////////////////////// 
+           
+            
+            
             /**
              * user passed the quiz
              * 
