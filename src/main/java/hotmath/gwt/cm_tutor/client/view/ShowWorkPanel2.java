@@ -380,7 +380,6 @@ public class ShowWorkPanel2 extends Composite {
             $wnd._theWhiteboard = new $wnd.Whiteboard(whiteboardId, isStatic);
             $wnd._theWhiteboard.initWhiteboard($doc);
 
-
             try {
                 //var templates = {"type":"img","path":"./","icon":"tn-","list":["temp_integral.png"]};
                 //$wnd._theWhiteboard.appendTemplates(templates);
@@ -388,8 +387,6 @@ public class ShowWorkPanel2 extends Composite {
             catch(e) {
                 //alert('error assigning whiteboard templates: ' + e);
             }
-
-
 
             // tell the Whiteboard object the size of the parent container
             // if height is passed in use it, otherwise calculate based on parent

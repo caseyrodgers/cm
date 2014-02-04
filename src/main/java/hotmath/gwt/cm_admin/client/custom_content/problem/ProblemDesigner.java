@@ -29,6 +29,7 @@ import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -36,28 +37,46 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class ProblemDesigner extends Composite {
     
+    static private ProblemDesigner __lastInstance;
+    
     BorderLayoutContainer _main;
     SolutionInfo _solutionInfo;
     private TutorWrapperPanel _tutorWrapper;
     private SolutionMeta _solutionMeta;
     ContentPanel _problemPanel = new ContentPanel();
 
+    static private ToggleButton _editMode;
     public ProblemDesigner() {
-        
+        __lastInstance = this;
+
+        if(_editMode == null) {
+            _editMode = new ToggleButton("Edit Mode");
+            _editMode.setValue(true);
+            _editMode.addSelectHandler(new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    __lastInstance.loadProblem();
+                }
+            });
+        }
         setupJsniHooks();
         
         _main = new BorderLayoutContainer();
         _main.setCenterWidget(new DefaultGxtLoadingPanel());
         
-        
+
+        _problemPanel.addTool(_editMode);
         _problemPanel.addTool(new TextButton("Add Step/Hint", new SelectHandler() {
-            
             @Override
             public void onSelect(SelectEvent event) {
                 addNewHintStep();
             }
         }));
         initWidget(_main);
+    }
+    
+    public SolutionMeta getSolutionMeta() {
+        return _solutionMeta;
     }
 
     protected void addNewHintStep() {
@@ -96,6 +115,9 @@ public class ProblemDesigner extends Composite {
         }.register();
     }
     
+    private void loadProblem() {
+        loadProblem(_solutionInfo, _solutionMeta);   
+    }
     
     
     CallbackOnComplete callback = new CallbackOnComplete() {
@@ -256,16 +278,17 @@ public class ProblemDesigner extends Composite {
 
         _tutorWrapper.externallyLoadedTutor(solution, getWidget(), "", "Solution Title", false, true, null);
 
-        jsni_SetupStepEditHooks();
-        
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-            @Override
-            native public void execute() /*-{
-                if($wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue) {
-                    $wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue();
-                }
-            }-*/;
-        });
+        if(_editMode.getValue()) {
+            jsni_SetupStepEditHooks();
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                @Override
+                native public void execute() /*-{
+                    if($wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue) {
+                        $wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue();
+                    }
+                }-*/;
+            });
+        }
     }
 
     static public class GwtTestUi implements CmGwtTestUi {
@@ -276,5 +299,9 @@ public class ProblemDesigner extends Composite {
             new ProblemDesigner().loadProblem(testPid);
         }
     }
+
+    public SolutionInfo getSolutionInfo() {
+        return _solutionInfo;
+   }
 
 }
