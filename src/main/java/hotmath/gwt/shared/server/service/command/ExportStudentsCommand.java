@@ -63,8 +63,8 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 	
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
-	private static final String ADMIN_EMAIL = "admin@hotmath.com";
-	private static final String DEFAULT_REP_EMAIL = "thamilton@hotmath.com";
+	private static final String ADMIN_EMAIL = "admin@catchupmath.com";
+	private static final String DEFAULT_REP_EMAIL = "thamilton@catchupmath.com";
 
 	private boolean runInSeparateThread = true;
 
@@ -98,7 +98,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 	    	new ExportStudentDataRunnable(action.getPageAction().getAdminId(), studentList, action.getEmailAddress(), filterDescr,
 	    			action.getLevelName(), action.getFromDate(), action.getToDate());
 
-	    if (runInSeparateThread) {
+	    if (runInSeparateThread == true) {
             Thread t = new Thread(exportRunnable);
             t.start();
 	    }
@@ -268,7 +268,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 			    }
     			if(emailAddr != null) {
 	    			SbMailManager.getInstance().sendFile(filePath.getPath(), subjBuff.toString(),
-	    					msgBuff.toString(), toEmailAddrs, "registration@hotmath.com");
+	    					msgBuff.toString(), toEmailAddrs, "registration@catchupmath.com");
     			}
     		}
     		catch (Exception e) {
@@ -278,7 +278,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 	    			    SbMailManager.getInstance().sendMessage(subjBuff.append(" ERROR").toString(),
 	    					"Sorry, there was a problem generating your export file.  We will identify and fix the problem as soon as possible." +
 	    			        "\n\n The CatchupMath Team",
-	    					toEmailAddrs, "registration@hotmath.com");
+	    					toEmailAddrs, "registration@catchupmath.com");
     				}
     				catch (Exception sbe) {
     	    			LOG.error("*** Exception mailing student data export error email ***", sbe);    					
@@ -292,10 +292,10 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     	    				toEmailAddrs[0] = DEFAULT_REP_EMAIL;
     	    			}
     					toEmailAddrs[1] = ADMIN_EMAIL;
-    					toEmailAddrs[2] = "bobhall@hotmath.com";
+    					toEmailAddrs[2] = "bobhall@catchupmath.com";
 	    			    SbMailManager.getInstance().sendMessage(subjBuff.append(" ERROR").toString(),
 	    					"There was a problem generating an export file for Admin UID: " + adminUid,
-	    					toEmailAddrs, "errors@hotmath.com");
+	    					toEmailAddrs, "errors@catchupmath.com");
     				}
     				catch (Exception sbe) {
     	    			LOG.error("*** Exception mailing internal student data export error email ***", sbe);    					
@@ -310,7 +310,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     						adminUid, sw.toString());
     				try {
     					SbMailManager.getInstance().sendMessage("CM Export File ERROR details", message,
-    							"errors@hotmath.com", "errors@hotmath.com",
+    							"errors@catchupmath.com", "errors@catchupmath.com",
     							"text/plain");
     				} catch (Exception ex) {
     					LOG.error("Could not send error notification email", ex);
