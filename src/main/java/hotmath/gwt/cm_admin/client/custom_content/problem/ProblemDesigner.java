@@ -257,7 +257,7 @@ public class ProblemDesigner extends Composite {
     protected void loadProblem(final SolutionInfo solution, SolutionMeta solutionMeta) {
         _solutionInfo = solution;
         _solutionMeta = solutionMeta;
-        _tutorWrapper = new TutorWrapperPanel(false, false, false, false, new TutorCallbackDefault() {
+        _tutorWrapper = new TutorWrapperPanel(!_editMode.getValue(), false, false, false, new TutorCallbackDefault() {
             @Override
             native public void solutionHasBeenInitialized() /*-{
                                                  
@@ -276,7 +276,8 @@ public class ProblemDesigner extends Composite {
         _main.setCenterWidget(_problemPanel);
         _main.forceLayout();
 
-        _tutorWrapper.externallyLoadedTutor(solution, getWidget(), "", "Solution Title", false, true, null);
+        boolean shouldExpand = _editMode.getValue();
+        _tutorWrapper.externallyLoadedTutor(solution, getWidget(), "", "Solution Title", false, shouldExpand, null);
 
         if(_editMode.getValue()) {
             jsni_SetupStepEditHooks();

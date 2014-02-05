@@ -206,8 +206,9 @@ public class CmSolutionManagerDao {
     static TutorProperties __tutorProps = new TutorProperties();
     static {
         try {
+            HotMathProperties.getInstance().getPropertiesObject().put("velocity.template.dir",  CatchupMathProperties.getInstance().getHotMathTutorTemplateDir());
             __creator = new SolutionHTMLCreatorIimplVelocity(__tutorProps.getTemplate(), __tutorProps.getTutor());
-        } catch (HotMathException hme) {
+        } catch (Exception hme) {
             HotMathLogger.logMessage(hme, "Error creating solution creator: " + hme);
         }
     }

@@ -72,7 +72,7 @@ public class ProblemDesignerEditorHintStep extends GWindow {
     
 
     private void doSave() {
-        if(_hintField.getValue().length() == 0 || _stepField.getValue().length() == 0) {
+        if(_hintField.getValue() == null || _stepField.getValue() == null || _hintField.getValue().length() == 0 || _stepField.getValue().length() == 0) {
             CmMessageBox.showAlert("Both hint and step must be specified");
             return;
         }

@@ -1,5 +1,6 @@
 package hotmath.cm.util;
 
+import hotmath.HotMathProperties;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.shared.client.util.CmException;
@@ -126,5 +127,15 @@ public class CatchupMathProperties extends Properties {
      */
     public String getCmInstallationId() {
         return getProperty("cm.installation","default");
+    }
+
+    
+    /** Return the path to the tutor template used
+     *  when writing static solutions
+     *  
+     * @return
+     */
+    public Object getHotMathTutorTemplateDir() {
+        return getProperty("catchup.tutor_templates", HotMathProperties.getInstance().getVelocityTemplateDir());
     }
 }
