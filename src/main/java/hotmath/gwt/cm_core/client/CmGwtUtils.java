@@ -296,7 +296,7 @@ public class CmGwtUtils {
     }-*/;
     
     
-    /** White to a whiteboard object.
+    /** Write to a whiteboard object.
      * 
      *  If whiteboard is null, then the last created whitebaord
      *  which is stored in _theWhiteboard is used.  Otherwise,

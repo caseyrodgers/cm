@@ -215,8 +215,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
     /** Return list of question HTML for custom quiz
      * 
      * @param conn
-     * @param adminId
-     * @param cqName
+     * @param customQuizId
      * @return
      * @throws Exception
      */
@@ -341,9 +340,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
      *
      * TODO: return List instead of CmList
      * 
-     * @param conn
-     * @param adminId
-     * @param cqName
+     * @param customQuizId
      * @return
      * @throws Exception
      */
