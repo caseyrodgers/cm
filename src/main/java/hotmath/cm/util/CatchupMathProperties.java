@@ -135,7 +135,7 @@ public class CatchupMathProperties extends Properties {
      *  
      * @return
      */
-    public Object getHotMathTutorTemplateDir() {
-        return getProperty("catchup.tutor_templates", HotMathProperties.getInstance().getVelocityTemplateDir());
+    public String getHotMathHome() {
+        return getProperty("hotmath.home", HotMathProperties.getInstance().getHotMathHome());
     }
 }

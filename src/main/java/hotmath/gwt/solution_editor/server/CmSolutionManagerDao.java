@@ -22,6 +22,17 @@ import java.sql.ResultSet;
 import sb.util.MD5;
 
 public class CmSolutionManagerDao {
+    
+
+    static SolutionHTMLCreatorIimplVelocity __creator;
+    static TutorProperties __tutorProps = new TutorProperties();
+    public CmSolutionManagerDao() throws Exception {
+        if(__creator == null) {
+            HotMathProperties.getInstance().getPropertiesObject().put("velocity.template.dir",  CatchupMathProperties.getInstance().getHotMathHome());
+            __creator = new SolutionHTMLCreatorIimplVelocity(__tutorProps.getTemplate(), __tutorProps.getTutor()); // CatchupMathProperties.getInstance().getHotMathTutorTemplateDir());
+        }
+    }
+    
     public String getSolutionXml(final Connection conn, String pid) throws Exception {
         PreparedStatement ps=null;
         try {
@@ -202,14 +213,4 @@ public class CmSolutionManagerDao {
         return new XmlFormatter().format(xml);
     }
 
-    static SolutionHTMLCreatorIimplVelocity __creator;
-    static TutorProperties __tutorProps = new TutorProperties();
-    static {
-        try {
-            HotMathProperties.getInstance().getPropertiesObject().put("velocity.template.dir",  CatchupMathProperties.getInstance().getHotMathTutorTemplateDir());
-            __creator = new SolutionHTMLCreatorIimplVelocity(__tutorProps.getTemplate(), __tutorProps.getTutor());
-        } catch (Exception hme) {
-            HotMathLogger.logMessage(hme, "Error creating solution creator: " + hme);
-        }
-    }
 }
