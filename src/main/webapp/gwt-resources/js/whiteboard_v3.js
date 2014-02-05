@@ -5761,10 +5761,10 @@ source: https://gist.github.com/754454
        
     }
 	wb.saveAsTemplate=function(){
-	gwt_saveWhiteboardAsTemplate();
+	wb.gwt_saveWhiteboardAsTemplate();
 	}
-	function gwt_saveWhiteboardAsTemplate(){
-	return wb.getWhiteboardAsTemplate()
+	wb.gwt_saveWhiteboardAsTemplate=function(){
+	gwt_saveWhiteboardAsTemplate();
 	}
 	wb.getWhiteboardAsTemplate=function(){
 	return wb.saveSelToImage()
