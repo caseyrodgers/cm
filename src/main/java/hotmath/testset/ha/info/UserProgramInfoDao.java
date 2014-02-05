@@ -72,7 +72,7 @@ public class UserProgramInfoDao {
     /** Return list of user program info objects that describe all students under this admin user
      * 
      * @param conn
-     * @param adminId
+     * @param userId
      * @return
      * @throws Exception
      */
