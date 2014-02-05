@@ -93,9 +93,16 @@ var Whiteboard = function (cont, isStatic) {
     var opts = {
         "templates": [{
             "type": "img",
-            "path": "/gwt-resources/images/whiteboard/",
+            "path": "./",
             "icon": "tn-",
             "list": ["nL.png", "gr2D.png"]
+        },
+		{
+            "type": "system",
+            "path": "./",
+            "icon": "tn-",
+			"opts":[{"scope":"whiteboard","function":"saveAsTemplate"}],
+            "list": ["Save"]
         }]
     }
     wb.options = opts;
@@ -429,8 +436,8 @@ var Whiteboard = function (cont, isStatic) {
                     y0 = y0 ? y0 : selectedObj.brect.ymin
                     w0 = w0 ? w0 : selectedObj.brect.w
                     h0 = h0 ? h0 : selectedObj.brect.h
-                    var cx = x0 + (w0 / 2) - scrollPosition.x;
-                    var cy = y0 + (h0 / 2) - scrollPosition.y;
+                    var cx = x0 + (w0 / 2) 
+                    var cy = y0 + (h0 / 2) 
                     context.translate(cx, cy);
                     context.rotate(isRotated.tr);
                     context.translate(-cx, -cy);
@@ -467,8 +474,8 @@ var Whiteboard = function (cont, isStatic) {
                     y0 = y0 ? y0 : selectedObj.brect.ymin
                     w0 = w0 ? w0 : selectedObj.brect.w
                     h0 = h0 ? h0 : selectedObj.brect.h
-                    var cx = x0 + (w0 / 2) - scrollPosition.x;
-                    var cy = y0 + (h0 / 2) - scrollPosition.y;
+                    var cx = x0 + (w0 / 2) 
+                    var cy = y0 + (h0 / 2)
                     context.translate(cx, cy);
                     context.rotate(isRotated.tr);
                     context.translate(-cx, -cy);
@@ -502,8 +509,8 @@ var Whiteboard = function (cont, isStatic) {
                 y0 = y0 ? y0 : selectedObj.brect.ymin
                 w0 = w0 ? w0 : selectedObj.brect.w
                 h0 = h0 ? h0 : selectedObj.brect.h
-                var cx = x0 + (w0 / 2) - scrollPosition.x;
-                var cy = y0 + (h0 / 2) - scrollPosition.y;
+                var cx = x0 + (w0 / 2) 
+                var cy = y0 + (h0 / 2) 
                 context.translate(cx, cy);
                 context.rotate(obj.tr);
                 context.translate(-cx, -cy);
@@ -554,7 +561,7 @@ var Whiteboard = function (cont, isStatic) {
             }
             console.log("scaleRatio:" + w + ":" + h + "||" + a + ":" + b)
             return {
-                h: -(h * a + w * b),
+                h: (h * a - w * b),
                 w: h * b + w * a
             }
         }
@@ -969,6 +976,7 @@ var Whiteboard = function (cont, isStatic) {
             updateBuffer()
             return _arr
         }
+		
 
         function updateMultiSelectRect() {
             var l = selectedObjects.length;
@@ -1033,7 +1041,77 @@ var Whiteboard = function (cont, isStatic) {
             }
 
         }
+function getWhiteboardObjBound(flag) {
+var objs=graphicDataStore;
+if(flag=='msel'){
+objs=selectedObjects
+}else if(flag=='sel'){
+objs=[selectedObj]
+}
+            var l = objs.length;
+            var mSelRect = null;
+            for (var i = 0; i < l; i++) {
+                var obj = objs[i]
+				var isCmd = obj.type === 'cmd'
+        var isDeleted = isObjDeleted(obj.uid);
+                if (isDeleted||isCmd||obj.id===0) {
+                    continue
+                }
+                if (true) {
+                    var r1 = obj.brect;
+                    var rect = cloneObject(r1);
+                    var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
+                    var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
+                    var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
+                    var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(obj.uid)
+                    if (isTransformed) {
+                        if (isMoved) {
+                            rect = cloneObject(isMoved.trect);
 
+                        }
+                        if (isScaled) {
+                            var dw = isScaled.tx
+                            var dh = isScaled.ty
+                            transformRect(rect, dw, dh, 'scale')
+
+                        }
+                        if (isRotated) {
+                            transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+                        }
+
+
+                    }
+                    transformRect(rect, scrollPosition.x, scrollPosition.y);
+                    if (!mSelRect) {
+                        mSelRect = {
+                            xmin: rect.xmin,
+                            ymin: rect.ymin,
+                            xmax: rect.xmax,
+                            ymax: rect.ymax
+                        }
+                    }
+                    mSelRect.xmin = rect.xmin < mSelRect.xmin ? rect.xmin : mSelRect.xmin;
+                    mSelRect.ymin = rect.ymin < mSelRect.ymin ? rect.ymin : mSelRect.ymin;
+                    mSelRect.xmax = rect.xmax > mSelRect.xmax ? rect.xmax : mSelRect.xmax;
+                    mSelRect.ymax = rect.ymax > mSelRect.ymax ? rect.ymax : mSelRect.ymax;
+
+                }
+            }
+			var bound={
+                    tx: mSelRect.xmin,
+                    ty: mSelRect.ymin,
+                    brect: {
+					xmin: mSelRect.xmin,
+                    ymin: mSelRect.ymin,
+					xmax: mSelRect.xmax,
+                    ymax: mSelRect.ymax,
+                        w: mSelRect.xmax - mSelRect.xmin,
+                        h: mSelRect.ymax - mSelRect.ymin
+                    }
+                }
+			return bound
+
+        }
         function contains(rect, xp, yp) {
             if (xp >= rect.xmin - 1 && xp <= rect.xmax + 1 && yp >= rect.ymin - 1 && yp <= rect.ymax + 1) {
                 return true
@@ -1622,12 +1700,20 @@ var Whiteboard = function (cont, isStatic) {
         var temp;
         for (var i = 0; i < tempsD.length; i++) {
             temp = tempsD[i]
+			var type=temp.type?temp.type:'img'
             var list = temp.list
             var path = temp.path
-            var icon = temp.icon ? temp.icon : "tn-"
+            var icon = temp.icon ? temp.icon : "tn-";
+			var opts=temp.opts;
             for (var j = 0; j < list.length; j++) {
                 var obj = {}
-                obj.icon = path + icon + list[j]
+				obj.type=type
+				var ext=""
+				if(type!='img'){
+				obj.opts=opts[j];
+				ext=".png"
+				}
+                obj.icon = path + icon + list[j]+ext
                 obj.url = path + list[j]
                 obj.name = obj.title = list[j].split(".")[0]
                 temps.push(obj);
@@ -1653,10 +1739,16 @@ var Whiteboard = function (cont, isStatic) {
         var arr = prepareTemplatesMenu(json)
 
         var divObj = $get_jqElement("#temp_cont");
+		var saveBtn=divObj.find("[name='Save']")
         var temp
         for (var k = 0; k < arr.length; k++) {
             temp = createTempBtn(arr[k])
-            temp.appendTo(divObj).css("margin", "4px");
+			if(saveBtn.length){
+			temp.insertBefore(saveBtn).css("margin", "4px");
+			}else{
+			temp.appendTo(divObj).css("margin", "4px");
+			}
+            
         }
         return divObj
 
@@ -1668,7 +1760,7 @@ var Whiteboard = function (cont, isStatic) {
             name: obj.name,
             path: obj.url,
             text: ""
-        }).addClass('big_tool_button')
+        }).addClass('small_tool_button')
             .css({
                 "background-image": "url(" + obj.icon + ")",
                 "background-repeat": "no-repeat",
@@ -1677,11 +1769,28 @@ var Whiteboard = function (cont, isStatic) {
                 var temp = $(this)
                 var name = temp.attr('name');
                 var path = temp.attr('path');
+				var type=temp.data('type');
+				if(type=='img'){
                 loadTemplate({
                     name: name,
                     path: path
                 });
+				}else if(type=='system'){
+				var opts=temp.data('opts');
+				var scope=opts['scope'];
+				scope=scope=='whiteboard'?wb:scope;
+				var fname=opts['function'];
+				if(scope=='global'){
+				fname()
+				}else{
+				scope[fname]()
+				}
+				}
             });
+			btn.data('type',obj.type)
+			if(obj.type!='img'){
+			btn.data('opts',obj.opts)
+			}
         return btn;
     }
 
@@ -3338,8 +3447,8 @@ var Whiteboard = function (cont, isStatic) {
                                 }
                                 var cx = rect.xmin + rect.w / 2
                                 var cy = rect.ymin + rect.h / 2
-                                var dsx = x - cx
-                                var dsy = y - cy
+                                var dsx = x - cx-scrollPosition.x
+                                var dsy = y - cy-scrollPosition.y
                                 clickR = Math.atan2(dsy, dsx)
                             }
                             if (isTransformed) {
@@ -3502,8 +3611,8 @@ var Whiteboard = function (cont, isStatic) {
                                 }
                                 var cx = rect.xmin + rect.w / 2
                                 var cy = rect.ymin + rect.h / 2
-                                var dsx = x - cx
-                                var dsy = y - cy
+                                var dsx = x - cx-scrollPosition.x
+                                var dsy = y - cy-scrollPosition.y
                                 dr = -clickR + Math.atan2(dsy, dsx)
                             }
                             if (transMode == 'scale' && isRotated) {
@@ -3767,8 +3876,8 @@ var Whiteboard = function (cont, isStatic) {
                                 }
                                 var cx = rect.xmin + rect.w / 2
                                 var cy = rect.ymin + rect.h / 2
-                                var dsx = x - cx
-                                var dsy = y - cy
+                                var dsx = x - cx-scrollPosition.x
+                                var dsy = y - cy-scrollPosition.y
                                 dr = -clickR + Math.atan2(dsy, dsx)
                             }
                             if (transMode == 'scale' && isRotated) {
@@ -5109,13 +5218,22 @@ source: https://gist.github.com/754454
                 var dw = isRotated.tx
                 var dh = isRotated.ty
                 var r = isRotated.tr
-                var o = obj.brect
+                var o = obj.brect;
+				var spx=Math.abs(scrollPosition.x)
+				var spy=Math.abs(scrollPosition.y)
 
                 var cx = o.xmin + (o.w / 2)
                 var cy = o.ymin + (o.h / 2)
+				//ctx.save()
+				//ctx.translate(,-scrollPosition.y)
+				//ctx.save()
                 ctx.translate(cx, cy)
                 ctx.rotate(r);
                 ctx.translate(-cx, -cy)
+				//ctx.restore()
+				//ctx.translate(scrollPosition.x,scrollPosition.y)
+				
+				
                 //ctx.translate(isTransformed.tx, isTransformed.ty)
                 cx = 0
                 cy = 0
@@ -5512,7 +5630,11 @@ source: https://gist.github.com/754454
         return canvas_drawing_width + ", " + canvas_drawing_height;
     }
     wb.getContentSizeOfWhiteboard = function () {
-        return [canvas_drawing_width, canvas_drawing_height];
+	var bound=getWhiteboardObjBound()
+	canvas_drawing_width=bound.brect.xmax;
+	canvas_drawing_height=bound.brect.ymax;
+	var pad=5;
+        return [canvas_drawing_width+pad, canvas_drawing_height+pad];
     }
     wb.setSizeOfWhiteboard = function (w, h) {
         cwi = w;
@@ -5589,46 +5711,64 @@ source: https://gist.github.com/754454
     wb.saveSelToImage = function () {
         if (IS_IE8) {
             alert('Not supported')
-            return
+            return null
         }
-        var obj = selectedObj;
+		var mselobj=multiSelection?{
+                    tx: mSelRect.xmin,
+                    ty: mSelRect.ymin,
+                    brect: {
+					xmin: mSelRect.xmin,
+                    ymin: mSelRect.ymin,
+					xmax: mSelRect.xmax,
+                    ymax: mSelRect.ymax,
+                        w: mSelRect.xmax - mSelRect.xmin,
+                        h: mSelRect.ymax - mSelRect.ymin
+                    }
+                }:{}
+        //var obj = multiSelection?mselobj:selectedObj;
+		var obj ;
+
+		if(multiSelection){
+		obj=getWhiteboardObjBound('msel')
+		}else if(selectedObj){
+		obj=getWhiteboardObjBound('sel')
+		}else{
+		obj=getWhiteboardObjBound()
+		}
         var dcan = $('<canvas width="300" height="300"/>')[0];
         var rect = cloneObjectDeep(obj.brect);
         //
-        var isMoved = isObjTransformed(obj.uid, 'move');
-        var isScaled = isObjTransformed(obj.uid, 'scale');
-        var isRotated = isObjTransformed(obj.uid, 'rotate');
-        var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(graphicDataStore[i].uid)
-        if (isTransformed) {
-            if (isMoved) {
-                rect = cloneObject(isMoved.trect);
-            }
-            if (isRotated) {
-                transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
-            }
-            if (isScaled) {
-                var dw = isScaled.tx
-                var dh = isScaled.ty
-                if (isRotated && transMode != 'rotate') {
-                    /*var nr0=getScaleRatio(isScaled.tx,isScaled.ty,isRotated.tr)
-			dw=nr0.w
-			dh=nr0.h*/
-                }
-                transformRect(rect, dw, dh, 'scale')
-            }
-
-        }
+		
         //
-        dcan.width = rect.w + 4;
-        dcan.height = rect.h + 4;
+		var pad=10
+        dcan.width = rect.w + pad;
+        dcan.height = rect.h + pad;
         var dcontext = dcan.getContext('2d');
+		//selectionMode = false;
+		multiSelection=false;
+		mSelRect=null;
+		selectedObj=null;
         removeBoundRect()
-        var imageData = context.getImageData(rect.xmin - 2, rect.ymin - 2, rect.w + 4, rect.h + 4);
-        drawBoundRect(obj)
+        var imageData = context.getImageData(rect.xmin - (pad/2), rect.ymin - (pad/2), rect.w + pad, rect.h + pad);
+        //drawBoundRect(obj)
         dcontext.putImageData(imageData, 0, 0);
         var dataURL = dcan.toDataURL();
-        $('#canvasImg')[0].src = dataURL;
+		console.log(dataURL)
+		if($('#canvasImg')[0]){
+		 $('#canvasImg')[0].src = dataURL;
+		 }
+		return dataURL
+       
     }
+	wb.saveAsTemplate=function(){
+	gwt_saveWhiteboardAsTemplate();
+	}
+	function gwt_saveWhiteboardAsTemplate(){
+	return wb.getWhiteboardAsTemplate()
+	}
+	wb.getWhiteboardAsTemplate=function(){
+	return wb.saveSelToImage()
+	}
     wb.setTransModeScale = function () {
         transMode = transMode == 'scale' ? 'move' : 'scale';
     }
