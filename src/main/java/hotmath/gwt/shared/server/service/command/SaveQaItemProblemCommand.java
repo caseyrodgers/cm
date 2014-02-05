@@ -23,8 +23,8 @@ public class SaveQaItemProblemCommand implements ActionHandler<SaveQaItemProblem
         String message = action.getProblem();
         
         try {
-            String asTo[] = {"casey@hotmath.com","qa@hotmath.com"};
-            SbMailManager.getInstance().sendMessage(subject, message,asTo,"admin@hotmath.com");
+            String asTo[] = {"casey@catchupmath.com","qa@catchupmath.com"};
+            SbMailManager.getInstance().sendMessage(subject, message,asTo,"admin@catchupmath.com");
         }
         catch(Exception e) {
             e.printStackTrace();

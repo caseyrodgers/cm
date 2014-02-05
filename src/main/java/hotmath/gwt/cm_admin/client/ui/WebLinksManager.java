@@ -133,7 +133,7 @@ public class WebLinksManager extends GWindow {
         BorderLayoutContainer blc = new BorderLayoutContainer();
         blc.setCenterWidget(_grid4PublicLinks);
         blc.setSouthWidget(new HTML(
-                "<p style='margin: 5px 0 0 15px;color: #666;font-size: .8em'>To request a change to a public link, email support@hotmath.com.</p>"),
+                "<p style='margin: 5px 0 0 15px;color: #666;font-size: .8em'>To request a change to a public link, email support@catchupmath.com.</p>"),
                 new BorderLayoutData(25));
 
         _publicLinksPanel.setWidget(new DefaultGxtLoadingPanel());

@@ -242,11 +242,11 @@ public class ExportGradebookCommand implements ActionHandler<ExportGradebookActi
 
     			String[] toEmailAddrs = new String[2];
     			toEmailAddrs[0] = emailAddr;
-    			toEmailAddrs[1] = "admin@hotmath.com";
+    			toEmailAddrs[1] = "admin@catchupmath.com";
     			
     			if(emailAddr != null) {
 	    			SbMailManager.getInstance().sendFile(filePath.getPath(), "Your Catchup Math Grade Book Export File",
-	    					msgBuff.toString(), toEmailAddrs, "registration@hotmath.com");
+	    					msgBuff.toString(), toEmailAddrs, "registration@catchupmath.com");
     			}
     		}
     		catch (Exception e) {

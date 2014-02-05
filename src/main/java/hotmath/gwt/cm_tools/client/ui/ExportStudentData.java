@@ -176,7 +176,7 @@ public class ExportStudentData extends SimpleContainer {
 		return exportBtn;
 	}
 
-	String description1 = "An Excel spreadsheet containing student details, selected report card data, and topics and standards covered for your currently displayed students will be generated and sent from 'registration@hotmath.com' to the email address you provide.";
+	String description1 = "An Excel spreadsheet containing student details, selected report card data, and topics and standards covered for your currently displayed students will be generated and sent from 'registration@catchupmath.com' to the email address you provide.";
 	String description2 = "<br/><br/>If a strand is selected above, the standards not yet covered for that strand will also be listed.";
 	String description = description1 + description2;
 

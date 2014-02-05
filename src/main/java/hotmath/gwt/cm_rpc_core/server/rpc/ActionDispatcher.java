@@ -416,7 +416,7 @@ public class ActionDispatcher {
 	
 
 	/**
-	 * Send error notification to errors@hotmath.com to allow real time tracking
+	 * Send error notification to errors@catchupmath.com to allow real time tracking
 	 * of errors.
 	 * 
 	 * @param ex
@@ -451,7 +451,7 @@ public class ActionDispatcher {
 						+ "\n\n" + sw.toString();
 				try {
 					SbMailManager.getInstance().sendMessage(subject, message,
-							"errors@hotmath.com", "errors@hotmath.com",
+							"errors@catchupmath.com", "errors@catchupmath.com",
 							"text/plain");
 				} catch (Exception e) {
 					logger.error("Could not send error notification error", e);

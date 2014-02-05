@@ -119,7 +119,7 @@ public class HelpWindow extends GWindow {
         TextButton supportBtn = new MyOptionButton("Support", "Get support help", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                CmMessageBox.showAlert("Please email support@hotmath.com for support.");
+                CmMessageBox.showAlert("Please email support@catchupmath.com for support.");
             }
         });
         toolBar.add(supportBtn);

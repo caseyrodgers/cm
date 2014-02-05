@@ -155,7 +155,7 @@ public class ExportGradebooksDialog extends LayoutContainer {
 	private LayoutContainer getDescription() {
 		LayoutContainer lc = new LayoutContainer();
 		groupName = (groupName == null) ? "selected" : groupName;
-        lc.add(new Html("An Excel spreadsheet containing grade book data for your " + groupName + " group will be generated and sent from 'registration@hotmath.com' to the email address you provide."));
+        lc.add(new Html("An Excel spreadsheet containing grade book data for your " + groupName + " group will be generated and sent from 'registration@catchupmath.com' to the email address you provide."));
         return lc;
 	}
 
