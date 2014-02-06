@@ -1791,7 +1791,7 @@ objs=[selectedObj]
 				}else if(type=='system'){
 				var opts=temp.data('opts');
 				var scope=opts['scope'];
-				scope=scope=='whiteboard'?wb:scope;
+				//scope=scope=='whiteboard'?wb:scope;
 				var fname=opts['function'];
 				if(scope=='global'){
 				fname()
