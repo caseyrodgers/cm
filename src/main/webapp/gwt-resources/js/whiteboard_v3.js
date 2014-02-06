@@ -103,6 +103,13 @@ var Whiteboard = function (cont, isStatic) {
             "icon": "tn-",
 			"opts":[{"scope":"whiteboard","function":"saveAsTemplate"}],
             "list": ["Save"]
+        },
+		{
+            "type": "system",
+            "path": "/gwt-resources/images/whiteboard/",
+            "icon": "tn-",
+			"opts":[{"scope":"global","function":gwt_manageTemplates}],
+            "list": ["Manage"]
         }]
     }
     wb.options = opts;
@@ -1783,7 +1790,7 @@ objs=[selectedObj]
 				if(scope=='global'){
 				fname()
 				}else{
-				scope[fname]()
+				window[scope][fname]()
 				}
 				}
             });
