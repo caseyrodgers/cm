@@ -108,7 +108,7 @@ var Whiteboard = function (cont, isStatic) {
             "type": "system",
             "path": "/gwt-resources/images/whiteboard/",
             "icon": "tn-",
-			"opts":[{"scope":"global","function":gwt_manageTemplates}],
+			"opts":[{"scope":"whiteboard","function":"manageTemplates"}],
             "list": ["Manage"]
         }]
     }
@@ -1506,8 +1506,14 @@ objs=[selectedObj]
     }
 
     function resizeWhiteboardTo(match, minW, minH) {
-        var w, h
+        var w, h;
+		var pad=5;
         if (match == 'content') {
+		if(graphicDataStore&&graphicDataStore.length){
+		var bound=getWhiteboardObjBound()
+	canvas_drawing_width=bound.brect.xmax;
+	canvas_drawing_height=bound.brect.ymax;
+	}
             w = canvas_drawing_width
             h = canvas_drawing_height
         } else if (match == 'custom') {
@@ -5775,6 +5781,9 @@ source: https://gist.github.com/754454
 	}
 	wb.getWhiteboardAsTemplate=function(){
 	return wb.saveSelToImage()
+	}
+	wb.manageTemplates=function(){
+	gwt_manageTemplates();
 	}
     wb.setTransModeScale = function () {
         transMode = transMode == 'scale' ? 'move' : 'scale';
