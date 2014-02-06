@@ -1795,10 +1795,13 @@ objs=[selectedObj]
 				var fname=opts['function'];
 				if(scope=='global'){
 				fname()
+				}else if(scope=='whiteboard'){
+				wb[fname]()
 				}else{
 				window[scope][fname]()
 				}
 				}
+				
             });
 			btn.data('type',obj.type)
 			if(obj.type!='img'){
