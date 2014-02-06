@@ -93,13 +93,13 @@ var Whiteboard = function (cont, isStatic) {
     var opts = {
         "templates": [{
             "type": "img",
-            "path": "./",
+            "path": "/gwt-resources/images/whiteboard/",
             "icon": "tn-",
             "list": ["nL.png", "gr2D.png"]
         },
 		{
             "type": "system",
-            "path": "./",
+            "path": "/gwt-resources/images/whiteboard/",
             "icon": "tn-",
 			"opts":[{"scope":"whiteboard","function":"saveAsTemplate"}],
             "list": ["Save"]
