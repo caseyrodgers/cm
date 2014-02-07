@@ -1067,9 +1067,9 @@ objs=[selectedObj]
                 if (true) {
                     var r1 = obj.brect;
                     var rect = cloneObject(r1);
-                    var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
-                    var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
-                    var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
+                    var isMoved = isObjTransformed(obj.uid, 'move');
+                    var isScaled = isObjTransformed(obj.uid, 'scale');
+                    var isRotated = isObjTransformed(obj.uid, 'rotate');
                     var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(obj.uid)
                     if (isTransformed) {
                         if (isMoved) {
@@ -1869,7 +1869,7 @@ objs=[selectedObj]
                 selectionMode = true;
             }
             buttonHighlite('move');
-
+			updateCanvas();
             setObjSelected(graphicDataStore[graphicDataStore.length - 1]);
         } else {
             loadedTemps++
@@ -5744,9 +5744,9 @@ source: https://gist.github.com/754454
         //var obj = multiSelection?mselobj:selectedObj;
 		var obj ;
 
-		if(multiSelection){
+		if(multiSelection&&selectionMode){
 		obj=getWhiteboardObjBound('msel')
-		}else if(selectedObj){
+		}else if(selectedObj&&selectionMode){
 		obj=getWhiteboardObjBound('sel')
 		}else{
 		obj=getWhiteboardObjBound()
