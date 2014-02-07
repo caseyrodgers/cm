@@ -5801,6 +5801,10 @@ source: https://gist.github.com/754454
             updateTempMenu(temp)
         }
     }
+	wb.getRenderedCommands=function(){
+	    var jsonStr = convertObjToString(graphicDataStore);
+	    return jsonStr;
+	}
     return wb;
 
 };
