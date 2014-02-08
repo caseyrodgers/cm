@@ -96,19 +96,23 @@ var Whiteboard = function (cont, isStatic) {
             "path": "/gwt-resources/images/whiteboard/",
             "icon": "tn-",
             "list": ["nL.png", "gr2D.png"]
-        },
-		{
+        }, {
             "type": "system",
             "path": "/gwt-resources/images/whiteboard/",
             "icon": "tn-",
-			"opts":[{"scope":"whiteboard","function":"saveAsTemplate"}],
+            "opts": [{
+                "scope": "whiteboard",
+                "function": "saveAsTemplate"
+            }],
             "list": ["Save"]
-        },
-		{
+        }, {
             "type": "system",
             "path": "/gwt-resources/images/whiteboard/",
             "icon": "tn-",
-			"opts":[{"scope":"whiteboard","function":"manageTemplates"}],
+            "opts": [{
+                "scope": "whiteboard",
+                "function": "manageTemplates"
+            }],
             "list": ["Manage"]
         }]
     }
@@ -443,8 +447,8 @@ var Whiteboard = function (cont, isStatic) {
                     y0 = y0 ? y0 : selectedObj.brect.ymin
                     w0 = w0 ? w0 : selectedObj.brect.w
                     h0 = h0 ? h0 : selectedObj.brect.h
-                    var cx = x0 + (w0 / 2) 
-                    var cy = y0 + (h0 / 2) 
+                    var cx = x0 + (w0 / 2)
+                    var cy = y0 + (h0 / 2)
                     context.translate(cx, cy);
                     context.rotate(isRotated.tr);
                     context.translate(-cx, -cy);
@@ -481,7 +485,7 @@ var Whiteboard = function (cont, isStatic) {
                     y0 = y0 ? y0 : selectedObj.brect.ymin
                     w0 = w0 ? w0 : selectedObj.brect.w
                     h0 = h0 ? h0 : selectedObj.brect.h
-                    var cx = x0 + (w0 / 2) 
+                    var cx = x0 + (w0 / 2)
                     var cy = y0 + (h0 / 2)
                     context.translate(cx, cy);
                     context.rotate(isRotated.tr);
@@ -516,8 +520,8 @@ var Whiteboard = function (cont, isStatic) {
                 y0 = y0 ? y0 : selectedObj.brect.ymin
                 w0 = w0 ? w0 : selectedObj.brect.w
                 h0 = h0 ? h0 : selectedObj.brect.h
-                var cx = x0 + (w0 / 2) 
-                var cy = y0 + (h0 / 2) 
+                var cx = x0 + (w0 / 2)
+                var cy = y0 + (h0 / 2)
                 context.translate(cx, cy);
                 context.rotate(obj.tr);
                 context.translate(-cx, -cy);
@@ -983,7 +987,7 @@ var Whiteboard = function (cont, isStatic) {
             updateBuffer()
             return _arr
         }
-		
+
 
         function updateMultiSelectRect() {
             var l = selectedObjects.length;
@@ -1048,20 +1052,21 @@ var Whiteboard = function (cont, isStatic) {
             }
 
         }
-function getWhiteboardObjBound(flag) {
-var objs=graphicDataStore;
-if(flag=='msel'){
-objs=selectedObjects
-}else if(flag=='sel'){
-objs=[selectedObj]
-}
+
+        function getWhiteboardObjBound(flag) {
+            var objs = graphicDataStore;
+            if (flag == 'msel') {
+                objs = selectedObjects
+            } else if (flag == 'sel') {
+                objs = [selectedObj]
+            }
             var l = objs.length;
             var mSelRect = null;
             for (var i = 0; i < l; i++) {
                 var obj = objs[i]
-				var isCmd = obj.type === 'cmd'
-        var isDeleted = isObjDeleted(obj.uid);
-                if (isDeleted||isCmd||obj.id===0) {
+                var isCmd = obj.type === 'cmd'
+                var isDeleted = isObjDeleted(obj.uid);
+                if (isDeleted || isCmd || obj.id === 0) {
                     continue
                 }
                 if (true) {
@@ -1104,21 +1109,22 @@ objs=[selectedObj]
 
                 }
             }
-			var bound={
-                    tx: mSelRect.xmin,
-                    ty: mSelRect.ymin,
-                    brect: {
-					xmin: mSelRect.xmin,
+            var bound = {
+                tx: mSelRect.xmin,
+                ty: mSelRect.ymin,
+                brect: {
+                    xmin: mSelRect.xmin,
                     ymin: mSelRect.ymin,
-					xmax: mSelRect.xmax,
+                    xmax: mSelRect.xmax,
                     ymax: mSelRect.ymax,
-                        w: mSelRect.xmax - mSelRect.xmin,
-                        h: mSelRect.ymax - mSelRect.ymin
-                    }
+                    w: mSelRect.xmax - mSelRect.xmin,
+                    h: mSelRect.ymax - mSelRect.ymin
                 }
-			return bound
+            }
+            return bound
 
         }
+
         function contains(rect, xp, yp) {
             if (xp >= rect.xmin - 1 && xp <= rect.xmax + 1 && yp >= rect.ymin - 1 && yp <= rect.ymax + 1) {
                 return true
@@ -1507,13 +1513,13 @@ objs=[selectedObj]
 
     function resizeWhiteboardTo(match, minW, minH) {
         var w, h;
-		var pad=5;
+        var pad = 5;
         if (match == 'content') {
-		if(graphicDataStore&&graphicDataStore.length){
-		var bound=getWhiteboardObjBound()
-	canvas_drawing_width=bound.brect.xmax;
-	canvas_drawing_height=bound.brect.ymax;
-	}
+            if (graphicDataStore && graphicDataStore.length) {
+                var bound = getWhiteboardObjBound()
+                canvas_drawing_width = bound.brect.xmax;
+                canvas_drawing_height = bound.brect.ymax;
+            }
             w = canvas_drawing_width
             h = canvas_drawing_height
         } else if (match == 'custom') {
@@ -1713,35 +1719,53 @@ objs=[selectedObj]
         var temp;
         for (var i = 0; i < tempsD.length; i++) {
             temp = tempsD[i]
-			var type=temp.type?temp.type:'img'
+            var type = temp.type ? temp.type : 'img'
             var list = temp.list
             var path = temp.path
-            var icon = temp.icon ? temp.icon : "tn-";
-			var opts=temp.opts;
+			path=path?path:"";
+            var icon = temp.icon ? temp.icon : "-tn";
+			if(icon.indexOf('-')==-1){
+			    icon="-"+icon;
+			}
+            var opts = temp.opts;
+			var labels=temp.labels?temp.labels:list
+            var label;
             for (var j = 0; j < list.length; j++) {
                 var obj = {}
-				obj.type=type
-				var ext=""
-				if(type!='img'){
-				obj.opts=opts[j];
-				ext=".png"
-				}
-                
-                obj.icon = path + icon + list[j]+ext
-                
+                obj.type = type
+                var ext = ""
+                if (type != 'img') {
+                    obj.opts = opts[j];
+                    ext = ".png"
+                }
+
+                obj.icon = path + icon + list[j] + ext;
+                if (icon && icon.charAt(0) == '-') {
+                    var lab = list[j]
+                    if (list[j].indexOf('.') > -1) {
+                        var _lab = list[j].split(".");
+                        lab = _lab[0];
+                        ext = '.' + _lab[1];
+                    }
+                    obj.icon = path + lab + icon + ext;
+                }
+                label = labels[j];
+
                 /** if image is not 'default' (has path)
                  *  then thumnail will be found relative
                  *  to file.
                  */
-                if(list[j].indexOf("/")>-1) { 
-	                var ei = list[j].indexOf(".png");
-	                if(ei > -1) {
-	                	obj.icon = list[j].substring(0, ei) + "-tn" + ".png";
-	                }
+                if (label.indexOf("/") > -1) {
+                   /* var ei = list[j].indexOf(".png");
+                    if (ei > -1) {
+                        obj.icon = list[j].substring(0, ei) + "-tn" + ".png";
+                    }*/
+                    label = label.split("/");
+                    label = label[label.length - 1]
                 }
-                
+
                 obj.url = path + list[j]
-                obj.name = obj.title = list[j].split(".")[0]
+                obj.name = obj.title = label.split(".")[0]
                 temps.push(obj);
             }
         }
@@ -1765,16 +1789,16 @@ objs=[selectedObj]
         var arr = prepareTemplatesMenu(json)
 
         var divObj = $get_jqElement("#temp_cont");
-		var saveBtn=divObj.find("[name='Save']")
+        var saveBtn = divObj.find("[name='Save']")
         var temp
         for (var k = 0; k < arr.length; k++) {
             temp = createTempBtn(arr[k])
-			if(saveBtn.length){
-			temp.insertBefore(saveBtn).css("margin", "4px");
-			}else{
-			temp.appendTo(divObj).css("margin", "4px");
-			}
-            
+            if (saveBtn.length) {
+                temp.insertBefore(saveBtn).css("margin", "4px");
+            } else {
+                temp.appendTo(divObj).css("margin", "4px");
+            }
+
         }
         return divObj
 
@@ -1795,31 +1819,31 @@ objs=[selectedObj]
                 var temp = $(this)
                 var name = temp.attr('name');
                 var path = temp.attr('path');
-				var type=temp.data('type');
-				if(type=='img'){
-                loadTemplate({
-                    name: name,
-                    path: path
-                });
-				}else if(type=='system'){
-				var opts=temp.data('opts');
-				var scope=opts['scope'];
-				//scope=scope=='whiteboard'?wb:scope;
-				var fname=opts['function'];
-				if(scope=='global'){
-				fname()
-				}else if(scope=='whiteboard'){
-				wb[fname]()
-				}else{
-				window[scope][fname]()
-				}
-				}
-				
+                var type = temp.data('type');
+                if (type == 'img') {
+                    loadTemplate({
+                        name: name,
+                        path: path
+                    });
+                } else if (type == 'system') {
+                    var opts = temp.data('opts');
+                    var scope = opts['scope'];
+                    //scope=scope=='whiteboard'?wb:scope;
+                    var fname = opts['function'];
+                    if (scope == 'global') {
+                        fname()
+                    } else if (scope == 'whiteboard') {
+                        wb[fname]()
+                    } else {
+                        window[scope][fname]()
+                    }
+                }
+
             });
-			btn.data('type',obj.type)
-			if(obj.type!='img'){
-			btn.data('opts',obj.opts)
-			}
+        btn.data('type', obj.type)
+        if (obj.type != 'img') {
+            btn.data('opts', obj.opts)
+        }
         return btn;
     }
 
@@ -1882,7 +1906,7 @@ objs=[selectedObj]
                 selectionMode = true;
             }
             buttonHighlite('move');
-			updateCanvas();
+            updateCanvas();
             setObjSelected(graphicDataStore[graphicDataStore.length - 1]);
         } else {
             loadedTemps++
@@ -3476,8 +3500,8 @@ objs=[selectedObj]
                                 }
                                 var cx = rect.xmin + rect.w / 2
                                 var cy = rect.ymin + rect.h / 2
-                                var dsx = x - cx-scrollPosition.x
-                                var dsy = y - cy-scrollPosition.y
+                                var dsx = x - cx - scrollPosition.x
+                                var dsy = y - cy - scrollPosition.y
                                 clickR = Math.atan2(dsy, dsx)
                             }
                             if (isTransformed) {
@@ -3640,8 +3664,8 @@ objs=[selectedObj]
                                 }
                                 var cx = rect.xmin + rect.w / 2
                                 var cy = rect.ymin + rect.h / 2
-                                var dsx = x - cx-scrollPosition.x
-                                var dsy = y - cy-scrollPosition.y
+                                var dsx = x - cx - scrollPosition.x
+                                var dsy = y - cy - scrollPosition.y
                                 dr = -clickR + Math.atan2(dsy, dsx)
                             }
                             if (transMode == 'scale' && isRotated) {
@@ -3905,8 +3929,8 @@ objs=[selectedObj]
                                 }
                                 var cx = rect.xmin + rect.w / 2
                                 var cy = rect.ymin + rect.h / 2
-                                var dsx = x - cx-scrollPosition.x
-                                var dsy = y - cy-scrollPosition.y
+                                var dsx = x - cx - scrollPosition.x
+                                var dsy = y - cy - scrollPosition.y
                                 dr = -clickR + Math.atan2(dsy, dsx)
                             }
                             if (transMode == 'scale' && isRotated) {
@@ -5248,21 +5272,21 @@ source: https://gist.github.com/754454
                 var dh = isRotated.ty
                 var r = isRotated.tr
                 var o = obj.brect;
-				var spx=Math.abs(scrollPosition.x)
-				var spy=Math.abs(scrollPosition.y)
+                var spx = Math.abs(scrollPosition.x)
+                var spy = Math.abs(scrollPosition.y)
 
                 var cx = o.xmin + (o.w / 2)
                 var cy = o.ymin + (o.h / 2)
-				//ctx.save()
-				//ctx.translate(,-scrollPosition.y)
-				//ctx.save()
+                //ctx.save()
+                //ctx.translate(,-scrollPosition.y)
+                //ctx.save()
                 ctx.translate(cx, cy)
                 ctx.rotate(r);
                 ctx.translate(-cx, -cy)
-				//ctx.restore()
-				//ctx.translate(scrollPosition.x,scrollPosition.y)
-				
-				
+                //ctx.restore()
+                //ctx.translate(scrollPosition.x,scrollPosition.y)
+
+
                 //ctx.translate(isTransformed.tx, isTransformed.ty)
                 cx = 0
                 cy = 0
@@ -5659,11 +5683,11 @@ source: https://gist.github.com/754454
         return canvas_drawing_width + ", " + canvas_drawing_height;
     }
     wb.getContentSizeOfWhiteboard = function () {
-	var bound=getWhiteboardObjBound()
-	canvas_drawing_width=bound.brect.xmax;
-	canvas_drawing_height=bound.brect.ymax;
-	var pad=5;
-        return [canvas_drawing_width+pad, canvas_drawing_height+pad];
+        var bound = getWhiteboardObjBound()
+        canvas_drawing_width = bound.brect.xmax;
+        canvas_drawing_height = bound.brect.ymax;
+        var pad = 5;
+        return [canvas_drawing_width + pad, canvas_drawing_height + pad];
     }
     wb.setSizeOfWhiteboard = function (w, h) {
         cwi = w;
@@ -5742,65 +5766,65 @@ source: https://gist.github.com/754454
             alert('Not supported')
             return null
         }
-		var mselobj=multiSelection?{
-                    tx: mSelRect.xmin,
-                    ty: mSelRect.ymin,
-                    brect: {
-					xmin: mSelRect.xmin,
-                    ymin: mSelRect.ymin,
-					xmax: mSelRect.xmax,
-                    ymax: mSelRect.ymax,
-                        w: mSelRect.xmax - mSelRect.xmin,
-                        h: mSelRect.ymax - mSelRect.ymin
-                    }
-                }:{}
+        var mselobj = multiSelection ? {
+            tx: mSelRect.xmin,
+            ty: mSelRect.ymin,
+            brect: {
+                xmin: mSelRect.xmin,
+                ymin: mSelRect.ymin,
+                xmax: mSelRect.xmax,
+                ymax: mSelRect.ymax,
+                w: mSelRect.xmax - mSelRect.xmin,
+                h: mSelRect.ymax - mSelRect.ymin
+            }
+        } : {}
         //var obj = multiSelection?mselobj:selectedObj;
-		var obj ;
+        var obj;
 
-		if(multiSelection&&selectionMode){
-		obj=getWhiteboardObjBound('msel')
-		}else if(selectedObj&&selectionMode){
-		obj=getWhiteboardObjBound('sel')
-		}else{
-		obj=getWhiteboardObjBound()
-		}
+        if (multiSelection && selectionMode) {
+            obj = getWhiteboardObjBound('msel')
+        } else if (selectedObj && selectionMode) {
+            obj = getWhiteboardObjBound('sel')
+        } else {
+            obj = getWhiteboardObjBound()
+        }
         var dcan = $('<canvas width="300" height="300"/>')[0];
         var rect = cloneObjectDeep(obj.brect);
         //
-		
+
         //
-		var pad=10
+        var pad = 10
         dcan.width = rect.w + pad;
         dcan.height = rect.h + pad;
         var dcontext = dcan.getContext('2d');
-		//selectionMode = false;
-		multiSelection=false;
-		mSelRect=null;
-		selectedObj=null;
+        //selectionMode = false;
+        multiSelection = false;
+        mSelRect = null;
+        selectedObj = null;
         removeBoundRect()
-        var imageData = context.getImageData(rect.xmin - (pad/2), rect.ymin - (pad/2), rect.w + pad, rect.h + pad);
+        var imageData = context.getImageData(rect.xmin - (pad / 2), rect.ymin - (pad / 2), rect.w + pad, rect.h + pad);
         //drawBoundRect(obj)
         dcontext.putImageData(imageData, 0, 0);
         var dataURL = dcan.toDataURL();
-		console.log(dataURL)
-		if($('#canvasImg')[0]){
-		 $('#canvasImg')[0].src = dataURL;
-		 }
-		return dataURL
-       
+        console.log(dataURL)
+        if ($('#canvasImg')[0]) {
+            $('#canvasImg')[0].src = dataURL;
+        }
+        return dataURL
+
     }
-	wb.saveAsTemplate=function(){
-	wb.gwt_saveWhiteboardAsTemplate();
-	}
-	wb.gwt_saveWhiteboardAsTemplate=function(){
-	gwt_saveWhiteboardAsTemplate();
-	}
-	wb.getWhiteboardAsTemplate=function(){
-	return wb.saveSelToImage()
-	}
-	wb.manageTemplates=function(){
-	gwt_manageTemplates();
-	}
+    wb.saveAsTemplate = function () {
+        wb.gwt_saveWhiteboardAsTemplate();
+    }
+    wb.gwt_saveWhiteboardAsTemplate = function () {
+        gwt_saveWhiteboardAsTemplate();
+    }
+    wb.getWhiteboardAsTemplate = function () {
+        return wb.saveSelToImage()
+    }
+    wb.manageTemplates = function () {
+        gwt_manageTemplates();
+    }
     wb.setTransModeScale = function () {
         transMode = transMode == 'scale' ? 'move' : 'scale';
     }
@@ -5814,10 +5838,10 @@ source: https://gist.github.com/754454
             updateTempMenu(temp)
         }
     }
-	wb.getRenderedCommands=function(){
-	    var jsonStr = convertObjToString(graphicDataStore);
-	    return jsonStr;
-	}
+    wb.getRenderedCommands = function () {
+        var jsonStr = convertObjToString(graphicDataStore);
+        return jsonStr;
+    }
     return wb;
 
 };
