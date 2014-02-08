@@ -161,10 +161,11 @@ public class AddProblemDialog extends GWindow {
         _treePanelProgram.setWidget(centered);
 
         _tabPanel = new TabPanel();
-        _tabPanel.add(_treeFlatPanel, new TabItemConfig("All Lessons", false));
         _tabPanel.add(_treePanelSubjectChapter, new TabItemConfig("By Subject", false));
         _tabPanel.add(_treePanelProgram, new TabItemConfig("By Program", false));
         _tabPanel.add(_treePanelCCSS, new TabItemConfig("By CCSS", false));
+        _tabPanel.add(_treeFlatPanel, new TabItemConfig("All Lessons", false));
+
 
         _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
             @Override

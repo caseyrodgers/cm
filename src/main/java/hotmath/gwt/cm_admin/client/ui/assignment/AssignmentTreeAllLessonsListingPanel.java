@@ -199,8 +199,7 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         _tree.setCheckable(true);
         _tree.setCheckStyle(CheckCascade.CHILDREN);        
 
-        SimpleSafeHtmlCell<String> cell = new SimpleSafeHtmlCell<String>(SimpleSafeHtmlRenderer.getInstance(),
-        		BrowserEvents.CLICK) {
+        SimpleSafeHtmlCell<String> cell = new SimpleSafeHtmlCell<String>(SimpleSafeHtmlRenderer.getInstance(),BrowserEvents.CLICK) {
             @Override
             public void onBrowserEvent(Context context, Element parent, String value, NativeEvent event,
                     ValueUpdater<String> valueUpdater) {
