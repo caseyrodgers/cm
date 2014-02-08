@@ -288,7 +288,16 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         }
         
         
-        _root.setChildren(children);
+        FolderDto all = makeFolder("All Lessons");
+        all.setChildren(children);
+        
+        
+        
+        
+        all.setChildren(children);
+        List<BaseDto> dl = new ArrayList<BaseDto>();
+        dl.add(all);
+        _root.setChildren(dl);
         
         FolderDto root = _root;
         for (BaseDto base : root.getChildren()) {
