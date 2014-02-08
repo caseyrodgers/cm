@@ -1755,7 +1755,7 @@ var Whiteboard = function (cont, isStatic) {
                  *  then thumnail will be found relative
                  *  to file.
                  */
-                if (label.indexOf("/") > -1) {
+                if (list[j].indexOf("/") > -1) {
                     var ei = list[j].indexOf(".png");
                     if (ei > -1) {
                         obj.icon = list[j].substring(0, ei) + "-tn" + ".png";
