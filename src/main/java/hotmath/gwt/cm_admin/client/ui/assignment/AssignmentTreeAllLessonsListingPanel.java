@@ -236,13 +236,13 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         public void load(final BaseDto loadConfig, AsyncCallback<List<BaseDto>> callback) {
             if (loadConfig.getChildren() == null || loadConfig.getChildren().size() == 0) {
                  if (loadConfig instanceof LessonDto) {
-                     Log.debug("Loading lesson problems: " + loadConfig);
+                     CmLoggerWindow.getInstance()._info("Loading lesson problems: " + loadConfig);
                     LessonDto l = (LessonDto) loadConfig;
                     AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(),l.getLessonFile(), l.getSubject(), callback, new CallbackOnComplete() {
                         
                         @Override
                         public void isComplete() {
-                            CmGwtUtils.gwt_log("Scrolling window into view: " + loadConfig.getId());
+                            CmLoggerWindow.getInstance()._info("Scrolling window into view: " + loadConfig.getId());
                             _tree.scrollIntoView(loadConfig);
                         }
                     });
