@@ -25,6 +25,7 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -203,6 +204,11 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
                 if (BrowserEvents.CLICK.equals(event.getType())) {
                     BaseDto base = _tree.getSelectionModel().getSelectedItem();
                     if (base instanceof ProblemDto) {
+                        Window.alert("Skip it");
+                        if(true) {
+                            return;
+                        }
+
                         ProblemDto p = (ProblemDto)base;
                         Log.debug("View Question", "Viewing " + p.getLabel());
                         
