@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAvailableLessonsAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
@@ -50,7 +51,6 @@ import com.sencha.gxt.widget.core.client.tree.Tree.CheckCascade;
 
 public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
 
-    
     static public interface CallbackOnSelectedLesson {
         void lessonWasSelected();
         void nodeWasChecked();
@@ -205,11 +205,6 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
                 if (BrowserEvents.CLICK.equals(event.getType())) {
                     BaseDto base = _tree.getSelectionModel().getSelectedItem();
                     if (base instanceof ProblemDto) {
-                        Window.alert("Skip it");
-                        if(true) {
-                            return;
-                        }
-
                         ProblemDto p = (ProblemDto)base;
                         Log.debug("View Question", "Viewing " + p.getLabel());
                         
@@ -244,6 +239,7 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
                         
                         @Override
                         public void isComplete() {
+                            CmGwtUtils.gwt_log("Scrolling window into view: " + loadConfig.getId());
                             _tree.scrollIntoView(loadConfig);
                         }
                     });
