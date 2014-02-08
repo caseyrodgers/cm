@@ -298,7 +298,7 @@ public class CmGwtUtils {
     
     /** Write to a whiteboard object.
      * 
-     *  If whiteboard is null, then the last created whitebaord
+     *  If whiteboard is null, then the last created whiteboard
      *  which is stored in _theWhiteboard is used.  Otherwise,
      *  we update the whiteboard 'whiteboardId'.
      *  
@@ -331,6 +331,17 @@ public class CmGwtUtils {
         }
         
         theWhiteboard.updateWhiteboard(realArray);
+    }-*/;
+    
+    static public native void jsni_setWhiteboardTemplatesAux(String whiteboardId, String templates) /*-{
+    
+        var theWhiteboard = whiteboardId == null?$wnd._theWhiteboard: $wnd._cmWhiteboards[whiteboardId];
+        if(!theWhiteboard) {
+            alert('whiteboard ' + whiteboardId + ' cannot be found in jsni_updateWhiteboardAux');
+            return;
+        }
+    
+        alert('template function: ' + theWhiteboard.appendTemplates);
     }-*/;
     
 

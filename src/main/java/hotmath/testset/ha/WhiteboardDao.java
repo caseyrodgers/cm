@@ -1,12 +1,20 @@
     package hotmath.testset.ha;
 
+import hotmath.cm.util.CmWebResourceManager;
 import hotmath.cm.util.CompressHelper;
+import hotmath.crypto.Base64;
 import hotmath.gwt.cm_core.client.model.WhiteboardModel;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,10 +23,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+
+import sb.util.MD5;
 
 /**
  * Provide DAO functionality for Whiteboards
@@ -202,6 +214,100 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
             throw new SQLException(e.getLocalizedMessage());
         }
     }
-    
 
+    /** Save the whiteboard image as a template for this admin
+     * 
+     * @param uid
+     * @param name
+     * @param dataUrl
+     * @throws Exception
+     */
+    public void saveWhiteboardAsTemplate(final int uid, final String name, String dataUrl) throws Exception {
+        int comma = dataUrl.indexOf(",");
+        String base64Data = dataUrl.substring(comma+1);
+        byte[] data = Base64.decode(base64Data);
+        BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(data));
+        
+        File directory = new File(CmWebResourceManager.getInstance().getFileBase() + "/../help/whiteboard_template/" + uid);
+        if(!directory.exists()) {
+            directory.mkdirs();
+        }
+        
+        String fileName = MD5.getMD5(name) + ".png";
+        File fullFile = new File(directory, fileName);
+        
+        ImageIO.write(bufferedImage, "png", fullFile);
+        
+        final Integer cntMatch = getJdbcTemplate().queryForObject("select count(*) as cnt from CM_WHITEBOARD_TEMPLATE where uid = ? and template_name = ?", new Object[] { uid, name }, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("cnt");
+            }
+        });
+
+        if(cntMatch == 0) {
+            final String url = "/help/whiteboard_template/" + uid + "/" + fileName;
+            getJdbcTemplate().update(new PreparedStatementCreator() {
+                @Override
+                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                    String sql = "insert into CM_WHITEBOARD_TEMPLATE(uid, template_name, template_path)values(?,?,?)";                
+                    PreparedStatement ps = con.prepareStatement(sql);
+                    ps.setInt(1, uid);
+                    ps.setString(2, name);
+                    ps.setString(3,url);
+                    return ps;
+                }
+            });
+        }
+        
+        createThumbnail(fullFile);
+    }
+
+    public String getWhiteboardTemplates(int adminId) {
+        String sql = "select * from CM_WHITEBOARD_TEMPLATE where uid = ? order by template_name";
+
+        List<String> list = getJdbcTemplate().query(sql, new Object[] { adminId}, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("template_path"); 
+            }
+        });
+
+        String files = "";
+        for(String f: list) {
+            if(files.length() > 0) {
+                files += ", ";
+            }
+            
+            if(!f.startsWith("/")) {
+                f = "/" + f;
+            }
+            files += "\"" + f + "\"";
+        }
+        
+        String json = "{" +
+                "\"type\":\"img\"," +
+                "\"path\":\"\"," +
+                "\"icon\":\"tn\"," +
+                "\"list\":["+ files + "]" + 
+                "}";
+        
+        return json;
+    }
+    
+    
+    
+    private void createThumbnail(File imageFile) throws Exception {
+        BufferedImage img = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
+        img.createGraphics().drawImage(ImageIO.read(imageFile).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH),0,0,null);
+        BufferedImage newBufferedImage = new BufferedImage(img.getWidth(),  img.getHeight(), BufferedImage.TYPE_INT_RGB);
+        newBufferedImage.createGraphics().drawImage(img, 0, 0, Color.WHITE, null);
+        
+
+        int idx = imageFile.getName().indexOf(".png");
+        if(idx > -1) {
+            File tnFile = new File(imageFile.getParentFile(), imageFile.getName().substring(0, idx) + "-tn.png");
+            ImageIO.write(newBufferedImage, "jpg", tnFile);        
+        }
+    }
 }

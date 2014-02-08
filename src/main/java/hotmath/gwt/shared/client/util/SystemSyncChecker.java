@@ -126,7 +126,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
         	    	if(startType == null)startType = "";
     
         	    	CmLogger.debug("GetCatchupMathVersionAction: " + version.getVersion() + " current: " + CatchupMathVersionInfo.getBuildVersion());
-                     if(version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
+                     if(version != null && version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
                          new SystemSyncChecker(version);
                      }
                      else if(!"ADMIN".equals(startType) && !"AUTO_CREATE".equals(startType) && CmShared.getQueryParameter("debug") == null) {

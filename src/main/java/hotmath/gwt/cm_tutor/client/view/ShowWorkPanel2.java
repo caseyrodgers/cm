@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardAsTemplateAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
@@ -12,7 +13,11 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.CmTutor;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
 
 import java.util.List;
 
@@ -20,6 +25,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -335,6 +341,31 @@ public class ShowWorkPanel2 extends Composite {
     }
 
 
+    /** Save the currently defined whiteboard as named template
+     * 
+     * @param name
+     */
+    public void saveAsTemplate(final String name) {
+        final String dataUrl = jsniGetWhiteboardDataUrl();
+        
+        SaveWhiteboardAsTemplateAction action = new SaveWhiteboardAsTemplateAction(UserInfoBase.getInstance().getUid(), name, dataUrl);
+        CmShared.getCmService().execute(action,  new AsyncCallback<RpcData>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Error saving template: " + caught);
+                Log.error("Error saving template", caught);
+            }
+
+            @Override
+            public void onSuccess(RpcData result) {
+                Log.info("SaveWhiteboardAsTemplateAction: " + result);
+            }});
+    }
+    
+    private native String jsniGetWhiteboardDataUrl() /*-{
+        return $wnd._theWhiteboard.saveSelToImage();
+    }-*/;
+
     private void whiteboardDelete_Gwt(int index) {
         _lastCommands.remove(index);
 
@@ -344,6 +375,14 @@ public class ShowWorkPanel2 extends Composite {
         SaveWhiteboardDataAction action = (SaveWhiteboardDataAction)_whiteboardOutCallback.createWhiteboardSaveAction(pid,  CommandType.DELETE, index + "");
         action.setIndex(index);
         whiteboardActions.getActions().add(action);
+    }
+
+    private void gwt_saveWhiteboardAsTemplate() {
+        _whiteboardOutCallback.saveWhiteboardAsTemplate(this);
+    }
+    
+    private void manageTemplates() {
+        Window.alert("Manager Templates");
     }
 
 
@@ -373,9 +412,6 @@ public class ShowWorkPanel2 extends Composite {
                 alert('whiteboard not found: ' + whiteboardId);
                 return;
             }
-
-
-
 
             $wnd._theWhiteboard = new $wnd.Whiteboard(whiteboardId, isStatic);
             $wnd._theWhiteboard.initWhiteboard($doc);
@@ -419,6 +455,17 @@ public class ShowWorkPanel2 extends Composite {
             $wnd._theWhiteboard.whiteboardIsReady = function() {
                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardIsReady()();
             }
+
+            $wnd._theWhiteboard.gwt_saveWhiteboardAsTemplate = function() {
+               that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::gwt_saveWhiteboardAsTemplate()();
+            }
+
+           $wnd.gwt_manageTemplates = function() {
+               that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::manageTemplates()();
+            }
+            
+            
+            
         } catch (e) {
             alert('error initializing whiteboard: ' + e);
             return;
@@ -480,6 +527,8 @@ public class ShowWorkPanel2 extends Composite {
          */
         Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data);
 
+        void saveWhiteboardAsTemplate(ShowWorkPanel2 showWorkPanel2);
+
         /**
          * Indicate the whiteboard is ready for operation
          *
@@ -517,7 +566,22 @@ public class ShowWorkPanel2 extends Composite {
         public void windowResized() {
             Log.debug("Show Work Panel was resized");
         }
+        
+        @Override
+        public void saveWhiteboardAsTemplate(ShowWorkPanel2 showWorkPanel2) {
+            String tmplName = Cookies.getCookie("wb_template");
+            String name = Window.prompt("Template Name", tmplName!=null?tmplName:"My Template");
+            if(name != null) {
+                Cookies.setCookie("wb_template", name);
+                showWorkPanel2.saveAsTemplate(name);
+            }
+        }
 
     }
+
+    native public void setWhiteboardTemplates(String templates) /*-{
+        $wnd._theWhiteboard.appendTemplates('(' + templates + ')');
+    }-*/;
+
 
 }

@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.model.StringHolder;
 import hotmath.gwt.cm_rpc.client.rpc.GetMessageOfTheDayAction;
-import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 

@@ -22,7 +22,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 
@@ -144,7 +144,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
         }
         _subBar.setupWhiteboardTools(true);
         
-        _showWork = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
+        _showWork = new ShowWorkPanel2(new ShowWorkPanelCallbackDefault() {
             @Override
             public void windowResized() {
             }

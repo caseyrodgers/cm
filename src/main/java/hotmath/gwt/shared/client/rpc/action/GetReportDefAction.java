@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.model.StringHolder;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_tools.client.model.StringHolder;
 
 import java.util.List;
 

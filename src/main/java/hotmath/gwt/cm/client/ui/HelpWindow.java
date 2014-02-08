@@ -27,6 +27,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
+import hotmath.gwt.shared.client.util.CmLoggerWindow;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.FeedbackWindow;
 import hotmath.gwt.shared.client.util.NetTestWindow;
@@ -294,6 +295,19 @@ public class HelpWindow extends GWindow {
                     });
                 }
             }));
+        	
+            addtionalTb.add(new TextButton("Debug Log", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    GWT.runAsync(new CmRunAsyncCallback() {
+                        @Override
+                        public void onSuccess() {
+                            CmLoggerWindow.getInstance().setVisible(true);
+                        }
+                    });
+                }
+            }));
+
         }
 
         setWidget(flc);

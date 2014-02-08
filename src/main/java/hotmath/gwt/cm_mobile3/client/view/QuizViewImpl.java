@@ -7,12 +7,11 @@ import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar.Callback;
-import hotmath.gwt.cm_mobile_shared.client.view.SubToolBar;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
 
 import java.util.List;
 
@@ -107,7 +106,7 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
         
          _whiteboardWrapper = new FlowPanel();
          _whiteboardWrapper.add(_subBar);
-        _showWork = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
+        _showWork = new ShowWorkPanel2(new ShowWorkPanelCallbackDefault() {
             @Override
             public void windowResized() {
             }

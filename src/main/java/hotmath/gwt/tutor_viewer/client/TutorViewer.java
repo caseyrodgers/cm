@@ -39,6 +39,7 @@ import com.google.gwt.user.client.ui.RootPanel;
     }
     
     public void onModuleLoad() {
+        
         UserInfo.setInstance(new UserInfo());
         
         if(CmGwtUtils.getQueryParameter("generate_context_all") != null) {
@@ -90,9 +91,7 @@ import com.google.gwt.user.client.ui.RootPanel;
         final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
         ((ServiceDefTarget) cmService).setServiceEntryPoint(point + "services/cmService");
         _serviceInstance = cmService;
-        
     }
-    
     static {
         setupServices();
     }

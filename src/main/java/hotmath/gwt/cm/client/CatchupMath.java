@@ -47,6 +47,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
+import hotmath.gwt.shared.client.util.CmLoggerWindow;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.SystemSyncChecker;
@@ -105,7 +106,6 @@ public class CatchupMath implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
-
         __thisInstance = this;
         CmLogger.info("Catchup Math Startup");
 
@@ -670,9 +670,9 @@ public class CatchupMath implements EntryPoint {
      * 
      */
     static private native void publishNative() /*-{
-                                               // Set global variable to signal that CM system has been initialized.
-                                               // This is checked in CatchupMath.html to indicate that a loading error occurred.
-                                               $wnd.__cmInitialized = true;
+                                                   // Set global variable to signal that CM system has been initialized.
+                                                   // This is checked in CatchupMath.html to indicate that a loading error occurred.
+                                                   $wnd.__cmInitialized = true;
                                                }-*/;
 
     static private native void publishNativeJsAfterLoad() /*-{

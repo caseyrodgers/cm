@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_admin.client;
 
-import hotmath.gwt.cm_tools.client.model.StringHolder;
+import hotmath.gwt.cm_rpc.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;

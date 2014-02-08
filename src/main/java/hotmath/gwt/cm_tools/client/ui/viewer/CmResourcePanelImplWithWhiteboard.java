@@ -11,7 +11,7 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -317,7 +317,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             /** show whiteboard panel
              * 
              */
-            _showWorkPanel = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
+            _showWorkPanel = new ShowWorkPanel2(new ShowWorkPanelCallbackDefault() {
                 @Override
                 public void showWorkIsReady(ShowWorkPanel2 showWork) {
                     whiteboardIsReady();

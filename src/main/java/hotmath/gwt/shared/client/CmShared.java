@@ -16,11 +16,11 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
-import hotmath.gwt.shared.client.rpc.LogRetryActionFailedAction;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
+import hotmath.gwt.shared.client.util.CmLoggerWindow;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.Date;
@@ -35,7 +35,6 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 
@@ -49,6 +48,12 @@ public class CmShared implements EntryPoint {
 
     @Override
     public void onModuleLoad() {
+        
+        
+        if(CmGwtUtils.getQueryParameter("debugjs") != null) {
+            CmLoggerWindow.getInstance().setVisible(true);
+        }
+        
         GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
             @Override
             public void onUncaughtException(Throwable e) {
@@ -414,9 +419,24 @@ public class CmShared implements EntryPoint {
         registerGlobalGwtJsMethods();
     }
 
+    static public void gwt_debugLog(final String msg) {
+        GWT.runAsync(new CmRunAsyncCallback() {
+            @Override
+            public void onSuccess() {
+                CmLoggerWindow.getInstance()._info(msg);
+            }
+        });        
+        
+    }
+    
     static private native void registerGlobalGwtJsMethods() /*-{
-                                                            $wnd.resetProgram_Gwt = @hotmath.gwt.shared.client.CmShared::resetProgram_Gwt();
-                                                            }-*/;
+        $wnd.resetProgram_Gwt = @hotmath.gwt.shared.client.CmShared::resetProgram_Gwt();
+                                                     
+        $wnd.gwt_debugLog = function(msg) {
+             @hotmath.gwt.shared.client.CmShared::gwt_debugLog(Ljava/lang/String;)(msg);
+        }
+        
+    }-*/;
 
     /**
      * create JSNI to return KEY JS variable set during login
