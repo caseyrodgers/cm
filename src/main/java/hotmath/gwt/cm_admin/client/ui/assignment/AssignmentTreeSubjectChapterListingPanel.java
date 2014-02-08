@@ -21,6 +21,7 @@ import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.util.CmLoggerWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -187,13 +188,12 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
                     ValueUpdater<String> valueUpdater) {
                 super.onBrowserEvent(context, parent, value, event, valueUpdater);
                 if (BrowserEvents.CLICK.equals(event.getType())) {
+                    CmLoggerWindow.getInstance()._info("Broswer click event");
                     BaseDto base = _tree.getSelectionModel().getSelectedItem();
-                    _tree.scrollIntoView(base);
 
                     if (base instanceof ProblemDto) {
                         ProblemDto p = (ProblemDto)base;
-                        Log.debug("View Question", "Viewing " + p.getLabel());
-                        
+                        CmLoggerWindow.getInstance()._info("Viewing problem: " + p.getLabel());
                         QuestionViewerPanel.getInstance().viewQuestion(p, false);
                     }
                 }
