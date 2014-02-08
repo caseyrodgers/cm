@@ -110,6 +110,8 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
     }
     
     FolderDto _root;
+
+    protected BaseDto _lastLoadConfig;
     
     private static FolderDto makeFolder(String name) {
         FolderDto theReturn = new FolderDto(++BaseDto.autoId, name);
@@ -186,6 +188,8 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
                 super.onBrowserEvent(context, parent, value, event, valueUpdater);
                 if (BrowserEvents.CLICK.equals(event.getType())) {
                     BaseDto base = _tree.getSelectionModel().getSelectedItem();
+                    _tree.scrollIntoView(base);
+
                     if (base instanceof ProblemDto) {
                         ProblemDto p = (ProblemDto)base;
                         Log.debug("View Question", "Viewing " + p.getLabel());
@@ -221,6 +225,7 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
         @SuppressWarnings("unchecked")
 		@Override
         public void load(BaseDto loadConfig, AsyncCallback<List<BaseDto>> callback) {
+            _lastLoadConfig = loadConfig;
             if (loadConfig.getChildren() == null || loadConfig.getChildren().size() == 0) {
                 if (loadConfig instanceof LessonDto) {
                     Log.debug("Loading lesson problems: " + loadConfig);
