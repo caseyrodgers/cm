@@ -199,24 +199,24 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         _tree.setCheckable(true);
         _tree.setCheckStyle(CheckCascade.CHILDREN);        
 
-        SimpleSafeHtmlCell<String> cell = new SimpleSafeHtmlCell<String>(SimpleSafeHtmlRenderer.getInstance(),
-        		BrowserEvents.CLICK) {
-            @Override
-            public void onBrowserEvent(Context context, Element parent, String value, NativeEvent event,
-                    ValueUpdater<String> valueUpdater) {
-                super.onBrowserEvent(context, parent, value, event, valueUpdater);
-                if (BrowserEvents.CLICK.equals(event.getType())) {
-                    BaseDto base = _tree.getSelectionModel().getSelectedItem();
-                    if (base instanceof ProblemDto) {
-                        ProblemDto p = (ProblemDto)base;
-                        Log.debug("View Question", "Viewing " + p.getLabel());
-                        
-                        QuestionViewerPanel.getInstance().viewQuestion(p, false);
-                    }
-                }
-            }
-        };
-        _tree.setCell(cell);
+//        SimpleSafeHtmlCell<String> cell = new SimpleSafeHtmlCell<String>(SimpleSafeHtmlRenderer.getInstance(),
+//        		BrowserEvents.CLICK) {
+//            @Override
+//            public void onBrowserEvent(Context context, Element parent, String value, NativeEvent event,
+//                    ValueUpdater<String> valueUpdater) {
+//                super.onBrowserEvent(context, parent, value, event, valueUpdater);
+//                if (BrowserEvents.CLICK.equals(event.getType())) {
+//                    BaseDto base = _tree.getSelectionModel().getSelectedItem();
+//                    if (base instanceof ProblemDto) {
+//                        ProblemDto p = (ProblemDto)base;
+//                        Log.debug("View Question", "Viewing " + p.getLabel());
+//                        
+//                        QuestionViewerPanel.getInstance().viewQuestion(p, false);
+//                    }
+//                }
+//            }
+//        };
+//        _tree.setCell(cell);
 
         _tree.addCheckChangedHandler(new CheckChangedHandler<BaseDto>() {
             @Override
