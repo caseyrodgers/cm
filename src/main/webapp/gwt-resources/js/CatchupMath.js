@@ -212,6 +212,8 @@ function get_type(thing) {
 
 
 function debug(x) {
-    // silent
+    if(window.gwt_debugLog) {
+        window.gwt_debugLog(x);
+    }
 }
 

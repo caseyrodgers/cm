@@ -1726,7 +1726,20 @@ objs=[selectedObj]
 				obj.opts=opts[j];
 				ext=".png"
 				}
+                
                 obj.icon = path + icon + list[j]+ext
+                
+                /** if image is not 'default' (has path)
+                 *  then thumnail will be found relative
+                 *  to file.
+                 */
+                if(list[j].indexOf("/")>-1) { 
+	                var ei = list[j].indexOf(".png");
+	                if(ei > -1) {
+	                	obj.icon = list[j].substring(0, ei) + "-tn" + ".png";
+	                }
+                }
+                
                 obj.url = path + list[j]
                 obj.name = obj.title = list[j].split(".")[0]
                 temps.push(obj);
