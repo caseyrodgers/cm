@@ -15,9 +15,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.CmTutor;
-import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.model.UserInfoBase;
-import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
 
 import java.util.List;
 
@@ -25,7 +22,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -345,11 +341,11 @@ public class ShowWorkPanel2 extends Composite {
      * 
      * @param name
      */
-    public void saveAsTemplate(final String name) {
+    public void saveAsTemplate(int adminId, final String name) {
         final String dataUrl = jsniGetWhiteboardDataUrl();
         
-        SaveWhiteboardAsTemplateAction action = new SaveWhiteboardAsTemplateAction(UserInfoBase.getInstance().getUid(), name, dataUrl);
-        CmShared.getCmService().execute(action,  new AsyncCallback<RpcData>() {
+        SaveWhiteboardAsTemplateAction action = new SaveWhiteboardAsTemplateAction(adminId, name, dataUrl);
+        CmTutor.getCmService().execute(action,  new AsyncCallback<RpcData>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Error saving template: " + caught);
@@ -569,12 +565,7 @@ public class ShowWorkPanel2 extends Composite {
         
         @Override
         public void saveWhiteboardAsTemplate(ShowWorkPanel2 showWorkPanel2) {
-            String tmplName = Cookies.getCookie("wb_template");
-            String name = Window.prompt("Template Name", tmplName!=null?tmplName:"My Template");
-            if(name != null) {
-                Cookies.setCookie("wb_template", name);
-                showWorkPanel2.saveAsTemplate(name);
-            }
+            Log.info("No saveWhiteboardAsTemplate defined");
         }
 
     }

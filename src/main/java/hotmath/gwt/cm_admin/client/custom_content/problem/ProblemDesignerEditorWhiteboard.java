@@ -17,6 +17,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.BeforeHideEvent;
@@ -71,6 +72,17 @@ public class ProblemDesignerEditorWhiteboard extends GWindow {
             public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
                 _countChanges++;
                 return new SaveStaticWhiteboardDataAction(UserInfoBase.getInstance().getUid(), solution.getPid(), commandType, data);
+            }
+            
+            
+             @Override
+            public void saveWhiteboardAsTemplate(ShowWorkPanel2 showWorkPanel2) {
+                 String tmplName = Cookies.getCookie("wb_template");
+                 String name = Window.prompt("Template Name", tmplName!=null?tmplName:"My Template");
+                 if(name != null) {
+                     Cookies.setCookie("wb_template", name);
+                     showWorkPanel2.saveAsTemplate(UserInfoBase.getInstance().getUid(), name);
+                 }
             }
         };
         _main.setWidget(new ShowWorkPanel2(callBack, true, true, "wb_ps-1", 545, getWidget()));
