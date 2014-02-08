@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAvailableLessonsAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
@@ -18,9 +19,17 @@ import hotmath.gwt.shared.client.util.CmLoggerWindow;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.dom.client.BrowserEvents;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.client.loader.RpcProxy;
@@ -29,9 +38,9 @@ import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.data.shared.TreeStore;
 import com.sencha.gxt.data.shared.loader.ChildTreeStoreBinding;
 import com.sencha.gxt.data.shared.loader.TreeLoader;
+import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent.CheckChangedHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -41,7 +50,7 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.tree.Tree;
 import com.sencha.gxt.widget.core.client.tree.Tree.CheckCascade;
 
-public class AssignmentTreeAllLessonsListingPanel extends SimpleContainer {
+public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
 
     static public interface CallbackOnSelectedLesson {
         void lessonWasSelected();
@@ -79,7 +88,6 @@ public class AssignmentTreeAllLessonsListingPanel extends SimpleContainer {
         }));        
     }
 
-    private void addTool(Object o){}
 
     private void readDataAndBuildTree() {
 
@@ -185,7 +193,7 @@ public class AssignmentTreeAllLessonsListingPanel extends SimpleContainer {
             public String getPath() {
                 return "name";
             }
-        }, new CheckableMinLevelGxtTreeAppearance(0));
+        });
         _tree.setLoader(loader);
         _tree.setWidth(300);
         _tree.setCheckable(true);
