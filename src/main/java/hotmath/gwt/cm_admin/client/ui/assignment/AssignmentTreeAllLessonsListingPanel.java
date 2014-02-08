@@ -50,6 +50,7 @@ import com.sencha.gxt.widget.core.client.tree.Tree.CheckCascade;
 
 public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
 
+    
     static public interface CallbackOnSelectedLesson {
         void lessonWasSelected();
         void nodeWasChecked();
