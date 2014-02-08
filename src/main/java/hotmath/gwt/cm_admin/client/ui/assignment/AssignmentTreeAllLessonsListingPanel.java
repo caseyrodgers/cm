@@ -14,6 +14,7 @@ import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.util.CmLoggerWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +71,8 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
 
         createAddSearchTool();
         setWidget(new DefaultGxtLoadingPanel());
+        
+        CmLoggerWindow.getInstance().setVisible(true);
     }
     
     
