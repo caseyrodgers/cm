@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAvailableLessonsAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
@@ -21,13 +20,14 @@ import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -205,12 +205,20 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
                     ValueUpdater<String> valueUpdater) {
                 super.onBrowserEvent(context, parent, value, event, valueUpdater);
                 if (BrowserEvents.CLICK.equals(event.getType())) {
-                    BaseDto base = _tree.getSelectionModel().getSelectedItem();
+                    final BaseDto base = _tree.getSelectionModel().getSelectedItem();
                     if (base instanceof ProblemDto) {
-                        ProblemDto p = (ProblemDto)base;
-                        Log.debug("View Question", "Viewing " + p.getLabel());
                         
-                        QuestionViewerPanel.getInstance().viewQuestion(p, false);
+                        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                            @Override
+                            public void execute() {
+                                ProblemDto p = (ProblemDto)base;
+                                Log.debug("View Question", "Viewing " + p.getLabel());
+                                
+                                QuestionViewerPanel.getInstance().viewQuestion(p, false);
+                            }
+                        });
+                        
+                        
                     }
                 }
             }

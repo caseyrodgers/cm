@@ -178,7 +178,7 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
         },new CheckableMinLevelGxtTreeAppearance(2));
         _tree.setLoader(loader);
         _tree.setWidth(300);
-        //_tree.setCheckable(true);
+        _tree.setCheckable(true);
         _tree.setCheckStyle(CheckCascade.CHILDREN);        
         _tree.setWidth(300);
         
