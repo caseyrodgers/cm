@@ -29,9 +29,9 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
-import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
@@ -40,7 +40,6 @@ import com.sencha.gxt.data.shared.loader.ChildTreeStoreBinding;
 import com.sencha.gxt.data.shared.loader.TreeLoader;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent.CheckChangedHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -169,10 +168,6 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         };
         loader.addLoadHandler(new ChildTreeStoreBinding<BaseDto>(_treeStore));
 
-        FlowLayoutContainer flowContainer = new FlowLayoutContainer();
-        flowContainer.setScrollMode(ScrollMode.AUTO);
-        flowContainer.addStyleName("margin-10");
-
         _tree = new Tree<BaseDto, String>(_treeStore, new ValueProvider<BaseDto, String>() {
 
             @Override
@@ -232,9 +227,16 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
             }
         });
         // tree.getStyle().setLeafIcon(ExampleImages.INSTANCE.music());
-        flowContainer.add(_tree);
+        
+//        FlowLayoutContainer flowContainer = new FlowLayoutContainer();
+//        flowContainer.setScrollMode(ScrollMode.AUTO);
+//        flowContainer.addStyleName("margin-10");
+//        flowContainer.add(_tree);
+        
+        FlowPanel flowPanel = new FlowPanel();
+        flowPanel.add(_tree);
 
-        setWidget(flowContainer);
+        setWidget(flowPanel);
         forceLayout();
     }
 
