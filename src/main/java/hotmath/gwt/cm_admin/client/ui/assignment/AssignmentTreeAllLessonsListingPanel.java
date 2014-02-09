@@ -203,6 +203,10 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
             public void onBrowserEvent(Context context, Element parent, String value, NativeEvent event,
                     ValueUpdater<String> valueUpdater) {
                 super.onBrowserEvent(context, parent, value, event, valueUpdater);
+                
+                
+                CmLoggerWindow.getInstance()._info("Browser event: " + event);
+                
                 if (BrowserEvents.CLICK.equals(event.getType())) {
                     BaseDto base = _tree.getSelectionModel().getSelectedItem();
                     if (base instanceof ProblemDto) {
@@ -242,9 +246,6 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
                         public void isComplete() {
                             CmLoggerWindow.getInstance()._info("Scrolling window into view: " + loadConfig.getId());
                             _tree.scrollIntoView(loadConfig);
-                            
-                            Window.alert("Force Layout!");
-                            forceLayout();
                         }
                     });
                 }
