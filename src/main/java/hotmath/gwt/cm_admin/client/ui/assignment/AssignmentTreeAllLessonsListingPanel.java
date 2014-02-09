@@ -20,18 +20,17 @@ import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
@@ -40,6 +39,7 @@ import com.sencha.gxt.data.shared.loader.ChildTreeStoreBinding;
 import com.sencha.gxt.data.shared.loader.TreeLoader;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent.CheckChangedHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -168,6 +168,10 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         };
         loader.addLoadHandler(new ChildTreeStoreBinding<BaseDto>(_treeStore));
 
+        FlowLayoutContainer flowContainer = new FlowLayoutContainer();
+        flowContainer.setScrollMode(ScrollMode.AUTO);
+        flowContainer.addStyleName("margin-10");
+
         _tree = new Tree<BaseDto, String>(_treeStore, new ValueProvider<BaseDto, String>() {
 
             @Override
@@ -200,20 +204,12 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
                     ValueUpdater<String> valueUpdater) {
                 super.onBrowserEvent(context, parent, value, event, valueUpdater);
                 if (BrowserEvents.CLICK.equals(event.getType())) {
-                    final BaseDto base = _tree.getSelectionModel().getSelectedItem();
+                    BaseDto base = _tree.getSelectionModel().getSelectedItem();
                     if (base instanceof ProblemDto) {
+                        ProblemDto p = (ProblemDto)base;
+                        Log.debug("View Question", "Viewing " + p.getLabel());
                         
-                        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-                            @Override
-                            public void execute() {
-                                ProblemDto p = (ProblemDto)base;
-                                Log.debug("View Question", "Viewing " + p.getLabel());
-                                
-                                QuestionViewerPanel.getInstance().viewQuestion(p, false);
-                            }
-                        });
-                        
-                        
+                        QuestionViewerPanel.getInstance().viewQuestion(p, false);
                     }
                 }
             }
@@ -227,16 +223,9 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
             }
         });
         // tree.getStyle().setLeafIcon(ExampleImages.INSTANCE.music());
-        
-//        FlowLayoutContainer flowContainer = new FlowLayoutContainer();
-//        flowContainer.setScrollMode(ScrollMode.AUTO);
-//        flowContainer.addStyleName("margin-10");
-//        flowContainer.add(_tree);
-        
-        FlowPanel flowPanel = new FlowPanel();
-        flowPanel.add(_tree);
+        flowContainer.add(_tree);
 
-        setWidget(flowPanel);
+        setWidget(flowContainer);
         forceLayout();
     }
 
@@ -253,6 +242,9 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
                         public void isComplete() {
                             CmLoggerWindow.getInstance()._info("Scrolling window into view: " + loadConfig.getId());
                             _tree.scrollIntoView(loadConfig);
+                            
+                            Window.alert("Force Layout!");
+                            forceLayout();
                         }
                     });
                 }
