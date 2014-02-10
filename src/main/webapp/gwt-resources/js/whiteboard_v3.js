@@ -832,6 +832,47 @@ var Whiteboard = function (cont, isStatic) {
             }
             return -1;
         }
+		
+		function selectionOnNode(obj,xp,yp){
+				var rect = cloneObject(obj.brect);
+                var rectM = getMoveNode(rect);
+                var rectR = getRotateNode(rect);
+                var isMoved = isObjTransformed(obj.uid, 'move');
+                var isScaled = isObjTransformed(obj.uid, 'scale');
+                var isRotated = isObjTransformed(obj.uid, 'rotate');
+                var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(graphicDataStore[i].uid)
+                if (isTransformed) {
+                    if (isMoved) {
+                        rect = cloneObject(isMoved.trect);
+                        rectM = getMoveNode(rect);
+                        rectR = getRotateNode(rect);
+                    }
+                    if (isScaled) {
+                        transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
+                        transformRect(rectM, isScaled.tx, isScaled.ty, 'move')
+                        transformRect(rectR, isScaled.tx, -isScaled.ty, 'move')
+                    }
+                    if (isRotated) {
+                        transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+                        transformRect(rectM, isRotated.tx, isRotated.ty, 'rotate', rect)
+                        transformRect(rectR, isRotated.tx, isRotated.ty, 'rotate', rect)
+                       
+                    }
+
+
+                }
+                transformRect(rect, scrollPosition.x, scrollPosition.y)
+                transformRect(rectR, scrollPosition.x, scrollPosition.y)
+                transformRect(rectM, scrollPosition.x, scrollPosition.y)
+                
+                var sel = contains(rect, xp, yp)
+                var selR = contains(rectR, xp, yp)
+                var selM = contains(rectM, xp, yp)
+                if (selR || selM) {                    
+                    return selM ? 'scale' : 'rotate'
+                }
+				return 'move';
+		}
 
         function findSelectedObjIndex(xp, yp) {
             var l = graphicDataStore.length
@@ -3118,6 +3159,10 @@ var Whiteboard = function (cont, isStatic) {
                 $get_Element("#button_temp").onclick = function (event) {
                 	/** Show the GWT supplied template manager */
                 	wb.manageTemplates();
+					//
+					
+					
+					//
                 };
             }
             if ($get_Element("#button_save")) {
@@ -3468,7 +3513,18 @@ var Whiteboard = function (cont, isStatic) {
 
                             return
                         }
-                        i = findSelectedObjIndex(x, y);
+						var dofindSel=true
+						if(selectedObj){
+						    var bsrect=getWhiteboardObjBound('sel');
+							if (contains(bsrect, x, y)) {
+                                i=selectedObjIndex;
+								dofindSel=!true
+								transMode=selectionOnNode(selectedObj,x,y);
+                            }
+						}
+						if(dofindSel){						
+							i = findSelectedObjIndex(x, y);
+						}
                         selectedObjIndex = i;
                         console.log(i)
                         console.log(selectedObj)
