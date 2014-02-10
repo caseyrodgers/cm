@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tutor.client.view;
 
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
@@ -341,7 +342,7 @@ public class ShowWorkPanel2 extends Composite {
      * 
      * @param name
      */
-    public void saveAsTemplate(int adminId, final String name) {
+    public void saveAsTemplate(int adminId, final String name, final CallbackOnComplete callback) {
         final String dataUrl = jsniGetWhiteboardDataUrl();
         
         SaveWhiteboardAsTemplateAction action = new SaveWhiteboardAsTemplateAction(adminId, name, dataUrl);
@@ -355,6 +356,8 @@ public class ShowWorkPanel2 extends Composite {
             @Override
             public void onSuccess(RpcData result) {
                 Log.info("SaveWhiteboardAsTemplateAction: " + result);
+                
+                callback.isComplete();
             }});
     }
     
@@ -378,7 +381,7 @@ public class ShowWorkPanel2 extends Composite {
     }
     
     private void manageTemplates() {
-        Window.alert("Manager Templates");
+        _whiteboardOutCallback.manageTemplates(this);
     }
 
 
@@ -523,6 +526,17 @@ public class ShowWorkPanel2 extends Composite {
          */
         Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data);
 
+        /** Provide a UI to manage the whiteboard templates
+         * 
+         * @param showWorkPanel2
+         */
+        void manageTemplates(ShowWorkPanel2 showWorkPanel2);
+        
+
+        /** Save the current whiteboard as a template
+         * 
+         * @param showWorkPanel2
+         */
         void saveWhiteboardAsTemplate(ShowWorkPanel2 showWorkPanel2);
 
         /**
@@ -567,11 +581,20 @@ public class ShowWorkPanel2 extends Composite {
         public void saveWhiteboardAsTemplate(ShowWorkPanel2 showWorkPanel2) {
             Log.info("No saveWhiteboardAsTemplate defined");
         }
+        
+        @Override
+        public void manageTemplates(ShowWorkPanel2 showWorkPanel2) {
+            Log.info("No Manage Templates defined");
+        }
 
     }
 
     native public void setWhiteboardTemplates(String templates) /*-{
         $wnd._theWhiteboard.appendTemplates('(' + templates + ')');
+    }-*/;
+
+    native public void setWhiteboardTemplate(String name, String path) /*-{
+       $wnd._theWhiteboard.setTemplate(name, path);
     }-*/;
 
 

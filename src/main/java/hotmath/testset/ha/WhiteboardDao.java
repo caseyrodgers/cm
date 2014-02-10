@@ -4,13 +4,14 @@ import hotmath.cm.util.CmWebResourceManager;
 import hotmath.cm.util.CompressHelper;
 import hotmath.crypto.Base64;
 import hotmath.gwt.cm_core.client.model.WhiteboardModel;
+import hotmath.gwt.cm_rpc.client.model.WhiteboardTemplate;
+import hotmath.gwt.cm_rpc.client.model.WhiteboardTemplatesResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -238,7 +239,7 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
         
         ImageIO.write(bufferedImage, "png", fullFile);
         
-        final Integer cntMatch = getJdbcTemplate().queryForObject("select count(*) as cnt from CM_WHITEBOARD_TEMPLATE where uid = ? and template_name = ?", new Object[] { uid, name }, new RowMapper<Integer>() {
+        final Integer cntMatch = getJdbcTemplate().queryForObject("select count(*) as cnt from CM_WHITEBOARD_TEMPLATE where admin_id = ? and template_name = ?", new Object[] { uid, name }, new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getInt("cnt");
@@ -250,7 +251,7 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "insert into CM_WHITEBOARD_TEMPLATE(uid, template_name, template_path)values(?,?,?)";                
+                    String sql = "insert into CM_WHITEBOARD_TEMPLATE(admin_id, template_name, template_path)values(?,?,?)";                
                     PreparedStatement ps = con.prepareStatement(sql);
                     ps.setInt(1, uid);
                     ps.setString(2, name);
@@ -263,36 +264,16 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
         createThumbnail(fullFile);
     }
 
-    public String getWhiteboardTemplates(int adminId) {
-        String sql = "select * from CM_WHITEBOARD_TEMPLATE where uid = ? order by template_name";
+    public List<WhiteboardTemplate> getWhiteboardTemplates(int adminId) {
+        String sql = "select * from CM_WHITEBOARD_TEMPLATE where admin_id = ? order by template_name";
 
-        List<String> list = getJdbcTemplate().query(sql, new Object[] { adminId}, new RowMapper<String>() {
+        List<WhiteboardTemplate> list = getJdbcTemplate().query(sql, new Object[] { adminId}, new RowMapper<WhiteboardTemplate>() {
             @Override
-            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getString("template_path"); 
+            public WhiteboardTemplate mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new WhiteboardTemplate(rs.getString("template_name"), rs.getString("template_path")); 
             }
         });
-
-        String files = "";
-        for(String f: list) {
-            if(files.length() > 0) {
-                files += ", ";
-            }
-            
-            if(!f.startsWith("/")) {
-                f = "/" + f;
-            }
-            files += "\"" + f + "\"";
-        }
-        
-        String json = "{" +
-                "\"type\":\"img\"," +
-                "\"path\":\"\"," +
-                "\"icon\":\"tn\"," +
-                "\"list\":["+ files + "]" + 
-                "}";
-        
-        return json;
+        return list;
     }
     
     
@@ -309,5 +290,19 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
             File tnFile = new File(imageFile.getParentFile(), imageFile.getName().substring(0, idx) + "-tn.png");
             ImageIO.write(newBufferedImage, "jpg", tnFile);        
         }
+    }
+
+    public void deleteTemplate(final int adminId, final String templateName) {
+        int cnt = getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "delete from CM_WHITEBOARD_TEMPLATE where admin_id = ? and template_name = ?";                
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setInt(1, adminId);
+                ps.setString(2, templateName);
+                return ps;
+            }
+        });
+        __logger.debug("Deleted: " + cnt);
     }
 }

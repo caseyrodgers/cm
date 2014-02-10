@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_admin.client;
 
 import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
-import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesigner;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditorHintStep;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditorWidget;
 import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
@@ -31,6 +30,7 @@ import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
+import hotmath.gwt.cm_tools.client.util.WhiteboardTemplatesManager;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -187,6 +187,10 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         }
         else if(test.equals("hint_editor")) {
             ProblemDesignerEditorHintStep.doTest();
+            return;
+        }
+        else if(test.equals("whiteboard_templates")) {
+            WhiteboardTemplatesManager.doTest();
             return;
         }
 
