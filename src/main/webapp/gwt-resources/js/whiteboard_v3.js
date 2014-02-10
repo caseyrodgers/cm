@@ -3116,7 +3116,8 @@ var Whiteboard = function (cont, isStatic) {
             }
             if ($get_Element("#button_temp")) {
                 $get_Element("#button_temp").onclick = function (event) {
-                    var a = showHideTemplates();
+                	/** Show the GWT supplied template manager */
+                	wb.manageTemplates();
                 };
             }
             if ($get_Element("#button_save")) {
@@ -5842,6 +5843,15 @@ source: https://gist.github.com/754454
         var jsonStr = convertObjToString(graphicDataStore);
         return jsonStr;
     }
+    
+    wb.setTemplate = function(name, path) {
+    	loadTemplate(  			
+    	    {
+            'name': name,
+            'path': path
+        });
+    }
+    
     return wb;
 
 };
