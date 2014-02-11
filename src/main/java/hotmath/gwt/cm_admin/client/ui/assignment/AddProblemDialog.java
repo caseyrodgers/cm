@@ -198,7 +198,7 @@ public class AddProblemDialog extends GWindow {
         data.setSplit(true);
         data.setCollapsible(true);
 
-        _mainContainer.setCenterWidget(_treeAllLessonsPanel, data);
+        _mainContainer.setCenterWidget(_tabPanel, data);
 
         addHideHandler(new HideHandler() {
             @Override
