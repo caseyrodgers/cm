@@ -186,6 +186,8 @@ public class WhiteboardTemplatesManager extends GWindow {
          */
         templates.getTemplates().add(0, new WhiteboardTemplate("Number Line", "/gwt-resources/images/whiteboard/nL.png"));
         templates.getTemplates().add(0, new WhiteboardTemplate("Graph 2D", "/gwt-resources/images/whiteboard/gr2D.png"));
+        templates.getTemplates().add(0, new WhiteboardTemplate("Equation 1", "/gwt-resources/images/whiteboard/templates/math1.png"));
+        templates.getTemplates().add(0, new WhiteboardTemplate("Equation 2", "/gwt-resources/images/whiteboard/templates/math2.png"));
         
         _listView.getStore().addAll(templates.getTemplates());
     }

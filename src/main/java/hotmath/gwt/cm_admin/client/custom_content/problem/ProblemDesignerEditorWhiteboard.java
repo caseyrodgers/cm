@@ -42,7 +42,7 @@ public class ProblemDesignerEditorWhiteboard extends GWindow {
         this.callback = callbackIn;
         this.solution = solution;
         this.whiteboardId = whiteboardId;
-        setPixelSize(800, 600);
+        setPixelSize(800, 650);
 
         setHeadingText("Edit Problem Definition: " + solution.getPid());
         _main = new BorderLayoutContainer();

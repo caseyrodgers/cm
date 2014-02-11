@@ -11,7 +11,7 @@
 		<gwtVersion>2.5.1</gwtVersion>
 		<gwtHome>${basedir}/libs/2.5.1</gwtHome>
 		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>
-		<gxt.version>3.0.1</gxt.version>
+		<gxt.version>3.0.6</gxt.version>
 	</properties>
 
 	<pluginRepositories>

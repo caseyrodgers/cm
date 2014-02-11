@@ -37,5 +37,13 @@ public class CheckableMinLevelGxtTreeAppearance extends BlueTreeAppearance {
         checkable = level >= minCheckableLevel;
         super.renderNode(sb, id, text, ts, icon, checkable, checked, joint, level, renderMode);
     }
+    
+    public void setMinCheckableLevel(int level) {
+        this.minCheckableLevel = level;
+    }
+
+    public int getMinCheckableLevel() {
+        return this.minCheckableLevel;
+    }
   }
 

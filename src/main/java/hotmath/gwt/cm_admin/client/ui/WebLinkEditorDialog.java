@@ -341,7 +341,7 @@ public class WebLinkEditorDialog extends GWindow {
         TextButton btn = new TextButton("Add", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                WebLinkAddTargetsDialog.getSharedInstance(new Callback() {
+                WebLinkAddTargetsDialog.getSharedInstance(0, new Callback() {
 
                     @Override
                     public void targetsAdded(List<LessonModel> targetResults) {

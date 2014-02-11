@@ -4,10 +4,14 @@ import hotmath.ProblemID;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.solution_editor.client.StepUnitPair;
 import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;
@@ -28,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
@@ -328,5 +333,63 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         SolutionDef def = new SolutionDef(pid);
         TutorSolution ts = new TutorSolution("sm", def, solutionMeta.getProblemStatement(),solutionMeta.getFigure(),steps ,true);
         dao.saveSolutionXml(conn, pid, ts.toXml(), solutionMeta.getTutorDefine(), true);
+    }
+
+    public void setCustomProblemLinkedLessons(int adminId, final String pid, final CmList<LessonModel> lessons) {
+        
+        // Delete any existing linked lessons
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "delete from CM_CUSTOM_PROBLEM_LINKED_LESSONS where pid = ?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setString(1, pid);
+                return ps;
+            }
+        });
+        
+        // insert each linked lesson
+        String sql = "insert into CM_CUSTOM_PROBLEM_LINKED_LESSONS(pid, lesson_name, lesson_file)values(?,?,?)";
+        getJdbcTemplate().batchUpdate(sql,
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        LessonModel lesson = lessons.get(i);
+                        
+                        ps.setString(1, pid);
+                        ps.setString(2, lesson.getLessonName());
+                        ps.setString(3, lesson.getLessonFile());
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return lessons.size();
+                    }
+                });
+    }
+    
+    public List<LessonModel> getCustomProblemLinkedLessons(String pid) throws Exception {
+        String sql = "select * from CM_CUSTOM_PROBLEM_LINKED_LESSONS where pid = ? order by lesson_name";
+        List<LessonModel> problems = getJdbcTemplate().query(sql, new Object[] { pid }, new RowMapper<LessonModel>() {
+            @Override
+            public LessonModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new LessonModel(rs.getString("lesson_name"), rs.getString("lesson_file"));
+            }
+        });
+        return problems;
+    }
+
+    public List<ProblemDto> getCustomProblemsLinkedToLesson(String lessonFile) {
+        String sql = "select * from CM_CUSTOM_PROBLEM_LINKED_LESSONS where lesson_file = ? order by pid";
+        List<ProblemDto> problems = getJdbcTemplate().query(sql, new Object[] { lessonFile }, new RowMapper<ProblemDto>() {
+            @Override
+            public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                LessonModel lm = new LessonModel(rs.getString("lesson_name"), rs.getString("lesson_file"));
+                ProblemDto prob = new ProblemDto(0,0,lm,rs.getString("pid"),rs.getString("pid"), 0);
+                return prob;
+            }
+        });
+        return problems;
+        
     }
 }

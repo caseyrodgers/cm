@@ -46,6 +46,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
@@ -86,7 +87,7 @@ public class AddProblemDialog extends GWindow {
     BorderLayoutContainer _mainContainer;
 
     TreeStore<BaseDto> _treeStore;
-    AssignmentTreeAllLessonsListingPanel _treeFlatPanel;
+    AssignmentTreeAllLessonsListingPanel _treeAllLessonsPanel;
     TabPanel _tabPanel;
 
     public AddProblemDialog() {
@@ -119,7 +120,7 @@ public class AddProblemDialog extends GWindow {
         _treePanelProgram = new ContentPanel();
         _mainContainer = new BorderLayoutContainer();
 
-        _treeFlatPanel = new AssignmentTreeAllLessonsListingPanel(new CallbackOnSelectedLesson() {
+        _treeAllLessonsPanel = new AssignmentTreeAllLessonsListingPanel(new CallbackOnSelectedLesson() {
             @Override
             public void lessonWasSelected() {
                 Window.alert("Lesson was selected");
@@ -130,7 +131,7 @@ public class AddProblemDialog extends GWindow {
                 setCheckMessageTask.delay(100);
             }
         });
-        _treeFlatPanel.refreshData();
+        _treeAllLessonsPanel.refreshData();
 
         _treePanelSubjectChapter = new AssignmentTreeSubjectChapterListingPanel(new CallbackOnSelectedLesson() {
             @Override
@@ -161,7 +162,7 @@ public class AddProblemDialog extends GWindow {
         _treePanelProgram.setWidget(centered);
 
         _tabPanel = new TabPanel();
-        _tabPanel.add(_treeFlatPanel, new TabItemConfig("All Lessons", false));
+        _tabPanel.add(_treeAllLessonsPanel, new TabItemConfig("All Lessons", false));
         _tabPanel.add(_treePanelSubjectChapter, new TabItemConfig("By Subject", false));
         _tabPanel.add(_treePanelProgram, new TabItemConfig("By Program", false));
         _tabPanel.add(_treePanelCCSS, new TabItemConfig("By CCSS", false));
@@ -169,8 +170,8 @@ public class AddProblemDialog extends GWindow {
         _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
             @Override
             public void onSelection(SelectionEvent<Widget> event) {
-                if (_tabPanel.getActiveWidget() == _treeFlatPanel) {
-                    if (_treeFlatPanel._tree == null) {
+                if (_tabPanel.getActiveWidget() == _treeAllLessonsPanel) {
+                    if (_treeAllLessonsPanel._tree == null) {
                         // is flat tree
                         updateFlattenTree();
                     }
@@ -197,7 +198,7 @@ public class AddProblemDialog extends GWindow {
         data.setSplit(true);
         data.setCollapsible(true);
 
-        _mainContainer.setCenterWidget(_tabPanel, data);
+        _mainContainer.setCenterWidget(_treeAllLessonsPanel, data);
 
         addHideHandler(new HideHandler() {
             @Override
@@ -216,7 +217,7 @@ public class AddProblemDialog extends GWindow {
     }
 
     private void updateFlattenTree() {
-        _treeFlatPanel.refreshData();
+        _treeAllLessonsPanel.refreshData();
     }
 
     public void setupViewerGui() {
@@ -257,7 +258,7 @@ public class AddProblemDialog extends GWindow {
             activeTree = _treePanelCCSS._tree;
         }
         else {
-            activeTree = _treeFlatPanel._tree;
+            activeTree = _treeAllLessonsPanel._tree;
         }
         return activeTree;
     }
@@ -695,6 +696,31 @@ public class AddProblemDialog extends GWindow {
     }
     
     static public void startTest() {
+        
+//        AssignmentTreeAllLessonsListingPanel treeAllLessonsPanel = new AssignmentTreeAllLessonsListingPanel(new CallbackOnSelectedLesson() {
+//            @Override
+//            public void lessonWasSelected() {
+//                Window.alert("Lesson was selected");
+//            }
+//
+//            @Override
+//            public void nodeWasChecked() {
+//                //setCheckMessageTask.delay(100);
+//            }
+//        });
+//        treeAllLessonsPanel.refreshData();
+//        
+//        GWindow w = new GWindow(false);
+//        
+//        BorderLayoutContainer bCont = new BorderLayoutContainer();
+//        bCont.setNorthWidget(treeAllLessonsPanel, new BorderLayoutData(100));
+//        bCont.setCenterWidget(new HTML("THE CENTER WIDGET"));
+//        
+//        w.setWidget(bCont);
+//        w.setVisible(true);
+        
+        
+        
         showDialog(new AddProblemsCallback() {
             @Override
             public void problemsAdded(List<ProblemDto> problemsAdded) {

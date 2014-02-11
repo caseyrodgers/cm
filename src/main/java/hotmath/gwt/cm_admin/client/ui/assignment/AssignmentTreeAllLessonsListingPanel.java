@@ -13,7 +13,6 @@ import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.util.CmLoggerWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,6 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -70,8 +68,6 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
 
         createAddSearchTool();
         setWidget(new DefaultGxtLoadingPanel());
-        
-        CmLoggerWindow.getInstance().setVisible(true);
     }
     
     
@@ -205,7 +201,7 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
                 super.onBrowserEvent(context, parent, value, event, valueUpdater);
                 
                 
-                CmLoggerWindow.getInstance()._info("Browser event: " + event);
+                Log.info("Browser event: " + event);
                 
                 if (BrowserEvents.CLICK.equals(event.getType())) {
                     BaseDto base = _tree.getSelectionModel().getSelectedItem();
@@ -238,13 +234,13 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         public void load(final BaseDto loadConfig, AsyncCallback<List<BaseDto>> callback) {
             if (loadConfig.getChildren() == null || loadConfig.getChildren().size() == 0) {
                  if (loadConfig instanceof LessonDto) {
-                     CmLoggerWindow.getInstance()._info("Loading lesson problems: " + loadConfig);
+                     Log.info("Loading lesson problems: " + loadConfig);
                     LessonDto l = (LessonDto) loadConfig;
                     AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(),l.getLessonFile(), l.getSubject(), callback, new CallbackOnComplete() {
                         
                         @Override
                         public void isComplete() {
-                            CmLoggerWindow.getInstance()._info("Scrolling window into view: " + loadConfig.getId());
+                            Log.info("Scrolling window into view: " + loadConfig.getId());
                             _tree.scrollIntoView(loadConfig);
                         }
                     });

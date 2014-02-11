@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.Problem
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.inmh.INeedMoreHelpItem;
+import hotmath.testset.ha.CustomProblemDao;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -180,6 +181,14 @@ public class AssignmentLessonPidSelector {
         for (ProblemDto p : problemsAll) {
             p.setLabel(getDefaultLabel(lessonName, (++pCount)));
         }
+        
+        
+        
+        /** Add any custom problem associated with this lesson 
+         * 
+         */
+        problemsAll.addAll(CustomProblemDao.getInstance().getCustomProblemsLinkedToLesson(lessonFile));
+
     }
 
     private boolean alreadyContains(List<ProblemDto> problemsAll2, String pid) {

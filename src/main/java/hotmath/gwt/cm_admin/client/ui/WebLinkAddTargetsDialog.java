@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetLessonTreeAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
@@ -27,11 +28,18 @@ import com.sencha.gxt.widget.core.client.tree.Tree;
 import com.sencha.gxt.widget.core.client.tree.Tree.CheckState;
 
 public class WebLinkAddTargetsDialog extends GWindow {
-
     static private WebLinkAddTargetsDialog __instance;
-    static public WebLinkAddTargetsDialog getSharedInstance(Callback callback) {
+    static public WebLinkAddTargetsDialog getSharedInstance(int minCheckableLevel, Callback callback) {
+        
+        // force recreate if different min check level
+        if(__instance != null) {
+            if(__instance._treeCheckableDisplay.getMinCheckableLevel() != minCheckableLevel) {
+                __instance = null;
+            }
+        }
+        
         if(__instance == null) {
-            __instance = new WebLinkAddTargetsDialog();
+            __instance = new WebLinkAddTargetsDialog(minCheckableLevel);
         }
         __instance.setCallback(callback);
         __instance.setVisible(true);
@@ -41,12 +49,13 @@ public class WebLinkAddTargetsDialog extends GWindow {
     protected ProgramListing _programListing;
     private Callback callback;
 
-    interface Callback {
+    public interface Callback {
         void targetsAdded(List<LessonModel> targetResults);
     }
     
     ContentPanel _main;
-    private WebLinkAddTargetsDialog() {
+    CheckableMinLevelGxtTreeAppearance _treeCheckableDisplay;
+    private WebLinkAddTargetsDialog(int minCheckableLevel) {
         super(false);
         setHeadingText("Select Lesson(s)");
         setPixelSize(640, 480);
@@ -80,6 +89,8 @@ public class WebLinkAddTargetsDialog extends GWindow {
                 hide();
             }
         }));
+        
+        _treeCheckableDisplay = new CheckableMinLevelGxtTreeAppearance(minCheckableLevel);
         
         _main = new ContentPanel();
         _main.setHeaderVisible(false);
@@ -191,7 +202,7 @@ public class WebLinkAddTargetsDialog extends GWindow {
             public String getPath() {
               return "name";
             }
-          });
+          }, _treeCheckableDisplay);
 
          _tree.setCheckable(true);
          _tree.setCheckStyle(Tree.CheckCascade.CHILDREN);

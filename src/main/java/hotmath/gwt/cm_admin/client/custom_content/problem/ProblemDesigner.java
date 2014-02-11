@@ -4,9 +4,7 @@ import hotmath.gwt.cm_core.client.CmGwtTestUi;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
-import hotmath.gwt.cm_rpc.client.model.StringHolder;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
-import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardTemplatesAction;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction;
@@ -21,7 +19,6 @@ import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -75,6 +72,15 @@ public class ProblemDesigner extends Composite {
                 addNewHintStep();
             }
         }));
+        
+        _problemPanel.addTool(new TextButton("Link Lesson", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                CustomProblemLinkedLessonDialog.getInstance(_solutionInfo).setVisible(true);
+            }
+        }));
+        
+
         initWidget(_main);
     }
     
