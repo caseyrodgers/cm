@@ -54,7 +54,7 @@ public class GetTopicPrescriptionCommand implements ActionHandler<GetTopicPrescr
         
         
         String lesson = action.getTopicFile();
-        if(!lesson.endsWith(".html")) {
+        if(lesson.endsWith(".html")) {
             lesson = lookupLessonFileFromName(conn, lesson);
         }
 

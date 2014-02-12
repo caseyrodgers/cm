@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.Problem
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 public class CustomProblemModel implements Response {
+    public static final String CUSTOM_MARKER = "Custom";
     String pid;
     TeacherIdentity teacher;
     int problemNumber;

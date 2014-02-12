@@ -71,6 +71,8 @@ public class CmIdleTimeWatcher {
                         Log.debug("ForceSystemSyncCheckEvent: complete ");
                     }
                 }));
+                
+                idle = true;
                 _baseIndex = NO_BASE_INDEX;
                 _lastIndex = NO_BASE_INDEX;
             }

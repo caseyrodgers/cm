@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
+import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
@@ -63,6 +64,9 @@ public class ProblemResourcesButton extends TextButton {
 
     protected void readDataFromServerIfNeeded() {
         
+        if(_problem.getLesson().getLessonFile() == null || _problem.getLesson().getLessonFile().startsWith(CustomProblemModel.CUSTOM_MARKER)) {
+            return; // skip
+        }
         
         new RetryAction<PrescriptionSessionResponse>() {
             @Override

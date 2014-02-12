@@ -29,6 +29,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
@@ -104,6 +105,7 @@ public class AssignmentProblemListView extends ContentPanel {
         problemListGrid.getView().setColumnLines(true);
         problemListGrid.setBorders(false);
         problemListGrid.setHideHeaders(false);
+        problemListGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         
         problemListGrid.setColumnReordering(true);
         
