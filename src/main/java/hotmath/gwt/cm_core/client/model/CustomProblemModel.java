@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_core.client.model;
 
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 public class CustomProblemModel implements Response {
@@ -7,6 +8,7 @@ public class CustomProblemModel implements Response {
     TeacherIdentity teacher;
     int problemNumber;
     String comments;
+    private ProblemType problemType;
 
     public CustomProblemModel(){}
             
@@ -51,6 +53,15 @@ public class CustomProblemModel implements Response {
     
     public String getTeacherName() {
         return teacher.getTeacherName();
+    }
+
+
+    public ProblemType getProblemType() {
+        return problemType;
+    }
+
+    public void setProblemType(ProblemType problemType) {
+        this.problemType = problemType;
     }
 
     @Override

@@ -1,6 +1,9 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentTreeAllLessonsListingPanel.CallbackOnSelectedLesson;
+import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentTreeCustomProblemsListingPanel.CallbackOnSelectedCustomProblem;
+import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
@@ -46,7 +49,6 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
@@ -88,6 +90,7 @@ public class AddProblemDialog extends GWindow {
 
     TreeStore<BaseDto> _treeStore;
     AssignmentTreeAllLessonsListingPanel _treeAllLessonsPanel;
+    AssignmentTreeCustomProblemsListingPanel _treeCustomProblemsPanel;
     TabPanel _tabPanel;
 
     public AddProblemDialog() {
@@ -117,6 +120,16 @@ public class AddProblemDialog extends GWindow {
         });
         addButton(btnClose);
 
+
+        if(CmShared.getQueryParameter("debug") != null) {
+            addTool(new TextButton("Create Problem", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    new CustomProblemManager(new TeacherIdentity(UserInfoBase.getInstance().getUid(), "", 0));              
+                }
+            }));
+        }
+        
         _treePanelProgram = new ContentPanel();
         _mainContainer = new BorderLayoutContainer();
 
@@ -156,6 +169,16 @@ public class AddProblemDialog extends GWindow {
                 setCheckMessageTask.delay(100);
             }
         });
+        
+        
+        _treeCustomProblemsPanel = new AssignmentTreeCustomProblemsListingPanel(new CallbackOnSelectedCustomProblem() {
+            @Override
+            public void lessonWasSelected() {
+            }
+            @Override
+            public void nodeWasChecked() {
+            }
+        });
 
         CenterLayoutContainer centered = new CenterLayoutContainer();
         centered.setWidget(new Label("Loading data ..."));
@@ -166,6 +189,11 @@ public class AddProblemDialog extends GWindow {
         _tabPanel.add(_treePanelSubjectChapter, new TabItemConfig("By Subject", false));
         _tabPanel.add(_treePanelProgram, new TabItemConfig("By Program", false));
         _tabPanel.add(_treePanelCCSS, new TabItemConfig("By CCSS", false));
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            _tabPanel.add(_treeCustomProblemsPanel, new TabItemConfig("Cust", false));
+        }
+        
 
         _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
             @Override
@@ -184,6 +212,11 @@ public class AddProblemDialog extends GWindow {
                 else if (_tabPanel.getActiveWidget() == _treePanelCCSS) {
                     if (_treePanelCCSS._tree == null) {
                         _treePanelCCSS.refreshData();
+                    }
+                }
+                else if(_tabPanel.getActiveWidget() == _treeCustomProblemsPanel) {
+                    if(_treeCustomProblemsPanel._tree == null) {
+                        _treeCustomProblemsPanel.refreshData();
                     }
                 }
 
@@ -256,6 +289,9 @@ public class AddProblemDialog extends GWindow {
         }
         else if (_tabPanel.getActiveWidget() == _treePanelCCSS) {
             activeTree = _treePanelCCSS._tree;
+        }
+        else if(_tabPanel.getActiveWidget() == _treeCustomProblemsPanel) {
+            activeTree = _treeCustomProblemsPanel._tree;
         }
         else {
             activeTree = _treeAllLessonsPanel._tree;

@@ -1,17 +1,20 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_core.client.model.CustomProblemModel;
+import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAvailableLessonsAction;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
+import hotmath.gwt.cm_rpc.client.rpc.GetCustomProblemAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.LessonDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -22,8 +25,6 @@ import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
@@ -36,65 +37,45 @@ import com.sencha.gxt.data.shared.TreeStore;
 import com.sencha.gxt.data.shared.loader.ChildTreeStoreBinding;
 import com.sencha.gxt.data.shared.loader.TreeLoader;
 import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent.CheckChangedHandler;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.tree.Tree;
 import com.sencha.gxt.widget.core.client.tree.Tree.CheckCascade;
 
-public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
+public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
 
-    static public interface CallbackOnSelectedLesson {
+    static public interface CallbackOnSelectedCustomProblem {
         void lessonWasSelected();
-
         void nodeWasChecked();
     }
 
-    CallbackOnSelectedLesson _callBack;
+    CallbackOnSelectedCustomProblem _callBack;
 
     Grid<LessonDto> _grid;
     Tree<BaseDto, String> _tree;
 
-    protected CmList<LessonDto> _allLessons;
+    protected CmList<CustomProblemModel> _allLessons;
 
-    private FilterSearchField _searchField;
 
-    public AssignmentTreeAllLessonsListingPanel(CallbackOnSelectedLesson callBack) {
+    public AssignmentTreeCustomProblemsListingPanel(CallbackOnSelectedCustomProblem callBack) {
         _callBack = callBack;
-
-        createAddSearchTool();
         setWidget(new DefaultGxtLoadingPanel());
     }
-
-    private void createAddSearchTool() {
-        _searchField = new FilterSearchField();
-        addTool(_searchField);
-        addTool(new TextButton("Search", new SelectHandler() {
-
-            @Override
-            public void onSelect(SelectEvent event) {
-                makeTree(_allLessons);
-            }
-        }));
-    }
+    
 
     private void readDataAndBuildTree() {
-
         CatchupMathTools.setBusy(true);
-        new RetryAction<CmList<LessonDto>>() {
+        new RetryAction<CmList<CustomProblemModel>>() {
             @Override
             public void attempt() {
-                GetAssignmentAvailableLessonsAction action = new GetAssignmentAvailableLessonsAction();
+                GetCustomProblemAction action = new GetCustomProblemAction(new TeacherIdentity(UserInfoBase.getInstance().getUid(),"", 0));
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
 
-            public void oncapture(CmList<LessonDto> lessons) {
+            public void oncapture(CmList<CustomProblemModel> lessons) {
                 CatchupMathTools.setBusy(false);
                 _allLessons = lessons;
                 makeTree(_allLessons);
@@ -102,6 +83,7 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
 
         }.register();
     }
+    
 
     public interface GridProperties extends PropertyAccess<String> {
         ModelKeyProvider<LessonDto> id();
@@ -110,14 +92,15 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
     }
 
     TreeStore<BaseDto> _treeStore;
+    
     FolderDto _root;
-
+    
     private static FolderDto makeFolder(String name) {
         FolderDto theReturn = new FolderDto(++BaseDto.autoId, name);
         theReturn.setChildren((List<BaseDto>) new ArrayList<BaseDto>());
         return theReturn;
     }
-
+    
     private static FolderDto makeLesson(LessonDto lessonDto) {
         LessonDto theReturn = lessonDto;
         theReturn.setId(++BaseDto.autoId);
@@ -125,21 +108,23 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         return theReturn;
     }
 
+
+    
     private void processFolder(TreeStore<BaseDto> store, FolderDto folder) {
         for (BaseDto child : folder.getChildren()) {
-            store.add(folder, child);
-            if (child instanceof FolderDto) {
-                processFolder(store, (FolderDto) child);
-            }
+          store.add(folder, child);
+          if (child instanceof FolderDto) {
+            processFolder(store, (FolderDto) child);
+          }
         }
-    }
+      }
+
 
     static int autoId;
-
-    public void makeTree(List<LessonDto> lessons) {
-
-        _treeStore = setupTreeStore(lessons);
-
+    public void makeTree(CmList<CustomProblemModel> custProblems) {
+        
+        _treeStore = setupTreeStore(custProblems);
+        
         TreeLoader<BaseDto> loader = new TreeLoader<BaseDto>(proxy) {
             @Override
             public boolean hasChildren(BaseDto parent) {
@@ -156,8 +141,8 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
 
             @Override
             public String getValue(BaseDto object) {
-                if (object instanceof ProblemDto) {
-                    return ((ProblemDto) object).getLabelWithType();
+                if(object instanceof ProblemDto) {
+                    return ((ProblemDto)object).getLabelWithType();
                 }
                 else {
                     return object.getName();
@@ -176,22 +161,23 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         _tree.setLoader(loader);
         _tree.setWidth(300);
         _tree.setCheckable(true);
-        _tree.setCheckStyle(CheckCascade.CHILDREN);
+        _tree.setCheckStyle(CheckCascade.CHILDREN);        
 
-        SimpleSafeHtmlCell<String> cell = new SimpleSafeHtmlCell<String>(SimpleSafeHtmlRenderer.getInstance(), BrowserEvents.CLICK) {
+        SimpleSafeHtmlCell<String> cell = new SimpleSafeHtmlCell<String>(SimpleSafeHtmlRenderer.getInstance(),BrowserEvents.CLICK) {
             @Override
             public void onBrowserEvent(Context context, Element parent, String value, NativeEvent event,
                     ValueUpdater<String> valueUpdater) {
                 super.onBrowserEvent(context, parent, value, event, valueUpdater);
-
+                
+                
                 Log.info("Browser event: " + event);
-
+                
                 if (BrowserEvents.CLICK.equals(event.getType())) {
                     BaseDto base = _tree.getSelectionModel().getSelectedItem();
                     if (base instanceof ProblemDto) {
-                        ProblemDto p = (ProblemDto) base;
+                        ProblemDto p = (ProblemDto)base;
                         Log.debug("View Question", "Viewing " + p.getLabel());
-
+                        
                         QuestionViewerPanel.getInstance().viewQuestion(p, false);
                     }
                 }
@@ -216,11 +202,11 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         @Override
         public void load(final BaseDto loadConfig, AsyncCallback<List<BaseDto>> callback) {
             if (loadConfig.getChildren() == null || loadConfig.getChildren().size() == 0) {
-                if (loadConfig instanceof LessonDto) {
-                    Log.info("Loading lesson problems: " + loadConfig);
+                 if (loadConfig instanceof LessonDto) {
+                     Log.info("Loading lesson problems: " + loadConfig);
                     LessonDto l = (LessonDto) loadConfig;
-                    AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(), l.getLessonFile(), l.getSubject(), callback, new CallbackOnComplete() {
-
+                    AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(),l.getLessonFile(), l.getSubject(), callback, new CallbackOnComplete() {
+                        
                         @Override
                         public void isComplete() {
                             Log.info("Scrolling window into view: " + loadConfig.getId());
@@ -229,23 +215,16 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
                     });
                 }
             }
-        }
-    };
-
-    private TreeStore<BaseDto> setupTreeStore(List<LessonDto> lessons) {
-
-        List<LessonDto> ll2 = new ArrayList<LessonDto>();
-        String filter = _searchField.getCurrentValue();
-        if (filter != null) {
-            filter = filter.toLowerCase();
-            for (LessonDto l : lessons) {
-                if (l.getName().toLowerCase().indexOf(filter) != -1) {
-                    ll2.add(l);
-                }
+            else {
+                callback.onSuccess(loadConfig.getChildren());
             }
-            lessons = ll2;
         }
+    };        
 
+    
+    private TreeStore<BaseDto> setupTreeStore(CmList<CustomProblemModel> custProbs) {
+        
+        List<LessonDto> ll2 = new ArrayList<LessonDto>();
         TreeStore<BaseDto> treeStore = new TreeStore<BaseDto>(new TreeKeyProvider());
         TreeLoader<BaseDto> loader = new TreeLoader<BaseDto>(proxy) {
             @Override
@@ -255,48 +234,43 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         };
         loader.addLoadHandler(new ChildTreeStoreBinding<BaseDto>(treeStore));
 
+
         _root = makeFolder("Root");
         List<BaseDto> children = new ArrayList<BaseDto>();
-        for (LessonDto l : lessons) {
-            children.add(makeLesson(l)); // new
-                                         // LessonDto(autoId++,0,"All",l.getLessonName()));
+        
+        int teacherId = -1;
+        FolderDto parentNode=null;
+        for(CustomProblemModel cp: custProbs) {
+            if(teacherId == -1 || teacherId != cp.getTeacher().getTeacherId()) {
+                teacherId = cp.getTeacher().getTeacherId();
+                parentNode = makeFolder("Custom Problems: " + cp.getTeacherName());
+                children.add(parentNode);
+            }
+            
+            ProblemDto prob = new ProblemDto(0, BaseDto.autoId++, new LessonModel(), cp.getPid(), cp.getPid(), 0);
+            prob.setProblemType(cp.getProblemType());
+            parentNode.addChild(prob);            
         }
-
-        if (CmShared.getQueryParameter("debug") != null) {
-            LessonDto customNodes = new LessonDto(++BaseDto.autoId, 0, "Custom Problems", "Custom Problems", null);
-            children.add(customNodes);
-        }
-
+        
         _root.setChildren(children);
-
+        
         FolderDto root = _root;
         for (BaseDto base : root.getChildren()) {
-            treeStore.add(base);
-            if (base instanceof FolderDto) {
-                processFolder(treeStore, (FolderDto) base);
-            }
+          treeStore.add(base);
+          if (base instanceof FolderDto) {
+            processFolder(treeStore, (FolderDto) base);
+          }
         }
 
         return treeStore;
     }
 
     public void refreshData() {
-        if (_treeStore != null) {
+        if(_treeStore != null) {
             _treeStore.clear();
         }
         readDataAndBuildTree();
     }
-
-    class FilterSearchField extends TextField {
-        public FilterSearchField() {
-            addChangeHandler(new ChangeHandler() {
-                @Override
-                public void onChange(ChangeEvent event) {
-                    makeTree(_allLessons);
-                }
-            });
-
-            setToolTip("Enter a search string");
-        }
-    }
 }
+
+

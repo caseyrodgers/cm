@@ -133,6 +133,7 @@ public class AssignmentLessonPidSelector {
             }
         }
 
+        
         AssignmentDao.getInstance().updateProblemTypes(problemsAll);
         
         
@@ -173,6 +174,7 @@ public class AssignmentLessonPidSelector {
         });
 
 
+
         /**
          * Add the label to each
          * 
@@ -181,14 +183,19 @@ public class AssignmentLessonPidSelector {
         for (ProblemDto p : problemsAll) {
             p.setLabel(getDefaultLabel(lessonName, (++pCount)));
         }
+
         
-        
-        
+
         /** Add any custom problem associated with this lesson 
          * 
          */
-        problemsAll.addAll(CustomProblemDao.getInstance().getCustomProblemsLinkedToLesson(lessonFile));
-
+        List<ProblemDto> customProblems = CustomProblemDao.getInstance().getCustomProblemsLinkedToLesson(lessonFile);
+        AssignmentDao.getInstance().updateProblemTypes(customProblems);
+        pCount=0;
+        for (ProblemDto p : customProblems) {
+            p.setLabel(getDefaultLabel(lessonName + " [cust]", (++pCount)));
+        }
+        problemsAll.addAll(customProblems);
     }
 
     private boolean alreadyContains(List<ProblemDto> problemsAll2, String pid) {

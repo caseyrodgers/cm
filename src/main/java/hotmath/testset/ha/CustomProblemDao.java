@@ -1,6 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.ProblemID;
+import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
@@ -10,7 +11,6 @@ import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.solution_editor.client.StepUnitPair;
@@ -208,7 +208,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         return newPid.getGUID();
     }
 
-    public List<CustomProblemModel> getCustomProblemsFor(final TeacherIdentity teacher) {
+    public List<CustomProblemModel> getCustomProblemsFor(final TeacherIdentity teacher) throws Exception {
         String sql =
                 "select cp.*, ct.admin_id, ct.teacher_name" +
                         " from   CM_CUSTOM_PROBLEM cp " +
@@ -223,6 +223,20 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                 return new CustomProblemModel(rs.getString("pid"), rs.getInt("teacher_problem_number"), new TeacherIdentity(rs.getInt("admin_id"), rs.getString("teacher_name"), rs.getInt("teacher_id")), rs.getString("comments"));
             }
         });
+        
+        
+        // transfer into shared object, and call to 
+        // set problem types.
+        //
+        // TODO: make generic way of getting problem type
+        List<ProblemDto> probs = new ArrayList<ProblemDto>();
+        for(CustomProblemModel cpm: problems) {
+            probs.add(new ProblemDto(0, 0, null, null, cpm.getPid(),0));
+        }
+        AssignmentDao.getInstance().updateProblemTypes(probs);
+        for(int i=0,t=problems.size();i<t;i++) {
+            problems.get(i).setProblemType(probs.get(i).getProblemType());
+        }
         return problems;
     }
 
