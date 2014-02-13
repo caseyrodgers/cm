@@ -178,7 +178,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         
         
         
-        if(sm != null && sm.getProgram().getProgramType() == CmProgramType.AUTOENROLL) {
+        if(sm != null && (sm.getProgram().getProgramType() == CmProgramType.AUTOENROLL || sm.getProgram().getProgramType() == CmProgramType.ASSIGNMENTS_ONLY)) {
             stdAdvOptionsBtn.setEnabled(false);
         }
         else {
@@ -554,7 +554,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                     activeSection = 0;
 
 
-                    if (progType == CmProgramType.AUTOENROLL) {
+                    if (progType == null || progType == CmProgramType.AUTOENROLL || progType == CmProgramType.ASSIGNMENTS_ONLY) {
                         stdAdvOptionsBtn.disable();
                     } else {
                         stdAdvOptionsBtn.enable();
@@ -1067,6 +1067,9 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             
             if (stdAdvOptionsBtn.isVisible()) {
                 if(stuMdl.getProgram().getProgramType() == CmProgramType.AUTOENROLL) {
+                    stdAdvOptionsBtn.setEnabled(false);
+                }
+                else if(stuMdl.getProgram().getProgramType() == CmProgramType.ASSIGNMENTS_ONLY) {
                     stdAdvOptionsBtn.setEnabled(false);
                 }
                 else {

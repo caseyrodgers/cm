@@ -7,6 +7,8 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 public class StudyProgramExt implements Response {
     
+    int uiId;
+    
     StudyProgramModel program;
     String title;
     String shortTitle;
@@ -69,9 +71,19 @@ public class StudyProgramExt implements Response {
             this.styleIsArchived = "custom-archived";
             this.label = label + " (" + program.getArchiveDate() + ")";
         }
+        
+        this.uiId = __uiIdCounter++;
     }
     
+
+    static int __uiIdCounter;
     
+    /** Get auto assigned ID used in GUI grids */
+    public int getUiId() {
+        return uiId;
+    }
+
+
 
     public StudyProgramModel getProgram() {
         return program;

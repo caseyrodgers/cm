@@ -6,7 +6,7 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 
 public interface StudyProgramProperties extends PropertyAccess<String> {
-    @Path("program.programId")
+    @Path("uiId")
     ModelKeyProvider<StudyProgramExt> id();
 
     LabelProvider<StudyProgramExt> title();
