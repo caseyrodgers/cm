@@ -68,7 +68,7 @@ class QuickSearchPanel extends HorizontalPanel {
             shouldRefresh = false;
 
         if (shouldRefresh) {
-            StudentSearchInfo.__instance.setQuickSearch(quickFilter.getValue());
+            StudentSearchInfo.__instance.setQuickSearch(quickFilter.getCurrentValue());
             StudentGridPanel.instance.loadAndResetStudentLoader();
         }
     }

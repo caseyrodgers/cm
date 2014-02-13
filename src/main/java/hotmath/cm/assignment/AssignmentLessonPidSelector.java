@@ -3,6 +3,7 @@ package hotmath.cm.assignment;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.InmhItemData;
 import hotmath.assessment.RppWidget;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CustomQuizQuestionManager;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
@@ -186,16 +187,19 @@ public class AssignmentLessonPidSelector {
 
         
 
-        /** Add any custom problem associated with this lesson 
-         * 
-         */
-        List<ProblemDto> customProblems = CustomProblemDao.getInstance().getCustomProblemsLinkedToLesson(lessonFile);
-        AssignmentDao.getInstance().updateProblemTypes(customProblems);
-        pCount=0;
-        for (ProblemDto p : customProblems) {
-            p.setLabel(getDefaultLabel(lessonName + " [cust]", (++pCount)));
+        /** Only do this if NOT THE LIVE server */
+        if(!CatchupMathProperties.getInstance().getCmInstallationId().equals("live")) {
+            /** Add any custom problem associated with this lesson 
+             * 
+             */
+            List<ProblemDto> customProblems = CustomProblemDao.getInstance().getCustomProblemsLinkedToLesson(lessonFile);
+            AssignmentDao.getInstance().updateProblemTypes(customProblems);
+            pCount=0;
+            for (ProblemDto p : customProblems) {
+                p.setLabel(getDefaultLabel(lessonName + " [cust]", (++pCount)));
+            }
+            problemsAll.addAll(customProblems);
         }
-        problemsAll.addAll(customProblems);
     }
 
     private boolean alreadyContains(List<ProblemDto> problemsAll2, String pid) {

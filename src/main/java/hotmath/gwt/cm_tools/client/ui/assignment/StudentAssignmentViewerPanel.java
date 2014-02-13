@@ -1,12 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
-import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.rpc.CmPrintAction;
-import hotmath.gwt.cm_rpc.client.rpc.CmPrintAction.PrintType;
 import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
@@ -244,35 +241,27 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         header.setSouthWidget(buttonBar, bData);
         
         ContentPanel cpHeader = new ContentPanel();
-        if(CmShared.getQueryParameter("debug") != null) {
-            cpHeader.addTool(new TextButton("Print", new SelectHandler() {
-                @Override
-                public void onSelect(SelectEvent event) {
-                    printAssignment();
-                }
-            }));
-        }
         cpHeader.setWidget(header);
         
         return cpHeader;
     }
     
-    protected void printAssignment() {
-        new RetryAction<RpcData>() {
-            @Override
-            public void attempt() {
-                CmPrintAction action = new CmPrintAction(PrintType.ASSIGNMENT, _studentAssignment.getUid(), _studentAssignment.getAssignment().getAssignKey());
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
-
-            public void oncapture(RpcData data) {
-                CatchupMathTools.setBusy(false);
-                CmMessageBox.showAlert("Report returned: " + data);
-            }
-        }.register();
-        
-    }
+//    protected void printAssignment() {
+//        new RetryAction<RpcData>() {
+//            @Override
+//            public void attempt() {
+//                CmPrintAction action = new CmPrintAction(PrintType.ASSIGNMENT, _studentAssignment.getUid(), _studentAssignment.getAssignment().getAssignKey());
+//                setAction(action);
+//                CmShared.getCmService().execute(action, this);
+//            }
+//
+//            public void oncapture(RpcData data) {
+//                CatchupMathTools.setBusy(false);
+//                CmMessageBox.showAlert("Report returned: " + data);
+//            }
+//        }.register();
+//        
+//    }
 
     private void turnInAssignment() {
         CmMessageBox.confirm("Turn In Assignment",  "Are you sure you want to turn in this assignment?",new ConfirmCallback() {

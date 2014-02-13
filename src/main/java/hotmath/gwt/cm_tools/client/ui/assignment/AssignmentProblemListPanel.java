@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm.client.ui.StudentAssignmentButton;
-import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
@@ -14,7 +13,6 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEvent;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedHandler;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
@@ -65,17 +63,6 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
         setHeadingHtml("Problems in Assignment");
         addTool(createNextProblemButton());
-        
-        
-        if(CmGwtUtils.getQueryParameter("debug") != null) {
-            addTool(new TextButton("Test", new SelectHandler() {
-                @Override
-                public void onSelect(SelectEvent event) {
-                    runTests();
-                }
-            }));
-        }
-        
         
         getButtonBar().add(createAnnotationLedgend());
 
@@ -166,55 +153,6 @@ public class AssignmentProblemListPanel extends ContentPanel {
         return b;
     }
     
-    int testCount;
-    private void runTests() {
-        testCount=100;
-        runTestsDoIt();
-    }
-    
-    private void runTestsDoIt() {
-        StudentProblemDto gotoThisOne=null;
-
-        
-        StudentProblemDto selected = _studentProblemGrid.getSelectionModel().getSelectedItem();
-        if(selected == null) {
-            return;
-        }
-        
-        
-        List<StudentProblemDto> a = _studentProblemGrid.getStore().getAll();
-        for (int which=0,count=a.size();which < count;which++) {
-            StudentProblemDto p = a.get(which);
-            if(selected == null || p == selected) {
-                // search from here to end
-                for(int i=which+1;i<count;i++) {
-                    StudentProblemDto p2 = a.get(i);
-                    if(p2 != null) {
-                        gotoThisOne=p2;
-                        break;
-                    }
-                }
-                if(gotoThisOne!=null) {
-                    break;
-                }
-            }
-        }
-        if(gotoThisOne == null) {
-            gotoThisOne = _studentProblemGrid.getStore().get(0);
-        }
-        
-        InfoPopupBox.display("Info",  "Test: " + testCount);
-        
-        _studentProblemGrid.getSelectionModel().select(true,  gotoThisOne);
-        if(testCount-- > 0) {
-            new com.google.gwt.user.client.Timer() {
-                @Override
-                public void run() {
-                    runTestsDoIt();                    
-                }
-            }.schedule(5000);
-        }
-    }
 
     // search from current position to end, then 
     private void moveToNextIncompleteProblem() {

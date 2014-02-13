@@ -393,7 +393,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         });
         // ti.setIconStyle("printer-icon");
         ti.setToolTip("Display a printable student detail report");
-        ti.addStyleName("student-details-panel-pr-btn");
+        //ti.addStyleName("student-details-panel-pr-btn");
         return ti;
     }
 
