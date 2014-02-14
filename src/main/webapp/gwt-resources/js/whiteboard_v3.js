@@ -20,7 +20,7 @@ var console_log = function (txt) {
     console.log(txt)
 }
 var transMode = 'move'
-var Whiteboard = function (cont, isStatic) {
+var Whiteboard = function (cont, isStatic,_opts) {
     var wb = this;
     var contDiv = cont;
     var canvas, context, pencil_btn, rect_btn, width, height, x, y, clickX, clickY, penDown = false;
@@ -117,6 +117,10 @@ var Whiteboard = function (cont, isStatic) {
         }]
     }
     wb.options = opts;
+	wb.options.showTemplates = true;
+	if(_opts){
+	$.extend(wb.options,_opts);
+	}
     //
     var toolArr = [{
         name: 'button_text',
@@ -267,6 +271,7 @@ var Whiteboard = function (cont, isStatic) {
             }).addClass('tools');
             var tool
             for (var k = 0; k < arr.length; k++) {
+
                 tool = createToolBtn(arr[k])
                 tool.appendTo(divObj);
             }
@@ -277,6 +282,9 @@ var Whiteboard = function (cont, isStatic) {
             var divObj = $("<div name='wb_menu' class='wb_menu' style='position:absolute;width:215px;top:36px;left:5px;background-color:#eeeeee;padding:5px;-webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);display:none;'></div>");
             var tool
             for (var k = 0; k < arr.length; k++) {
+				if(arr[k].text=='Temp'&&!wb.options.showTemplates){
+					continue
+				}
                 tool = createToolBtn(arr[k])
                 tool.appendTo(divObj).css("margin", "4px");
             }
