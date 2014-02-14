@@ -121,6 +121,9 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                      }
                      
                      CatchupMathVersion version = info.getVersionInfo();
+                     if(version == null) {
+                         return;
+                     }
                      
          	    	String startType = UserInfoBase.getInstance().getCmStartType();
         	    	if(startType == null)startType = "";

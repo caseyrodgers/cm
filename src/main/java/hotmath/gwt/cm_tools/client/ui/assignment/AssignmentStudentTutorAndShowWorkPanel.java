@@ -148,7 +148,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
             public void onSelect(SelectEvent event) {
                 if (showLesson.getValue()) {
                     showWhiteboard();
-                    loadAssignmentWhiteboardData(_uid, _assignKey, _problem.getPid());
+                    // loadAssignmentWhiteboardData(_uid, _assignKey, _problem.getPid());
                 }
                 else {
                     _container.remove(_showWorkWrapper);

@@ -200,9 +200,11 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
     private void loadProblemStatement(StudentProblemDto studentProb) {
 
-        if(UserInfo.getInstance().getAssignmentMetaInfo().removeFromUnreadAnnotations(_studentAssignment, studentProb)) {
-            _studentProblemGrid.getStore().update(studentProb);
-            StudentAssignmentButton.refreshButtonState();
+        if( UserInfo.getInstance().getAssignmentMetaInfo() != null) {
+            if(UserInfo.getInstance().getAssignmentMetaInfo().removeFromUnreadAnnotations(_studentAssignment, studentProb)) {
+                _studentProblemGrid.getStore().update(studentProb);
+                StudentAssignmentButton.refreshButtonState();
+            }
         }
         
         _currentProblem = studentProb;
