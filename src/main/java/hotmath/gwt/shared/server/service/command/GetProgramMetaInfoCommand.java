@@ -34,6 +34,9 @@ public class GetProgramMetaInfoCommand implements ActionHandler<GetProgramMetaIn
                 if(subjId.equals("ElemAlg")) {
                     return CmProgram.ELEMALG.getSectionCount();
                 }
+                else if(subjId.equals("BasicMath")) {
+                    return CmProgram.BASICMATH.getSectionCount();
+                }
                 else {
                     // default 
                     return CmProgram.PREALG_PROF.getSectionCount();
