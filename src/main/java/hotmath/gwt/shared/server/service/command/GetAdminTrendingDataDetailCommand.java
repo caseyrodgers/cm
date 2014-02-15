@@ -21,16 +21,16 @@ public class GetAdminTrendingDataDetailCommand implements ActionHandler<GetAdmin
         studentPool = new GetStudentGridPageCommand().getStudentPool(action.getDataAction());
         if(studentPool.size() == 0)
             throw new CmRpcException("No students found");
-        
-        if(action.getDataType() == GetAdminTrendingDataDetailAction.DataType.PROGRAM_USERS) {
+
+        switch (action.getDataType()) {
+        case PROGRAM_USERS:
             return CmAdminDao.getInstance().getStudentsWhoHaveBeenAssignedProgramSegment(conn, studentPool,action.getTestDefId(), action.getQuizSegment(),false);
-        }
-        else if(action.getDataType() == GetAdminTrendingDataDetailAction.DataType.LESSON_USERS) {
+        case LESSON_USERS:
             return CmAdminDao.getInstance().getStudentsWhoHaveBeenAssignedLesson(conn, studentPool,action.getLessonName(),false);
+        case LESSON_USERS_CURRENT_PROG:
+            return CmAdminDao.getInstance().getStudentsWhoHaveBeenAssignedLesson(conn, studentPool,action.getLessonName(),true);
         }
-        else {
-            throw new CmRpcException("Unknown DataType request: " + action.getDataType());
-        }
+        throw new CmRpcException("Unknown DataType request: " + action.getDataType());
     }
 
     public List<StudentModelI> getStudentPool() {

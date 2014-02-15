@@ -63,11 +63,12 @@ public class TrendingDataWindowBarChart implements IsWidget {
 
 	List<TrendingData> trendingData;
 	String title;
+	boolean _currentProgramOnly;
 
-
-	public TrendingDataWindowBarChart(String title, List<TrendingData> data) {
+	public TrendingDataWindowBarChart(String title, List<TrendingData> data, boolean currentProgramOnly) {
 		this.trendingData = data;
 		this.title = title;
+		this._currentProgramOnly = currentProgramOnly;
 	}
 
 	private Widget _widget;
@@ -192,6 +193,9 @@ public class TrendingDataWindowBarChart implements IsWidget {
 		else if(max < 100) {
 			fudge = 100;
 		}
+		else if(max < 500) {
+			fudge = 500;
+		}
 		else { 
 			fudge = 1000;
 		}
@@ -206,7 +210,7 @@ public class TrendingDataWindowBarChart implements IsWidget {
 
 		final String lessonName = trendingData.get(lessonNumber).getLessonName();
 		CmServiceAsync service = CmShared.getCmService();
-		GetAdminTrendingDataDetailAction action = new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._pageAction, lessonName);
+		GetAdminTrendingDataDetailAction action = new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._pageAction, lessonName, _currentProgramOnly);
 		service.execute(action,
 				new CmAsyncCallback<CmList<StudentModelI>>() {
 			public void onSuccess(CmList<StudentModelI> students) {

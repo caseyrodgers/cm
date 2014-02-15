@@ -29,6 +29,12 @@ public class GetAdminTrendingDataDetailAction implements Action<CmList<StudentMo
         this.lessonName = lessonName;
     }
 
+    public GetAdminTrendingDataDetailAction(GetStudentGridPageAction action, String lessonName, boolean useCurrentProgram) {
+        this.dataType = (useCurrentProgram == true) ? DataType.LESSON_USERS_CURRENT_PROG : DataType.LESSON_USERS;
+        this.dataAction = action;
+        this.lessonName = lessonName;
+    }
+
 
     public Integer getTestDefId() {
         return testDefId;
@@ -79,5 +85,5 @@ public class GetAdminTrendingDataDetailAction implements Action<CmList<StudentMo
         this.dataType = dataType;
     }
     
-    public enum DataType{PROGRAM_USERS,LESSON_USERS};
+    public enum DataType{PROGRAM_USERS,LESSON_USERS,LESSON_USERS_CURRENT_PROG};
 }

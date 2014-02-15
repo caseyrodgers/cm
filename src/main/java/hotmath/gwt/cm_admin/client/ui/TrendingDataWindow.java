@@ -190,7 +190,8 @@ public class TrendingDataWindow extends GWindow {
     		_lessonsChartWidget.removeFromParent();
     		_tabPanel.remove(_lessonsChartWidget);
     	}
-        TrendingDataWindowBarChart _trendingChart = new TrendingDataWindowBarChart("Most Prescribed Lessons", trendingData.getTrendingData());
+    	boolean currentProgramOnly = (onlyActiveOrFullHistory() == GetAdminTrendingDataAction.DataType.ONLY_ACTIVE);
+        TrendingDataWindowBarChart _trendingChart = new TrendingDataWindowBarChart("Most Prescribed Lessons", trendingData.getTrendingData(), currentProgramOnly);
         _lessonsChartWidget = _trendingChart.asWidget();
         _tabPanel.add(_lessonsChartWidget, "Most Prescribed Lessons");
     }
