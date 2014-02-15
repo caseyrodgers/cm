@@ -1235,6 +1235,8 @@ order by count_assigned desc
 limit 5        
 
 
+# trending data for student's active program
+#
 .key=TRENDING_DATA_SQL_FROM_UIDS_ACTIVE_ONLY
 
 select lesson_name,count(*) as count_assigned
@@ -1267,7 +1269,6 @@ WHERE (p.test_def_id = ?)
 and $$UID_LIST$$
 group by test_segment
 order by test_segment;
-
 
 
 .key=TRENDING_DATA_FOR_TEST_SEGMENTS_SQL_FROM_UIDS_ACTIVE_ONLY
@@ -1323,7 +1324,7 @@ SELECT distinct u.user_name,u.uid
 FROM   HA_TEST_DEF d
   JOIN HA_TEST t
     ON t.test_def_id = d.test_def_id
-  JOIN v_HA_USER_ACTIVE u
+  JOIN HA_USER u
      ON u.uid = t.user_id
 WHERE (d.test_def_id = ?)
 and t.test_segment = ?
@@ -1339,8 +1340,29 @@ from  HA_TEST_RUN_LESSON l
     ON r.run_id = l.run_id
    JOIN HA_TEST t
      ON t.test_id = r.test_id
-   JOIN v_HA_USER_ACTIVE u
+   JOIN HA_USER u
      ON u.uid = t.user_id
+where $$UID_LIST$$
+and     l.lesson_name = ?
+group by uid
+order by user_name
+
+
+# trending data detail for student's active program
+#
+.key=TRENDING_DATA_DETAIL_FOR_LESSON_FROM_UIDS_ACTIVE_ONLY
+
+select distinct  u.uid, u.user_name, count(*) as times_assigned
+from  HA_TEST_RUN_LESSON l
+  JOIN HA_TEST_RUN r
+    ON r.run_id = l.run_id
+   JOIN HA_TEST t
+     ON t.test_id = r.test_id
+   JOIN CM_USER_PROGRAM p
+     ON p.id = t.user_prog_id
+  JOIN HA_USER u
+     ON u.user_prog_id = p.id
+    AND u.uid = t.user_id
 where $$UID_LIST$$
 and     l.lesson_name = ?
 group by uid

@@ -985,6 +985,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
      * @param conn
      * @param studentPool
      * @param lessonName
+     * @param useActiveOnly
      * @return
      * @throws Exception
      */
@@ -995,8 +996,8 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
         ResultSet rs = null;
         try {
 
-            String sql = CmMultiLinePropertyReader.getInstance().getProperty(
-                    "TRENDING_DATA_DETAIL_FOR_LESSON_FROM_UIDS");
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty((useActiveOnly == false) ?
+                    "TRENDING_DATA_DETAIL_FOR_LESSON_FROM_UIDS" : "TRENDING_DATA_DETAIL_FOR_LESSON_FROM_UIDS_ACTIVE_ONLY");
             sql = QueryHelper.createInListSQL(sql, createInListReplacements(studentPool), "u.uid");
             ps = conn.prepareStatement(sql);
             ps.setString(1, lessonName);
