@@ -412,7 +412,7 @@ public class ShowWorkPanel2 extends Composite {
                 return;
             }
 
-            $wnd._theWhiteboard = new $wnd.Whiteboard(whiteboardId, isStatic, {'showTemplates':false});
+            $wnd._theWhiteboard = new $wnd.Whiteboard(whiteboardId, isStatic, {'showTemplates':true});
             $wnd._theWhiteboard.initWhiteboard($doc);
 
             try {
