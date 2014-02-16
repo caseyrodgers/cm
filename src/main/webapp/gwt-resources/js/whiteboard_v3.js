@@ -1516,7 +1516,9 @@ var Whiteboard = function (cont, isStatic,_opts) {
         $get_Element("#button_oval").style.border = '1px solid #000000';
         $get_Element("#button_eraser").style.border = '1px solid #000000';
         $get_Element("#button_nav").style.border = '1px solid #000000';
+		if ($get_Element("#button_temp")) {
         $get_Element("#button_temp").style.border = '1px solid #000000';
+		}
         if ($get_Element("#button_move")) {
             $get_Element("#button_move").style.border = '1px solid #000000';
         }
