@@ -20,7 +20,7 @@ var console_log = function (txt) {
     console.log(txt)
 }
 var transMode = 'move'
-var Whiteboard = function (cont, isStatic,_opts) {
+var Whiteboard = function (cont, isStatic, _opts) {
     var wb = this;
     var contDiv = cont;
     var canvas, context, pencil_btn, rect_btn, width, height, x, y, clickX, clickY, penDown = false;
@@ -89,7 +89,8 @@ var Whiteboard = function (cont, isStatic,_opts) {
     var loadedImgTemps = {};
     var loadedTemps = 0;
     var totalTempsloaded = 0;
-    //
+    var graphEditMode = false;
+    // --- /gwt-resources/images/whiteboard/
     var opts = {
         "templates": [{
             "type": "img",
@@ -117,10 +118,10 @@ var Whiteboard = function (cont, isStatic,_opts) {
         }]
     }
     wb.options = opts;
-	wb.options.showTemplates = true;
-	if(_opts){
-	$.extend(wb.options,_opts);
-	}
+    wb.options.showTemplates = true;
+    if (_opts) {
+        $.extend(wb.options, _opts);
+    }
     //
     var toolArr = [{
         name: 'button_text',
@@ -242,11 +243,17 @@ var Whiteboard = function (cont, isStatic,_opts) {
             var tempMenu = buildTempMenu().appendTo(wbc);
             $get_jqElement("#toggleMenu").on("click", function (e) {
                 hideTemplates()
+                if (graphEditMode) {
+                    //showHideGraphModuleEditor(false)
+                }
                 positionToolMenu('t', e.originalEvent);
                 $get_jqElement("#wb_menu").toggle();
             });
             $get_jqElement("#toggleMenu").on("mouseover", function (e) {
                 hideTemplates()
+                if (graphEditMode) {
+                    //showHideGraphModuleEditor(false)
+                }
                 positionToolMenu('t', e.originalEvent);
                 $get_jqElement("#wb_menu").show()
             });
@@ -282,9 +289,9 @@ var Whiteboard = function (cont, isStatic,_opts) {
             var divObj = $("<div name='wb_menu' class='wb_menu' style='position:absolute;width:215px;top:36px;left:5px;background-color:#eeeeee;padding:5px;-webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);display:none;'></div>");
             var tool
             for (var k = 0; k < arr.length; k++) {
-				if(arr[k].text=='Temp'&&!wb.options.showTemplates){
-					continue
-				}
+                if (arr[k].text == 'Temp' && !wb.options.showTemplates) {
+                    continue
+                }
                 tool = createToolBtn(arr[k])
                 tool.appendTo(divObj).css("margin", "4px");
             }
@@ -412,118 +419,288 @@ var Whiteboard = function (cont, isStatic,_opts) {
             }
             return divObj
         }
-        //
 
-        function drawBoundRect(obj, boo) {
-            var dx = x - clickX
-            var dy = y - clickY
-            context.save();
-            context.lineWidth = 4;
-            context.strokeStyle = "rgba(0, 0, 255, 0.5)";
-            context.translate(scrollPosition.x, scrollPosition.y);
-            var isMoved = isObjTransformed(selectedObj.uid, 'move');
-            var isScaled = isObjTransformed(selectedObj.uid, 'scale');
-            var isRotated = isObjTransformed(selectedObj.uid, 'rotate');
-            var x0, y0, w0, h0, sx, sy;
-            if (transMode == 'move') {
-                if (boo) {
-                    obj = isMoved ? isMoved : {
-                        tx: 0,
-                        ty: 0
-                    }
-                }
-                x0 = selectedObj.brect.xmin + obj.tx;
-                y0 = selectedObj.brect.ymin + obj.ty;
-                w0 = selectedObj.brect.w;
-                h0 = selectedObj.brect.h;
-                if (isScaled) {
+        function createEditableGraph(type) {
+            var egraph = $get_Element("#egraph");
+            if (egraph) {
+                $(egraph).remove();
+            }
+            var board_hold = $get_Element("#wb-container");
+            var board = $("<div name='egraph' class='egraph' style='max-width:400px;width:400px;position:absolute;top:35px;display:none;'/>")
+            board.appendTo($(board_hold));
+            if (!wb.graphModules) {
+                wb.graphModules = {}
+                wb.plotModules = {}
+            }
+            var gtype = type ? type : 'xy'
+            var graph = new Graph(document, board.get(0), gtype, -5, 5, -5, 5, 1, 1, undefined, true, true, 300, gtype == 'xy' ? 300 : 150, true, true, false);
+            wb.graphModule = new Plotter(graph, 'point', {
+                data: "['interactive']"
+            }, 'GridToGrid', true, false, false, false);
+        }
 
-                    sx = isScaled.tx;
-                    sy = isScaled.ty;
-                    if (isRotated) {
-                        /*var nr0=getScaleRatio(sx,sy,isRotated.tr)
-			sx=nr0.w
-			sy=nr0.h*/
+        function getGraphModuleConfig() {
+            var p = wb.graphModule;
+            var g = p.graphObj;
+            p.setAxisDatas();
+            var obj = p.getGraphData()
+            obj.plot_data = eval(p.plot_datas);
+            return (obj);
+        }
+
+        function updateGraphModule(uid, config, rerender, data, boo) {
+            //var config=eval(data.config)
+            if (!rerender) {
+                if (!config || (wb.graphModule && (config.gtype != wb.graphModule.graph_type))) {
+                    createEditableGraph(config.gtype)
+                }
+
+                if (config) {
+                    var plot = wb.graphModule
+                    var graph = plot.graphObj
+                    graph.setAxis(config.xaxis, config.yaxis);
+                    graph.scaleGraph(config.xscale, config.yscale);
+                }
+            }
+            //graphicData.config=getGraphModuleConfig()
+            var plot = wb.graphModule
+            var graph = plot.graphObj
+            var gData = graph.canvas.toDataURL();
+            var pData = graph.canvas.toDataURL();
+            var gImage, pImage;
+            if (!wb.graphModules[uid]) {
+                wb.graphModules[uid] = new Image();
+                wb.plotModules[uid] = new Image();
+            }
+            gImage = wb.graphModules[uid]
+            pImage = wb.plotModules[uid]
+            gImage.src = gData;
+            pImage.src = pData;
+            wb.graphModules[uid] = gImage;
+            wb.plotModules[uid] = pImage;
+            //var bound = plot.selObjBound.brect
+            //context.drawImage(gImage, bound.xmin, bound.ymin);
+            //context.drawImage(pImage, bound.xmin, bound.ymin);
+            var tdata = getGraphModuleConfig();
+            if (!objectActions[uid]['edit']) {
+                objectActions[uid]['edit'] = [{}];
+            }
+            var li = objectActions[uid]['edit'].length - 1;
+            objectActions[uid]['edit'][li] = tdata;
+            if (!boo) {
+                var mobj = {
+                    id: data.id,
+                    uid: data.uid,
+                    type: 'cmd',
+                    config: tdata,
+                    cmd: {
+                        name: 'edit',
+                        data: tdata
+                    },
+                    dataArr: []
+                }
+                updateDataToSERVER(null, mobj);
+            }
+            updateCanvas();
+        }
+
+        function showHideGraphModuleEditor(boo) {
+            var plot
+            var graph
+            var config = selectedObj ? eval(selectedObj.config) : null;
+            var gedit = $get_jqElement("#egraph");
+            if (boo) {
+                if ((wb.graphModule && (config.gtype != wb.graphModule.graph_type))) {
+                    createEditableGraph(config.gtype)
+                }
+                plot = wb.graphModule
+                graph = plot.graphObj
+                var uid = selectedObj.uid
+                var li = objectActions[selectedObj.uid]['edit'] ? objectActions[selectedObj.uid]['edit'].length - 1 : -1;
+                if (li > -1) {
+                    config = objectActions[uid]['edit'][li]
+                }
+                if (config) {
+                    graph.setAxis(config.xaxis, config.yaxis);
+                    graph.scaleGraph(config.xscale, config.yscale);
+                }
+                graphEditMode = true;
+                var bound = getWhiteboardObjBound('sel');
+                if (selectedObj) {
+                    plot.currentUID = selectedObj.uid;
+                    plot.objIndex = selectedObjIndex;
+                    plot.selObjBound = bound;
+                } else {
+                    config = plot.objIndex !== undefined ? eval(graphicDataStore[plot.objIndex].config) : null;
+                }
+
+                var pos = bound.brect;
+                var off = {
+                    left: 0.5,
+                    top: $get_jqElement("#tools").outerHeight() + 0.5
+                };
+                removeBoundRect();
+                updateCanvas();
+                gedit.css({
+                    'left': pos.xmin + off.left + 'px',
+                    'top': pos.ymin + off.top + 'px',
+                    'display': 'block'
+                })
+                //gedit.show();
+            } else {
+                graphEditMode = !true;
+                if (wb.graphModule) {
+                    plot = wb.graphModule
+                    graph = plot.graphObj
+                    config = plot.objIndex !== undefined ? eval(graphicDataStore[plot.objIndex].config) : null;
+                    if (config) {
+                        var nconfig = getGraphModuleConfig()
+                        if (config.xaxis != nconfig.xaxis || config.yaxis != nconfig.yaxis || config.xscale != nconfig.xscale || config.yscale != nconfig.yscale) {
+                            updateGraphModule(plot.currentUID, nconfig, true, graphicDataStore[plot.objIndex])
+                        }
+                        gedit.hide();
+                        updateCanvas();
+                        setObjSelected(graphicDataStore[plot.objIndex]);
                     }
-                    x0 = x0 - sx
-                    y0 = y0 - sy
-                    w0 = selectedObj.brect.w + (sx * 2)
-                    h0 = selectedObj.brect.h + (sy * 2)
                 }
-                if (isRotated) {
-                    x0 = x0 ? x0 : selectedObj.brect.xmin
-                    y0 = y0 ? y0 : selectedObj.brect.ymin
-                    w0 = w0 ? w0 : selectedObj.brect.w
-                    h0 = h0 ? h0 : selectedObj.brect.h
-                    var cx = x0 + (w0 / 2)
-                    var cy = y0 + (h0 / 2)
-                    context.translate(cx, cy);
-                    context.rotate(isRotated.tr);
-                    context.translate(-cx, -cy);
+            }
+        }
+    wb.addGraphModule = function (t, x, y, boo, data) {
+        //alert("ADD "+temp.name+" from "+temp.path)
+        if (selectedObj && selectionMode && selectedObj.id == 'graph') {
+            //showHideGraphModuleEditor(true)
+            return
+        }
+        var config = {
+            gtype: t ? t : 'xy',
+            xmin: -5,
+            ymin: -5,
+            xmax: 5,
+            ymax: 5,
+            xinc: 1,
+            yinc: 1
+        }
+        if (!boo) {
+            graphicData.dataArr = [];
+            graphicData.id = 'graph';
+            graphicData.uid = data ? (data.uid ? data.uid : getNextObjectID()) : getNextObjectID();
+            objectActions[graphicData.uid] = {};
+        } else {
+            graphicData = data
+            config = graphicData.config
+        }
+        var uid = graphicData.uid
+        if (!data || !wb.graphModule || (wb.graphModule && (config.gtype != wb.graphModule.graph_type))) {
+            createEditableGraph(config.gtype)
+        }
+        var plot = wb.graphModule
+        var graph = plot.graphObj
+        if (boo && config) {
+            graph.setAxis(config.xaxis, config.yaxis);
+            graph.scaleGraph(config.xscale, config.yscale);
+        }
+
+        var w = graph.width;
+        var h = graph.height;
+        graphicData.config = getGraphModuleConfig()
+        var gr, xp, yp, xs, ys
+        var cposX = parseInt($get_Element("#canvas-container").style.left);
+        var cposY = parseInt($get_Element("#canvas-container").style.top);
+        cposX = cposX ? cposX : 0;
+        cposY = cposY ? cposY : 0;
+        var sw = (screen_width - w) / 2
+        var sh = (screen_height - h) / 2
+        xp = x ? x - w / 2 : sw - cposX
+        yp = y ? y - h / 2 : sh - cposY
+        xs = x ? x - w / 2 : sw - cposX
+        ys = y ? y - h / 2 : sh - cposY
+        var gData = graph.canvas.toDataURL();
+        var pData = graph.canvas.toDataURL();
+        var gImage, pImage;
+        if (!wb.graphModules[uid]) {
+            wb.graphModules[uid] = new Image();
+            wb.plotModules[uid] = new Image();
+        }
+        gImage = wb.graphModules[uid]
+        pImage = wb.plotModules[uid]
+        gImage.src = gData;
+        pImage.src = pData;
+        wb.graphModules[uid] = gImage;
+        wb.plotModules[uid] = pImage;
+        context.drawImage(gImage, xp, yp);
+        context.drawImage(pImage, xp, yp);
+        //graphcontext.drawImage(gr, xp, yp);
+
+
+
+
+        if (!boo) {
+            graphicData.dataArr.push({
+                x: xs - scrollPosition.x,
+                y: ys - scrollPosition.y,
+                w: w,
+                h: h
+            });
+            graphicData.brect = getBoundRect(xs - scrollPosition.x, ys - scrollPosition.y, w, h);
+            sendData();
+            if (!selectionMode) {
+                selectionMode = true;
+            }
+            buttonHighlite('move');
+            updateCanvas();
+            setObjSelected(graphicDataStore[graphicDataStore.length - 1]);
+        } else {
+
+            var isDeleted = isObjDeleted(uid);
+            var isMoved = isObjTransformed(uid, 'move');
+            var isScaled = isObjTransformed(uid, 'scale');
+            var isRotated = isObjTransformed(uid, 'rotate');
+            var isModified = isMoved || isScaled || isRotated || isDeleted; //isObjTransformed(uid);
+            if (isModified) {
+                updateCanvas();
+            }
+
+        }
+    }
+    //
+
+    function drawBoundRect(obj, boo) {
+        var dx = x - clickX
+        var dy = y - clickY
+        context.save();
+        context.lineWidth = 4;
+        context.strokeStyle = "rgba(0, 0, 255, 0.5)";
+        context.translate(scrollPosition.x, scrollPosition.y);
+        var isMoved = isObjTransformed(selectedObj.uid, 'move');
+        var isScaled = isObjTransformed(selectedObj.uid, 'scale');
+        var isRotated = isObjTransformed(selectedObj.uid, 'rotate');
+        var x0, y0, w0, h0, sx, sy;
+        if (transMode == 'move') {
+            if (boo) {
+                obj = isMoved ? isMoved : {
+                    tx: 0,
+                    ty: 0
                 }
-                context.strokeRect(x0, y0, w0, h0)
-            } else if (transMode == 'scale') {
-                if (boo) {
-                    obj = isScaled ? isScaled : {
-                        tx: 0,
-                        ty: 0
-                    }
-                }
-                sx = obj.tx;
-                sy = obj.ty;
+            }
+            x0 = selectedObj.brect.xmin + obj.tx;
+            y0 = selectedObj.brect.ymin + obj.ty;
+            w0 = selectedObj.brect.w;
+            h0 = selectedObj.brect.h;
+            if (isScaled) {
+
+                sx = isScaled.tx;
+                sy = isScaled.ty;
                 if (isRotated) {
                     /*var nr0=getScaleRatio(sx,sy,isRotated.tr)
 			sx=nr0.w
 			sy=nr0.h*/
                 }
-                x0 = selectedObj.brect.xmin - sx;
-                y0 = selectedObj.brect.ymin - sy;
-
-
-                w0 = selectedObj.brect.w + (sx * 2);
-                h0 = selectedObj.brect.h + (sy * 2);
-                if (isMoved) {
-                    x0 = x0 + isMoved.tx
-                    y0 = y0 + isMoved.ty
-                    //w0=obj.brect.w+(isScaled.tx*2)
-                    //h0=obj.brect.h+(isScaled.ty*2)
-                }
-                if (isRotated) {
-                    x0 = x0 ? x0 : selectedObj.brect.xmin
-                    y0 = y0 ? y0 : selectedObj.brect.ymin
-                    w0 = w0 ? w0 : selectedObj.brect.w
-                    h0 = h0 ? h0 : selectedObj.brect.h
-                    var cx = x0 + (w0 / 2)
-                    var cy = y0 + (h0 / 2)
-                    context.translate(cx, cy);
-                    context.rotate(isRotated.tr);
-                    context.translate(-cx, -cy);
-                }
-                context.strokeRect(x0, y0, w0, h0)
-            } else if (transMode == 'rotate') {
-                if (boo) {
-                    obj = isRotated ? isRotated : {
-                        tx: 0,
-                        tr: 0
-                    }
-                }
-                console.log("ROTATION:::" + obj.tr);
-                x0 = selectedObj.brect.xmin;
-                y0 = selectedObj.brect.ymin;
-                w0 = selectedObj.brect.w;
-                h0 = selectedObj.brect.h;
-                if (isMoved) {
-                    x0 = x0 + isMoved.tx
-                    y0 = y0 + isMoved.ty
-                    //w0=obj.brect.w+(isScaled.tx*2)
-                    //h0=obj.brect.h+(isScaled.ty*2)
-                }
-                if (isScaled) {
-                    x0 = x0 - isScaled.tx
-                    y0 = y0 - isScaled.ty
-                    w0 = selectedObj.brect.w + (isScaled.tx * 2)
-                    h0 = selectedObj.brect.h + (isScaled.ty * 2)
-                }
+                x0 = x0 - sx
+                y0 = y0 - sy
+                w0 = selectedObj.brect.w + (sx * 2)
+                h0 = selectedObj.brect.h + (sy * 2)
+            }
+            if (isRotated) {
                 x0 = x0 ? x0 : selectedObj.brect.xmin
                 y0 = y0 ? y0 : selectedObj.brect.ymin
                 w0 = w0 ? w0 : selectedObj.brect.w
@@ -531,745 +708,849 @@ var Whiteboard = function (cont, isStatic,_opts) {
                 var cx = x0 + (w0 / 2)
                 var cy = y0 + (h0 / 2)
                 context.translate(cx, cy);
-                context.rotate(obj.tr);
+                context.rotate(isRotated.tr);
                 context.translate(-cx, -cy);
-                context.strokeRect(x0, y0, w0, h0)
             }
-            context.fillStyle = 'blue';
-            context.fillRect(x0 + w0 - 10, y0 + h0 - 10, 20, 20);
-            context.arc(x0 + w0, y0, 10, 0, 2 * Math.PI, false);
-            context.fill()
-            context.restore()
-        }
-
-        function drawSelectionRect(obj, w, col) {
-            context.save();
-            context.lineWidth = w ? w : 1;
-            context.strokeStyle = col ? col : "rgba(0, 0, 0, 0.75)";
-            //context.translate(scrollPosition.x,scrollPosition.y);
-            context.strokeRect(obj.tx, obj.ty, obj.brect.w, obj.brect.h)
-            context.restore()
-        }
-
-        function drawMultiSelectionRect() {
-
-            if (mSelRect) {
-                multiSelection = true;
-                drawSelectionRect({
-                    tx: mSelRect.xmin,
-                    ty: mSelRect.ymin,
-                    brect: {
-                        w: mSelRect.xmax - mSelRect.xmin,
-                        h: mSelRect.ymax - mSelRect.ymin
-                    }
-                }, 4, "rgba(0, 0, 255, 0.5)");
-            }
-        }
-
-        function removeBoundRect() {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            reRenderCanvas();
-        }
-
-        function getScaleRatio(w, h, radians, boo) {
-            var a = (Math.cos(radians)),
-                b = (Math.sin(radians));
+            context.beginPath();
+            context.strokeRect(x0, y0, w0, h0)
+        } else if (transMode == 'scale') {
             if (boo) {
-                a = Math.abs(a)
-                b = Math.abs(b)
-            }
-            console.log("scaleRatio:" + w + ":" + h + "||" + a + ":" + b)
-            return {
-                h: (h * a - w * b),
-                w: h * b + w * a
-            }
-        }
-
-        function getRPoint(cx, cy, px, py, rad) {
-
-            var x, y, ds, dx, dy;
-            dx = px - cx;
-            dy = py - cy;
-            ds = Math.sqrt(dx * dx + dy * dy);
-            rad += Math.atan2(dy, dx);
-            x = cx + ds * Math.cos(rad);
-            y = cy + ds * Math.sin(rad);
-
-            return {
-                x: x,
-                y: y
-            };
-        }
-
-        function getObjCenter(obj) {
-            var rect = [obj.xmin, obj.ymin, obj.w, obj.h];
-            return {
-                x: rect[0] + rect[2] / 2,
-                y: rect[1] + rect[3] / 2
-            }
-        }
-
-        function getBoundingBox(obj, tr, _cx, _cy) {
-            var c1, c2, c3, c4,
-                bx1, by1, bx2, by2;
-
-            var rect = [obj.xmin, obj.ymin, obj.w, obj.h];
-            var rad = tr;
-            var cx = _cx ? _cx : rect[0] + rect[2] / 2;
-            var cy = _cy ? _cy : rect[1] + rect[3] / 2;
-            c1 = getRPoint(cx, cy, rect[0], rect[1], rad);
-            c2 = getRPoint(cx, cy, rect[0] + rect[2], rect[1], rad);
-            c3 = getRPoint(cx, cy, rect[0] + rect[2], rect[1] + rect[3], rad);
-            c4 = getRPoint(cx, cy, rect[0], rect[1] + rect[3], rad);
-            bx1 = Math.min(c1.x, c2.x, c3.x, c4.x);
-            by1 = Math.min(c1.y, c2.y, c3.y, c4.y);
-            bx2 = Math.max(c1.x, c2.x, c3.x, c4.x);
-            by2 = Math.max(c1.y, c2.y, c3.y, c4.y);
-            var bounds = [bx1, by1, bx2 - bx1, by2 - by1];
-            return {
-                x: bx1,
-                y: by1,
-                xmin: bx1,
-                ymin: by1,
-                xmax: bx2,
-                ymax: by2,
-                w: bounds[2],
-                h: bounds[3]
-            }
-        }
-
-        function drawTempObj(selectedObj, dx, dy) {
-            //console.log("DRAW_TEMP_OBJ")
-            //console.log(selectedObj)
-            // context.clearRect(0, 0, canvas.width, canvas.height);
-            if (selectedObj.id === 2 && useMQ) {
-                //context.drawImage(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
-            } else {
-                try {
-                    // context.putImageData(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
-                    renderObj(selectedObj, true);
-                    renderToBuffer(selectedObj);
-                } catch (ex) {
-                    alert(ex)
+                obj = isScaled ? isScaled : {
+                    tx: 0,
+                    ty: 0
                 }
             }
-        }
-
-        function applyAllTrans(obj) {
-            var isMoved = isObjTransformed(selectedObj.uid, 'move');
-            var isScaled = isObjTransformed(selectedObj.uid, 'scale');
-            var isRotated = isObjTransformed(selectedObj.uid, 'rotate');
-            if (isMoved) {
-                translateObj(obj, isMoved.tx, isMoved.ty)
+            sx = obj.tx;
+            sy = obj.ty;
+            if (isRotated) {
+                /*var nr0=getScaleRatio(sx,sy,isRotated.tr)
+			sx=nr0.w
+			sy=nr0.h*/
             }
-            if (isScaled) {
-                scaleObj(obj, isScaled.tx, isScaled.ty)
+            x0 = selectedObj.brect.xmin - sx;
+            y0 = selectedObj.brect.ymin - sy;
+
+
+            w0 = selectedObj.brect.w + (sx * 2);
+            h0 = selectedObj.brect.h + (sy * 2);
+            if (isMoved) {
+                x0 = x0 + isMoved.tx
+                y0 = y0 + isMoved.ty
+                //w0=obj.brect.w+(isScaled.tx*2)
+                //h0=obj.brect.h+(isScaled.ty*2)
             }
             if (isRotated) {
-                rotateObj(obj, isRotated.trect.rot)
+                x0 = x0 ? x0 : selectedObj.brect.xmin
+                y0 = y0 ? y0 : selectedObj.brect.ymin
+                w0 = w0 ? w0 : selectedObj.brect.w
+                h0 = h0 ? h0 : selectedObj.brect.h
+                var cx = x0 + (w0 / 2)
+                var cy = y0 + (h0 / 2)
+                context.translate(cx, cy);
+                context.rotate(isRotated.tr);
+                context.translate(-cx, -cy);
             }
-        }
-
-        function transformObj(obj, dx, dy, multi) {
-
-            // var isMoved =  isObjTransformed(selectedObj.uid, 'move');		
-            // var isScaled =  isObjTransformed(selectedObj.uid, 'scale');
-            // var isRotated =  isObjTransformed(selectedObj.uid, 'rotate')
-            if (transMode == 'move') {
-
-                translateObj(obj, dx, dy, multi)
-
-            }
-            if (transMode == 'scale') {
-
-                scaleObj(obj, dx, dy, multi)
-
-            }
-            if (transMode == 'rotate') {
-
-                rotateObj(obj, dx, dy, multi)
-
-            }
-            return obj
-
-        }
-
-        function translateObj(obj, dx, dy, multi) {
-            var da = obj.dataArr
-            var _selectedObj = multi ? multi : selectedObj
-            var sa = _selectedObj.dataArr[0]
-            var sobj = da[0]
-            sobj.x = sa.x + dx
-            sobj.y = sa.y + dy
-            obj.dataArr[0] = sobj;
-            da = _selectedObj.brect;
-            for (var m in da) {
-                if (m == 'x' || m == 'xmin' || m == 'xmax') {
-                    obj.brect[m] = _selectedObj.brect[m] + dx
-                }
-                if (m == 'y' || m == 'ymin' || m == 'ymax') {
-                    obj.brect[m] = _selectedObj.brect[m] + dy
+            context.beginPath();
+            context.strokeRect(x0, y0, w0, h0)
+        } else if (transMode == 'rotate') {
+            if (boo) {
+                obj = isRotated ? isRotated : {
+                    tx: 0,
+                    tr: 0
                 }
             }
-            return obj
+            console.log("ROTATION:::" + obj.tr);
+            x0 = selectedObj.brect.xmin;
+            y0 = selectedObj.brect.ymin;
+            w0 = selectedObj.brect.w;
+            h0 = selectedObj.brect.h;
+            if (isMoved) {
+                x0 = x0 + isMoved.tx
+                y0 = y0 + isMoved.ty
+                //w0=obj.brect.w+(isScaled.tx*2)
+                //h0=obj.brect.h+(isScaled.ty*2)
+            }
+            if (isScaled) {
+                x0 = x0 - isScaled.tx
+                y0 = y0 - isScaled.ty
+                w0 = selectedObj.brect.w + (isScaled.tx * 2)
+                h0 = selectedObj.brect.h + (isScaled.ty * 2)
+            }
+            x0 = x0 ? x0 : selectedObj.brect.xmin
+            y0 = y0 ? y0 : selectedObj.brect.ymin
+            w0 = w0 ? w0 : selectedObj.brect.w
+            h0 = h0 ? h0 : selectedObj.brect.h
+            var cx = x0 + (w0 / 2)
+            var cy = y0 + (h0 / 2)
+            context.translate(cx, cy);
+            context.rotate(obj.tr);
+            context.translate(-cx, -cy);
+            context.beginPath();
+            context.strokeRect(x0, y0, w0, h0)
+        }
+        context.beginPath();
+        context.fillStyle = 'blue';
+        if (selectedObj.id == 'graph') {
+            context.fillRect(x0 + w0 - 40, y0, 40, 40);
+            context.font = "bold 14px Arial";
+            context.fillStyle = 'white';
+            context.fillText("edit", x0 + w0 - 33, y0 + 25);
+
+        } else {
+            context.fillRect(x0 + w0 - 10, y0 + h0 - 10, 20, 20);
+            context.arc(x0 + w0, y0, 10, 0, 2 * Math.PI, false);
+        }
+        context.fill()
+        context.restore()
+    }
+
+    function drawSelectionRect(obj, w, col) {
+        context.save();
+        context.lineWidth = w ? w : 1;
+        context.strokeStyle = col ? col : "rgba(0, 0, 0, 0.75)";
+        //context.translate(scrollPosition.x,scrollPosition.y);
+        context.strokeRect(obj.tx, obj.ty, obj.brect.w, obj.brect.h)
+        context.restore()
+    }
+
+    function drawMultiSelectionRect() {
+
+        if (mSelRect) {
+            multiSelection = true;
+            drawSelectionRect({
+                tx: mSelRect.xmin,
+                ty: mSelRect.ymin,
+                brect: {
+                    w: mSelRect.xmax - mSelRect.xmin,
+                    h: mSelRect.ymax - mSelRect.ymin
+                }
+            }, 4, "rgba(0, 0, 255, 0.5)");
+        }
+    }
+
+    function removeBoundRect() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        reRenderCanvas();
+    }
+
+    function getScaleRatio(w, h, radians, boo) {
+        var a = (Math.cos(radians)),
+            b = (Math.sin(radians));
+        if (boo) {
+            a = Math.abs(a)
+            b = Math.abs(b)
+        }
+        console.log("scaleRatio:" + w + ":" + h + "||" + a + ":" + b)
+        return {
+            h: (h * a - w * b),
+            w: h * b + w * a
+        }
+    }
+
+    function getRPoint(cx, cy, px, py, rad) {
+
+        var x, y, ds, dx, dy;
+        dx = px - cx;
+        dy = py - cy;
+        ds = Math.sqrt(dx * dx + dy * dy);
+        rad += Math.atan2(dy, dx);
+        x = cx + ds * Math.cos(rad);
+        y = cy + ds * Math.sin(rad);
+
+        return {
+            x: x,
+            y: y
+        };
+    }
+
+    function getObjCenter(obj) {
+        var rect = [obj.xmin, obj.ymin, obj.w, obj.h];
+        return {
+            x: rect[0] + rect[2] / 2,
+            y: rect[1] + rect[3] / 2
+        }
+    }
+
+    function getBoundingBox(obj, tr, _cx, _cy) {
+        var c1, c2, c3, c4,
+            bx1, by1, bx2, by2;
+
+        var rect = [obj.xmin, obj.ymin, obj.w, obj.h];
+        var rad = tr;
+        var cx = _cx ? _cx : rect[0] + rect[2] / 2;
+        var cy = _cy ? _cy : rect[1] + rect[3] / 2;
+        c1 = getRPoint(cx, cy, rect[0], rect[1], rad);
+        c2 = getRPoint(cx, cy, rect[0] + rect[2], rect[1], rad);
+        c3 = getRPoint(cx, cy, rect[0] + rect[2], rect[1] + rect[3], rad);
+        c4 = getRPoint(cx, cy, rect[0], rect[1] + rect[3], rad);
+        bx1 = Math.min(c1.x, c2.x, c3.x, c4.x);
+        by1 = Math.min(c1.y, c2.y, c3.y, c4.y);
+        bx2 = Math.max(c1.x, c2.x, c3.x, c4.x);
+        by2 = Math.max(c1.y, c2.y, c3.y, c4.y);
+        var bounds = [bx1, by1, bx2 - bx1, by2 - by1];
+        return {
+            x: bx1,
+            y: by1,
+            xmin: bx1,
+            ymin: by1,
+            xmax: bx2,
+            ymax: by2,
+            w: bounds[2],
+            h: bounds[3]
+        }
+    }
+
+    function drawTempObj(selectedObj, dx, dy) {
+        //console.log("DRAW_TEMP_OBJ")
+        //console.log(selectedObj)
+        // context.clearRect(0, 0, canvas.width, canvas.height);
+        if (selectedObj.id === 2 && useMQ) {
+            //context.drawImage(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
+        } else {
+            try {
+                // context.putImageData(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
+                renderObj(selectedObj, true);
+                renderToBuffer(selectedObj);
+            } catch (ex) {
+                alert(ex)
+            }
+        }
+    }
+
+    function applyAllTrans(obj) {
+        var isMoved = isObjTransformed(selectedObj.uid, 'move');
+        var isScaled = isObjTransformed(selectedObj.uid, 'scale');
+        var isRotated = isObjTransformed(selectedObj.uid, 'rotate');
+        if (isMoved) {
+            translateObj(obj, isMoved.tx, isMoved.ty)
+        }
+        if (isScaled) {
+            scaleObj(obj, isScaled.tx, isScaled.ty)
+        }
+        if (isRotated) {
+            rotateObj(obj, isRotated.trect.rot)
+        }
+    }
+
+    function transformObj(obj, dx, dy, multi) {
+
+        // var isMoved =  isObjTransformed(selectedObj.uid, 'move');		
+        // var isScaled =  isObjTransformed(selectedObj.uid, 'scale');
+        // var isRotated =  isObjTransformed(selectedObj.uid, 'rotate')
+        if (transMode == 'move') {
+
+            translateObj(obj, dx, dy, multi)
 
         }
+        if (transMode == 'scale') {
 
-        function scaleObj(obj, dx, dy, multi) {
-            var da = obj.dataArr
-            var _selectedObj = multi ? multi : selectedObj
-            var sa = _selectedObj.dataArr[0]
-            var sobj = da[0]
-            sobj.x = sa.x + dx
-            sobj.y = sa.y + dy
-            obj.dataArr[0] = sobj;
-            da = _selectedObj.brect;
-            for (var m in da) {
+            scaleObj(obj, dx, dy, multi)
+
+        }
+        if (transMode == 'rotate') {
+
+            rotateObj(obj, dx, dy, multi)
+
+        }
+        return obj
+
+    }
+
+    function translateObj(obj, dx, dy, multi) {
+        var da = obj.dataArr
+        var _selectedObj = multi ? multi : selectedObj
+        var sa = _selectedObj.dataArr[0]
+        var sobj = da[0]
+        sobj.x = sa.x + dx
+        sobj.y = sa.y + dy
+        obj.dataArr[0] = sobj;
+        da = _selectedObj.brect;
+        for (var m in da) {
+            if (m == 'x' || m == 'xmin' || m == 'xmax') {
+                obj.brect[m] = _selectedObj.brect[m] + dx
+            }
+            if (m == 'y' || m == 'ymin' || m == 'ymax') {
+                obj.brect[m] = _selectedObj.brect[m] + dy
+            }
+        }
+        return obj
+
+    }
+
+    function scaleObj(obj, dx, dy, multi) {
+        var da = obj.dataArr
+        var _selectedObj = multi ? multi : selectedObj
+        var sa = _selectedObj.dataArr[0]
+        var sobj = da[0]
+        sobj.x = sa.x + dx
+        sobj.y = sa.y + dy
+        obj.dataArr[0] = sobj;
+        da = _selectedObj.brect;
+        for (var m in da) {
+            if (m == 'x' || m == 'xmin') {
+                obj.brect[m] = _selectedObj.brect[m] - dx
+            }
+            if (m == 'y' || m == 'ymin') {
+                obj.brect[m] = _selectedObj.brect[m] - dy
+            }
+            if (m == 'xmax') {
+                obj.brect[m] = _selectedObj.brect[m] + dx
+            }
+            if (m == 'ymax') {
+                obj.brect[m] = _selectedObj.brect[m] + dy
+            }
+            if (m == 'w') {
+                obj.brect[m] = _selectedObj.brect[m] + (dx * 2)
+            }
+            if (m == 'h') {
+                obj.brect[m] = _selectedObj.brect[m] + (dy * 2)
+            }
+        }
+        return obj
+
+    }
+
+    function rotateObj(obj, rot) {
+        obj.tr = obj.tr ? obj.tr + rot : rot;
+        obj.brect.tr = obj.tr;
+        return obj
+    }
+
+    function transformRect(obj, dx, dy, mode, pa) {
+        var _selectedObj = selectedObj;
+        if (!mode) {
+            //mode=transMode;
+
+        }
+        if (mode == 'rotate') {
+            var c = pa ? getObjCenter(pa) : {}
+            var _obj = getBoundingBox(obj, dx, c.x, c.y)
+            for (var m in obj) {
+                obj[m] = _obj[m] ? _obj[m] : obj[m];
+            }
+            return obj
+        }
+        for (var m in obj) {
+            if (mode == 'scale') {
                 if (m == 'x' || m == 'xmin') {
-                    obj.brect[m] = _selectedObj.brect[m] - dx
+                    obj[m] = obj[m] - dx
                 }
                 if (m == 'y' || m == 'ymin') {
-                    obj.brect[m] = _selectedObj.brect[m] - dy
+                    obj[m] = obj[m] - dy
                 }
                 if (m == 'xmax') {
-                    obj.brect[m] = _selectedObj.brect[m] + dx
+                    obj[m] = obj[m] + dx
                 }
                 if (m == 'ymax') {
-                    obj.brect[m] = _selectedObj.brect[m] + dy
+                    obj[m] = obj[m] + dy
                 }
                 if (m == 'w') {
-                    obj.brect[m] = _selectedObj.brect[m] + (dx * 2)
+                    obj[m] = obj[m] + (dx * 2)
                 }
                 if (m == 'h') {
-                    obj.brect[m] = _selectedObj.brect[m] + (dy * 2)
+                    obj[m] = obj[m] + (dy * 2)
+                }
+            } else {
+
+
+
+                if (m == 'x' || m == 'xmin' || m == 'xmax') {
+                    obj[m] = obj[m] + dx
+                }
+                if (m == 'y' || m == 'ymin' || m == 'ymax') {
+                    obj[m] = obj[m] + dy
                 }
             }
-            return obj
-
         }
+        return obj
 
-        function rotateObj(obj, rot) {
-            obj.tr = obj.tr ? obj.tr + rot : rot;
-            obj.brect.tr = obj.tr;
-            return obj
+    }
+
+    function getMoveNode(r) {
+        var obj = {}
+        obj.x = r.xmax - 10;
+        obj.y = r.ymax - 10;
+        obj.xmin = r.xmax - 10;
+        obj.ymin = r.ymax - 10;
+        obj.xmax = r.xmax + 10;
+        obj.ymax = r.ymax + 10;
+        obj.w = 20;
+        obj.h = 20;
+        return obj
+    }
+
+    function getRotateNode(r) {
+        var obj = {}
+        obj.x = r.xmax - 10;
+        obj.y = r.ymin - 10;
+        obj.xmin = r.xmax - 10;
+        obj.ymin = r.ymin - 10;
+        obj.xmax = r.xmax + 10;
+        obj.ymax = r.ymin + 10;
+        obj.w = 20;
+        obj.h = 20;
+        if (selectedObj && selectedObj.id == 'graph') {
+            obj.x = r.xmax - 40;
+            obj.y = r.ymin - 0;
+            obj.xmin = r.xmax - 40;
+            obj.ymin = r.ymin - 0;
+            obj.xmax = r.xmax;
+            obj.ymax = r.ymin + 40;
+            obj.w = 40;
+            obj.h = 40;
         }
+        return obj
+    }
 
-        function transformRect(obj, dx, dy, mode, pa) {
-            var _selectedObj = selectedObj;
-            if (!mode) {
-                //mode=transMode;
+    function findObjIndex(obj, boo) {
+        var l = graphicDataStore.length
+        for (var i = l - 1; i >= 0; i--) {
+            var __obj = graphicDataStore[i];
+            if (!boo && __obj.type == 'cmd') {
+                continue
+            }
+            if (__obj.uid == obj.uid) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    function selectionOnNode(obj, xp, yp) {
+        var rect = cloneObject(obj.brect);
+        var rectM = getMoveNode(rect);
+        var rectR = getRotateNode(rect);
+        var isMoved = isObjTransformed(obj.uid, 'move');
+        var isScaled = isObjTransformed(obj.uid, 'scale');
+        var isRotated = isObjTransformed(obj.uid, 'rotate');
+        var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(graphicDataStore[i].uid)
+        if (isTransformed) {
+            if (isMoved) {
+                rect = cloneObject(isMoved.trect);
+                rectM = getMoveNode(rect);
+                rectR = getRotateNode(rect);
+            }
+            if (isScaled) {
+                transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
+                transformRect(rectM, isScaled.tx, isScaled.ty, 'move')
+                transformRect(rectR, isScaled.tx, -isScaled.ty, 'move')
+            }
+            if (isRotated) {
+                transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+                transformRect(rectM, isRotated.tx, isRotated.ty, 'rotate', rect)
+                transformRect(rectR, isRotated.tx, isRotated.ty, 'rotate', rect)
 
             }
-            if (mode == 'rotate') {
-                var c = pa ? getObjCenter(pa) : {}
-                var _obj = getBoundingBox(obj, dx, c.x, c.y)
-                for (var m in obj) {
-                    obj[m] = _obj[m] ? _obj[m] : obj[m];
+
+
+        }
+        transformRect(rect, scrollPosition.x, scrollPosition.y)
+        transformRect(rectR, scrollPosition.x, scrollPosition.y)
+        transformRect(rectM, scrollPosition.x, scrollPosition.y)
+
+        var sel = contains(rect, xp, yp)
+        var selR = contains(rectR, xp, yp)
+        var selM = contains(rectM, xp, yp)
+        if (selR || selM) {
+            if (selectedObj && selectedObj.id == 'graph' && selR) {
+                return 'edit';
+            }
+            return selM ? 'scale' : 'rotate'
+        }
+        return null;
+    }
+
+    function findSelectedObjIndex(xp, yp) {
+        var l = graphicDataStore.length
+        for (var i = l - 1; i >= 0; i--) {
+            var __obj = graphicDataStore[i];
+            if (graphicDataStore[i].type == 'cmd') {
+                continue
+            }
+            var _objid = graphicDataStore[i].id
+            var isGraph = _objid == 11 || _objid == 12
+            if (isObjDeleted(graphicDataStore[i].uid) || isGraph) {
+                continue
+            }
+            var rect = cloneObject(graphicDataStore[i].brect);
+            var rectM = getMoveNode(rect);
+            var rectR = getRotateNode(rect);
+            var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
+            var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
+            var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
+            var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(graphicDataStore[i].uid)
+            if (isTransformed) {
+                if (isMoved) {
+                    rect = cloneObject(isMoved.trect);
+                    rectM = getMoveNode(rect);
+                    rectR = getRotateNode(rect);
                 }
-                return obj
+                if (isScaled) {
+                    transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
+                    transformRect(rectM, isScaled.tx, isScaled.ty, 'move')
+                    transformRect(rectR, isScaled.tx, -isScaled.ty, 'move')
+                }
+                if (isRotated) {
+                    transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+                    transformRect(rectM, isRotated.tx, isRotated.ty, 'rotate', rect)
+                    transformRect(rectR, isRotated.tx, isRotated.ty, 'rotate', rect)
+                    console.log(rect);
+                }
+
+
             }
-            for (var m in obj) {
-                if (mode == 'scale') {
-                    if (m == 'x' || m == 'xmin') {
-                        obj[m] = obj[m] - dx
+            transformRect(rect, scrollPosition.x, scrollPosition.y)
+            transformRect(rectR, scrollPosition.x, scrollPosition.y)
+            transformRect(rectM, scrollPosition.x, scrollPosition.y)
+            //selectedObj = null
+            if (!rect) {
+                selectedObj = null
+                return -1
+            }
+            var sel = contains(rect, xp, yp)
+            var selR = contains(rectR, xp, yp)
+            var selM = contains(rectM, xp, yp)
+            console.log(selR)
+            console.log(selM)
+            if (selR || selM) {
+                i = selectedObjIndex
+                transMode = selM ? 'scale' : 'rotate'
+                if (selectedObj && selectedObj.id == 'graph' && selR) {
+                    return 'edit';
+                }
+                return i;
+            }
+            console.log(rect);
+            console.log(sel)
+            var hasShape = false
+            if (sel) {
+                hasShape = getShapeHit(__obj, {
+                    xmin: xp - hitW,
+                    ymin: yp - hitW,
+                    xmax: xp + hitH,
+                    ymax: yp + hitH
+                })
+            }
+            if (sel && hasShape) {
+                selectedObj = graphicDataStore[i];
+                updateBuffer()
+                return i;
+            }
+        }
+        selectedObj = null
+        updateBuffer()
+        return -1
+    }
+    //
+    function checkForMultiSelect() {
+        var l = graphicDataStore.length;
+        var _arr = [];
+        mSelRect = null;
+        for (var i = 0; i < l; i++) {
+            var obj = graphicDataStore[i]
+            if (obj.type == 'cmd') {
+                continue
+            }
+            var _objid = obj.id
+            var isGraph = _objid == 11 || _objid == 12
+
+            if (isObjDeleted(obj.uid) || isGraph) {
+                continue
+            }
+            if (!obj.isErased) {
+                var r1 = obj.brect;
+                var rect = cloneObject(r1);
+                var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
+                var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
+                var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
+                var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(obj.uid)
+                /* if (isTransformed) {
+                        rect = cloneObject(isTransformed.trect);
+                    }*/
+                if (isTransformed) {
+                    if (isMoved) {
+                        rect = cloneObject(isMoved.trect);
+
                     }
-                    if (m == 'y' || m == 'ymin') {
-                        obj[m] = obj[m] - dy
+                    if (isScaled) {
+                        var dw = isScaled.tx
+                        var dh = isScaled.ty
+                        if (isRotated) {
+                            /*var nr0=getScaleRatio(isScaled.tx,isScaled.ty,isRotated.tr)
+			dw=nr0.w
+			dh=nr0.h*/
+                        }
+                        transformRect(rect, dw, dh, 'scale')
+                        //transformRect(rect, isScaled.tx, isScaled.ty,'scale') 
+
                     }
-                    if (m == 'xmax') {
-                        obj[m] = obj[m] + dx
+                    if (isRotated) {
+                        transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+
                     }
-                    if (m == 'ymax') {
-                        obj[m] = obj[m] + dy
-                    }
-                    if (m == 'w') {
-                        obj[m] = obj[m] + (dx * 2)
-                    }
-                    if (m == 'h') {
-                        obj[m] = obj[m] + (dy * 2)
-                    }
-                } else {
 
 
-
-                    if (m == 'x' || m == 'xmin' || m == 'xmax') {
-                        obj[m] = obj[m] + dx
+                }
+                transformRect(rect, scrollPosition.x, scrollPosition.y)
+                var sel = intersectRect(rect, selectionRect)
+                var hasShape = false
+                if (sel) {
+                    hasShape = getShapeHit(obj, getIntRect(rect, selectionRect))
+                }
+                if (sel && hasShape) {
+                    _arr.push(obj)
+                    if (!mSelRect) {
+                        mSelRect = {
+                            xmin: rect.xmin,
+                            ymin: rect.ymin,
+                            xmax: rect.xmax,
+                            ymax: rect.ymax
+                        }
                     }
-                    if (m == 'y' || m == 'ymin' || m == 'ymax') {
-                        obj[m] = obj[m] + dy
-                    }
+                    mSelRect.xmin = rect.xmin < mSelRect.xmin ? rect.xmin : mSelRect.xmin;
+                    mSelRect.ymin = rect.ymin < mSelRect.ymin ? rect.ymin : mSelRect.ymin;
+                    mSelRect.xmax = rect.xmax > mSelRect.xmax ? rect.xmax : mSelRect.xmax;
+                    mSelRect.ymax = rect.ymax > mSelRect.ymax ? rect.ymax : mSelRect.ymax;
                 }
             }
-            return obj
-
         }
+        updateBuffer()
+        return _arr
+    }
 
-        function getMoveNode(r) {
-            var obj = {}
-            obj.x = r.xmax - 10;
-            obj.y = r.ymax - 10;
-            obj.xmin = r.xmax - 10;
-            obj.ymin = r.ymax - 10;
-            obj.xmax = r.xmax + 10;
-            obj.ymax = r.ymax + 10;
-            obj.w = 20;
-            obj.h = 20;
-            return obj
-        }
 
-        function getRotateNode(r) {
-            var obj = {}
-            obj.x = r.xmax - 10;
-            obj.y = r.ymin - 10;
-            obj.xmin = r.xmax - 10;
-            obj.ymin = r.ymin - 10;
-            obj.xmax = r.xmax + 10;
-            obj.ymax = r.ymin + 10;
-            obj.w = 20;
-            obj.h = 20;
-            return obj
-        }
-
-        function findObjIndex(obj) {
-            var l = graphicDataStore.length
-            for (var i = l - 1; i >= 0; i--) {
-                var __obj = graphicDataStore[i];
-                if (__obj.uid == obj.uid) {
-                    return i;
-                }
+    function updateMultiSelectRect() {
+        var l = selectedObjects.length;
+        mSelRect = null
+        for (var i = 0; i < l; i++) {
+            var obj = selectedObjects[i]
+            if (isObjDeleted(obj.uid)) {
+                continue
             }
-            return -1;
+            if (!obj.isErased) {
+                var r1 = obj.brect;
+                var rect = cloneObject(r1);
+                /* var isTransformed = isObjTransformed(obj.uid,transMode)
+                    if (isTransformed) {
+                        rect = cloneObject(isTransformed.trect);
+                    }*/
+                var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
+                var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
+                var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
+                var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(obj.uid)
+                /* if (isTransformed) {
+                        rect = cloneObject(isTransformed.trect);
+                    }*/
+                if (isTransformed) {
+                    if (isMoved) {
+                        rect = cloneObject(isMoved.trect);
+
+                    }
+                    if (isScaled) {
+                        var dw = isScaled.tx
+                        var dh = isScaled.ty
+                        if (isRotated) {
+                            /*var nr0=getScaleRatio(isScaled.tx,isScaled.ty,isRotated.tr)
+			dw=nr0.w
+			dh=nr0.h*/
+                        }
+                        transformRect(rect, dw, dh, 'scale')
+
+                    }
+                    if (isRotated) {
+                        transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+
+                    }
+
+
+                }
+                transformRect(rect, scrollPosition.x, scrollPosition.y);
+                if (!mSelRect) {
+                    mSelRect = {
+                        xmin: rect.xmin,
+                        ymin: rect.ymin,
+                        xmax: rect.xmax,
+                        ymax: rect.ymax
+                    }
+                }
+                mSelRect.xmin = rect.xmin < mSelRect.xmin ? rect.xmin : mSelRect.xmin;
+                mSelRect.ymin = rect.ymin < mSelRect.ymin ? rect.ymin : mSelRect.ymin;
+                mSelRect.xmax = rect.xmax > mSelRect.xmax ? rect.xmax : mSelRect.xmax;
+                mSelRect.ymax = rect.ymax > mSelRect.ymax ? rect.ymax : mSelRect.ymax;
+
+            }
         }
-		
-		function selectionOnNode(obj,xp,yp){
-				var rect = cloneObject(obj.brect);
-                var rectM = getMoveNode(rect);
-                var rectR = getRotateNode(rect);
+
+    }
+
+    function getWhiteboardObjBound(flag) {
+        var objs = graphicDataStore;
+        if (flag == 'msel') {
+            objs = selectedObjects
+        } else if (flag == 'sel') {
+            objs = [selectedObj]
+        }
+        var l = objs.length;
+        var mSelRect = null;
+        for (var i = 0; i < l; i++) {
+            var obj = objs[i]
+            var isCmd = obj.type === 'cmd'
+            var isDeleted = isObjDeleted(obj.uid);
+            if (isDeleted || isCmd || obj.id === 0) {
+                continue
+            }
+            if (true) {
+                var r1 = obj.brect;
+                var rect = cloneObject(r1);
+                var isMoved = isObjTransformed(obj.uid, 'move');
+                var isScaled = isObjTransformed(obj.uid, 'scale');
+                var isRotated = isObjTransformed(obj.uid, 'rotate');
+                var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(obj.uid)
+                if (isTransformed) {
+                    if (isMoved) {
+                        rect = cloneObject(isMoved.trect);
+
+                    }
+                    if (isScaled) {
+                        var dw = isScaled.tx
+                        var dh = isScaled.ty
+                        transformRect(rect, dw, dh, 'scale')
+
+                    }
+                    if (isRotated) {
+                        transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+                    }
+
+
+                }
+                transformRect(rect, scrollPosition.x, scrollPosition.y);
+                if (!mSelRect) {
+                    mSelRect = {
+                        xmin: rect.xmin,
+                        ymin: rect.ymin,
+                        xmax: rect.xmax,
+                        ymax: rect.ymax
+                    }
+                }
+                mSelRect.xmin = rect.xmin < mSelRect.xmin ? rect.xmin : mSelRect.xmin;
+                mSelRect.ymin = rect.ymin < mSelRect.ymin ? rect.ymin : mSelRect.ymin;
+                mSelRect.xmax = rect.xmax > mSelRect.xmax ? rect.xmax : mSelRect.xmax;
+                mSelRect.ymax = rect.ymax > mSelRect.ymax ? rect.ymax : mSelRect.ymax;
+
+            }
+        }
+        var bound = {
+            tx: mSelRect.xmin,
+            ty: mSelRect.ymin,
+            brect: {
+                xmin: mSelRect.xmin,
+                ymin: mSelRect.ymin,
+                xmax: mSelRect.xmax,
+                ymax: mSelRect.ymax,
+                w: mSelRect.xmax - mSelRect.xmin,
+                h: mSelRect.ymax - mSelRect.ymin
+            }
+        }
+        return bound
+
+    }
+
+    function contains(rect, xp, yp) {
+        if (xp >= rect.xmin - 1 && xp <= rect.xmax + 1 && yp >= rect.ymin - 1 && yp <= rect.ymax + 1) {
+            return true
+        }
+        return false
+    }
+
+    function intersectRect(r1, r2) {
+        return !(r2.xmin > r1.xmax ||
+            r2.xmax < r1.xmin ||
+            r2.ymin > r1.ymax ||
+            r2.ymax < r1.ymin);
+    }
+
+    function getIntRect(r1, r2) {
+        var xmin = Math.max(r1.xmin, r2.xmin);
+        var xmax = Math.min(r1.xmax, r2.xmax);
+        var ymin = Math.max(r1.ymin, r2.ymin);
+        var ymax = Math.min(r1.ymax, r2.ymax);
+        return {
+            xmin: xmin,
+            ymin: ymin,
+            xmax: xmax,
+            ymax: ymax
+        };
+    }
+
+    function getShapeHit(obj, rect) {
+        buffercontext.clearRect(0, 0, buffercanvas.width, buffercanvas.height);
+        buffercanvas.width = canvas.width;
+        buffercanvas.height = canvas.height;
+        buffercontext.save();
+        buffercontext.translate(scrollPosition.x, scrollPosition.y);
+        renderToBuffer(obj, buffercontext);
+        var __w = rect.xmax - rect.xmin;
+        var __h = rect.ymax - rect.ymin;
+        __w = Math.max(__w, hitW * 2);
+        __h = Math.max(__h, hitH * 2);
+        var imgd = buffercontext.getImageData(rect.xmin, rect.ymin, __w, __h);
+        var pix = imgd.data;
+        var hasColorData = false;
+        for (var i = 0, n = pix.length; i < n; i += 4) {
+            if (pix[i + 3] > 0) {
+                hasColorData = true
+                break
+            }
+        }
+        buffercontext.restore();
+        return hasColorData
+    }
+
+    function checkForObjectErase(r) {
+        var l = graphicDataStore.length
+        for (var i = 0; i < l; i++) {
+            var obj = graphicDataStore[i]
+            if (obj.type == 'cmd') {
+                continue
+            }
+            if (isObjDeleted(obj.uid)) {
+                continue
+            }
+            if (!obj.isErased) {
+                var r1 = obj.brect;
+
+                var rect = cloneObject(r1);
                 var isMoved = isObjTransformed(obj.uid, 'move');
                 var isScaled = isObjTransformed(obj.uid, 'scale');
                 var isRotated = isObjTransformed(obj.uid, 'rotate');
                 var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(graphicDataStore[i].uid)
                 if (isTransformed) {
-                    if (isMoved) {
-                        rect = cloneObject(isMoved.trect);
-                        rectM = getMoveNode(rect);
-                        rectR = getRotateNode(rect);
-                    }
-                    if (isScaled) {
-                        transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
-                        transformRect(rectM, isScaled.tx, isScaled.ty, 'move')
-                        transformRect(rectR, isScaled.tx, -isScaled.ty, 'move')
-                    }
-                    if (isRotated) {
-                        transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
-                        transformRect(rectM, isRotated.tx, isRotated.ty, 'rotate', rect)
-                        transformRect(rectR, isRotated.tx, isRotated.ty, 'rotate', rect)
-                       
-                    }
-
-
+                    // rect = cloneObject(isTransformed.trect);
                 }
-                transformRect(rect, scrollPosition.x, scrollPosition.y)
-                transformRect(rectR, scrollPosition.x, scrollPosition.y)
-                transformRect(rectM, scrollPosition.x, scrollPosition.y)
-                
-                var sel = contains(rect, xp, yp)
-                var selR = contains(rectR, xp, yp)
-                var selM = contains(rectM, xp, yp)
-                if (selR || selM) {                    
-                    return selM ? 'scale' : 'rotate'
-                }
-				return 'move';
-		}
-
-        function findSelectedObjIndex(xp, yp) {
-            var l = graphicDataStore.length
-            for (var i = l - 1; i >= 0; i--) {
-                var __obj = graphicDataStore[i];
-                if (graphicDataStore[i].type == 'cmd') {
-                    continue
-                }
-                var _objid = graphicDataStore[i].id
-                var isGraph = _objid == 11 || _objid == 12
-                if (isObjDeleted(graphicDataStore[i].uid) || isGraph) {
-                    continue
-                }
-                var rect = cloneObject(graphicDataStore[i].brect);
-                var rectM = getMoveNode(rect);
-                var rectR = getRotateNode(rect);
-                var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
-                var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
-                var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
-                var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(graphicDataStore[i].uid)
                 if (isTransformed) {
                     if (isMoved) {
                         rect = cloneObject(isMoved.trect);
-                        rectM = getMoveNode(rect);
-                        rectR = getRotateNode(rect);
                     }
                     if (isScaled) {
                         transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
-                        transformRect(rectM, isScaled.tx, isScaled.ty, 'move')
-                        transformRect(rectR, isScaled.tx, -isScaled.ty, 'move')
                     }
                     if (isRotated) {
                         transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
-                        transformRect(rectM, isRotated.tx, isRotated.ty, 'rotate', rect)
-                        transformRect(rectR, isRotated.tx, isRotated.ty, 'rotate', rect)
-                        console.log(rect);
                     }
 
 
                 }
                 transformRect(rect, scrollPosition.x, scrollPosition.y)
-                transformRect(rectR, scrollPosition.x, scrollPosition.y)
-                transformRect(rectM, scrollPosition.x, scrollPosition.y)
-                //selectedObj = null
-                if (!rect) {
-                    selectedObj = null
-                    return -1
-                }
-                var sel = contains(rect, xp, yp)
-                var selR = contains(rectR, xp, yp)
-                var selM = contains(rectM, xp, yp)
-                console.log(selR)
-                console.log(selM)
-                if (selR || selM) {
-                    i = selectedObjIndex
-                    transMode = selM ? 'scale' : 'rotate'
-                    return i;
-                }
-                console.log(rect);
-                console.log(sel)
-                var hasShape = false
-                if (sel) {
-                    hasShape = getShapeHit(__obj, {
-                        xmin: xp - hitW,
-                        ymin: yp - hitW,
-                        xmax: xp + hitH,
-                        ymax: yp + hitH
-                    })
-                }
-                if (sel && hasShape) {
-                    selectedObj = graphicDataStore[i];
-                    updateBuffer()
-                    return i;
-                }
+                // var isTransformed = isObjTransformed(obj.uid,transMode)
+
+                // transformRect(rect, scrollPosition.x, scrollPosition.y,transMode)
+                obj.isErased = intersectRect(rect, r)
             }
-            selectedObj = null
-            updateBuffer()
-            return -1
         }
-        //
-        function checkForMultiSelect() {
-            var l = graphicDataStore.length;
-            var _arr = [];
-            mSelRect = null;
-            for (var i = 0; i < l; i++) {
-                var obj = graphicDataStore[i]
-                if (obj.type == 'cmd') {
-                    continue
-                }
-                var _objid = obj.id
-                var isGraph = _objid == 11 || _objid == 12
+        //return -1
+    }
 
-                if (isObjDeleted(obj.uid) || isGraph) {
-                    continue
-                }
-                if (!obj.isErased) {
-                    var r1 = obj.brect;
-                    var rect = cloneObject(r1);
-                    var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
-                    var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
-                    var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
-                    var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(obj.uid)
-                    /* if (isTransformed) {
-                        rect = cloneObject(isTransformed.trect);
-                    }*/
-                    if (isTransformed) {
-                        if (isMoved) {
-                            rect = cloneObject(isMoved.trect);
-
-                        }
-                        if (isScaled) {
-                            var dw = isScaled.tx
-                            var dh = isScaled.ty
-                            if (isRotated) {
-                                /*var nr0=getScaleRatio(isScaled.tx,isScaled.ty,isRotated.tr)
-			dw=nr0.w
-			dh=nr0.h*/
-                            }
-                            transformRect(rect, dw, dh, 'scale')
-                            //transformRect(rect, isScaled.tx, isScaled.ty,'scale') 
-
-                        }
-                        if (isRotated) {
-                            transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
-
-                        }
-
-
-                    }
-                    transformRect(rect, scrollPosition.x, scrollPosition.y)
-                    var sel = intersectRect(rect, selectionRect)
-                    var hasShape = false
-                    if (sel) {
-                        hasShape = getShapeHit(obj, getIntRect(rect, selectionRect))
-                    }
-                    if (sel && hasShape) {
-                        _arr.push(obj)
-                        if (!mSelRect) {
-                            mSelRect = {
-                                xmin: rect.xmin,
-                                ymin: rect.ymin,
-                                xmax: rect.xmax,
-                                ymax: rect.ymax
-                            }
-                        }
-                        mSelRect.xmin = rect.xmin < mSelRect.xmin ? rect.xmin : mSelRect.xmin;
-                        mSelRect.ymin = rect.ymin < mSelRect.ymin ? rect.ymin : mSelRect.ymin;
-                        mSelRect.xmax = rect.xmax > mSelRect.xmax ? rect.xmax : mSelRect.xmax;
-                        mSelRect.ymax = rect.ymax > mSelRect.ymax ? rect.ymax : mSelRect.ymax;
-                    }
-                }
-            }
-            updateBuffer()
-            return _arr
-        }
-
-
-        function updateMultiSelectRect() {
-            var l = selectedObjects.length;
-            mSelRect = null
-            for (var i = 0; i < l; i++) {
-                var obj = selectedObjects[i]
-                if (isObjDeleted(obj.uid)) {
-                    continue
-                }
-                if (!obj.isErased) {
-                    var r1 = obj.brect;
-                    var rect = cloneObject(r1);
-                    /* var isTransformed = isObjTransformed(obj.uid,transMode)
-                    if (isTransformed) {
-                        rect = cloneObject(isTransformed.trect);
-                    }*/
-                    var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
-                    var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
-                    var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
-                    var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(obj.uid)
-                    /* if (isTransformed) {
-                        rect = cloneObject(isTransformed.trect);
-                    }*/
-                    if (isTransformed) {
-                        if (isMoved) {
-                            rect = cloneObject(isMoved.trect);
-
-                        }
-                        if (isScaled) {
-                            var dw = isScaled.tx
-                            var dh = isScaled.ty
-                            if (isRotated) {
-                                /*var nr0=getScaleRatio(isScaled.tx,isScaled.ty,isRotated.tr)
-			dw=nr0.w
-			dh=nr0.h*/
-                            }
-                            transformRect(rect, dw, dh, 'scale')
-
-                        }
-                        if (isRotated) {
-                            transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
-
-                        }
-
-
-                    }
-                    transformRect(rect, scrollPosition.x, scrollPosition.y);
-                    if (!mSelRect) {
-                        mSelRect = {
-                            xmin: rect.xmin,
-                            ymin: rect.ymin,
-                            xmax: rect.xmax,
-                            ymax: rect.ymax
-                        }
-                    }
-                    mSelRect.xmin = rect.xmin < mSelRect.xmin ? rect.xmin : mSelRect.xmin;
-                    mSelRect.ymin = rect.ymin < mSelRect.ymin ? rect.ymin : mSelRect.ymin;
-                    mSelRect.xmax = rect.xmax > mSelRect.xmax ? rect.xmax : mSelRect.xmax;
-                    mSelRect.ymax = rect.ymax > mSelRect.ymax ? rect.ymax : mSelRect.ymax;
-
-                }
-            }
-
-        }
-
-        function getWhiteboardObjBound(flag) {
-            var objs = graphicDataStore;
-            if (flag == 'msel') {
-                objs = selectedObjects
-            } else if (flag == 'sel') {
-                objs = [selectedObj]
-            }
-            var l = objs.length;
-            var mSelRect = null;
-            for (var i = 0; i < l; i++) {
-                var obj = objs[i]
-                var isCmd = obj.type === 'cmd'
-                var isDeleted = isObjDeleted(obj.uid);
-                if (isDeleted || isCmd || obj.id === 0) {
-                    continue
-                }
-                if (true) {
-                    var r1 = obj.brect;
-                    var rect = cloneObject(r1);
-                    var isMoved = isObjTransformed(obj.uid, 'move');
-                    var isScaled = isObjTransformed(obj.uid, 'scale');
-                    var isRotated = isObjTransformed(obj.uid, 'rotate');
-                    var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(obj.uid)
-                    if (isTransformed) {
-                        if (isMoved) {
-                            rect = cloneObject(isMoved.trect);
-
-                        }
-                        if (isScaled) {
-                            var dw = isScaled.tx
-                            var dh = isScaled.ty
-                            transformRect(rect, dw, dh, 'scale')
-
-                        }
-                        if (isRotated) {
-                            transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
-                        }
-
-
-                    }
-                    transformRect(rect, scrollPosition.x, scrollPosition.y);
-                    if (!mSelRect) {
-                        mSelRect = {
-                            xmin: rect.xmin,
-                            ymin: rect.ymin,
-                            xmax: rect.xmax,
-                            ymax: rect.ymax
-                        }
-                    }
-                    mSelRect.xmin = rect.xmin < mSelRect.xmin ? rect.xmin : mSelRect.xmin;
-                    mSelRect.ymin = rect.ymin < mSelRect.ymin ? rect.ymin : mSelRect.ymin;
-                    mSelRect.xmax = rect.xmax > mSelRect.xmax ? rect.xmax : mSelRect.xmax;
-                    mSelRect.ymax = rect.ymax > mSelRect.ymax ? rect.ymax : mSelRect.ymax;
-
-                }
-            }
-            var bound = {
-                tx: mSelRect.xmin,
-                ty: mSelRect.ymin,
-                brect: {
-                    xmin: mSelRect.xmin,
-                    ymin: mSelRect.ymin,
-                    xmax: mSelRect.xmax,
-                    ymax: mSelRect.ymax,
-                    w: mSelRect.xmax - mSelRect.xmin,
-                    h: mSelRect.ymax - mSelRect.ymin
-                }
-            }
-            return bound
-
-        }
-
-        function contains(rect, xp, yp) {
-            if (xp >= rect.xmin - 1 && xp <= rect.xmax + 1 && yp >= rect.ymin - 1 && yp <= rect.ymax + 1) {
-                return true
-            }
-            return false
-        }
-
-        function intersectRect(r1, r2) {
-            return !(r2.xmin > r1.xmax ||
-                r2.xmax < r1.xmin ||
-                r2.ymin > r1.ymax ||
-                r2.ymax < r1.ymin);
-        }
-
-        function getIntRect(r1, r2) {
-            var xmin = Math.max(r1.xmin, r2.xmin);
-            var xmax = Math.min(r1.xmax, r2.xmax);
-            var ymin = Math.max(r1.ymin, r2.ymin);
-            var ymax = Math.min(r1.ymax, r2.ymax);
-            return {
-                xmin: xmin,
-                ymin: ymin,
-                xmax: xmax,
-                ymax: ymax
-            };
-        }
-
-        function getShapeHit(obj, rect) {
-            buffercontext.clearRect(0, 0, buffercanvas.width, buffercanvas.height);
-            buffercanvas.width = canvas.width;
-            buffercanvas.height = canvas.height;
-            buffercontext.save();
-            buffercontext.translate(scrollPosition.x, scrollPosition.y);
-            renderToBuffer(obj, buffercontext);
-            var __w = rect.xmax - rect.xmin;
-            var __h = rect.ymax - rect.ymin;
-            __w = Math.max(__w, hitW * 2);
-            __h = Math.max(__h, hitH * 2);
-            var imgd = buffercontext.getImageData(rect.xmin, rect.ymin, __w, __h);
-            var pix = imgd.data;
-            var hasColorData = false;
-            for (var i = 0, n = pix.length; i < n; i += 4) {
-                if (pix[i + 3] > 0) {
-                    hasColorData = true
-                    break
-                }
-            }
-            buffercontext.restore();
-            return hasColorData
-        }
-
-        function checkForObjectErase(r) {
-            var l = graphicDataStore.length
-            for (var i = 0; i < l; i++) {
-                var obj = graphicDataStore[i]
-                if (obj.type == 'cmd') {
-                    continue
-                }
-                if (isObjDeleted(obj.uid)) {
-                    continue
-                }
-                if (!obj.isErased) {
-                    var r1 = obj.brect;
-
-                    var rect = cloneObject(r1);
-                    var isMoved = isObjTransformed(obj.uid, 'move');
-                    var isScaled = isObjTransformed(obj.uid, 'scale');
-                    var isRotated = isObjTransformed(obj.uid, 'rotate');
-                    var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(graphicDataStore[i].uid)
-                    if (isTransformed) {
-                        // rect = cloneObject(isTransformed.trect);
-                    }
-                    if (isTransformed) {
-                        if (isMoved) {
-                            rect = cloneObject(isMoved.trect);
-                        }
-                        if (isScaled) {
-                            transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
-                        }
-                        if (isRotated) {
-                            transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
-                        }
-
-
-                    }
-                    transformRect(rect, scrollPosition.x, scrollPosition.y)
-                    // var isTransformed = isObjTransformed(obj.uid,transMode)
-
-                    // transformRect(rect, scrollPosition.x, scrollPosition.y,transMode)
-                    obj.isErased = intersectRect(rect, r)
-                }
-            }
-            //return -1
-        }
-
-        //
+    //
     mq_holder.onload = function () {
 
         context.drawImage(this, holder_x, holder_y);
@@ -1516,9 +1797,9 @@ var Whiteboard = function (cont, isStatic,_opts) {
         $get_Element("#button_oval").style.border = '1px solid #000000';
         $get_Element("#button_eraser").style.border = '1px solid #000000';
         $get_Element("#button_nav").style.border = '1px solid #000000';
-		if ($get_Element("#button_temp")) {
-        $get_Element("#button_temp").style.border = '1px solid #000000';
-		}
+        if ($get_Element("#button_temp")) {
+            $get_Element("#button_temp").style.border = '1px solid #000000';
+        }
         if ($get_Element("#button_move")) {
             $get_Element("#button_move").style.border = '1px solid #000000';
         }
@@ -1527,6 +1808,9 @@ var Whiteboard = function (cont, isStatic,_opts) {
         }
         if (currentTool != 'temps') {
             hideTemplates();
+        }
+        if (graphEditMode) {
+            showHideGraphModuleEditor(false)
         }
         //
     }
@@ -1773,13 +2057,13 @@ var Whiteboard = function (cont, isStatic,_opts) {
             var type = temp.type ? temp.type : 'img'
             var list = temp.list
             var path = temp.path
-			path=path?path:"";
+            path = path ? path : "";
             var icon = temp.icon ? temp.icon : "-tn";
-			if(icon.indexOf('-')==-1){
-			    icon="-"+icon;
-			}
+            if (icon.indexOf('-') == -1) {
+                icon = "-" + icon;
+            }
             var opts = temp.opts;
-			var labels=temp.labels?temp.labels:list
+            var labels = temp.labels ? temp.labels : list
             var label;
             for (var j = 0; j < list.length; j++) {
                 var obj = {}
@@ -1951,7 +2235,7 @@ var Whiteboard = function (cont, isStatic,_opts) {
                 name: temp.name,
                 url: temp.path
             });
-            graphicData.brect = getBoundRect(xs, ys, w, h);
+            graphicData.brect = getBoundRect(xs - scrollPosition.x, ys - scrollPosition.y, w, h);
             sendData();
             if (!selectionMode) {
                 selectionMode = true;
@@ -1975,6 +2259,7 @@ var Whiteboard = function (cont, isStatic,_opts) {
         }
     }
 
+
     function setObjSelected(obj) {
         var index = findObjIndex(obj);
         if (index > -1) {
@@ -1985,7 +2270,7 @@ var Whiteboard = function (cont, isStatic,_opts) {
                 ty: 0,
                 tr: 0,
                 brect: selectedObj.brect
-            });
+            }, true);
         }
     }
     //--Templates Code end
@@ -3077,15 +3362,30 @@ var Whiteboard = function (cont, isStatic,_opts) {
             };
             $get_Element("#button_gr2D").onclick = function (event) {
                 // $get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
-                currentTool = 'gr2D';
-                showHideGraph('gr2D')
-                buttonHighlite('pencil')
+                //currentTool = 'gr2D';
+                //showHideGraph('gr2D')
+                //buttonHighlite('pencil')
+                if (wb.options.showTemplates) {
+                    wb.addGraphModule('xy');
+                } else {
+                    currentTool = 'gr2D';
+                    showHideGraph('gr2D')
+                    buttonHighlite('pencil')
+                }
             };
             $get_Element("#button_nL").onclick = function (event) {
                 // $get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
-                currentTool = 'nL';
-                showHideGraph('nL')
-                buttonHighlite('pencil')
+                //currentTool = 'nL';
+                //showHideGraph('nL')
+                //buttonHighlite('pencil')
+                //wb.addGraphModule('x')
+                if (wb.options.showTemplates) {
+                    wb.addGraphModule('x');
+                } else {
+                    currentTool = 'nL';
+                    showHideGraph('nL');
+                    buttonHighlite('pencil')
+                }
             };
             $get_Element("#button_clear").onclick = function (event) {
                 // $get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
@@ -3167,12 +3467,12 @@ var Whiteboard = function (cont, isStatic,_opts) {
             }
             if ($get_Element("#button_temp")) {
                 $get_Element("#button_temp").onclick = function (event) {
-                	/** Show the GWT supplied template manager */
-                	wb.manageTemplates();
-					//
-					
-					
-					//
+                    /** Show the GWT supplied template manager */
+                    if (!window['gwt_manageTemplates']) {
+                        showHideTemplates()
+                    } else {
+                        wb.manageTemplates();
+                    }
                 };
             }
             if ($get_Element("#button_save")) {
@@ -3523,18 +3823,28 @@ var Whiteboard = function (cont, isStatic,_opts) {
 
                             return
                         }
-						var dofindSel=true
-						if(selectedObj){
-						    var bsrect=getWhiteboardObjBound('sel');
-							if (contains(bsrect, x, y)) {
-                                i=selectedObjIndex;
-								dofindSel=!true
-								transMode=selectionOnNode(selectedObj,x,y);
+                        var dofindSel = true
+                        if (selectedObj) {
+                            var bsrect = getWhiteboardObjBound('sel');
+                            if (contains(bsrect.brect, x, y)) {
+                                i = selectedObjIndex;
+                                dofindSel = !true
+                                transMode = selectionOnNode(selectedObj, x, y);
+                                transMode = transMode == null ? 'move' : transMode
+                                if (transMode == 'edit') {
+                                    return
+                                }
+                            } else {
+                                transMode = selectionOnNode(selectedObj, x, y);
+                                transMode = transMode == null ? 'move' : transMode
+                                if (transMode == 'edit') {
+                                    return
+                                }
                             }
-						}
-						if(dofindSel){						
-							i = findSelectedObjIndex(x, y);
-						}
+                        }
+                        if (dofindSel) {
+                            i = findSelectedObjIndex(x, y);
+                        }
                         selectedObjIndex = i;
                         console.log(i)
                         console.log(selectedObj)
@@ -3691,7 +4001,17 @@ var Whiteboard = function (cont, isStatic,_opts) {
                     event_rightclick = false;
                     return
                 }
+                if (!selectedObj && graphEditMode) {
+                    showHideGraphModuleEditor(false)
+                    penDown = false
+                    return;
+                }
                 if (selectionMode) {
+                    if (transMode == 'edit') {
+                        showHideGraphModuleEditor(true)
+                        penDown = false
+                        return;
+                    }
                     var dx = x - clickX;
                     var dy = y - clickY;
                     selectionDragMode = false;
@@ -3824,6 +4144,7 @@ var Whiteboard = function (cont, isStatic,_opts) {
                             selectionRect = null;
                             multiSelection = false
                             wb.removeSelectionMode(true);
+
                         }
                     }
                     penDown = false;
@@ -3926,7 +4247,7 @@ var Whiteboard = function (cont, isStatic,_opts) {
             };
 
             var ev_onmousemove = function (_event) {
-                if (isReadOnly || currentTool == 'nav' || event_rightclick) {
+                if (isReadOnly || currentTool == 'nav' || event_rightclick || transMode == 'edit') {
                     return
                 }
                 var event = _event ? _event : window.event;
@@ -5045,7 +5366,12 @@ source: https://gist.github.com/754454
 		}else if(obj.cmd.name='delete'){
 		objectActions[uid].isDeleted=true;
 		}*/
-            graphicDataStore.push(cloneObject(obj));
+            var _obj = cloneObject(obj)
+            graphicDataStore.push(_obj);
+            if (obj.id == 'graph') {
+                //wb.addGraphModule(obj.config.gtype, undefined, undefined, false, obj);
+                updateGraphModule(_obj.uid, _obj.config, !true, null, true)
+            }
             updateCanvas();
             if (obj.groupid !== undefined) {
                 gidSeed = obj.groupid
@@ -5278,7 +5604,33 @@ source: https://gist.github.com/754454
         if (graphic_id === 11 || graphic_id === 12) {
             idName = graphic_id == 11 ? "gr2D" : "nL";
             var _obj = cloneObject(obj)
-            showHideGraph(idName, graphic_data[0].x + scrollPosition.x, graphic_data[0].y + scrollPosition.y, graphic_data[0].addImage);
+            //showHideGraph(idName, graphic_data[0].x + scrollPosition.x, graphic_data[0].y + scrollPosition.y, graphic_data[0].addImage);
+            if (wb.options.showTemplates) {
+
+                var config = {
+                    gtype: idName == "gr2D" ? "xy" : 'x',
+                    xmin: -5,
+                    ymin: -5,
+                    xmax: 5,
+                    ymax: 5,
+                    xinc: 1,
+                    yinc: 1,
+                    xaxis: 150,
+                    yaxis: idName == "gr2D" ? 150 : 75,
+                    xscale: 25,
+                    yscale: 25
+                }
+                var w = 300
+                var h = (idName == 'gr2D' ? 300 : 150)
+                _obj.id = 'graph';
+                _obj.config = config;
+                objectActions[_obj.uid] = {};
+                wb.addGraphModule(_obj.config.gtype, graphic_data[0].x, graphic_data[0].y, true, _obj);
+                _obj.dataArr[0].x = graphic_data[0].x - w / 2
+                _obj.dataArr[0].y = graphic_data[0].y - h / 2
+            } else {
+                showHideGraph(idName, graphic_data[0].x + scrollPosition.x, graphic_data[0].y + scrollPosition.y, graphic_data[0].addImage);
+            }
             rect = getBoundRect(graphic_data[0].x, graphic_data[0].y, 300, (idName == 'gr2D' ? 300 : 150));
             obj = _obj;
         }
@@ -5289,6 +5641,13 @@ source: https://gist.github.com/754454
                 name: graphic_data[0].name,
                 path: graphic_data[0].url
             }, graphic_data[0].x, graphic_data[0].y, true, !boo ? obj : undefined);
+            rect = getBoundRect(graphic_data[0].x, graphic_data[0].y, graphic_data[0].w, graphic_data[0].h);
+            obj = _obj;
+            doUpdateCanvas = true;
+        }
+        if (graphic_id === 'graph') {
+            var _obj = cloneObject(obj)
+            wb.addGraphModule(_obj.config.gtype, graphic_data[0].x, graphic_data[0].y, true, _obj);
             rect = getBoundRect(graphic_data[0].x, graphic_data[0].y, graphic_data[0].w, graphic_data[0].h);
             obj = _obj;
             doUpdateCanvas = true;
@@ -5478,6 +5837,15 @@ source: https://gist.github.com/754454
         if (graphic_id === 'template') {
             var img = loadedImgTemps[graphic_data[0].name]
             ctx.drawImage(img, graphic_data[0].x, graphic_data[0].y);
+
+        }
+        if (graphic_id === 'graph') {
+            if (selectedObj && graphEditMode && (uid == selectedObj.uid)) {} else {
+                var gimg = wb.graphModules[uid];
+                var pimg = wb.plotModules[uid];
+                ctx.drawImage(gimg, graphic_data[0].x, graphic_data[0].y);
+                ctx.drawImage(pimg, graphic_data[0].x, graphic_data[0].y);
+            }
 
         }
         if (isTransformed) {
@@ -5909,15 +6277,14 @@ source: https://gist.github.com/754454
         var jsonStr = convertObjToString(graphicDataStore);
         return jsonStr;
     }
-    
-    wb.setTemplate = function(name, path) {
-    	loadTemplate(  			
-    	    {
+
+    wb.setTemplate = function (name, path) {
+        loadTemplate({
             'name': name,
             'path': path
         });
     }
-    
+
     return wb;
 
 };
