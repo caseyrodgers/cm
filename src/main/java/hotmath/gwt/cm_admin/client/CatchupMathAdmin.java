@@ -25,6 +25,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.search.LessonSearchWindow;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.DateRangePickerDialog;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
@@ -41,7 +42,6 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
@@ -192,6 +192,10 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         }
         else if(test.equals("whiteboard_templates")) {
             WhiteboardTemplatesManager.doTest();
+            return;
+        }
+        else if(test.equals("date_chooser")) {
+            DateRangePickerDialog.doTest();
             return;
         }
 
