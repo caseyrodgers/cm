@@ -12,6 +12,8 @@ import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
+import java.util.Date;
+
 import com.google.gwt.user.client.Cookies;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -78,7 +80,12 @@ public class CustomProblemPropertyEditor extends GWindow {
             return;
         }
         
-        Cookies.setCookie("teacher_name", _teacherName.getCurrentValue());
+        Date now = new Date();
+        long nowLong = now.getTime();
+        nowLong = nowLong + (1000 * 60 * 60 * 24 * 7);//seven days
+        now.setTime(nowLong);
+
+        Cookies.setCookie("teacher_name", _teacherName.getCurrentValue(), now);
         
         problem.getTeacher().setTeacherName(_teacherName.getCurrentValue());
         
@@ -137,7 +144,6 @@ public class CustomProblemPropertyEditor extends GWindow {
             teacherName = _teacherNameFromCookie;
         }
         _teacherName.setValue(teacherName);
-        
         
         frame.setWidget(form);
         frame.setHeaderVisible(false);

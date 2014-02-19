@@ -73,13 +73,6 @@ public class ProblemDesigner extends Composite {
             }
         }));
         
-        _problemPanel.addTool(new TextButton("Link Lesson", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                CustomProblemLinkedLessonDialog.getInstance(_solutionInfo).setVisible(true);
-            }
-        }));
-        
 
         initWidget(_main);
     }

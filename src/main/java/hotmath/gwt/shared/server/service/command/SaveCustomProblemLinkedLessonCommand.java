@@ -9,6 +9,12 @@ import hotmath.testset.ha.CustomProblemDao;
 
 import java.sql.Connection;
 
+/** Save custom problem linked lessons
+ * 
+ * TODO: remove comment to separate action?
+ * @author casey
+ *
+ */
 public class SaveCustomProblemLinkedLessonCommand implements ActionHandler<SaveCustomProblemLinkedLessonAction,RpcData>{
 
 
@@ -16,6 +22,7 @@ public class SaveCustomProblemLinkedLessonCommand implements ActionHandler<SaveC
     public RpcData execute(Connection conn, SaveCustomProblemLinkedLessonAction action) throws Exception {
         
         CustomProblemDao.getInstance().setCustomProblemLinkedLessons(action.getAdminId(), action.getPid(), action.getLessons());
+        CustomProblemDao.getInstance().setCustomProblemComment(action.getPid(), action.getComments());
         return new RpcData("status=OK");
     }
     

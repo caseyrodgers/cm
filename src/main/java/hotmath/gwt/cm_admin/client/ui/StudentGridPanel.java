@@ -44,6 +44,7 @@ import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -462,7 +463,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         toolbar.add(new FillToolItem());
 
         toolbar.add(displayPrintableReportToolItem(_grid));
-
+        
         return toolbar;
     }
 

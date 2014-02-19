@@ -66,24 +66,25 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
     public SolutionInfo createNewCustomProblem(final CustomProblemModel problem) throws Exception {
 
         SolutionInfo solution = null;
-        
-        
-        /** If teacher_id not set, try to look up before search
+
+        /**
+         * If teacher_id not set, try to look up before search
          * 
          */
-        if(problem.getTeacher().getTeacherId() == 0) {
+        if (problem.getTeacher().getTeacherId() == 0) {
             String sql = "select teacher_id from CM_CUSTOM_PROBLEM_TEACHER where admin_id = ? and teacher_name = ?";
-            List<Integer> tIds = getJdbcTemplate().query(sql, new Object[] { problem.getTeacher().getAdminId(), problem.getTeacher().getTeacherName() }, new RowMapper<Integer>() {
-                @Override
-                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return rs.getInt("teacher_id");
-                }
-            });
-            if(tIds.size() > 0) {
+            List<Integer> tIds = getJdbcTemplate().query(sql, new Object[] { problem.getTeacher().getAdminId(), problem.getTeacher().getTeacherName() },
+                    new RowMapper<Integer>() {
+                        @Override
+                        public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                            return rs.getInt("teacher_id");
+                        }
+                    });
+            if (tIds.size() > 0) {
                 problem.getTeacher().setTeacherId(tIds.get(0));
             }
         }
-        
+
         /**
          * get unique identifier for this teacher
          * 
@@ -105,7 +106,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                     String sql = "insert into CM_CUSTOM_PROBLEM_TEACHER(admin_id, teacher_name, max_problem_number)values(?,?,?)";
-                    PreparedStatement ps = con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+                    PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                     ps.setInt(1, problem.getTeacher().getAdminId());
                     ps.setString(2, problem.getTeacher().getTeacherName());
                     ps.setInt(3, 1);
@@ -214,30 +215,37 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                         " from   CM_CUSTOM_PROBLEM cp " +
                         " JOIN CM_CUSTOM_PROBLEM_TEACHER ct " +
                         " on ct.teacher_id = cp.teacher_id " +
-                        " where  (ct.admin_id = ? or 1 = 1) " +  /** GET ALL */
-                        " order  by teacher_problem_number ";
+                        " where  (ct.admin_id = ?) " +
+                        " order  by ct.teacher_name, teacher_problem_number ";
 
         List<CustomProblemModel> problems = getJdbcTemplate().query(sql, new Object[] { teacher.getAdminId() }, new RowMapper<CustomProblemModel>() {
             @Override
             public CustomProblemModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new CustomProblemModel(rs.getString("pid"), rs.getInt("teacher_problem_number"), new TeacherIdentity(rs.getInt("admin_id"), rs.getString("teacher_name"), rs.getInt("teacher_id")), rs.getString("comments"));
+                CustomProblemModel cp = new CustomProblemModel(rs.getString("pid"), rs.getInt("teacher_problem_number"), new TeacherIdentity(rs
+                        .getInt("admin_id"), rs.getString("teacher_name"), rs.getInt("teacher_id")), rs.getString("comments"));
+                cp.setLinkedLessons(getCustomProblemLinkedLessons(cp.getPid()));
+                return cp;
             }
         });
-        
-        
-        // transfer into shared object, and call to 
+
+        // transfer into shared object, and call to
         // set problem types.
         //
         // TODO: make generic way of getting problem type
         List<ProblemDto> probs = new ArrayList<ProblemDto>();
-        for(CustomProblemModel cpm: problems) {
-            probs.add(new ProblemDto(0, 0, null, null, cpm.getPid(),0));
+        for (CustomProblemModel cpm : problems) {
+            probs.add(new ProblemDto(0, 0, null, null, cpm.getPid(), 0));
         }
         AssignmentDao.getInstance().updateProblemTypes(probs);
-        for(int i=0,t=problems.size();i<t;i++) {
+        for (int i = 0, t = problems.size(); i < t; i++) {
             problems.get(i).setProblemType(probs.get(i).getProblemType());
         }
         return problems;
+    }
+
+    protected List<LessonModel> getLinkedLessons(TeacherIdentity teacher, String pid) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     public void deleteCustomProblem(final CustomProblemModel problem) throws Exception {
@@ -273,31 +281,29 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         });
 
     }
-    
-    
+
     static public String extractWidgetJson(String html) {
 
-        String START_TOKEN="hm_flash_widget_def";
-        
+        String START_TOKEN = "hm_flash_widget_def";
+
         int startPos = html.indexOf(START_TOKEN);
-        if(startPos == -1) {
+        if (startPos == -1) {
             return null;
         }
-        
+
         startPos = html.indexOf("{", startPos);
         int endPos = html.indexOf("}", startPos);
-        String json = html.substring(startPos, endPos+1);
-        
+        String json = html.substring(startPos, endPos + 1);
+
         return json;
-     }    
+    }
 
     public void saveProblemWidget(Connection conn, String pid, String data) throws Exception {
         CmSolutionManagerDao dao = new CmSolutionManagerDao();
         TutorSolution solution = dao.getTutorSolution(conn, pid);
-        
-        
+
         String jsonHtml = "";
-        if(data != null) {
+        if (data != null) {
             jsonHtml = "<div id='hm_flash_widget'><div id='hm_flash_widget_def' style='display: none'>";
             jsonHtml += data;
             jsonHtml += "</div></div>";
@@ -305,52 +311,51 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 
         TutorProblem prob = solution.getProblem();
         String htmlNoWidget = stripWidgetFromHtml(prob.getStatement());
-        
+
         solution.getProblem().setStatement(htmlNoWidget + jsonHtml);
         SolutionDef def = new SolutionDef(pid);
-        
-        
+
         List<StepUnitPair> steps = new ArrayList<StepUnitPair>();
-        for(int i=0, t=prob.getStepUnits().size();i<t;i+=2) {
+        for (int i = 0, t = prob.getStepUnits().size(); i < t; i += 2) {
             TutorStepUnit hint = prob.getStepUnits().get(i);
-            TutorStepUnit step = prob.getStepUnits().get(i+1);
+            TutorStepUnit step = prob.getStepUnits().get(i + 1);
             steps.add(new StepUnitPair(hint.getContentAsString(), step.getContentAsString(), step.getFigure()));
         }
-        
-        TutorSolution ts = new TutorSolution("sm", def, prob.getStatement(),prob.getStatementFigure(),steps ,true);
+
+        TutorSolution ts = new TutorSolution("sm", def, prob.getStatement(), prob.getStatementFigure(), steps, true);
         dao.saveSolutionXml(conn, pid, ts.toXml(), solution.getTutorDefine(), true);
     }
-    
+
     static public String stripWidgetFromHtml(String html) {
-        String START_TOKEN="<div id='hm_flash_widget'";
+        String START_TOKEN = "<div id='hm_flash_widget'";
         int startPos = html.indexOf(START_TOKEN);
-        if(startPos == -1) {
+        if (startPos == -1) {
             return html;
         }
         int endPos = html.indexOf("</div>", startPos);
-        endPos = html.indexOf("</div>", endPos+1);
+        endPos = html.indexOf("</div>", endPos + 1);
 
         String htmlNew = html.substring(0, startPos);
-        htmlNew += html.substring(endPos+6);
-        
-        return htmlNew;    
+        htmlNew += html.substring(endPos + 6);
+
+        return htmlNew;
     }
 
     public void saveProblemHintStep(Connection conn, String pid, SolutionMeta solutionMeta) throws Exception {
         CmSolutionManagerDao dao = new CmSolutionManagerDao();
         List<StepUnitPair> steps = new ArrayList<StepUnitPair>();
-        for(int i=0, t=solutionMeta.getSteps().size();i<t;i++) {
+        for (int i = 0, t = solutionMeta.getSteps().size(); i < t; i++) {
             SolutionMetaStep sh = solutionMeta.getSteps().get(i);
             steps.add(new StepUnitPair(sh.getHint(), sh.getText(), sh.getFigure()));
         }
-        
+
         SolutionDef def = new SolutionDef(pid);
-        TutorSolution ts = new TutorSolution("sm", def, solutionMeta.getProblemStatement(),solutionMeta.getFigure(),steps ,true);
+        TutorSolution ts = new TutorSolution("sm", def, solutionMeta.getProblemStatement(), solutionMeta.getFigure(), steps, true);
         dao.saveSolutionXml(conn, pid, ts.toXml(), solutionMeta.getTutorDefine(), true);
     }
 
     public void setCustomProblemLinkedLessons(int adminId, final String pid, final CmList<LessonModel> lessons) {
-        
+
         // Delete any existing linked lessons
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
@@ -361,7 +366,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                 return ps;
             }
         });
-        
+
         // insert each linked lesson
         String sql = "insert into CM_CUSTOM_PROBLEM_LINKED_LESSONS(pid, lesson_name, lesson_file)values(?,?,?)";
         getJdbcTemplate().batchUpdate(sql,
@@ -369,7 +374,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
                         LessonModel lesson = lessons.get(i);
-                        
+
                         ps.setString(1, pid);
                         ps.setString(2, lesson.getLessonName());
                         ps.setString(3, lesson.getLessonFile());
@@ -381,16 +386,36 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                     }
                 });
     }
-    
-    public List<LessonModel> getCustomProblemLinkedLessons(String pid) throws Exception {
-        String sql = "select * from CM_CUSTOM_PROBLEM_LINKED_LESSONS where pid = ? order by lesson_name";
-        List<LessonModel> problems = getJdbcTemplate().query(sql, new Object[] { pid }, new RowMapper<LessonModel>() {
+
+    public void setCustomProblemComment(final String pid, final String comments) {
+        // Delete any existing linked lessons
+        getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
-            public LessonModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new LessonModel(rs.getString("lesson_name"), rs.getString("lesson_file"));
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "update CM_CUSTOM_PROBLEM set comments = ? where pid = ?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setString(1, comments);
+                ps.setString(2, pid);
+                return ps;
             }
         });
-        return problems;
+    }
+
+    public List<LessonModel> getCustomProblemLinkedLessons(String pid) {
+        try {
+            String sql = "select * from CM_CUSTOM_PROBLEM_LINKED_LESSONS where pid = ? order by lesson_name";
+            List<LessonModel> problems = getJdbcTemplate().query(sql, new Object[] { pid }, new RowMapper<LessonModel>() {
+                @Override
+                public LessonModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return new LessonModel(rs.getString("lesson_name"), rs.getString("lesson_file"));
+                }
+            });
+            return problems;
+        } catch (Exception e) {
+            __logger.error("Error getting custom pid linked lessons", e);
+        }
+
+        return new ArrayList<LessonModel>();
     }
 
     public List<ProblemDto> getCustomProblemsLinkedToLesson(String lessonFile) {
@@ -399,11 +424,11 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
             @Override
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 LessonModel lm = new LessonModel(rs.getString("lesson_name"), rs.getString("lesson_file"));
-                ProblemDto prob = new ProblemDto(0,0,lm,rs.getString("pid"),rs.getString("pid"), 0);
+                ProblemDto prob = new ProblemDto(0, 0, lm, rs.getString("pid"), rs.getString("pid"), 0);
                 return prob;
             }
         });
         return problems;
-        
+
     }
 }

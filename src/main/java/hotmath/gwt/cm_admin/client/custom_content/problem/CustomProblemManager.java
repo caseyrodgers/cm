@@ -3,11 +3,14 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCustomProblemAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_tools.client.ui.MyTextButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
@@ -18,22 +21,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.data.shared.Store;
+import com.sencha.gxt.data.shared.Store.StoreFilter;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.grid.GridView;
+import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 public class CustomProblemManager extends GWindow {
     
@@ -42,6 +55,7 @@ public class CustomProblemManager extends GWindow {
     Grid<CustomProblemModel> _grid;
     GridProperties _gridProps = GWT.create(GridProperties.class);
     private DefaultGxtLoadingPanel _emptyPage;
+    private CheckBox _showAllTeachers;
 
     public CustomProblemManager(TeacherIdentity teacher) {
         super(true);
@@ -62,11 +76,11 @@ public class CustomProblemManager extends GWindow {
         ListStore<CustomProblemModel> store = new ListStore<CustomProblemModel>(_gridProps.key());
         List<ColumnConfig<CustomProblemModel, ?>> cols = new ArrayList<ColumnConfig<CustomProblemModel, ?>>();
         
-        cols.add(new ColumnConfig<CustomProblemModel, String>(_gridProps.teacherName(), 100, "Teacher"));
-        cols.add(new ColumnConfig<CustomProblemModel, Integer>(_gridProps.problemNumber(), 100, "Problem"));
+        cols.add(new ColumnConfig<CustomProblemModel, String>(_gridProps.teacherName(), 50, "Teacher"));
+        cols.add(new ColumnConfig<CustomProblemModel, Integer>(_gridProps.problemNumber(), 20, "Problem"));
         
         ColumnModel<CustomProblemModel> colModel = new ColumnModel<CustomProblemModel>(cols);
-        _grid = new Grid<CustomProblemModel>(store,  colModel);
+        _grid = new Grid<CustomProblemModel>(store,  colModel, createGridView());
         _grid.getView().setAutoExpandColumn(cols.get(0));
         _grid.getView().setAutoFill(true);
         
@@ -76,13 +90,10 @@ public class CustomProblemManager extends GWindow {
                 showProblem(event.getSelectedItem());
             }
         });
-        
-        setWidget(_main);
-        
         _emptyPage = new DefaultGxtLoadingPanel("Click on a problem or create a new one");
         
         _main.setCenterWidget(_emptyPage);
-        
+
         ContentPanel gridPanel = new ContentPanel();
         gridPanel.setWidget(_grid);
         
@@ -114,9 +125,89 @@ public class CustomProblemManager extends GWindow {
             }
         }));
         
-        _main.setWestWidget(gridPanel, new BorderLayoutData(300));
+        
+        
+        TextButton btn = new MyTextButton("Edit", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                CustomProblemModel problem = _grid.getSelectionModel().getSelectedItem();
+                if(problem == null) {
+                    CmMessageBox.showAlert("No problem is selected");
+                    return;
+                }
+                CustomProblemPropertiesDialog.getInstance(problem).setVisible(true);
+            }
+        }, "Edit comments and link to lessons");
+        
+        gridPanel.addTool(btn);
+
+
+        BorderLayoutContainer gridCont = new BorderLayoutContainer();
+        gridCont.setCenterWidget(gridPanel);
+        FlowLayoutContainer flow = new FlowLayoutContainer();
+        _showAllTeachers = new CheckBox();
+        _showAllTeachers.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent event) {
+                _grid.getStore().setEnableFilters(_showAllTeachers.getValue());
+            }
+        });
+        flow.add(new MyFieldLabel(_showAllTeachers,"Show All Teachers",120));
+        flow.getElement().setAttribute("style",  "padding: 3px;");
+        gridCont.setSouthWidget(flow, new BorderLayoutData(30));
+        _main.setWestWidget(gridCont, new BorderLayoutData(200));
+        
+        
+
+        _grid.getStore().addFilter(new StoreFilter<CustomProblemModel>() {
+            @Override
+            public boolean select(Store<CustomProblemModel> store, CustomProblemModel parent, CustomProblemModel item) {
+                if(item.getTeacher().getTeacherId() == teacher.getTeacherId()) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        });
+        
+        _grid.getStore().setEnableFilters(true);
+
+        
+        new QuickTip(_grid);
+        
+        setWidget(_main);
     }
     
+    
+    private GridView<CustomProblemModel> createGridView() {
+        GridView<CustomProblemModel> view = new GridView<CustomProblemModel>() {
+            @Override
+            protected void processRows(int startRow, boolean skipStripe) {
+                super.processRows(startRow, skipStripe);
+                
+                NodeList<Element> rows = getRows();
+                for (int i = 0, len = rows.getLength(); i < len; i++) {
+                    Element row = rows.getItem(i).cast();
+                    CustomProblemModel link = ds.get(i);
+                    
+                    // whatever tooltip you want with optional qtitle
+                    String label = "<b>Problem: </b><br/>" + link.getLabel() + "</div><br/>";
+                    String comments = link.getComments()==null?"":"<b>Comments</b><br/>" + link.getComments() + "<br/>";
+                    String linkedLessons = "";
+                    for(LessonModel lessonModel: link.getLinkedLessons()) {
+                        linkedLessons += "<li>" + lessonModel.getLessonName() + "</li>";
+                    }
+                    linkedLessons =  linkedLessons.length()==0?"":"<b>Linked Lessons</b><ul>" + linkedLessons + "</ul>";
+                    
+                    String tip = label + comments + linkedLessons;
+                    row.setAttribute("qtip", tip);
+                    // row.setAttribute("qtitle", "ToolTip&nbsp;Title");
+                }
+            }
+        };
+        return view;
+    }
     
 
     protected void deleteSelectedProblem() {
@@ -197,7 +288,7 @@ public class CustomProblemManager extends GWindow {
     }
     
     public static void startTest() {
-        new CustomProblemManager(new TeacherIdentity(2, null,0));
+        new CustomProblemManager(new TeacherIdentity(2, "casey_1",1));
     }
 
 }

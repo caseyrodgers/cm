@@ -178,7 +178,7 @@ public class DateRangePickerDialog extends GWindow {
         _fromPicker.addHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
-                System.out.println("Mouse Down");
+                
             }
         }, MouseDownEvent.getType());
         return new DatePickerWrapper(_fromPicker, "From");

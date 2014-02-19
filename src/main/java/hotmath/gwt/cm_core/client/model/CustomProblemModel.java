@@ -1,7 +1,10 @@
 package hotmath.gwt.cm_core.client.model;
 
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+
+import java.util.List;
 
 public class CustomProblemModel implements Response {
     public static final String CUSTOM_MARKER = "Custom";
@@ -10,6 +13,7 @@ public class CustomProblemModel implements Response {
     int problemNumber;
     String comments;
     private ProblemType problemType;
+    private List<LessonModel> linkedLessons;
 
     public CustomProblemModel(){}
             
@@ -19,6 +23,16 @@ public class CustomProblemModel implements Response {
         this.teacher = teacher;
         this.comments = comments;
     }
+    
+
+    public void setLinkedLessons(List<LessonModel> linkedLessons) {
+        this.linkedLessons = linkedLessons;
+    }
+
+    public String getLabel() {
+        return teacher.getTeacherName() + ":" + problemNumber;
+    }
+
     
     public int getProblemNumber() {
         return problemNumber;
@@ -64,10 +78,16 @@ public class CustomProblemModel implements Response {
     public void setProblemType(ProblemType problemType) {
         this.problemType = problemType;
     }
+    
+
+    public List<LessonModel> getLinkedLessons() {
+        return linkedLessons;
+    }
 
     @Override
     public String toString() {
         return "CustomProblemModel [pid=" + pid + ", teacher=" + teacher + ", problemNumber=" + problemNumber + ", comments=" + comments + "]";
     }
+
 }
 
