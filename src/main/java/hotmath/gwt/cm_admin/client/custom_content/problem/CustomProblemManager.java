@@ -135,7 +135,14 @@ public class CustomProblemManager extends GWindow {
                     CmMessageBox.showAlert("No problem is selected");
                     return;
                 }
-                CustomProblemPropertiesDialog.getInstance(problem).setVisible(true);
+                CustomProblemPropertiesDialog.getInstance(new CallbackOnComplete() {
+                    
+                    @Override
+                    public void isComplete() {
+                        /** was updated */
+                        readFromServer();
+                    }
+                }, problem).setVisible(true);
             }
         }, "Edit comments and link to lessons");
         
@@ -193,14 +200,15 @@ public class CustomProblemManager extends GWindow {
                     
                     // whatever tooltip you want with optional qtitle
                     String label = "<b>Problem: </b><br/>" + link.getLabel() + "</div><br/>";
-                    String comments = link.getComments()==null?"":"<b>Comments</b><br/>" + link.getComments() + "<br/>";
+                    String comments = link.getComments()==null?"":"<b>Comments</b><br/>" + link.getComments() + "<br/><br/>";
                     String linkedLessons = "";
                     for(LessonModel lessonModel: link.getLinkedLessons()) {
                         linkedLessons += "<li>" + lessonModel.getLessonName() + "</li>";
                     }
                     linkedLessons =  linkedLessons.length()==0?"":"<b>Linked Lessons</b><ul>" + linkedLessons + "</ul>";
                     
-                    String tip = label + comments + linkedLessons;
+                    String tip = "<div style='width: 140px;'>" + label + comments + linkedLessons + "</div>";
+                    
                     row.setAttribute("qtip", tip);
                     // row.setAttribute("qtitle", "ToolTip&nbsp;Title");
                 }
@@ -262,8 +270,6 @@ public class CustomProblemManager extends GWindow {
             problemDesigner.loadProblem(selectedItem.getPid());
         }
     }
-
-
 
     private void readFromServer() {
         

@@ -50,8 +50,8 @@ public class ProblemDesigner extends Composite {
         __lastInstance = this;
 
         if(_editMode == null) {
-            _editMode = new ToggleButton("Edit Mode");
-            _editMode.setValue(true);
+            _editMode = new ToggleButton("Preview Mode");
+            _editMode.setValue(false);
             _editMode.addSelectHandler(new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
@@ -281,7 +281,7 @@ public class ProblemDesigner extends Composite {
         boolean shouldExpand = _editMode.getValue();
         _tutorWrapper.externallyLoadedTutor(solution, getWidget(), "", "Solution Title", false, shouldExpand, null);
 
-        if(_editMode.getValue()) {
+        if(!_editMode.getValue()) {
             jsni_SetupStepEditHooks();
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                 @Override

@@ -1,11 +1,15 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemLinkedLessonAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -26,20 +30,22 @@ public class CustomProblemPropertiesDialog extends GWindow {
 
     private static CustomProblemPropertiesDialog __instance;
 
-    public static Component getInstance(CustomProblemModel problem) {
+    public static Component getInstance(CallbackOnComplete callbackOnComplete, CustomProblemModel problem) {
         __instance = null;
         if (__instance == null) {
             __instance = new CustomProblemPropertiesDialog();
         }
-        __instance.setSolution(problem);
+        __instance.setSolution(callbackOnComplete, problem);
         
         __instance.setVisible(true);
         return __instance;
     }
 
     private CustomProblemModel _customProblem;
+    private CallbackOnComplete callbackOnComplete;
 
-    private void setSolution(CustomProblemModel problem) {
+    private void setSolution(CallbackOnComplete callbackOnComplete, CustomProblemModel problem) {
+        this.callbackOnComplete = callbackOnComplete;
         _customProblem = problem;
         _lessonsPanel.setSolution(problem.getPid());
         _comments.setValue(problem.getComments());
@@ -66,10 +72,33 @@ public class CustomProblemPropertiesDialog extends GWindow {
         addButton(new TextButton("Cancel", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                hide();
+                if(isDirty()) {
+                    CmMessageBox.confirm("Close?",  "There are pending changes.  Are you sure you want to cancel?", new ConfirmCallback() {
+                        @Override
+                        public void confirmed(boolean yesNo) {
+                            if(yesNo) {
+                                hide();
+                            }
+                        }
+                    });
+                }
+                else {
+                    hide();
+                }
             }
         }));
         
+    }
+
+
+    protected boolean isDirty() {
+        if(_lessonsPanel._isDirty) {
+            return true;
+        }
+        if(_comments.getValue() != null && (!_comments.getValue().equals(_customProblem.getComments()))) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -80,6 +109,7 @@ public class CustomProblemPropertiesDialog extends GWindow {
 
     private void saveLessonsToServer(final String pid, final String comments, final List<LessonModel> lessons) {
 
+        CmBusyManager.setBusy(true);
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
@@ -91,6 +121,11 @@ public class CustomProblemPropertiesDialog extends GWindow {
             @Override
             public void oncapture(RpcData value) {
                 Log.info("Custom Problem linked to lessons: " + value);
+                CmBusyManager.setBusy(false);
+                
+                callbackOnComplete.isComplete();
+                
+                hide();
             }
         }.register();
 
