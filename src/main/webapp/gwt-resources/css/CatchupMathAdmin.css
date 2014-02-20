@@ -600,3 +600,15 @@ program-details-panel .x-ftree2-node-over {
 .level-combo {
 	margin-top: 3px !important;
 }
+
+
+
+.cp_designer-toolbar {
+	margin: 2px 5px;
+	padding: 3px;
+	background: #D9E8FB;
+	
+	-moz-border-radius:10px;
+    border-radius: 10px;
+	
+}

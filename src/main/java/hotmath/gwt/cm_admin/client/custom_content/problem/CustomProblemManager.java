@@ -169,6 +169,7 @@ public class CustomProblemManager extends GWindow {
         _grid.getStore().addFilter(new StoreFilter<CustomProblemModel>() {
             @Override
             public boolean select(Store<CustomProblemModel> store, CustomProblemModel parent, CustomProblemModel item) {
+                System.out.println("Checking: " + item);
                 if(item.getTeacher().getTeacherId() == teacher.getTeacherId()) {
                     return true;
                 }
@@ -288,6 +289,8 @@ public class CustomProblemManager extends GWindow {
             public void oncapture(CmList<CustomProblemModel> problems) {
                 _grid.getStore().clear();
                 _grid.getStore().addAll(problems);
+                
+                forceLayout();
                 
             }
         }.register();

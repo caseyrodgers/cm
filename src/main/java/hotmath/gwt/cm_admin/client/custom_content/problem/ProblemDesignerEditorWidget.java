@@ -182,7 +182,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
         store.add(new  WidgetType("inequality", "Inequality", "{'type': 'inequality'}"));
         store.add(new  WidgetType("number_fraction", "Fraction","{'type': 'number_fraction'}"));
         store.add(new  WidgetType("mChoice", "Multiple Choice", "{'type': 'mChoice', 'value':'THIS|THAT|1'}"));
-        store.add(new  WidgetType("", "No Widget", "{'type': ''}"));
+        store.add(new  WidgetType("", "Whiteboard", "{'type': ''}"));
         
 //        store.add(new  WidgetType("number_rational", "Rational"));
 

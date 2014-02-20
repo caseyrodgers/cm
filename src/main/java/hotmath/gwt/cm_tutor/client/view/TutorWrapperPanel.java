@@ -887,7 +887,10 @@ public class TutorWrapperPanel extends Composite {
             htmlNew += html.substring(endPos+6);
             
             return htmlNew;    
-        }   
-        
-        
+        }
+
+        /** Return the current widget json */
+        public static native String jsni_getWidgetJson() /*-{
+            return $wnd.TutorSolutionWidgetValues.getActiveWidget().widgetJson;
+        }-*/;
 }

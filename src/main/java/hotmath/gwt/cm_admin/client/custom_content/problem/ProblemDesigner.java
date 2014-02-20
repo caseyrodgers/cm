@@ -66,6 +66,15 @@ public class ProblemDesigner extends Composite {
         
 
         _problemPanel.addTool(_editMode);
+        
+        _problemPanel.addTool(new TextButton("Edit Input", new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
+                new ProblemDesignerEditorWidget(_solutionInfo,TutorWrapperPanel.jsni_getWidgetJson(), callback);
+            }
+        }));
+        
         _problemPanel.addTool(new TextButton("Add Step/Hint", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
@@ -136,7 +145,7 @@ public class ProblemDesigner extends Composite {
             new ProblemDesignerEditorWhiteboard(_solutionInfo, "wb_ps", callback);
         }
         else if(partType.equals("widget")) {
-            String widgetJson = jsni_getWidgetJson();
+            String widgetJson = TutorWrapperPanel.jsni_getWidgetJson();
             if(widgetJson == null) {
                 widgetJson = "{type:''}";
             }
@@ -159,7 +168,9 @@ public class ProblemDesigner extends Composite {
             int which = Integer.parseInt(data);
             moveSolutionHintStep(which, which-1);
         }
-        
+        else if(partType.equals("add_hint-step")) {
+            addNewHintStep();
+        }
         else {
             Window.alert("UNKNOWN EDIT GWT PART: " + partType + " data: " + data);
         }
@@ -216,16 +227,13 @@ public class ProblemDesigner extends Composite {
         }.register();
     }
 
-    native private String jsni_getWidgetJson() /*-{
-        return $wnd.TutorSolutionWidgetValues.getActiveWidget().widgetJson;
-    }-*/;
 
-    native private void jsni_SetupStepEditHooks() /*-{
+    native private void jsni_SetupStepEditHooks(boolean showAddStepHintButton) /*-{
 
        var that = this;
        
        $wnd.gwt_getHintNumber = function(o) {
-          return o.parentElement.getAttribute("hint_step_num");
+          return o.parentElement.parentElement.getAttribute("hint_step_num");
        }
        
        $wnd.gwt_getWidgetJson = function(o) {
@@ -235,31 +243,39 @@ public class ProblemDesigner extends Composite {
        // add hooks on double click to bring up appropriate editor
        // and add a hover to indicate editability
        //
-       $wnd.$('.cm_whiteboard').prepend("<button onclick='window.gwt_editPart(\"whiteboard\",null)'>Click to Edit</button>").dblclick(function(x) {
+       $wnd.$('.cm_whiteboard').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Click to Edit Problem Statement</button></div>").dblclick(function(x) {
            //var whiteboardId = x.target.parentNode.parentNode.parentNode.parentNode.getAttribute("wb_id");
            $wnd.gwt_editPart('whiteboard', null);
        });
     
-       $wnd.$('#hm_flash_widget').prepend("<button onclick='window.gwt_editPart(\"widget\",null)'>Click to Edit</button>").dblclick(function() {
+       $wnd.$('#hm_flash_widget').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Click to Edit Input</button></div>").dblclick(function() {
           $wnd.gwt_editPart('widget', whiteboardId);
        });
        
        
-       var clickDef = "<button onclick='window.gwt_editPart(\"hint\",window.gwt_getHintNumber(this))'>Click to Edit</button>" +
+       var clickDef = "<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"hint\",window.gwt_getHintNumber(this))'>Click to Edit</button>" +
                       "<button onclick='window.gwt_editPart(\"hint-remove\",window.gwt_getHintNumber(this))'>Click to Remove</button>" +
                       "<button onclick='window.gwt_editPart(\"hint-moveUp\",window.gwt_getHintNumber(this))'>^</button>" +
-                      "<button onclick='window.gwt_editPart(\"hint-moveDown\",window.gwt_getHintNumber(this))'>v</button>";
+                      "<button onclick='window.gwt_editPart(\"hint-moveDown\",window.gwt_getHintNumber(this))'>v</button></div>";
                       
        $wnd.$('.hint-step').prepend(clickDef).dblclick(function() {
           var stepId = getStepId(this);
           $wnd.gwt_editPart('hint', stepId);
        });
+       
+       if(true || showAddStepHintButton) {
+           $wnd.$('#raw_tutor_steps').append("<div style='margin-top: 15px;' class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"add_hint-step\",null)'>Click to Add Hint/Step</button></div>").dblclick(function() {
+              $wnd.gwt_editPart('add_hint', whiteboardId);
+           });
+       }
+       
+       
     }-*/;
     
     protected void loadProblem(final SolutionInfo solution, SolutionMeta solutionMeta) {
         _solutionInfo = solution;
         _solutionMeta = solutionMeta;
-        _tutorWrapper = new TutorWrapperPanel(!_editMode.getValue(), false, false, false, new TutorCallbackDefault() {
+        _tutorWrapper = new TutorWrapperPanel(_editMode.getValue(), false, false, false, new TutorCallbackDefault() {
             @Override
             native public void solutionHasBeenInitialized() /*-{
                                                  
@@ -278,11 +294,11 @@ public class ProblemDesigner extends Composite {
         _main.setCenterWidget(_problemPanel);
         _main.forceLayout();
 
-        boolean shouldExpand = _editMode.getValue();
+        boolean shouldExpand = !_editMode.getValue();
         _tutorWrapper.externallyLoadedTutor(solution, getWidget(), "", "Solution Title", false, shouldExpand, null);
 
         if(!_editMode.getValue()) {
-            jsni_SetupStepEditHooks();
+            jsni_SetupStepEditHooks(solutionMeta.getSteps().size()==0);
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                 @Override
                 native public void execute() /*-{
