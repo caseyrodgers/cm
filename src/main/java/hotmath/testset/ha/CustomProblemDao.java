@@ -101,19 +101,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 
         final int problemNumber;
         if (probNum.size() == 0) {
-            KeyHolder keyHolder = new GeneratedKeyHolder();
-            getJdbcTemplate().update(new PreparedStatementCreator() {
-                @Override
-                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "insert into CM_CUSTOM_PROBLEM_TEACHER(admin_id, teacher_name, max_problem_number)values(?,?,?)";
-                    PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                    ps.setInt(1, problem.getTeacher().getAdminId());
-                    ps.setString(2, problem.getTeacher().getTeacherName());
-                    ps.setInt(3, 1);
-                    return ps;
-                }
-            }, keyHolder);
-            problem.getTeacher().setTeacherId(keyHolder.getKey().intValue());
+            addNewTeacher(problem.getTeacher().getAdminId(), problem.getTeacherName());
             problemNumber = 1;
         }
         else {
@@ -211,10 +199,12 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 
     public List<CustomProblemModel> getCustomProblemsFor(final TeacherIdentity teacher) throws Exception {
         String sql =
-                "select cp.*, ct.admin_id, ct.teacher_name" +
+                "select cp.*, ct.admin_id, ct.teacher_name, s.solutionxml " +
                         " from   CM_CUSTOM_PROBLEM cp " +
                         " JOIN CM_CUSTOM_PROBLEM_TEACHER ct " +
                         " on ct.teacher_id = cp.teacher_id " +
+                        " JOIN SOLUTIONS s " +
+                        " on s.problemindex = cp.pid " +
                         " where  (ct.admin_id = ?) " +
                         " order  by ct.teacher_name, teacher_problem_number ";
 
@@ -222,7 +212,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
             @Override
             public CustomProblemModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                 CustomProblemModel cp = new CustomProblemModel(rs.getString("pid"), rs.getInt("teacher_problem_number"), new TeacherIdentity(rs
-                        .getInt("admin_id"), rs.getString("teacher_name"), rs.getInt("teacher_id")), rs.getString("comments"));
+                        .getInt("admin_id"), rs.getString("teacher_name"), rs.getInt("teacher_id")), rs.getString("comments"), SolutionDao.determineProblemType(rs.getString("solutionxml")));
                 cp.setLinkedLessons(getCustomProblemLinkedLessons(cp.getPid()));
                 return cp;
             }
@@ -418,17 +408,70 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         return new ArrayList<LessonModel>();
     }
 
-    public List<ProblemDto> getCustomProblemsLinkedToLesson(String lessonFile) {
-        String sql = "select * from CM_CUSTOM_PROBLEM_LINKED_LESSONS where lesson_file = ? order by pid";
-        List<ProblemDto> problems = getJdbcTemplate().query(sql, new Object[] { lessonFile }, new RowMapper<ProblemDto>() {
+    public List<CustomProblemModel> getCustomProblemsLinkedToLesson(String lessonFile) {
+        String sql = "select distinct cp.pid, cp.teacher_id, cp.comments, cp.teacher_problem_number, cl.lesson_name, cl.lesson_file, s.solutionxml" +
+                     " from CM_CUSTOM_PROBLEM_LINKED_LESSONS cl " +
+                     " JOIN CM_CUSTOM_PROBLEM  cp " +
+                     " on cp.pid = cl.pid " +
+                     " JOIN SOLUTIONS s " +
+                     " on s.problemindex = cp.pid " +
+                     " where cl.lesson_file = ?";
+        
+        List<CustomProblemModel> problems = getJdbcTemplate().query(sql, new Object[] { lessonFile }, new RowMapper<CustomProblemModel>() {
             @Override
-            public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                LessonModel lm = new LessonModel(rs.getString("lesson_name"), rs.getString("lesson_file"));
-                ProblemDto prob = new ProblemDto(0, 0, lm, rs.getString("pid"), rs.getString("pid"), 0);
-                return prob;
+            public CustomProblemModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new CustomProblemModel(rs.getString("pid"), rs.getInt("teacher_problem_number"), getTeacherIdentity(rs.getInt("teacher_id")), rs.getString("comments"), SolutionDao.determineProblemType(rs.getString("solutionxml")));
             }
         });
         return problems;
-
     }
+
+    protected TeacherIdentity getTeacherIdentity(int teacherId) {
+        String sql = "select * from CM_CUSTOM_PROBLEM_TEACHER where teacher_id = ?";
+        return getJdbcTemplate().queryForObject(sql, new Object[]{teacherId}, new RowMapper<TeacherIdentity>() {
+            public TeacherIdentity mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return _extractTeacherIdentity(rs);
+            }
+        });
+    }
+
+    /** Return list of teachers defined for this admin
+     * 
+     * @param adminId
+     * @return
+     */
+    public List<TeacherIdentity> getAdminTeachers(int adminId) {
+        String sql = "select * from CM_CUSTOM_PROBLEM_TEACHER where admin_id = ? order by teacher_name";
+        return getJdbcTemplate().query(sql, new Object[]{adminId}, new RowMapper<TeacherIdentity>() {
+            public TeacherIdentity mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return _extractTeacherIdentity(rs);
+            }
+        });
+    }
+
+    protected TeacherIdentity _extractTeacherIdentity(ResultSet rs) throws SQLException {
+        return new TeacherIdentity(rs.getInt("admin_id"), rs.getString("teacher_name"), rs.getInt("teacher_id"));        
+    }
+
+    /** Add a new teacher and return the next problem_number
+     * 
+     * @param adminId
+     * @param teacherName
+     * @return
+     */
+    public void addNewTeacher(final int adminId, final String teacherName) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "insert into CM_CUSTOM_PROBLEM_TEACHER(admin_id, teacher_name, max_problem_number)values(?,?,?)";
+                PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, adminId);
+                ps.setString(2, teacherName);
+                ps.setInt(3, 1);
+                return ps;
+            }
+        }, keyHolder);
+    }    
+    
 }

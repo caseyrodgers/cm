@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
+import hotmath.gwt.cm_admin.client.teacher.TeacherManager;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.CreateCustomProblemAction;
@@ -12,9 +13,6 @@ import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import java.util.Date;
-
-import com.google.gwt.user.client.Cookies;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -30,11 +28,14 @@ import com.sencha.gxt.widget.core.client.form.TextField;
  */
 public class CustomProblemPropertyEditor extends GWindow {
 
-    CallbackOnComplete callback;
+    Callback callback;
     CustomProblemModel problem;
     String _teacherNameFromCookie;
     
-    public CustomProblemPropertyEditor(CustomProblemModel problem, CallbackOnComplete callback) {
+    public interface Callback {
+        void solutionCreated(SolutionInfo solution);
+    }
+    public CustomProblemPropertyEditor(CustomProblemModel problem, Callback callback) {
         super(false);
         
         assert(problem != null);
@@ -46,7 +47,7 @@ public class CustomProblemPropertyEditor extends GWindow {
         setHeadingText("Create New Solution");
         
         
-        _teacherNameFromCookie = Cookies.getCookie("teacher_name");
+        _teacherNameFromCookie = TeacherManager.getTeacher().getTeacherName();
         
 
         buildGui();
@@ -79,13 +80,7 @@ public class CustomProblemPropertyEditor extends GWindow {
             CmMessageBox.showAlert(message);
             return;
         }
-        
-        Date now = new Date();
-        long nowLong = now.getTime();
-        nowLong = nowLong + (1000 * 60 * 60 * 24 * 7);//seven days
-        now.setTime(nowLong);
 
-        Cookies.setCookie("teacher_name", _teacherName.getCurrentValue(), now);
         
         problem.getTeacher().setTeacherName(_teacherName.getCurrentValue());
         
@@ -107,7 +102,7 @@ public class CustomProblemPropertyEditor extends GWindow {
                 CmBusyManager.setBusy(false);
                 InfoPopupBox.display("Problem Created",  "New custom problem created: " + solution.getPid());
                 hide();
-                callback.isComplete();
+                callback.solutionCreated(solution);
             }
         }.register();
     }

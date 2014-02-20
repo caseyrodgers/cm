@@ -1,13 +1,15 @@
 package hotmath.cm.assignment;
 
-import java.util.List;
-
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStatsUsers;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentDto;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentRealTimeStatsUsersAction;
 import hotmath.gwt.shared.server.service.command.GetAssignmentRealTimeStatsUsersCommand;
+import hotmath.testset.ha.SolutionDao;
+
+import java.util.List;
+
 import junit.framework.TestCase;
 
 public class AssignmentDao_Test extends TestCase {
@@ -44,8 +46,8 @@ public class AssignmentDao_Test extends TestCase {
     public void testOne() throws Exception {
         String html1 = "<div id='problem_statement'><div id='hm_flash_widget' class='not_used'></div></div>";
         String html2 = "<div id='problem_statement'><div id='hm_flash_widget' class='used'></div></div>";
-        assertTrue(AssignmentDao.determineProblemType(html1) == ProblemType.WHITEBOARD);
-        assertTrue(AssignmentDao.determineProblemType(html2) == ProblemType.WHITEBOARD);
+        assertTrue(SolutionDao.determineProblemType(html1) == ProblemType.WHITEBOARD);
+        assertTrue(SolutionDao.determineProblemType(html2) == ProblemType.WHITEBOARD);
     }
 
 }

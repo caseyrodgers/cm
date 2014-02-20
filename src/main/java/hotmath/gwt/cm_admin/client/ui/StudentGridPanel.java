@@ -810,7 +810,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
-                        new CustomProblemManager(new TeacherIdentity(_cmAdminMdl.getUid(), "", 0));
+                        CustomProblemManager.showManager();
                     }
                 });                
             }});

@@ -326,7 +326,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 boolean found = false;
                 for (ProblemDto problem : problems) {
                     if (problem.getPidOnly().equals(pid)) {
-                        problem.setProblemType(determineProblemType(xml));
+                        problem.setProblemType(SolutionDao.determineProblemType(xml));
                         found = true;
                     }
                 }
@@ -2311,70 +2311,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return value;
     }
 
-    /**
-     * Given the a problem PID, determine the type of problem
-     * 
-     * Meaning what type of input is required
-     * 
-     * @param defaultLabel
-     * @return
-     */
-    static public ProblemType determineProblemType(String htmlOrXml) {
-        try {
-
-            /**
-             * might be XML (hmsl ) or HTML (rendered)
-             * 
-             */
-            String psHtml = "";
-            if (htmlOrXml.indexOf("<hmsl") > -1) {
-                /** is XmL */
-                Document doc = parseSolutionXml(htmlOrXml);
-                Element docEle = doc.getDocumentElement();
-                NodeList elements = docEle.getElementsByTagName("statement");
-                if (elements.getLength() > 0) {
-                    psHtml = elements.item(0).getTextContent();
-                }
-            } else {
-                /** is HTML */
-                /** extract just the problem statement */
-                int su = htmlOrXml.indexOf("stepunit"); // first step
-                if (su >= 1) {
-                    psHtml = htmlOrXml.substring(0, su);
-                }
-            }
-
-            if ((psHtml.indexOf("hm_flash_widget") > -1 || psHtml.indexOf("hotmath:flash") > -1) && psHtml.indexOf("not_used") == -1) {
-                return ProblemType.INPUT_WIDGET;
-            } else if (psHtml.indexOf("<div widget='") > -1) {
-                return ProblemType.INPUT_WIDGET;
-            } else if (psHtml.indexOf("hm_question_def") > -1) {
-                return ProblemType.MULTI_CHOICE;
-            } else {
-                return ProblemType.WHITEBOARD;
-            }
-
-        } catch (Exception e) {
-            __logger.error("Error determining problem type: " + htmlOrXml, e);
-        }
-
-        return ProblemType.UNKNOWN;
-    }
-
-    private static Document parseSolutionXml(String xml) {
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            InputSource is = new InputSource(new StringReader(xml));
-            return db.parse(is);
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    
 
     /**
      * Make a copy of Assignment pointed to by assKey

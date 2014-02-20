@@ -1,11 +1,14 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
+import hotmath.gwt.cm_admin.client.teacher.TeacherManager;
+import hotmath.gwt.cm_admin.client.teacher.TeacherManager.Callback;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCustomProblemAction;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -56,12 +59,14 @@ public class CustomProblemManager extends GWindow {
     GridProperties _gridProps = GWT.create(GridProperties.class);
     private DefaultGxtLoadingPanel _emptyPage;
     private CheckBox _showAllTeachers;
+    private StoreFilter<CustomProblemModel> _filter;
+    private String _selectedSolution;
 
-    public CustomProblemManager(TeacherIdentity teacher) {
+    private CustomProblemManager(TeacherIdentity teacher) {
         super(true);
         
         this.teacher = teacher;
-        setHeadingText("Custom Problem Manager");
+        setHeadingText("Custom Problem Manager: " + teacher.getTeacherName());
         setPixelSize(800, 600);
         setMaximizable(true);
         
@@ -101,11 +106,12 @@ public class CustomProblemManager extends GWindow {
             
             @Override
             public void onSelect(SelectEvent event) {
-                CustomProblemModel problem = new CustomProblemModel(null,0,teacher, null);
-                new CustomProblemPropertyEditor(problem,new CallbackOnComplete() {
-                    
+                CustomProblemModel problem = new CustomProblemModel(null,0,teacher, null, null);
+                new CustomProblemPropertyEditor(problem,new CustomProblemPropertyEditor.Callback() {
+
                     @Override
-                    public void isComplete() {
+                    public void solutionCreated(SolutionInfo solution) {
+                        _selectedSolution = solution.getPid();
                         readFromServer();
                     }
                 });
@@ -118,12 +124,15 @@ public class CustomProblemManager extends GWindow {
                 deleteSelectedProblem();
             }
         }));
+        
+        /**
         gridPanel.addTool(new TextButton("Refresh", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 readFromServer();
             }
         }));
+        */
         
         
         
@@ -165,11 +174,9 @@ public class CustomProblemManager extends GWindow {
         _main.setWestWidget(gridCont, new BorderLayoutData(200));
         
         
-
-        _grid.getStore().addFilter(new StoreFilter<CustomProblemModel>() {
+        _filter = new StoreFilter<CustomProblemModel>() {
             @Override
             public boolean select(Store<CustomProblemModel> store, CustomProblemModel parent, CustomProblemModel item) {
-                System.out.println("Checking: " + item);
                 if(item.getTeacher().getTeacherId() == teacher.getTeacherId()) {
                     return true;
                 }
@@ -177,8 +184,10 @@ public class CustomProblemManager extends GWindow {
                     return false;
                 }
             }
-        });
+        };
         
+
+        _grid.getStore().addFilter(_filter);
         _grid.getStore().setEnableFilters(true);
 
         
@@ -265,10 +274,12 @@ public class CustomProblemManager extends GWindow {
             return;
         }
         else {
+            
+            _selectedSolution = selectedItem.getPid();
             ProblemDesigner problemDesigner = new ProblemDesigner();
             _main.setCenterWidget(problemDesigner);
             forceLayout();
-            problemDesigner.loadProblem(selectedItem.getPid());
+            problemDesigner.loadProblem(selectedItem.getPid(), selectedItem.getLabel());
         }
     }
 
@@ -290,14 +301,43 @@ public class CustomProblemManager extends GWindow {
                 _grid.getStore().clear();
                 _grid.getStore().addAll(problems);
                 
+                _grid.getStore().removeFilters();
+                _grid.getStore().addFilter(_filter);
+                _grid.getStore().setEnableFilters(true);
+                
+                if(_selectedSolution != null) {
+                    for(int i=0;i<problems.size();i++) {
+                        CustomProblemModel m = problems.get(i);
+                        if(m.getPid().equals(_selectedSolution)) {
+                            _grid.getSelectionModel().select(m, false);
+                            break;
+                        }
+                    }
+                }
+                
                 forceLayout();
                 
             }
         }.register();
     }
     
+    /** 
+     *                                 
+                                new TeacherIdentity(UserInfoBase.getInstance().getUid(), "", 0)
+                                new TeacherIdentity(_cmAdminMdl.getUid(), "", 0));
+
+     */
+    public static void showManager() {
+        new TeacherManager(new Callback() {
+            public void teacherSet(TeacherIdentity teacher) {
+                new CustomProblemManager(teacher);
+            }
+        });
+    }
+    
     public static void startTest() {
-        new CustomProblemManager(new TeacherIdentity(2, "casey_1",1));
+        CustomProblemManager.showManager();
+        //new CustomProblemManager(new TeacherIdentity(2, "casey_1",1));
     }
 
 }

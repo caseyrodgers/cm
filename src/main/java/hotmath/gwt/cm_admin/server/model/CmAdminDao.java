@@ -1,10 +1,8 @@
 package hotmath.gwt.cm_admin.server.model;
-
-import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
-import static hotmath.cm.util.CmCacheManager.CacheName.SUBJECT_CHAPTERS;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.QueryHelper;
+import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc_core.client.CmUserException;
@@ -385,7 +383,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
     public List<ChapterModel> getChaptersForProgramSubject(String progId, String subjId) throws Exception {
 
         String key = new StringBuilder(progId).append(".").append(subjId).toString();
-        List<ChapterModel> list = (List<ChapterModel>) CmCacheManager.getInstance().retrieveFromCache(SUBJECT_CHAPTERS, key);
+        List<ChapterModel> list = (List<ChapterModel>) CmCacheManager.getInstance().retrieveFromCache(CmCacheManager.CacheName.SUBJECT_CHAPTERS, key);
         
         if (logger.isDebugEnabled())
         	logger.debug("key: + " + key + " size: " + ((list!=null) ? list.size() : 0));
@@ -403,7 +401,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                     }
                 });
         
-         CmCacheManager.getInstance().addToCache(SUBJECT_CHAPTERS, key, list);
+         CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.SUBJECT_CHAPTERS, key, list);
          
          return list;
     }
@@ -658,7 +656,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
 
     public String getPrintableStudentReportId(List<Integer> studentUids) {
         String reportId = String.format("%d%d%d", studentUids.get(0), System.currentTimeMillis(), studentUids.size());
-        CmCacheManager.getInstance().addToCache(REPORT_ID, reportId, studentUids);
+        CmCacheManager.getInstance().addToCache(CmCacheManager.CacheName.REPORT_ID, reportId, studentUids);
         return reportId;
     }
 
@@ -1105,6 +1103,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                 );
         return dateExpire;
     }
+
 
 }
 

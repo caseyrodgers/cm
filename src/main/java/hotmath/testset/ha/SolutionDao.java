@@ -5,11 +5,14 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CompressHelper;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionGlobalContextNotFound;
 import hotmath.spring.SpringManager;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -20,12 +23,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Provide DAO functionality for HaTestDefs
@@ -422,5 +434,88 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
             throw new CmException("Solution not found: " + pid);
         }
     }
+    
+    
+    
+    /**
+     * Given the a problem PID, determine the type of problem
+     * 
+     * Meaning what type of input is required
+     * 
+     * @param defaultLabel
+     * @return
+     */
+    public ProblemType getProblemType(String pid) throws Exception {
+        String sql = "select problemindex, solutionxml from SOLUTIONS where problemindex = ?";
+        return getJdbcTemplate().queryForObject(sql, new Object[] {pid}, new RowMapper<ProblemType>() {
+            @Override
+            public ProblemType mapRow(ResultSet rs, int rowNum) throws SQLException {
+                String xml = rs.getString("solutionxml");
+                return determineProblemType(xml);
+            }
+        });
+    }
+    
+    
+    /** Look at the associated XML and determine the input type
+     * 
+     * @param htmlOrXml
+     * @return
+     */
+    static public ProblemType determineProblemType(String htmlOrXml) {
+        try {
 
+            /**
+             * might be XML (hmsl ) or HTML (rendered)
+             * 
+             */
+            String psHtml = "";
+            if (htmlOrXml.indexOf("<hmsl") > -1) {
+                /** is XmL */
+                Document doc = parseSolutionXml(htmlOrXml);
+                Element docEle = doc.getDocumentElement();
+                NodeList elements = docEle.getElementsByTagName("statement");
+                if (elements.getLength() > 0) {
+                    psHtml = elements.item(0).getTextContent();
+                }
+            } else {
+                /** is HTML */
+                /** extract just the problem statement */
+                int su = htmlOrXml.indexOf("stepunit"); // first step
+                if (su >= 1) {
+                    psHtml = htmlOrXml.substring(0, su);
+                }
+            }
+
+            if ((psHtml.indexOf("hm_flash_widget") > -1 || psHtml.indexOf("hotmath:flash") > -1) && psHtml.indexOf("not_used") == -1) {
+                return ProblemType.INPUT_WIDGET;
+            } else if (psHtml.indexOf("<div widget='") > -1) {
+                return ProblemType.INPUT_WIDGET;
+            } else if (psHtml.indexOf("hm_question_def") > -1) {
+                return ProblemType.MULTI_CHOICE;
+            } else {
+                return ProblemType.WHITEBOARD;
+            }
+
+        } catch (Exception e) {
+            __logger.error("Error determining problem type: " + htmlOrXml, e);
+        }
+
+        return ProblemType.UNKNOWN;
+    }
+
+    private static Document parseSolutionXml(String xml) {
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            InputSource is = new InputSource(new StringReader(xml));
+            return db.parse(is);
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (SAXException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }    
 }

@@ -125,7 +125,7 @@ public class AddProblemDialog extends GWindow {
             addTool(new TextButton("Create Problem", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
-                    new CustomProblemManager(new TeacherIdentity(UserInfoBase.getInstance().getUid(), "", 0));              
+                    CustomProblemManager.showManager();              
                 }
             }));
         }

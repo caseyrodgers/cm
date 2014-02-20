@@ -15,7 +15,7 @@ public class GetAdminTeachersCommand implements ActionHandler<GetAdminTeachersAc
     
     @Override
     public CmList<TeacherIdentity> execute(Connection conn, GetAdminTeachersAction action) throws Exception {
-        return new CmArrayList<>(CustomProblemDao.getInstance().getAdminTeachers(action.getAdminId()));
+        return new CmArrayList<TeacherIdentity>(CustomProblemDao.getInstance().getAdminTeachers(action.getAdminId()));
     }
 
     @Override

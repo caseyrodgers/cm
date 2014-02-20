@@ -101,7 +101,11 @@ public class ProblemDesigner extends Composite {
         }
     }-*/;
 
-    public void loadProblem(final String pid) {
+    public void loadProblem(final String pid, String label) {
+        
+        if(label != null) {
+           _problemPanel.setHeadingText("Problem: " + label);
+        }
         
         new RetryAction<CmList<Response>>() {
             @Override
@@ -134,7 +138,7 @@ public class ProblemDesigner extends Composite {
     CallbackOnComplete callback = new CallbackOnComplete() {
         @Override
         public void isComplete() {
-            loadProblem(_solutionInfo.getPid());
+            loadProblem(_solutionInfo.getPid(),null);
         }
     };
     
@@ -222,7 +226,7 @@ public class ProblemDesigner extends Composite {
             }
             public void oncapture(RpcData value) {
                 Log.info("Hint saved");
-                loadProblem(_solutionInfo.getPid());
+                loadProblem(_solutionInfo.getPid(), null);
             }
         }.register();
     }
@@ -317,7 +321,7 @@ public class ProblemDesigner extends Composite {
         public void startTest() {
             String testPid="test_casey_1_1_1_1";
             testPid="cmextras_dynamic_oops_basic_1_1";
-            new ProblemDesigner().loadProblem(testPid);
+            new ProblemDesigner().loadProblem(testPid, null);
         }
     }
 

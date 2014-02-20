@@ -17,11 +17,12 @@ public class CustomProblemModel implements Response {
 
     public CustomProblemModel(){}
             
-    public CustomProblemModel(String pid, int problemNumber, TeacherIdentity teacher, String comments) {
+    public CustomProblemModel(String pid, int problemNumber, TeacherIdentity teacher, String comments, ProblemType type) {
         this.pid = pid;
         this.problemNumber = problemNumber;
         this.teacher = teacher;
         this.comments = comments;
+        this.problemType = type;
     }
     
 
@@ -30,7 +31,7 @@ public class CustomProblemModel implements Response {
     }
 
     public String getLabel() {
-        return teacher.getTeacherName() + ":" + problemNumber;
+        return teacher.getTeacherName() + "-" + problemNumber;
     }
 
     

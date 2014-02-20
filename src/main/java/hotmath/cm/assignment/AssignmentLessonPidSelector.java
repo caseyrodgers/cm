@@ -5,6 +5,7 @@ import hotmath.assessment.InmhItemData;
 import hotmath.assessment.RppWidget;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CustomQuizQuestionManager;
+import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
@@ -192,13 +193,16 @@ public class AssignmentLessonPidSelector {
             /** Add any custom problem associated with this lesson 
              * 
              */
-            List<ProblemDto> customProblems = CustomProblemDao.getInstance().getCustomProblemsLinkedToLesson(lessonFile);
-            AssignmentDao.getInstance().updateProblemTypes(customProblems);
+            List<CustomProblemModel> customProblems = CustomProblemDao.getInstance().getCustomProblemsLinkedToLesson(lessonFile);
+            List<ProblemDto> problems = new ArrayList<ProblemDto>();
             pCount=0;
-            for (ProblemDto p : customProblems) {
-                p.setLabel(getDefaultLabel(lessonName + " [cust]", (++pCount)));
+            for (CustomProblemModel p : customProblems) {
+                ++pCount;
+                ProblemDto prob = new ProblemDto(pCount,pCount,new LessonModel(lessonFile,lessonFile),"[custom] " + p.getLabel(),p.getPid(),0);
+                prob.setProblemType(p.getProblemType());
+                problems.add(prob);
             }
-            problemsAll.addAll(customProblems);
+            problemsAll.addAll(problems);
         }
     }
 
