@@ -455,7 +455,7 @@ public class TutorWrapperPanel extends Composite {
                 return;
             }
         }
-        Window.alert("Static whiteboard not found: " + wbId);
+        //Window.alert("Static whiteboard not found: " + wbId);
     }
     
 

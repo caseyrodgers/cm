@@ -294,6 +294,11 @@ public class ShowWorkPanel2 extends Composite {
      */
     public void loadWhiteboard(List<WhiteboardCommand> commands) {
         _lastCommands = commands;
+        if(commands == null) {
+            jsni_updateWhiteboard(this.whiteboardId, "clear", null);
+            return;
+        }
+        
         Log.debug("Loading whiteboard with " + commands.size() + " commands");
         try {
             //jsni_updateWhiteboard(flashId, "clear", null);

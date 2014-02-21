@@ -136,7 +136,7 @@ public class CustomProblemManager extends GWindow {
         
         
         
-        TextButton btn = new MyTextButton("Edit", new SelectHandler() {
+        TextButton btn = new MyTextButton("Properties", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 CustomProblemModel problem = _grid.getSelectionModel().getSelectedItem();
@@ -303,7 +303,10 @@ public class CustomProblemManager extends GWindow {
                 
                 _grid.getStore().removeFilters();
                 _grid.getStore().addFilter(_filter);
-                _grid.getStore().setEnableFilters(true);
+                
+                if(!_showAllTeachers.getValue()) {
+                    _grid.getStore().setEnableFilters(true);
+                }
                 
                 if(_selectedSolution != null) {
                     for(int i=0;i<problems.size();i++) {

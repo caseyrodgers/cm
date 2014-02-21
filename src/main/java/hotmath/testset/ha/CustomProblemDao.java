@@ -472,6 +472,85 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                 return ps;
             }
         }, keyHolder);
+    }
+
+    /** Setup an editable whitebaord in
+     * SOLUTION_WHITEBOARD 
+     * 
+     *  Return a unique key used to update this temporary whiteboard
+     *  
+     * @param pid
+     */
+    public String setupForWhiteboardEditing(final String pid) {
+        final String pidEdit = pid + "!" + System.currentTimeMillis();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "insert into SOLUTION_WHITEBOARD_temp (pid_edit,pid,wb_id,wb_command, wb_data,insert_time_mills) " +
+                             " select ? as pid_edit, pid, wb_id,wb_command, wb_data, insert_time_mills " +
+                             " from  SOLUTION_WHITEBOARD " +
+                             " where pid = ? " + 
+                             " order by insert_time_mills";
+                
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setString(1, pidEdit);
+                ps.setString(2, pid);
+                return ps;
+            }
+        });
+        return pidEdit;
+    }
+
+    /** Commit changes to temporary whiteboard into main whiteboard table
+     *  and remove work entries for whiteboard changes.
+     * 
+     * @param pid
+     */
+    public void commitWhiteboardEditing(final String pidEdit, final String pid) {
+        
+        /** Delete existing whiteboard
+         * 
+         */
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "delete from SOLUTION_WHITEBOARD where pid = ?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setString(1,  pid);
+                return ps;
+            }
+        });
+        
+        /** Insert new records into main whiteboard table
+         * 
+         */
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "insert into SOLUTION_WHITEBOARD(pid,wb_id,wb_command, wb_data,insert_time_mills) " +
+                        " select pid, wb_id,wb_command, wb_data, insert_time_mills " +
+                        " from  SOLUTION_WHITEBOARD_temp " +
+                        " where pid_edit = ? " + 
+                        " order by insert_time_mills";
+
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setString(1,  pidEdit);
+                return ps;
+            }
+        });
+        
+        /** Remove the temporary/work area for this pid
+         * 
+         */
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "delete from SOLUTION_WHITEBOARD_temp where pid_edit = ?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setString(1,  pidEdit);
+                return ps;
+            }
+        });
     }    
     
 }

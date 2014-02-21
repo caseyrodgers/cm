@@ -49,8 +49,7 @@ public class CustomProblemLinkedLessonsPanel extends ContentPanel {
     
     private void drawGui() {
         _main = new BorderLayoutContainer();
-        _main.setNorthWidget(new HTML("<p style='padding: 10px;font-size: 1.2em'>Lessons that are linked to this problem.</p>"), new BorderLayoutData(
-                40));
+        _main.setNorthWidget(new HTML("<b style='display: block;margin: 10px 5px'>Lessons that are linked to this problem.</b>"), new BorderLayoutData(35));
         _main.setCenterWidget(new DefaultGxtLoadingPanel());
 
 

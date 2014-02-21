@@ -6,10 +6,15 @@ import hotmath.gwt.cm_rpc.client.model.WhiteboardTemplatesResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardTemplatesAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveStaticWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
+import hotmath.gwt.cm_rpc.client.rpc.SetupWhiteboardForEditingAction;
+import hotmath.gwt.cm_rpc.client.rpc.SetupWhiteboardForEditingAction.SetupType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.MyTextButton;
 import hotmath.gwt.cm_tools.client.util.WhiteboardTemplatesManager;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
@@ -18,16 +23,20 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.event.BeforeHideEvent;
 import com.sencha.gxt.widget.core.client.event.BeforeHideEvent.BeforeHideHandler;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class ProblemDesignerEditorWhiteboard extends GWindow {
 
@@ -36,18 +45,20 @@ public class ProblemDesignerEditorWhiteboard extends GWindow {
     private BorderLayoutContainer _main;
     private CallbackOnComplete callback;
     private int _countChanges;
+    protected String _pidEdit;
 
     public ProblemDesignerEditorWhiteboard(SolutionInfo solution, String whiteboardId, CallbackOnComplete callbackIn) {
-        super(true);
+        super(false);
         this.callback = callbackIn;
         this.solution = solution;
         this.whiteboardId = whiteboardId;
         setPixelSize(800, 650);
+        setResizable(false);
 
         setHeadingText("Edit Problem Definition: " + solution.getPid());
         _main = new BorderLayoutContainer();
         setWidget(_main);
-        setVisible(true);
+
         buildUi();
 
         addBeforeHideHandler(new BeforeHideHandler() {
@@ -58,7 +69,46 @@ public class ProblemDesignerEditorWhiteboard extends GWindow {
                 }
             }
         });
+        
+        addButton(new MyTextButton("Save",  new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                doSave();
+            }
+        }, "Save any changes to whiteboard"));
+        
+        addButton(new TextButton("Cancel",new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                hide();
+            }
+        }));
+        
+        setVisible(true);
     }
+
+    protected void doSave() {
+        
+        CmBusyManager.setBusy(true);
+        
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                SetupWhiteboardForEditingAction action = new SetupWhiteboardForEditingAction(SetupType.SAVE, solution.getPid(), _pidEdit);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(RpcData result) {
+                CmBusyManager.setBusy(false);
+                _pidEdit = result.getDataAsString("status");
+                Log.info("Whiteboard changes commited: " + result);
+                
+                hide();
+            }
+
+        }.register();    }
 
     private void buildUi() {
         final ShowWorkPanel2Callback callBack = new ShowWorkPanelCallbackDefault() {
@@ -68,16 +118,16 @@ public class ProblemDesignerEditorWhiteboard extends GWindow {
 
             @Override
             public void showWorkIsReady(ShowWorkPanel2 showWork) {
-                WhiteboardModel whiteBoard = solution.getWhiteboards().size() > 0 ? solution.getWhiteboards().get(0) : new WhiteboardModel();
-                showWork.loadWhiteboard(whiteBoard.getCommands());
+                //WhiteboardModel whiteBoard = solution.getWhiteboards().size() > 0 ? solution.getWhiteboards().get(0) : new WhiteboardModel();
+                //showWork.loadWhiteboard(whiteBoard.getCommands());
 
-                // loadWhiteboardTemplates(showWork);
+                setupWhiteboardForEditing(showWork, solution.getPid());
             }
 
             @Override
             public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
                 _countChanges++;
-                return new SaveStaticWhiteboardDataAction(UserInfoBase.getInstance().getUid(), solution.getPid(), commandType, data);
+                return new SaveStaticWhiteboardDataAction(_pidEdit, UserInfoBase.getInstance().getUid(), solution.getPid(), commandType, data);
             }
             
             
@@ -119,6 +169,28 @@ public class ProblemDesignerEditorWhiteboard extends GWindow {
     }
     
     
+    protected void setupWhiteboardForEditing(final ShowWorkPanel2 showWork, final String pid) {
+        
+        CmBusyManager.setBusy(true);
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                SetupWhiteboardForEditingAction action = new SetupWhiteboardForEditingAction(SetupType.CREATE, pid);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(RpcData result) {
+                CmBusyManager.setBusy(false);
+                _pidEdit = result.getDataAsString("pid_edit");
+                WhiteboardModel whiteBoard = solution.getWhiteboards().size() > 0 ? solution.getWhiteboards().get(0) : new WhiteboardModel();
+                showWork.loadWhiteboard(whiteBoard.getCommands());
+            }
+
+        }.register();
+    }
+
     protected void loadWhiteboardTemplates(final ShowWorkPanel2 showWork) {
         new RetryAction<WhiteboardTemplatesResponse>() {
             @Override

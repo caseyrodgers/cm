@@ -19,7 +19,7 @@ public class SaveStaticWhiteboardDataCommand implements ActionHandler<SaveStatic
 
     @Override
     public RpcData execute(Connection conn, SaveStaticWhiteboardDataAction action) throws Exception {
-        WhiteboardDao.getInstance().saveStaticWhiteboardData(action.getAdminId(), action.getPid(), action.getCommandType(), action.getData());
+        WhiteboardDao.getInstance().saveStaticWhiteboardData(action.getPidEdit(), action.getAdminId(), action.getPid(), action.getCommandType(), action.getData());
         return new RpcData("status=OK");
     }
 

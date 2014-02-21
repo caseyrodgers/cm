@@ -10,14 +10,24 @@ public class SaveStaticWhiteboardDataAction implements Action<RpcData>{
     private String pid;
     private CommandType commandType;
     private String data;
+    private String pidEdit;
 
     public SaveStaticWhiteboardDataAction(){}
 
-    public SaveStaticWhiteboardDataAction(int adminId, String pid, CommandType commandType, String data) {
+    public SaveStaticWhiteboardDataAction(String pidEdit, int adminId, String pid, CommandType commandType, String data) {
+        this.pidEdit = pidEdit;
         this.adminId = adminId;
         this.pid = pid;
         this.commandType = commandType;
         this.data = data;
+    }
+
+    public String getPidEdit() {
+        return pidEdit;
+    }
+
+    public void setPidEdit(String pidEdit) {
+        this.pidEdit = pidEdit;
     }
 
     public int getAdminId() {

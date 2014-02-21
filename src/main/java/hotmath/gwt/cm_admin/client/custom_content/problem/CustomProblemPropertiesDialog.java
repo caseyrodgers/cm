@@ -17,6 +17,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.Component;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -136,8 +137,12 @@ public class CustomProblemPropertiesDialog extends GWindow {
         BorderLayoutContainer bl = new BorderLayoutContainer();
         _comments = new TextArea();
         FramedPanel fp1 = new FramedPanel();
-        fp1.setWidget(_comments);
-        fp1.setHeadingText("Comments");
+        BorderLayoutContainer bl2 = new BorderLayoutContainer();
+        bl2.setNorthWidget(new HTML("<b>Problem Comment</b>"), new BorderLayoutData(30));
+        bl2.setCenterWidget(_comments);
+        
+        fp1.setWidget(bl2);
+        fp1.setHeaderVisible(false);
         fp1.setBorders(false);
         
         bl.setNorthWidget(fp1, new BorderLayoutData(120));

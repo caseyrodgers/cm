@@ -60,14 +60,17 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
     /**
      * Provide standardized way to store whiteboard data
      * 
-     * TODO: Move other whiteboard backend operations here.
+     * update whiteboard is tempoary location, using
+     * pidEdit as temp key to reference pid.
      * 
+     * TODO: Move other whiteboard backend operations here.
+     * @param pidEdit 
      * @param adminId
      * @param pid
      * @param commandType
      * @param data
      */
-    public void saveStaticWhiteboardData(final int teacherId, final String pid, CommandType commandType, String commandData) throws Exception {
+    public void saveStaticWhiteboardData(final String pidEdit, final int teacherId, final String pid, CommandType commandType, String commandData) throws Exception {
 
         switch(commandType) {
         
@@ -75,8 +78,8 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
                 
                 final int rowToDelete = Integer.parseInt(commandData);
     
-                String sqlD = "select id from SOLUTION_WHITEBOARD where pid = ? order by id limit ?,1";
-                final Integer whiteboardId = getJdbcTemplate().queryForObject(sqlD, new Object[] { pid, rowToDelete }, new RowMapper<Integer>() {
+                String sqlD = "select id from SOLUTION_WHITEBOARD_temp where pid_edit = ? order by id limit ?,1";
+                final Integer whiteboardId = getJdbcTemplate().queryForObject(sqlD, new Object[] { pidEdit, rowToDelete }, new RowMapper<Integer>() {
                     @Override
                     public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                         return rs.getInt("id");
@@ -86,7 +89,7 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
                 int countDeleted = getJdbcTemplate().update(new PreparedStatementCreator() {
                     @Override
                     public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                        String sqlD = "delete from  SOLUTION_WHITEBOARD where id = ?";
+                        String sqlD = "delete from  SOLUTION_WHITEBOARD_temp where id = ?";
                         PreparedStatement ps = con.prepareStatement(sqlD);
                         ps.setInt(1, whiteboardId);
                         return ps;
@@ -99,9 +102,9 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
                 getJdbcTemplate().update(new PreparedStatementCreator() {
                     @Override
                     public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                        String sql = "delete from SOLUTION_WHITEBOARD where pid = ?";
+                        String sql = "delete from SOLUTION_WHITEBOARD_temp where pid_edit = ?";
                         PreparedStatement ps = con.prepareStatement(sql);
-                        ps.setString(1, pid);
+                        ps.setString(1, pidEdit);
                         return ps;
                     }
                 });
@@ -116,8 +119,8 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
                  * Delete the newest command
                  * 
                  */
-                String sql = "select max(id) as whiteboard_id " + " from SOLUTION_WHITEBOARD " + " where pid = ?";
-                final Integer maxWhiteboardId = getJdbcTemplate().queryForObject(sql, new Object[] { pid }, new RowMapper<Integer>() {
+                String sql = "select max(id) as whiteboard_id " + " from SOLUTION_WHITEBOARD_temp " + " where pid = ?";
+                final Integer maxWhiteboardId = getJdbcTemplate().queryForObject(sql, new Object[] { pidEdit }, new RowMapper<Integer>() {
                     @Override
                     public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                         return rs.getInt(1);
@@ -128,7 +131,7 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
                     getJdbcTemplate().update(new PreparedStatementCreator() {
                         @Override
                         public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                            String sql = "delete from SOLUTION_WHITEBOARD where id = ?";
+                            String sql = "delete from SOLUTION_WHITEBOARD_temp where id = ?";
                             PreparedStatement ps = con.prepareStatement(sql);
                             ps.setInt(1, maxWhiteboardId);
                             return ps;
@@ -148,19 +151,20 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
                     getJdbcTemplate().update(new PreparedStatementCreator() {
                         @Override
                         public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                            String sql = "insert into SOLUTION_WHITEBOARD(wb_id, pid, wb_command, wb_data, insert_time_mills) "
-                                    + " values('wb_ps',?,?,?,?) ";
+                            String sql = "insert into SOLUTION_WHITEBOARD_temp(pid_edit, wb_id, pid, wb_command, wb_data, insert_time_mills) "
+                                    + " values(?, 'wb_ps',?,?,?,?) ";
                             PreparedStatement ps = con.prepareStatement(sql);
-                            ps.setString(1, pid);
-                            ps.setString(2, "draw");
-                            ps.setBytes(3, outBytes);
-                            ps.setLong(4, System.currentTimeMillis());
+                            ps.setString(1,  pidEdit);
+                            ps.setString(2, pid);
+                            ps.setString(3, "draw");
+                            ps.setBytes(4, outBytes);
+                            ps.setLong(5, System.currentTimeMillis());
     
                             return ps;
                         }
                     });
                 } catch (UnsupportedEncodingException e) {
-                    __logger.error("Error saving SOLUTION_WHITEBOARD data: + " + pid, e);
+                    __logger.error("Error saving SOLUTION_WHITEBOARD_temp data: + " + pid, e);
                     throw new Exception(e);
                 }
                 
@@ -169,7 +173,6 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
                 
             default: 
                 throw new CmException("Unknown whiteboard command: " + commandType);
-                
         }
     }
     
