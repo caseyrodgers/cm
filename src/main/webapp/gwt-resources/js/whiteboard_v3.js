@@ -91,15 +91,17 @@ var Whiteboard = function (cont, isStatic, _opts) {
     var totalTempsloaded = 0;
     var graphEditMode = false;
     // --- /gwt-resources/images/whiteboard/
+    var imgPath = '/gwt-resources/images/whiteboard/'
+    //imgPath = './'
     var opts = {
         "templates": [{
             "type": "img",
-            "path": "/gwt-resources/images/whiteboard/",
+            "path": imgPath,
             "icon": "tn-",
             "list": ["nL.png", "gr2D.png"]
         }, {
             "type": "system",
-            "path": "/gwt-resources/images/whiteboard/",
+            "path": imgPath,
             "icon": "tn-",
             "opts": [{
                 "scope": "whiteboard",
@@ -108,7 +110,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             "list": ["Save"]
         }, {
             "type": "system",
-            "path": "/gwt-resources/images/whiteboard/",
+            "path": imgPath,
             "icon": "tn-",
             "opts": [{
                 "scope": "whiteboard",
@@ -420,7 +422,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             return divObj
         }
 
-        function createEditableGraph(type) {
+        function createEditableGraph(type, w, h) {
             var egraph = $get_Element("#egraph");
             if (egraph) {
                 $(egraph).remove();
@@ -433,10 +435,25 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 wb.plotModules = {}
             }
             var gtype = type ? type : 'xy'
-            var graph = new Graph(document, board.get(0), gtype, -5, 5, -5, 5, 1, 1, undefined, true, true, 300, gtype == 'xy' ? 300 : 150, true, true, false);
+            var graph = new Graph(document, board.get(0), gtype, -5, 5, -5, 5, 1, 1, undefined, true, true, w ? w : 300, h ? h : (gtype == 'xy' ? 300 : 150), true, true, false);
             wb.graphModule = new Plotter(graph, 'point', {
                 data: "['interactive']"
             }, 'GridToGrid', true, false, false, false);
+            var cntrlCont = createToolBtn({
+                name: 'toggleGraphEdit',
+                title: 'Show/Hide Graph Edit',
+                classes: 'big_tool_button',
+                text: "Edit Graph"
+            }).appendTo($get_jqElement("#tools")).css({
+                "position": "absolute",
+                "right": "5px",
+                "font-size": "0.9em",
+                "display": "none"
+            }).click(function () {
+                var egraph = $get_jqElement("#egraph")
+                var visib = egraph.is(":visible");
+                showHideGraphModuleEditor(!visib);
+            });
         }
 
         function getGraphModuleConfig() {
@@ -450,9 +467,10 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
         function updateGraphModule(uid, config, rerender, data, boo) {
             //var config=eval(data.config)
+            showHideGraphToggler(false)
             if (!rerender) {
                 if (!config || (wb.graphModule && (config.gtype != wb.graphModule.graph_type))) {
-                    createEditableGraph(config.gtype)
+                    createEditableGraph(config.gtype, config.width, config.height)
                 }
 
                 if (config) {
@@ -504,14 +522,26 @@ var Whiteboard = function (cont, isStatic, _opts) {
             updateCanvas();
         }
 
+        function showHideGraphToggler(boo) {
+            var togg = $get_jqElement("#toggleGraphEdit");
+            boo ? togg.show() : togg.hide()
+
+        }
+
         function showHideGraphModuleEditor(boo) {
             var plot
             var graph
             var config = selectedObj ? eval(selectedObj.config) : null;
             var gedit = $get_jqElement("#egraph");
+            var togg = $get_jqElement("#toggleGraphEdit");
+            if (boo) {
+                togg.text("Edit Done")
+            } else {
+                togg.text("Edit Graph")
+            }
             if (boo) {
                 if ((wb.graphModule && (config.gtype != wb.graphModule.graph_type))) {
-                    createEditableGraph(config.gtype)
+                    createEditableGraph(config.gtype, config.width, config.height)
                 }
                 plot = wb.graphModule
                 graph = plot.graphObj
@@ -563,6 +593,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                         setObjSelected(graphicDataStore[plot.objIndex]);
                     }
                 }
+
             }
         }
     wb.addGraphModule = function (t, x, y, boo, data) {
@@ -591,7 +622,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         }
         var uid = graphicData.uid
         if (!data || !wb.graphModule || (wb.graphModule && (config.gtype != wb.graphModule.graph_type))) {
-            createEditableGraph(config.gtype)
+            createEditableGraph(config.gtype, config.width, config.height)
         }
         var plot = wb.graphModule
         var graph = plot.graphObj
@@ -791,10 +822,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
         context.beginPath();
         context.fillStyle = 'blue';
         if (selectedObj.id == 'graph') {
-            context.fillRect(x0 + w0 - 40, y0, 40, 40);
+            /*context.fillRect(x0 + w0 - 40, y0, 40, 40);
             context.font = "bold 14px Arial";
             context.fillStyle = 'white';
-            context.fillText("edit", x0 + w0 - 33, y0 + 25);
+            context.fillText("edit", x0 + w0 - 33, y0 + 25);*/
+            showHideGraphToggler(true)
 
         } else {
             context.fillRect(x0 + w0 - 10, y0 + h0 - 10, 20, 20);
@@ -1153,7 +1185,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
         var selM = contains(rectM, xp, yp)
         if (selR || selM) {
             if (selectedObj && selectedObj.id == 'graph' && selR) {
-                return 'edit';
+                return 'move';
+            }
+            if (selectedObj && selectedObj.id == 'graph' && selM) {
+                transMode = 'move'
+                return 'move';
             }
             return selM ? 'scale' : 'rotate'
         }
@@ -1216,7 +1252,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 i = selectedObjIndex
                 transMode = selM ? 'scale' : 'rotate'
                 if (selectedObj && selectedObj.id == 'graph' && selR) {
-                    return 'edit';
+                    transMode = 'move'
+                    return 'move';
+                }
+                if (selectedObj && selectedObj.id == 'graph' && selM) {
+                    transMode = 'move'
+                    return 'move';
                 }
                 return i;
             }
@@ -4008,7 +4049,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 }
                 if (selectionMode) {
                     if (transMode == 'edit') {
-                        showHideGraphModuleEditor(true)
+                        //showHideGraphModuleEditor(true)
                         penDown = false
                         return;
                     }
