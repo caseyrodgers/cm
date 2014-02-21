@@ -6,11 +6,13 @@ import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
+import hotmath.gwt.cm_rpc.client.rpc.CopyCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.ui.MyTextButton;
@@ -125,18 +127,17 @@ public class CustomProblemManager extends GWindow {
             }
         }));
         
-        /**
-        gridPanel.addTool(new TextButton("Refresh", new SelectHandler() {
+        gridPanel.addTool(new TextButton("Copy", new SelectHandler() {
+            
             @Override
             public void onSelect(SelectEvent event) {
-                readFromServer();
+                copySelectedProblem();
             }
         }));
-        */
+
         
         
-        
-        TextButton btn = new MyTextButton("Properties", new SelectHandler() {
+        TextButton btn = new MyTextButton("Props", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 CustomProblemModel problem = _grid.getSelectionModel().getSelectedItem();
@@ -157,6 +158,15 @@ public class CustomProblemManager extends GWindow {
         
         gridPanel.addTool(btn);
 
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            gridPanel.addTool(new TextButton("Refresh", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    readFromServer();
+                }
+            }));
+        }
 
         BorderLayoutContainer gridCont = new BorderLayoutContainer();
         gridCont.setCenterWidget(gridPanel);
@@ -264,6 +274,43 @@ public class CustomProblemManager extends GWindow {
         }.register();        
     }
 
+
+    protected void copySelectedProblem() {
+        final CustomProblemModel problem = _grid.getSelectionModel().getSelectedItem();
+        if(problem == null) {
+            CmMessageBox.showAlert("Select a problem to copy");
+            return;
+        }
+
+        CmMessageBox.confirm("Copy Problem", "Copy problem?",new ConfirmCallback() {
+            @Override
+            public void confirmed(boolean yesNo) {
+                if(yesNo) {
+                    doCopySelectProblem(problem);
+                }
+            }
+        });
+    }
+    
+
+    private void doCopySelectProblem(final CustomProblemModel problem) {
+        CmBusyManager.setBusy(true);
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CopyCustomProblemAction action = new CopyCustomProblemAction(problem.getPid());
+                setAction(action);
+                CmShared.getCmService().execute(action,  this);
+            }
+
+            @Override
+            public void oncapture(RpcData data) {
+                CmBusyManager.setBusy(false);
+                _selectedSolution = data.getDataAsString("pid");
+                readFromServer();
+            }
+        }.register();                
+    }
 
 
     protected void showProblem(CustomProblemModel selectedItem) {

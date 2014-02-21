@@ -1,6 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.ProblemID;
+import hotmath.SolutionManager;
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
@@ -11,6 +12,7 @@ import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.solution_editor.client.StepUnitPair;
@@ -18,7 +20,10 @@ import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;
 import hotmath.gwt.solution_editor.server.solution.TutorProblem;
 import hotmath.gwt.solution_editor.server.solution.TutorSolution;
 import hotmath.gwt.solution_editor.server.solution.TutorStepUnit;
+import hotmath.solution.Solution;
 import hotmath.spring.SpringManager;
+import hotmath.util.HMConnectionPool;
+import hotmath.util.HmContentExtractor;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -551,6 +556,58 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                 return ps;
             }
         });
+    }
+
+    public String copyCustomProblem(String pid) throws Exception {
+        /** Extract information about this existing Custom Problem
+         * 
+         */
+        final String solutionXml = SolutionDao.getInstance().getSolutionXML(pid);
+        String sql = "select ct.admin_id, ct.teacher_name, cp.* from CM_CUSTOM_PROBLEM cp JOIN CM_CUSTOM_PROBLEM_TEACHER ct on ct.teacher_id = cp.teacher_id where pid = ?";
+        final CustomProblemModel problemToCopy = getJdbcTemplate().queryForObject(sql, new Object[]{pid}, new RowMapper<CustomProblemModel>() {
+            public CustomProblemModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new CustomProblemModel(rs.getString("pid"),  rs.getInt("teacher_problem_number"),new TeacherIdentity(rs.getInt("admin_id"), rs.getString("teacher_name"), rs.getInt("teacher_id")), rs.getString("comments"), SolutionDao.determineProblemType(solutionXml));
+            }
+        });
+        
+        CustomProblemModel newProblem = new CustomProblemModel(null, 0, problemToCopy.getTeacher(), null, problemToCopy.getProblemType());
+        final SolutionInfo newSolution = createNewCustomProblem(newProblem);
+        
+        /** copy the existing solutionxml into new solution
+         * 
+         */
+        Connection conn=null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            new CmSolutionManagerDao().saveSolutionXml(conn, newSolution.getPid(), solutionXml,null,true );
+        }
+        finally {
+            SqlUtilities.releaseResources(null, null, conn);
+        }
+        
+        
+        /** Copy over any static whiteboard
+         * 
+         */
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "insert into SOLUTION_WHITEBOARD(pid,wb_id,wb_command, wb_data,insert_time_mills) " +
+                        " select ? as pid, wb_id,wb_command, wb_data, insert_time_mills " +
+                        " from  SOLUTION_WHITEBOARD " +
+                        " where pid = ? " + 
+                        " order by insert_time_mills";
+
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setString(1,  newSolution.getPid());
+                ps.setString(2,  problemToCopy.getPid());
+                return ps;
+            }
+        });
+        
+        
+        
+        return newSolution.getPid();
     }    
     
 }
