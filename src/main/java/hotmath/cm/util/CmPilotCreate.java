@@ -399,14 +399,13 @@ public class CmPilotCreate {
 	                    + "\nsalesZone: " + salesPerson.getRepId();
 	            try {
 	                
-	                /** send to sales rep, chuck, and tina if NOT College Pilot request, 
-	                    otherwise just sent to chuck and lincoln */
+	                /** send to sales rep and chuck if NOT College Pilot request, 
+	                    otherwise send to chuck and lincoln */
 	            	String sendTo[];
 	            	if (isCollegePilot != true) {
-	            		sendTo = new String[3];
+	            		sendTo = new String[2];
 	            		sendTo[0] = salesPerson.getEmail();
 	            		sendTo[1] = "cgrant.hotmath@gmail.com";
-	            		sendTo[2] = "thamilton@catchupmath.com";
 	            	}
 	            	else {
 	            		sendTo = new String[2];
