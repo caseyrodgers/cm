@@ -1,0 +1,35 @@
+<html>
+
+ <body>
+     <div style='height: 400px;background: black;'>
+      <applet id='clipboard_image'
+              archive='clipboard_image.jar'
+              code='de.christophlinder.supa.SupaApplet' 
+              width='500' 
+              height='400'>
+        <!--param name='clickforpaste' value='true'-->
+        <param name='imagecodec' value='png'>
+        <param name='encoding' value='base64'>
+        <param name='trace' value='false'>
+        <param name='previewscaler' value='fit to canvas'>
+		<!--param name='backgroundcolor' value='#FF0000'-->
+        <!--param name='trace' value='true'-->
+		<!--param name='pasteonload' value='true'-->
+        Applets disabled :(
+      </applet>
+      <button onclick='doIt()'>Do It</button>
+      <button onclick='doIt2()'>Do It2</button>
+     </div>
+
+     <script>
+         function doIt() {
+             clipboard_image.pasteFromClipboard();
+         }
+
+         function doIt2() {
+             alert(clipboard_image.getEncodedString());
+         }
+     </script>
+ </body>
+
+</html>

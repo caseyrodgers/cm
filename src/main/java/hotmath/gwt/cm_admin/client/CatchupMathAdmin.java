@@ -31,6 +31,7 @@ import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
+import hotmath.gwt.cm_tools.client.util.CreateTemplateFromClipboardImage;
 import hotmath.gwt.cm_tools.client.util.WhiteboardTemplatesManager;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
@@ -196,6 +197,10 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         }
         else if(test.equals("date_chooser")) {
             DateRangePickerDialog.doTest();
+            return;
+        }
+        else if(test.equals("clipboard_image")) {
+            CreateTemplateFromClipboardImage.doTest();
             return;
         }
 

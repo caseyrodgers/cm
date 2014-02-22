@@ -19,6 +19,8 @@ import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -44,6 +46,8 @@ import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
@@ -69,13 +73,22 @@ public class WhiteboardTemplatesManager extends GWindow {
         }));
         
         
-        addTool(new TextButton("Create New", new SelectHandler() {
-            
+        TextButton createNewBtn = new TextButton("Create New");
+        Menu createMenu = new Menu();
+        createMenu.add(new MenuItem("From Existing Whiteboard", new SelectionHandler<MenuItem>() {
             @Override
-            public void onSelect(SelectEvent event) {
-                createNewTemplate(showWorkPanel2);
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                createFromExistingWhiteboard();
             }
         }));
+        createMenu.add(new MenuItem("From Image in Clipboard", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                createFromImageInClipboard();
+            }
+        }));
+        createNewBtn.setMenu(createMenu);
+        addTool(createNewBtn);
         
         addTool(new TextButton("Delete", new SelectHandler() {
             @Override
@@ -92,7 +105,16 @@ public class WhiteboardTemplatesManager extends GWindow {
         setVisible(true);
     }
     
-    protected void createNewTemplate(final ShowWorkPanel2 showWorkPanel2) {
+    protected void createFromImageInClipboard() {
+        new CreateTemplateFromClipboardImage(this.showWorkPanel2, new CallbackOnComplete() {
+            @Override
+            public void isComplete() {
+                loadWhiteboardTemplates();
+            }
+        });
+    }
+
+    protected void createFromExistingWhiteboard() {
         String tmplName = Cookies.getCookie("wb_template");
         final PromptMessageBox mb = new PromptMessageBox("Save As Template", "Template Name");
         mb.getTextField().setValue(tmplName != null?tmplName:"My Template");
@@ -114,7 +136,6 @@ public class WhiteboardTemplatesManager extends GWindow {
         mb.setWidth(300);
         mb.show();                
     }
-    
     private void useTemplate() {
         final WhiteboardTemplate item = _listView.getSelectionModel().getSelectedItem();
         if(item == null) {
