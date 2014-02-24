@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_core.client.CmGwtTestUi;
+import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
@@ -10,9 +11,11 @@ import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction.SaveType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.ui.MyTextButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
@@ -45,17 +48,34 @@ public class ProblemDesigner extends Composite {
     private SolutionMeta _solutionMeta;
     ContentPanel _problemPanel = new ContentPanel();
 
+    private CustomProblemModel _customProblem;
+
     static private ToggleButton _editMode;
     public ProblemDesigner() {
         __lastInstance = this;
 
+        TextButton btn = new MyTextButton("Properties", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                CustomProblemPropertiesDialog.getInstance(new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        /** was updated */
+                    }
+                }, _customProblem).setVisible(true);
+            }
+        }, "Edit comments and link to lessons");
+        
+        _problemPanel.addTool(btn);
+        
+        
         if(_editMode == null) {
             _editMode = new ToggleButton("Preview Mode");
             _editMode.setValue(false);
             _editMode.addSelectHandler(new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
-                    __lastInstance.loadProblem();
+                    __lastInstance.loadProblem(_customProblem);
                 }
             });
         }
@@ -67,22 +87,6 @@ public class ProblemDesigner extends Composite {
 
         _problemPanel.addTool(_editMode);
         
-        _problemPanel.addTool(new TextButton("Edit Input", new SelectHandler() {
-            
-            @Override
-            public void onSelect(SelectEvent event) {
-                new ProblemDesignerEditorWidget(_solutionInfo,TutorWrapperPanel.jsni_getWidgetJson(), callback);
-            }
-        }));
-        
-        _problemPanel.addTool(new TextButton("Add Step/Hint", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                addNewHintStep();
-            }
-        }));
-        
-
         initWidget(_main);
     }
     
@@ -101,7 +105,10 @@ public class ProblemDesigner extends Composite {
         }
     }-*/;
 
-    public void loadProblem(final String pid, String label) {
+    public void loadProblem(CustomProblemModel customProblem) {
+        _customProblem = customProblem;
+        final String pid = customProblem.getPid();
+        String label = customProblem.getLabel();
         
         if(label != null) {
            _problemPanel.setHeadingText("Problem: " + label);
@@ -130,15 +137,12 @@ public class ProblemDesigner extends Composite {
         }.register();
     }
     
-    private void loadProblem() {
-        loadProblem(_solutionInfo, _solutionMeta);   
-    }
     
     
     CallbackOnComplete callback = new CallbackOnComplete() {
         @Override
         public void isComplete() {
-            loadProblem(_solutionInfo.getPid(),null);
+            loadProblem(_customProblem);
         }
     };
     
@@ -226,7 +230,7 @@ public class ProblemDesigner extends Composite {
             }
             public void oncapture(RpcData value) {
                 Log.info("Hint saved");
-                loadProblem(_solutionInfo.getPid(), null);
+                loadProblem(_customProblem);
             }
         }.register();
     }
@@ -321,7 +325,7 @@ public class ProblemDesigner extends Composite {
         public void startTest() {
             String testPid="test_casey_1_1_1_1";
             testPid="cmextras_dynamic_oops_basic_1_1";
-            new ProblemDesigner().loadProblem(testPid, null);
+            new ProblemDesigner().loadProblem(new CustomProblemModel(testPid, 0, null, null, ProblemType.UNKNOWN));
         }
     }
 

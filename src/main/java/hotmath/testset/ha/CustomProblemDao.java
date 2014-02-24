@@ -1,18 +1,17 @@
 package hotmath.testset.ha;
 
 import hotmath.ProblemID;
-import hotmath.SolutionManager;
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
+import hotmath.gwt.cm_rpc.client.model.LessonLinkedModel;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.solution_editor.client.StepUnitPair;
@@ -20,10 +19,8 @@ import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;
 import hotmath.gwt.solution_editor.server.solution.TutorProblem;
 import hotmath.gwt.solution_editor.server.solution.TutorSolution;
 import hotmath.gwt.solution_editor.server.solution.TutorStepUnit;
-import hotmath.solution.Solution;
 import hotmath.spring.SpringManager;
 import hotmath.util.HMConnectionPool;
-import hotmath.util.HmContentExtractor;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -34,7 +31,10 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -238,10 +238,6 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         return problems;
     }
 
-    protected List<LessonModel> getLinkedLessons(TeacherIdentity teacher, String pid) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     public void deleteCustomProblem(final CustomProblemModel problem) throws Exception {
 
@@ -608,6 +604,46 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         
         
         return newSolution.getPid();
-    }    
+    }
+
+    public List<LessonLinkedModel> getLessonsLinkedToCustomProblems(int adminId) {
+        
+        final List<LessonLinkedModel> lessons = new ArrayList<LessonLinkedModel>();
+        
+        String sql= "" +
+                "select t.admin_id, cl.lesson_file, cl.lesson_name, cl.pid " +
+                " from CM_CUSTOM_PROBLEM cp " +
+                " join CM_CUSTOM_PROBLEM_TEACHER t " +
+                "     on t.teacher_id = cp.teacher_id " +
+                "  join CM_CUSTOM_PROBLEM_LINKED_LESSONS cl " +
+                "      on cl.pid = cp.pid " +
+                " where admin_id = ? " +
+                " order by lesson_name";
+        getJdbcTemplate().query(sql, new Object[]{adminId}, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                
+                String pid =rs.getString("pid");
+                String lessonFile = rs.getString("lesson_file");
+                String lessonName = rs.getString("lesson_name");
+                
+                LessonLinkedModel model = null;
+                for(LessonLinkedModel l: lessons) {
+                    if(l.getLessonFile().equals(lessonFile)) {
+                        model = l;
+                        break;
+                    }
+                }
+                
+                if(model == null) {
+                    model = new LessonLinkedModel(lessonName, lessonFile);
+                    lessons.add(model);
+                }
+                model.getProblems().add(pid);
+                return pid;
+            }
+        });
+        return lessons;
+    }
     
 }

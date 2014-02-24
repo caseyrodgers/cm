@@ -4,7 +4,6 @@ import hotmath.gwt.cm_admin.client.teacher.TeacherManager;
 import hotmath.gwt.cm_admin.client.teacher.TeacherManager.Callback;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
-import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.CopyCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteCustomProblemAction;
@@ -15,7 +14,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
-import hotmath.gwt.cm_tools.client.ui.MyTextButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
@@ -41,6 +39,7 @@ import com.sencha.gxt.data.shared.Store;
 import com.sencha.gxt.data.shared.Store.StoreFilter;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
@@ -63,13 +62,15 @@ public class CustomProblemManager extends GWindow {
     private CheckBox _showAllTeachers;
     private StoreFilter<CustomProblemModel> _filter;
     private String _selectedSolution;
+    protected CmList<CustomProblemModel> _allProblems;
+    private ToggleButton _filterButton;
 
     private CustomProblemManager(TeacherIdentity teacher) {
         super(true);
         
         this.teacher = teacher;
         setHeadingText("Custom Problem Manager: " + teacher.getTeacherName());
-        setPixelSize(800, 600);
+        setPixelSize(700, 600);
         setMaximizable(true);
         
         buildGui();
@@ -137,26 +138,20 @@ public class CustomProblemManager extends GWindow {
 
         
         
-        TextButton btn = new MyTextButton("Props", new SelectHandler() {
+        _filterButton = new ToggleButton("Filter");
+        _filterButton.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                CustomProblemModel problem = _grid.getSelectionModel().getSelectedItem();
-                if(problem == null) {
-                    CmMessageBox.showAlert("No problem is selected");
-                    return;
-                }
-                CustomProblemPropertiesDialog.getInstance(new CallbackOnComplete() {
-                    
+                CustomProblemSearchDialog.getInstance(new CustomProblemSearchDialog.Callback() {
                     @Override
-                    public void isComplete() {
-                        /** was updated */
-                        readFromServer();
+                    public void selectionChanged(List<? extends LessonModel> models) {
+                        applyFilter(models);
                     }
-                }, problem).setVisible(true);
+                }).setVisible(true);
+                _filterButton.setValue(true);
             }
-        }, "Edit comments and link to lessons");
-        
-        gridPanel.addTool(btn);
+        });
+        gridPanel.addTool(_filterButton);
 
         
         if(CmShared.getQueryParameter("debug") != null) {
@@ -196,11 +191,6 @@ public class CustomProblemManager extends GWindow {
             }
         };
         
-
-        _grid.getStore().addFilter(_filter);
-        _grid.getStore().setEnableFilters(true);
-
-        
         new QuickTip(_grid);
         
         setWidget(_main);
@@ -236,7 +226,49 @@ public class CustomProblemManager extends GWindow {
         };
         return view;
     }
+
     
+
+    private void applyFilter(List<? extends LessonModel> models) {
+        
+        if(models == null || models.size() == 0) {
+            setGridStore(_allProblems);
+            _filterButton.setValue(false);
+            return;
+        }
+        List<CustomProblemModel> listFiltered = new ArrayList<CustomProblemModel>();
+        List<CustomProblemModel> list = _allProblems;
+        boolean found=false;
+        for(CustomProblemModel m: list) {
+            for(LessonModel lm: m.getLinkedLessons()) {
+                
+                for(LessonModel modelToCheck: models) {
+                    if(modelToCheck.getLessonFile().equals(lm.getLessonFile())) {
+                        
+                        // this store record has at least one of the selected models
+                        listFiltered.add(m);
+                        found=true;
+                        break;
+                    }
+                    if(found) {
+                        break;
+                    }
+                }
+            }
+        }
+        setGridStore(listFiltered);
+    }
+
+    private void setGridStore(List<CustomProblemModel> problems) {
+        _grid.getStore().clear();
+        _grid.getStore().addAll(problems);
+        _grid.getStore().removeFilters();
+        _grid.getStore().addFilter(_filter);
+        if(!_showAllTeachers.getValue()) {
+            _grid.getStore().setEnableFilters(true);
+        }            
+    }
+
 
     protected void deleteSelectedProblem() {
         final CustomProblemModel problem = _grid.getSelectionModel().getSelectedItem();
@@ -326,7 +358,7 @@ public class CustomProblemManager extends GWindow {
             ProblemDesigner problemDesigner = new ProblemDesigner();
             _main.setCenterWidget(problemDesigner);
             forceLayout();
-            problemDesigner.loadProblem(selectedItem.getPid(), selectedItem.getLabel());
+            problemDesigner.loadProblem(selectedItem);
         }
     }
 
@@ -345,16 +377,11 @@ public class CustomProblemManager extends GWindow {
 
             @Override
             public void oncapture(CmList<CustomProblemModel> problems) {
-                _grid.getStore().clear();
-                _grid.getStore().addAll(problems);
                 
-                _grid.getStore().removeFilters();
-                _grid.getStore().addFilter(_filter);
+                _allProblems = problems;
                 
-                if(!_showAllTeachers.getValue()) {
-                    _grid.getStore().setEnableFilters(true);
-                }
-                
+                setGridStore(problems);
+
                 if(_selectedSolution != null) {
                     for(int i=0;i<problems.size();i++) {
                         CustomProblemModel m = problems.get(i);
