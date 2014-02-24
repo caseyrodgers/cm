@@ -1,14 +1,8 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
-import hotmath.gwt.cm_rpc.client.model.LessonLinkedModel;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
-import hotmath.gwt.cm_rpc.client.rpc.GetLessonsLinkToAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.model.UserInfoBase;
-import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +27,11 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
 public class CustomProblemSearchDialog extends GWindow {
     
     static private CustomProblemSearchDialog __instance;
-    static public CustomProblemSearchDialog getInstance(Callback callback) {
+    static public CustomProblemSearchDialog getInstance(List<LessonModel> lessonModels, Callback callback) {
         if(__instance == null) {
             __instance = new CustomProblemSearchDialog();
         }
-        __instance.setCallback(callback);
+        __instance.setCallback(lessonModels, callback);
         __instance.toFront();
         return __instance;
     }
@@ -49,9 +43,21 @@ public class CustomProblemSearchDialog extends GWindow {
     
     Callback _callback;
 
-    protected CmList<LessonLinkedModel> _lessons;
-    private void setCallback(Callback callback) {
+    protected CmList<LessonModel> _lessons;
+
+    private List<LessonModel> _lessonModels;
+    private void setCallback(List<LessonModel> lessonModels, Callback callback) {
+        this._lessonModels = lessonModels;
         this._callback = callback;
+        
+        List<LessonModel> selectedItems = _grid.getSelectionModel().getSelectedItems();
+        
+        _grid.getStore().clear();
+        _grid.getStore().addAll(_lessonModels);
+        
+        if(selectedItems.size() > 0) {
+            _grid.getSelectionModel().setSelection(selectedItems);
+        }
     }
     
     private CustomProblemSearchDialog() {
@@ -60,11 +66,12 @@ public class CustomProblemSearchDialog extends GWindow {
         setHeadingText("Custom Problem Filter");
         setPixelSize(400, 400);
         setCollapsible(true);
-        setModal(false);
+        
+        setModal(true);
+        setAutoHide(true);
         
         buildUi();
         
-        getDataFromServer();
         
         addButton(new TextButton("Hide", new SelectHandler() {
             
@@ -84,53 +91,53 @@ public class CustomProblemSearchDialog extends GWindow {
         setVisible(true);
     }
 
-    private void getDataFromServer() {
-        
-        new RetryAction<CmList<LessonLinkedModel>>() {
-
-            @Override
-            public void attempt() {
-                CmBusyManager.setBusy(true);
-                GetLessonsLinkToAction action = new GetLessonsLinkToAction(UserInfoBase.getInstance().getUid());
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
-
-            @Override
-            public void oncapture(CmList<LessonLinkedModel> lessons) {
-                _lessons = lessons;
-                CmBusyManager.setBusy(false);
-                _grid.getStore().clear();
-                
-                _grid.getStore().addAll(lessons);
-            }
-        }.register();
-    }
+//    private void __getDataFromServer(List<LessonModel> lessonModels) {
+//        
+//        new RetryAction<CmList<LessonModel>>() {
+//
+//            @Override
+//            public void attempt() {
+//                CmBusyManager.setBusy(true);
+//                GetLessonsLinkToAction action = new GetLessonsLinkToAction(UserInfoBase.getInstance().getUid());
+//                setAction(action);
+//                CmShared.getCmService().execute(action, this);
+//            }
+//
+//            @Override
+//            public void oncapture(CmList<LessonModel> lessons) {
+//                _lessons = lessons;
+//                CmBusyManager.setBusy(false);
+//                _grid.getStore().clear();
+//                
+//                _grid.getStore().addAll(lessons);
+//            }
+//        }.register();
+//    }
 
     interface GridProps extends PropertyAccess<String> {
-        ModelKeyProvider<LessonLinkedModel> lessonFile();
-        ValueProvider<LessonLinkedModel, String> lessonName();
-        ValueProvider<LessonLinkedModel, Integer> problemCount();
+        ModelKeyProvider<LessonModel> lessonFile();
+        ValueProvider<LessonModel, String> lessonName();
+        ValueProvider<LessonModel, Integer> problemCount();
     }
     GridProps props = GWT.create(GridProps.class);
     
-    Grid<LessonLinkedModel> _grid;
+    Grid<LessonModel> _grid;
     private void buildUi() {
         BorderLayoutContainer bCont = new BorderLayoutContainer();
         bCont.setNorthWidget(new HTML("<p style='margin: 10px'>Select the topics you would like to see problems for.</p>"), new BorderLayoutData(40));
         
         
-        ListStore<LessonLinkedModel> store = new ListStore<LessonLinkedModel>(props.lessonFile());
-        List<ColumnConfig<LessonLinkedModel, ?>> list = new ArrayList<ColumnConfig<LessonLinkedModel, ?>>();
-        list.add(new ColumnConfig<LessonLinkedModel, String>(props.lessonName(), 200, "Topic Name"));
-        list.add(new ColumnConfig<LessonLinkedModel, Integer>(props.problemCount(), 50, "Count"));
-        ColumnModel<LessonLinkedModel> cm = new ColumnModel<LessonLinkedModel>(list);
-        _grid = new Grid<LessonLinkedModel>(store, cm);
+        ListStore<LessonModel> store = new ListStore<LessonModel>(props.lessonFile());
+        List<ColumnConfig<LessonModel, ?>> list = new ArrayList<ColumnConfig<LessonModel, ?>>();
+        list.add(new ColumnConfig<LessonModel, String>(props.lessonName(), 200, "Topic Name"));
+        // list.add(new ColumnConfig<LessonModel, Integer>(props.problemCount(), 50, "Count"));
+        ColumnModel<LessonModel> cm = new ColumnModel<LessonModel>(list);
+        _grid = new Grid<LessonModel>(store, cm);
         _grid.getView().setAutoFill(true);
         
-        _grid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<LessonLinkedModel>() {
+        _grid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<LessonModel>() {
             @Override
-            public void onSelectionChanged(SelectionChangedEvent<LessonLinkedModel> event) {
+            public void onSelectionChanged(SelectionChangedEvent<LessonModel> event) {
                 _callback.selectionChanged(_grid.getSelectionModel().getSelectedItems());
             }
         });

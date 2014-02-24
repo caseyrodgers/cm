@@ -18,6 +18,7 @@ import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -142,7 +143,9 @@ public class CustomProblemManager extends GWindow {
         _filterButton.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                CustomProblemSearchDialog.getInstance(new CustomProblemSearchDialog.Callback() {
+                
+                
+                CustomProblemSearchDialog.getInstance(getLessonsInStore(), new CustomProblemSearchDialog.Callback() {
                     @Override
                     public void selectionChanged(List<? extends LessonModel> models) {
                         applyFilter(models);
@@ -195,8 +198,50 @@ public class CustomProblemManager extends GWindow {
         
         setWidget(_main);
     }
+
+
+    /** Return the distinct list of lessons associated with 
+     *  custom problems in store.
+     * @return 
+     */
+    private List<LessonModel> getLessonsInStore() {
+        List<LessonModel> lessonsInStore = new ArrayList<LessonModel>();
+        
+        
+        List<CustomProblemModel> toToFiltered = _showAllTeachers.getValue()?_allProblems:getLessonsOnlyThisAdmin(_allProblems);
+        
+        for(CustomProblemModel cm: toToFiltered) {
+            for(LessonModel lm: cm.getLinkedLessons()) {
+                
+                boolean found=false;
+                for(LessonModel lmIn: lessonsInStore){
+                    if(lmIn.getLessonFile().equals(lm.getLessonFile())) {
+                        found=true;
+                        break;
+                    }
+                }
+                
+                if(!found) {
+                    lessonsInStore.add(lm);
+                }
+            }
+        }
+        
+        return lessonsInStore;
+    }
+
     
-    
+    private List<CustomProblemModel> getLessonsOnlyThisAdmin(CmList<CustomProblemModel> all) {
+        List<CustomProblemModel> list = new ArrayList<CustomProblemModel>();
+        for(CustomProblemModel cp: all) {
+            if(cp.getTeacher().getTeacherId() == teacher.getTeacherId()) {
+                list.add(cp);
+            }
+        }
+        return list;
+    }
+
+
     private GridView<CustomProblemModel> createGridView() {
         GridView<CustomProblemModel> view = new GridView<CustomProblemModel>() {
             @Override
@@ -236,6 +281,7 @@ public class CustomProblemManager extends GWindow {
             _filterButton.setValue(false);
             return;
         }
+        
         List<CustomProblemModel> listFiltered = new ArrayList<CustomProblemModel>();
         List<CustomProblemModel> list = _allProblems;
         boolean found=false;
