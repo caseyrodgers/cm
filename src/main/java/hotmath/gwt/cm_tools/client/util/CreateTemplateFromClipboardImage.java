@@ -10,9 +10,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -27,7 +25,6 @@ public class CreateTemplateFromClipboardImage extends GWindow {
     
     private ShowWorkPanel2 showWork;
     private CallbackOnComplete callback;
-    private TextField _templateName;
 
     public CreateTemplateFromClipboardImage(ShowWorkPanel2 showWork, CallbackOnComplete callback) {
         super(false);
@@ -62,12 +59,10 @@ public class CreateTemplateFromClipboardImage extends GWindow {
         
        
         BorderLayoutContainer bCont = new BorderLayoutContainer();
-        _templateName = new TextField();
         FramedPanel framed = new FramedPanel();
         framed.setBorders(false);
         framed.setHeaderVisible(false);
         FlowLayoutContainer flow = new FlowLayoutContainer();
-        flow.add(new MyFieldLabel(_templateName, "Template Name", 100, 150));
         flow.add(new HTML("<div style='position: absolute;right: 10px;top: 0;width: 220px;height: 4em;'>Copy an image into your clipboard and then paste it into the preview area.</div>"));
         framed.setWidget(flow);
         bCont.setNorthWidget(framed, new BorderLayoutData(50));
@@ -94,12 +89,10 @@ public class CreateTemplateFromClipboardImage extends GWindow {
         
         addCloseButton();
         
-        String tmplName = Cookies.getCookie("wb_template");
-        _templateName.setValue(tmplName != null?tmplName:"Clipboard Image");
         setVisible(true);
     }
 
-    protected void saveClipboardImage(final String templateName) {
+    protected void saveClipboardImage() {
         final String dataUrl = jsni_getClipboardImageData();
         if(dataUrl == null) {
             CmMessageBox.showAlert("Image is null");
@@ -110,7 +103,7 @@ public class CreateTemplateFromClipboardImage extends GWindow {
 
             @Override
             public void attempt() {
-                SaveWhiteboardAsTemplateAction action = new SaveWhiteboardAsTemplateAction(UserInfoBase.getInstance().getUid(), templateName, dataUrl);
+                SaveWhiteboardAsTemplateAction action = new SaveWhiteboardAsTemplateAction(UserInfoBase.getInstance().getUid(), dataUrl);
                 setAction(action);
                 CmShared.getCmService().execute(action,  this);
             }
@@ -143,13 +136,7 @@ public class CreateTemplateFromClipboardImage extends GWindow {
     }-*/;
 
     protected void createTemplateFromImage() {
-        
-        String templateName = _templateName.getCurrentValue();
-        if(templateName == null || templateName.length() == 0) {
-            CmMessageBox.showAlert("Please specify a template name.");
-            return;
-        }
-        saveClipboardImage(templateName);
+        saveClipboardImage();
     }
 
     static public void doTest() {

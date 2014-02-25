@@ -347,10 +347,10 @@ public class ShowWorkPanel2 extends Composite {
      * 
      * @param name
      */
-    public void saveAsTemplate(int adminId, final String name, final CallbackOnComplete callback) {
+    public void saveAsTemplate(int adminId, final CallbackOnComplete callback) {
         final String dataUrl = jsniGetWhiteboardDataUrl();
         
-        SaveWhiteboardAsTemplateAction action = new SaveWhiteboardAsTemplateAction(adminId, name, dataUrl);
+        SaveWhiteboardAsTemplateAction action = new SaveWhiteboardAsTemplateAction(adminId, dataUrl);
         CmTutor.getCmService().execute(action,  new AsyncCallback<RpcData>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -598,8 +598,8 @@ public class ShowWorkPanel2 extends Composite {
         $wnd._theWhiteboard.appendTemplates('(' + templates + ')');
     }-*/;
 
-    native public void setWhiteboardTemplate(String name, String path) /*-{
-       $wnd._theWhiteboard.setTemplate(name, path);
+    native public void setWhiteboardTemplate(String path) /*-{
+       $wnd._theWhiteboard.setTemplate('template', path);
     }-*/;
 
 

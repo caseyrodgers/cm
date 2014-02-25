@@ -123,7 +123,7 @@ public class WhiteboardTemplatesManager extends GWindow {
             if (mb.getHideButton() == mb.getButtonById(PredefinedButton.OK.name())) {
                 String name =mb.getTextField().getCurrentValue();
                 Cookies.setCookie("wb_template", name);
-                showWorkPanel2.saveAsTemplate(UserInfoBase.getInstance().getUid(), name, new CallbackOnComplete() {
+                showWorkPanel2.saveAsTemplate(UserInfoBase.getInstance().getUid(), new CallbackOnComplete() {
                     @Override
                     public void isComplete() {
                         loadWhiteboardTemplates();
@@ -142,7 +142,7 @@ public class WhiteboardTemplatesManager extends GWindow {
             CmMessageBox.showAlert("Select a template first");
             return;
         }
-        showWorkPanel2.setWhiteboardTemplate(item.getName(), item.getPath());
+        showWorkPanel2.setWhiteboardTemplate(item.getPath());
         
         hide();
     }
@@ -168,7 +168,7 @@ public class WhiteboardTemplatesManager extends GWindow {
                 new RetryAction<RpcData>() {
                     @Override
                     public void attempt() {
-                        ManageWhiteboardTemplatesAction action = new ManageWhiteboardTemplatesAction(UserInfoBase.getInstance().getUid(),item.getName(), ManageType.DELETE);
+                        ManageWhiteboardTemplatesAction action = new ManageWhiteboardTemplatesAction(UserInfoBase.getInstance().getUid(),item.getPath(), ManageType.DELETE);
                         setAction(action);
                         CmShared.getCmService().execute(action, this);
                     }
@@ -205,10 +205,10 @@ public class WhiteboardTemplatesManager extends GWindow {
         /** add standard templates
          * 
          */
-        templates.getTemplates().add(0, new WhiteboardTemplate("Number Line", "/gwt-resources/images/whiteboard/nL.png"));
-        templates.getTemplates().add(0, new WhiteboardTemplate("Graph 2D", "/gwt-resources/images/whiteboard/gr2D.png"));
-        templates.getTemplates().add(0, new WhiteboardTemplate("Equation 1", "/gwt-resources/images/whiteboard/templates/math1.png"));
-        templates.getTemplates().add(0, new WhiteboardTemplate("Equation 2", "/gwt-resources/images/whiteboard/templates/math2.png"));
+        templates.getTemplates().add(0, new WhiteboardTemplate("/gwt-resources/images/whiteboard/nL.png"));
+        templates.getTemplates().add(0, new WhiteboardTemplate("/gwt-resources/images/whiteboard/gr2D.png"));
+        templates.getTemplates().add(0, new WhiteboardTemplate("/gwt-resources/images/whiteboard/templates/math1.png"));
+        templates.getTemplates().add(0, new WhiteboardTemplate("/gwt-resources/images/whiteboard/templates/math2.png"));
         
         _listView.getStore().addAll(templates.getTemplates());
     }
@@ -259,7 +259,7 @@ public class WhiteboardTemplatesManager extends GWindow {
         ModelKeyProvider<WhiteboardTemplate> kp = new ModelKeyProvider<WhiteboardTemplate>() {
             @Override
             public String getKey(WhiteboardTemplate item) {
-                return item.getName();
+                return item.getPath();
             }
         };
 

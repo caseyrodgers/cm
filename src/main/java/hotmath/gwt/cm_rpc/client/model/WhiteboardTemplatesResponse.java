@@ -29,7 +29,7 @@ public class WhiteboardTemplatesResponse implements Response {
     public String getJsonRepresentation() {
         String files = "";
         for(WhiteboardTemplate template: templates) {
-            String f = template.getName();
+            String f = template.getPath();
             if(files.length() > 0) {
                 files += ", ";
             }

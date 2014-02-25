@@ -226,7 +226,7 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
      * @param dataUrl
      * @throws Exception
      */
-    public void saveWhiteboardAsTemplate(final int uid, final String name, String dataUrl) throws Exception {
+    public void saveWhiteboardAsTemplate(final int uid,  String dataUrl) throws Exception {
         int comma = dataUrl.indexOf(",");
         String base64Data = dataUrl.substring(comma+1);
         byte[] data = Base64.decode(base64Data);
@@ -236,13 +236,15 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
         if(!directory.exists()) {
             directory.mkdirs();
         }
+
+        final String templateName = MD5.getMD5(dataUrl);
         
-        String fileName = MD5.getMD5(name) + ".png";
+        String fileName = templateName + ".png";
         File fullFile = new File(directory, fileName);
         
         ImageIO.write(bufferedImage, "png", fullFile);
         
-        final Integer cntMatch = getJdbcTemplate().queryForObject("select count(*) as cnt from CM_WHITEBOARD_TEMPLATE where admin_id = ? and template_name = ?", new Object[] { uid, name }, new RowMapper<Integer>() {
+        final Integer cntMatch = getJdbcTemplate().queryForObject("select count(*) as cnt from CM_WHITEBOARD_TEMPLATE where admin_id = ? and template_name = ?", new Object[] { uid, templateName }, new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getInt("cnt");
@@ -254,10 +256,10 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "insert into CM_WHITEBOARD_TEMPLATE(admin_id, template_name, template_path)values(?,?,?)";                
+                    String sql = "insert into CM_WHITEBOARD_TEMPLATE(admin_id, template_name, template_path, last_modified)values(?,?,?, now())";                
                     PreparedStatement ps = con.prepareStatement(sql);
                     ps.setInt(1, uid);
-                    ps.setString(2, name);
+                    ps.setString(2, templateName);
                     ps.setString(3,url);
                     return ps;
                 }
@@ -268,12 +270,12 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
     }
 
     public List<WhiteboardTemplate> getWhiteboardTemplates(int adminId) {
-        String sql = "select * from CM_WHITEBOARD_TEMPLATE where admin_id = ? order by template_name";
+        String sql = "select * from CM_WHITEBOARD_TEMPLATE where admin_id = ? order by last_modified desc";
 
         List<WhiteboardTemplate> list = getJdbcTemplate().query(sql, new Object[] { adminId}, new RowMapper<WhiteboardTemplate>() {
             @Override
             public WhiteboardTemplate mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new WhiteboardTemplate(rs.getString("template_name"), rs.getString("template_path")); 
+                return new WhiteboardTemplate(rs.getString("template_path")); 
             }
         });
         return list;
@@ -299,7 +301,7 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
         int cnt = getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                String sql = "delete from CM_WHITEBOARD_TEMPLATE where admin_id = ? and template_name = ?";                
+                String sql = "delete from CM_WHITEBOARD_TEMPLATE where admin_id = ? and template_path = ?";                
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setInt(1, adminId);
                 ps.setString(2, templateName);

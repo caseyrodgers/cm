@@ -15,6 +15,8 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyTextButton;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.WhiteboardTemplatesManager;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
@@ -26,15 +28,12 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.HTML;
-import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.event.BeforeHideEvent;
 import com.sencha.gxt.widget.core.client.event.BeforeHideEvent.BeforeHideHandler;
-import com.sencha.gxt.widget.core.client.event.HideEvent;
-import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -135,24 +134,20 @@ public class ProblemDesignerEditorWhiteboard extends GWindow {
             public void saveWhiteboardAsTemplate(final ShowWorkPanel2 showWorkPanel2) {
                  String tmplName = Cookies.getCookie("wb_template");
                  final PromptMessageBox mb = new PromptMessageBox("Save As Template", "Template Name");
-                 mb.getTextField().setValue(tmplName != null?tmplName:"My Template");
-                 mb.addHideHandler(new HideHandler() {
-                   public void onHide(HideEvent event) {
-                     if (mb.getHideButton() == mb.getButtonById(PredefinedButton.OK.name())) {
-                         String name =mb.getTextField().getCurrentValue();
-                         Cookies.setCookie("wb_template", name);
-                         showWorkPanel2.saveAsTemplate(UserInfoBase.getInstance().getUid(), name, new CallbackOnComplete() {
+                 
+                 
+                 CmMessageBox.confirm("Save",  "Save as template?",  new ConfirmCallback() {
+                    @Override
+                    public void confirmed(boolean yesNo) {
+                        showWorkPanel2.saveAsTemplate(UserInfoBase.getInstance().getUid(),  new CallbackOnComplete() {
                             @Override
                             public void isComplete() {
                                 // silent
                             }
                         });
-                     } else if (mb.getHideButton() == mb.getButtonById(PredefinedButton.CANCEL.name())) {
-                     }
-                   }
-                 });
-                 mb.setWidth(300);
-                 mb.show();
+                    }
+                });
+                 
              }
              
              

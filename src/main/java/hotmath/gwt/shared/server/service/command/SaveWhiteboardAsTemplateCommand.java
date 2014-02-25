@@ -13,7 +13,7 @@ public class SaveWhiteboardAsTemplateCommand implements ActionHandler<SaveWhiteb
 
     @Override
     public RpcData execute(Connection conn, SaveWhiteboardAsTemplateAction action) throws Exception {
-        WhiteboardDao.getInstance().saveWhiteboardAsTemplate(action.getUid(), action.getName(), action.getDataUrl());
+        WhiteboardDao.getInstance().saveWhiteboardAsTemplate(action.getUid(), action.getDataUrl());
         return new RpcData("status=OK");
     }
     

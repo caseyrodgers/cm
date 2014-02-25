@@ -6,14 +6,12 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 public class SaveWhiteboardAsTemplateAction implements Action<RpcData> {
     
     private int uid;
-    private String name;
     private String dataUrl;
 
     public SaveWhiteboardAsTemplateAction() {}
 
-    public SaveWhiteboardAsTemplateAction(int uid,String name, String dataUrl) {
+    public SaveWhiteboardAsTemplateAction(int uid,String dataUrl) {
         this.uid = uid;
-        this.name = name;
         this.dataUrl = dataUrl;
     }
 
@@ -23,15 +21,6 @@ public class SaveWhiteboardAsTemplateAction implements Action<RpcData> {
 
     public void setUid(int uid) {
         this.uid = uid;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDataUrl() {
