@@ -90,7 +90,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
     var loadedTemps = 0;
     var totalTempsloaded = 0;
     var graphEditMode = false;
-    var editGR;
+	var editGR;
     // --- /gwt-resources/images/whiteboard/
     var imgPath = '/gwt-resources/images/whiteboard/'
     //imgPath = './'
@@ -455,6 +455,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 var visib = egraph.is(":visible");
                 showHideGraphModuleEditor(!visib);
             });
+			$(graph.createGTool("done")).click(function () {
+                //var egraph = $get_jqElement("#egraph")
+                //var visib = egraph.is(":visible");
+				transMode='move'
+                showHideGraphModuleEditor(false);
+            });
         }
 
         function getGraphModuleConfig() {
@@ -465,21 +471,18 @@ var Whiteboard = function (cont, isStatic, _opts) {
             obj.plot_data = eval(p.plot_datas);
             return (obj);
         }
-
-        function plotFunctionToGraphModule(config) {
-            if (config) {
-                var plot = wb.graphModule
-                var graph = plot.graphObj
-                graph.setAxis(config.xaxis, config.yaxis);
-                graph.scaleGraph(config.xscale, config.yscale);
-                if (config.plot_data) {
-                    plot.setAxisDatas()
-                    plot.renderData({
-                        data: config.plot_data
-                    }, config.labelPlot, config.node_data, false, config.actions);
+		function plotFunctionToGraphModule(config){
+		if (config) {
+                    var plot = wb.graphModule
+                    var graph = plot.graphObj
+                    graph.setAxis(config.xaxis, config.yaxis);
+                    graph.scaleGraph(config.xscale, config.yscale);
+					if(config.plot_data){
+					plot.setAxisDatas()
+					plot.renderData({data:config.plot_data},config.labelPlot,config.node_data,false,config.actions);
+					}
                 }
-            }
-        }
+		}
 
         function updateGraphModule(uid, config, rerender, data, boo) {
             //var config=eval(data.config)
@@ -494,12 +497,10 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     var graph = plot.graphObj
                     graph.setAxis(config.xaxis, config.yaxis);
                     graph.scaleGraph(config.xscale, config.yscale);
-                    if (config.plot_data) {
-                        plot.setAxisDatas()
-                        plot.renderData({
-                            data: config.plot_data
-                        }, config.labelPlot, config.node_data, false, config.actions);
-                    }
+					if(config.plot_data){
+					plot.setAxisDatas()
+					plot.renderData({data:config.plot_data},config.labelPlot,config.node_data,false,config.actions);
+					}
                 }
             }
             //graphicData.config=getGraphModuleConfig()
@@ -540,8 +541,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     dataArr: []
                 }
                 updateDataToSERVER(null, mobj);
-            }
-            updateCanvas();
+				
+            }else{
+			updateCanvas();
+			}
+            
         }
 
         function showHideGraphToggler(boo) {
@@ -550,7 +554,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
         }
 
-        function showHideGraphModuleEditor(boo) {
+        function showHideGraphModuleEditor(boo,noupdate) {
             var plot
             var graph
             var config = selectedObj ? eval(selectedObj.config) : null;
@@ -611,8 +615,10 @@ var Whiteboard = function (cont, isStatic, _opts) {
                             updateGraphModule(plot.currentUID, nconfig, true, graphicDataStore[plot.objIndex])
                         }
                         gedit.hide();
+						if(!noupdate){
                         updateCanvas();
                         setObjSelected(graphicDataStore[plot.objIndex]);
+						}
                     }
                 }
 
@@ -849,32 +855,32 @@ var Whiteboard = function (cont, isStatic, _opts) {
             context.fillStyle = 'white';
             context.fillText("edit", x0 + w0 - 33, y0 + 25);*/
             //showHideGraphToggler(true)
-            context.arc(x0, y0 + h0, 18, 0, 2 * Math.PI, false);
-            //context.drawImage(editGR,x0-10,y0+h0-10,20,20)
-            //context.drawImage(editGR,x0,y0+h0,20,20)
+			context.arc(x0, y0+h0, 18, 0, 2 * Math.PI, false);
+			//context.drawImage(editGR,x0-10,y0+h0-10,20,20)
+			//context.drawImage(editGR,x0,y0+h0,20,20)
         } else {
             context.fillRect(x0 + w0 - 18, y0 + h0 - 18, 36, 36);
             context.arc(x0 + w0, y0, 18, 0, 2 * Math.PI, false);
         }
-        context.arc(x0, y0, 18, 0, 2 * Math.PI, false);
-
+		context.arc(x0, y0, 18, 0, 2 * Math.PI, false);
+		
         context.fill()
-        context.font = "bold 16px Arial";
-        context.fillStyle = "rgba(255, 255, 255, 0.75)";
-        context.textBaseline = 'top';
-        var mw = context.measureText('X').width;
-        var nx = x0 - (mw / 2);
-        var ny = y0 - 9;
-
-        context.fillText("X", nx, ny);
-        context.beginPath()
-        context.strokeStyle = "rgba(255, 255, 255, 0.75)";
-        context.lineWidth = 4;
-        context.arc(x0, y0, 12, 0, 2 * Math.PI, false);
-        context.stroke();
-        if (selectedObj.id == 'graph') {
-
-            context.drawImage(editGR, x0 - 14, y0 + h0 - 14, 28, 28)
+		context.font = "bold 16px Arial";
+            context.fillStyle = "rgba(255, 255, 255, 0.75)";
+			context.textBaseline = 'top';
+			var mw=context.measureText('X').width;
+			var nx=x0-(mw/2);
+			var ny=y0-9;
+			
+            context.fillText("X", nx, ny);
+			context.beginPath()
+			context.strokeStyle ="rgba(255, 255, 255, 0.75)";
+			context.lineWidth = 4;
+			context.arc(x0, y0, 12, 0, 2 * Math.PI, false);
+			context.stroke();
+			if (selectedObj.id == 'graph') {
+            
+			context.drawImage(editGR,x0-14,y0+h0-14,28,28)
         }
         context.restore()
     }
@@ -1142,7 +1148,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
     }
 
     function getMoveNode(r) {
-        var c = 18
+	var c=18
         var obj = {}
         obj.x = r.xmax - c;
         obj.y = r.ymax - c;
@@ -1150,13 +1156,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
         obj.ymin = r.ymax - c;
         obj.xmax = r.xmax + c;
         obj.ymax = r.ymax + c;
-        obj.w = c * 2;
-        obj.h = c * 2;
+        obj.w = c*2;
+        obj.h = c*2;
         return obj
     }
-
-    function getDeleteNode(r) {
-        var c = 18
+function getDeleteNode(r) {
+var c=18
         var obj = {}
         obj.x = r.xmin - c;
         obj.y = r.ymin - c;
@@ -1164,13 +1169,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
         obj.ymin = r.ymin - c;
         obj.xmax = r.xmin + c;
         obj.ymax = r.ymin + c;
-        obj.w = c * 2;
-        obj.h = c * 2;
+        obj.w = c*2;
+        obj.h = c*2;
         return obj
     }
-
-    function getEditNode(r) {
-        var c = 18
+	function getEditNode(r) {
+	var c=18
         var obj = {}
         obj.x = r.xmin - c;
         obj.y = r.ymax - c;
@@ -1178,13 +1182,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
         obj.ymin = r.ymax - c;
         obj.xmax = r.xmin + c;
         obj.ymax = r.ymax + c;
-        obj.w = c * 2;
-        obj.h = c * 2;
+        obj.w = c*2;
+        obj.h = c*2;
         return obj
     }
-
     function getRotateNode(r) {
-        var c = 18
+	var c=18
         var obj = {}
         obj.x = r.xmax - c;
         obj.y = r.ymin - c;
@@ -1192,8 +1195,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
         obj.ymin = r.ymin - c;
         obj.xmax = r.xmax + c;
         obj.ymax = r.ymin + c;
-        obj.w = c * 2;
-        obj.h = c * 2;
+        obj.w = c*2;
+        obj.h = c*2;
         /*if (selectedObj && selectedObj.id == 'graph') {
             obj.x = r.xmax - 40;
             obj.y = r.ymin - 0;
@@ -1225,8 +1228,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
         var rect = cloneObject(obj.brect);
         var rectM = getMoveNode(rect);
         var rectR = getRotateNode(rect);
-        var rectD = getDeleteNode(rect);
-        var rectE = getEditNode(rect);
+		var rectD = getDeleteNode(rect);
+		var rectE = getEditNode(rect);
         var isMoved = isObjTransformed(obj.uid, 'move');
         var isScaled = isObjTransformed(obj.uid, 'scale');
         var isRotated = isObjTransformed(obj.uid, 'rotate');
@@ -1236,21 +1239,21 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 rect = cloneObject(isMoved.trect);
                 rectM = getMoveNode(rect);
                 rectR = getRotateNode(rect);
-                rectD = getDeleteNode(rect);
-                rectE = getEditNode(rect);
+				rectD = getDeleteNode(rect);
+				rectE = getEditNode(rect);
             }
             if (isScaled) {
                 transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
                 transformRect(rectM, isScaled.tx, isScaled.ty, 'move')
                 transformRect(rectR, isScaled.tx, -isScaled.ty, 'move')
-                transformRect(rectE, isScaled.tx, isScaled.ty, 'move')
+				transformRect(rectE, isScaled.tx, isScaled.ty, 'move')
                 transformRect(rectD, -isScaled.tx, isScaled.ty, 'move')
             }
             if (isRotated) {
                 transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
                 transformRect(rectM, isRotated.tx, isRotated.ty, 'rotate', rect)
                 transformRect(rectR, isRotated.tx, isRotated.ty, 'rotate', rect)
-                transformRect(rectD, isRotated.tx, isRotated.ty, 'rotate', rect)
+				transformRect(rectD, isRotated.tx, isRotated.ty, 'rotate', rect)
                 transformRect(rectE, isRotated.tx, isRotated.ty, 'rotate', rect)
 
             }
@@ -1260,16 +1263,16 @@ var Whiteboard = function (cont, isStatic, _opts) {
         transformRect(rect, scrollPosition.x, scrollPosition.y)
         transformRect(rectR, scrollPosition.x, scrollPosition.y)
         transformRect(rectM, scrollPosition.x, scrollPosition.y)
-        transformRect(rectD, scrollPosition.x, scrollPosition.y)
+		transformRect(rectD, scrollPosition.x, scrollPosition.y)
         transformRect(rectE, scrollPosition.x, scrollPosition.y)
 
         var sel = contains(rect, xp, yp)
         var selR = contains(rectR, xp, yp)
         var selM = contains(rectM, xp, yp)
-        var selD = contains(rectD, xp, yp)
-        if (selD) {
-            return 'delete'
-        }
+		var selD = contains(rectD, xp, yp)
+		if(selD){
+			return 'delete'
+			}
         if (selR || selM) {
             if (selectedObj && selectedObj.id == 'graph' && selR) {
                 return 'move';
@@ -1280,13 +1283,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
             }
             return selM ? 'scale' : 'rotate'
         }
-        if (selectedObj && selectedObj.id == 'graph') {
-            var selE = contains(rectE, xp, yp)
-            if (selE) {
-                transMode = 'edit'
-                return 'edit';
-            }
-        }
+		if (selectedObj && selectedObj.id == 'graph') {
+			var selE = contains(rectE, xp, yp)
+				if(selE){
+					transMode = 'edit'
+                    return 'edit';
+				}
+			}
         return null;
     }
 
@@ -1305,8 +1308,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
             var rect = cloneObject(graphicDataStore[i].brect);
             var rectM = getMoveNode(rect);
             var rectR = getRotateNode(rect);
-            var rectD = getDeleteNode(rect);
-            var rectE = getEditNode(rect);
+			var rectD = getDeleteNode(rect);
+			var rectE = getEditNode(rect);
             var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
             var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
             var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
@@ -1316,21 +1319,21 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     rect = cloneObject(isMoved.trect);
                     rectM = getMoveNode(rect);
                     rectR = getRotateNode(rect);
-                    rectD = getDeleteNode(rect);
-                    rectE = getEditNode(rect);
+					rectD = getDeleteNode(rect);
+					rectE = getEditNode(rect);
                 }
                 if (isScaled) {
                     transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
                     transformRect(rectM, isScaled.tx, isScaled.ty, 'move')
                     transformRect(rectR, isScaled.tx, -isScaled.ty, 'move')
-                    transformRect(rectE, isScaled.tx, isScaled.ty, 'move')
+					transformRect(rectE, isScaled.tx, isScaled.ty, 'move')
                     transformRect(rectD, isScaled.tx, isScaled.ty, 'move')
                 }
                 if (isRotated) {
                     transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
                     transformRect(rectM, isRotated.tx, isRotated.ty, 'rotate', rect)
                     transformRect(rectR, isRotated.tx, isRotated.ty, 'rotate', rect)
-                    transformRect(rectD, isRotated.tx, isRotated.ty, 'rotate', rect)
+					transformRect(rectD, isRotated.tx, isRotated.ty, 'rotate', rect)
                     transformRect(rectE, isRotated.tx, isRotated.ty, 'rotate', rect)
                     console.log(rect);
                 }
@@ -1340,8 +1343,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
             transformRect(rect, scrollPosition.x, scrollPosition.y)
             transformRect(rectR, scrollPosition.x, scrollPosition.y)
             transformRect(rectM, scrollPosition.x, scrollPosition.y)
-            transformRect(rectD, scrollPosition.x, scrollPosition.y)
-            transformRect(rectE, scrollPosition.x, scrollPosition.y)
+			transformRect(rectD, scrollPosition.x, scrollPosition.y)
+			transformRect(rectE, scrollPosition.x, scrollPosition.y)
             //selectedObj = null
             if (!rect) {
                 selectedObj = null
@@ -1350,12 +1353,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
             var sel = contains(rect, xp, yp)
             var selR = contains(rectR, xp, yp)
             var selM = contains(rectM, xp, yp)
-            var selD = contains(rectD, xp, yp)
+			var selD = contains(rectD, xp, yp)
             console.log(selR)
             console.log(selM)
-            if (selD) {
-                return 'delete'
-            }
+			if(selD){
+			return 'delete'
+			}
             if (selR || selM) {
                 i = selectedObjIndex
                 transMode = selM ? 'scale' : 'rotate'
@@ -1369,13 +1372,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 }
                 return i;
             }
-            if (selectedObj && selectedObj.id == 'graph') {
-                var selE = contains(rectE, xp, yp)
-                if (selE) {
-                    transMode = 'edit'
+			if (selectedObj && selectedObj.id == 'graph') {
+				var selE = contains(rectE, xp, yp)
+				if(selE){
+					transMode = 'edit'
                     return 'edit';
-                }
-            }
+				}
+			}
             console.log(rect);
             console.log(sel)
             var hasShape = false
@@ -1932,8 +1935,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
     function onkeydownHandler(_event) {
         var event = _event ? _event : window.event;
-
-        if (currentTool == 'text' && event.keyCode == 13) {
+	var txtBox=$get_jqElement("#inputBox");	
+	var visib = txtBox.is(":visible");
+        if (currentTool == 'text'&&visib && event.keyCode == 13) {
             if (!event.shiftKey) {
                 if (event.preventDefault) {
                     event.preventDefault();
@@ -3431,10 +3435,10 @@ var Whiteboard = function (cont, isStatic, _opts) {
             gr2D_h = 300;
             nL_w = 300;
             nL_h = 100;
-            //
-            editGR = new Image();
+			//
+			editGR = new Image();
             editGR.src = imgPath + 'edit.png';
-            //
+			//
             offX = $get_Element("#canvas-container").offsetLeft;
             offY = $get_Element("#canvas-container").offsetTop;
 
@@ -3582,6 +3586,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 renderText();
                 // check()
             }
+			$(document).on("keydown",onkeydownHandler)
             if ($get_Element("#button_undo")) {
                 $get_Element("#button_undo").onclick = function (event) {
                     var l = graphicDataStore.length
@@ -3991,13 +3996,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
                                 dofindSel = !true
                                 transMode = selectionOnNode(selectedObj, x, y);
                                 transMode = transMode == null ? 'move' : transMode
-                                if (transMode == 'edit' || transMode == 'delete') {
+                                if (transMode == 'edit'||transMode == 'delete') {
                                     return
                                 }
                             } else {
                                 transMode = selectionOnNode(selectedObj, x, y);
                                 transMode = transMode == null ? 'move' : transMode
-                                if (transMode == 'edit' || transMode == 'delete') {
+                                if (transMode == 'edit'||transMode == 'delete') {
                                     return
                                 }
                             }
@@ -4172,9 +4177,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
                         penDown = false
                         return;
                     }
-                    if (transMode == 'delete') {
+					if (transMode == 'delete') {
                         //showHideGraphModuleEditor(true)
-                        wb.deleteSelectedObj();
+						wb.deleteSelectedObj();
                         penDown = false
                         return;
                     }
@@ -5131,6 +5136,16 @@ var Whiteboard = function (cont, isStatic, _opts) {
     }
 
     function updateCanvas() {
+	 var egraph = $get_jqElement("#egraph")
+	var visib = egraph.is(":visible");
+	if(visib){
+                showHideGraphModuleEditor(false,true);
+	}
+	var txtBox=$get_jqElement("#inputBox");	
+	visib = txtBox.is(":visible");
+	if(visib&&$get_jqElement("#content").val().length){
+                txtBox.hide()
+	}
         buffercontext.clearRect(0, 0, buffercanvas.width, buffercanvas.height);
         buffercanvas.width = canvas.width;
         buffercanvas.height = canvas.height;
@@ -6199,7 +6214,7 @@ source: https://gist.github.com/754454
     wb.removeSelectionMode = function (boo) {
 
         selectedObjects = [];
-        selectedObj = null
+		selectedObj=null
         mSelRect = null;
         multiSelection = false
         removeBoundRect()
