@@ -36,7 +36,7 @@ public class PrescriptionLessonResourceVideoActivity implements PrescriptionLess
         }
 
         
-        if(video.indexOf("youtube") > -1 || video.indexOf("mathtv") > -1) {
+        if(video.indexOf("youtube") > -1 || video.indexOf("mathtv") > -1 || video.indexOf("sharon_vids") > -1) {
             nonFlashUrl = video.substring(0, video.indexOf(".flv"));
         }
         else {

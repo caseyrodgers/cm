@@ -19,7 +19,10 @@ public class WidgetEditorFactory {
             return new WidgetEditorImplInteger(widgetDef);
         }
         else if(type.equals("number_fraction")) {
-            return new WidgetEditorImplInteger(widgetDef);
+            return new WidgetEditorImplFraction(widgetDef);
+        }
+        else if(type.equals("number_rational")) {
+            return new WidgetEditorImplRational(widgetDef);
         }
         else if(type.equals("mChoice")) {
             return new WidgetEditorImplMultiChoice(widgetDef);

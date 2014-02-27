@@ -6,9 +6,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 
 public interface WidgetEditor extends IsWidget {
-
     String getWidgetJson();
-
     WidgetDefModel getWidgetDef();
-
 }

@@ -182,9 +182,8 @@ public class ProblemDesignerEditorWidget extends GWindow {
         store.add(new  WidgetType("inequality", "Inequality", "{'type': 'inequality'}"));
         store.add(new  WidgetType("number_fraction", "Fraction","{'type': 'number_fraction'}"));
         store.add(new  WidgetType("mChoice", "Multiple Choice", "{'type': 'mChoice', 'value':'THIS|THAT|1'}"));
-        store.add(new  WidgetType("", "Whiteboard", "{'type': ''}"));
         
-//        store.add(new  WidgetType("number_rational", "Rational"));
+        store.add(new  WidgetType("number_rational", "Rational","{'type':'number_rational'}"));
 
 //        store.add(new  WidgetType("coordinates", "Coordinates"));
 //        store.add(new  WidgetType("number_mixed_fraction", "Mixed Fraction"));
@@ -194,7 +193,9 @@ public class ProblemDesignerEditorWidget extends GWindow {
 //        store.add(new  WidgetType("odds", "Odds"));
 //        store.add(new  WidgetType("point_slope_form", "Point Slope Form"));
 //        store.add(new  WidgetType("inequality_exact", "Inequality, Exact"));
-        
+
+        store.add(new  WidgetType("", "Whiteboard", "{'type': ''}"));
+
         _comboType = new ComboBox<WidgetType>(store, props.label());
         _comboType.setAllowBlank(false);
         _comboType.setTriggerAction(TriggerAction.ALL);

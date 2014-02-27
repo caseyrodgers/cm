@@ -30,14 +30,13 @@ public class WidgetEditorImplMultiChoice extends WidgetEditorImplBase {
 
     public WidgetEditorImplMultiChoice(WidgetDefModel widgetDef) {
         super(widgetDef);
-        buildUi();
     }
     
     MultiGridProps props = GWT.create(MultiGridProps.class);
     
     boolean areChanges;
     Grid<MultiValue> _grid;
-    private void buildUi() {
+    protected void buildUi() {
         final ListStore<MultiValue> store = new ListStore<MultiValue>(props.key());
         List<ColumnConfig<MultiValue, ?>> cols = new ArrayList<ColumnConfig<MultiValue, ?>>();
         ColumnConfig<MultiValue, String> nameCol = new ColumnConfig<MultiValue, String>(props.value(),200,"Value");
@@ -107,9 +106,16 @@ public class WidgetEditorImplMultiChoice extends WidgetEditorImplBase {
                 removeSelectedChoice();
             }
         }));
-        initWidget(content);
+        
+        _fields.clear();
+        _fields.add(content);
+        // initWidget(content);
     }
 
+    @Override
+    protected String getWidgetType() {
+        return "mChoice";
+    }
 
     protected void removeSelectedChoice() {
         if(selected() != null) {
@@ -134,13 +140,12 @@ public class WidgetEditorImplMultiChoice extends WidgetEditorImplBase {
 
 
     @Override
-    public String getWidgetJson() {
-        WidgetDefModel model = new WidgetDefModel();
-        model.setValue(getValueString());
-        model.setType("mChoice");
-        return model.getJson();
+    protected WidgetDefModel createWidgetDefModel() {
+        WidgetDefModel wd = super.createWidgetDefModel();
+        wd.setValue(getValueString());
+        return wd;
     }
-
+    
     private String getValueString() {
 
         String value="";
