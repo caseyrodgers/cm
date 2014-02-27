@@ -467,15 +467,14 @@ function signupComplete(data) {
    }
 
    var obj = eval('(' + data + ')');
-   
+
    var cmKey = obj.key;  // login security key
    var userId = obj.uid;
    var userName = obj.userName;
    var password = obj.password;
-   
-   
+
    var email = $get('parent_email').value;
-    var html = "<h1>Catchup Math Signup Success</h1><p><b>Congratulations!</b><br/>You have successfully signed up for Catchup Math.</p>" +
+   var html = "<h1>Catchup Math Signup Success</h1><p><b>Congratulations!</b><br/>You have successfully signed up for Catchup Math.</p>" +
                "<p>Your login information is: <br/>" +
                "<div class='login-info'>" +
                "<div class='col'>Login Name: </div><div class='val'>" + userName + "</div>" +
@@ -486,15 +485,13 @@ function signupComplete(data) {
               " and enter the login information shown above.</p>" +
               "<p class='info-sent'>Your signup information has also been sent to the email address: " + email + "</p>" +
               "<p><a href='/loginService?uid=" + userId + "'>Begin Using Catchup Math</a></p>";
-    
-    
-    YUI().use("node", function(Y) {
-       Y.one("#signup_page").setStyle('display', 'none');
-       var success = Y.one('#signup_success');
-       success.set('innerHTML', html);
-       success.setStyle('display', 'block');
-       window.scrollTo(0,0);
-    });
+
+   var e1 = document.getElementById('signup_page');
+   e1.setAttribute('style', 'display:none');
+   var success = document.getElementById('signup_success');
+   success.innerHTML = html;
+   success.setAttribute('style', 'display:block');
+   window.scrollTo(0,0); 
 }
    
 function setTotalCost(cost) {
