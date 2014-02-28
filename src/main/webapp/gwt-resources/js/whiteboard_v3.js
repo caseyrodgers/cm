@@ -479,7 +479,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     graph.scaleGraph(config.xscale, config.yscale);
 					if(config.plot_data){
 					plot.setAxisDatas()
-					plot.renderData({data:config.plot_data},config.labelPlot,config.node_data,false,config.actions);
+					plot.renderData({data:convertObjToString(config.plot_data)},config.labelPlot,config.node_data,false,config.actions);
 					}
                 }
 		}
@@ -499,7 +499,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     graph.scaleGraph(config.xscale, config.yscale);
 					if(config.plot_data){
 					plot.setAxisDatas()
-					plot.renderData({data:config.plot_data},config.labelPlot,config.node_data,false,config.actions);
+					plot.renderData({data:convertObjToString(config.plot_data)},config.labelPlot,config.node_data,false,config.actions);
 					}
                 }
             }
