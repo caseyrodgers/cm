@@ -119,7 +119,7 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
                  * Delete the newest command
                  * 
                  */
-                String sql = "select max(id) as whiteboard_id " + " from SOLUTION_WHITEBOARD_temp " + " where pid = ?";
+                String sql = "select max(id) as whiteboard_id " + " from SOLUTION_WHITEBOARD_temp " + " where pid_edit = ?";
                 final Integer maxWhiteboardId = getJdbcTemplate().queryForObject(sql, new Object[] { pidEdit }, new RowMapper<Integer>() {
                     @Override
                     public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {

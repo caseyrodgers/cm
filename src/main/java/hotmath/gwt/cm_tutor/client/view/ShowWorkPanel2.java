@@ -17,6 +17,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -292,19 +293,19 @@ public class ShowWorkPanel2 extends Composite {
     }
 
     /**
-     * Provide generate way to load data externally.
+     * Provide way to load data externally.
      *
-     * Always clears before processing
      *
      * @param commands
      */
     public void loadWhiteboard(List<WhiteboardCommand> commands) {
-        _lastCommands = commands;
         if(commands == null) {
+            _lastCommands = new ArrayList<WhiteboardCommand>();
             jsni_clearWhiteboard();
             return;
         }
         
+        _lastCommands = commands;
         Log.debug("Loading whiteboard with " + commands.size() + " commands");
         try {
             //jsni_updateWhiteboard(flashId, "clear", null);
