@@ -242,7 +242,8 @@ public class ShowWorkPanel2 extends Composite {
                 _lastCommands.remove(_lastCommands.size() - 1); // remove last
 
                 Log.debug("Whiteboard Undo: _lastCommands size == " + _lastCommands.size());
-                                                                // element
+                             
+                jsni_clearWhiteboard();
                 loadWhiteboard(_lastCommands);
             } else {
                 Log.debug("Whiteboard: Nothing to undo");
@@ -284,6 +285,11 @@ public class ShowWorkPanel2 extends Composite {
             $wnd._theWhiteboard.disableUndo();
         }
     }-*/;
+    
+    
+    public void jsni_clearWhiteboard() {
+        jsni_updateWhiteboard(this.whiteboardId, "clear", null);        
+    }
 
     /**
      * Provide generate way to load data externally.
@@ -295,7 +301,7 @@ public class ShowWorkPanel2 extends Composite {
     public void loadWhiteboard(List<WhiteboardCommand> commands) {
         _lastCommands = commands;
         if(commands == null) {
-            jsni_updateWhiteboard(this.whiteboardId, "clear", null);
+            jsni_clearWhiteboard();
             return;
         }
         
