@@ -33,3 +33,8 @@ border-right:1px inset #000000;
 .cm_whiteboard {
 	margin-bottom: 40px;
 }
+
+
+#tutoroutput td {
+   padding: 2px 5px;
+}

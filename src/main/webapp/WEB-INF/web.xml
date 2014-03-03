@@ -95,6 +95,13 @@
     </url-pattern>
   </servlet-mapping>
 
+  <servlet-mapping>
+    <servlet-name>CmSignupService</servlet-name>
+    <url-pattern>
+      /cm_signup
+    </url-pattern>
+  </servlet-mapping>
+
   <servlet>
     <servlet-name>CmLoginService</servlet-name>
     <servlet-class>
