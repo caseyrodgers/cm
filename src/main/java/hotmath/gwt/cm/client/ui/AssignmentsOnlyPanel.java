@@ -2,10 +2,7 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
@@ -13,10 +10,6 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class AssignmentsOnlyPanel extends CenterLayoutContainer {
-    
-    interface MyUiBinder extends UiBinder<Widget, AssignmentsOnlyPanel> {}
-    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-
     public AssignmentsOnlyPanel() {
         ContentPanel lc = new ContentPanel();
         lc.setHeadingText("Catchup Math Assignments");

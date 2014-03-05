@@ -30,8 +30,16 @@ public class AutoAdvancedProgramWindow extends GWindow {
         setClosable(false);
         setResizable(false);
         setStyleName("auto-assignment-window");
-        String msg = "<p>You are now enrolled in: <br/><b>" + assignedName + "</b><br/> "
+        
+        
+        String msg=null;
+        if(assignedName.startsWith("No Program")) {
+            msg = "<p>Your understanding of Elementary Algebra seems pretty strong. Please tell your instructor.</p>"; 
+        }
+        else {
+            msg = "<p>You are now enrolled in: <br/><b>" + assignedName + "</b><br/> "
                 + "You will be able to move ahead quickly to more advanced programs as you pass the quizzes.</p>";
+        }
 
         HTML html = new HTML(msg);
 

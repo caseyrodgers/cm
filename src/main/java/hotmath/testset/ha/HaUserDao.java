@@ -217,6 +217,9 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
         if(programFlow.getUserProgram().getTestDefId() == CmProgram.ASSIGNMENTS_ONLY.getDefId()) {
             destination.setPlace(CmPlace.ASSIGNMENTS_ONLY);
         }
+        else if(programFlow.getUserProgram().getTestDefId() == CmProgram.NONE.getDefId()) {
+            destination.setPlace(CmPlace.NO_PROGRAM_ASSIGNED);
+        }
         else if (programFlow.getUserProgram().isCustom()
                 && programFlow.getActiveFlowAction(conn).getPlace() == CmPlace.END_OF_PROGRAM) {
             /**

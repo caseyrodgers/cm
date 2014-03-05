@@ -222,6 +222,10 @@ public class HaTestDefPlacement extends HaTestDef {
                     program = CmProgram.ELEMALG;
                 }
                 else {
+                    
+                    /** missed zero on last segment
+                     * 
+                     */
                     program = CmProgram.NONE;
                 }
             }

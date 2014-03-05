@@ -9,6 +9,7 @@ import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
 import hotmath.gwt.cm.client.ui.EndOfProgramPanel;
 import hotmath.gwt.cm.client.ui.FooterPanel;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
+import hotmath.gwt.cm.client.ui.NoProgramAssignedPanel;
 import hotmath.gwt.cm.client.ui.StudentAssignmentSelectorDialog;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
@@ -234,6 +235,9 @@ public class CatchupMath implements EntryPoint {
 
             if (firstLocation.getPlace() == CmPlace.END_OF_PROGRAM && UserInfo.getInstance().getOnCompletion() == UserProgramCompletionAction.STOP) {
                 showEndOfProgramPanel();
+            } 
+            else if(firstLocation.getPlace() == CmPlace.NO_PROGRAM_ASSIGNED) {
+                showNoProgramAssigned();
             } else {
 
                 if (startType.equals("AUTO_CREATE")) {
@@ -409,6 +413,10 @@ public class CatchupMath implements EntryPoint {
                 case ASSIGNMENTS_ONLY:
                     showAssignmentsOnly();
                     break;
+                    
+                case NO_PROGRAM_ASSIGNED:
+                    showNoProgramAssigned();
+                    break;
 
                 default:
                     CmLogger.error("Unknown NextAction type: " + flowResponse);
@@ -432,6 +440,17 @@ public class CatchupMath implements EntryPoint {
         });
     }
 
+    protected void showNoProgramAssigned() {
+        GWT.runAsync(new CmRunAsyncCallback() {
+            @Override
+            public void onSuccess() {
+                _mainContainer.clear();
+                _mainContainer.add(new NoProgramAssignedPanel());
+                _mainContainer.forceLayout();
+            }
+        });
+    }
+    
     public void showAssignments_gwt() {
         GWT.runAsync(new RunAsyncCallback() {
             @Override

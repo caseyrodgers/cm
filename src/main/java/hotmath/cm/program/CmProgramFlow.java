@@ -146,6 +146,9 @@ public class CmProgramFlow {
     		    
     		    return new CmProgramFlowAction(CmPlace.ASSIGNMENTS_ONLY);
     		}
+    		else if(userProgram.getTestDefId() == CmProgram.NONE.getDefId()) {
+    		    return new CmProgramFlowAction(CmPlace.NO_PROGRAM_ASSIGNED);
+    		}
     		else {
         		if (activeInfo.getActiveRunId() > 0) {
         			// is in a prescription
