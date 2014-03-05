@@ -13,6 +13,14 @@ import java.util.List;
  */
 public class HaTestDefPlacement extends HaTestDef {
 	
+    
+    public interface PlacementAdapter {
+        String getSubTitle(int segment);
+        String[] getSegmentNames();
+        int getTotalSegmentCount();
+        CmProgram getNextProgram(String testName, int total, int correct);
+    }
+    
 
 	public HaTestDefPlacement() {}
 	
@@ -36,14 +44,7 @@ public class HaTestDefPlacement extends HaTestDef {
 		
 		return dao.getTestIdsForPlacementSegment(segment, program.getTestDef().getTextCode(), getAdapter().getSegmentNames()[segment-1], config, testSegmentSlot);
     }
-	
-	public interface PlacementAdapter {
-        String getSubTitle(int segment);
-        String[] getSegmentNames();
-        int getTotalSegmentCount();
-        CmProgram getNextProgram(String testName, int total, int correct);
-	}
-	
+
 	
 	public CmProgram getNextProblem(String testName, int total, int correct) {
 	    return getAdapter().getNextProgram(testName, total, correct);	
@@ -95,7 +96,7 @@ public class HaTestDefPlacement extends HaTestDef {
 	
 	
 	
-	   /** Return set of 4 tests of 7 questions, taken from each subject:
+	 /** Return set of 4 tests of 7 questions, taken from each subject:
      * 
      * 
      * There will be 4 tests with 10 questions each (prealgptests, alg1, gcgeopractice, alg2).
@@ -211,26 +212,20 @@ public class HaTestDefPlacement extends HaTestDef {
         public CmProgram getNextProgram(String testName, int total, int correct) {
             String thisTest = testName.toLowerCase();
             CmProgram program=null;
-            
-            // some trigger, in this case > 1 wrong answers.
-            if ((total - correct) > 1) {
-                /** Sign user up for the current subject program.
-                    map to real Program name.
-                */
-                if(thisTest.indexOf("elementary") > -1) {
-                    if(correct < 9) {   
-                        program = CmProgram.ELEMALG;
-                    }
+            if (thisTest.indexOf("basic math") > -1) {
+                if(correct < 9) {
+                    program = CmProgram.BASICMATH;    
                 }
-                else if (thisTest.indexOf("basic math") > -1) {
-                    if(correct < 9) {
-                        program = CmProgram.BASICMATH;    
-                    }
-                } 
             }
-            else {
-                program = null;
+            else if(thisTest.indexOf("elementary") > -1) {
+                if(correct < 9) {   
+                    program = CmProgram.ELEMALG;
+                }
+                else {
+                    program = CmProgram.NONE;
+                }
             }
+            
             
             return program;
         }

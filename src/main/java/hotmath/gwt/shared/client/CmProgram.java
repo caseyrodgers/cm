@@ -44,7 +44,10 @@ public enum CmProgram {
     ELEMALG(54,"ElemAlg", "ElemAlg", "Prof", true, 9),
     ELEMALG_CHAP(55,"ElemAlg - Chapters", "ElemAlg", "Chap",true, 2),
     BASICMATH(56,"BasicMath", "BasicMath", "Prof", true, 11),
-    AUTO_ENROLL_COLLEGE(57,"Auto-Enrollment College","","Auto-Enroll College",true, 0);
+    AUTO_ENROLL_COLLEGE(57,"Auto-Enrollment College","","Auto-Enroll College",true, 0), 
+    
+    /** Represents no current program assigned */
+    NONE(-1,"No Program",null,null,true,0);
 
     private final int     defId;
     private final String  title;
