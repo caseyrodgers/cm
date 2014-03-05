@@ -1,6 +1,6 @@
 package hotmath.assessment;
 
-import hotmath.testset.ha.CmProgram;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaTestRunDao.TestRunLesson;

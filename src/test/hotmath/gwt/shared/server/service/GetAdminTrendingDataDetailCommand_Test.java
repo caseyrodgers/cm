@@ -4,10 +4,10 @@ import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataDetailAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.server.service.command.GetAdminTrendingDataDetailCommand;
-import hotmath.testset.ha.CmProgram;
 
 public class GetAdminTrendingDataDetailCommand_Test extends CmDbTestCase{
     

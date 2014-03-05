@@ -13,6 +13,15 @@ public class CustomProgramCommand_Test extends CmDbTestCase {
         super(name);
     }
     
+    public void testCopyCustomProblem() throws Exception {
+        CustomProgramAction action = new CustomProgramAction(ActionType.COPY);
+        action.setAdminId(5);
+        action.setProgramId(328);
+        action.setDestAdminId(2);
+        
+        CmList<CustomLessonModel> lessons = new CustomProgramCommand().execute(conn,action);
+        assertTrue(lessons.size() != 0);
+    }
     public void testGetLessons() throws Exception {
         CustomProgramAction action = new CustomProgramAction(ActionType.GET_ALL_LESSONS);
         CmList<CustomLessonModel> lessons = new CustomProgramCommand().execute(conn,action);

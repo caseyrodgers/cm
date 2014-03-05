@@ -5,7 +5,7 @@ import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
-import hotmath.testset.ha.CmProgram;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDefDao;

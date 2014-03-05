@@ -13,7 +13,7 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.testset.ha.CmProgram;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 

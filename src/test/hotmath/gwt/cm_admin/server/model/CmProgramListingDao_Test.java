@@ -2,7 +2,7 @@ package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
-import hotmath.testset.ha.CmProgram;
+import hotmath.gwt.shared.client.CmProgram;
 
 import java.util.List;
 

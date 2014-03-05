@@ -6,7 +6,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
-import hotmath.testset.ha.CmProgram;
+import hotmath.gwt.shared.client.CmProgram;
 
 import java.sql.Connection;
 

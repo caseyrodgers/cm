@@ -37,6 +37,10 @@ public class CustomProgramCommand implements ActionHandler<CustomProgramAction, 
                 CustomProgramModel newProgram = CmCustomProgramDao.getInstance().createNewCustomProgram(conn, action.getAdminId(), action.getProgramName(), action.getLessons());
                 return new CmArrayList<CustomLessonModel>();
                 
+            case COPY:
+                CmCustomProgramDao.getInstance().copyCustomProblem(conn, action.getAdminId(), action.getProgramId(), action.getDestAdminId());
+                return new CmArrayList<CustomLessonModel>();
+                
             default:
                 throw new IllegalArgumentException("Unknown ActionType: "  + action);
         }
@@ -44,7 +48,6 @@ public class CustomProgramCommand implements ActionHandler<CustomProgramAction, 
 
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
-        // TODO Auto-generated method stub
         return CustomProgramAction.class;
     }
 

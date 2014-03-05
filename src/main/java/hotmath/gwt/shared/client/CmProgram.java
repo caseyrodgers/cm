@@ -1,4 +1,4 @@
-package hotmath.testset.ha;
+package hotmath.gwt.shared.client;
 
 /**
  * Defines all currently defined tests and their related meta data.
@@ -43,7 +43,8 @@ public enum CmProgram {
     ASSIGNMENTS_ONLY(53,"Assignments Only", "Assignments Only", "Assignments Only", true, 0),
     ELEMALG(54,"ElemAlg", "ElemAlg", "Prof", true, 9),
     ELEMALG_CHAP(55,"ElemAlg - Chapters", "ElemAlg", "Chap",true, 2),
-    BASICMATH(56,"BasicMath", "BasicMath", "Prof", true, 11);
+    BASICMATH(56,"BasicMath", "BasicMath", "Prof", true, 11),
+    AUTO_ENROLL_COLLEGE(57,"Auto-Enrollment College","","Auto-Enroll College",true, 0);
 
     private final int     defId;
     private final String  title;

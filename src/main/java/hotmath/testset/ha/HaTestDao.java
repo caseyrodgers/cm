@@ -11,6 +11,7 @@ import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
@@ -154,19 +156,19 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(null, pstat, null);
         }
     }
-    
-    
-    /** Remove all associated test runs from named test
+
+    /**
+     * Remove all associated test runs from named test
      * 
      */
     public void removeTestRuns(final HaTest test) throws Exception {
-    	getJdbcTemplate().update(new PreparedStatementCreator() {
-    		public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-    			PreparedStatement ps = con.prepareStatement("delete from HA_TEST_RUN where test_id = ?");
-    			ps.setInt(1, test.getTestId());
-    			return ps;
-    		}
-    	});
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement ps = con.prepareStatement("delete from HA_TEST_RUN where test_id = ?");
+                ps.setInt(1, test.getTestId());
+                return ps;
+            }
+        });
     }
 
     public void updateGradeLevel(final int testId, final int gradeLevel) throws Exception {
@@ -179,7 +181,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             }
         });
     }
-    
+
     /**
      * Convenience method used to create a new HaTest from raw data
      * 
@@ -192,6 +194,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
      * @throws HotMathException
      */
     static public final int EMPTY_TEST = -1;
+
     public HaTest createTest(final Integer uid, final HaTestDef testDef, final int segment)
             throws Exception {
 
@@ -211,10 +214,9 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
         HaUser user = HaUserDao.getInstance().lookUser(uid, false);
         final HaTestConfig config = user.getTestConfig();
 
-        final List<String> testIds = (List<String>)(segment == EMPTY_TEST?new ArrayList<String>():testDef.getTestIdsForSegment(userProgram, segment, config, segmentSlot));
+        final List<String> testIds = (List<String>) (segment == EMPTY_TEST ? new ArrayList<String>() : testDef.getTestIdsForSegment(userProgram, segment,
+                config, segmentSlot));
 
-        
-        
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
@@ -235,9 +237,9 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
                      * 
                      */
                     int segmentCount = 0;
-                    int gradeLevel=0;
+                    int gradeLevel = 0;
                     if (userProgram.getCustomProgramId() > 0) {
-                        segmentCount = CmCustomProgramDao.getInstance().getTotalSegmentCount(connection,userProgram.getCustomProgramId());
+                        segmentCount = CmCustomProgramDao.getInstance().getTotalSegmentCount(connection, userProgram.getCustomProgramId());
                         gradeLevel = CmUserProgramDao.getInstance().getCustomProgramGradeLevel(userProgram.getCustomProgramId());
                     } else if (userProgram.getCustomQuizId() > 0)
                         segmentCount = 1;
@@ -261,24 +263,28 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
         // extract the auto created pk
         final int testId = keyHolder.getKey().intValue();
 
-        if((testDef.getTestDefId() != CmProgram.CUSTOM_QUIZ.getDefId()) && (testDef.getTestDefId() != CmProgram.AUTO_ENROLL.getDefId())) {
+        if ((testDef.getTestDefId() != CmProgram.CUSTOM_QUIZ.getDefId()) && (testDef.getTestDefId() != CmProgram.AUTO_ENROLL.getDefId())) {
             randomizePids(testIds);
         }
-        
-        for (final String pid : testIds) {
-            // insert IDS for use with this test
-            int count = getJdbcTemplate().update(new PreparedStatementCreator() {
-                @Override
-                public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
-                    PreparedStatement ps = conn.prepareStatement("insert into HA_TEST_IDS(test_id, pid) values(?,?)");
-                    ps.setInt(1, testId);
-                    ps.setString(2, pid);
 
-                    return ps;
-                }
-            });
-            if (count != 1)
-                throw new Exception("Could not add a problem id to a test");
+        // insert IDS for use with this test
+        String sql = "insert into HA_TEST_IDS(test_id, pid) values(?,?)";
+        int counts[] = getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() {
+
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setInt(1, testId);
+                ps.setString(2, testIds.get(i));
+            }
+
+            @Override
+            public int getBatchSize() {
+                return testIds.size();
+            }
+        });
+        
+        if(counts.length != testIds.size()) {
+            __logger.warn("Could not save all testIds: " + testIds);
         }
 
         // mark this user's record indicating this test as the active
@@ -289,12 +295,11 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
 
         return loadTest(testId);
     }
-    
+
     private void randomizePids(List<String> pids) {
         __logger.debug("Randomizing pids");
         Collections.shuffle(pids);
     }
-    
 
     public HaTest loadTest(final int testId) throws Exception {
 
@@ -304,99 +309,97 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
         if (testCached != null)
             return testCached;
 
-        
-            StudentUserProgramModel programInfo = new StudentUserProgramModel(); 
-            List<HaTest> tests = getJdbcTemplate().query(
-                    CmMultiLinePropertyReader.getInstance().getProperty("HA_TEST_LOAD"),
-                    new Object[]{testId},
-                    new RowMapper<HaTest>() {
-                        @Override
-                        public HaTest mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            try {
-                                HaTest test = new HaTest();
-                                test.setTestId(rs.getInt("test_id"));
-                                test.setUser(HaUserDao.getInstance().lookUser(rs.getInt("user_id"), false));
-                                test.setSegment(rs.getInt("test_segment"));
-                                test.setSegmentSlot(rs.getInt("test_segment_slot"));
-                                test.setNumTestQuestions(rs.getInt("test_question_count"));
-                                test.setTotalSegments(rs.getInt("total_segments"));
-                                test.setGradeLevel(rs.getInt("grade_level"));
+        StudentUserProgramModel programInfo = new StudentUserProgramModel();
+        List<HaTest> tests = getJdbcTemplate().query(
+                CmMultiLinePropertyReader.getInstance().getProperty("HA_TEST_LOAD"),
+                new Object[] { testId },
+                new RowMapper<HaTest>() {
+                    @Override
+                    public HaTest mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        try {
+                            HaTest test = new HaTest();
+                            test.setTestId(rs.getInt("test_id"));
+                            test.setUser(HaUserDao.getInstance().lookUser(rs.getInt("user_id"), false));
+                            test.setSegment(rs.getInt("test_segment"));
+                            test.setSegmentSlot(rs.getInt("test_segment_slot"));
+                            test.setNumTestQuestions(rs.getInt("test_question_count"));
+                            test.setTotalSegments(rs.getInt("total_segments"));
+                            test.setGradeLevel(rs.getInt("grade_level"));
 
-                                __logger.debug("Loaded HaTest: " + test);
-            
-                                test.setProgramInfo(new StudentUserProgramModel());
-                                Integer prgId = rs.getInt("prog_id");
-                                if (prgId != null && prgId > 0) {
-                                    /**
-                                     * (new style) use data from CM_USER_PROGRAM attached to this
-                                     * test record
-                                     * 
-                                     */
-                                    __logger.debug("Loading test program info from CM_USER_PROGRAM: " + testId + ", " + prgId);
-                                    StudentUserProgramModel programInfo = test.getProgramInfo();
-                                    programInfo.setId(prgId);
-                                    programInfo.setAdminId(rs.getInt("admin_id"));
-                                    programInfo.setCreateDate(rs.getDate("prog_create_date"));
-                                    programInfo.setTestDefId(rs.getInt("prog_test_def_id"));
-                                    programInfo.setTestName(rs.getString("prog_test_name"));
-                                    programInfo.setConfig(new HaTestConfig(rs.getString("test_config_json")));
-                                }
-                                else {
-                                        /**
-                                         * fall back to extracting program info attached to user
-                                         * 
-                                         */
-                                        __logger.debug("Loading test program info from current assigned program: " + testId);
-                                        test.setProgramInfo(CmUserProgramDao.getInstance().loadProgramInfoCurrent(test.getUser().getUid()));                
-                                }                                    
-                                
-                                // todo: remove connection
-                                Connection conn=HotMathProperties.getInstance().getDataSourceObject().getSbDBConnection().getConnection();
-                                test.setTestDef(HaTestDefFactory.createTestDef(conn, test.getProgramInfo().getTestDefId()));
+                            __logger.debug("Loaded HaTest: " + test);
 
-                                
-                                return test;
-                            } catch (Exception e) {
-                                __logger.error("Error loading test: " + testId);
-                                throw new SQLException(e.getMessage(), e);
+                            test.setProgramInfo(new StudentUserProgramModel());
+                            Integer prgId = rs.getInt("prog_id");
+                            if (prgId != null && prgId > 0) {
+                                /**
+                                 * (new style) use data from CM_USER_PROGRAM
+                                 * attached to this test record
+                                 * 
+                                 */
+                                __logger.debug("Loading test program info from CM_USER_PROGRAM: " + testId + ", " + prgId);
+                                StudentUserProgramModel programInfo = test.getProgramInfo();
+                                programInfo.setId(prgId);
+                                programInfo.setAdminId(rs.getInt("admin_id"));
+                                programInfo.setCreateDate(rs.getDate("prog_create_date"));
+                                programInfo.setTestDefId(rs.getInt("prog_test_def_id"));
+                                programInfo.setTestName(rs.getString("prog_test_name"));
+                                programInfo.setConfig(new HaTestConfig(rs.getString("test_config_json")));
                             }
+                            else {
+                                /**
+                                 * fall back to extracting program info attached
+                                 * to user
+                                 * 
+                                 */
+                                __logger.debug("Loading test program info from current assigned program: " + testId);
+                                test.setProgramInfo(CmUserProgramDao.getInstance().loadProgramInfoCurrent(test.getUser().getUid()));
+                            }
+
+                            // todo: remove connection
+                            Connection conn = HotMathProperties.getInstance().getDataSourceObject().getSbDBConnection().getConnection();
+                            test.setTestDef(HaTestDefFactory.createTestDef(conn, test.getProgramInfo().getTestDefId()));
+
+                            return test;
+                        } catch (Exception e) {
+                            __logger.error("Error loading test: " + testId);
+                            throw new SQLException(e.getMessage(), e);
                         }
-                    });
+                    }
+                });
 
+        /**
+         * There should be only one test for a given test_id
+         * 
+         * If multiple, then is in error.
+         * 
+         * Report error and return first test found.
+         * 
+         * 
+         */
+        if (tests.size() == 0) {
+            throw new Exception("No such test found: " + testId);
+        }
+        else if (tests.size() > 1) {
+            __logger.warn("More than one test found for test_id " + testId);
+        }
 
-            
-            /** There should be only one test for a given test_id
-             *  
-             *  If multiple, then is in error. 
-             *  
-             *  Report error and return first test found.
-             *  
-             *  
-             */
-            if(tests.size() == 0) {
-                throw new Exception("No such test found: " + testId);
-            }
-            else if(tests.size() > 1) {
-                __logger.warn("More than one test found for test_id " + testId);
-            }
-            
-            HaTest test = tests.get(0);
-            
-            /**
-             * Get all ids defined for test and add to HaTest object
-             * 
-             */
-            List<String> testIds = getTestIdsForTest(test.getTestId());
-            for (String pid : testIds) {
-                test.addPid(pid);
-            }
+        HaTest test = tests.get(0);
 
-            // HaTestConfig config = new HaTestConfig(configJson);
-            // test.setConfig(config);
+        /**
+         * Get all ids defined for test and add to HaTest object
+         * 
+         */
+        List<String> testIds = getTestIdsForTest(test.getTestId());
+        for (String pid : testIds) {
+            test.addPid(pid);
+        }
 
-            CmCacheManager.getInstance().addToCache(CacheName.TEST, testId, test);
+        // HaTestConfig config = new HaTestConfig(configJson);
+        // test.setConfig(config);
 
-            return test;
+        CmCacheManager.getInstance().addToCache(CacheName.TEST, testId, test);
+
+        return test;
     }
 
     /**
@@ -508,16 +511,17 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             int answeredCorrect, int answeredIncorrect, int notAnswered) throws HotMathException {
         PreparedStatement pstat = null;
         ResultSet rs = null;
-        
-        /** There should not be any existing test run for this test_id
-         *  
-         *  if there is then, it is a duplicate and is an exception.
-         *  
-         *  Throw exception to help find this bug!
+
+        /**
+         * There should not be any existing test run for this test_id
+         * 
+         * if there is then, it is a duplicate and is an exception.
+         * 
+         * Throw exception to help find this bug!
          */
         Integer count = getJdbcTemplate().queryForObject(
                 "select count(*) from HA_TEST_RUN where test_id = ?",
-                new Object[]{testId},
+                new Object[] { testId },
                 new RowMapper<Integer>() {
                     @Override
                     public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -525,14 +529,12 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
                     }
                 });
 
-        
         try {
 
-            if(count > 0) {
+            if (count > 0) {
                 throw new Exception("This test has already been checked");
             }
-                        
-            
+
             /**
              * Determine if user passed this quiz/test
              * 
@@ -554,7 +556,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
 
             HaTest test = HaTestDao.getInstance().loadTest(testId);
             String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, " +
-                         " answered_incorrect, not_answered,run_session,is_passing,is_html5_only)values(?,?,?,?,?,1,?,?)";
+                    " answered_incorrect, not_answered,run_session,is_passing,is_html5_only)values(?,?,?,?,?,1,?,?)";
             pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             HaTestRun testRun = new HaTestRun();
 
@@ -565,7 +567,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             pstat.setInt(4, answeredIncorrect);
             pstat.setInt(5, notAnswered);
             pstat.setInt(6, passedQuiz ? 1 : 0);
-            pstat.setInt(7, clientEnv.isFlashEnabled()?0:0);
+            pstat.setInt(7, clientEnv.isFlashEnabled() ? 0 : 0);
 
             int cnt = pstat.executeUpdate();
             if (cnt != 1)
@@ -610,10 +612,11 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             updateTestRunSessions(conn, runId);
 
             /*
-             * shouldn't update Quiz columns for CP "test runs" (pinfo.getCustomProgramId() > 0)
+             * shouldn't update Quiz columns for CP "test runs"
+             * (pinfo.getCustomProgramId() > 0)
              */
             if (pinfo.getCustomProgramId() <= 0)
-            	HaUserExtendedDao.updateUserExtended(conn, studentUid, testRun);
+                HaUserExtendedDao.updateUserExtended(conn, studentUid, testRun);
 
             return testRun;
         } catch (HotMathException hme) {
@@ -673,10 +676,10 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public List<String> getTestIdsForTest(int testId) throws Exception {
-        
+
         return getJdbcTemplate().query(
                 "select * from HA_TEST_IDS where test_id = ? order by tid",
-                new Object[]{testId},
+                new Object[] { testId },
                 new RowMapper<String>() {
                     @Override
                     public String mapRow(ResultSet rs, int rowNum) throws SQLException {

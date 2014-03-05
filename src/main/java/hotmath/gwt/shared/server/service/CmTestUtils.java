@@ -2,7 +2,7 @@ package hotmath.gwt.shared.server.service;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
-import hotmath.testset.ha.CmProgram;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.testset.ha.HaUserFactory;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;

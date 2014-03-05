@@ -29,10 +29,10 @@ import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
-import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestDefDescription;
@@ -2059,11 +2059,6 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             String progId = rs.getString("prog_id").toUpperCase();
             progId = (progId != null) ? progId.replaceAll(" ", "").replaceAll("-", "") : progId;
 
-            /**
-             * What to do if CmProgramType.valueOf() does not exist? It throws
-             * nasty exception! TODO: need better way to determine
-             * CmProgramType.
-             */
             CmProgramType progType = (progId != null) ? CmProgramType.lookup(progId) : null;
 
             sprm.setProgramType(progType);

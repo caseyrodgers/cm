@@ -1,8 +1,8 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.server.service.CmTestUtils;
-import hotmath.testset.ha.CmProgram;
 
 public class QuizContextTest extends CmDbTestCase{
     public QuizContextTest(String name) {

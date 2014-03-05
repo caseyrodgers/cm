@@ -4,6 +4,7 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
@@ -12,7 +13,6 @@ import hotmath.subscriber.SalesZone;
 import hotmath.subscriber.SalesZone.Representative;
 import hotmath.subscriber.id.IdCreateStategyImpHmPilot;
 import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
-import hotmath.testset.ha.CmProgram;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 

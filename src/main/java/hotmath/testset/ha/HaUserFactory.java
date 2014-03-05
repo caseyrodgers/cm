@@ -11,6 +11,7 @@ import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;

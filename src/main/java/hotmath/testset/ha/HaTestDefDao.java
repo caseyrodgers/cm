@@ -6,6 +6,7 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.model.CustomQuizId;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
@@ -120,6 +121,7 @@ public class HaTestDefDao extends SimpleJdbcDaoSupport {
         public HaTestDef mapRow(ResultSet rs, int rowNum) throws SQLException {
             try {
                 String testName = rs.getString("test_name");
+
                 HaTestDef testDef = null;
                 if (testName.toLowerCase().indexOf(CmProgram.AUTO_ENROLL.getTitle().toLowerCase()) > -1) {
                     testDef = new HaTestDefPlacement();

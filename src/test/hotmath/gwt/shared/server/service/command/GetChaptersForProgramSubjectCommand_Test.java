@@ -4,8 +4,8 @@ import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.rpc.action.GetChaptersForProgramSubjectAction;
-import hotmath.testset.ha.CmProgram;
 
 public class GetChaptersForProgramSubjectCommand_Test extends CmDbTestCase {
 	

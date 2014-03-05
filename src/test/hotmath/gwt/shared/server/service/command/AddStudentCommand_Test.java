@@ -6,8 +6,8 @@ import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
-import hotmath.testset.ha.CmProgram;
 
 public class AddStudentCommand_Test extends CmDbTestCase {
 	

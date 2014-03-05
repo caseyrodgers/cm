@@ -18,6 +18,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.model.ProgramData;
 import hotmath.gwt.shared.client.model.ProgramSegmentData;
 import hotmath.gwt.shared.client.model.TrendingData;
@@ -25,7 +26,6 @@ import hotmath.gwt.shared.client.rpc.action.SaveAutoRegistrationAction;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.server.service.command.SaveAutoRegistrationCommand;
 import hotmath.spring.SpringManager;
-import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
@@ -680,9 +680,8 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             m.setArchiveDate(rs.getString("archive_date"));
             m.setSectionCount(rs.getInt("segment_count"));
             
-            String progId = rs.getString("id").toUpperCase();
-            progId = (progId != null) ? progId.replaceAll(" ", "").replaceAll("-", "") : progId;
-            CmProgramType progType = (progId != null) ? CmProgramType.valueOf(progId) : null;
+            String progId = rs.getString("id");
+            CmProgramType progType = (progId != null) ? CmProgramType.lookup(progId) : null;
             
             m.setProgramType(progType);
             l.add(m);

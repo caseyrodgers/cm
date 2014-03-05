@@ -5,7 +5,8 @@ import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.testset.ha.CmProgram;
+import hotmath.gwt.shared.client.CmProgram;
+import hotmath.testset.ha.HaTestDefPlacement;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaUser;
 import hotmath.util.HMConnectionPool;
@@ -35,43 +36,10 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
 
         String thisTest = getTestRun().getHaTest().getSubTitle(getTest().getSegment()).toLowerCase();
 
-        CmProgram program=null;
         
         CmProgramFlowAction nextAction = new CmProgramFlowAction();
-        // some trigger, in this case > 1 wrong answers.
-        if ((total - correct) > 1) {
-            /** Sign user up for the current subject program.
-                map to real Program name.
-            */
-            if(thisTest.indexOf("essentials") > -1) {
-                if(correct < 9) {
-                    program = CmProgram.ESSENTIALS;
-                }
-            }
-            else if (thisTest.indexOf("pre-algebra") > -1) {
-                if(correct < 9) {
-                    program = CmProgram.PREALG_PROF;    
-                }
-            } else if (thisTest.indexOf("algebra 1") > -1) {
-                if(correct < 9) {
-                    program = CmProgram.ALG1_PROF;
-                }
-            } else if (thisTest.indexOf("geometry") > -1) {
-                if(correct < 9) {
-                    program = CmProgram.GEOM_PROF;
-                }
-            } else if (thisTest.indexOf("algebra 2") > -1) {
-                program = CmProgram.ALG2_PROF;
-            }
-        } else if (thisTest.indexOf("algebra 2") > -1) {
-            /**
-             * this means user passed the last test
-             * assign to National as default
-             * 
-             */
-            program = CmProgram.NATIONAL;
-        }
-
+        
+        CmProgram program=((HaTestDefPlacement)getTest().getTestDef()).getNextProblem(thisTest, total, correct);
         HaUser user = getTestRun().getHaTest().getUser();        
 
         if (program != null) {

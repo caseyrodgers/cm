@@ -4,6 +4,7 @@ import hotmath.cm.program.CmProgramFlow;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.shared.client.CmProgram;
 
 import java.util.List;
 

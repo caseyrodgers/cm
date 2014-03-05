@@ -1,6 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.shared.client.CmProgram;
 
 import java.util.List;
 

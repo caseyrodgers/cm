@@ -19,10 +19,10 @@ import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand.CustomProgramInfo;
-import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaUserFactory;
 import hotmath.util.sql.SqlUtilities;
 

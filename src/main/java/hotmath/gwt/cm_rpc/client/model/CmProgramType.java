@@ -3,34 +3,30 @@ package hotmath.gwt.cm_rpc.client.model;
 
 public enum CmProgramType {
 
-    AUTOENROLL("Auto-Enroll", "AUTOENROLL"),
-    CHAP("Chap", "CHAP"),
-    CUSTOM("Custom","CUSTOM"),
-    CUSTOMQUIZ("Custom Quiz", "CUSTOMQUIZ"),
-    GRADPREP("Grad Prep","GRADPREP"),
-    GRADPREPNATIONAL("Grad Prep National", "GRADPREPNATIONAL"),
-    GRADPREPTX("Grad Prep Tx", "GRADPREPTX"),
-    MATHJAX("MathJax", "MATHJAX"),
-    PROF("Prof", "PROF"),
-    OTHER("Other", "Other"),
-    ASSIGNMENTS_ONLY("Assignments Only", "ASSIGNMENTSONLY"),
-    UNKNOWN("UnknownType", "UKNOWN");
+    AUTOENROLL("Auto-Enroll"),
+    CHAP("Chap"),
+    CUSTOM("Custom"),
+    CUSTOMQUIZ("Custom Quiz"),
+    GRADPREP("Grad Prep"),
+    GRADPREPNATIONAL("Grad Prep National"),
+    GRADPREPTX("Grad Prep Tx"),
+    MATHJAX("MathJax"),
+    PROF("Prof"),
+    OTHER("Other"),
+    ASSIGNMENTS_ONLY("Assignments Only"),
+    UNKNOWN("UnknownType"),
+    AUTOENROLLCOLLEGE("Auto-Enroll College");
 
     private final String type;
-    private final String name;
 
-    CmProgramType(String type, String name) {
+    CmProgramType(String type) {
         this.type = type;
-        this.name = name;
     }
 
     public String getType() {
         return type;
     }
 
-    public String getName() {
-        return name;
-    }
 
     /** Do a case-insensitive search
      *  for name and return UNKNOWN
@@ -40,18 +36,18 @@ public enum CmProgramType {
      * @return
      */
     static public CmProgramType lookup(String name) throws IllegalArgumentException {
-        boolean found = false;
+        
+        if(name == null) {
+            return null;
+        }
+        
+        name = name.replaceAll(" ", "").replaceAll("-", "");
+
         for (CmProgramType e : values()) {
-        	String type=e.type;
+        	String type=e.toString();
             if (type.equalsIgnoreCase(name)) {
                 return e;
             }
-            
-        	String ename=e.name;
-            if (ename.equalsIgnoreCase(name)) {
-                return e;
-            }
-
         }
         throw new IllegalArgumentException("No such CmProgramType: " + name);
     }

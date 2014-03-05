@@ -6,8 +6,8 @@ import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
-import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.StudentUserProgramModel;
 
 import java.util.ArrayList;

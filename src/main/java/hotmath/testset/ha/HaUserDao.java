@@ -14,6 +14,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.UserInfoStats;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tools.client.model.ActivityLogRecord;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
 

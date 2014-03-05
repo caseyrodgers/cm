@@ -14,14 +14,7 @@ public class CustomProgramAction implements Action<CmList<CustomLessonModel>>{
     Integer programId;
     Integer adminId;
     String programName;
-    
-    public Integer getAdminId() {
-        return adminId;
-    }
-
-    public void setAdminId(Integer adminId) {
-        this.adminId = adminId;
-    }
+    int destAdminId;
 
     List<CustomLessonModel> lessons;
     
@@ -32,9 +25,27 @@ public class CustomProgramAction implements Action<CmList<CustomLessonModel>>{
         this.action = action;
     }
     
+    public int getDestAdminId() {
+        return destAdminId;
+    }
+
+    public void setDestAdminId(int destAdminId) {
+        this.destAdminId = destAdminId;
+    }
+
     public ActionType getAction() {
         return action;
     }
+    
+    
+    public Integer getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(Integer adminId) {
+        this.adminId = adminId;
+    }
+    
 
     public String getProgramName() {
         return programName;
@@ -66,8 +77,8 @@ public class CustomProgramAction implements Action<CmList<CustomLessonModel>>{
     
     @Override
     public String toString() {
-        return "CustomProgramAction [action=" + action + ", adminId=" + adminId + ", lessons=" + lessons
-                + ", programId=" + programId + ", programName=" + programName + "]";
+        return "CustomProgramAction [action=" + action + ", programId=" + programId + ", adminId=" + adminId + ", programName=" + programName
+                + ", destAdminId=" + destAdminId + ", lessons=" + lessons + "]";
     }    
 
     static public enum ActionType {
@@ -89,6 +100,13 @@ public class CustomProgramAction implements Action<CmList<CustomLessonModel>>{
         /** create a new Custom Program 
          * 
          */
-        CREATE
+        CREATE,
+        
+        
+        /** Copy custom problem into optional other account
+         * 
+         */
+        COPY
     }
+
 }

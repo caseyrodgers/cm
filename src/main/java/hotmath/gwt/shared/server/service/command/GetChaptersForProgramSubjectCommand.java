@@ -23,7 +23,6 @@ public class GetChaptersForProgramSubjectCommand implements ActionHandler<GetCha
 
 	@Override
 	public Class<? extends Action<? extends Response>> getActionType() {
-		// TODO Auto-generated method stub
 		return GetChaptersForProgramSubjectAction.class;
 	}
 }

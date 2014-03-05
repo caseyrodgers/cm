@@ -2,7 +2,7 @@
 <%@ page import="java.sql.Connection, java.util.List" %>
 <%@ page import="hotmath.gwt.cm_admin.server.model.CmProgramListingDao" %>
 <%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson" %>
-<%@ page import="hotmath.testset.ha.CmProgram" %>
+<%@ page import="hotmath.gwt.shared.client.CmProgram" %>
 <%@ page import="hotmath.util.HMConnectionPool" %>
 
 <%

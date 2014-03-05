@@ -15,6 +15,7 @@ import hotmath.gwt.shared.client.model.CustomQuizId;
 import hotmath.gwt.shared.client.model.CustomQuizInfoModel;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.server.service.command.CustomProgramCommand_Test;
 import hotmath.spring.SpringManager;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -421,6 +422,15 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         return customProg;
     }
 
+    /** Returns CustomProgramModel of custom program matching 
+     * customProgramName or null if not exists
+     * 
+     * @param conn
+     * @param adminId
+     * @param customProgramName
+     * @return
+     * @throws Exception
+     */
     public CustomProgramModel getCustomProgram(final Connection conn, Integer adminId, String customProgramName)
             throws Exception {
         PreparedStatement stmt = null;
@@ -431,7 +441,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
             stmt.setString(2, customProgramName);
             ResultSet rs = stmt.executeQuery();
             if (!rs.next())
-                throw new CmException("Custom Program not found for: " + adminId + ", " + customProgramName);
+                return null;
 
             return new CustomProgramModel(rs.getString("name"), rs.getInt("id"), rs.getInt("assigned_count"),
                     rs.getInt("inuse_count"), rs.getInt("is_template") != 0,
@@ -444,9 +454,11 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
     public CmList<CustomProgramModel> deleteCustomProgram(final Connection conn, Integer programId) throws Exception {
         Statement stmt = null;
         try {
-            CmList<CustomProgramModel> programs = new CmArrayList<CustomProgramModel>();
             stmt = conn.createStatement();
             stmt.executeUpdate("delete from HA_CUSTOM_PROGRAM where id = " + programId);
+            stmt.executeUpdate("delete from HA_CUSTOM_PROGRAM_LESSON where program_id = " + programId);
+            
+            CmList<CustomProgramModel> programs = new CmArrayList<CustomProgramModel>();
             return programs;
         } finally {
             SqlUtilities.releaseResources(null, stmt, null);
@@ -908,4 +920,70 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         else
             return 99;
     }
+
+    public void copyCustomProblem(Connection conn, Integer sourceAdminId, Integer programId, int destAdminId) throws Exception {
+        
+        /** Does this account already have a CP with name? 
+         * */
+        final CustomProgramModel existingCp = getCustomProgram(programId);
+        if(existingCp == null) {
+            throw new Exception("No such Custom Problem: " + programId);
+        }
+
+        CustomProgramModel destCp = getCustomProgram(conn, destAdminId, existingCp.getProgramName());
+        if(destCp != null) {
+            deleteCustomProgram(conn,  destCp.getProgramId());
+        }
+
+        createNewCustomProgram(conn, destAdminId,existingCp.getProgramName(),getCustomProgramLessons(conn,  existingCp.getProgramId(), 1) );
+    }
+    
+    
+    public void installCustomUtahPrograms() throws Exception {
+        
+        int cpsToCopy[] = {
+        4489,
+        4490,
+        4491,
+        4492,
+        4493,
+        4494,
+        4495,
+        4496,
+        4497,
+        4498,
+        4499,
+        4500,
+        4501,
+        4502,
+        4503,
+        4504
+        };
+        
+        Connection conn=null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            for(int cpId: cpsToCopy) {
+                copyCustomProblem(conn, 5, cpId, 216);
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null, null, conn);
+        }
+    }
+    
+    
+    static public void main(String as[]) {
+        try {
+            CmCustomProgramDao.getInstance().installCustomUtahPrograms();
+            System.out.println("Custom problems installed");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        
+        System.exit(0);
+    }
+    
+    
 }
