@@ -8,6 +8,7 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
 
 	String schoolName;
     boolean isFreeAccount;
+    boolean isCollege;
     String schoolUserName;
     String adminUserName;
     String passcode;
@@ -16,6 +17,7 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
     private Integer maxStudents;
     private Integer totalStudents;
     private Integer countFreeStudents;
+    private int countCommunityStudents;
     private String hasTutoring;
     private Integer tutoringMinutes;
     private String subscriberId;
@@ -36,6 +38,14 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
 	
 	public Boolean getIsFreeAccount() {
 	    return isFreeAccount;
+	}
+	
+	public void setIsCollege(boolean isCollege) {
+	    this.isCollege = isCollege;
+	}
+	
+	public boolean getIsCollege() {
+	    return isCollege;
 	}
 	
 	public void setSchoolName(String schoolName) {
@@ -104,6 +114,14 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
 	
 	public Integer getCountFreeStudents() {
 	    return countFreeStudents;
+	}
+
+	public void setCountCommunityStudents(int count) {
+	    this.countCommunityStudents = count;
+	}
+	
+	public int getCountCommunityStudents() {
+	    return countComunityStudents;
 	}
 
 	public String getHasTutoring() {
