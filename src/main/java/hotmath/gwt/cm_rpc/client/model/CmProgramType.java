@@ -13,7 +13,7 @@ public enum CmProgramType {
     MATHJAX("MathJax"),
     PROF("Prof"),
     OTHER("Other"),
-    ASSIGNMENTS_ONLY("Assignments Only"),
+    ASSIGNMENTSONLY("Assignments Only"),
     UNKNOWN("UnknownType"),
     AUTOENROLLCOLLEGE("Auto-Enroll College"),
     NONE("none");

@@ -178,7 +178,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         
         
         
-        if(sm != null && (sm.getProgram().getProgramType() == CmProgramType.AUTOENROLL || sm.getProgram().getProgramType() == CmProgramType.ASSIGNMENTS_ONLY)) {
+        if(sm != null && (sm.getProgram().getProgramType() == CmProgramType.AUTOENROLL || sm.getProgram().getProgramType() == CmProgramType.ASSIGNMENTSONLY)) {
             stdAdvOptionsBtn.setEnabled(false);
         }
         else {
@@ -554,7 +554,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                     activeSection = 0;
 
 
-                    if (progType == null || progType == CmProgramType.AUTOENROLL || progType == CmProgramType.ASSIGNMENTS_ONLY || progType == CmProgramType.AUTOENROLLCOLLEGE || progType == CmProgramType.NONE) {
+                    if (progType == null || progType == CmProgramType.AUTOENROLL || progType == CmProgramType.ASSIGNMENTSONLY || progType == CmProgramType.AUTOENROLLCOLLEGE || progType == CmProgramType.NONE) {
                         stdAdvOptionsBtn.disable();
                     } else {
                         stdAdvOptionsBtn.enable();
@@ -835,7 +835,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 /** When set, the student will only have access to the assignments.
                  * 
                  */
-                StudyProgramModel spma = new StudyProgramModel(-1, CmProgramType.ASSIGNMENTS_ONLY.getType(), CmProgramType.ASSIGNMENTS_ONLY.getType(), CmProgramType.ASSIGNMENTS_ONLY.getType(), 0, " ", 0, " ",false, false, false,false, 0);
+                StudyProgramModel spma = new StudyProgramModel(-1, CmProgramType.ASSIGNMENTSONLY.getType(), CmProgramType.ASSIGNMENTSONLY.getType(), CmProgramType.ASSIGNMENTSONLY.getType(), 0, " ", 0, " ",false, false, false,false, 0);
                 progList.add(new StudyProgramExt(spma,spma.getTitle(), spma.getShortTitle(), spma.getDescr(), false, false, false, 0, null));
 
                 
@@ -1067,7 +1067,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             
             if (stdAdvOptionsBtn.isVisible()) {
                 CmProgramType pt = stuMdl.getProgram().getProgramType();
-                if(pt == CmProgramType.AUTOENROLL ||  pt == CmProgramType.AUTOENROLLCOLLEGE || pt == CmProgramType.ASSIGNMENTS_ONLY || pt == CmProgramType.NONE) {
+                if(pt == CmProgramType.AUTOENROLL ||  pt == CmProgramType.AUTOENROLLCOLLEGE || pt == CmProgramType.ASSIGNMENTSONLY || pt == CmProgramType.NONE) {
                     stdAdvOptionsBtn.setEnabled(false);
                 }
                 else {

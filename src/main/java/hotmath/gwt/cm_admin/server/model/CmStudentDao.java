@@ -2110,7 +2110,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             boolean isCompleted) {
 
         StudentProgramModel program = student.getProgram();
-        if (program.getProgramType() == CmProgramType.ASSIGNMENTS_ONLY) {
+        if (program.getProgramType() == CmProgramType.ASSIGNMENTSONLY) {
             student.setStatus("");
         } else if (program.isCustom() == false) {
             program.setProgramDescription(programName);
