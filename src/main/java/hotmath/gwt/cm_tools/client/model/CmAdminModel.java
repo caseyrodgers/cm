@@ -4,11 +4,14 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 public class CmAdminModel implements Response {
 	
-    public CmAdminModel() {}
+	private static final long serialVersionUID = -2998846590065500098L;
+
+	public CmAdminModel() {}
     
     int uid;
     int subscriberId;
     int passCode;
+
     public int getUid() {
         return uid;
     }
