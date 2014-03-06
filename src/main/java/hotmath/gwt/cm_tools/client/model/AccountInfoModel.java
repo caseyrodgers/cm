@@ -46,6 +46,10 @@ public interface AccountInfoModel extends Response {
 
     public Integer getCountFreeStudents();
 
+    public void setCountCommunityStudents(int count);
+
+    public int getCountCommunityStudents();
+
     public String getHasTutoring();
 
     public void setHasTutoring(String hasTutoring);
@@ -73,4 +77,8 @@ public interface AccountInfoModel extends Response {
     public void setAccountRepEmail(String emaail);
 
     public String getAccountRepEmail();
+
+    public void setIsCollege(boolean isCollege);
+
+    public boolean getIsCollege();
 }
