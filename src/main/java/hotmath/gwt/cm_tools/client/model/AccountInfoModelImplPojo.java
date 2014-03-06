@@ -121,7 +121,7 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
 	}
 	
 	public int getCountCommunityStudents() {
-	    return countComunityStudents;
+	    return countCommunityStudents;
 	}
 
 	public String getHasTutoring() {
