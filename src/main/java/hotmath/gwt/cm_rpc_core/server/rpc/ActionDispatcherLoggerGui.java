@@ -139,21 +139,27 @@ public class ActionDispatcherLoggerGui extends JFrame {
         setVisible(true);
     }
     
-    /** return true if this action should be cached
+    /** return true if this action should be cached.
+     * 
+     * Return false if this action should not be cached.
      * 
      * @param actionName
      * @return
      */
     public boolean shouldActionBeCached(String actionName) {
         String cacheFilter = _actionPass.getText();
-        if(cacheFilter.length() == 0) {
-            return true;
+        if(cacheFilter.length() > 0) {
+            String filters[] = cacheFilter.split(",");
+            for(String f: filters) {
+                if(actionName.contains(f.trim())) {
+                    return false;
+                }
+            }
         }
-        else {
-            return !actionName.contains(cacheFilter);
-        }
-        
+        return true;
     }
+    
+    
     private void enableDebugMode(boolean yesNo) {
         if(yesNo) {
             Level level = Level.DEBUG;

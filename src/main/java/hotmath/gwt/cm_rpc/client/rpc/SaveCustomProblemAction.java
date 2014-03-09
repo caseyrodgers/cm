@@ -6,7 +6,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
 public class SaveCustomProblemAction implements Action<RpcData> {
     
-    public enum SaveType{WIDGET, HINTSTEP}
+    public enum SaveType{WIDGET, HINTSTEP, PROBLEM_STATEMENT_TEXT}
 
     private String pid;
     private SaveType type;

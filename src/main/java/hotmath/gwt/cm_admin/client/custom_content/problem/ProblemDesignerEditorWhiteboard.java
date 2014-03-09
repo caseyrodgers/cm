@@ -4,12 +4,16 @@ import hotmath.gwt.cm_core.client.model.WhiteboardModel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.WhiteboardTemplatesResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardTemplatesAction;
+import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction.SaveType;
 import hotmath.gwt.cm_rpc.client.rpc.SaveStaticWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SetupWhiteboardForEditingAction;
 import hotmath.gwt.cm_rpc.client.rpc.SetupWhiteboardForEditingAction.SetupType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -27,7 +31,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
@@ -36,6 +39,7 @@ import com.sencha.gxt.widget.core.client.event.BeforeHideEvent;
 import com.sencha.gxt.widget.core.client.event.BeforeHideEvent.BeforeHideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 public class ProblemDesignerEditorWhiteboard extends GWindow {
 
@@ -43,8 +47,9 @@ public class ProblemDesignerEditorWhiteboard extends GWindow {
     private SolutionInfo solution;
     private BorderLayoutContainer _main;
     private CallbackOnComplete callback;
-    private int _countChanges;
+    private int _countChanges=1;
     protected String _pidEdit;
+    private CKEditorPanel _ckEditorPanel;
 
     public ProblemDesignerEditorWhiteboard(SolutionInfo solution, String whiteboardId, CallbackOnComplete callbackIn) {
         super(false);
@@ -63,7 +68,12 @@ public class ProblemDesignerEditorWhiteboard extends GWindow {
         addBeforeHideHandler(new BeforeHideHandler() {
             @Override
             public void onBeforeHide(BeforeHideEvent event) {
-                if (_countChanges > 0) {
+                /** 
+                 * always save for now
+                 * TODO: add tracking of editor and whiteboard commands for dirty.
+                 */
+                
+                if (_countChanges > 0) { 
                     callback.isComplete();
                 }
             }
@@ -90,24 +100,29 @@ public class ProblemDesignerEditorWhiteboard extends GWindow {
         
         CmBusyManager.setBusy(true);
         
-        new RetryAction<RpcData>() {
+        final String editorText = _ckEditorPanel.getEditorValue();
+        
+        new RetryAction<CmList<Response>>() {
             @Override
             public void attempt() {
-                SetupWhiteboardForEditingAction action = new SetupWhiteboardForEditingAction(SetupType.SAVE, solution.getPid(), _pidEdit);
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
+                
+                MultiActionRequestAction mAction = new MultiActionRequestAction(); 
+                mAction.getActions().add(new SaveCustomProblemAction(solution.getPid(), SaveType.PROBLEM_STATEMENT_TEXT, editorText));                
+                mAction.getActions().add(new SetupWhiteboardForEditingAction(SetupType.SAVE, solution.getPid(), _pidEdit));
+                setAction(mAction);
+                CmShared.getCmService().execute(mAction, this);
             }
 
             @Override
-            public void oncapture(RpcData result) {
+            public void oncapture( CmList<Response> result) {
                 CmBusyManager.setBusy(false);
-                _pidEdit = result.getDataAsString("status");
                 Log.info("Whiteboard changes commited: " + result);
-                
                 hide();
             }
 
-        }.register();    }
+        }.register();   
+        
+    }
 
     private void buildUi() {
         final ShowWorkPanel2Callback callBack = new ShowWorkPanelCallbackDefault() {
@@ -158,11 +173,34 @@ public class ProblemDesignerEditorWhiteboard extends GWindow {
              
         };
         
-        _main.setNorthWidget(new HTML("<p style='padding: 10px;font-size: 1.3em;'>Edit the problem statement below using the standard whiteboard tools.</p>"), new BorderLayoutData(50));
+        BorderLayoutContainer bCon = new BorderLayoutContainer();
+
+        _ckEditorPanel = new CKEditorPanel(jsni_getProblemStatementHtml());
+        bCon.setCenterWidget(new ShowWorkPanel2(callBack, true, true, "wb_ps-1", 300, getWidget()));
+        bCon.setNorthWidget(_ckEditorPanel, new BorderLayoutData(300));
         
-        _main.setCenterWidget(new ShowWorkPanel2(callBack, true, true, "wb_ps-1", 545, getWidget()));
+        
+        _main.setCenterWidget(bCon);
     }
     
+    
+    native private String jsni_getProblemStatementHtml() /*-{
+        var m = $wnd.$('.cm_problem_text');
+        if(m.length == 0) {
+            return '';
+        }
+        return m.html();
+    }-*/;
+    
+    
+    native private String jsni_setProblemStatementHtml(String text) /*-{
+        var m = $wnd.$('.cm_problem_text');
+        if(m.length == 0) {
+            alert('no cm_problem_text element');
+            return;
+        }
+        m.html(text);
+    }-*/;
     
     protected void setupWhiteboardForEditing(final ShowWorkPanel2 showWork, final String pid) {
         

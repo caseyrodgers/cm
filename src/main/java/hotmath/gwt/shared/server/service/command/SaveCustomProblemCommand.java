@@ -22,6 +22,11 @@ public class SaveCustomProblemCommand implements ActionHandler<SaveCustomProblem
             CustomProblemDao.getInstance().saveProblemHintStep(conn, action.getPid(), action.getSolutionMeta());
             break;
             
+            
+        case PROBLEM_STATEMENT_TEXT:
+            CustomProblemDao.getInstance().saveProblemStatementText(conn, action.getPid(), action.getData());
+            break;
+            
             default:
                 throw new Exception("Unknown SaveType:" + action);
         }

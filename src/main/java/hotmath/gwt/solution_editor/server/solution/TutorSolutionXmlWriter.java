@@ -2,11 +2,14 @@ package hotmath.gwt.solution_editor.server.solution;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Date;
 
 import org.jdom.CDATA;
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+
+import sb.util.SbUtilities;
 
 public class TutorSolutionXmlWriter {
     
@@ -24,7 +27,7 @@ public class TutorSolutionXmlWriter {
             
           Element root = new Element("hmsl");
           root.setAttribute("version", "2.0");
-          root.setAttribute("date", tutorSolution.getDate());
+          root.setAttribute("date", tutorSolution.getDate()!=null?tutorSolution.getDate():SbUtilities.getDateStamp());
           
           TutorProblem problem = tutorSolution.getProblem();
           Element prob = new Element("problem");
@@ -40,7 +43,7 @@ public class TutorSolutionXmlWriter {
           ident.setAttribute("chapter", id.getChapter());
           ident.setAttribute("section",id.getSection());
           ident.setAttribute("set", id.getSet());
-          ident.setAttribute("problemNumber",id.getProblemNumber());
+          ident.setAttribute("problemNumber",id.getProblemNumber()!=null?id.getProblemNumber():"");
           ident.setAttribute("page","" + id.getPage());
           prob.addContent(ident);
           

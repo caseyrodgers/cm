@@ -251,7 +251,7 @@ public class ProblemDesigner extends Composite {
        // add hooks on double click to bring up appropriate editor
        // and add a hover to indicate editability
        //
-       $wnd.$('.cm_whiteboard').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Click to Edit Problem Statement</button></div>").dblclick(function(x) {
+       $wnd.$('#problem_statement').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Click to Edit Problem Statement</button></div>").dblclick(function(x) {
            //var whiteboardId = x.target.parentNode.parentNode.parentNode.parentNode.getAttribute("wb_id");
            $wnd.gwt_editPart('whiteboard', null);
        });

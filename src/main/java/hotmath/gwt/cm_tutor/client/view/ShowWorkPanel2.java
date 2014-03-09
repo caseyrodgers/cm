@@ -426,7 +426,6 @@ public class ShowWorkPanel2 extends Composite {
 
             $wnd._theWhiteboard = new $wnd.Whiteboard(whiteboardId, isStatic, {'showTemplates':true});
             $wnd._theWhiteboard.initWhiteboard($doc);
-
             try {
                 //var templates = {"type":"img","path":"./","icon":"tn-","list":["temp_integral.png"]};
                 //$wnd._theWhiteboard.appendTemplates(templates);

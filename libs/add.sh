@@ -6,6 +6,9 @@ mvn install:install-file -DgroupId=com.sencha.gxt -DartifactId=gxt -Dversion=3.0
 mvn install:install-file -DgroupId=com.sencha.gxt -DartifactId=gxt-chart -Dversion=3.0.6 -Dpackaging=jar -Dfile=gxt-chart-3.0.6.jar -DgeneratePom=true
 
 
+mvn install:install-file -DgroupId=wiriplugin -DartifactId=wiriplugin -Dversion=4.3.3 -Dpackaging=jar -Dfile=wiriplugin-4.3.3.jar -DgeneratePom=true
+
+
 mvn install:install-file -DgroupId=html.editor -DartifactId=editor -Dversion=0.1 -Dpackaging=jar -Dfile=syntax_jtext-1.0.jar -DgeneratePom=true
 
 mvn install:install-file -DgroupId=sb -DartifactId=sblib -Dversion=2.0 -Dpackaging=jar -Dfile=sblib.jar -DgeneratePom=true

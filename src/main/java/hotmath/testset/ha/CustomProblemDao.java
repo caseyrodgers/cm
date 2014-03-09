@@ -331,6 +331,20 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 
         return htmlNew;
     }
+    
+    static public String stripProblemStatmentText(String html) {
+        String START_TOKEN = "<div class='cm_problem_text";
+        int startPos = html.indexOf(START_TOKEN);
+        if (startPos == -1) {
+            return html;
+        }
+        int endPos = html.indexOf("</div>", startPos);
+
+        String htmlNew = html.substring(0, startPos);
+        htmlNew += html.substring(endPos + 6);
+
+        return htmlNew;
+    }
 
     public void saveProblemHintStep(Connection conn, String pid, SolutionMeta solutionMeta) throws Exception {
         CmSolutionManagerDao dao = new CmSolutionManagerDao();
@@ -644,6 +658,21 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
             }
         });
         return lessons;
+    }
+
+    public void saveProblemStatementText(Connection conn, String pid, String data) throws Exception {
+        
+        CmSolutionManagerDao dao = new CmSolutionManagerDao();
+        TutorSolution ts = dao.getTutorSolution(conn, pid);
+        dao.getSolutionXml(conn,  pid);
+
+        String stmt = stripProblemStatmentText(ts.getProblem().getStatement());
+        
+        String html = "<div class='cm_problem_text'>" + data + "</div>";
+        
+        ts.getProblem().setStatement(html + stmt);
+        
+        dao.saveSolutionXml(conn, pid, ts.toXml(), ts.getTutorDefine(), true);        
     }
     
 }
