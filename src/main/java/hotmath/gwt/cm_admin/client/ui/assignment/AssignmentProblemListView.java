@@ -24,17 +24,19 @@ import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.Style.SelectionMode;
+import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
@@ -48,11 +50,11 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 public class AssignmentProblemListView extends ContentPanel {
-    
+
     final Grid<ProblemDtoLocal> problemListGrid;
     Assignment _assignment;
     Callback callback;
-    
+
     VerticalLayoutContainer problemListContainer;
     private TextButton _deleteButton;
 
@@ -61,44 +63,43 @@ public class AssignmentProblemListView extends ContentPanel {
     private TextButton _downButton;
     private TextButton _ccssButton;
     ProblemDtoLocal _selectedRecord;
+
     public AssignmentProblemListView(Assignment assignment, final Callback callback) {
-        
+
         this._assignment = assignment;
         this.callback = callback;
 
         AssignmentProblemListPanelProperties props = GWT.create(AssignmentProblemListPanelProperties.class);
-        
+
         ordinalNumberValueProvider = new MyOrdinalProvider();
         List<ColumnConfig<ProblemDtoLocal, ?>> cols = new ArrayList<ColumnConfig<ProblemDtoLocal, ?>>();
         cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.ordinal(), 25, ""));
-        cols.get(cols.size()-1).setMenuDisabled(true);
+        cols.get(cols.size() - 1).setMenuDisabled(true);
         cols.add(new ColumnConfig<ProblemDtoLocal, String>(props.labelWithType(), 150, "Problems Assigned"));
-        cols.get(cols.size()-1).setMenuDisabled(true);
+        cols.get(cols.size() - 1).setMenuDisabled(true);
         ColumnModel<ProblemDtoLocal> probColModel = new ColumnModel<ProblemDtoLocal>(cols);
-        
+
         ModelKeyProvider<ProblemDtoLocal> kp = new ModelKeyProvider<ProblemDtoLocal>() {
             @Override
             public String getKey(ProblemDtoLocal item) {
                 return item.getPid();
             }
         };
-        
 
-        
         ListStore<ProblemDtoLocal> store = new ListStore<ProblemDtoLocal>(kp);
 
-        if(assignment.getPids() != null) {
-            int ordinal=0;
-            for(ProblemDto prob: assignment.getPids()) {
-                store.add(new ProblemDtoLocal(assignment, prob, ++ordinal));    
+        if (assignment.getPids() != null) {
+            int ordinal = 0;
+            for (ProblemDto prob : assignment.getPids()) {
+                store.add(new ProblemDtoLocal(assignment, prob, ++ordinal));
             }
         }
-        
+
         ContentPanel root = this;
         root.setHeadingText("Assigned Problems");
         // root.getHeader().setIcon(ExampleImages.INSTANCE.table());
         root.addStyleName("margin-10");
-         
+
         problemListGrid = new Grid<ProblemDtoLocal>(store, probColModel);
         problemListGrid.getView().setAutoExpandColumn(cols.get(1));
         problemListGrid.getView().setStripeRows(true);
@@ -106,35 +107,35 @@ public class AssignmentProblemListView extends ContentPanel {
         problemListGrid.setBorders(false);
         problemListGrid.setHideHeaders(false);
         problemListGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        
+
         problemListGrid.setColumnReordering(true);
-        
+
         problemListGrid.getSelectionModel().addSelectionHandler(new SelectionHandler<ProblemDtoLocal>() {
             @Override
             public void onSelection(SelectionEvent<ProblemDtoLocal> event) {
-                showSelectedProblemHtml(callback);                
+                showSelectedProblemHtml(callback);
             }
         });
-        
-        /** If active assignment, then provide real time stats
+
+        /**
+         * If active assignment, then provide real time stats
          * 
          */
-        if(!assignment.getStatus().equals("Draft")) {
-            
+        if (!assignment.getStatus().equals("Draft")) {
+
             problemListGrid.addRowDoubleClickHandler(new RowDoubleClickHandler() {
                 @Override
                 public void onRowDoubleClick(RowDoubleClickEvent event) {
                     showUserProblemStats();
                 }
             });
-            
-            
+
             ColumnConfig<ProblemDtoLocal, String> percentCol = new ColumnConfig<ProblemDtoLocal, String>(props.percentCorrect(), 55, "Correct");
             percentCol.setComparator(new Comparator<String>() {
                 @Override
                 public int compare(String o1, String o2) {
                     /** strip of percent and treat as number */
-                    if(o1 == null || o2 == null) {
+                    if (o1 == null || o2 == null) {
                         return 0;
                     }
                     int i1 = Integer.parseInt(o1.split("%")[0].trim());
@@ -144,38 +145,54 @@ public class AssignmentProblemListView extends ContentPanel {
             });
             percentCol.setMenuDisabled(true);
             cols.add(percentCol);
-            
-            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Percentage of correct answers"));
-            cols.get(cols.size()-1).setMenuDisabled(true);
-            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromSafeConstant("Display percentage of correct answers"));
+
+            cols.get(cols.size() - 1).setToolTip(SafeHtmlUtils.fromString("Percentage of correct answers"));
+            cols.get(cols.size() - 1).setMenuDisabled(true);
+            cols.get(cols.size() - 1).setToolTip(SafeHtmlUtils.fromSafeConstant("Display percentage of correct answers"));
             TextButton answers = new TextButton("Answer Stats", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
-                    showUserProblemStats();              
+                    showUserProblemStats();
                 }
             });
             addTool(answers);
         }
-     
+
         problemListContainer = new VerticalLayoutContainer();
-        
+
         problemListContainer.add(problemListGrid, new VerticalLayoutData(1, 1));
-        
-        if(store.size() == 0) {
+
+        if (store.size() == 0) {
             root.setWidget(createDefaultNoProblemsMessge());
         }
         else {
             root.setWidget(problemListContainer);
         }
-     
+
         // needed to enable quicktips (qtitle for the heading and qtip for the
         // content) that are setup in the change GridCellRenderer
         new QuickTip(problemListGrid);
-        
-        
+
         addTool(createAddButton());
         _deleteButton = createDelButton();
         addTool(_deleteButton);
+
+        if (CmShared.getQueryParameter("debug") != null) {
+
+            final ToggleButton tb = new ToggleButton("Run Test");
+            tb.addSelectHandler(new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    if (tb.getValue()) {
+                        runTests();
+                    }
+                    else {
+                        stopTests();
+                    }
+                }
+            });
+            addTool(tb);
+        }
         _upButton = new TextButton("Up", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
@@ -193,12 +210,12 @@ public class AssignmentProblemListView extends ContentPanel {
         });
         addTool(_downButton);
         _downButton.setToolTip("Move problem selection down");
-        
+
         _ccssButton = new TextButton("CCSS", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 ProblemDtoLocal selected = problemListGrid.getSelectionModel().getSelectedItem();
-                if(selected == null) {
+                if (selected == null) {
                     CmMessageBox.showAlert("Please select a problem first");
                     return;
                 }
@@ -208,34 +225,84 @@ public class AssignmentProblemListView extends ContentPanel {
                  * use Lesson if available, if not use Problem
                  */
                 if (lesson.getLessonName() != null && lesson.getLessonName().trim().length() > 0)
-                	new CCSSCoverageForLessonWindow(lesson, _assignment.getAdminId());
+                    new CCSSCoverageForLessonWindow(lesson, _assignment.getAdminId());
                 else
                     new CCSSCoverageForProblemWindow(problem, _assignment.getAdminId());
             }
         });
         addTool(_ccssButton);
         _ccssButton.setToolTip("Display CCSS coverage for selected problem.");
-        
-        if(store.size()==0) {
+
+        if (store.size() == 0) {
             activateButtons(false);
         }
     }
-    
-    
+
+    Tester _tester;
+
+    protected void stopTests() {
+        if (_tester != null) {
+            _tester.stopTests();
+            _tester = null;
+        }
+    }
+
+    protected void runTests() {
+        final List<ProblemDtoLocal> probs = problemListGrid.getStore().getAll();
+
+        _tester = new Tester(probs, this);
+        _tester.startTests();
+    }
+
+    class Tester {
+
+        private List<ProblemDtoLocal> probs;
+        int count;
+        private AssignmentProblemListView view;
+        private Timer _timer;
+
+        public Tester(List<ProblemDtoLocal> probs, AssignmentProblemListView view) {
+            this.probs = probs;
+            this.count = 0;
+            this.view = view;
+        }
+
+        public void startTests() {
+
+            _timer = new Timer() {
+                @Override
+                public void run() {
+                    if (probs.size() > count) {
+                        ProblemDtoLocal item = probs.get(count++);
+                        view.problemListGrid.getSelectionModel().select(item, false);
+                        _timer.schedule(3000);
+                    }
+                }
+            };
+            _timer.schedule(0);
+        }
+
+        public void stopTests() {
+            _timer.cancel();
+            _timer = null;
+        }
+
+    }
+
     protected void showUserProblemStats() {
-        _selectedRecord  = problemListGrid.getSelectionModel().getSelectedItem();
-        if(_selectedRecord == null) {
+        _selectedRecord = problemListGrid.getSelectionModel().getSelectedItem();
+        if (_selectedRecord == null) {
             CmMessageBox.showAlert("Please select a problem first");
             return;
         }
-        new AssignmentProblemStatsDialog(AssignmentProblemListView.this._assignment.getAssignKey(), _selectedRecord.getPid(), _selectedRecord.getLabel(), new CallbackOnComplete() {
-            @Override
-            public void isComplete() {
-                showSelectedProblemHtml(callback);
-            }
-        });
+        new AssignmentProblemStatsDialog(AssignmentProblemListView.this._assignment.getAssignKey(), _selectedRecord.getPid(), _selectedRecord.getLabel(),
+                new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        showSelectedProblemHtml(callback);
+                    }
+                });
     }
-
 
     private void startCheckingRealTimeStats() {
         GetAssignmentRealTimeStatsAction action = new GetAssignmentRealTimeStatsAction(this._assignment.getAssignKey());
@@ -244,70 +311,66 @@ public class AssignmentProblemListView extends ContentPanel {
             public void onSuccess(AssignmentRealTimeStats result) {
                 updateRealTimeStats(result);
             }
+
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Error: " + caught);
             }
         });
-        
+
     }
-
-
 
     protected void updateRealTimeStats(AssignmentRealTimeStats pidStats) {
         ordinalNumberValueProvider.doIncreaseOnEachOrdinal(false);
 
         List<ProblemDtoLocal> storePids = problemListGrid.getStore().getAll();
-        
+
         ordinalNumberValueProvider.resetOrdinalNumber();
-        for(ProblemDtoLocal pl: storePids) {
+        for (ProblemDtoLocal pl : storePids) {
             // look up stats
-            for(PidStats ps: pidStats.getPidStats()) {
-                if(ps.getPid().equals(pl.getPid())) {
+            for (PidStats ps : pidStats.getPidStats()) {
+                if (ps.getPid().equals(pl.getPid())) {
                     pl.setPidStats(ps);
                     problemListGrid.getStore().update(pl);
                     break;
                 }
             }
         }
-        
-        
-    }
 
+    }
 
     protected void moveSelectProblem(int i) {
         ProblemDtoLocal selected = problemListGrid.getSelectionModel().getSelectedItem();
-        if(selected == null) {
+        if (selected == null) {
             CmMessageBox.showAlert("No selected problem");
             return;
         }
-        
+
         List<ProblemDtoLocal> curr = problemListGrid.getStore().getAll();
-        int which=0;
-        for(ProblemDtoLocal p: curr) {
-            if(p.getPid().equals(selected.getPid())) {
+        int which = 0;
+        for (ProblemDtoLocal p : curr) {
+            if (p.getPid().equals(selected.getPid())) {
                 break;
             }
             which++;
         }
-        
-        
-        if(which + i < 0 || which + i > curr.size()-1) {
+
+        if (which + i < 0 || which + i > curr.size() - 1) {
             return;
         }
-        
+
         // make editable copy
         List<ProblemDtoLocal> newList = new ArrayList<ProblemDtoLocal>();
         newList.addAll(curr);
-        
+
         newList.remove(selected);
         newList.add(which + i, selected);
-        
+
         problemListGrid.getStore().clear();
         ordinalNumberValueProvider.resetOrdinalNumber();
         problemListGrid.getStore().addAll(newList);
-        
-        problemListGrid.getSelectionModel().select(selected,false);
+
+        problemListGrid.getSelectionModel().select(selected, false);
     }
 
     private void activateButtons(boolean b) {
@@ -320,15 +383,13 @@ public class AssignmentProblemListView extends ContentPanel {
         setWidget(problemListContainer);
         ordinalNumberValueProvider.resetOrdinalNumber();
         problemListGrid.getStore().clear();
-        
+
         problemListGrid.getStore().addAll(createActiveList(cmList));
-        
-        activateButtons(cmList.size()>0);
+
+        activateButtons(cmList.size() > 0);
         forceLayout();
-        
-        
-        
-        if(!_assignment.getStatus().equals("Draft")) {
+
+        if (!_assignment.getStatus().equals("Draft")) {
             startCheckingRealTimeStats();
         }
     }
@@ -336,66 +397,63 @@ public class AssignmentProblemListView extends ContentPanel {
     private Widget createDefaultNoProblemsMessge() {
         CenterLayoutContainer cc = new CenterLayoutContainer();
         cc.add(new HTML("<h1>Press Add to begin selecting problem.</h1>"));
-        
+
         return cc;
     }
-    
+
     public void setNoProblemsMessge() {
         setWidget(createDefaultNoProblemsMessge());
-        
+
         forceLayout();
     }
 
     private TextButton createDelButton() {
-        
+
         TextButton btn = new TextButton("Delete");
         btn.setToolTip("Remove selected problem(s) from Assignment");
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                if(CmShared.getQueryParameter("debug") == null && !callback.isDraftMode()) {
+                if (CmShared.getQueryParameter("debug") == null && !callback.isDraftMode()) {
                     CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
                     return;
                 }
-                
+
                 List<ProblemDtoLocal> newList = new ArrayList<ProblemDtoLocal>();
-                
-                
-                
-                ProblemDtoLocal nextSelect=null;
-                for(int j=0, jt=problemListGrid.getStore().getAll().size();j<jt;j++) {
-                    ProblemDtoLocal pd = (ProblemDtoLocal)problemListGrid.getStore().getAll().get(j);
-                
-                    boolean found=false;
-                    for(int i=0, t=problemListGrid.getSelectionModel().getSelectedItems().size();i<t;i++) {
-                        ProblemDtoLocal pto = (ProblemDtoLocal)problemListGrid.getSelectionModel().getSelectedItems().get(i);
-                        if(pto == pd) {
+
+                ProblemDtoLocal nextSelect = null;
+                for (int j = 0, jt = problemListGrid.getStore().getAll().size(); j < jt; j++) {
+                    ProblemDtoLocal pd = (ProblemDtoLocal) problemListGrid.getStore().getAll().get(j);
+
+                    boolean found = false;
+                    for (int i = 0, t = problemListGrid.getSelectionModel().getSelectedItems().size(); i < t; i++) {
+                        ProblemDtoLocal pto = (ProblemDtoLocal) problemListGrid.getSelectionModel().getSelectedItems().get(i);
+                        if (pto == pd) {
                             // remove it
-                            found=true;
-                            
-                            int tot=problemListGrid.getStore().getAll().size();
-                            if(j<tot-1) {
-                                nextSelect = (ProblemDtoLocal)problemListGrid.getStore().get(j+1);
+                            found = true;
+
+                            int tot = problemListGrid.getStore().getAll().size();
+                            if (j < tot - 1) {
+                                nextSelect = (ProblemDtoLocal) problemListGrid.getStore().get(j + 1);
                             }
-                            else if(j>1){
-                                nextSelect = (ProblemDtoLocal)problemListGrid.getStore().get(j-1);
+                            else if (j > 1) {
+                                nextSelect = (ProblemDtoLocal) problemListGrid.getStore().get(j - 1);
                             }
-                            else if(j==1){
-                                nextSelect = (ProblemDtoLocal)problemListGrid.getStore().get(0);
-                            } 
+                            else if (j == 1) {
+                                nextSelect = (ProblemDtoLocal) problemListGrid.getStore().get(0);
+                            }
                             break;
                         }
                     }
-                    if(!found) {
+                    if (!found) {
                         newList.add(pd);
                     }
                 }
                 ordinalNumberValueProvider.resetOrdinalNumber();
                 problemListGrid.getStore().clear();
                 problemListGrid.getStore().addAll(newList);
-                
-                
-                if(nextSelect != null) {
+
+                if (nextSelect != null) {
                     newList.clear();
                     newList.add(nextSelect);
                     problemListGrid.getSelectionModel().setSelection(newList);
@@ -406,26 +464,24 @@ public class AssignmentProblemListView extends ContentPanel {
         return btn;
     }
 
-
     private Widget createAddButton() {
-        
+
         TextButton btn = new TextButton("Add");
         btn.setToolTip("Add one or more problems to Assignment");
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                
-                if(CmShared.getQueryParameter("debug") == null && !callback.isDraftMode()) {
+
+                if (CmShared.getQueryParameter("debug") == null && !callback.isDraftMode()) {
                     CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
                     return;
                 }
-                
+
                 AddProblemDialog.showDialog(new AddProblemDialog.AddProblemsCallback() {
                     @Override
                     public void problemsAdded(List<ProblemDto> problemsAdded) {
                         addProblemsToAssignment(createActiveList(problemsAdded));
                     }
-
 
                 });
             }
@@ -433,42 +489,42 @@ public class AssignmentProblemListView extends ContentPanel {
 
         return btn;
     }
-    
 
     private List<ProblemDtoLocal> createActiveList(List<ProblemDto> problemsAdded) {
         List<ProblemDtoLocal> la = new ArrayList<ProblemDtoLocal>();
-        int ordinal=0;
-        for(ProblemDto p: problemsAdded) {
+        int ordinal = 0;
+        for (ProblemDto p : problemsAdded) {
             la.add(new ProblemDtoLocal(_assignment, p, ++ordinal));
         }
         return la;
     }
 
     private void addProblemsToAssignment(final List<ProblemDtoLocal> problemsAdded) {
-        
-        /** make sure no duplicates
+
+        /**
+         * make sure no duplicates
          * 
          */
         List<ProblemDtoLocal> currList = problemListGrid.getStore().getAll();
-        for(ProblemDtoLocal pd: problemsAdded) {
-            
-            boolean found=false;
-            for(ProblemDtoLocal p: currList) {
-                if(p.getPid().equals(pd.getPid())) {
-                    found=true;
+        for (ProblemDtoLocal pd : problemsAdded) {
+
+            boolean found = false;
+            for (ProblemDtoLocal p : currList) {
+                if (p.getPid().equals(pd.getPid())) {
+                    found = true;
                     break;
                 }
             }
-            
-            if(!found) {
+
+            if (!found) {
                 problemListGrid.getStore().add(pd);
             }
             else {
-               CmMessageBox.showAlert("Problem '" + pd.getLabel() + "' is already in assignment");
+                CmMessageBox.showAlert("Problem '" + pd.getLabel() + "' is already in assignment");
             }
         }
-        
-        if(problemListGrid.getStore().size() == 0) {
+
+        if (problemListGrid.getStore().size() == 0) {
             setWidget(createDefaultNoProblemsMessge());
             activateButtons(false);
         }
@@ -478,10 +534,10 @@ public class AssignmentProblemListView extends ContentPanel {
         }
         forceLayout();
     }
-    
+
     private void showSelectedProblemHtml(Callback callbackOnComplete) {
         ProblemDtoLocal data = problemListGrid.getSelectionModel().getSelectedItem();
-        if(data != null) {
+        if (data != null) {
             callbackOnComplete.problemHasBeenSelected(data.getProblem());
         }
     }
@@ -502,42 +558,46 @@ public class AssignmentProblemListView extends ContentPanel {
         public String getPath() {
             return "/";
         }
-        
+
     };
 
     public List<ProblemDto> getAssignmentPids() {
         List<ProblemDto> problems = new ArrayList<ProblemDto>();
-        for(ProblemDtoLocal a: problemListGrid.getStore().getAll()) {
+        for (ProblemDtoLocal a : problemListGrid.getStore().getAll()) {
             problems.add(a.getProblem());
         }
         return problems;
     }
-    
+
     public interface AssignmentProblemListPanelProperties extends PropertyAccess<String> {
         @Path("pid")
         ModelKeyProvider<ProblemDtoLocal> id();
+
         ValueProvider<ProblemDtoLocal, String> percentCorrect();
+
         ValueProvider<ProblemDtoLocal, Integer> ordinal();
+
         ValueProvider<ProblemDtoLocal, String> labelWithType();
+
         ValueProvider<ProblemDtoLocal, Integer> ordinalNumber();
     }
 
-    
     class MyOrdinalProvider implements ValueProvider<ProblemDtoLocal, Integer> {
 
-        int orderPosition=0;
-        boolean increase=true;
-        
+        int orderPosition = 0;
+        boolean increase = true;
+
         public void doIncreaseOnEachOrdinal(boolean yesNo) {
             increase = yesNo;
         }
-        
+
         public void resetOrdinalNumber() {
             orderPosition = 0;
         }
+
         @Override
         public Integer getValue(ProblemDtoLocal object) {
-            if(this.increase) {
+            if (this.increase) {
                 ++orderPosition;
             }
             return orderPosition;
@@ -554,11 +614,11 @@ public class AssignmentProblemListView extends ContentPanel {
         }
     };
 
-
-    /** Composite of ProblemDto and real time active info 
+    /**
+     * Composite of ProblemDto and real time active info
      * 
      * @author casey
-     *
+     * 
      */
     class ProblemDtoLocal {
 
@@ -566,14 +626,13 @@ public class AssignmentProblemListView extends ContentPanel {
         int ordinal;
         PidStats pidStats;
         private Assignment assignment;
-        
 
         public ProblemDtoLocal(Assignment assignment, ProblemDto problem, int ordinal) {
             this.assignment = assignment;
             this.problem = problem;
             this.ordinal = ordinal;
         }
-        
+
         public void setPidStats(PidStats ps) {
             this.pidStats = ps;
         }
@@ -589,6 +648,7 @@ public class AssignmentProblemListView extends ContentPanel {
         public void setProblem(ProblemDto problem) {
             this.problem = problem;
         }
+
         public ProblemDto getProblem() {
             return this.problem;
         }
@@ -596,11 +656,11 @@ public class AssignmentProblemListView extends ContentPanel {
         public String getLabel() {
             return this.problem.getLabel();
         }
-        
+
         public String getLabelWithType() {
             String labelWithType = problem.getLabelWithType();
-            if(assignment.isPersonalized()) {
-                if(problem.getProblemType() == ProblemType.MULTI_CHOICE) {
+            if (assignment.isPersonalized()) {
+                if (problem.getProblemType() == ProblemType.MULTI_CHOICE) {
                     labelWithType += " *";
                 }
             }
@@ -608,24 +668,24 @@ public class AssignmentProblemListView extends ContentPanel {
         }
 
         public void setOrdinalNumber(Integer value) {
-            problem.setOrdinalNumber(value);    
+            problem.setOrdinalNumber(value);
         }
-        
+
         public Integer getOrdinalNumber() {
             return problem.getOrdinalNumber();
         }
-        
+
         public String getPid() {
             return problem.getPid();
         }
-        
+
         public String getPercentCorrect() {
-            if(pidStats == null) {
+            if (pidStats == null) {
                 return "--";
             }
             else {
                 int percent = pidStats.getCorrectPercent();
-                return (percent<10?" ":"") + percent + "%";
+                return (percent < 10 ? " " : "") + percent + "%";
             }
         }
 
