@@ -1,7 +1,8 @@
 mvn install:install-file -DgroupId=hotmath -DartifactId=hotmath -Dversion=2.0 -Dpackaging=jar -Dfile=hotmath2.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=hotmath -DartifactId=cm_lib -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=cm_lib-1.0-SNAPSHOT.jar
 
-mvn install:install-file -DgroupId=com.extjs.gxt -DartifactId=gxt -Dversion=2.2.3 -Dpackaging=jar -Dfile=gxt-2.2.3-gwt.22.jar -DgeneratePom=true
+#mvn install:install-file -DgroupId=com.extjs.gxt -DartifactId=gxt -Dversion=2.2.3 -Dpackaging=jar -Dfile=gxt-2.2.3-gwt.22.jar -DgeneratePom=true
+
 mvn install:install-file -DgroupId=com.sencha.gxt -DartifactId=gxt -Dversion=3.0.6 -Dpackaging=jar -Dfile=gxt-3.0.6.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=com.sencha.gxt -DartifactId=gxt-chart -Dversion=3.0.6 -Dpackaging=jar -Dfile=gxt-chart-3.0.6.jar -DgeneratePom=true
 
@@ -9,7 +10,7 @@ mvn install:install-file -DgroupId=com.sencha.gxt -DartifactId=gxt-chart -Dversi
 mvn install:install-file -DgroupId=wiriplugin -DartifactId=wiriplugin -Dversion=4.3.3 -Dpackaging=jar -Dfile=wiriplugin-4.3.3.jar -DgeneratePom=true
 
 
-mvn install:install-file -DgroupId=html.editor -DartifactId=editor -Dversion=0.1 -Dpackaging=jar -Dfile=syntax_jtext-1.0.jar -DgeneratePom=true
+#mvn install:install-file -DgroupId=html.editor -DartifactId=editor -Dversion=0.1 -Dpackaging=jar -Dfile=syntax_jtext-1.0.jar -DgeneratePom=true
 
 mvn install:install-file -DgroupId=sb -DartifactId=sblib -Dversion=2.0 -Dpackaging=jar -Dfile=sblib.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=smartsprites -DartifactId=smartsprites-with-depends -Dversion=0.3.0 -Dpackaging=jar -Dfile=smartsprites-with-depends.jar -DgeneratePom=true
@@ -20,13 +21,13 @@ mvn install:install-file -DgroupId=jtidy -DartifactId=jtidy -Dversion=r-938 -Dpa
 
 #mvn install:install-file -DgroupId=com.yahoo.platform.yui -DartifactId=yuicompressor -Dversion=2.3.6 -Dpackaging=jar -Dfile=yuicompressor-2.4.2.jar -DgeneratePom=true
 
-mvn install:install-file -DgroupId=lucene -DartifactId=lucene -Dversion=2.1 -Dpackaging=jar -Dfile=lucene-2.1.jar -DgeneratePom=true
+#mvn install:install-file -DgroupId=lucene -DartifactId=lucene -Dversion=2.1 -Dpackaging=jar -Dfile=lucene-2.1.jar -DgeneratePom=true
 
 mvn install:install-file -DgroupId=com.bramosystems.oss.player -DartifactId=bst-player-api -Dversion=1.2.1 -Dpackaging=jar -Dfile=bst-player-api-1.2.1.jar -DgeneratePom=true
 
-mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-user -Dversion=2.5.0 -Dpackaging=jar -Dfile=gwt-2.5.0/gwt-user.jar -DgeneratePom=true
-mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-dev -Dversion=2.5.0 -Dpackaging=jar -Dfile=gwt-2.5.0/gwt-dev.jar -DgeneratePom=true
-mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-servlet -Dversion=2.5.0 -Dpackaging=jar -Dfile=gwt-2.5.0/gwt-servlet.jar -DgeneratePom=true
+#mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-user -Dversion=2.5.0 -Dpackaging=jar -Dfile=gwt-2.5.0/gwt-user.jar -DgeneratePom=true
+#mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-dev -Dversion=2.5.0 -Dpackaging=jar -Dfile=gwt-2.5.0/gwt-dev.jar -DgeneratePom=true
+#mvn install:install-file -DgroupId=com.google.gwt -DartifactId=gwt-servlet -Dversion=2.5.0 -Dpackaging=jar -Dfile=gwt-2.5.0/gwt-servlet.jar -DgeneratePom=true
 
 mvn install:install-file -DgroupId=htmlparser -DartifactId=htmlparser -Dversion=1.6 -Dpackaging=jar -Dfile=htmlparser.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=org.json -DartifactId=json -Dversion=1.0 -Dpackaging=jar -Dfile=json-1.0.jar -DgeneratePom=true
