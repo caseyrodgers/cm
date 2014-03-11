@@ -268,15 +268,19 @@ public class AssignmentProblemListView extends ContentPanel {
         }
 
         public void startTests() {
-
             _timer = new Timer() {
                 @Override
                 public void run() {
-                    if (probs.size() > count) {
-                        ProblemDtoLocal item = probs.get(count++);
-                        view.problemListGrid.getSelectionModel().select(item, false);
-                        _timer.schedule(3000);
+                    if (probs.size() < count+1) {
+                        count = 0;
                     }
+
+                    ProblemDtoLocal item = probs.get(count);
+                    view.problemListGrid.getSelectionModel().select(item, false);
+                    view.problemListGrid.getView().focusRow(count);
+                    _timer.schedule(4000);
+                    
+                    count++;
                 }
             };
             _timer.schedule(0);
