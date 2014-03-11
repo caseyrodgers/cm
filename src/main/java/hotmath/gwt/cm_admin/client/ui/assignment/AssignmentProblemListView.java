@@ -278,7 +278,7 @@ public class AssignmentProblemListView extends ContentPanel {
                     ProblemDtoLocal item = probs.get(count);
                     view.problemListGrid.getSelectionModel().select(item, false);
                     view.problemListGrid.getView().focusRow(count);
-                    _timer.schedule(4000);
+                    _timer.schedule(6000);
                     
                     count++;
                 }
