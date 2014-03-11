@@ -90,7 +90,10 @@ var Whiteboard = function (cont, isStatic, _opts) {
     var loadedTemps = 0;
     var totalTempsloaded = 0;
     var graphEditMode = false;
-	var editGR;
+    var editGR;
+    var textEditMode = false;
+    var cTMaxWidth = null;
+    var objOnSel = null;
     // --- /gwt-resources/images/whiteboard/
     var imgPath = '/gwt-resources/images/whiteboard/'
     //imgPath = './'
@@ -257,11 +260,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 if (graphEditMode) {
                     //showHideGraphModuleEditor(false)
                 }
-                positionToolMenu('t', e.originalEvent);
-                $get_jqElement("#wb_menu").show()
+                // positionToolMenu('t', e.originalEvent);
+                //$get_jqElement("#wb_menu").show()
             });
             $get_jqElement("#wb_menu").on("mouseleave", function (e) {
-                $get_jqElement("#wb_menu").hide()
+                //$get_jqElement("#wb_menu").hide()
             });
             $get_jqElement('#canvas').on("contextmenu", function (e) {
                 hideTemplates()
@@ -455,10 +458,10 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 var visib = egraph.is(":visible");
                 showHideGraphModuleEditor(!visib);
             });
-			$(graph.createGTool("done")).click(function () {
+            $(graph.createGTool("done")).click(function () {
                 //var egraph = $get_jqElement("#egraph")
                 //var visib = egraph.is(":visible");
-				transMode='move'
+                transMode = 'move'
                 showHideGraphModuleEditor(false);
             });
         }
@@ -471,18 +474,21 @@ var Whiteboard = function (cont, isStatic, _opts) {
             obj.plot_data = eval(p.plot_datas);
             return (obj);
         }
-		function plotFunctionToGraphModule(config){
-		if (config) {
-                    var plot = wb.graphModule
-                    var graph = plot.graphObj
-                    graph.setAxis(config.xaxis, config.yaxis);
-                    graph.scaleGraph(config.xscale, config.yscale);
-					if(config.plot_data){
-					plot.setAxisDatas()
-					plot.renderData({data:convertObjToString(config.plot_data)},config.labelPlot,config.node_data,false,config.actions);
-					}
+
+        function plotFunctionToGraphModule(config) {
+            if (config) {
+                var plot = wb.graphModule
+                var graph = plot.graphObj
+                graph.setAxis(config.xaxis, config.yaxis);
+                graph.scaleGraph(config.xscale, config.yscale);
+                if (config.plot_data) {
+                    plot.setAxisDatas()
+                    plot.renderData({
+                        data: convertObjToString(config.plot_data)
+                    }, config.labelPlot, config.node_data, false, config.actions);
                 }
-		}
+            }
+        }
 
         function updateGraphModule(uid, config, rerender, data, boo) {
             //var config=eval(data.config)
@@ -497,10 +503,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     var graph = plot.graphObj
                     graph.setAxis(config.xaxis, config.yaxis);
                     graph.scaleGraph(config.xscale, config.yscale);
-					if(config.plot_data){
-					plot.setAxisDatas()
-					plot.renderData({data:convertObjToString(config.plot_data)},config.labelPlot,config.node_data,false,config.actions);
-					}
+                    if (config.plot_data) {
+                        plot.setAxisDatas()
+                        plot.renderData({
+                            data: convertObjToString(config.plot_data)
+                        }, config.labelPlot, config.node_data, false, config.actions);
+                    }
                 }
             }
             //graphicData.config=getGraphModuleConfig()
@@ -541,11 +549,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     dataArr: []
                 }
                 updateDataToSERVER(null, mobj);
-				
-            }else{
-			updateCanvas();
-			}
-            
+
+            } else {
+                updateCanvas();
+            }
+
         }
 
         function showHideGraphToggler(boo) {
@@ -554,7 +562,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
         }
 
-        function showHideGraphModuleEditor(boo,noupdate) {
+        function showHideGraphModuleEditor(boo, noupdate) {
             var plot
             var graph
             var config = selectedObj ? eval(selectedObj.config) : null;
@@ -615,10 +623,10 @@ var Whiteboard = function (cont, isStatic, _opts) {
                             updateGraphModule(plot.currentUID, nconfig, true, graphicDataStore[plot.objIndex])
                         }
                         gedit.hide();
-						if(!noupdate){
-                        updateCanvas();
-                        setObjSelected(graphicDataStore[plot.objIndex]);
-						}
+                        if (!noupdate) {
+                            updateCanvas();
+                            setObjSelected(graphicDataStore[plot.objIndex]);
+                        }
                     }
                 }
 
@@ -726,6 +734,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
     function drawBoundRect(obj, boo) {
         var dx = x - clickX
         var dy = y - clickY
+        var hitC = 26;
+        var hitR = hitC / 2;
         context.save();
         context.lineWidth = 4;
         context.strokeStyle = "rgba(0, 0, 255, 0.5)";
@@ -733,7 +743,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
         var isMoved = isObjTransformed(selectedObj.uid, 'move');
         var isScaled = isObjTransformed(selectedObj.uid, 'scale');
         var isRotated = isObjTransformed(selectedObj.uid, 'rotate');
+        var isEdited = isObjTransformed(selectedObj.uid, 'edit');
         var x0, y0, w0, h0, sx, sy;
+        var sbrect = cloneObject(selectedObj.brect)
+        if (selectedObj && selectedObj.id == 2 && isEdited) {
+            sbrect.w = isEdited.brect.w
+            sbrect.h = isEdited.brect.h
+        }
         if (transMode == 'move') {
             if (boo) {
                 obj = isMoved ? isMoved : {
@@ -743,8 +759,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
             }
             x0 = selectedObj.brect.xmin + obj.tx;
             y0 = selectedObj.brect.ymin + obj.ty;
-            w0 = selectedObj.brect.w;
-            h0 = selectedObj.brect.h;
+            w0 = sbrect.w;
+            h0 = sbrect.h;
+
             if (isScaled) {
 
                 sx = isScaled.tx;
@@ -756,14 +773,14 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 }
                 x0 = x0 - sx
                 y0 = y0 - sy
-                w0 = selectedObj.brect.w + (sx * 2)
-                h0 = selectedObj.brect.h + (sy * 2)
+                w0 = sbrect.w + (sx * 2)
+                h0 = sbrect.h + (sy * 2)
             }
             if (isRotated) {
                 x0 = x0 ? x0 : selectedObj.brect.xmin
                 y0 = y0 ? y0 : selectedObj.brect.ymin
-                w0 = w0 ? w0 : selectedObj.brect.w
-                h0 = h0 ? h0 : selectedObj.brect.h
+                w0 = w0 ? w0 : sbrect.w
+                h0 = h0 ? h0 : sbrect.h
                 var cx = x0 + (w0 / 2)
                 var cy = y0 + (h0 / 2)
                 context.translate(cx, cy);
@@ -790,8 +807,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
             y0 = selectedObj.brect.ymin - sy;
 
 
-            w0 = selectedObj.brect.w + (sx * 2);
-            h0 = selectedObj.brect.h + (sy * 2);
+            w0 = sbrect.w + (sx * 2);
+            h0 = sbrect.h + (sy * 2);
             if (isMoved) {
                 x0 = x0 + isMoved.tx
                 y0 = y0 + isMoved.ty
@@ -801,8 +818,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
             if (isRotated) {
                 x0 = x0 ? x0 : selectedObj.brect.xmin
                 y0 = y0 ? y0 : selectedObj.brect.ymin
-                w0 = w0 ? w0 : selectedObj.brect.w
-                h0 = h0 ? h0 : selectedObj.brect.h
+                w0 = w0 ? w0 : sbrect.w
+                h0 = h0 ? h0 : sbrect.h
                 var cx = x0 + (w0 / 2)
                 var cy = y0 + (h0 / 2)
                 context.translate(cx, cy);
@@ -821,8 +838,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
             console.log("ROTATION:::" + obj.tr);
             x0 = selectedObj.brect.xmin;
             y0 = selectedObj.brect.ymin;
-            w0 = selectedObj.brect.w;
-            h0 = selectedObj.brect.h;
+            w0 = sbrect.w;
+            h0 = sbrect.h;
             if (isMoved) {
                 x0 = x0 + isMoved.tx
                 y0 = y0 + isMoved.ty
@@ -832,13 +849,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
             if (isScaled) {
                 x0 = x0 - isScaled.tx
                 y0 = y0 - isScaled.ty
-                w0 = selectedObj.brect.w + (isScaled.tx * 2)
-                h0 = selectedObj.brect.h + (isScaled.ty * 2)
+                w0 = sbrect.w + (isScaled.tx * 2)
+                h0 = sbrect.h + (isScaled.ty * 2)
             }
             x0 = x0 ? x0 : selectedObj.brect.xmin
             y0 = y0 ? y0 : selectedObj.brect.ymin
-            w0 = w0 ? w0 : selectedObj.brect.w
-            h0 = h0 ? h0 : selectedObj.brect.h
+            w0 = w0 ? w0 : sbrect.w
+            h0 = h0 ? h0 : sbrect.h
             var cx = x0 + (w0 / 2)
             var cy = y0 + (h0 / 2)
             context.translate(cx, cy);
@@ -847,41 +864,65 @@ var Whiteboard = function (cont, isStatic, _opts) {
             context.beginPath();
             context.strokeRect(x0, y0, w0, h0)
         }
+
         context.beginPath();
-        context.fillStyle = 'blue';
-        if (selectedObj.id == 'graph') {
+        context.fillStyle = 'red';
+        var xLT = x0 - hitR;
+        var yLT = y0 - hitR;
+        var xLB = x0 - hitR;
+        var yLB = y0 + h0 + hitR;
+        var xRT = x0 + w0 + hitR;
+        var yRT = y0 - hitR;
+        var xRB = x0 + w0 + hitR;
+        var yRB = y0 + h0 + hitR;
+        context.save()
+        context.lineWidth = 1;
+        context.strokeStyle = "rgba(255, 0, 0, 0.75)";
+        context.strokeRect(x0 - hitR, y0 - hitR, w0 + hitC, h0 + hitC);
+        context.restore();
+        if (selectedObj.id == 'graph' || selectedObj.id == 2) {
             /*context.fillRect(x0 + w0 - 40, y0, 40, 40);
             context.font = "bold 14px Arial";
             context.fillStyle = 'white';
             context.fillText("edit", x0 + w0 - 33, y0 + 25);*/
             //showHideGraphToggler(true)
-			context.arc(x0, y0+h0, 18, 0, 2 * Math.PI, false);
-			//context.drawImage(editGR,x0-10,y0+h0-10,20,20)
-			//context.drawImage(editGR,x0,y0+h0,20,20)
+            context.arc(xLB, yLB, hitR, 0, 2 * Math.PI, false);
+            //context.drawImage(editGR,x0-10,y0+h0-10,20,20)
+            //context.drawImage(editGR,x0,y0+h0,20,20)
         } else {
-            context.fillRect(x0 + w0 - 18, y0 + h0 - 18, 36, 36);
-            context.arc(x0 + w0, y0, 18, 0, 2 * Math.PI, false);
+            if (selectedObj.id == 2) {
+                //context.arc(x0, y0+h0, hitR, 0, 2 * Math.PI, false);
+                //context.fill()
+                //context.beginPath();
+            }
+            context.arc(xLT, yLT, hitR, 0, 2 * Math.PI, false);
+            context.fillRect(xRB - hitR, yRB - hitR, hitC, hitC);
+            //context.arc(x0 + w0+hitR, y0-hitR, hitR, 0, 2 * Math.PI, false);
         }
-		context.arc(x0, y0, 18, 0, 2 * Math.PI, false);
-		
+        //context.arc(x0-hitR, y0-hitR, hitR, 0, 2 * Math.PI, false);
+        context.save()
+        context.lineWidth = 0;
+        context.arc(xRT, yRT, hitR, 0, 2 * Math.PI, false);
+        context.restore();
         context.fill()
-		context.font = "bold 16px Arial";
-            context.fillStyle = "rgba(255, 255, 255, 0.75)";
-			context.textBaseline = 'top';
-			var mw=context.measureText('X').width;
-			var nx=x0-(mw/2);
-			var ny=y0-9;
-			
-            context.fillText("X", nx, ny);
-			context.beginPath()
-			context.strokeStyle ="rgba(255, 255, 255, 0.75)";
-			context.lineWidth = 4;
-			context.arc(x0, y0, 12, 0, 2 * Math.PI, false);
-			context.stroke();
-			if (selectedObj.id == 'graph') {
-            
-			context.drawImage(editGR,x0-14,y0+h0-14,28,28)
+        context.font = "bold 14px Arial";
+        context.fillStyle = "rgba(255, 255, 255, 0.75)";
+        context.textBaseline = 'center';
+        var mw = context.measureText('X').width;
+        var nx = xRT - (mw / 2);
+        var ny = yRT + 5
+
+        context.fillText("X", nx, ny);
+        context.beginPath()
+        context.strokeStyle = "rgba(255, 255, 255, 0.75)";
+        context.lineWidth = 3;
+        context.arc(xRT, yRT, hitR - 5, 0, 2 * Math.PI, false);
+        context.stroke();
+        if (selectedObj.id == 'graph' || selectedObj.id == 2) {
+
+            context.drawImage(editGR, x0 - (hitC - 4), y0 + h0 + (4), hitC - 8, hitC - 8)
         }
+
         context.restore()
     }
 
@@ -1148,55 +1189,58 @@ var Whiteboard = function (cont, isStatic, _opts) {
     }
 
     function getMoveNode(r) {
-	var c=18
+        var c = 26
         var obj = {}
-        obj.x = r.xmax - c;
-        obj.y = r.ymax - c;
-        obj.xmin = r.xmax - c;
-        obj.ymin = r.ymax - c;
+        obj.x = r.xmax;
+        obj.y = r.ymax;
+        obj.xmin = r.xmax;
+        obj.ymin = r.ymax;
         obj.xmax = r.xmax + c;
         obj.ymax = r.ymax + c;
-        obj.w = c*2;
-        obj.h = c*2;
+        obj.w = c;
+        obj.h = c;
         return obj
     }
-function getDeleteNode(r) {
-var c=18
-        var obj = {}
-        obj.x = r.xmin - c;
-        obj.y = r.ymin - c;
-        obj.xmin = r.xmin - c;
-        obj.ymin = r.ymin - c;
-        obj.xmax = r.xmin + c;
-        obj.ymax = r.ymin + c;
-        obj.w = c*2;
-        obj.h = c*2;
-        return obj
-    }
-	function getEditNode(r) {
-	var c=18
-        var obj = {}
-        obj.x = r.xmin - c;
-        obj.y = r.ymax - c;
-        obj.xmin = r.xmin - c;
-        obj.ymin = r.ymax - c;
-        obj.xmax = r.xmin + c;
-        obj.ymax = r.ymax + c;
-        obj.w = c*2;
-        obj.h = c*2;
-        return obj
-    }
+
     function getRotateNode(r) {
-	var c=18
+        var c = 26
         var obj = {}
-        obj.x = r.xmax - c;
+        obj.x = r.xmin - c;
         obj.y = r.ymin - c;
-        obj.xmin = r.xmax - c;
+        obj.xmin = r.xmin - c;
+        obj.ymin = r.ymin - c;
+        obj.xmax = r.xmin;
+        obj.ymax = r.ymin;
+        obj.w = c;
+        obj.h = c;
+        return obj
+    }
+
+    function getEditNode(r) {
+        var c = 26
+        var obj = {}
+        obj.x = r.xmin - c;
+        obj.y = r.ymax;
+        obj.xmin = r.xmin - c;
+        obj.ymin = r.ymax;
+        obj.xmax = r.xmin;
+        obj.ymax = r.ymax + c;
+        obj.w = c;
+        obj.h = c;
+        return obj
+    }
+
+    function getDeleteNode(r) {
+        var c = 26
+        var obj = {}
+        obj.x = r.xmax;
+        obj.y = r.ymin - c;
+        obj.xmin = r.xmax;
         obj.ymin = r.ymin - c;
         obj.xmax = r.xmax + c;
-        obj.ymax = r.ymin + c;
-        obj.w = c*2;
-        obj.h = c*2;
+        obj.ymax = r.ymin;
+        obj.w = c;
+        obj.h = c;
         /*if (selectedObj && selectedObj.id == 'graph') {
             obj.x = r.xmax - 40;
             obj.y = r.ymin - 0;
@@ -1228,8 +1272,8 @@ var c=18
         var rect = cloneObject(obj.brect);
         var rectM = getMoveNode(rect);
         var rectR = getRotateNode(rect);
-		var rectD = getDeleteNode(rect);
-		var rectE = getEditNode(rect);
+        var rectD = getDeleteNode(rect);
+        var rectE = getEditNode(rect);
         var isMoved = isObjTransformed(obj.uid, 'move');
         var isScaled = isObjTransformed(obj.uid, 'scale');
         var isRotated = isObjTransformed(obj.uid, 'rotate');
@@ -1239,21 +1283,21 @@ var c=18
                 rect = cloneObject(isMoved.trect);
                 rectM = getMoveNode(rect);
                 rectR = getRotateNode(rect);
-				rectD = getDeleteNode(rect);
-				rectE = getEditNode(rect);
+                rectD = getDeleteNode(rect);
+                rectE = getEditNode(rect);
             }
             if (isScaled) {
                 transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
                 transformRect(rectM, isScaled.tx, isScaled.ty, 'move')
-                transformRect(rectR, isScaled.tx, -isScaled.ty, 'move')
-				transformRect(rectE, isScaled.tx, isScaled.ty, 'move')
-                transformRect(rectD, -isScaled.tx, isScaled.ty, 'move')
+                transformRect(rectR, -isScaled.tx, isScaled.ty, 'move')
+                transformRect(rectE, isScaled.tx, isScaled.ty, 'move')
+                transformRect(rectD, isScaled.tx, -isScaled.ty, 'move')
             }
             if (isRotated) {
                 transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
                 transformRect(rectM, isRotated.tx, isRotated.ty, 'rotate', rect)
                 transformRect(rectR, isRotated.tx, isRotated.ty, 'rotate', rect)
-				transformRect(rectD, isRotated.tx, isRotated.ty, 'rotate', rect)
+                transformRect(rectD, isRotated.tx, isRotated.ty, 'rotate', rect)
                 transformRect(rectE, isRotated.tx, isRotated.ty, 'rotate', rect)
 
             }
@@ -1263,16 +1307,16 @@ var c=18
         transformRect(rect, scrollPosition.x, scrollPosition.y)
         transformRect(rectR, scrollPosition.x, scrollPosition.y)
         transformRect(rectM, scrollPosition.x, scrollPosition.y)
-		transformRect(rectD, scrollPosition.x, scrollPosition.y)
+        transformRect(rectD, scrollPosition.x, scrollPosition.y)
         transformRect(rectE, scrollPosition.x, scrollPosition.y)
 
         var sel = contains(rect, xp, yp)
         var selR = contains(rectR, xp, yp)
         var selM = contains(rectM, xp, yp)
-		var selD = contains(rectD, xp, yp)
-		if(selD){
-			return 'delete'
-			}
+        var selD = contains(rectD, xp, yp)
+        if (selD) {
+            return 'delete'
+        }
         if (selR || selM) {
             if (selectedObj && selectedObj.id == 'graph' && selR) {
                 return 'move';
@@ -1283,13 +1327,13 @@ var c=18
             }
             return selM ? 'scale' : 'rotate'
         }
-		if (selectedObj && selectedObj.id == 'graph') {
-			var selE = contains(rectE, xp, yp)
-				if(selE){
-					transMode = 'edit'
-                    return 'edit';
-				}
-			}
+        if (selectedObj && (selectedObj.id == 'graph' || selectedObj.id == 2)) {
+            var selE = contains(rectE, xp, yp)
+            if (selE) {
+                transMode = 'edit'
+                return 'edit';
+            }
+        }
         return null;
     }
 
@@ -1301,6 +1345,9 @@ var c=18
                 continue
             }
             var _objid = graphicDataStore[i].id
+            var _uid = graphicDataStore[i].uid
+            var __uid = selectedObj ? selectedObj.uid : -1
+            var inSel = __uid === _uid;
             var isGraph = _objid == 11 || _objid == 12
             if (isObjDeleted(graphicDataStore[i].uid) || isGraph) {
                 continue
@@ -1308,8 +1355,8 @@ var c=18
             var rect = cloneObject(graphicDataStore[i].brect);
             var rectM = getMoveNode(rect);
             var rectR = getRotateNode(rect);
-			var rectD = getDeleteNode(rect);
-			var rectE = getEditNode(rect);
+            var rectD = getDeleteNode(rect);
+            var rectE = getEditNode(rect);
             var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
             var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
             var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
@@ -1319,21 +1366,21 @@ var c=18
                     rect = cloneObject(isMoved.trect);
                     rectM = getMoveNode(rect);
                     rectR = getRotateNode(rect);
-					rectD = getDeleteNode(rect);
-					rectE = getEditNode(rect);
+                    rectD = getDeleteNode(rect);
+                    rectE = getEditNode(rect);
                 }
                 if (isScaled) {
                     transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
                     transformRect(rectM, isScaled.tx, isScaled.ty, 'move')
                     transformRect(rectR, isScaled.tx, -isScaled.ty, 'move')
-					transformRect(rectE, isScaled.tx, isScaled.ty, 'move')
+                    transformRect(rectE, isScaled.tx, isScaled.ty, 'move')
                     transformRect(rectD, isScaled.tx, isScaled.ty, 'move')
                 }
                 if (isRotated) {
                     transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
                     transformRect(rectM, isRotated.tx, isRotated.ty, 'rotate', rect)
                     transformRect(rectR, isRotated.tx, isRotated.ty, 'rotate', rect)
-					transformRect(rectD, isRotated.tx, isRotated.ty, 'rotate', rect)
+                    transformRect(rectD, isRotated.tx, isRotated.ty, 'rotate', rect)
                     transformRect(rectE, isRotated.tx, isRotated.ty, 'rotate', rect)
                     console.log(rect);
                 }
@@ -1343,8 +1390,8 @@ var c=18
             transformRect(rect, scrollPosition.x, scrollPosition.y)
             transformRect(rectR, scrollPosition.x, scrollPosition.y)
             transformRect(rectM, scrollPosition.x, scrollPosition.y)
-			transformRect(rectD, scrollPosition.x, scrollPosition.y)
-			transformRect(rectE, scrollPosition.x, scrollPosition.y)
+            transformRect(rectD, scrollPosition.x, scrollPosition.y)
+            transformRect(rectE, scrollPosition.x, scrollPosition.y)
             //selectedObj = null
             if (!rect) {
                 selectedObj = null
@@ -1353,32 +1400,34 @@ var c=18
             var sel = contains(rect, xp, yp)
             var selR = contains(rectR, xp, yp)
             var selM = contains(rectM, xp, yp)
-			var selD = contains(rectD, xp, yp)
+            var selD = contains(rectD, xp, yp)
             console.log(selR)
             console.log(selM)
-			if(selD){
-			return 'delete'
-			}
-            if (selR || selM) {
-                i = selectedObjIndex
-                transMode = selM ? 'scale' : 'rotate'
-                if (selectedObj && selectedObj.id == 'graph' && selR) {
-                    transMode = 'move'
-                    return 'move';
+            if (inSel) {
+                if (selD) {
+                    return 'delete'
                 }
-                if (selectedObj && selectedObj.id == 'graph' && selM) {
-                    transMode = 'move'
-                    return 'move';
+                if (selR || selM) {
+                    i = selectedObjIndex
+                    transMode = selM ? 'scale' : 'rotate'
+                    if (selectedObj && selectedObj.id == 'graph' && selR) {
+                        transMode = 'move'
+                        return 'move';
+                    }
+                    if (selectedObj && selectedObj.id == 'graph' && selM) {
+                        transMode = 'move'
+                        return 'move';
+                    }
+                    return i;
                 }
-                return i;
+                if (selectedObj && (selectedObj.id == 'graph' || selectedObj.id == 2)) {
+                    var selE = contains(rectE, xp, yp)
+                    if (selE) {
+                        transMode = 'edit'
+                        return 'edit';
+                    }
+                }
             }
-			if (selectedObj && selectedObj.id == 'graph') {
-				var selE = contains(rectE, xp, yp)
-				if(selE){
-					transMode = 'edit'
-                    return 'edit';
-				}
-			}
             console.log(rect);
             console.log(sel)
             var hasShape = false
@@ -1399,6 +1448,104 @@ var c=18
         selectedObj = null
         updateBuffer()
         return -1
+    }
+
+    function findObjUnder(xp, yp) {
+        var l = graphicDataStore.length
+        for (var i = l - 1; i >= 0; i--) {
+            var __obj = graphicDataStore[i];
+            if (graphicDataStore[i].type == 'cmd') {
+                continue
+            }
+            var _objid = graphicDataStore[i].id
+            var _uid = graphicDataStore[i].uid
+            var __uid = selectedObj ? selectedObj.uid : -1
+            var inSel = __uid === _uid;
+            var isGraph = _objid == 11 || _objid == 12
+            if (isObjDeleted(graphicDataStore[i].uid) || isGraph) {
+                continue
+            }
+            var rect = cloneObject(graphicDataStore[i].brect);
+
+            var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
+            var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
+            var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
+            var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(graphicDataStore[i].uid)
+            if (isTransformed) {
+                if (isMoved) {
+                    rect = cloneObject(isMoved.trect);
+                }
+                if (isScaled) {
+                    transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
+                }
+                if (isRotated) {
+                    transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+                }
+
+
+            }
+            transformRect(rect, scrollPosition.x, scrollPosition.y)
+            //selectedObj = null
+            if (!rect) {
+                return null
+            }
+            var sel = contains(rect, xp, yp)
+
+            //console.log(rect);
+            //console.log(sel)
+            var hasShape = false
+            if (sel) {
+                hasShape = getShapeHit(__obj, {
+                    xmin: xp - hitW,
+                    ymin: yp - hitW,
+                    xmax: xp + hitH,
+                    ymax: yp + hitH
+                })
+            }
+            if (sel && hasShape) {
+                //selectedObj = graphicDataStore[i];
+                updateBuffer()
+                return graphicDataStore[i];
+            }
+        }
+        //selectedObj = null
+        //updateBuffer()
+        return null
+    }
+
+    function showObjSelection(obj) {
+        var index = findObjIndex(obj);
+        var el = $get_Element("#tempSelection")
+        if (index > -1) {
+            if (!el) {
+                var p = $get_jqElement("#canvas-container");
+                var _obj = $("<div name='tempSelection' class='tempSelection' style='position:absolute;border:4px solid rgba(0, 0, 255, 0.5);'></div>");
+                p.prepend(_obj)
+                el = _obj[0]
+            }
+            var _dim = {
+                tx: obj.brect.xmin - 4,
+                ty: obj.brect.ymin - 4,
+
+                w: obj.brect.xmax - obj.brect.xmin,
+                h: obj.brect.ymax - obj.brect.ymin
+
+            };
+            $(el).css({
+                'width': _dim.w + 'px',
+                'height': _dim.h + 'px',
+                'left': _dim.tx + 'px',
+                'top': _dim.ty + 'px',
+                'display': 'block'
+            })
+        }
+    }
+
+    function removeObjSelection() {
+        var obj = $get_Element("#tempSelection")
+        if (obj) {
+            $(obj).hide();
+        }
     }
     //
     function checkForMultiSelect() {
@@ -1812,12 +1959,37 @@ var c=18
         return result;
     };
 
-    function renderText_html(xt, xp, yp, col, ctx) {
+    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+        var words = text.split('');
+        var line = '';
 
+        for (var n = 0; n < words.length; n++) {
+            var testLine = line + words[n] + '';
+            var metrics = context.measureText(testLine);
+            var testWidth = metrics.width;
+            if (testWidth > maxWidth && n > 0) {
+                context.fillText(line, x, y);
+                line = words[n] + '';
+                y += lineHeight + lineHeight / 3;
+            } else {
+                line = testLine;
+            }
+        }
+        context.fillText(line, x, y);
+    }
+
+    function renderText_html(xt, xp, yp, col, ctx) {
+        var boo = false;
         var txt = xt ? xt : $get_Element("#content").value;
         // alert(txt);
         var cntxt = ctx ? ctx : context;
         var str = txt.split("\n")
+        if (transMode == 'edit' && selectionMode && selectedObj) {
+            xp = parseFloat($get_jqElement("#inputBox").css("left"))
+            yp = parseFloat($get_jqElement("#inputBox").css("top"))
+            boo = true;
+            col = selectedObj.dataArr[0].color;
+        }
         var x0 = xp ? xp : clickX
         var y0 = yp ? yp : clickY
         var ht = determineFontHeight(str[0]);
@@ -1826,11 +1998,12 @@ var c=18
         cntxt.textBaseline = 'top';
         var colr = col ? col : wb.globalStrokeColor;
         cntxt.fillStyle = colr;
-        for (var i = 0; i < str.length; i++) {
+        var maxWidth = xt ? cTMaxWidth : $get_jqElement("#content").width();
+        /*for (var i = 0; i < str.length; i++) {
             cntxt.fillText(str[i], x0, y0)
             y0 += ht + ht / 3
-        }
-
+        }*/
+        wrapText(cntxt, txt, x0, y0, maxWidth, ht)
         if (!xt) {
             var rect = {}
             rect.x = rect.xmin = x0 - scrollPosition.x
@@ -1841,20 +2014,56 @@ var c=18
             rect.ymax = rect.y + rect.h;
             //console.log('renderText')
             // console.log(this)
-            var gd = graphicData
-            gd.brect = rect
+
 
             //context.drawImage(this, holder_x, holder_y);
             // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
             // gd.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             //graphicDataStore[graphicDataStore.length - 1] = gd
             //updateCanvas();
-            updateText(txt, x0, sy, colorToNumber(colr));
-            sendData();
+            if (boo) {
+                var uid = selectedObj.uid;
+                var tdata = {
+                    x: xp,
+                    y: yp,
+                    text: txt,
+                    brect: rect
+                };
+                if (!objectActions[uid]['edit']) {
+                    objectActions[uid]['edit'] = [{}];
+                }
+                var li = objectActions[uid]['edit'].length - 1;
+                objectActions[uid]['edit'][li] = tdata;
+                var mobj = {
+                    id: selectedObj.id,
+                    uid: selectedObj.uid,
+
+                    type: 'cmd',
+                    cmd: {
+                        name: 'edit',
+                        data: tdata
+                    },
+                    textBoxWidth: maxWidth,
+                    dataArr: []
+                }
+
+                updateDataToSERVER(null, mobj);
+                transMode = 'move';
+            } else {
+                var gd = graphicData
+                gd.brect = rect
+                gd.textBoxWidth = maxWidth;
+                updateText(txt, x0, sy, colorToNumber(colr));
+                sendData();
+            }
             updateCanvas();
 
             $get_Element("#content").value = "";
             $get_Element("#inputBox").style.display = 'none';
+            textEditMode = !true;
+            if (boo) {
+                setObjSelected(selectedObj);
+            }
         }
         // alert($get_Element("#inputBox").style.display)
     }
@@ -1935,9 +2144,9 @@ var c=18
 
     function onkeydownHandler(_event) {
         var event = _event ? _event : window.event;
-	var txtBox=$get_jqElement("#inputBox");	
-	var visib = txtBox.is(":visible");
-        if (currentTool == 'text'&&visib && event.keyCode == 13) {
+        var txtBox = $get_jqElement("#inputBox");
+        var visib = txtBox.is(":visible");
+        if (currentTool == 'text' && visib && event.keyCode == 13) {
             if (!event.shiftKey) {
                 if (event.preventDefault) {
                     event.preventDefault();
@@ -1973,16 +2182,23 @@ var c=18
             showHideGraphModuleEditor(false)
         }
         //
+        $get_jqElement("#wb_menu").hide()
     }
 
     function buttonHighlite(t) {
         resetButtonHighlite();
+        var isOpen = $get_Element("#inputBox").style.display == 'block';
+        if (isOpen) {
+            renderText();
+        }
         $get_Element("#button_" + t).style.border = '2px solid #ff9900';
         if (currentTool != 'text' && $get_Element("#inputBox").style.display == 'block') {
+            textEditMode = !true;
             hideTextBox();
         }
         if (t !== 'move') {
             selectionMode = false;
+            selectedObj = null;
             removeBoundRect()
         }
     }
@@ -2433,6 +2649,7 @@ var c=18
             }, true);
         }
     }
+
     //--Templates Code end
     //--NAVIGATOR CODE BEGIN--
     var mpos
@@ -3435,10 +3652,10 @@ var c=18
             gr2D_h = 300;
             nL_w = 300;
             nL_h = 100;
-			//
-			editGR = new Image();
+            //
+            editGR = new Image();
             editGR.src = imgPath + 'edit.png';
-			//
+            //
             offX = $get_Element("#canvas-container").offsetLeft;
             offY = $get_Element("#canvas-container").offsetTop;
 
@@ -3481,6 +3698,7 @@ var c=18
             drawingLayer = '1';
             if (currentTool != 'pencil') {
                 if (currentTool == 'text' || $get_Element("#inputBox").style.display == 'block') {
+                    textEditMode = !true;
                     hideTextBox();
                 }
                 resetButtonHighlite();
@@ -3556,6 +3774,7 @@ var c=18
                 // resetWhiteBoard();
                 currentTool = 'pencil'
                 buttonHighlite(currentTool)
+                textEditMode = !true;
                 hideTextBox();
                 // penDown=false;
                 // graphMode='';
@@ -3586,7 +3805,7 @@ var c=18
                 renderText();
                 // check()
             }
-			$(document).on("keydown",onkeydownHandler)
+            $(document).on("keydown", onkeydownHandler)
             if ($get_Element("#button_undo")) {
                 $get_Element("#button_undo").onclick = function (event) {
                     var l = graphicDataStore.length
@@ -3952,6 +4171,17 @@ var c=18
                     }
                     penDown = true;
                     rendering = false;
+                    var isOpen = $get_Element("#inputBox").style.display == 'block';
+                    if (isOpen) {
+                        renderText();
+                    }
+                    if (objOnSel) {
+                        removeObjSelection();
+                        if (!selectionMode) {
+                            $get_jqElement("#button_move").trigger('click');
+                        }
+
+                    }
                     clickX = dx;
                     clickY = dy;
                     x = dx;
@@ -3996,13 +4226,13 @@ var c=18
                                 dofindSel = !true
                                 transMode = selectionOnNode(selectedObj, x, y);
                                 transMode = transMode == null ? 'move' : transMode
-                                if (transMode == 'edit'||transMode == 'delete') {
+                                if (transMode == 'edit' || transMode == 'delete') {
                                     return
                                 }
                             } else {
                                 transMode = selectionOnNode(selectedObj, x, y);
                                 transMode = transMode == null ? 'move' : transMode
-                                if (transMode == 'edit'||transMode == 'delete') {
+                                if (transMode == 'edit' || transMode == 'delete') {
                                     return
                                 }
                             }
@@ -4171,15 +4401,26 @@ var c=18
                     penDown = false
                     return;
                 }
+                if (!selectedObj && textEditMode) {
+                    hideTextBox()
+                    penDown = false
+                    return;
+                }
                 if (selectionMode) {
                     if (transMode == 'edit') {
+                        if (selectedObj.id == 2) {
+                            updateCanvas();
+                            showTextBox()
+                            penDown = false
+                            return;
+                        }
                         showHideGraphModuleEditor(true)
                         penDown = false
                         return;
                     }
-					if (transMode == 'delete') {
+                    if (transMode == 'delete') {
                         //showHideGraphModuleEditor(true)
-						wb.deleteSelectedObj();
+                        wb.deleteSelectedObj();
                         penDown = false
                         return;
                     }
@@ -4423,6 +4664,13 @@ var c=18
                 }
                 var event = _event ? _event : window.event;
                 event = event.type.indexOf('touch') > -1 ? _event.changedTouches[0] : event;
+                if (event.pageX != undefined) {
+                    x = event.pageX - offX;
+                    y = event.pageY - offY;
+                } else {
+                    x = event.clientX - offX
+                    y = event.clientY - offY
+                }
                 if (penDown) {
                     rendering = true;
                     // console.log("MMOVE")
@@ -4439,13 +4687,7 @@ var c=18
                     // x = event.layerX?event.layerX:event.pageX-offX;
                     // y = event.layerY?event.layerY:event.pageY-offY;
                     // getCanvasPos()
-                    if (event.pageX != undefined) {
-                        x = event.pageX - offX;
-                        y = event.pageY - offY;
-                    } else {
-                        x = event.clientX - offX
-                        y = event.clientY - offY
-                    }
+
                     var dx = x - clickX;
                     var dy = y - clickY;
                     var bool = isMultitouch_gesture(_event);
@@ -4673,6 +4915,19 @@ var c=18
                             }
                         }
 
+                    }
+                } else {
+                    var _sobj = findObjUnder(x, y);
+                    if (_sobj) {
+                        if (selectedObj && (_sobj.uid == selectedObj.uid)) {
+
+                        } else {
+                            showObjSelection(_sobj);
+                            objOnSel = _sobj;
+                        }
+                    } else {
+                        removeObjSelection();
+                        objOnSel = null;
                     }
                 }
                 var bool = isMultitouch_gesture(_event);
@@ -4924,11 +5179,13 @@ var c=18
     }
 
     function showTextBox() {
+        cTMaxWidth = null;
         if (useMQ) {
             showTextBox_mq()
         } else {
             showTextBox_html()
         }
+        textEditMode = true;
     }
 
     function hideTextBox() {
@@ -4937,16 +5194,43 @@ var c=18
         } else {
             hideTextBox_html()
         }
+        textEditMode = !true;
     }
 
     function showTextBox_html() {
         //alert("A")
         if (!$get_Element("#content")) {
-            $($("#" + contDiv + " [name='inputBox'] div")[0]).html("<textarea class='content' name='content' cols=15 rows=1 style='font:20pt Arial;color:" + wb.globalStrokeColor + "' ></textarea>")
+            var siz = viewport()
+            var docWidth = siz.width;
+            var docHeight = siz.height;
+            var maxW = docWidth - clickX - 50
+            $($("#" + contDiv + " [name='inputBox'] div")[0]).html("<textarea class='content' name='content' cols=3 rows=1 style='min-width:60px;min-height:40px;resize:none;font:20pt Arial;color:" + wb.globalStrokeColor + "' ></textarea>" + '<div name="dummy_resize" style="max-width:' + maxW + 'px;min-height:40px;display: none;font:20pt Arial;word-wrap:break-word;"></div>')
+            $get_jqElement("#inputBox").find("[name='content']").live({
+                input: function (e) {
+                    var rs = $get_jqElement("#dummy_resize")
+                    rs.text($(this).val() + "9");
+                    $(this).css("width", rs.css("width"));
+                    $(this).css("height", rs.css("height"));
+                }
+            });
+        } else {}
+
+
+        var px = clickX;
+        var py = clickY;
+        if (selectedObj) {
+            var isEdited = isObjTransformed(selectedObj.uid, 'edit')
+            var data = isEdited || selectedObj.dataArr[0];
+            var txt = data ? data.text : "";
+            $get_jqElement("#inputBox").find("[name='content']").val(txt);
+            var b = getWhiteboardObjBound('sel')
+            px = data && b ? b.tx : clickX;
+            py = data && b ? b.ty : clickY;
+
         }
         $get_Element("#inputBox").style.display = 'block';
-        $get_Element("#inputBox").style.top = clickY + "px";
-        $get_Element("#inputBox").style.left = clickX + "px";
+        $get_Element("#inputBox").style.top = py + "px";
+        $get_Element("#inputBox").style.left = px + "px";
         //$get_Element("#inputBox").style.color = wb.globalStrokeColor;
         $get_Element("#content").focus();
     }
@@ -5136,16 +5420,16 @@ var c=18
     }
 
     function updateCanvas() {
-	 var egraph = $get_jqElement("#egraph")
-	var visib = egraph.is(":visible");
-	if(visib){
-                showHideGraphModuleEditor(false,true);
-	}
-	var txtBox=$get_jqElement("#inputBox");	
-	visib = txtBox.is(":visible");
-	if(visib&&$get_jqElement("#content").val().length){
-                txtBox.hide()
-	}
+        var egraph = $get_jqElement("#egraph")
+        var visib = egraph.is(":visible");
+        if (visib) {
+            showHideGraphModuleEditor(false, true);
+        }
+        var txtBox = $get_jqElement("#inputBox");
+        visib = txtBox.is(":visible");
+        if (visib && $get_jqElement("#content").val().length) {
+            txtBox.hide()
+        }
         buffercontext.clearRect(0, 0, buffercanvas.width, buffercanvas.height);
         buffercanvas.width = canvas.width;
         buffercanvas.height = canvas.height;
@@ -5742,6 +6026,7 @@ source: https://gist.github.com/754454
                         xt = xt.split('{').join("");
                         xt = xt.split('}').join("")
                     }
+                    cTMaxWidth = obj.textBoxWidth ? obj.textBoxWidth : obj.brect.w
                     renderText(xt, x0, y0, col);
                     if (!boo) {
                         var str = xt.split("\n");
@@ -5977,13 +6262,13 @@ source: https://gist.github.com/754454
 
         }
         if (graphic_id === 2) {
-            for (i = 0; i < dLength; i++) {
-
-                if (graphic_data[i].text != "" || graphic_data[i].text != undefined) {
-                    x0 = graphic_data[i].x - cx;
-                    y0 = graphic_data[i].y - cy;
+            if (transMode == 'edit' && selectedObj && (uid == selectedObj.uid)) {} else {
+                var isEdited = isObjTransformed(uid, 'edit');
+                if (isEdited) {
+                    x0 = _obj.dataArr[0].x - cx;
+                    y0 = _obj.dataArr[0].y - cy;
                     // context.fillText(graphic_data[i].text, x0, y0);
-                    xt = graphic_data[i].text;
+                    xt = isEdited.text;
                     xt = unescape(decodeURI(xt));
                     xt = String(xt).split("\\:").join(" ");
                     if (xt.indexOf('\\frac') > -1) {
@@ -5992,8 +6277,30 @@ source: https://gist.github.com/754454
                         xt = xt.split('{').join("");
                         xt = xt.split('}').join("")
                     }
-                    renderText(xt, x0, y0, col, ctx);
+                    cTMaxWidth = _obj.textBoxWidth ? _obj.textBoxWidth : _obj.brect.w
+                    renderText(xt, x0, y0, isEdited.color, ctx);
+                    //_obj.brect=cloneObject(isEdited.brect);
+                } else {
+                    for (i = 0; i < dLength; i++) {
 
+                        if (graphic_data[i].text != "" || graphic_data[i].text != undefined) {
+                            x0 = graphic_data[i].x - cx;
+                            y0 = graphic_data[i].y - cy;
+                            // context.fillText(graphic_data[i].text, x0, y0);
+                            xt = graphic_data[i].text;
+                            xt = unescape(decodeURI(xt));
+                            xt = String(xt).split("\\:").join(" ");
+                            if (xt.indexOf('\\frac') > -1) {
+                                xt = xt.split('\\frac').join("");
+                                xt = xt.split('}{').join("/");
+                                xt = xt.split('{').join("");
+                                xt = xt.split('}').join("")
+                            }
+                            cTMaxWidth = _obj.textBoxWidth ? _obj.textBoxWidth : _obj.brect.w
+                            renderText(xt, x0, y0, col, ctx);
+
+                        }
+                    }
                 }
             }
 
@@ -6214,7 +6521,7 @@ source: https://gist.github.com/754454
     wb.removeSelectionMode = function (boo) {
 
         selectedObjects = [];
-		selectedObj=null
+        selectedObj = null
         mSelRect = null;
         multiSelection = false
         removeBoundRect()
