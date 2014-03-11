@@ -1524,8 +1524,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 el = _obj[0]
             }
             var _dim = {
-                tx: obj.brect.xmin - 4,
-                ty: obj.brect.ymin - 4,
+                tx: obj.brect.xmin + scrollPosition.x - 4,
+                ty: obj.brect.ymin + scrollPosition.y - 4,
 
                 w: obj.brect.xmax - obj.brect.xmin,
                 h: obj.brect.ymax - obj.brect.ymin
