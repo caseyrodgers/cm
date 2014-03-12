@@ -17,7 +17,7 @@
   <head>
 
     <script type="text/javascript"
-      src="http://catchupmath.com/assets/mathjax/2.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+      src="http://catchupmath.com/assets/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
 
 
