@@ -14,17 +14,19 @@ import com.sencha.gxt.widget.core.client.form.TextArea;
 public class CKEditorPanel extends SimplePanel {
     
     private TextArea _textArea;
+    private String _id;
 
 
-    public CKEditorPanel(final String text) {
+    public CKEditorPanel(String id, final String text) {
         _textArea = new TextArea();
-        _textArea.setId("editor_div");
+        _id = id;
+        _textArea.setId(_id);
         setWidget(_textArea);
         
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
-                jsni_setupCkeditor(text);
+                jsni_setupCkeditor(_id, text);
             }
         });
     }
@@ -33,14 +35,17 @@ public class CKEditorPanel extends SimplePanel {
         _textArea.setValue(text);
     }
 
-    native private void jsni_setupCkeditor(String text) /*-{
-        $wnd.CKEDITOR.replace('editor_div');
-        
-        $wnd.CKEDITOR.instances.editor_div.setData(text);
+    native private void jsni_setupCkeditor(String id, String text) /*-{
+        $wnd.CKEDITOR.replace( id,{__customConfig : '','height' : '170'});
+        $wnd.CKEDITOR.instances[id].setData(text);
     }-*/;
     
-    
-    native public String getEditorValue() /*-{
-        return $wnd.CKEDITOR.instances.editor_div.getData();
+
+    native public String jsni_getEditorValue(String id) /*-{
+        return $wnd.CKEDITOR.instances[id].getData();
     }-*/;
+
+    public String getEditorValue() {
+        return jsni_getEditorValue(_id);
+    }
 }

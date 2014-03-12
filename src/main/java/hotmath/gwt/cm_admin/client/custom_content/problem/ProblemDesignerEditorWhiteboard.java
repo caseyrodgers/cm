@@ -175,7 +175,7 @@ public class ProblemDesignerEditorWhiteboard extends GWindow {
         
         BorderLayoutContainer bCon = new BorderLayoutContainer();
 
-        _ckEditorPanel = new CKEditorPanel(jsni_getProblemStatementHtml());
+        _ckEditorPanel = new CKEditorPanel("ps_editor",jsni_getProblemStatementHtml());
         bCon.setCenterWidget(new ShowWorkPanel2(callBack, true, true, "wb_ps-1", 300, getWidget()));
         bCon.setNorthWidget(_ckEditorPanel, new BorderLayoutData(300));
         

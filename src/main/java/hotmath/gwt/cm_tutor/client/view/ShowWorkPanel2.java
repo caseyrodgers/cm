@@ -134,6 +134,11 @@ public class ShowWorkPanel2 extends Composite {
        _whiteboardOutCallback.showWorkIsReady(this);
     }
 
+    
+    native public String getWhiteboardCommandsAsJson() /*-{
+        return $wnd._theWhiteboard.getRenderedCommands();
+    }-*/;
+    
     public boolean isReady() {
         return isReady;
     }
@@ -473,8 +478,6 @@ public class ShowWorkPanel2 extends Composite {
            $wnd.gwt_manageTemplates = function() {
                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::manageTemplates()();
             }
-            
-            
             
         } catch (e) {
             alert('error initializing whiteboard: ' + e);

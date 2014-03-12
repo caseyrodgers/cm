@@ -249,7 +249,6 @@ public class AssignmentProblemListView extends ContentPanel {
 
     protected void runTests() {
         final List<ProblemDtoLocal> probs = problemListGrid.getStore().getAll();
-
         _tester = new Tester(probs, this);
         _tester.startTests();
     }
@@ -271,16 +270,29 @@ public class AssignmentProblemListView extends ContentPanel {
             _timer = new Timer() {
                 @Override
                 public void run() {
-                    if (probs.size() < count+1) {
-                        count = 0;
+                    
+                    ProblemDtoLocal sel = view.problemListGrid.getSelectionModel().getSelectedItem();
+                    count=0;
+                    if(sel != null) {
+                        for(int d=0;d<probs.size();d++) {
+                            ProblemDtoLocal dl = probs.get(d);
+                            if(dl.equals(sel)) {
+                                count=d;
+                                break;
+                            }
+                        }
+                        
+                        if(count < probs.size()-1) {
+                            count++;
+                        }
+                        else {
+                            count=0;
+                        }
                     }
-
                     ProblemDtoLocal item = probs.get(count);
                     view.problemListGrid.getSelectionModel().select(item, false);
                     view.problemListGrid.getView().focusRow(count);
                     _timer.schedule(6000);
-                    
-                    count++;
                 }
             };
             _timer.schedule(0);

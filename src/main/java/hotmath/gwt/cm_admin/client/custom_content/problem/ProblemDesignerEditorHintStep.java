@@ -133,6 +133,15 @@ public class ProblemDesignerEditorHintStep extends GWindow {
         _hintField.setValue(this._hintStep.getHint());
         _stepField.setValue(this._hintStep.getText());
         
+        
+        addTool(new TextButton("Edit", new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
+                new CpEditingArea("hint");
+            }
+        }));
+        
         BorderLayoutData bD = new BorderLayoutData(.30);
         bD.setSplit(true);
         bC.setNorthWidget(new MyFieldLabel(_hintField, "Hint Text", 100), bD);
@@ -151,7 +160,9 @@ public class ProblemDesignerEditorHintStep extends GWindow {
 
 
     static public void doTest() {
-        new ProblemDesignerEditorHintStep(new SolutionInfo(), new SolutionMeta(),0, new CallbackOnComplete() {
+        SolutionMeta meta = new SolutionMeta();
+        meta.getSteps().add(new SolutionMetaStep(new SolutionMeta(), "Hint", "Step",null));
+        new ProblemDesignerEditorHintStep(new SolutionInfo(), meta,0, new CallbackOnComplete() {
             @Override
             public void isComplete() {
             }
