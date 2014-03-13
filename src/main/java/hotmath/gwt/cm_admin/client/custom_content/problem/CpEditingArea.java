@@ -7,7 +7,6 @@ import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
 
-import com.google.gwt.user.client.Window;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -30,10 +29,15 @@ public class CpEditingArea extends GWindow {
     BorderLayoutContainer _main;
     String _editorKey;
     private String _wbKey;
-    public CpEditingArea(String editKey) {
+    
+    interface Callback {
+        void editingComplete(String partText);
+    }
+    Callback _callback;
+    public CpEditingArea(String editKey, Callback callback) {
         
         super(false);
-        
+        this._callback = callback;
         setPixelSize(800,  600);
         setHeadingText("Edit Solution Information");
         
@@ -59,11 +63,12 @@ public class CpEditingArea extends GWindow {
     
     
     private void doSave() {
-        String textPart = ckEditorPanel.getEditorValue();
-        String whiteboard = _showWork.getWhiteboardCommandsAsJson();
-        
-        Window.alert("Text: " + textPart + ", ' WB: " + whiteboard);
-        
+        String partText = 
+                "<div class='step_part'>" + ckEditorPanel.getEditorValue() + 
+                "   <div class='wb_json'>" + _showWork.getWhiteboardCommandsAsJson() + "</div>" +
+                "</div>";
+        _callback.editingComplete(partText);
+        hide();
     }
     
     private void buildUi() {

@@ -556,8 +556,6 @@ public class TutorWrapperPanel extends Composite {
        
        $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext,submitButtonText, indicateWidgetStatus, installCustomSteps);
        
-       
-       
        $wnd.Flashcard_mngr.problemGenDebugInfo =  function (code, info) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_problemGenDebugInfo(Ljava/lang/String;Ljava/lang/String;)(code, info);
        }      

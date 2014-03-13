@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
+import hotmath.gwt.cm_admin.client.custom_content.problem.CpEditingArea.Callback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
@@ -56,7 +57,7 @@ public class ProblemDesignerEditorHintStep extends GWindow {
         addButton(new TextButton("Save", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                doSave();
+                //doSave();
             }
         }));
         addButton(new TextButton("Cancel", new SelectHandler() {
@@ -71,15 +72,10 @@ public class ProblemDesignerEditorHintStep extends GWindow {
     
     
 
-    private void doSave() {
-        if(_hintField.getValue() == null || _stepField.getValue() == null || _hintField.getValue().length() == 0 || _stepField.getValue().length() == 0) {
-            CmMessageBox.showAlert("Both hint and step must be specified");
-            return;
-        }
+    private void doSave(final String partText) {
         
-        
-        _hintStep.setHint(_hintField.getCurrentValue());
-        _hintStep.setText(_stepField.getCurrentValue());
+        _hintStep.setHint(partText);
+        //_hintStep.setText(_stepField.getCurrentValue());
         
         
         if(whichStepHint == NEW_HINTSTEP) {
@@ -107,25 +103,6 @@ public class ProblemDesignerEditorHintStep extends GWindow {
 
     private TextArea _hintField = new TextArea();
     private TextArea _stepField = new TextArea();
-    private void buildUi2() {
-       VerticalLayoutContainer vert = new VerticalLayoutContainer();
-       _hintField.setHeight(100);
-       _stepField.setHeight(100);
-       
-       _hintField.setValue(this._hintStep.getHint());
-       _stepField.setValue(this._hintStep.getText());
-       
-       vert.add(new FieldLabel(_hintField, "Hint Text"));
-       vert.add(new FieldLabel(_stepField, "Step Text"));
-       
-       FramedPanel fp = new FramedPanel();
-       fp.setHeaderVisible(false);
-       
-       fp.setWidget(vert);
-       
-       setWidget(fp);
-    }
-    
     
     private void buildUi() {
         
@@ -138,7 +115,13 @@ public class ProblemDesignerEditorHintStep extends GWindow {
             
             @Override
             public void onSelect(SelectEvent event) {
-                new CpEditingArea("hint");
+                new CpEditingArea("hint", new Callback() {
+                    @Override
+                    public void editingComplete(String stepPartText) {
+                        _stepField.setText(stepPartText);
+                        doSave(stepPartText);
+                    }
+                });
             }
         }));
         

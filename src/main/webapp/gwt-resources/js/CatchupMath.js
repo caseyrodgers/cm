@@ -187,24 +187,6 @@ function flash_quizResult(result) {
     }
 }
 
-function processMathJax() {
-    try {
-        if (typeof MathJax != "undefined") {
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-            //  alert('MathJax log: ' + MathJax.Message.Log());
-        }
-    } catch (e) {
-        alert('Error processing MathJax: ' + e);
-    }
-}
-
-/** turn of the popup menu for MathJax */
-if (typeof MathJax != "undefined") {
-	MathJax.Hub.Config({
-		  "showMathMenu":false
-	});
-}
-
 function get_type(thing) {
     if (thing === null) return "[object Null]"; // special case
     return Object.prototype.toString.call(thing);

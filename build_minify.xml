@@ -28,6 +28,7 @@
 	        quiz-min.js
 		CatchupMath-min.js
 		swfobject/swfobject.js
+
         	../../../../../../hotmath2/web/js/hm_mathjax-min.js
 
                 whiteboard_static.js

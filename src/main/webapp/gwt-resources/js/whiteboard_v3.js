@@ -6773,6 +6773,14 @@ source: https://gist.github.com/754454
             'path': path
         });
     }
+    
+    
+    wb.loadFromJson = function(json) {
+    	var arr = eval('(' + json + ')');
+    	for(var i=0;i<arr.length;i++) {
+        	renderObj(arr[i], false);
+    	}    	    
+    }
 
     return wb;
 

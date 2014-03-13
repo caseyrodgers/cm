@@ -427,7 +427,7 @@ public class EditAssignmentDialog {
     static public void startTest() {
         Assignment ass = new Assignment();
         ass.setAdminId(2);
-        ass.setAssignKey(76);
+        ass.setAssignKey(7230);
         ass.setStatus("Open");
         new AssignmentStatusDialog(ass);
         
