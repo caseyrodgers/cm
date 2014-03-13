@@ -134,9 +134,14 @@ public class ShowWorkPanel2 extends Composite {
        _whiteboardOutCallback.showWorkIsReady(this);
     }
 
-    
-    native public String getWhiteboardCommandsAsJson() /*-{
-        return $wnd._theWhiteboard.getRenderedCommands();
+
+    public String getWhiteboardCommandsAsJson() {
+        return jsni_getWhiteboardCommandsAsJson(whiteboardId);
+    }
+
+    native private String jsni_getWhiteboardCommandsAsJson(String whiteboardId) /*-{
+        var theWhiteboard = $wnd._cmWhiteboards[whiteboardId];
+        return theWhiteboard.getRenderedCommands();
     }-*/;
     
     public boolean isReady() {
@@ -158,18 +163,19 @@ public class ShowWorkPanel2 extends Composite {
     }
 
     public void resizeWhiteboard() {
-        jnsi_resizeWhiteboard(getParentWidget().getElement(), whiteboardHeight);
+        jnsi_resizeWhiteboard(whiteboardId, getParentWidget().getElement(), whiteboardHeight);
         _whiteboardOutCallback.windowResized();
     }
 
     public void setAsTeacherMode(boolean yesNo) {
         _teacherMode=yesNo;
-        jsni_setAsTeacherMode(yesNo);
+        jsni_setAsTeacherMode(whiteboardId, yesNo);
     }
 
-    private native void jsni_setAsTeacherMode(boolean yesNo)/*-{
-                                                            $wnd._theWhiteboard.setAsTeacherMode(yesNo);
-                                                            }-*/;
+    private native void jsni_setAsTeacherMode(String whiteboardId, boolean yesNo)/*-{
+        var theWhiteboard = $wnd._cmWhiteboards[whiteboardId];
+        theWhiteboard.setAsTeacherMode(yesNo);
+    }-*/;
 
     native public void setProblemStatement(String theProbStmt) /*-{
         var ps = $wnd.$('.problemStatement');
@@ -192,7 +198,7 @@ public class ShowWorkPanel2 extends Composite {
             Window.alert("Whiteboard is not ready");
             return;
         }
-        CmGwtUtils.jsni_updateWhiteboardAux(null, command, commandData);
+        CmGwtUtils.jsni_updateWhiteboardAux(whiteboardId, command, commandData);
     }
 
 
@@ -232,7 +238,7 @@ public class ShowWorkPanel2 extends Composite {
             commandType = CommandType.CLEAR;
         } else if (json.equals("undo")) {
 
-            jsni_enableWhiteboardUndo(false);
+            jsni_enableWhiteboardUndo(whiteboardId, false);
 
             Log.debug("Whiteboard Undo: disabling undo button");
 
@@ -283,12 +289,13 @@ public class ShowWorkPanel2 extends Composite {
         // CmRpcCore.EVENT_BUS.fireEvent(new ShowWorkModifiedEvent(this));
     }
 
-    native private void jsni_enableWhiteboardUndo(boolean b) /*-{
+    native private void jsni_enableWhiteboardUndo(String whiteboardId, boolean b) /*-{
+        var theWhiteboard = $wnd._cmWhiteboards[whiteboardId];
         if(b) {
-            $wnd._theWhiteboard.enableUndo();
+            theWhiteboard.enableUndo();
         }
         else {
-            $wnd._theWhiteboard.disableUndo();
+            theWhiteboard.disableUndo();
         }
     }-*/;
     
@@ -342,7 +349,7 @@ public class ShowWorkPanel2 extends Composite {
                 Log.debug("saveWhiteboardToServer: complete");
                 whiteboardActions.getActions().clear();
 
-                jsni_enableWhiteboardUndo(true);
+                jsni_enableWhiteboardUndo(whiteboardId,true);
             }
 
             @Override
@@ -360,7 +367,7 @@ public class ShowWorkPanel2 extends Composite {
      * @param name
      */
     public void saveAsTemplate(int adminId, final CallbackOnComplete callback) {
-        final String dataUrl = jsniGetWhiteboardDataUrl();
+        final String dataUrl = jsniGetWhiteboardDataUrl(whiteboardId);
         
         SaveWhiteboardAsTemplateAction action = new SaveWhiteboardAsTemplateAction(adminId, dataUrl);
         CmTutor.getCmService().execute(action,  new AsyncCallback<RpcData>() {
@@ -378,8 +385,9 @@ public class ShowWorkPanel2 extends Composite {
             }});
     }
     
-    private native String jsniGetWhiteboardDataUrl() /*-{
-        return $wnd._theWhiteboard.saveSelToImage();
+    private native String jsniGetWhiteboardDataUrl(String whiteboardId) /*-{
+        var theWhiteboard = $wnd._cmWhiteboards[whiteboardId];
+        return theWhiteboard.saveSelToImage();
     }-*/;
 
     private void whiteboardDelete_Gwt(int index) {
@@ -416,32 +424,19 @@ public class ShowWorkPanel2 extends Composite {
             // create a single global object for now.
             // TODO: add support for multiple whiteboards
             //
-            var _theWhiteboard;
-            if($wnd._theWhiteboard) {
-              // $wnd._theWhiteboard.releaseResources();
-              $wnd._theWhiteboard = null;
-            }
-
-            //new $wnd.Whiteboard();
-            $wnd._theWhiteboardDiv = $doc.getElementById(whiteboardId);
-            if($wnd._theWhiteboardDiv == null) {
+            var theWhiteboardDiv = $doc.getElementById(whiteboardId);
+            if(theWhiteboardDiv == null) {
                 alert('whiteboard not found: ' + whiteboardId);
                 return;
             }
 
-            $wnd._theWhiteboard = new $wnd.Whiteboard(whiteboardId, isStatic, {'showTemplates':true});
-            $wnd._theWhiteboard.initWhiteboard($doc);
-            try {
-                //var templates = {"type":"img","path":"./","icon":"tn-","list":["temp_integral.png"]};
-                //$wnd._theWhiteboard.appendTemplates(templates);
-            }
-            catch(e) {
-                //alert('error assigning whiteboard templates: ' + e);
-            }
+            var theWhiteboard = new $wnd.Whiteboard(whiteboardId, isStatic, {'showTemplates':true});
+            $wnd._cmWhiteboards[whiteboardId] = theWhiteboard;
+            
+            theWhiteboard.initWhiteboard($doc);
 
             // tell the Whiteboard object the size of the parent container
             // if height is passed in use it, otherwise calculate based on parent
-
             var height=0;
             if(heightIn) {
                 height = heightIn;
@@ -452,26 +447,26 @@ public class ShowWorkPanel2 extends Composite {
             var width = Number($wnd.grabComputedWidth(ele)) + 15;
 
             //alert('setting whiteboard size: ' + height + ', ' + width);
-            $wnd._theWhiteboard.setWhiteboardViewPort(width, height);
+            theWhiteboard.setWhiteboardViewPort(width, height);
 
             // overide methods in the Whiteboard instance
-            $wnd._theWhiteboard.whiteboardOut = function (data, boo) {
+            theWhiteboard.whiteboardOut = function (data, boo) {
                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
             }
 
-            $wnd._theWhiteboard.whiteboardDelete = function (indexToDelete) {
+            theWhiteboard.whiteboardDelete = function (indexToDelete) {
                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardDelete_Gwt(I)(indexToDelete);
             }
 
-            $wnd._theWhiteboard.saveWhiteboard = function () {
+            theWhiteboard.saveWhiteboard = function () {
                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardSave_Gwt()();
             }
 
-            $wnd._theWhiteboard.whiteboardIsReady = function() {
+            theWhiteboard.whiteboardIsReady = function() {
                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardIsReady()();
             }
 
-            $wnd._theWhiteboard.gwt_saveWhiteboardAsTemplate = function() {
+            theWhiteboard.gwt_saveWhiteboardAsTemplate = function() {
                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::gwt_saveWhiteboardAsTemplate()();
             }
 
@@ -485,15 +480,15 @@ public class ShowWorkPanel2 extends Composite {
         }
     }-*/;
 
-    private native void jnsi_resizeWhiteboard(Element ele, int heightIn)/*-{
+    private native void jnsi_resizeWhiteboard(String whiteboardId, Element ele, int heightIn)/*-{
         if (typeof $wnd.Whiteboard == 'undefined') {
             $wnd.console.log('jnsi_resizeWhiteboard: Whiteboard not defined');
             return;
         }
 
+        var theWhiteboard = $wnd._cmWhiteboards[whiteboardId];
+        
         // tell the Whiteboard object the size of the parent container
-
-
         var height=0;
         if(heightIn == 0) {
             height = Number($wnd.grabComputedHeight(ele)) + 15;
@@ -503,13 +498,14 @@ public class ShowWorkPanel2 extends Composite {
         }
         var width = Number($wnd.grabComputedWidth(ele)) + 15;
 
-        $wnd._theWhiteboard.setWhiteboardViewPort(width, height);
-        $wnd._theWhiteboard.resizeWhiteboard();
+        theWhiteboard.setWhiteboardViewPort(width, height);
+        theWhiteboard.resizeWhiteboard();
      }-*/;
 
-    static private native void jsni_disconnectWhiteboard()/*-{
-                                                          $wnd._theWhiteboard.disconnectWhiteboard($doc);
-                                                          }-*/;
+    static private native void jsni_disconnectWhiteboard(String whiteboardId)/*-{
+       var theWhiteboard = $wnd._cmWhiteboards[whiteboardId];
+       theWhiteboard.disconnectWhiteboard($doc);
+    }-*/;
 
     static {
         CmRpcCore.EVENT_BUS.addHandler(WindowHasBeenResizedEvent.TYPE, new WindowHasBeenResizedHandler() {
@@ -603,12 +599,22 @@ public class ShowWorkPanel2 extends Composite {
 
     }
 
-    native public void setWhiteboardTemplates(String templates) /*-{
-        $wnd._theWhiteboard.appendTemplates('(' + templates + ')');
+    public void setWhiteboardTemplates(String templates) {
+        jsni_setWhiteboardTemplates(whiteboardId, templates);
+    }
+    native private void jsni_setWhiteboardTemplates(String whiteboardId, String templates) /*-{
+        var theWhiteboard = $wnd._cmWhiteboards[whiteboardId];
+        theWhiteboard.appendTemplates('(' + templates + ')');
     }-*/;
 
-    native public void setWhiteboardTemplate(String path) /*-{
-       $wnd._theWhiteboard.setTemplate('template', path);
+    
+    public void setWhiteboardTemplate(String path) {
+        jsni_setWhiteboardTemplate(whiteboardId, path);
+    }
+
+    native private void jsni_setWhiteboardTemplate(String whiteboardId, String path) /*-{
+       var theWhiteboard = $wnd._cmWhiteboards[whiteboardId];
+       $theWhiteboard.setTemplate('template', path);
     }-*/;
 
 

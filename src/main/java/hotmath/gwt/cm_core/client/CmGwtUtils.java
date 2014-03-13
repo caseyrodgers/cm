@@ -308,7 +308,7 @@ public class CmGwtUtils {
      */
     static public native void jsni_updateWhiteboardAux(String whiteboardId, String command, String commandData) /*-{
     
-        var theWhiteboard = whiteboardId == null?$wnd._theWhiteboard: $wnd._cmWhiteboards[whiteboardId];
+        var theWhiteboard  = $wnd._cmWhiteboards[whiteboardId];
         if(!theWhiteboard) {
             alert('whiteboard ' + whiteboardId + ' cannot be found in jsni_updateWhiteboardAux');
             return;
@@ -335,7 +335,7 @@ public class CmGwtUtils {
     
     static public native void jsni_setWhiteboardTemplatesAux(String whiteboardId, String templates) /*-{
     
-        var theWhiteboard = whiteboardId == null?$wnd._theWhiteboard: $wnd._cmWhiteboards[whiteboardId];
+        var theWhiteboard = $wnd._cmWhiteboards[whiteboardId];
         if(!theWhiteboard) {
             alert('whiteboard ' + whiteboardId + ' cannot be found in jsni_updateWhiteboardAux');
             return;
