@@ -6,11 +6,30 @@ public class TeacherIdentity implements Response {
     private int adminId;
     private int teacherId;
     String teacherName;
+    final int UNKNOWN = -1;
     public TeacherIdentity() {}
     public TeacherIdentity(int adminId, String teacherName, int teacherId) {
         this.adminId = adminId;
         this.teacherName = teacherName;
         this.teacherId = teacherId;
+    }
+    
+    public TeacherIdentity(String serializedTeacher) {
+        if(serializedTeacher == null) {
+            this.adminId = UNKNOWN;
+            this.teacherId = UNKNOWN;
+            this.teacherName = "Unknown Teacher";
+        }
+        else {
+            String p[] = serializedTeacher.split("\\|");
+            this.adminId = Integer.parseInt(p[0]);
+            this.teacherId = Integer.parseInt(p[1]);
+            this.teacherName = p[2];
+        }
+    }
+    
+    public boolean isUnknown() {
+        return adminId == UNKNOWN;
     }
 
     public int getTeacherId() {

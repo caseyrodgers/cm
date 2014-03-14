@@ -18,7 +18,6 @@ import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -54,8 +54,6 @@ import com.sencha.gxt.widget.core.client.grid.GridView;
 import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 public class CustomProblemManager extends GWindow {
-    
-    private TeacherIdentity teacher;
     BorderLayoutContainer _main;
     Grid<CustomProblemModel> _grid;
     GridProperties _gridProps = GWT.create(GridProperties.class);
@@ -66,11 +64,11 @@ public class CustomProblemManager extends GWindow {
     protected CmList<CustomProblemModel> _allProblems;
     private ToggleButton _filterButton;
 
-    private CustomProblemManager(TeacherIdentity teacher) {
+    private CustomProblemManager() {
         super(true);
-        
-        this.teacher = teacher;
-        setHeadingText("Custom Problem Manager: " + teacher.getTeacherName());
+
+        setLocalTitle();
+
         setPixelSize(700, 600);
         setMaximizable(true);
         
@@ -79,8 +77,13 @@ public class CustomProblemManager extends GWindow {
         setVisible(true);
     }
     
+    
+    private void setLocalTitle() {
+        setHeadingText("Custom Problem Manager: " + TeacherManager.getTeacher().getTeacherName());
+    }
 
     private void buildGui() {
+       
         _main = new BorderLayoutContainer();
         ListStore<CustomProblemModel> store = new ListStore<CustomProblemModel>(_gridProps.key());
         List<ColumnConfig<CustomProblemModel, ?>> cols = new ArrayList<ColumnConfig<CustomProblemModel, ?>>();
@@ -110,15 +113,18 @@ public class CustomProblemManager extends GWindow {
             
             @Override
             public void onSelect(SelectEvent event) {
-                CustomProblemModel problem = new CustomProblemModel(null,0,teacher, null, null);
-                new CustomProblemPropertyEditor(problem,new CustomProblemPropertyEditor.Callback() {
-
-                    @Override
-                    public void solutionCreated(SolutionInfo solution) {
-                        _selectedSolution = solution.getPid();
-                        readFromServer();
-                    }
-                });
+                
+                if(TeacherManager.getTeacher().isUnknown()) {
+                    new TeacherManager(new Callback() {
+                        @Override
+                        public void teacherSet(TeacherIdentity teacher) {
+                            showAddNewProblemDialog();
+                        }
+                    });
+                }
+                else {
+                    showAddNewProblemDialog();
+                }
             }
         }));
         gridPanel.addTool(new TextButton("Del", new SelectHandler() {
@@ -168,16 +174,34 @@ public class CustomProblemManager extends GWindow {
 
         BorderLayoutContainer gridCont = new BorderLayoutContainer();
         gridCont.setCenterWidget(gridPanel);
-        FlowLayoutContainer flow = new FlowLayoutContainer();
+        HorizontalPanel flow = new HorizontalPanel();
         _showAllTeachers = new CheckBox();
+        _showAllTeachers.setToolTip("If selected, all teachers will be listed");
+        _showAllTeachers.setValue(true);
         _showAllTeachers.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
                 _grid.getStore().setEnableFilters(_showAllTeachers.getValue());
             }
         });
-        flow.add(new MyFieldLabel(_showAllTeachers,"Show All Teachers",120));
-        flow.getElement().setAttribute("style",  "padding: 3px;");
+        flow.add(new MyFieldLabel(_showAllTeachers,"All Teachers",75, 20));
+        
+        TextButton selTeach = new TextButton("Select Teacher", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                new TeacherManager(new Callback() {
+                    
+                    @Override
+                    public void teacherSet(TeacherIdentity teacher) {
+                        setLocalTitle();
+                        readFromServer();
+                    }
+                });
+            }
+        });
+        selTeach.setToolTip("Choose your teacher identity");
+        flow.add(selTeach);
+        flow.getElement().setAttribute("style",  "padding-left: 3px;");
         gridCont.setSouthWidget(flow, new BorderLayoutData(30));
         _main.setWestWidget(gridCont, new BorderLayoutData(200));
         
@@ -185,7 +209,7 @@ public class CustomProblemManager extends GWindow {
         _filter = new StoreFilter<CustomProblemModel>() {
             @Override
             public boolean select(Store<CustomProblemModel> store, CustomProblemModel parent, CustomProblemModel item) {
-                if(item.getTeacher().getTeacherId() == teacher.getTeacherId()) {
+                if(item.getTeacher().getTeacherId() == TeacherManager.getTeacher().getTeacherId()) {
                     return true;
                 }
                 else {
@@ -197,6 +221,17 @@ public class CustomProblemManager extends GWindow {
         new QuickTip(_grid);
         
         setWidget(_main);
+    }
+    
+    private void showAddNewProblemDialog() {
+        CustomProblemModel problem = new CustomProblemModel(null,0,TeacherManager.getTeacher(), null, null);
+        new CustomProblemPropertyEditor(problem,new CustomProblemPropertyEditor.Callback() {
+            @Override
+            public void solutionCreated(SolutionInfo solution) {
+                _selectedSolution = solution.getPid();
+                readFromServer();
+            }
+        });
     }
 
 
@@ -234,7 +269,7 @@ public class CustomProblemManager extends GWindow {
     private List<CustomProblemModel> getLessonsOnlyThisAdmin(CmList<CustomProblemModel> all) {
         List<CustomProblemModel> list = new ArrayList<CustomProblemModel>();
         for(CustomProblemModel cp: all) {
-            if(cp.getTeacher().getTeacherId() == teacher.getTeacherId()) {
+            if(cp.getTeacher().getTeacherId() == TeacherManager.getTeacher().getTeacherId()) {
                 list.add(cp);
             }
         }
@@ -416,7 +451,7 @@ public class CustomProblemManager extends GWindow {
 
             @Override
             public void attempt() {
-                GetCustomProblemAction action = new GetCustomProblemAction(teacher);
+                GetCustomProblemAction action = new GetCustomProblemAction(TeacherManager.getTeacher());
                 setAction(action);
                 CmShared.getCmService().execute(action,  this);
             }
@@ -451,11 +486,7 @@ public class CustomProblemManager extends GWindow {
 
      */
     public static void showManager() {
-        new TeacherManager(new Callback() {
-            public void teacherSet(TeacherIdentity teacher) {
-                new CustomProblemManager(teacher);
-            }
-        });
+        new CustomProblemManager();
     }
     
     public static void startTest() {

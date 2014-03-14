@@ -122,7 +122,8 @@ public class CustomProblemPropertyEditor extends GWindow {
     private void buildGui() {
         FramedPanel frame = new FramedPanel();
 
-        _teacherName.setToolTip("Unique teacher name");
+        _teacherName.setToolTip("Unique teacher name.  To select a differnt teacher, cancel and use the Select Teacher button.");
+        _teacherName.setEnabled(false);
         _comments.setHeight(100);
         _comments.setValue(problem.getComments());
         _problemNumber.setToolTip("The unique problem number automatically assigned");

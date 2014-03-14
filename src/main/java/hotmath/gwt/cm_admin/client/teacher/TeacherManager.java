@@ -19,6 +19,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.RetryActionManager;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.client.Cookies;
@@ -68,13 +69,8 @@ public class TeacherManager extends GWindow {
             public void onSelect(SelectEvent event) {
                 __currentTeacherIdentity = getSelectedTeacher();
                 
-                
-                Date now = new Date();
-                long nowLong = now.getTime();
-                nowLong = nowLong + (1000 * 60 * 60 * 24 * 7);//seven days
-                now.setTime(nowLong);
-
-                Cookies.setCookie("teacher_name", __currentTeacherIdentity.getTeacherName(), now);
+                String val = __currentTeacherIdentity.getAdminId() + "|" + __currentTeacherIdentity.getTeacherId() + "|" + __currentTeacherIdentity.getTeacherName();
+                Storage.getLocalStorage().setItem("current_teacher",val);
                 
                 callback.teacherSet(__currentTeacherIdentity);
                 hide();
@@ -236,7 +232,10 @@ public class TeacherManager extends GWindow {
     }
 
     public static TeacherIdentity getTeacher() {
+        if(__currentTeacherIdentity == null || __currentTeacherIdentity.isUnknown()) {
+            String val = Storage.getLocalStorage().getItem("current_teacher");
+            __currentTeacherIdentity = new TeacherIdentity(val); 
+        }
         return __currentTeacherIdentity;
     }
-
 }
