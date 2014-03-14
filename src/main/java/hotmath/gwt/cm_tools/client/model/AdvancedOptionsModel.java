@@ -2,15 +2,13 @@ package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
-public class AdvancedOptionsModel implements Response{
+public class AdvancedOptionsModel implements Response {
     
-    
-    public AdvancedOptionsModel(){}
-    
+	private static final long serialVersionUID = 1510395407744871420L;
     
     private String passPercent;
     private StudentSettingsModel ssm;
-    private int sectionNum;
+    private int activeSection;
     private boolean loggedIn;
     private boolean startedQuiz;
     private boolean tookQuiz;
@@ -18,10 +16,13 @@ public class AdvancedOptionsModel implements Response{
     private boolean usedResources;
     private boolean registered;
     private int sectionCount;
+    private int sectionNum;
     private boolean sectionIsSettable;
     private boolean progStopIsSettable;
-    private int activeSection;
+    private boolean selfPay;
+    private boolean selfPayIsSettable;
     
+	public AdvancedOptionsModel(){}
 
     public void setPassPercent(String passPercent) {
         this.passPercent = passPercent;
@@ -135,6 +136,21 @@ public class AdvancedOptionsModel implements Response{
     public int getActiveSection() {
         return activeSection;
     }
-    
-    
+
+    public void setSelfPay(boolean selfPay) {
+    	this.selfPay = selfPay;
+    }
+
+    public boolean getSelfPay() {
+		return selfPay;
+	}
+
+	public boolean getSelfPayIsSettable() {
+		return selfPayIsSettable;
+	}
+
+	public void setSelfPayIsSettable(boolean selfPayIsSettable) {
+		this.selfPayIsSettable = selfPayIsSettable;
+	}
+
 }
