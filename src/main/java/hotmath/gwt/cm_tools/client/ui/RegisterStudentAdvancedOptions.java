@@ -12,6 +12,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.List;
 
+import com.google.gwt.user.client.Window;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -43,6 +44,7 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 	private CheckBox isDisableCalcAlways;
 	private CheckBox isDisableCalcQuizzes;
 	private CheckBox isNoPublicWebLinks;
+	private CheckBox isSelfPay;
 
 	private ComboBox <PassPercent> passCombo;
 	private SectionNumberCombo sectionCombo;
@@ -62,6 +64,8 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 	private int currentSection;
 	private boolean sectionIsSettable;
 	private boolean progStopIsSettable;
+	private boolean selfPayIsSettable;
+	private boolean selfPay;
 
     private StudentProgramModel program;
 	
@@ -75,6 +79,8 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 		this.currentSection = options.getSectionNum();
 		this.sectionCount = options.getSectionCount();
         this.sectionIsSettable = options.isSectionIsSettable();
+        this.selfPayIsSettable = options.getSelfPayIsSettable();
+        this.selfPay = options.getSelfPay();
 
 		this.progStopIsSettable = options.isProgStopIsSettable();
 		this.program = selectedProgram;
@@ -163,6 +169,14 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
             sectionCombo = new SectionNumberCombo(0);
             advOptions.addThing(new MyFieldLabel(sectionCombo, "Select Section", LABEL_LEN));
             setupSectionComboAsync();
+        }
+
+        if (selfPayIsSettable) {
+        	isSelfPay = new CheckBox();
+        	isSelfPay.setId("self_pay");
+        	isSelfPay.setValue(options.getSelfPay());
+        	advOptions.addThing(new MyFieldLabel(isSelfPay, "Student pays $29", LABEL_LEN, 10));
+        	
         }
 
 		advOptWindow.setHeadingText((isNew)?"Set Options":"Edit Options");
@@ -334,6 +348,7 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
                 options.setPassPercent(passPercent);
                 options.setSettings(ssm);
                 options.setSectionNum(sectionNum);
+                options.setSelfPay(selfPay);
                 callback.setAdvancedOptions(options);
 
                 advOptWindow.close();

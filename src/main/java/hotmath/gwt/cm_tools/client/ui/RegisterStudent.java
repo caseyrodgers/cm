@@ -95,6 +95,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
     private boolean skipComboSet;
     private boolean loading;
     private boolean passPercentReqd;
+    private boolean selfPay;
     private Integer sectionCount = 0;
     private Integer activeSection = 0;
 
@@ -428,6 +429,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 stuSettingsMdl = options.getSettings();
                 passPercent = options.getPassPercent();
                 activeSection = options.getSectionNum();
+                selfPay = options.getSelfPay();;
             }
         };
 
@@ -450,6 +452,10 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 ssm.setTutoringAvailable(acctInfoMdl.getIsTutoringEnabled());
             }
         }
+        boolean isCollege = acctInfoMdl.getIsCollege();
+        boolean isSelfPay = student.getSelfPay();
+        options.setSelfPayIsSettable(isCollege);
+        options.setSelfPay(isSelfPay);
 
         options.setPassPercent(passPercent);
         options.setSettings(ssm);
@@ -1488,6 +1494,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         sm.setAdminUid(cmAdminMdl.getUid());
         sm.setPassPercent(passPercent);
         sm.setSectionNum(activeSection);
+        sm.setSelfPay(selfPay);
 
         String chapTitle = (chap != null) ? chap.getTitle() : null;
         sm.setChapter(chapTitle);
