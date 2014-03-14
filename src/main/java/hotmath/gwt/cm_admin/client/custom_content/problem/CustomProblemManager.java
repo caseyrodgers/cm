@@ -404,7 +404,7 @@ public class CustomProblemManager extends GWindow {
             ProblemDesigner problemDesigner = new ProblemDesigner();
             _main.setCenterWidget(problemDesigner);
             forceLayout();
-            problemDesigner.loadProblem(selectedItem);
+            problemDesigner.loadProblem(selectedItem, 0);
         }
     }
 

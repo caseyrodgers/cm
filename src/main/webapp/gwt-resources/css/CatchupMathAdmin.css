@@ -612,3 +612,8 @@ program-details-panel .x-ftree2-node-over {
     border-radius: 10px;
 	
 }
+
+.hint-step-box {
+	margin: 10px;
+	border: 2px solid blue;
+}

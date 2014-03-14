@@ -1,4 +1,7 @@
 
+
+
+
 // global array of initialized whiteboard objects
 window._cmWhiteboards = [];
 
@@ -16,7 +19,6 @@ function setupStaticWhiteboards_v2() {
 			wb.innerHTML = '';
 			
 			var whiteboardId = 'wb_json-' + i;
-			alert('create: ' + whiteboardId);
 			
 			wb.setAttribute("id", whiteboardId);
 			window._cmWhiteboards[whiteboardId] = new Whiteboard(whiteboardId, true);

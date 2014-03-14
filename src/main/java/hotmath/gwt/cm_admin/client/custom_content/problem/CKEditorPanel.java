@@ -30,10 +30,10 @@ public class CKEditorPanel extends SimplePanel {
             }
         });
     }
-    
-    public void setEditorValue(String text) {
-        _textArea.setValue(text);
-    }
+
+    native public void setEditorValue(String text) /*-{
+        $wnd.CKEDITOR.instances[id].setData(text);
+    }-*/;
 
     native private void jsni_setupCkeditor(String id, String text) /*-{
         $wnd.CKEDITOR.replace( id,{__customConfig : '','height' : '170'});

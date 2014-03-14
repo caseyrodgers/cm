@@ -115,7 +115,7 @@ public class ProblemDesignerEditorHintStep extends GWindow {
             
             @Override
             public void onSelect(SelectEvent event) {
-                new CpEditingArea("hint", new Callback() {
+                new CpEditingArea("hint", _hintStep.getHint(), new Callback() {
                     @Override
                     public void editingComplete(String stepPartText) {
                         _stepField.setText(stepPartText);

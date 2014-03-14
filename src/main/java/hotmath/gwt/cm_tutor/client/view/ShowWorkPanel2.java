@@ -617,5 +617,13 @@ public class ShowWorkPanel2 extends Composite {
        $theWhiteboard.setTemplate('template', path);
     }-*/;
 
+    public void loadWhiteboardFromJson(String whiteboardJson) {
+        jsni_loadWhiteboardFromJson(whiteboardId, whiteboardJson);
+    }
+    
+    native private void jsni_loadWhiteboardFromJson(String whiteboardId, String json) /*-{
+        $wnd._cmWhiteboards[whiteboardId].loadFromJson(json);
+    }-*/;
+
 
 }

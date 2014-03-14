@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
+import hotmath.gwt.cm_admin.client.custom_content.problem.CpEditingArea.Callback;
 import hotmath.gwt.cm_core.client.CmGwtTestUi;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
@@ -15,6 +16,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.Problem
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.MyTextButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
@@ -75,7 +77,7 @@ public class ProblemDesigner extends Composite {
             _editMode.addSelectHandler(new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
-                    __lastInstance.loadProblem(_customProblem);
+                    __lastInstance.loadProblem(_customProblem, 0);
                 }
             });
         }
@@ -95,7 +97,25 @@ public class ProblemDesigner extends Composite {
     }
 
     protected void addNewHintStep() {
-        new ProblemDesignerEditorHintStep(_solutionInfo,_solutionMeta,ProblemDesignerEditorHintStep.NEW_HINTSTEP,callback);
+        SolutionMetaStep hintStep = new SolutionMetaStep();
+        _solutionMeta.getSteps().add(hintStep);
+        
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                SaveCustomProblemAction action = new SaveCustomProblemAction(_solutionMeta.getPid(), SaveType.HINTSTEP, _solutionMeta);
+                setAction(action);
+                CmShared.getCmService().execute(action,  this);
+            }
+            public void oncapture(RpcData value) {
+                CmBusyManager.setBusy(false);
+                Log.info("Hint saved");
+                
+                int bottom = _tutorFlow.getScrollSupport().getMaximumVerticalScrollPosition();
+                loadProblem(_customProblem, bottom);
+            }
+        }.register();        
     }
 
     native private void setupJsniHooks() /*-{
@@ -105,7 +125,7 @@ public class ProblemDesigner extends Composite {
         }
     }-*/;
 
-    public void loadProblem(CustomProblemModel customProblem) {
+    public void loadProblem(CustomProblemModel customProblem, final int scrollPosition) {
         _customProblem = customProblem;
         final String pid = customProblem.getPid();
         String label = customProblem.getLabel();
@@ -132,7 +152,7 @@ public class ProblemDesigner extends Composite {
                 SolutionMeta sm = (SolutionMeta)responses.get(1);
                 
                 // Window.alert("Solution: " + responses);
-                loadProblem(si, sm);
+                loadProblem(si, sm, scrollPosition);
             }
         }.register();
     }
@@ -142,13 +162,14 @@ public class ProblemDesigner extends Composite {
     CallbackOnComplete callback = new CallbackOnComplete() {
         @Override
         public void isComplete() {
-            loadProblem(_customProblem);
+            loadProblem(_customProblem,0);
         }
     };
     
     
     private void gwt_editPart(String partType, String data) {
 
+        // Window.alert("Part: " + partType + ", " + data);
         if(partType.equals("whiteboard")) {
             new ProblemDesignerEditorWhiteboard(_solutionInfo, "wb_ps", callback);
         }
@@ -162,8 +183,26 @@ public class ProblemDesigner extends Composite {
         }
         else if(partType.equals("hint")) {
             int which = Integer.parseInt(data);
-            new ProblemDesignerEditorHintStep(_solutionInfo,_solutionMeta, which, callback);
+            final SolutionMetaStep step = _solutionMeta.getSteps().get(which);
+            new CpEditingArea("wb_editor", step.getHint(), new Callback() {
+                @Override
+                public void editingComplete(String partText) {
+                    step.setHint(partText);
+                    saveSolutionToServer();
+                }
+            });
         }
+        else if(partType.equals("step")) {
+            int which = Integer.parseInt(data);
+            final SolutionMetaStep step = _solutionMeta.getSteps().get(which);
+            new CpEditingArea("wb_editor", step.getText(), new Callback() {
+                @Override
+                public void editingComplete(String partText) {
+                    step.setText(partText);
+                    saveSolutionToServer();
+                }
+            });
+        }        
         else if(partType.equals("hint-remove")) {
             int which = Integer.parseInt(data);
             removeSolutionHintStep(which);
@@ -221,6 +260,8 @@ public class ProblemDesigner extends Composite {
     
     
     private void saveSolutionToServer() {
+        
+        final int scrollPosition = _tutorFlow.getScrollSupport().getVerticalScrollPosition();
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
@@ -230,7 +271,7 @@ public class ProblemDesigner extends Composite {
             }
             public void oncapture(RpcData value) {
                 Log.info("Hint saved");
-                loadProblem(_customProblem);
+                loadProblem(_customProblem, scrollPosition);
             }
         }.register();
     }
@@ -241,7 +282,8 @@ public class ProblemDesigner extends Composite {
        var that = this;
        
        $wnd.gwt_getHintNumber = function(o) {
-          return o.parentElement.parentElement.getAttribute("hint_step_num");
+          var stepNum = $wnd.$(o).closest('.hint-step').attr('hint_step_num');
+          return stepNum;
        }
        
        $wnd.gwt_getWidgetJson = function(o) {
@@ -249,7 +291,6 @@ public class ProblemDesigner extends Composite {
        }
        
        // add hooks on double click to bring up appropriate editor
-       // and add a hover to indicate editability
        //
        $wnd.$('#problem_statement').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Click to Edit Problem Statement</button></div>").dblclick(function(x) {
            //var whiteboardId = x.target.parentNode.parentNode.parentNode.parentNode.getAttribute("wb_id");
@@ -261,15 +302,32 @@ public class ProblemDesigner extends Composite {
        });
        
        
-       var clickDef = "<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"hint\",window.gwt_getHintNumber(this))'>Click to Edit</button>" +
-                      "<button onclick='window.gwt_editPart(\"hint-remove\",window.gwt_getHintNumber(this))'>Click to Remove</button>" +
+       var clickDef = "<div class='cp_designer-toolbar'>" +
+                      "<button onclick='window.gwt_editPart(\"hint-remove\",window.gwt_getHintNumber(this))'>Click to Remove Hint/Step</button>" +
                       "<button onclick='window.gwt_editPart(\"hint-moveUp\",window.gwt_getHintNumber(this))'>^</button>" +
                       "<button onclick='window.gwt_editPart(\"hint-moveDown\",window.gwt_getHintNumber(this))'>v</button></div>";
                       
-       $wnd.$('.hint-step').prepend(clickDef).dblclick(function() {
-          var stepId = getStepId(this);
+       $wnd.$('.hint-step').addClass('hint-step-box').prepend(clickDef);
+       
+       
+       var hintClickDef = "<div class='cp_designer-toolbar'>" +
+                      "<button onclick='window.gwt_editPart(\"hint\",window.gwt_getHintNumber(this))'>Edit Hint</button>";
+                      
+                      
+       $wnd.$('.hint').prepend(hintClickDef).dblclick(function() {
+          var stepId = $wnd.gwt_getHintNumber(this.parentElement.parentElement);
           $wnd.gwt_editPart('hint', stepId);
        });
+       
+       var stepClickDef = "<div class='cp_designer-toolbar'>" +
+                  "<button onclick='window.gwt_editPart(\"step\",window.gwt_getHintNumber(this))'>Edit Step</button>";
+                      
+                      
+       $wnd.$('.step').prepend(stepClickDef).dblclick(function() {
+          var stepId = getStepId(this.parentElement.parentElement);
+          $wnd.gwt_editPart('step', stepId);
+       });
+
        
        if(true || showAddStepHintButton) {
            $wnd.$('#raw_tutor_steps').append("<div style='margin-top: 15px;' class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"add_hint-step\",null)'>Click to Add Hint/Step</button></div>").dblclick(function() {
@@ -280,7 +338,8 @@ public class ProblemDesigner extends Composite {
        
     }-*/;
     
-    protected void loadProblem(final SolutionInfo solution, SolutionMeta solutionMeta) {
+    FlowLayoutContainer _tutorFlow;
+    protected void loadProblem(final SolutionInfo solution, SolutionMeta solutionMeta, int scrollPosition) {
         _solutionInfo = solution;
         _solutionMeta = solutionMeta;
         _tutorWrapper = new TutorWrapperPanel(_editMode.getValue(), false, false, false, new TutorCallbackDefault() {
@@ -294,13 +353,15 @@ public class ProblemDesigner extends Composite {
                 return false;
             }
         });
-        FlowLayoutContainer flow = new FlowLayoutContainer();
-        flow.setScrollMode(ScrollMode.AUTO);
-        flow.add(_tutorWrapper);
+        _tutorFlow = new FlowLayoutContainer();
+        _tutorFlow.setScrollMode(ScrollMode.AUTO);
+        _tutorFlow.add(_tutorWrapper);
         
-        _problemPanel.setWidget(flow);
+        _problemPanel.setWidget(_tutorFlow);
         _main.setCenterWidget(_problemPanel);
+
         _main.forceLayout();
+
 
         boolean shouldExpand = !_editMode.getValue();
         _tutorWrapper.externallyLoadedTutor(solution, getWidget(), "", "Solution Title", false, shouldExpand, null);
@@ -316,6 +377,9 @@ public class ProblemDesigner extends Composite {
                 }-*/;
             });
         }
+        
+        
+        _tutorFlow.getScrollSupport().setVerticalScrollPosition(scrollPosition);
     }
 
   
@@ -325,7 +389,7 @@ public class ProblemDesigner extends Composite {
         public void startTest() {
             String testPid="test_casey_1_1_1_1";
             testPid="cmextras_dynamic_oops_basic_1_1";
-            new ProblemDesigner().loadProblem(new CustomProblemModel(testPid, 0, null, null, ProblemType.UNKNOWN));
+            new ProblemDesigner().loadProblem(new CustomProblemModel(testPid, 0, null, null, ProblemType.UNKNOWN),0);
         }
     }
 

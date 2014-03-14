@@ -34,7 +34,7 @@ public class CpEditingArea extends GWindow {
         void editingComplete(String partText);
     }
     Callback _callback;
-    public CpEditingArea(String editKey, Callback callback) {
+    public CpEditingArea(String editKey, String text, Callback callback) {
         
         super(false);
         this._callback = callback;
@@ -45,7 +45,11 @@ public class CpEditingArea extends GWindow {
         
         _editorKey = "ckedit_id_" + editKey.trim(); 
         _wbKey = "wb_" + _editorKey;
-        buildUi();
+        
+        
+        AreaData areaData = extractAreaData(text);
+        
+        buildUi(areaData);
         
         
         addButton(new TextButton("Save", new SelectHandler() {
@@ -61,6 +65,34 @@ public class CpEditingArea extends GWindow {
         setVisible(true); 
     }
     
+    private AreaData extractAreaData(String text) {
+        String checkFor = "<div class='wb_json'>";
+        int p = text.indexOf(checkFor);
+        String wbJson = null;
+        String textPart = null;
+        if(p > -1) {
+            textPart = text.substring(0, p);
+            wbJson = text.substring(p);
+            wbJson = wbJson.substring(checkFor.length(), wbJson.indexOf("</div>"));
+        }
+        else {
+            textPart = text;
+        }
+        AreaData aData = new AreaData(textPart,wbJson);
+        return aData;
+    }
+
+    class AreaData {
+        String textPart;
+        String wbJson;
+        
+        public AreaData(String textPart, String whiteboardJson) {
+            this.textPart = textPart;
+            this.wbJson = whiteboardJson;
+        }
+        
+    }
+    
     
     private void doSave() {
         String partText = 
@@ -71,8 +103,8 @@ public class CpEditingArea extends GWindow {
         hide();
     }
     
-    private void buildUi() {
-        ckEditorPanel = new CKEditorPanel(_editorKey,"");
+    private void buildUi(final AreaData areaData) {
+        ckEditorPanel = new CKEditorPanel(_editorKey,areaData.textPart);
         
         
         _showWork = new ShowWorkPanel2(new ShowWorkPanelCallbackDefault() {
@@ -83,6 +115,7 @@ public class CpEditingArea extends GWindow {
             
             @Override
             public void showWorkIsReady(ShowWorkPanel2 showWork) {
+                showWork.loadWhiteboardFromJson(areaData.wbJson);
             }
             
             @Override
@@ -94,9 +127,7 @@ public class CpEditingArea extends GWindow {
         _main.setSouthWidget(_showWork,new BorderLayoutData(290));
         _main.setCenterWidget(ckEditorPanel);
     }
-    
-    public void setValue(String hint) {
-    }
+
 
     public String getCurrentValue() {
         return null;
