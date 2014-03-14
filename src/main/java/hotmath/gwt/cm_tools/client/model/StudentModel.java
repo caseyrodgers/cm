@@ -28,7 +28,8 @@ public class StudentModel implements StudentModelI {
     Boolean programChanged;
     
     boolean hasExtendedData;
-
+    boolean selfPay;
+    boolean isCollege;
     
     StudentProgramModel program = new StudentProgramModel();
 
@@ -259,5 +260,25 @@ public class StudentModel implements StudentModelI {
 	@Override
 	public void setSettings(StudentSettingsModel settings) {
 		this.settings = settings;
+	}
+
+	@Override
+	public void setSelfPay(boolean selfPay) {
+		this.selfPay = selfPay;
+	}
+
+	@Override
+	public boolean getSelfPay() {
+		return selfPay;
+	}
+
+	@Override
+	public void setIsCollege(boolean isCollege) {
+		this.isCollege = isCollege;
+	}
+
+	@Override
+	public boolean getIsCollege() {
+		return isCollege;
 	}
 }

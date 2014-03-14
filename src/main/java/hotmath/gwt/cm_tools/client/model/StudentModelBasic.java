@@ -31,6 +31,8 @@ class StudentModelBasic implements StudentModelI, IsSerializable{
     StudentSettingsModel settings = new StudentSettingsModel();
     
     boolean hasExtendedData;
+    boolean selfPay;
+    boolean isCollege;
     
     private String showWorkState;
 
@@ -308,5 +310,25 @@ class StudentModelBasic implements StudentModelI, IsSerializable{
     @Override
 	public void setSettings(StudentSettingsModel settings) {
 		this.settings = settings;
+	}
+
+	@Override
+	public void setSelfPay(boolean selfPay) {
+		this.selfPay = selfPay;
+	}
+
+	@Override
+	public boolean getSelfPay() {
+		return selfPay;
+	}
+
+	@Override
+	public void setIsCollege(boolean isCollege) {
+		this.isCollege = isCollege;
+	}
+
+	@Override
+	public boolean getIsCollege() {
+		return isCollege;
 	}	
 }

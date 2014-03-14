@@ -1036,6 +1036,7 @@ ORDER BY   user_name
 select s.id,
        Ifnull(s.school_type, 'NONE')                  as school_name,
        s.responsible_name,
+       s.is_college,
        sc.date_expire                                 as catchup_expire_date,
        sc.service_name,
        st.date_expire                                 as tutoring_expire_date,
@@ -1043,6 +1044,7 @@ select s.id,
        h.create_date                                  as account_create_date,
        t.student_count,
        t2.student_count_free,
+       ifnull(t3.student_count_community,0)           as student_count_community,
        Ifnull(cc.max_students, 1000)                  as max_students,
        l.login_time,
        Date_format(l.login_time, '%Y-%m-%d %h:%i %p') as login_date_time,
@@ -1087,6 +1089,18 @@ from   SUBSCRIBERS s
                                      and cust.name = 'Essentials Topics' ) )
                   group  by admin_id) t2
               on t2.admin_id = h.aid
+       left join (select u.admin_id,
+                         u.is_active,
+                         count(*) as student_count_community
+                  from   HA_USER u
+                         join CM_GROUP g
+                           on g.id = u.group_id
+                  where  u.admin_id = ?
+                         and u.is_active = 1
+                         and is_auto_create_template = 0
+                         and g.name = 'Community'
+                  group  by admin_id) t3
+              on t3.admin_id = h.aid
        left join (select user_id,
                          Max(login_time) as login_time
                   from   HA_USER_LOGIN u

@@ -412,7 +412,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
     	try {
             accountInfo = this.getJdbcTemplate().queryForObject(
                 sql, 
-                new Object[] { adminUid,adminUid,adminUid,adminUid,adminUid },
+                new Object[] { adminUid,adminUid,adminUid,adminUid,adminUid,adminUid },
                 new RowMapper<AccountInfoModel>() {
                     public AccountInfoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         try {
@@ -423,10 +423,12 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                             ai.setAdminUserName(rs.getString("user_name"));
                             ai.setMaxStudents(rs.getInt("max_students"));
                             ai.setTotalStudents(rs.getInt("student_count"));
+                            ai.setIsCollege(rs.getInt("is_college")==0?false:true);
                             java.sql.Date dt = rs.getDate("catchup_expire_date");
                             ai.setAccountCreateDate(rs.getDate("account_create_date"));
                             ai.setIsFreeAccount(rs.getInt("is_free")==0?Boolean.FALSE:Boolean.TRUE);
                             ai.setCountFreeStudents(rs.getInt("student_count_free"));
+                            ai.setCountCommunityStudents(rs.getInt("student_count_community"));
                             ai.setAccountRepEmail(rs.getString("account_rep_email"));
                             /** if account create is null (test account), use default
                              * 
@@ -1101,6 +1103,20 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                 }
                 );
         return dateExpire;
+    }
+
+	public void markAccountAsSelfPay(Connection conn, Integer uid) throws Exception {
+        String sql = String.format("update HA_USER set is_self_pay = 1 where uid = %d", uid);
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+            int cnt = stmt.executeUpdate(sql);
+            if (cnt == 0) {
+                throw new CmException("Could not mark account as self-pay: " + uid);
+            }
+        } finally {
+            SqlUtilities.releaseResources(null, stmt, null);
+        }
     }
 
 

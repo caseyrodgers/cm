@@ -138,7 +138,12 @@ public interface StudentModelI extends Response {
 	public StudentSettingsModel getSettings();
 	
 	public void setSettings(StudentSettingsModel optionSettings);
+
+	public void setSelfPay(boolean selfPay);
+	public boolean getSelfPay();
 	
+	public void setIsCollege(boolean isCollege);
+	public boolean getIsCollege();
 	
 	public boolean getHasExtendedData();
 	public void setHasExtendedData(boolean extended);

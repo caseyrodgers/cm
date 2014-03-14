@@ -5,8 +5,11 @@ import java.io.Serializable;
 
 public class StudentModelExt extends BaseModel implements Serializable, StudentModelI {
 
+	private static final long serialVersionUID = -6423021563090351219L;
 
-    private boolean hasExtendedData = false;
+	private boolean hasExtendedData = false;
+    private boolean selfPay = false;
+    private boolean isCollege = false;
 
 
     public StudentModelExt() {
@@ -354,21 +357,39 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         }
 
         public void setProgram(StudentProgramModel studyProgram) {
-            set(PROGRAM_KEY, studyProgram);
+        	set(PROGRAM_KEY, studyProgram);
         }
 
-    @Override
-    public StudentSettingsModel getSettings() {
-        StudentSettingsModel settings = get(SETTINGS_KEY);
-        if(settings == null) {
-            setSettings(new StudentSettingsModel());
+        @Override
+        public StudentSettingsModel getSettings() {
+        	StudentSettingsModel settings = get(SETTINGS_KEY);
+        	if(settings == null) {
+        		setSettings(new StudentSettingsModel());
+        	}
+        	return get(SETTINGS_KEY);
         }
-        return get(SETTINGS_KEY);
-    }
 
 
         @Override
         public void setSettings(StudentSettingsModel optionSettings) {
-                set(SETTINGS_KEY, optionSettings);
+        	set(SETTINGS_KEY, optionSettings);
         }
+
+        public boolean getSelfPay() {
+        	return selfPay;
+        }
+
+        public void setSelfPay(boolean selfPay) {
+        	this.selfPay = selfPay;
+        }
+
+		@Override
+		public void setIsCollege(boolean isCollege) {
+			this.isCollege = isCollege;
+		}
+
+		@Override
+		public boolean getIsCollege() {
+			return isCollege;
+		}
 }
