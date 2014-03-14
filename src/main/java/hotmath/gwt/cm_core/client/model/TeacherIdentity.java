@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_core.client.model;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 
 public class TeacherIdentity implements Response {
     private int adminId;
@@ -16,7 +17,7 @@ public class TeacherIdentity implements Response {
     
     public TeacherIdentity(String serializedTeacher) {
         if(serializedTeacher == null) {
-            this.adminId = UNKNOWN;
+            this.adminId = UserInfoBase.getInstance().getUid();
             this.teacherId = UNKNOWN;
             this.teacherName = "Unknown Teacher";
         }
@@ -29,7 +30,7 @@ public class TeacherIdentity implements Response {
     }
     
     public boolean isUnknown() {
-        return adminId == UNKNOWN;
+        return teacherId == UNKNOWN;
     }
 
     public int getTeacherId() {

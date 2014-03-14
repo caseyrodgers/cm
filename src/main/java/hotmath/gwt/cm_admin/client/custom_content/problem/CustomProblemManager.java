@@ -18,6 +18,7 @@ import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -43,7 +44,6 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
@@ -451,7 +451,7 @@ public class CustomProblemManager extends GWindow {
 
             @Override
             public void attempt() {
-                GetCustomProblemAction action = new GetCustomProblemAction(TeacherManager.getTeacher());
+                GetCustomProblemAction action = new GetCustomProblemAction(new TeacherIdentity(UserInfoBase.getInstance().getUid(),  "TEST", -1));
                 setAction(action);
                 CmShared.getCmService().execute(action,  this);
             }
