@@ -348,7 +348,7 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
                 options.setPassPercent(passPercent);
                 options.setSettings(ssm);
                 options.setSectionNum(sectionNum);
-                options.setSelfPay(selfPay);
+                options.setSelfPay(isSelfPay.getValue());
                 callback.setAdvancedOptions(options);
 
                 advOptWindow.close();
