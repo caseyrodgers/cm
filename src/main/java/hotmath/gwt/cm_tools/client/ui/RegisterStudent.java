@@ -165,6 +165,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             stuSettingsMdl = stuMdl.getSettings();
             activeSection = stuMdl.getSectionNum();
             sectionCount = stuMdl.getSectionCount();
+            selfPay = stuMdl.getSelfPay();
         }
 
         cmAdminMdl = cm;
@@ -453,9 +454,8 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             }
         }
         boolean isCollege = acctInfoMdl.getIsCollege();
-        boolean isSelfPay = student.getSelfPay();
         options.setSelfPayIsSettable(isCollege);
-        options.setSelfPay(isSelfPay);
+        options.setSelfPay(selfPay);
 
         options.setPassPercent(passPercent);
         options.setSettings(ssm);
