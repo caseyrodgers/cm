@@ -77,7 +77,7 @@ public class ProblemDesigner extends Composite {
             _editMode.addSelectHandler(new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
-                    __lastInstance.loadProblem(_customProblem, 0);
+                    __lastInstance.loadProblem(__lastInstance._customProblem, 0);
                 }
             });
         }
