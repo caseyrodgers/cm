@@ -483,7 +483,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                 PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, adminId);
                 ps.setString(2, teacherName);
-                ps.setInt(3, 1);
+                ps.setInt(3, 0);
                 return ps;
             }
         }, keyHolder);

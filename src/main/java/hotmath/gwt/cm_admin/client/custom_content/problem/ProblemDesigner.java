@@ -112,7 +112,7 @@ public class ProblemDesigner extends Composite {
                 CmBusyManager.setBusy(false);
                 Log.info("Hint saved");
                 
-                int bottom = _tutorFlow.getScrollSupport().getMaximumVerticalScrollPosition();
+                int bottom = -1; // _tutorFlow.getScrollSupport().getMaximumVerticalScrollPosition();
                 loadProblem(_customProblem, bottom);
             }
         }.register();        
@@ -134,6 +134,7 @@ public class ProblemDesigner extends Composite {
            _problemPanel.setHeadingText("Problem: " + label);
         }
         
+        CmBusyManager.setBusy(true);
         new RetryAction<CmList<Response>>() {
             @Override
             public void attempt() {
@@ -147,7 +148,7 @@ public class ProblemDesigner extends Composite {
 
             @Override
             public void oncapture(CmList<Response> responses) {
-                
+                CmBusyManager.setBusy(false);        
                 SolutionInfo si = (SolutionInfo)responses.get(0);
                 SolutionMeta sm = (SolutionMeta)responses.get(1);
                 
@@ -379,6 +380,9 @@ public class ProblemDesigner extends Composite {
         }
         
         
+        if(scrollPosition == -1) {
+            scrollPosition = _tutorFlow.getScrollSupport().getMaximumVerticalScrollPosition();
+        }
         _tutorFlow.getScrollSupport().setVerticalScrollPosition(scrollPosition);
     }
 

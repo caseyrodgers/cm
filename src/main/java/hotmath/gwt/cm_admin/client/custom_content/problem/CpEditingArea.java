@@ -115,7 +115,9 @@ public class CpEditingArea extends GWindow {
             
             @Override
             public void showWorkIsReady(ShowWorkPanel2 showWork) {
-                showWork.loadWhiteboardFromJson(areaData.wbJson);
+                if(areaData.wbJson != null) {
+                    showWork.loadWhiteboardFromJson(areaData.wbJson);
+                }
             }
             
             @Override

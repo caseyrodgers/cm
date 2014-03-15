@@ -614,7 +614,7 @@ public class ShowWorkPanel2 extends Composite {
 
     native private void jsni_setWhiteboardTemplate(String whiteboardId, String path) /*-{
        var theWhiteboard = $wnd._cmWhiteboards[whiteboardId];
-       $theWhiteboard.setTemplate('template', path);
+       theWhiteboard.setTemplate('template', path);
     }-*/;
 
     public void loadWhiteboardFromJson(String whiteboardJson) {
