@@ -283,13 +283,18 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 		TextButton cancelBtn = new TextButton("Reset", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-				PassPercent p = passCombo.getStore().get(PassPercentCombo.DEFAULT_PERCENT_IDX);
-				passCombo.setOriginalValue(p);
-				passCombo.setValue(p);
+
+            	if (passCombo != null && passCombo.isEnabled()) {
+				    PassPercent p = passCombo.getStore().get(PassPercentCombo.DEFAULT_PERCENT_IDX);
+				    passCombo.setOriginalValue(p);
+				    passCombo.setValue(p);
+            	}
 				
-				SectionNumber n = sectionCombo.getStore().get(0);
-				sectionCombo.setOriginalValue(n);
-				sectionCombo.setValue(n);
+			    if (sectionCombo != null && sectionCombo.isEnabled()) {
+				    SectionNumber n = sectionCombo.getStore().get(0);
+				    sectionCombo.setOriginalValue(n);
+				    sectionCombo.setValue(n);
+			    }
 	    		
 	        	isShowWorkRequired.setValue(false);
 	            isGamesLimited.setValue(false);
