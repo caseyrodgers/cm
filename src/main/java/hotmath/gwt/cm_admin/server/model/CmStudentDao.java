@@ -516,7 +516,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         try {
             sm.setBackgroundStyle(getBackgroundImageRamdom());
 
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ADD_STUDENT_SQL"));
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("ADD_STUDENT_SQL");
+            ps = conn.prepareStatement(sql);
             ps.setString(1, sm.getName());
             ps.setString(2, sm.getPasscode());
             ps.setInt(3, sm.getSectionNum());
@@ -535,7 +536,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             ps.setString(6, sm.getProgram().getSubjectId());
             ps.setInt(7, sm.getAdminUid());
             ps.setInt(8, (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0);
-            ps.setString(9, sm.getBackgroundStyle());
+            ps.setInt(9, (sm.getSelfPay() == true) ? 1 : 0);
+            ps.setString(10, sm.getBackgroundStyle());
 
             int count = ps.executeUpdate();
             if (count == 1) {
