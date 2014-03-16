@@ -4,24 +4,7 @@ var _terms_msg = '<p class="tooltip_2">Please review our sample session before b
 
 
 function setupSignupPage() {
-   new YAHOO.widget.Tooltip("info_tip1", {
-                 context:"card_info",  
-                 text:_card_what_msg, 
-                 showDelay:400 }
-   );
-   new YAHOO.widget.Tooltip("info_tip2", {
-        context:"card_info2",  
-        text:_card_what_msg, 
-        showDelay:400 }
-   );
-   
-   new YAHOO.widget.Tooltip("terms_inf", {
-        context:"terms_info",  
-        text:_terms_msg,
-        autodismissdelay:15000,
-        showDelay:400 }
-   );     
-   
+   setupToolTips();   
    
    setCmSelection();
    
@@ -32,6 +15,27 @@ function setupSignupPage() {
 
    var e2 = document.getElementById('TYPE_SERVICE_CATCHUP_YEAR');
    e2.onclick = function() {setCmSelection();};
+}
+
+
+function setupToolTips() {
+   new YAHOO.widget.Tooltip("info_tip1", {
+                 context:"card_info",  
+                 text:_card_what_msg, 
+                 showDelay:400 }
+   );
+   new YAHOO.widget.Tooltip("info_tip2", {
+        context:"card_info2",  
+        text:_card_what_msg, 
+        showDelay:400 }
+   );
+   new YAHOO.widget.Tooltip("terms_inf", {
+        context:"terms_info",  
+        text:_terms_msg,
+        autodismissdelay:15000,
+        showDelay:400 }
+   );     
+	   
 }
 
 
@@ -140,6 +144,89 @@ function checkForm() {
         return false;
 
     doSignup();
+
+    return false;   // always return false;
+}
+
+function checkSelfPayForm() {
+
+	_totalCost=29;
+    clearErrorMessages();
+    
+    fld = $get('student_email');
+    if(fld.value == "") {
+        if(showError(fld, "Please specify your email.")) {
+            return false;
+        }    }
+    var errMsg = validateEmail(fld.value);
+    
+    if(errMsg != null) {
+        if(showError(fld, errMsg))
+            return false;
+    }
+    fld = $get('confirm_email');
+    if(fld.value == '') {
+        if(showError(fld, "Please confirm the email."))
+            return false;
+
+    }
+
+    if( (fld.value != $get('student_email').value) ) {
+        if(showError(fld, "Must match above."))
+            return false;
+    }
+
+    fld = $get('first_name');
+    if(fld.value == '') {
+        if(showError(fld, "What is your first name?"))
+            return false;
+
+    }
+
+    fld = $get('last_name');
+    if(fld.value == '') {
+        if(showError(fld, "What is your last name?"))
+            return false;
+
+    }
+
+    fld = $get('address1');
+    if(fld.value == '') {
+        if(showError(fld, "Your address is?"))
+            return false;
+
+    }
+
+    fld = $get('city');
+    if(fld.value == '') {
+        if(showError(fld, "What is your city?"))
+            return false;
+
+    }
+
+    fld = $get('sel_state');
+    if(fld.selectedIndex < 2) {
+        if(showError(fld, "Please tell us your state."))
+            return false;
+
+    }
+
+    fld = $get('zip');
+    if(fld.value == '') {
+        if(showError(fld, "Please enter your zip code"))
+            return false;
+
+    }
+    else if(!validateZip(fld.value)) {
+        if(showError(fld, "This is not a valid zip code"))
+            return false;
+
+    }
+
+    if(!checkCreditCard())
+        return false;
+
+    //doSignup();
 
     return false;   // always return false;
 }
