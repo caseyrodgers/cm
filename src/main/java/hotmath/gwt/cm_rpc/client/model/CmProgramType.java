@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_rpc.client.model;
 
-import org.jfree.util.Log;
+import com.allen_sauer.gwt.log.client.Log;
+
 
 
 public enum CmProgramType {
