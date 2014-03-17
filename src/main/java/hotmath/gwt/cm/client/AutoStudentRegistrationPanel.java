@@ -330,6 +330,11 @@ class MyFieldValidator extends AbstractValidator<String> {
         if (value.contains(" ")) {
             return createError(editor, "No spaces allowed", value);
         }
+        
+        if(value.contains("'")) {
+            return createError(editor, "No quotes are allowed", value);
+        }
+        
         return null;
     }
 
