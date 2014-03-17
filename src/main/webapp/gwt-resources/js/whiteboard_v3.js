@@ -97,7 +97,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
     var textAreaW = null;
     // --- /gwt-resources/images/whiteboard/
     var imgPath = '/gwt-resources/images/whiteboard/'
-    imgPath = './'
+    //imgPath = './'
     var opts = {
         "templates": [{
             "type": "img",
