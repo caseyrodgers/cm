@@ -26,8 +26,8 @@ public class WidgetEditorImplFraction extends WidgetEditorImplBase {
         _numerator.setValue( getIntValueAsString(p[0]));
         _denominator.setValue(p.length > 1?getIntValueAsString(p[1]):"");
         
-        _fields.add(new MyFieldLabel(_numerator, "Numerator", 70));
-        _fields.add(new MyFieldLabel(_denominator, "Denominator", 70));
+        _fields.add(new MyFieldLabel(_numerator, "Numerator", 80, 80));
+        _fields.add(new MyFieldLabel(_denominator, "Denominator", 80,80));
     }
 
     @Override

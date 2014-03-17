@@ -29,6 +29,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.Composite;
@@ -42,6 +43,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class ProblemDesigner extends Composite {
     
+    private static final int SCROLL_TO_END = -1;
+
     static private ProblemDesigner __lastInstance;
     
     BorderLayoutContainer _main;
@@ -112,8 +115,7 @@ public class ProblemDesigner extends Composite {
                 CmBusyManager.setBusy(false);
                 Log.info("Hint saved");
                 
-                int bottom = -1; // _tutorFlow.getScrollSupport().getMaximumVerticalScrollPosition();
-                loadProblem(_customProblem, bottom);
+                loadProblem(_customProblem, SCROLL_TO_END);
             }
         }.register();        
     }
@@ -163,7 +165,8 @@ public class ProblemDesigner extends Composite {
     CallbackOnComplete callback = new CallbackOnComplete() {
         @Override
         public void isComplete() {
-            loadProblem(_customProblem,0);
+            int scrollPosition = _tutorFlow.getScrollSupport().getVerticalScrollPosition();
+            loadProblem(_customProblem,scrollPosition);
         }
     };
     
@@ -361,7 +364,6 @@ public class ProblemDesigner extends Composite {
         _problemPanel.setWidget(_tutorFlow);
         _main.setCenterWidget(_problemPanel);
 
-        _main.forceLayout();
 
 
         boolean shouldExpand = !_editMode.getValue();
@@ -378,12 +380,23 @@ public class ProblemDesigner extends Composite {
                 }-*/;
             });
         }
+
         
-        
-        if(scrollPosition == -1) {
-            scrollPosition = _tutorFlow.getScrollSupport().getMaximumVerticalScrollPosition();
+
+        final int thisScrollPosition;
+        if(scrollPosition == SCROLL_TO_END) {
+            thisScrollPosition = _tutorFlow.getScrollSupport().getMaximumVerticalScrollPosition();
         }
-        _tutorFlow.getScrollSupport().setVerticalScrollPosition(scrollPosition);
+        else {
+            thisScrollPosition = scrollPosition;
+        }
+        new Timer() {
+            @Override
+            public void run() {
+                _tutorFlow.getScrollSupport().setVerticalScrollPosition(thisScrollPosition);
+                _main.forceLayout();
+            }
+        }.schedule(0);
     }
 
   

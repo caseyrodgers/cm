@@ -140,7 +140,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements WidgetE
     
 
     private void addChoice() {
-        _grid.getStore().add(new MultiValue("Empty Value",false));
+        _grid.getStore().add(new MultiValue("",false));
     }
     
     private MultiValue selected() {
