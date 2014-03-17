@@ -73,7 +73,8 @@ function checkForm() {
     if(fld.value == "") {
         if(showError(fld, "Please specify your email.")) {
             return false;
-        }    }
+        }
+    }
     var errMsg = validateEmail(fld.value);
     
     if(errMsg != null) {
@@ -152,105 +153,132 @@ function checkSelfPayForm() {
 
 	_totalCost=29;
     clearErrorMessages();
+    var isValid = false;
     
+    fld = $get('student_first_name');
+    if(fld.value == '') {
+        if(showError(fld, "What is your first name?"))
+            isValid = false;
+    }
+
+    fld = $get('student_last_name');
+    if(fld.value == '') {
+        if(showError(fld, "What is your last name?"))
+            isValid = false;
+    }
+
+    fld = $get('student_id');
+    if(fld.value == '') {
+        if(showError(fld, "What is your student ID?"))
+            isValid = false;
+    }
+
+    fld = $get('student_birth_month');
+    if(fld.selectedIndex < 2) {
+        if(showError(fld, "Please specify your birthday."))
+            isValid = false;
+    }
+
+    fld = $get('student_birth_day');
+    if(fld.selectedIndex < 2) {
+        if(showError(fld, "Please specify your birthday."))
+            isValid = false;
+    }
+
     fld = $get('student_email');
     if(fld.value == "") {
         if(showError(fld, "Please specify your email.")) {
-            return false;
-        }    }
+            isValid = false;
+        }
+    }
     var errMsg = validateEmail(fld.value);
     
     if(errMsg != null) {
         if(showError(fld, errMsg))
-            return false;
+            isValid = false;
     }
     fld = $get('confirm_email');
     if(fld.value == '') {
         if(showError(fld, "Please confirm the email."))
-            return false;
-
+            isValid = false;
     }
 
     if( (fld.value != $get('student_email').value) ) {
         if(showError(fld, "Must match above."))
-            return false;
+            isValid = false;
     }
 
     fld = $get('first_name');
     if(fld.value == '') {
-        if(showError(fld, "What is your first name?"))
-            return false;
-
+        if(showError(fld, "What is cardholder's first name?"))
+            isValid = false;
     }
 
     fld = $get('last_name');
     if(fld.value == '') {
-        if(showError(fld, "What is your last name?"))
-            return false;
-
+        if(showError(fld, "What is cardholder's last name?"))
+            isValid = false;
     }
 
     fld = $get('address1');
     if(fld.value == '') {
-        if(showError(fld, "Your address is?"))
-            return false;
-
+        if(showError(fld, "Cardholder's address is?"))
+            isValid = false;
     }
 
     fld = $get('city');
     if(fld.value == '') {
-        if(showError(fld, "What is your city?"))
-            return false;
-
+        if(showError(fld, "What is cardholder's city?"))
+            isValid = false;
     }
 
     fld = $get('sel_state');
     if(fld.selectedIndex < 2) {
-        if(showError(fld, "Please tell us your state."))
-            return false;
-
+        if(showError(fld, "Please tell us cardholder's state."))
+            isValid = false;
     }
 
     fld = $get('zip');
     if(fld.value == '') {
-        if(showError(fld, "Please enter your zip code"))
-            return false;
-
+        if(showError(fld, "Please enter cardholder's zip code."))
+            isValid = false;
     }
     else if(!validateZip(fld.value)) {
         if(showError(fld, "This is not a valid zip code"))
-            return false;
-
+            isValid = false;
     }
 
-    if(!checkCreditCard())
-        return false;
+    if (checkCreditCard() == false)
+        isValid = false;
 
-    //doSignup();
+    if (isValid == true)
+    	doSignup();
 
     return false;   // always return false;
 }
 
 function checkCreditCard() {
     fld = $get('sel_cardtype');
+    var isValid = true;
     if(fld.selectedIndex < 2) {
         if(showError(fld, "Which type of credit card?"))
-            return false;
-
+            isValid = false;
     }
     var cardType = $get('sel_cardtype').value;
 
     fld = $get('card_number');
     var cardNumOnlyNums = removeAllNonNumeric(fld.value);
     if(!cardNumOnlyNums) {
-        if(showError(fld, "What is your card number."))
-            return false;
+        if(showError(fld, "What is credit card number?"))
+            isValid = false;
     }
     else if(!cardnumberIsValid(cardNumOnlyNums)) {
         if(showError(fld, "Invalid credit card number."))
-            return false;
+            isValid = false;
     }
 
+    if (isValid == false)
+    	return isValid;
 
     // make sure card_type and number match up
     if(cardType == 'Amex') {
