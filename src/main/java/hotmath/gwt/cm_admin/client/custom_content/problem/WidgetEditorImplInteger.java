@@ -15,10 +15,10 @@ public class WidgetEditorImplInteger extends WidgetEditorImplBase {
     
     protected void buildUi() {
         _correctIntegerValue = new TextField();
-        _correctIntegerValue.setValue(_widgetDef.getValue()!=null?_widgetDef.getValue():"");
+        _correctIntegerValue.setValue(getIntValueAsString(_widgetDef.getValue()!=null?_widgetDef.getValue():""));
         _fields.add(new MyFieldLabel(_correctIntegerValue, "Correct Value",80, 100));
     }
-    
+
     protected WidgetDefModel createWidgetDefModel() {
         WidgetDefModel widget = super.createWidgetDefModel();
         widget.setValue(_correctIntegerValue.getCurrentValue());

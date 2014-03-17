@@ -17,16 +17,15 @@ public class WidgetEditorImplRational extends WidgetEditorImplFraction {
     protected void buildUi() {
         super.buildUi();
         
-        String format = getWidgetDef().getFormat().split("\\|")[0];
+        String format = getWidgetDef().getFormat()!=null?getWidgetDef().getFormat().split("\\|")[0]:"";
         _format.setValue(format);
         super._fields.add(new MyFieldLabel(_format, "Format",80, 100));
     }
-    
     @Override
     protected WidgetDefModel createWidgetDefModel() {
         WidgetDefModel wd = super.createWidgetDefModel();
         wd.setType("number_rational");
-        wd.setFormat(_format.getCurrentValue());
+        wd.setFormat(_format.getCurrentValue()!=null?_format.getCurrentValue():null);
         return wd;
     }
     

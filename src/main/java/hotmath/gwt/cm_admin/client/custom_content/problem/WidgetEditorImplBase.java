@@ -44,4 +44,22 @@ public abstract class WidgetEditorImplBase extends Composite implements WidgetEd
         return wd;
     }
     
+    
+    
+    /** silently coerese into an int as string
+     * 
+     * @param intVal
+     * @return
+     */
+    protected String getIntValueAsString(String intVal) {
+        try {
+            return Integer.parseInt(intVal) + ""; 
+        }
+        catch(Exception e) {
+            // silent ..?
+        }
+        return "0";
+    }
+    
+    
 }

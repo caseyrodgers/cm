@@ -23,8 +23,9 @@ public class WidgetEditorImplFraction extends WidgetEditorImplBase {
         String value = getWidgetDef().getValue();
         String p[] = value.split("/");
         
-        _numerator.setValue(p[0]);
-        _denominator.setValue(p.length > 1?p[1]:"");
+        _numerator.setValue( getIntValueAsString(p[0]));
+        _denominator.setValue(p.length > 1?getIntValueAsString(p[1]):"");
+        
         _fields.add(new MyFieldLabel(_numerator, "Numerator", 70));
         _fields.add(new MyFieldLabel(_denominator, "Denominator", 70));
     }
@@ -44,6 +45,17 @@ public class WidgetEditorImplFraction extends WidgetEditorImplBase {
 
     @Override
     public String checkValid() {
+        try {
+            if(_numerator.getCurrentValue() != null) {
+                Integer.parseInt(_numerator.getCurrentValue());
+            }
+            if(_denominator.getCurrentValue() != null) {
+                Integer.parseInt(_denominator.getCurrentValue());
+            }
+        }
+        catch(Exception e) {
+            return "Invalid fraction values.  Make sure both are integers";
+        }
         return null;
     }
 }

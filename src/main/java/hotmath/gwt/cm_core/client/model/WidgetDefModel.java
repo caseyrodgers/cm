@@ -85,7 +85,7 @@ public class WidgetDefModel extends JSOBaseModel {
      * @return
      */
     public String getJson() {
-        String json = "{type:'" + type + "',value:'" + value + "', format:'" + format + "|', width:" + width + ", height:" + height + "}";
+        String json = "{type:'" + type + "',value:'" + value + "', format:'" + (format!=null?format:"") + "|', width:" + width + ", height:" + height + "}";
         return json;
     }
     
