@@ -94,9 +94,10 @@ var Whiteboard = function (cont, isStatic, _opts) {
     var textEditMode = false;
     var cTMaxWidth = null;
     var objOnSel = null;
+    var textAreaW = null;
     // --- /gwt-resources/images/whiteboard/
     var imgPath = '/gwt-resources/images/whiteboard/'
-    //imgPath = './'
+    imgPath = './'
     var opts = {
         "templates": [{
             "type": "img",
@@ -1360,7 +1361,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
             var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
             var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
             var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
-            var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(graphicDataStore[i].uid)
+            var isEdited = isObjTransformed(graphicDataStore[i].uid, 'edit');
+            var isTransformed = isMoved || isScaled || isRotated || isEdited; //isObjTransformed(graphicDataStore[i].uid)
             if (isTransformed) {
                 if (isMoved) {
                     rect = cloneObject(isMoved.trect);
@@ -1368,6 +1370,19 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     rectR = getRotateNode(rect);
                     rectD = getDeleteNode(rect);
                     rectE = getEditNode(rect);
+                }
+                if (isEdited) {
+
+                    if (__obj.id == '2') {
+                        rect.w = isEdited.brect.w
+                        rect.h = isEdited.brect.h
+                        rect.xmax = rect.xmin + rect.w
+                        rect.ymax = rect.ymin + rect.h
+                        rectM = getMoveNode(rect);
+                        rectR = getRotateNode(rect);
+                        rectD = getDeleteNode(rect);
+                        rectE = getEditNode(rect);
+                    }
                 }
                 if (isScaled) {
                     transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
@@ -1470,10 +1485,21 @@ var Whiteboard = function (cont, isStatic, _opts) {
             var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
             var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
             var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
-            var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(graphicDataStore[i].uid)
+            var isEdited = isObjTransformed(graphicDataStore[i].uid, 'edit');
+            var isTransformed = isMoved || isScaled || isRotated || isEdited; //isObjTransformed(graphicDataStore[i].uid)
             if (isTransformed) {
+
                 if (isMoved) {
                     rect = cloneObject(isMoved.trect);
+                }
+                if (isEdited) {
+
+                    if (__obj.id == '2') {
+                        rect.w = isEdited.brect.w
+                        rect.h = isEdited.brect.h
+                        rect.xmax = rect.xmin + rect.w
+                        rect.ymax = rect.ymin + rect.h
+                    }
                 }
                 if (isScaled) {
                     transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
@@ -1516,6 +1542,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
     function showObjSelection(obj) {
         var index = findObjIndex(obj);
         var el = $get_Element("#tempSelection")
+
         if (index > -1) {
             if (!el) {
                 var p = $get_jqElement("#canvas-container");
@@ -1523,12 +1550,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 p.prepend(_obj)
                 el = _obj[0]
             }
+            var bound = getWhiteboardObjBound('custom', obj)
             var _dim = {
-                tx: obj.brect.xmin + scrollPosition.x - 4,
-                ty: obj.brect.ymin + scrollPosition.y - 4,
+                tx: bound.brect.xmin + scrollPosition.x - 4,
+                ty: bound.brect.ymin + scrollPosition.y - 4,
 
-                w: obj.brect.xmax - obj.brect.xmin,
-                h: obj.brect.ymax - obj.brect.ymin
+                w: bound.brect.xmax - bound.brect.xmin,
+                h: bound.brect.ymax - bound.brect.ymin
 
             };
             $(el).css({
@@ -1689,12 +1717,14 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
     }
 
-    function getWhiteboardObjBound(flag) {
+    function getWhiteboardObjBound(flag, _obj) {
         var objs = graphicDataStore;
         if (flag == 'msel') {
             objs = selectedObjects
         } else if (flag == 'sel') {
             objs = [selectedObj]
+        } else if (flag == 'custom') {
+            objs = [_obj]
         }
         var l = objs.length;
         var mSelRect = null;
@@ -1711,11 +1741,21 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 var isMoved = isObjTransformed(obj.uid, 'move');
                 var isScaled = isObjTransformed(obj.uid, 'scale');
                 var isRotated = isObjTransformed(obj.uid, 'rotate');
-                var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(obj.uid)
+                var isEdited = isObjTransformed(obj.uid, 'edit');
+                var isTransformed = isMoved || isScaled || isRotated || isEdited; //isObjTransformed(obj.uid)
                 if (isTransformed) {
                     if (isMoved) {
                         rect = cloneObject(isMoved.trect);
 
+                    }
+                    if (isEdited) {
+
+                        if (obj.id == '2') {
+                            rect.w = isEdited.brect.w
+                            rect.h = isEdited.brect.h
+                            rect.xmax = rect.xmin + rect.w
+                            rect.ymax = rect.ymin + rect.h
+                        }
                     }
                     if (isScaled) {
                         var dw = isScaled.tx
@@ -1960,31 +2000,75 @@ var Whiteboard = function (cont, isStatic, _opts) {
     };
 
     function wrapText(context, text, x, y, maxWidth, lineHeight) {
-        var words = text.split('');
+        var words = text.split(' ');
         var line = '';
-
+        var w = maxWidth;
+        var h = 0;
         for (var n = 0; n < words.length; n++) {
-            var testLine = line + words[n] + '';
+            var testLine = line + words[n] + ' ';
             var metrics = context.measureText(testLine);
             var testWidth = metrics.width;
-            if (testWidth > maxWidth && n > 0) {
+            if (testWidth >= maxWidth && n > 0) {
                 context.fillText(line, x, y);
-                line = words[n] + '';
+                w = Math.max(w, context.measureText(line).width);
+                line = words[n] + ' ';
+                h += lineHeight + lineHeight / 3;
                 y += lineHeight + lineHeight / 3;
+                //w=Math.max(w,testWidth);
             } else {
                 line = testLine;
+                w = Math.max(w, context.measureText(line).width);
             }
         }
         context.fillText(line, x, y);
+        //if(line.length){
+        h += lineHeight + lineHeight / 3;
+        w = Math.max(w, context.measureText(line).width);
+        //}
+        return {
+            w: w,
+            h: Math.max(40, h)
+        }
     }
 
-    function renderText_html(xt, xp, yp, col, ctx) {
+    function getTextBoxDim(text, x, y, maxWidth, lineHeight) {
+        var words = text.split(' ');
+        var line = '';
+        var w = 0;
+        var h = 0;
+        for (var n = 0; n < words.length; n++) {
+            var testLine = line + words[n] + ' ';
+            var metrics = context.measureText(testLine);
+            var testWidth = metrics.width;
+            if (testWidth > maxWidth && n > 0) {
+                //context.fillText(line, x, y);
+                w = Math.max(w, context.measureText(line).width);
+                h += lineHeight + lineHeight / 3;
+                line = words[n] + ' ';
+                y += lineHeight + lineHeight / 3;
+
+            } else {
+                line = testLine;
+                w = Math.max(w, context.measureText(line).width);
+            }
+        }
+        //context.fillText(line, x, y);
+
+        h += lineHeight + lineHeight / 3;;
+        w = Math.max(w, context.measureText(line).width);
+        return {
+            w: w,
+            h: Math.max(40, h)
+        }
+    }
+
+    function renderText_html(xt, xp, yp, col, ctx, notEdit) {
         var boo = false;
         var txt = xt ? xt : $get_Element("#content").value;
         // alert(txt);
         var cntxt = ctx ? ctx : context;
         var str = txt.split("\n")
-        if (transMode == 'edit' && selectionMode && selectedObj) {
+        if (!notEdit && transMode == 'edit' && selectionMode && selectedObj) {
             xp = parseFloat($get_jqElement("#inputBox").css("left"))
             yp = parseFloat($get_jqElement("#inputBox").css("top"))
             boo = true;
@@ -2003,13 +2087,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
             cntxt.fillText(str[i], x0, y0)
             y0 += ht + ht / 3
         }*/
-        wrapText(cntxt, txt, x0, y0, maxWidth, ht)
+        var dim = wrapText(cntxt, txt, x0, y0, maxWidth, ht)
         if (!xt) {
             var rect = {}
             rect.x = rect.xmin = x0 - scrollPosition.x
             rect.y = rect.ymin = sy - scrollPosition.y
-            rect.w = cntxt.measureText(txt).width
-            rect.h = (ht + ht / 3) * str.length
+            rect.w = dim.w; //cntxt.measureText(txt).width
+            rect.h = dim.h; //(ht + ht / 3) * str.length
             rect.xmax = rect.x + rect.w;
             rect.ymax = rect.y + rect.h;
             //console.log('renderText')
@@ -2130,11 +2214,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
         // alert($get_Element("#inputBox").style.display)
     }
 
-    function renderText(xt, xp, yp, col, ctx) {
+    function renderText(xt, xp, yp, col, ctx, boo) {
         if (useMQ) {
-            renderText_mq(xt, xp, yp, col, ctx)
+            renderText_mq(xt, xp, yp, col, ctx, boo)
         } else {
-            renderText_html(xt, xp, yp, col, ctx)
+            renderText_html(xt, xp, yp, col, ctx, boo)
         }
     }
 
@@ -3718,27 +3802,27 @@ var Whiteboard = function (cont, isStatic, _opts) {
             }
             //
             $get_Element("#button_text").onclick = function (event) {
-                // $get_Element("#drawsection").style.cursor='crosshair';
+                $get_Element("#drawsection").style.cursor = 'text';
                 currentTool = 'text';
                 buttonHighlite(currentTool)
             };
             $get_Element("#button_pencil").onclick = function (event) {
-                // $get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
+                $get_Element("#drawsection").style.cursor = 'url("' + _imageBaseDir + 'pencil.png") 0 26,auto';
                 currentTool = 'pencil';
                 buttonHighlite(currentTool)
             };
             $get_Element("#button_rect").onclick = function (event) {
-                // $get_Element("#drawsection").style.cursor='crosshair';
+                $get_Element("#drawsection").style.cursor = 'crosshair';
                 currentTool = 'rect';
                 buttonHighlite(currentTool)
             };
             $get_Element("#button_line").onclick = function (event) {
-                // $get_Element("#drawsection").style.cursor='crosshair';
+                $get_Element("#drawsection").style.cursor = 'crosshair';
                 currentTool = 'line';
                 buttonHighlite(currentTool)
             };
             $get_Element("#button_oval").onclick = function (event) {
-                // $get_Element("#drawsection").style.cursor='crosshair';
+                $get_Element("#drawsection").style.cursor = 'crosshair';
                 currentTool = 'oval';
                 buttonHighlite(currentTool)
             };
@@ -3783,6 +3867,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             };
             $get_Element("#button_eraser").onclick = function (event) {
                 // $get_Element("#drawsection").style.cursor='url("imgs/eraser.png"),auto';
+                $get_Element("#drawsection").style.cursor = 'crosshair';
                 // resetWhiteBoard();
                 currentTool = 'eraser'
                 buttonHighlite(currentTool)
@@ -3790,6 +3875,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             if ($get_Element("#button_move")) {
                 $get_Element("#button_move").onclick = function (event) {
                     // $get_Element("#drawsection").style.cursor='url("imgs/eraser.png"),auto';
+                    $get_Element("#drawsection").style.cursor = 'move';
                     // resetWhiteBoard();
                     wb.setSelectionMode()
                     //currentTool = 'move'
@@ -4924,10 +5010,20 @@ var Whiteboard = function (cont, isStatic, _opts) {
                         } else {
                             showObjSelection(_sobj);
                             objOnSel = _sobj;
+                            $get_Element("#drawsection").style.cursor = 'default';
                         }
                     } else {
                         removeObjSelection();
                         objOnSel = null;
+                        var cur = 'crosshair'
+                        if (currentTool == 'pencil' && !selectionMode) {
+                            cur = 'url("' + _imageBaseDir + 'pencil.png") 0 26,auto'
+                        } else if (currentTool == 'text' && !selectionMode) {
+                            cur = 'text'
+                        } else if (selectionMode) {
+                            cur = 'move'
+                        }
+                        $get_Element("#drawsection").style.cursor = cur;
                     }
                 }
                 var bool = isMultitouch_gesture(_event);
@@ -5199,33 +5295,66 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
     function showTextBox_html() {
         //alert("A")
+        var siz = viewport()
+        var docWidth = siz.width;
+        var docHeight = siz.height;
         if (!$get_Element("#content")) {
-            var siz = viewport()
-            var docWidth = siz.width;
-            var docHeight = siz.height;
+
             var maxW = docWidth - clickX - 50
-            $($("#" + contDiv + " [name='inputBox'] div")[0]).html("<textarea class='content' name='content' cols=3 rows=1 style='min-width:60px;min-height:40px;resize:none;font:20pt Arial;color:" + wb.globalStrokeColor + "' ></textarea>" + '<div name="dummy_resize" style="max-width:' + maxW + 'px;min-height:40px;display: none;font:20pt Arial;word-wrap:break-word;"></div>')
+            $($("#" + contDiv + " [name='inputBox'] div")[0]).html("<textarea class='content' name='content' style='min-width:60px;min-height:40px;width:60px;height:40px;font:20pt Arial;color:" + wb.globalStrokeColor + "' ></textarea>" + '<div name="dummy_resize" style="max-width:' + maxW + 'px;min-height:40px;display: none;font:20pt Arial;word-wrap:normal;"></div>');
             $get_jqElement("#inputBox").find("[name='content']").live({
                 input: function (e) {
                     var rs = $get_jqElement("#dummy_resize")
-                    rs.text($(this).val() + "9");
-                    $(this).css("width", rs.css("width"));
-                    $(this).css("height", rs.css("height"));
+                    rs.text($(this).val() + "9.");
+                    rs.show()
+                    var duw = rs.width();
+                    var duh = rs.height();
+                    rs.hide()
+                    $(this).css("width", duw + 'px');
+                    $(this).css("height", duh + 'px');
+                },
+                mousedown: function (e) {
+                    textAreaW = $get_jqElement("#content").width()
+                },
+                mouseup: function (e) {
+                    var _w = $get_jqElement("#content").width()
+                    if (_w !== textAreaW) {
+                        $get_jqElement("#dummy_resize").css('max-width', _w + 'px');
+                        $get_jqElement("#content").trigger('input');
+                    }
                 }
             });
-        } else {}
+        } else {
+            var rd = $get_jqElement("#dummy_resize");
+            var rs = $get_jqElement("#content");
+            rs.css('width', '60px');
+            rs.css('height', '40px');
+            var maxW = docWidth - clickX - 50;
+
+            //rd.css('width','60px');
+            //rd.css('height','40px');
+            rd.css('max-width', maxW + 'px');
+            rd.css('min-height', '40px');
+        }
 
 
         var px = clickX;
         var py = clickY;
         if (selectedObj) {
-            var isEdited = isObjTransformed(selectedObj.uid, 'edit')
+            var isEdited = isObjTransformed(selectedObj.uid, 'edit');
             var data = isEdited || selectedObj.dataArr[0];
             var txt = data ? data.text : "";
+            txt = unescape(decodeURI(txt));
+            var dim = getTextBoxDim(txt)
+
             $get_jqElement("#inputBox").find("[name='content']").val(txt);
             var b = getWhiteboardObjBound('sel')
             px = data && b ? b.tx : clickX;
             py = data && b ? b.ty : clickY;
+            var rs = $get_jqElement("#dummy_resize");
+            rs.css("max-width", b.brect.w + "px");
+            $get_jqElement("#content").css("width", b.brect.w + "px");
+            $get_jqElement("#content").css("height", b.brect.h + "px");
 
         }
         $get_Element("#inputBox").style.display = 'block';
@@ -5233,6 +5362,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         $get_Element("#inputBox").style.left = px + "px";
         //$get_Element("#inputBox").style.color = wb.globalStrokeColor;
         $get_Element("#content").focus();
+        $get_jqElement("#content").trigger('input');
     }
 
     function hideTextBox_html() {
@@ -6278,7 +6408,7 @@ source: https://gist.github.com/754454
                         xt = xt.split('}').join("")
                     }
                     cTMaxWidth = _obj.textBoxWidth ? _obj.textBoxWidth : _obj.brect.w
-                    renderText(xt, x0, y0, isEdited.color, ctx);
+                    renderText(xt, x0, y0, isEdited.color, ctx, true);
                     //_obj.brect=cloneObject(isEdited.brect);
                 } else {
                     for (i = 0; i < dLength; i++) {
@@ -6297,7 +6427,7 @@ source: https://gist.github.com/754454
                                 xt = xt.split('}').join("")
                             }
                             cTMaxWidth = _obj.textBoxWidth ? _obj.textBoxWidth : _obj.brect.w
-                            renderText(xt, x0, y0, col, ctx);
+                            renderText(xt, x0, y0, col, ctx, true);
 
                         }
                     }
@@ -6773,9 +6903,8 @@ source: https://gist.github.com/754454
             'path': path
         });
     }
-    
-    
-    wb.loadFromJson = function(json) {
+	
+	wb.loadFromJson = function(json) {
     	var arr = eval('(' + json + ')');
     	for(var i=0;i<arr.length;i++) {
         	renderObj(arr[i], false);
