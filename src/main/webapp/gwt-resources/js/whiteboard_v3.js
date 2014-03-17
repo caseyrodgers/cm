@@ -1527,10 +1527,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     xmax: xp + hitH,
                     ymax: yp + hitH
                 })
+				updateBuffer()
             }
             if (sel && hasShape) {
                 //selectedObj = graphicDataStore[i];
-                updateBuffer()
+                
                 return graphicDataStore[i];
             }
         }
