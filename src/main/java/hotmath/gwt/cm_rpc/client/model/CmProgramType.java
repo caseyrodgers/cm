@@ -19,8 +19,7 @@ public enum CmProgramType {
     ASSIGNMENTSONLY("Assignments Only"),
     UNKNOWN("UnknownType"),
     PLACEME("PlaceMe"),
-    NONE("none"),
-    UNKNONW("unknonw");
+    NONE("none");
 
     
     private final String type;
@@ -55,7 +54,6 @@ public enum CmProgramType {
                 return e;
             }
         }
-
         Log.warn("CmProgramType: type not found '" + name + "'");
         return UNKNOWN;
     }
