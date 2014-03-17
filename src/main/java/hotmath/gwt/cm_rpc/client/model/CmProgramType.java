@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_rpc.client.model;
 
+import org.jfree.util.Log;
+
 
 public enum CmProgramType {
 
@@ -16,8 +18,10 @@ public enum CmProgramType {
     ASSIGNMENTSONLY("Assignments Only"),
     UNKNOWN("UnknownType"),
     PLACEME("PlaceMe"),
-    NONE("none");
+    NONE("none"),
+    UNKNONW("unknonw");
 
+    
     private final String type;
 
     CmProgramType(String type) {
@@ -50,6 +54,8 @@ public enum CmProgramType {
                 return e;
             }
         }
-        throw new IllegalArgumentException("No such CmProgramType: " + name);
+
+        Log.warn("CmProgramType: type not found '" + name + "'");
+        return UNKNOWN;
     }
 }
