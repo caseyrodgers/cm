@@ -174,13 +174,13 @@ function checkSelfPayForm() {
     }
 
     fld = $get('student_birth_month');
-    if(fld.selectedIndex < 2) {
+    if(fld.selectedIndex < 1) {
         if(showError(fld, "Please specify your birthday."))
             isValid = false;
     }
 
     fld = $get('student_birth_day');
-    if(fld.selectedIndex < 2) {
+    if(fld.selectedIndex < 1) {
         if(showError(fld, "Please specify your birthday."))
             isValid = false;
     }
@@ -191,12 +191,14 @@ function checkSelfPayForm() {
             isValid = false;
         }
     }
-    var errMsg = validateEmail(fld.value);
-    
-    if(errMsg != null) {
+    var errMsg = null;
+    if (isValid == true)
+    	errMsg = validateEmail(fld.value);
+    if (errMsg != null) {
         if(showError(fld, errMsg))
             isValid = false;
     }
+
     fld = $get('confirm_email');
     if(fld.value == '') {
         if(showError(fld, "Please confirm the email."))
@@ -340,7 +342,7 @@ function checkCreditCard() {
 
 function showError(fld, msg) {
     _validationErrorCount++;
-    divs = fld.parentNode.getElementsByTagName("div");
+    var divs = fld.parentNode.getElementsByTagName("div");
     if(divs.length > 0) {
         divs[0].innerHTML = "^ -- " + msg;
         divs[0].style.display = 'block';
@@ -447,7 +449,7 @@ function validateZip(s) {
 function validateEmail(s) {
  s = s.trim();
  if (s.length == 0) {
-     return "Please enter an email address";
+     return "Please enter an email address.";
  }
 
  // DO NOT ALLOW www to be part of email...
@@ -460,7 +462,7 @@ function validateEmail(s) {
      return null;
  }
  else {
-     return "Not a valid email address";
+     return "Not a valid email address.";
  }
 }
 
