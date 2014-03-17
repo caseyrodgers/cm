@@ -5024,7 +5024,16 @@ var Whiteboard = function (cont, isStatic, _opts) {
                         } else if (selectionMode) {
                             cur = 'move'
                         }
+						var _ccur=$get_Element("#drawsection").style.cursor
+						_ccur=_ccur.split(",")[0]
+						_ccur=_ccur.split(" ")[0]
+						_ccur=_ccur.substring(_ccur.lastIndexOf("/"))
+						var _cur=cur.split(",")[0]
+						_cur=_cur.split(" ")[0]
+						_cur=_cur.substring(_cur.lastIndexOf("/"))
+						if(_cur!=_ccur){
                         $get_Element("#drawsection").style.cursor = cur;
+						}
                     }
                 }
                 var bool = isMultitouch_gesture(_event);
