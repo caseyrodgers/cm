@@ -13,17 +13,16 @@ public abstract class WidgetEditorImplBase extends Composite implements WidgetEd
 
     public WidgetEditorImplBase(WidgetDefModel widgetDef) {
         this._widgetDef = widgetDef;
-        
-        
-        buildUi();
         initWidget(_fields);
-
     }
-
+    
+    
+    abstract protected String getWidgetType();
     abstract protected void buildUi();
     
     @Override
     public Widget asWidget() {
+        buildUi();
         return this;
     }
 
@@ -31,8 +30,6 @@ public abstract class WidgetEditorImplBase extends Composite implements WidgetEd
     public WidgetDefModel getWidgetDef() {
         return _widgetDef;
     }
-    
-    
     
     @Override
     public String getWidgetJson() {
@@ -47,6 +44,4 @@ public abstract class WidgetEditorImplBase extends Composite implements WidgetEd
         return wd;
     }
     
-    
-    abstract protected String getWidgetType();
 }

@@ -20,4 +20,9 @@ public class WidgetEditorImplNoWidget extends WidgetEditorImplBase {
     protected String getWidgetType() {
         return "";
     }
+    
+    @Override
+    public String checkValid() {
+        return null;
+    }
 }

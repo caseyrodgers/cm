@@ -6,7 +6,7 @@ import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 
-public class WidgetEditorImplRational extends WidgetEditorImplInteger {
+public class WidgetEditorImplRational extends WidgetEditorImplFraction {
 
     TextField _format = new TextField();
 
@@ -15,8 +15,10 @@ public class WidgetEditorImplRational extends WidgetEditorImplInteger {
     }
 
     protected void buildUi() {
-
         super.buildUi();
+        
+        String format = getWidgetDef().getFormat().split("\\|")[0];
+        _format.setValue(format);
         super._fields.add(new MyFieldLabel(_format, "Format",80, 100));
     }
     

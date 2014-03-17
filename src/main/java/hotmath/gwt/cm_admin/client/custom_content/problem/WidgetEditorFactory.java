@@ -16,7 +16,7 @@ public class WidgetEditorFactory {
             return new WidgetEditorImplInteger(widgetDef);
         }
         else if(type.equals("inequality")) {
-            return new WidgetEditorImplInteger(widgetDef);
+            return new WidgetEditorImplInequality(widgetDef);
         }
         else if(type.equals("number_fraction")) {
             return new WidgetEditorImplFraction(widgetDef);

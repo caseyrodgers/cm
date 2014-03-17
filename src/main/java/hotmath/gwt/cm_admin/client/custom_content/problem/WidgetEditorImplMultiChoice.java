@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.data.shared.Store.Record;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.CompleteEditEvent;
@@ -26,10 +28,11 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.editing.GridEditing;
 import com.sencha.gxt.widget.core.client.grid.editing.GridInlineEditing;
 
-public class WidgetEditorImplMultiChoice extends WidgetEditorImplBase {
+public class WidgetEditorImplMultiChoice extends ContentPanel implements WidgetEditor {
 
+    private WidgetDefModel widgetDef;
     public WidgetEditorImplMultiChoice(WidgetDefModel widgetDef) {
-        super(widgetDef);
+        this.widgetDef = widgetDef;
     }
     
     MultiGridProps props = GWT.create(MultiGridProps.class);
@@ -45,10 +48,13 @@ public class WidgetEditorImplMultiChoice extends WidgetEditorImplBase {
         cols.add(correctCol);
         
         String choiceData = getWidgetDef().getValue();
+        if(choiceData == null) {
+            choiceData = "";
+        }
         String c[] = choiceData.split("\\|");
         int correctIndex = 0;
         if(c.length > 1) {
-            correctIndex = Integer.parseInt(c[c.length-1]);
+            correctIndex = Integer.parseInt(c[c.length-1]) - 1;  // one based
             for(int i=0,t=c.length;i<(t-1);i++) {
                 store.add(new MultiValue(c[i], false));
             }
@@ -87,11 +93,10 @@ public class WidgetEditorImplMultiChoice extends WidgetEditorImplBase {
         editor.addEditor(correctCol, new CheckBox());
 
         
-        ContentPanel content = new ContentPanel();
-        content.setWidget(editor.getEditableGrid());
+        setWidget(editor.getEditableGrid());
         
         
-        content.addTool(new TextButton("Add Choice", new SelectHandler() {
+        addTool(new TextButton("Add Choice", new SelectHandler() {
             
             @Override
             public void onSelect(SelectEvent event) {
@@ -99,27 +104,37 @@ public class WidgetEditorImplMultiChoice extends WidgetEditorImplBase {
             }
 
         }));
-        content.addTool(new TextButton("Remove Choice", new SelectHandler() {
+        addTool(new TextButton("Remove Choice", new SelectHandler() {
             
             @Override
             public void onSelect(SelectEvent event) {
                 removeSelectedChoice();
             }
         }));
-        
-        _fields.clear();
-        _fields.add(content);
-        // initWidget(content);
     }
 
     @Override
+    public Widget asWidget() {
+        buildUi();
+        return this;
+    }
     protected String getWidgetType() {
         return "mChoice";
     }
 
     protected void removeSelectedChoice() {
         if(selected() != null) {
+            
+            int index = _grid.getStore().indexOf(selected());
             _grid.getStore().remove(selected());
+
+            if(_grid.getStore().size() > 0) {
+                if(index > _grid.getStore().size()-1) {
+                    index = _grid.getStore().size()-1;
+                }
+                _grid.getSelectionModel().select(index,  false);
+            }
+            
         }
     }
     
@@ -139,9 +154,9 @@ public class WidgetEditorImplMultiChoice extends WidgetEditorImplBase {
     }
 
 
-    @Override
     protected WidgetDefModel createWidgetDefModel() {
-        WidgetDefModel wd = super.createWidgetDefModel();
+        WidgetDefModel wd = new WidgetDefModel();
+        wd.setType(getWidgetType());
         wd.setValue(getValueString());
         return wd;
     }
@@ -163,7 +178,7 @@ public class WidgetEditorImplMultiChoice extends WidgetEditorImplBase {
                 correctSel = i;
             }
         }
-        value += "|" + correctSel;
+        value += "|" + (correctSel+1);  // one base
         return value;
     }
 
@@ -204,5 +219,21 @@ public class WidgetEditorImplMultiChoice extends WidgetEditorImplBase {
         ModelKeyProvider<MultiValue> key();
         ValueProvider<MultiValue, Boolean> correct();
         ValueProvider<MultiValue, String> value();
+    }
+
+    @Override
+    public String getWidgetJson() {
+        WidgetDefModel widget = createWidgetDefModel();
+        return widget.getJson();
+    }
+
+    @Override
+    public WidgetDefModel getWidgetDef() {
+        return widgetDef;
+    }
+
+    @Override
+    public String checkValid() {
+        return null;
     }
 }
