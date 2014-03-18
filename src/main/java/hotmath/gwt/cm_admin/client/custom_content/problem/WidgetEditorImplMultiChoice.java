@@ -54,7 +54,11 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements WidgetE
         String c[] = choiceData.split("\\|");
         int correctIndex = 0;
         if(c.length > 1) {
-            correctIndex = Integer.parseInt(c[c.length-1]) - 1;  // one based
+            correctIndex = Integer.parseInt(c[c.length-1]);
+            // convert to one base
+            if(correctIndex > 0) {
+                correctIndex--;
+            }
             for(int i=0,t=c.length;i<(t-1);i++) {
                 store.add(new MultiValue(c[i], false));
             }
