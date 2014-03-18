@@ -1,6 +1,7 @@
 package hotmath.assessment;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_admin.server.model.ParallelProgramDao;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
@@ -77,7 +78,13 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
                 sm.setSectionNum(0);
                 
                 startTime = System.currentTimeMillis();
-                dao.updateStudent(conn, sm, true, false, true, false, false);
+
+                // handle Parallel Program transitions
+				ParallelProgramDao ppDao = ParallelProgramDao.getInstance();
+				boolean resetMainProgram = (ppDao.isStudentInParallelProgram(sm.getUid()) == false);
+				boolean continueParallelProgram = ! resetMainProgram;
+
+                dao.updateStudent(conn, sm, true, false, true, false, false, resetMainProgram, continueParallelProgram);
                 updateStudentTime = System.currentTimeMillis() - startTime;
                 
                 startTime = System.currentTimeMillis();
