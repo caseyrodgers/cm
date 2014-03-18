@@ -17,7 +17,11 @@ public class WidgetEditorImplRational extends WidgetEditorImplFraction {
     protected void buildUi() {
         super.buildUi();
         
-        String format = getWidgetDef().getFormat()!=null?getWidgetDef().getFormat().split("\\|")[0]:"";
+        String format = getWidgetDef().getFormat();
+        if(format !=null) {
+            String p[] = format.split("\\|");
+            format = p.length > 0?p[0]:null;
+        }
         _format.setValue(format);
         super._fields.add(new MyFieldLabel(_format, "Format",80, 80));
     }

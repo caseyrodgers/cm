@@ -31,14 +31,14 @@ public class WidgetEditorImplInequality extends SimplePanel implements WidgetEdi
     public Widget asWidget() {
         _inequalityDef = new TextField();
         _inequalityDef.setToolTip("Set an inequality, for example x > -3");
-        _inequalityDef.setValue(URL.decode(widgetDef.getValue()));
+        _inequalityDef.setValue(widgetDef.getValue()!=null?URL.decode(widgetDef.getValue()):null);
         setWidget(new MyFieldLabel(_inequalityDef, "Inequality", 80,  100));
         return this;
     }
 
     @Override
     public String getWidgetJson() {
-        String val = URL.encode(_inequalityDef.getCurrentValue());
+        String val = _inequalityDef.getCurrentValue() != null?URL.encode(_inequalityDef.getCurrentValue()):null;
         widgetDef.setType("inequality");
         widgetDef.setValue(val);
         return widgetDef.getJson();

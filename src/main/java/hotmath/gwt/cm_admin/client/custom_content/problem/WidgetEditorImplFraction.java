@@ -21,7 +21,7 @@ public class WidgetEditorImplFraction extends WidgetEditorImplBase {
         
         
         String value = getWidgetDef().getValue();
-        String p[] = value.split("/");
+        String p[] = value!=null?value.split("/"):new String[1];
         
         _numerator.setValue( getIntValueAsString(p[0]));
         _denominator.setValue(p.length > 1?getIntValueAsString(p[1]):"");
