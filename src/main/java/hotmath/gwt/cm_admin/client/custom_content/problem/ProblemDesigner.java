@@ -382,6 +382,7 @@ public class ProblemDesigner extends Composite {
         }
 
         
+        _main.forceLayout();
 
         final int thisScrollPosition;
         if(scrollPosition == SCROLL_TO_END) {
@@ -394,7 +395,6 @@ public class ProblemDesigner extends Composite {
             @Override
             public void run() {
                 _tutorFlow.getScrollSupport().setVerticalScrollPosition(thisScrollPosition);
-                _main.forceLayout();
             }
         }.schedule(0);
     }
