@@ -27,6 +27,9 @@ public class WidgetEditorFactory {
         else if(type.equals("mChoice")) {
             return new WidgetEditorImplMultiChoice(widgetDef);
         }
+        else if(type.equals("coordinates")) {
+            return new WidgetEditorImplCoordinates(widgetDef);
+        }
         else if(type.equals("")) {
             return new WidgetEditorImplNoWidget(widgetDef);
         }

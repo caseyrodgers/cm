@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -104,7 +105,11 @@ public class CpEditingArea extends GWindow {
     }
     
     private void buildUi(final AreaData areaData) {
-        ckEditorPanel = new CKEditorPanel(_editorKey,areaData.textPart);
+        ckEditorPanel = new CKEditorPanel(_editorKey,areaData.textPart, new CallbackOnComplete() {
+            @Override
+            public void isComplete() {
+            }
+        });
         
         
         _showWork = new ShowWorkPanel2(new ShowWorkPanelCallbackDefault() {

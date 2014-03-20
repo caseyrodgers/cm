@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client;
 
 import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditorHintStep;
+import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditor;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditorWidget;
 import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
 import hotmath.gwt.cm_admin.client.ui.AssignmentManagerDialog2;
@@ -201,6 +202,10 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         }
         else if(test.equals("clipboard_image")) {
             CreateTemplateFromClipboardImage.doTest();
+            return;
+        }
+        else if(test.equals("custom_problem_designer")) {
+            ProblemDesignerEditor.doTest();
             return;
         }
 

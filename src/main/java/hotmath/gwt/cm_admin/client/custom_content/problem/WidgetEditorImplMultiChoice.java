@@ -13,7 +13,6 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
-import com.sencha.gxt.data.shared.Store.Record;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.CompleteEditEvent;
@@ -79,7 +78,6 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements WidgetE
             public void onCompleteEdit(CompleteEditEvent<MultiValue> event) {
                 areChanges = true;
 
-                MultiValue mv = _grid.getSelectionModel().getSelectedItem();
                 MultiValue ch = store.getAll().get(event.getEditCell().getRow());
                 
                 /** only one can be selected */

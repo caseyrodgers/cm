@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_admin.client.custom_content.problem.CpEditingArea.Callback;
+import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditor.EditorCallback;
 import hotmath.gwt.cm_core.client.CmGwtTestUi;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
@@ -11,6 +12,8 @@ import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction.SaveType;
+import hotmath.gwt.cm_rpc.client.rpc.SetupWhiteboardForEditingAction;
+import hotmath.gwt.cm_rpc.client.rpc.SetupWhiteboardForEditingAction.SetupType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -171,11 +174,27 @@ public class ProblemDesigner extends Composite {
     };
     
     
+    native private String jsni_getProblemStatementHtml() /*-{
+        var m = $wnd.$('.cm_problem_text');
+        if(m.length == 0) {
+            return '';
+        }
+        return m.html();
+    }-*/;
+    
+    
     private void gwt_editPart(String partType, String data) {
 
         // Window.alert("Part: " + partType + ", " + data);
         if(partType.equals("whiteboard")) {
-            new ProblemDesignerEditorWhiteboard(_solutionInfo, "wb_ps", callback);
+            new ProblemDesignerEditor(_solutionInfo,_solutionMeta.getProblemStatement(), "wb_ps", new EditorCallback() {
+                
+                @Override
+                public void editingComplete(String pidEdit, String textPluswhiteboardJson) {
+                    _solutionMeta.setProblemStatement(textPluswhiteboardJson);
+                    saveSolutionToServer();
+                }
+            });
         }
         else if(partType.equals("widget")) {
             String widgetJson = TutorWrapperPanel.jsni_getWidgetJson();
@@ -188,10 +207,12 @@ public class ProblemDesigner extends Composite {
         else if(partType.equals("hint")) {
             int which = Integer.parseInt(data);
             final SolutionMetaStep step = _solutionMeta.getSteps().get(which);
-            new CpEditingArea("wb_editor", step.getHint(), new Callback() {
+            
+            new ProblemDesignerEditor(_solutionInfo, step.getHint(), "wb_hint", new EditorCallback() {
+                
                 @Override
-                public void editingComplete(String partText) {
-                    step.setHint(partText);
+                public void editingComplete(String pidEdit, String textPartPlusWhiteboardJson) {
+                    step.setHint(textPartPlusWhiteboardJson);
                     saveSolutionToServer();
                 }
             });
@@ -199,14 +220,13 @@ public class ProblemDesigner extends Composite {
         else if(partType.equals("step")) {
             int which = Integer.parseInt(data);
             final SolutionMetaStep step = _solutionMeta.getSteps().get(which);
-            new CpEditingArea("wb_editor", step.getText(), new Callback() {
+            new ProblemDesignerEditor(_solutionInfo, step.getText(), "wb_step", new EditorCallback() {
                 @Override
-                public void editingComplete(String partText) {
-                    step.setText(partText);
+                public void editingComplete(String pidEdit, String textPartPlusWhiteboardJson) {
+                    step.setText(textPartPlusWhiteboardJson);
                     saveSolutionToServer();
                 }
-            });
-        }        
+            });        }        
         else if(partType.equals("hint-remove")) {
             int which = Integer.parseInt(data);
             removeSolutionHintStep(which);
@@ -227,6 +247,29 @@ public class ProblemDesigner extends Composite {
         }
     }
     
+    protected void saveProblemStatement(final String pidEdit, final String textPart, String whiteboardJson) {
+            CmBusyManager.setBusy(true);
+            
+            new RetryAction<CmList<Response>>() {
+                @Override
+                public void attempt() {
+                    MultiActionRequestAction mAction = new MultiActionRequestAction(); 
+                    mAction.getActions().add(new SaveCustomProblemAction(_solutionInfo.getPid(), SaveType.PROBLEM_STATEMENT_TEXT, textPart));                
+                    mAction.getActions().add(new SetupWhiteboardForEditingAction(SetupType.SAVE, _solutionInfo.getPid(), pidEdit));
+                    setAction(mAction);
+                    CmShared.getCmService().execute(mAction, this);
+                }
+
+                @Override
+                public void oncapture( CmList<Response> result) {
+                    CmBusyManager.setBusy(false);
+                    Log.info("Whiteboard changes commited: " + result);
+                    hide();
+                }
+
+            }.register();   
+    }
+
     private void moveSolutionHintStep(int which, int toWhere) {
         
         if(toWhere < 0 || toWhere > _solutionMeta.getSteps().size()-1) {
