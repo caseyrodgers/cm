@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
-import hotmath.gwt.cm_admin.client.custom_content.problem.CpEditingArea.Callback;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditor.EditorCallback;
 import hotmath.gwt.cm_core.client.CmGwtTestUi;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
@@ -12,8 +11,6 @@ import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction.SaveType;
-import hotmath.gwt.cm_rpc.client.rpc.SetupWhiteboardForEditingAction;
-import hotmath.gwt.cm_rpc.client.rpc.SetupWhiteboardForEditingAction.SetupType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -191,8 +188,7 @@ public class ProblemDesigner extends Composite {
                 
                 @Override
                 public void editingComplete(String pidEdit, String textPluswhiteboardJson) {
-                    _solutionMeta.setProblemStatement(textPluswhiteboardJson);
-                    saveSolutionToServer();
+                    saveProblemStatement(pidEdit,textPluswhiteboardJson);
                 }
             });
         }
@@ -209,7 +205,6 @@ public class ProblemDesigner extends Composite {
             final SolutionMetaStep step = _solutionMeta.getSteps().get(which);
             
             new ProblemDesignerEditor(_solutionInfo, step.getHint(), "wb_hint", new EditorCallback() {
-                
                 @Override
                 public void editingComplete(String pidEdit, String textPartPlusWhiteboardJson) {
                     step.setHint(textPartPlusWhiteboardJson);
@@ -247,24 +242,22 @@ public class ProblemDesigner extends Composite {
         }
     }
     
-    protected void saveProblemStatement(final String pidEdit, final String textPart, String whiteboardJson) {
+    protected void saveProblemStatement(final String pidEdit, final String textAndwhiteboardJson) {
             CmBusyManager.setBusy(true);
             
-            new RetryAction<CmList<Response>>() {
+            new RetryAction<RpcData>() {
                 @Override
                 public void attempt() {
-                    MultiActionRequestAction mAction = new MultiActionRequestAction(); 
-                    mAction.getActions().add(new SaveCustomProblemAction(_solutionInfo.getPid(), SaveType.PROBLEM_STATEMENT_TEXT, textPart));                
-                    mAction.getActions().add(new SetupWhiteboardForEditingAction(SetupType.SAVE, _solutionInfo.getPid(), pidEdit));
-                    setAction(mAction);
-                    CmShared.getCmService().execute(mAction, this);
+                    SaveCustomProblemAction action = new SaveCustomProblemAction(_solutionInfo.getPid(), SaveType.PROBLEM_STATEMENT_TEXT, textAndwhiteboardJson); 
+                    setAction(action);
+                    CmShared.getCmService().execute(action, this);
                 }
 
                 @Override
-                public void oncapture( CmList<Response> result) {
+                public void oncapture(RpcData result) {
                     CmBusyManager.setBusy(false);
                     Log.info("Whiteboard changes commited: " + result);
-                    hide();
+                    loadProblem(_customProblem, 0);
                 }
 
             }.register();   

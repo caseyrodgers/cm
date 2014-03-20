@@ -1,23 +1,12 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
-import hotmath.gwt.cm_admin.client.custom_content.problem.CpEditingArea.AreaData;
-import hotmath.gwt.cm_core.client.model.WhiteboardModel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.WhiteboardTemplatesResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardTemplatesAction;
-import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
-import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction;
-import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction.SaveType;
-import hotmath.gwt.cm_rpc.client.rpc.SaveStaticWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
-import hotmath.gwt.cm_rpc.client.rpc.SetupWhiteboardForEditingAction;
-import hotmath.gwt.cm_rpc.client.rpc.SetupWhiteboardForEditingAction.SetupType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyTextButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
@@ -30,11 +19,9 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -131,22 +118,29 @@ public class ProblemDesignerEditor extends GWindow {
         
         String wbJsonHtml = wbJson!=null?"<div class='wb_json'>" + wbJson + "</div>":"";
         
-        String textPlusWhiteboard = 
+        String textPlusWhiteboardPlusWidget = 
                 "<div class='step_part'>" + _ckEditorPanel.getEditorValue() + 
                 wbJsonHtml +
                 "</div>";
-        callback.editingComplete(_pidEdit,textPlusWhiteboard);
+        
+        textPlusWhiteboardPlusWidget += this.areaData.widgetHtml;
+        callback.editingComplete(_pidEdit,textPlusWhiteboardPlusWidget);
         hide();
     }
 
     static int _cnt;
     private void showWhiteboardEditor(boolean yesNo) {
+        String textValue="";
         if(_ckEditorPanel != null) {
+            textValue = _ckEditorPanel.getEditorValue();
             _ckEditorPanel.destroyEditor();
+            _ckEditorPanel = null;
         }
-        _ckEditorPanel = null;
+        else {
+            textValue = this.areaData.textPart;
+        }
         
-        _ckEditorPanel = new CKEditorPanel("ps_editor",this.areaData.textPart, new CallbackOnComplete() {
+        _ckEditorPanel = new CKEditorPanel("ps_editor",textValue, new CallbackOnComplete() {
             
             @Override
             public void isComplete() {
@@ -250,28 +244,6 @@ public class ProblemDesignerEditor extends GWindow {
         }
         m.html(text);
     }-*/;
-    
-    protected void setupWhiteboardForEditing(final ShowWorkPanel2 showWork, final String pid) {
-        
-        CmBusyManager.setBusy(true);
-        new RetryAction<RpcData>() {
-            @Override
-            public void attempt() {
-                SetupWhiteboardForEditingAction action = new SetupWhiteboardForEditingAction(SetupType.CREATE, pid);
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
-
-            @Override
-            public void oncapture(RpcData result) {
-                CmBusyManager.setBusy(false);
-                _pidEdit = result.getDataAsString("pid_edit");
-                WhiteboardModel whiteBoard = solution.getWhiteboards().size() > 0 ? solution.getWhiteboards().get(0) : new WhiteboardModel();
-                showWork.loadWhiteboard(whiteBoard.getCommands());
-            }
-
-        }.register();
-    }
 
     protected void loadWhiteboardTemplates(final ShowWorkPanel2 showWork) {
         new RetryAction<WhiteboardTemplatesResponse>() {
@@ -314,17 +286,29 @@ public class ProblemDesignerEditor extends GWindow {
         else {
             textPart = text;
         }
-        AreaData aData = new AreaData(textPart,wbJson);
+        
+        checkFor="<div id='hm_flash_widget'>";
+        p = textPart.indexOf(checkFor);
+        String widgetHtml="";
+        if(p > -1) {
+            widgetHtml = text.substring(p);
+            textPart = text.substring(0, p);
+            //widgetHtml = wbJson.substring(checkFor.length(), wbJson.indexOf("</div></div>"));
+        }
+        
+        AreaData aData = new AreaData(textPart,wbJson, widgetHtml);
         return aData;
     }
 
     class AreaData {
         String textPart;
         String wbJson;
+        String widgetHtml;
         
-        public AreaData(String textPart, String whiteboardJson) {
+        public AreaData(String textPart, String whiteboardJson, String widgetHtml) {
             this.textPart = textPart;
             this.wbJson = whiteboardJson;
+            this.widgetHtml = widgetHtml;
         }
         
     }    

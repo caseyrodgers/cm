@@ -443,22 +443,6 @@ public class TutorWrapperPanel extends Composite {
     }
     
     
-    private void gwt_loadStaticWhiteboardCommands(String wbId) {
-        if(wbId == null) {
-            return;
-        }
-        for(WhiteboardModel wbModel: this._solutionInfo.getWhiteboards()) {
-            if(wbModel.getWhiteboardId().equals(wbId)) {
-                for(WhiteboardCommand wc: wbModel.getCommands()) {
-                    CmGwtUtils.jsni_updateWhiteboardAux(wbId, wc.getCommand(), wc.getData());
-                }
-                return;
-            }
-        }
-        //Window.alert("Static whiteboard not found: " + wbId);
-    }
-    
-
     /** initialize external tutor JS/HTML and provide glue between external JS
      * methods and GWT.
      * 
@@ -515,10 +499,6 @@ public class TutorWrapperPanel extends Composite {
         
         $wnd.gwt_showWhiteboard = function() {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_showWhiteBoard()();
-        }
-        
-        $wnd.gwt_loadStaticWhiteboardCommands = function(id) {
-            return that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_loadStaticWhiteboardCommands(Ljava/lang/String;)(id);
         }
         
         $wnd.gwt_tutorIsReadonlyMessage = function() {

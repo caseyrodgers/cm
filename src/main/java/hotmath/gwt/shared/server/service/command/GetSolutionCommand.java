@@ -94,13 +94,6 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
                 solutionInfo.setWidgetResult(HaTestRunDao.getInstance().getRunTutorWidgetValue(action.getRunId(), action.getPid()));
             }
             
-            
-            /** Read any static whiteboards that have been defined for this solution
-             * 
-             */
-            solutionInfo.getWhiteboards().addAll(WhiteboardDao.getInstance().getStaticWhiteboards(action.getPid()));
-            
-            
             return solutionInfo;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
