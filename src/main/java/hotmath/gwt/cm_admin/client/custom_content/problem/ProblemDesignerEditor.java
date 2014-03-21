@@ -19,9 +19,12 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -30,6 +33,9 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.event.BeforeHideEvent;
 import com.sencha.gxt.widget.core.client.event.BeforeHideEvent.BeforeHideHandler;
+import com.sencha.gxt.widget.core.client.event.MaximizeEvent;
+import com.sencha.gxt.widget.core.client.event.MaximizeEvent.MaximizeHandler;
+import com.sencha.gxt.widget.core.client.event.ResizeEndEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -68,6 +74,7 @@ public class ProblemDesignerEditor extends GWindow {
         this.areaData = extractAreaData(editorText);
         setPixelSize(730, 500);
         setResizable(true);
+        setMaximizable(true);
 
         setHeadingText("Edit Problem Definition: " + solution.getPid());
         _main = new BorderLayoutContainer();
@@ -110,9 +117,34 @@ public class ProblemDesignerEditor extends GWindow {
             }
         });
         
+        
+        addMaximizeHandler(new MaximizeHandler() {
+            @Override
+            public void onMaximize(MaximizeEvent event) {
+                resizeWhiteboard();
+            }
+        });
+        
         setVisible(true);
     }
 
+    @Override
+    protected void onEndResize(ResizeEndEvent re) {
+        super.onEndResize(re);
+        resizeWhiteboard();
+    }
+
+    private void resizeWhiteboard() {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                int height = _wbWrapper.getOffsetHeight();
+                _showWorkPanel.resizeWhiteboard(height);
+            }
+        });
+
+    }
+    
     protected void doSave() {
         String wbJson = _showWorkPanel != null?_showWorkPanel.getWhiteboardCommandsAsJson():this.areaData.wbJson;
         
@@ -153,7 +185,10 @@ public class ProblemDesignerEditor extends GWindow {
                 _showWorkPanel = new ShowWorkPanel2(whiteboardCallBack, true, true, "wb_ps-1", 280, getWidget());
             }
             BorderLayoutContainer bCon = new BorderLayoutContainer();
-            bCon.setCenterWidget(_showWorkPanel);
+            
+            _wbWrapper = new SimplePanel();
+            _wbWrapper.setWidget(_showWorkPanel);
+            bCon.setCenterWidget(_wbWrapper);
             bCon.setNorthWidget(_ckEditorPanel, new BorderLayoutData(175));
             _main.setCenterWidget(bCon);
         } 
@@ -170,6 +205,8 @@ public class ProblemDesignerEditor extends GWindow {
         
         // _ckEditorPanel.resizeEditor(200);
     }
+    
+    SimplePanel _wbWrapper;
     
     final ShowWorkPanel2Callback whiteboardCallBack = new ShowWorkPanelCallbackDefault() {
         @Override
@@ -230,8 +267,8 @@ public class ProblemDesignerEditor extends GWindow {
     
     
     private void setEditorHeight() {
-        int h = _ckEditorPanel.getParent().getElement().getClientHeight();
-        _ckEditorPanel.resizeEditor(h);
+//        int h = _showWorkPanel.getParent().getElement().getClientHeight();
+//        //_showWorkPanel.resizeWhiteboard();
     }
 
     

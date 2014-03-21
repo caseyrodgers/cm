@@ -163,10 +163,14 @@ public class ShowWorkPanel2 extends Composite {
     }
 
     public void resizeWhiteboard() {
-        jnsi_resizeWhiteboard(whiteboardId, getParentWidget().getElement(), whiteboardHeight);
+        resizeWhiteboard(whiteboardHeight);
+    }
+    
+    public void resizeWhiteboard(int height) {
+        jnsi_resizeWhiteboard(whiteboardId, getParentWidget().getElement(), height);
         _whiteboardOutCallback.windowResized();
     }
-
+    
     public void setAsTeacherMode(boolean yesNo) {
         _teacherMode=yesNo;
         jsni_setAsTeacherMode(whiteboardId, yesNo);
@@ -480,6 +484,8 @@ public class ShowWorkPanel2 extends Composite {
         }
     }-*/;
 
+    
+    
     private native void jnsi_resizeWhiteboard(String whiteboardId, Element ele, int heightIn)/*-{
         if (typeof $wnd.Whiteboard == 'undefined') {
             $wnd.console.log('jnsi_resizeWhiteboard: Whiteboard not defined');
@@ -497,7 +503,7 @@ public class ShowWorkPanel2 extends Composite {
             height = heightIn;
         }
         var width = Number($wnd.grabComputedWidth(ele)) + 15;
-
+        
         theWhiteboard.setWhiteboardViewPort(width, height);
         theWhiteboard.resizeWhiteboard();
      }-*/;
