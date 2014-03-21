@@ -387,6 +387,9 @@ pageTracker._trackPageview();
                   <p id='error_text' class='error_msg'> We have a problem  </p>
                 </div>
              </div>
+             <div>
+                 <input id="uid_fld" type="hidden" value="x" />
+             </div>
            </form>
         </div>
         <div id='signup_success' style='display: none'>
@@ -570,7 +573,24 @@ pageTracker._trackPageview();
 <script type="text/javascript" src="/assets/js/yui/build/connection/connection-min.js"></script>     
 <script type="text/javascript" src="/assets/js/cmsignup.js"></script>
 <script>
-  // once document is loaded, process startup 
+  // once document is loaded, process startup
+  window.onload=function(){
+      var parms = window.location.search;
+	  if (parms == null || parms.length<1) return;
+	  var parmList = parms.split("?");
+	  if (parmList == null || parmList.length == 0) return;
+      var argString = parmList[parmList.length-1];
+      var argArray = argString.split("&");
+	  var argValPair = argArray[0].split("=");
+	  if (argValPair.length < 2) return;
+	  if ("uid" == argValPair[0]) {
+    	  var uid = argValPair[1];
+	      var x = document.getElementById("uid_fld");
+	      x.value = uid;
+	  }
+	  //alert("uid: " + document.getElementById("uid_fld").value);
+  };
+
   YAHOO.util.Event.addListener(window, "load", setupToolTips);
 </script>  
 
