@@ -31,15 +31,17 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'about' }
 	];
 
-	CKEDITOR.stylesSet.add( 'my_styles', [
-	                                      // Block-level styles
-	                                      { name: 'Blue Title', element: 'h2', styles: { 'color': 'Blue' } },
-	                                      { name: 'Red Title' , element: 'h3', styles: { 'color': 'Red' } },
-
-	                                      // Inline styles
-	                                      { name: 'CSS Style', element: 'span', attributes: { 'class': 'my_style' } },
-	                                      { name: 'Marker: Yellow', element: 'span', styles: { 'background-color': 'Yellow' } }
-	                                  ]);
+	if(!CKEDITOR.stylesSet.get('my_styles')) {
+		CKEDITOR.stylesSet.add( 'my_styles', [
+		                                      // Block-level styles
+		                                      { name: 'Blue Title', element: 'h2', styles: { 'color': 'Blue' } },
+		                                      { name: 'Red Title' , element: 'h3', styles: { 'color': 'Red' } },
+	
+		                                      // Inline styles
+		                                      { name: 'CSS Style', element: 'span', attributes: { 'class': 'my_style' } },
+		                                      { name: 'Marker: Yellow', element: 'span', styles: { 'background-color': 'Yellow' } }
+		                                  ]);
+	}
 	config.stylesSet = 'my_styles';
 	
 	
@@ -54,6 +56,10 @@ CKEDITOR.editorConfig = function( config ) {
 	                	];
 
     config.removeButtons = 'Source';
+    
+    
+    config.removePlugins = 'elementspath';
+    config.resize_enabled = false;
 	
 //	config.toolbar = [
 //	                  {name: 'basicstyles', items: [ 'Bold', 'Italic','Superscript', 'Subscript', 'FontSize' ] },

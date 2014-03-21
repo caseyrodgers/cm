@@ -140,7 +140,7 @@ public class ProblemDesignerEditor extends GWindow {
             textValue = this.areaData.textPart;
         }
         
-        _ckEditorPanel = new CKEditorPanel("ps_editor",90, textValue, new CallbackOnComplete() {
+        _ckEditorPanel = new CKEditorPanel("ps_editor",120, textValue, new CallbackOnComplete() {
             
             @Override
             public void isComplete() {
@@ -150,11 +150,11 @@ public class ProblemDesignerEditor extends GWindow {
         if(yesNo) {
 
             if(_showWorkPanel == null) {
-                _showWorkPanel = new ShowWorkPanel2(whiteboardCallBack, true, true, "wb_ps-1", 255, getWidget());
+                _showWorkPanel = new ShowWorkPanel2(whiteboardCallBack, true, true, "wb_ps-1", 280, getWidget());
             }
             BorderLayoutContainer bCon = new BorderLayoutContainer();
             bCon.setCenterWidget(_showWorkPanel);
-            bCon.setNorthWidget(_ckEditorPanel, new BorderLayoutData(200));
+            bCon.setNorthWidget(_ckEditorPanel, new BorderLayoutData(175));
             _main.setCenterWidget(bCon);
         } 
         else
