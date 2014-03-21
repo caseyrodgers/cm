@@ -2294,7 +2294,7 @@ where s.type = 'ST'
   
 .key=USER_LOGIN_AUTOREG
 
-select u.uid,a.partner_key
+select u.uid, a.partner_key
 from   HA_USER u
 JOIN CM_GROUP g ON u.group_id = g.id
 JOIN HA_ADMIN a ON u.admin_id = a.aid
@@ -2303,6 +2303,21 @@ where s.type = 'ST'
   and s.password = ?
   and g.name = ?
   and is_auto_create_template = 1
+  and u.is_self_pay = 0
+
+
+.key=USER_LOGIN_AUTOREG_SELFPAY
+
+select u.uid, a.partner_key
+from   HA_USER u
+JOIN CM_GROUP g ON u.group_id = g.id
+JOIN HA_ADMIN a ON u.admin_id = a.aid
+JOIN SUBSCRIBERS s ON a.subscriber_id = s.id
+where s.type = 'ST'
+  and s.password = ?
+  and g.name = ?
+  and is_auto_create_template = 1
+  and u.is_self_pay = 1
 
 
 .key=SCHOOL_ACCOUNT_SERVICES

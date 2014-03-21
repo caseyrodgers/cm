@@ -25,6 +25,7 @@ import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;
 import hotmath.gwt.shared.client.rpc.action.LoginAction;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.testset.ha.HaAdmin;
+import hotmath.testset.ha.HaUserAutoRegSelfPay;
 import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.HaUserParallelProgram;
 import hotmath.util.HMConnectionPool;
@@ -283,7 +284,14 @@ public class LoginService extends HttpServlet {
                             req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);
                         }
 				    }
-    				else {
+    				else if (cmUser instanceof HaUserAutoRegSelfPay) {
+    					clientInfo.setUserType(UserType.STUDENT);
+
+    					// TODO: handle mobile devices ?
+
+                        resp.sendRedirect("/cm-college-self-pay.html?uid=" + loginInfo.getUserId());
+				    }
+                    else {
     					clientInfo.setUserType(UserType.STUDENT);
     					
     					// if this is a "real login" and Student is currently in a "Parallel Program",

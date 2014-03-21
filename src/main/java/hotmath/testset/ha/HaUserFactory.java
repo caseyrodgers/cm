@@ -64,8 +64,8 @@ public class HaUserFactory {
          * 3. If SUBSCRIBER.student_email + HA_USER.passcode match, then user is a
          * SINGLE USER, not a school.
          *
-         * 4. If HA_USER.group_name = passcode + HA_USER.group_name = password, then
-         * this user is a HaUserAuto and will create a new account before login
+         * 4. If SUBSCRIBER.password = user + HA_USER.group_name = password, then
+         * this user is a HaUserAutoRegistration and will create a new account before login
          * completes.
          *
          * @param user
@@ -231,15 +231,11 @@ public class HaUserFactory {
                                 SqlUtilities.releaseResources(rs, pstat, null);
                         }
 
-                        // The final possibility is an Auto Registration match on the
-                        // userName and passcode.
+                        // Check for Auto Registration login 
                         // If the passcode matches the GROUP_NAME of the HA_USER record that
-                        // defines
-                        // this Auto Registration Setup. The user must be taken on the 'Auto
-                        // Registration Path'
-                        // right after login. It will be an error if the subscriber record
-                        // is not
-                        // an ST.
+                        // defines this Auto Registration Setup. The user must be taken on the
+                        // 'Auto Registration Path' right after login. It will be an error if
+                        // the subscriber record is not an ST.
                         // perhaps it is a Single User student
                         // Then we search for the SUBSCRIBER.student_email
                         // associated with the SUBCRIBERS record that the
@@ -273,6 +269,40 @@ public class HaUserFactory {
                                 }
                         } finally {
                                 SqlUtilities.releaseResources(rs, pstat, null);
+                        }
+
+                        // Last possibility, check for Auto Registration Self-Pay login. 
+                        // If the passcode matches the GROUP_NAME of an HA_USER record that
+                        // defines an Auto Registration Self-Pay Setup then the user must be taken
+                        // on the  'Auto Registration Self-Pay Path'.
+                        //
+                        String sql = CmMultiLinePropertyReader
+                        		.getInstance().getProperty("USER_LOGIN_AUTOREG_SELFPAY");
+                        try {
+                        	pstat = conn.prepareStatement(sql);
+
+                        	pstat.setString(1, user);
+                        	pstat.setString(2, pwd);
+
+                        	rs = pstat.executeQuery();
+                        	if (rs.first()) {
+                        		int userId = rs.getInt("uid");
+                        		HaUserAutoRegSelfPay student = new HaUserAutoRegSelfPay(
+                        				HaUser.lookUser(conn, userId, null).getUid());
+                        		student.setPartner("partner");
+                        		student.setLoginName(user);
+                        		student.setUserName("auto-reg");
+                        		student.setPassword("self-pay");
+                        		student.setAccountType("ST");
+                        		student.setExpireDate(new Date(System.currentTimeMillis()
+                        				+ (1000 * 3600 * 24)));
+
+                        		__logger.info("User is auto reg self pay student: userId: "
+                        				+ userId + ", user: " + user);
+                        		return student;
+                        	}
+                        } finally {
+                        	SqlUtilities.releaseResources(rs, pstat, null);
                         }
 
                         checkForSchoolLoginFailure(conn, user);

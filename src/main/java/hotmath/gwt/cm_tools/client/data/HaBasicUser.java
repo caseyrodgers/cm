@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public interface HaBasicUser extends Response {
     
-    public static enum UserType { STUDENT, ADMIN, AUTO_CREATE, PARALLEL_PROGRAM, ERROR };
+    public static enum UserType { STUDENT, ADMIN, AUTO_CREATE, PARALLEL_PROGRAM, AUTO_REG_SELF_PAY, ERROR };
     
     String getUserName();
     String getPassword();

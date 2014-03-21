@@ -60,7 +60,7 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
                 groupModel = gm;
 
                 CmAdminDao.getInstance().removeAutoRegistrationSetupFor(conn, student.getAdminUid(), groupName);
-                
+
                 break;
             }
         }
@@ -78,8 +78,10 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         
         StudentModelI sm = CmStudentDao.getInstance().addStudent(conn, student);
         
-        
         CmAdminDao.getInstance().markAccountAsAutoRegistrationSetup(conn, sm.getUid());
+        if (student.getSelfPay() == true) {
+        	CmAdminDao.getInstance().markAccountAsSelfPay(conn, sm.getUid());
+        }
         
         RpcData rdata = new RpcData("status=OK");
         return rdata;
