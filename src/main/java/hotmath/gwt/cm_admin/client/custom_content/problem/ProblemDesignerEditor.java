@@ -66,7 +66,7 @@ public class ProblemDesignerEditor extends GWindow {
         this.editorText = editorText;
         this.whiteboardId = whiteboardId;
         this.areaData = extractAreaData(editorText);
-        setPixelSize(800, 650);
+        setPixelSize(730, 500);
         setResizable(true);
 
         setHeadingText("Edit Problem Definition: " + solution.getPid());
@@ -140,7 +140,7 @@ public class ProblemDesignerEditor extends GWindow {
             textValue = this.areaData.textPart;
         }
         
-        _ckEditorPanel = new CKEditorPanel("ps_editor",textValue, new CallbackOnComplete() {
+        _ckEditorPanel = new CKEditorPanel("ps_editor",90, textValue, new CallbackOnComplete() {
             
             @Override
             public void isComplete() {
@@ -150,12 +150,11 @@ public class ProblemDesignerEditor extends GWindow {
         if(yesNo) {
 
             if(_showWorkPanel == null) {
-                _showWorkPanel = new ShowWorkPanel2(whiteboardCallBack, true, true, "wb_ps-1", 300, getWidget());
+                _showWorkPanel = new ShowWorkPanel2(whiteboardCallBack, true, true, "wb_ps-1", 255, getWidget());
             }
             BorderLayoutContainer bCon = new BorderLayoutContainer();
             bCon.setCenterWidget(_showWorkPanel);
-            bCon.setNorthWidget(_ckEditorPanel, new BorderLayoutData(300));
-            _ckEditorPanel.resizeEditor(100);
+            bCon.setNorthWidget(_ckEditorPanel, new BorderLayoutData(200));
             _main.setCenterWidget(bCon);
         } 
         else
@@ -219,7 +218,7 @@ public class ProblemDesignerEditor extends GWindow {
     
     private void buildUi() {
         
-        showWhiteboardEditor(this.areaData.wbJson != null && this.areaData.wbJson.length() > 0);
+        showWhiteboardEditor(true);
         
         addResizeHandler(new ResizeHandler() {
             @Override

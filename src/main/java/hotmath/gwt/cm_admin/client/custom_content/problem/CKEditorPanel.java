@@ -20,7 +20,7 @@ public class CKEditorPanel extends SimplePanel {
 
 
     CallbackOnComplete callback;
-    public CKEditorPanel(String id, final String text, final CallbackOnComplete callback) {
+    public CKEditorPanel(String id, final int height, final String text, final CallbackOnComplete callback) {
         _textArea = new TextArea();
         _id = id;
         this.callback = callback;
@@ -30,7 +30,7 @@ public class CKEditorPanel extends SimplePanel {
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
-                jsni_setupCkeditor(_id, text);
+                jsni_setupCkeditor(_id, height,text);
             }
         });
     }
@@ -43,9 +43,12 @@ public class CKEditorPanel extends SimplePanel {
         $wnd.CKEDITOR.instances[id].setData(text);
     }-*/;
 
-    native private void jsni_setupCkeditor(String id, String text) /*-{
+    native private void jsni_setupCkeditor(String id, int height, String text) /*-{
         var that = this;
-        $wnd.CKEDITOR.replace( id,{__customConfig : '','height' : '170'});
+        $wnd.CKEDITOR.replace( id,
+            {
+                __customConfig : '','height' : height
+           });                
         $wnd.CKEDITOR.instances[id].setData(text);
         $wnd.CKEDITOR.on("instanceReady", function(event) {
             that.@hotmath.gwt.cm_admin.client.custom_content.problem.CKEditorPanel::ckeditorIsReady()();
@@ -57,6 +60,7 @@ public class CKEditorPanel extends SimplePanel {
     }
     
     native private void jsni_resizeEditor(String id, int height) /*-{
+    if(true) { return; }
         var o = $wnd.CKEDITOR.instances[id];
         if(o) {
             o.resize( '100%', height, false );

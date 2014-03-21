@@ -50,7 +50,7 @@ public class CpEditingArea extends GWindow {
         
         AreaData areaData = extractAreaData(text);
         
-        buildUi(areaData);
+        buildUi(areaData,200);
         
         
         addButton(new TextButton("Save", new SelectHandler() {
@@ -104,8 +104,8 @@ public class CpEditingArea extends GWindow {
         hide();
     }
     
-    private void buildUi(final AreaData areaData) {
-        ckEditorPanel = new CKEditorPanel(_editorKey,areaData.textPart, new CallbackOnComplete() {
+    private void buildUi(final AreaData areaData, int height) {
+        ckEditorPanel = new CKEditorPanel(_editorKey,height,areaData.textPart, new CallbackOnComplete() {
             @Override
             public void isComplete() {
             }
