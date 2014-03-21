@@ -184,13 +184,16 @@ public class ProblemDesigner extends Composite {
 
         // Window.alert("Part: " + partType + ", " + data);
         if(partType.equals("whiteboard")) {
-            new ProblemDesignerEditor(_solutionInfo,_solutionMeta.getProblemStatement(), "wb_ps", new EditorCallback() {
+            
+            ProblemDesignerEditor.getSharedWindow().show(_solutionInfo,_solutionMeta.getProblemStatement(), "wb_ps", new EditorCallback() {
                 
                 @Override
                 public void editingComplete(String pidEdit, String textPluswhiteboardJson) {
                     saveProblemStatement(pidEdit,textPluswhiteboardJson);
                 }
             });
+            
+            
         }
         else if(partType.equals("widget")) {
             String widgetJson = TutorWrapperPanel.jsni_getWidgetJson();
@@ -204,7 +207,7 @@ public class ProblemDesigner extends Composite {
             int which = Integer.parseInt(data);
             final SolutionMetaStep step = _solutionMeta.getSteps().get(which);
             
-            new ProblemDesignerEditor(_solutionInfo, step.getHint(), "wb_hint", new EditorCallback() {
+            ProblemDesignerEditor.getSharedWindow().show(_solutionInfo, step.getHint(), "wb_hint", new EditorCallback() {
                 @Override
                 public void editingComplete(String pidEdit, String textPartPlusWhiteboardJson) {
                     step.setHint(textPartPlusWhiteboardJson);
@@ -215,7 +218,7 @@ public class ProblemDesigner extends Composite {
         else if(partType.equals("step")) {
             int which = Integer.parseInt(data);
             final SolutionMetaStep step = _solutionMeta.getSteps().get(which);
-            new ProblemDesignerEditor(_solutionInfo, step.getText(), "wb_step", new EditorCallback() {
+            ProblemDesignerEditor.getSharedWindow().show(_solutionInfo, step.getText(), "wb_step", new EditorCallback() {
                 @Override
                 public void editingComplete(String pidEdit, String textPartPlusWhiteboardJson) {
                     step.setText(textPartPlusWhiteboardJson);

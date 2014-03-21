@@ -21,8 +21,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -64,23 +62,15 @@ public class ProblemDesignerEditor extends GWindow {
     }
 
     
-    
-    public ProblemDesignerEditor(SolutionInfo solution, String editorText, String whiteboardId, EditorCallback callbackIn) {
+    public ProblemDesignerEditor() {
         super(false);
-        this.callback = callbackIn;
-        this.solution = solution;
-        this.editorText = editorText;
-        this.whiteboardId = whiteboardId;
-        this.areaData = extractAreaData(editorText);
         setPixelSize(730, 500);
         setResizable(true);
-        setMaximizable(true);
 
-        setHeadingText("Edit Problem Definition: " + solution.getPid());
+        setHeadingText("Edit Problem Definition");
         _main = new BorderLayoutContainer();
         setWidget(_main);
 
-        
         _showWhiteboardToggle = new ToggleButton("Show Whiteboard");
         _showWhiteboardToggle.addSelectHandler(new SelectHandler() {
             @Override
@@ -90,7 +80,6 @@ public class ProblemDesignerEditor extends GWindow {
         });
         addTool(_showWhiteboardToggle);
         
-        buildUi();
 
         addButton(new MyTextButton("Save",  new SelectHandler() {
             @Override
@@ -106,13 +95,11 @@ public class ProblemDesignerEditor extends GWindow {
             }
         }));
         
-
-        
         addBeforeHideHandler(new BeforeHideHandler() {
             @Override
             public void onBeforeHide(BeforeHideEvent event) {
                 if(_ckEditorPanel != null) {
-                    _ckEditorPanel.destroyEditor();
+                    destroyEditor();
                 }
             }
         });
@@ -124,8 +111,36 @@ public class ProblemDesignerEditor extends GWindow {
                 resizeWhiteboard();
             }
         });
+    }
+
+    private void destroyEditor() {
+        _ckEditorPanel.destroyEditor();
+        _ckEditorPanel = null;
+    }
+    
+    
+    public void show(SolutionInfo solution, String editorText, String whiteboardId, EditorCallback callbackIn) {
+        this.callback = callbackIn;
+        this.solution = solution;
+        this.editorText = editorText;
+        this.whiteboardId = whiteboardId;
+        this.areaData = extractAreaData(editorText);
+        
+        showWhiteboardEditor(true);
         
         setVisible(true);
+        
+        
+        
+        if(_lastWbheight > 0) {
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    _showWorkPanel.resizeWhiteboard(_lastWbheight);
+                }
+            });
+            
+        }
     }
 
     @Override
@@ -134,12 +149,13 @@ public class ProblemDesignerEditor extends GWindow {
         resizeWhiteboard();
     }
 
+    int _lastWbheight;
     private void resizeWhiteboard() {
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
-                int height = _wbWrapper.getOffsetHeight();
-                _showWorkPanel.resizeWhiteboard(height);
+                _lastWbheight = _wbWrapper.getOffsetHeight();
+                _showWorkPanel.resizeWhiteboard(_lastWbheight);
             }
         });
 
@@ -165,8 +181,7 @@ public class ProblemDesignerEditor extends GWindow {
         String textValue="";
         if(_ckEditorPanel != null) {
             textValue = _ckEditorPanel.getEditorValue();
-            _ckEditorPanel.destroyEditor();
-            _ckEditorPanel = null;
+            destroyEditor();
         }
         else {
             textValue = this.areaData.textPart;
@@ -202,8 +217,6 @@ public class ProblemDesignerEditor extends GWindow {
         _main.forceLayout();
 
         _showWhiteboardToggle.setValue(yesNo);
-        
-        // _ckEditorPanel.resizeEditor(200);
     }
     
     SimplePanel _wbWrapper;
@@ -253,18 +266,6 @@ public class ProblemDesignerEditor extends GWindow {
     };
     private ShowWorkPanel2 _showWorkPanel;
     
-    private void buildUi() {
-        
-        showWhiteboardEditor(true);
-        
-        addResizeHandler(new ResizeHandler() {
-            @Override
-            public void onResize(ResizeEvent event) {
-                setEditorHeight();
-            }
-        });
-    }
-    
     
     private void setEditorHeight() {
 //        int h = _showWorkPanel.getParent().getElement().getClientHeight();
@@ -302,7 +303,7 @@ public class ProblemDesignerEditor extends GWindow {
     
     static public void doTest() {
         SolutionInfo si = new SolutionInfo("custom_44_140314_set1_1_1", "This is the <b>HTML</b>", "", false);
-        final ProblemDesignerEditor wb = new ProblemDesignerEditor(si,  si.getHtml(), "wb_id", new EditorCallback() {
+        ProblemDesignerEditor.getSharedWindow().show(si,  si.getHtml(), "wb_id", new EditorCallback() {
             @Override
             public void editingComplete(String pidEdit, String textPlusWhiteboard) {
             }
@@ -347,6 +348,16 @@ public class ProblemDesignerEditor extends GWindow {
             this.widgetHtml = widgetHtml;
         }
         
+    }
+
+
+
+    static ProblemDesignerEditor __sharedInstance;
+    public static ProblemDesignerEditor getSharedWindow() {
+        if(__sharedInstance == null) {
+            __sharedInstance = new ProblemDesignerEditor();
+        }
+        return __sharedInstance;
     }    
 
 }

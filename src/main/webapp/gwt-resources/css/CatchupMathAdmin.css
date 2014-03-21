@@ -617,3 +617,12 @@ program-details-panel .x-ftree2-node-over {
 	margin: 10px;
 	border: 2px solid blue;
 }
+
+.wb_json .drawsection {
+	border: none;
+}
+
+
+.wb_json .wb-container {
+	background: transparent;
+}
