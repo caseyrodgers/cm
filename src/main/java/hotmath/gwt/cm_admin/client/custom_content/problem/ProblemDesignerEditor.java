@@ -196,9 +196,12 @@ public class ProblemDesignerEditor extends GWindow {
         });
         if(yesNo) {
 
-            if(_showWorkPanel == null) {
-                _showWorkPanel = new ShowWorkPanel2(whiteboardCallBack, true, true, "wb_ps-1", 280, getWidget());
+            if(_showWorkPanel != null) {
+                _showWorkPanel = null;
             }
+            
+            _showWorkPanel = new ShowWorkPanel2(whiteboardCallBack, true, true, "wb_ps-1", 280, getWidget());
+            
             BorderLayoutContainer bCon = new BorderLayoutContainer();
             
             _wbWrapper = new SimplePanel();
