@@ -167,12 +167,6 @@ function checkSelfPayForm() {
             isValid = false;
     }
 
-    fld = $get('student_id');
-    if(fld.value == '') {
-        if(showError(fld, "What is your student ID?"))
-            isValid = false;
-    }
-
     fld = $get('student_birth_month');
     if(fld.selectedIndex < 1) {
         if(showError(fld, "Please specify your birthday."))
