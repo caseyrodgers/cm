@@ -177,28 +177,24 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
             rs = stmt.executeQuery();
 
             Set<Character> excludedChars = new HashSet<Character>();
+            excludedChars.add('I');
+            excludedChars.add('O');
             while(rs.next()) {
             	String existingPassword = rs.getString("password");
 
             	if (existingPassword.length() > password.length()+1) continue;
 
-            	if (existingPassword.equalsIgnoreCase(password)) {
-            		excludedChars.add(' ');
-            	}
-            	else {
+            	if (existingPassword.equalsIgnoreCase(password) == false) {
                 	int length = existingPassword.length();
                 	char lastChar = existingPassword.substring(length-1, length).charAt(0);
                 	excludedChars.add(lastChar);
             	}
             }
-            if (excludedChars.size() == 0) {
-            	return password;
-            }
 
             String foundChar = null;
-            int limit = 26 - excludedChars.size();
+            int limit = 100;
             while(limit-- > 0) {
-            	char test = (char)((int)(Math.random() * 25) + 65);
+            	char test = getRandomSuffix();
             	if (excludedChars.contains(test) == false) {
             		// found an unused char (A-Z)
             		foundChar = String.valueOf(test);
@@ -221,7 +217,11 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
             SqlUtilities.releaseResources(rs, stmt, null);
         }
     }
-    
+
+    private char getRandomSuffix() {
+    	return (char)((int)(Math.random() * 25) + 65);
+    }
+
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return CreateAutoRegistrationAccountAction.class;
