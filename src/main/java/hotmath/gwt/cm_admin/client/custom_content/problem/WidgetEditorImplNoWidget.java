@@ -5,7 +5,7 @@ import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 import com.google.gwt.user.client.ui.HTML;
 
 
-public class WidgetEditorImplNoWidget extends WidgetEditorImplBase {
+public class WidgetEditorImplNoWidget extends WidgetEditorImplDefault {
 
     public WidgetEditorImplNoWidget(WidgetDefModel widgetDef) {
         super(widgetDef);
@@ -13,7 +13,7 @@ public class WidgetEditorImplNoWidget extends WidgetEditorImplBase {
     
     @Override
     protected void buildUi() {
-        _fields.add(new HTML("<h1>No Widget</h1>"));
+        _fields.add(new HTML("<h1>No Input</h1>"));
     };
     
     @Override
@@ -24,5 +24,10 @@ public class WidgetEditorImplNoWidget extends WidgetEditorImplBase {
     @Override
     public String checkValid() {
         return null;
+    }
+    
+    @Override
+    public String getDescription() {
+    	return "No input value";
     }
 }

@@ -22,8 +22,11 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -33,6 +36,7 @@ import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
@@ -53,14 +57,16 @@ public class ProblemDesignerEditorWidget extends GWindow {
     private CallbackOnComplete _callback;
     BorderLayoutContainer _main;
     FramedPanel _innerFrame;
+
+	private HTML _aboutWidgetLabel = new HTML();
     public ProblemDesignerEditorWidget(SolutionInfo _solutionInfo, String widgetJson, CallbackOnComplete callback) {
         super(false);
         setPixelSize(340, 300);
-        setMaximizable(true);
+        setResizable(false);
         this._solutionInfo = _solutionInfo;
         this._callback = callback;
 
-        setHeadingText("Widget Editor");
+        setHeadingText("Input Editor");
         
         _main = new BorderLayoutContainer();
         
@@ -73,9 +79,15 @@ public class ProblemDesignerEditorWidget extends GWindow {
             }
         });
         
-        BorderLayoutData bData = new BorderLayoutData(30);
+        BorderLayoutData bData = new BorderLayoutData(60);
         bData.setMargins(new Margins(10,10,10,10));
-        _main.setNorthWidget(new MyFieldLabel(_comboType,"Widget Type", 100, 100), bData);
+        
+        
+        FlowPanel headerPanel = new FlowPanel();
+        headerPanel.add(new MyFieldLabel(_comboType,"Input Type", 100, 100));
+        headerPanel.add(_aboutWidgetLabel);
+        
+        _main.setNorthWidget(headerPanel, bData);
         
         _innerFrame = new FramedPanel();
         _innerFrame.setHeaderVisible(false);
@@ -140,12 +152,18 @@ public class ProblemDesignerEditorWidget extends GWindow {
                _widgetEditor.getWidgetDef().setValue(wd.getValue()) ;
             }
 
-            _innerFrame.setWidget(_widgetEditor.asWidget());
+            _aboutWidgetLabel.setHTML("<div style='font-style: italic'>" + _widgetEditor.getDescription() + "</div>");
+            
+            FlowLayoutContainer flow = new FlowLayoutContainer();
+            flow.setScrollMode(ScrollMode.AUTO);
+
+            flow.add(_widgetEditor.asWidget());
+            _innerFrame.setWidget(flow);
             
             forceLayout();
         } catch (Exception e) {
-            Log.error("Error creating widget", e);
-            Window.alert("Could not create widget editor: " + e);
+            Log.error("Error creating input", e);
+            Window.alert("Could not create input editor: " + e);
         }
     }
     
@@ -190,10 +208,10 @@ public class ProblemDesignerEditorWidget extends GWindow {
         store.add(new  WidgetType("mChoice", "Multiple Choice", "{'type': 'mChoice', 'value':'THIS|THAT|1'}"));
         store.add(new  WidgetType("number_rational", "Rational","{'type':'number_rational'}"));
         store.add(new  WidgetType("coordinates", "Coordinates","{'type':'coordinates'}"));
-        
+        store.add(new  WidgetType("number_mixed_fraction", "Mixed Fraction","{'type':'number_mixed_fraction'}"));
+        store.add(new  WidgetType("widget_plot", "Plot","{'type':'widget_plot', 'value':'1|2|3|4|5|6|7|8'}"));
+        //store.add(new  WidgetType("power_form", "Power Form"));
 
-//        store.add(new  WidgetType("coordinates", "Coordinates"));
-//        store.add(new  WidgetType("number_mixed_fraction", "Mixed Fraction"));
 //        store.add(new  WidgetType("power_form", "Power Form"));
 //        store.add(new  WidgetType("scientific_notation", "Scientific Notation"));
 //        store.add(new  WidgetType("letter", "Text"));
@@ -210,7 +228,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
     }
 
     static public void doTest() {
-        new ProblemDesignerEditorWidget(new SolutionInfo("custom_2_131219_set1_1_1",null,null,false), "{type:'number_integer', value:'200'}", new CallbackOnComplete() {
+        new ProblemDesignerEditorWidget(new SolutionInfo("custom_2_131219_set1_1_1",null,null,false), "{type:'number_integer', value:'1/200'}", new CallbackOnComplete() {
             @Override
             public void isComplete() {
             }

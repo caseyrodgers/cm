@@ -9,4 +9,5 @@ public interface WidgetEditor extends IsWidget {
     String getWidgetJson();
     WidgetDefModel getWidgetDef();
     String checkValid();
+	String getDescription();
 }

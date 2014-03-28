@@ -11,9 +11,9 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEditor {
     
     
-    private WidgetDefModel widgetDef;
-    private TextField xField;
-    private TextField yField;
+    protected WidgetDefModel widgetDef;
+    protected TextField xField;
+    protected TextField yField;
 
     public WidgetEditorImplCoordinates(WidgetDefModel widgetDef) {
         this.widgetDef = widgetDef;
@@ -47,6 +47,11 @@ public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEd
         fieldsPanel.add(new MyFieldLabel(xField, "X", 30, 50));
         fieldsPanel.add(new MyFieldLabel(yField, "Y", 30, 50));
         setWidget(fieldsPanel);
+    }
+    
+    @Override
+    public String getDescription() {
+    	return "Allow entering Coordinates";
     }
 
     @Override

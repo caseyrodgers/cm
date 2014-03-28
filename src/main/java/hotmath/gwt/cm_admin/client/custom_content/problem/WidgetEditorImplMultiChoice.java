@@ -238,4 +238,9 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements WidgetE
     public String checkValid() {
         return null;
     }
+    
+    @Override
+    public String getDescription() {
+    	return "Select one value from a set of choices";
+    }
 }

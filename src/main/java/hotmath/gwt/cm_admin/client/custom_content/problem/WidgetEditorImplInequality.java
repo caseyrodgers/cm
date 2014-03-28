@@ -49,4 +49,8 @@ public class WidgetEditorImplInequality extends SimplePanel implements WidgetEdi
         return widgetDef;
     }
     
+    @Override
+    public String getDescription() {
+    	return "Enter an inequality";
+    }
 }

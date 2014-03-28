@@ -6,12 +6,12 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 
-public abstract class WidgetEditorImplBase extends Composite implements WidgetEditor {
+public abstract class WidgetEditorImplDefault extends Composite implements WidgetEditor {
 
     protected WidgetDefModel _widgetDef;
     protected VerticalLayoutContainer _fields = new VerticalLayoutContainer();
 
-    public WidgetEditorImplBase(WidgetDefModel widgetDef) {
+    public WidgetEditorImplDefault(WidgetDefModel widgetDef) {
         this._widgetDef = widgetDef;
         initWidget(_fields);
     }

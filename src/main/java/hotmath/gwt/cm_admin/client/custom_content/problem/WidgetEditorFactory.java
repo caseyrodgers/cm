@@ -21,6 +21,9 @@ public class WidgetEditorFactory {
         else if(type.equals("number_fraction")) {
             return new WidgetEditorImplFraction(widgetDef);
         }
+        else if(type.equals("number_mixed_fraction")) {
+            return new WidgetEditorImplMixedFraction(widgetDef);
+        }
         else if(type.equals("number_rational")) {
             return new WidgetEditorImplRational(widgetDef);
         }
@@ -29,6 +32,9 @@ public class WidgetEditorFactory {
         }
         else if(type.equals("coordinates")) {
             return new WidgetEditorImplCoordinates(widgetDef);
+        }
+        else if(type.equals("widget_plot")) {
+            return new WidgetEditorImplPlot(widgetDef);
         }
         else if(type.equals("")) {
             return new WidgetEditorImplNoWidget(widgetDef);

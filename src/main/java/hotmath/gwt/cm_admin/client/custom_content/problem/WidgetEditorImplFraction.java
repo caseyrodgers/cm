@@ -5,7 +5,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 
-public class WidgetEditorImplFraction extends WidgetEditorImplBase {
+public class WidgetEditorImplFraction extends WidgetEditorImplDefault {
 
     TextField _numerator;
     TextField _denominator;
@@ -36,6 +36,11 @@ public class WidgetEditorImplFraction extends WidgetEditorImplBase {
         
         wd.setValue(_numerator.getCurrentValue() + "/" + _denominator.getCurrentValue());
         return wd;
+    }
+    
+    @Override
+    public String getDescription() {
+    	return "Enter a fraction";
     }
     
     @Override

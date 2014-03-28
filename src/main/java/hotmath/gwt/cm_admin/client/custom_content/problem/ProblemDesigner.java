@@ -4,6 +4,8 @@ import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditor.
 import hotmath.gwt.cm_core.client.CmGwtTestUi;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
@@ -13,6 +15,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction.SaveType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -65,7 +68,7 @@ public class ProblemDesigner extends Composite {
                 CustomProblemPropertiesDialog.getInstance(new CallbackOnComplete() {
                     @Override
                     public void isComplete() {
-                        /** was updated */
+                        CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.SOLUTION));
                     }
                 }, _customProblem).setVisible(true);
             }
@@ -335,14 +338,9 @@ public class ProblemDesigner extends Composite {
        
        // add hooks on double click to bring up appropriate editor
        //
-       $wnd.$('#problem_statement').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Click to Edit Problem Statement</button></div>").dblclick(function(x) {
-           //var whiteboardId = x.target.parentNode.parentNode.parentNode.parentNode.getAttribute("wb_id");
-           $wnd.gwt_editPart('whiteboard', null);
-       });
+       $wnd.$('#problem_statement').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Click to Edit Problem Statement</button></div>");
     
-       $wnd.$('#hm_flash_widget').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Click to Edit Input</button></div>").dblclick(function() {
-          $wnd.gwt_editPart('widget', whiteboardId);
-       });
+       $wnd.$('#hm_flash_widget').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Click to Edit Input</button></div>");
        
        
        var clickDef = "<div class='cp_designer-toolbar'>" +

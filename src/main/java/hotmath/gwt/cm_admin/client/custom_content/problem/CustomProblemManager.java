@@ -4,11 +4,15 @@ import hotmath.gwt.cm_admin.client.teacher.TeacherManager;
 import hotmath.gwt.cm_admin.client.teacher.TeacherManager.Callback;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.CopyCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -64,9 +68,11 @@ public class CustomProblemManager extends GWindow {
     protected CmList<CustomProblemModel> _allProblems;
     private ToggleButton _filterButton;
 
+    private static CustomProblemManager __instance;
     private CustomProblemManager() {
         super(true);
 
+        __instance = this;
         setLocalTitle();
 
         setPixelSize(700, 600);
@@ -492,6 +498,17 @@ public class CustomProblemManager extends GWindow {
     public static void startTest() {
         CustomProblemManager.showManager();
         //new CustomProblemManager(new TeacherIdentity(2, "casey_1",1));
+    }
+    
+    static {
+    	CmRpcCore.EVENT_BUS.addHandler(DataBaseHasBeenUpdatedEvent.TYPE, new DataBaseHasBeenUpdatedHandler() {
+    		@Override
+    		public void databaseUpdated(TypeOfUpdate type) {
+    			if(type == TypeOfUpdate.SOLUTION) {
+    				__instance.readFromServer();
+    			}
+    		}
+    	});
     }
 
 }

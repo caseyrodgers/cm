@@ -11,7 +11,7 @@ import com.google.gwt.event.shared.EventHandler;
  */
 public interface DataBaseHasBeenUpdatedHandler extends EventHandler {
     
-    public enum TypeOfUpdate{ANNOTATION,FULL, ASSIGNMENTS};
+    public enum TypeOfUpdate{ANNOTATION,FULL, ASSIGNMENTS, SOLUTION};
     
     /** 'some' table has been updated.
      * 

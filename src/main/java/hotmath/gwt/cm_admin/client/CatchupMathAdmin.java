@@ -131,82 +131,9 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     private void completeLoginProcess(final int uid) {
         
         Log.debug("CatchupMathAdmin: login complete, is Mobile: " + UserInfoBase.getInstance().isMobile());
-        String test = CmShared.getQueryParameterValue("test");
-        if(test.equals("final")) {
-            FinalExamCreationManager.startTest();
-            return;
-        }
-        else if(test.equals("assignments")) {
-            AssignmentManagerDialog2.startTest();
-            return;
-        }
-        else if(test.equals("assignment_status")) {
-            AssignmentStatusDialog.startTest();
-            return;
-        }
-        else if(test.equals("assignment_edit")) {
-            EditAssignmentDialog.startTest();
-            return;
-        }
-        else if(test.equals("ccss")) {
-            CCSSCoverageWindow.startTest();
-            return;
-        }
-        else if(test.equals("highlights")) {
-            HighlightsDataWindow.getSharedInstance(2).setVisible(true);
-            return;
-        }
-        else if(test.equals("register")) {
-            RegisterStudent.startTest();
-            return;
-        }
-        else if(test.equals("activity")) {
-            UserActivityLogDialog.startTest();
-            return;
-        }
-        else if(test.equals("weblinks")) {
-            WebLinksManager.startTest();
-            return;
-        }
-        else if(test.equals("weblinkeditor")) {
-            WebLinkEditorDialog.startTest();
-            return;
-        }        
-        else if(test.equals("search")) {
-            LessonSearchWindow.startTest();
-            return;
-        }
-        else if(test.equals("custom_manager")) {
-            CustomProblemManager.startTest();
-            return;
-        }
-        else if(test.equals("assignment_add_problem")) {
-            AddProblemDialog.startTest();
-            return;
-        }
-        else if(test.equals("widget_editor")) {
-            ProblemDesignerEditorWidget.doTest();
-            return;
-        }
-        else if(test.equals("hint_editor")) {
-            ProblemDesignerEditorHintStep.doTest();
-            return;
-        }
-        else if(test.equals("whiteboard_templates")) {
-            WhiteboardTemplatesManager.doTest();
-            return;
-        }
-        else if(test.equals("date_chooser")) {
-            DateRangePickerDialog.doTest();
-            return;
-        }
-        else if(test.equals("clipboard_image")) {
-            CreateTemplateFromClipboardImage.doTest();
-            return;
-        }
-        else if(test.equals("custom_problem_designer")) {
-            ProblemDesignerEditor.doTest();
-            return;
+
+        if(checkForDebuggingTest()) {
+        	return;
         }
 
         new MessageOfTheDayDialog(new CallbackGeneric() {
@@ -240,7 +167,74 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         }
     }
 
-    private void loadMainPage() {
+    private boolean checkForDebuggingTest() {
+        String test = CmShared.getQueryParameterValue("test");
+        if(test.equals("final")) {
+            FinalExamCreationManager.startTest();
+        }
+        else if(test.equals("assignments")) {
+            AssignmentManagerDialog2.startTest();
+        }
+        else if(test.equals("assignment_status")) {
+            AssignmentStatusDialog.startTest();
+        }
+        else if(test.equals("assignment_edit")) {
+            EditAssignmentDialog.startTest();
+        }
+        else if(test.equals("ccss")) {
+            CCSSCoverageWindow.startTest();
+        }
+        else if(test.equals("highlights")) {
+            HighlightsDataWindow.getSharedInstance(2).setVisible(true);
+        }
+        else if(test.equals("register")) {
+            RegisterStudent.startTest();
+        }
+        else if(test.equals("activity")) {
+            UserActivityLogDialog.startTest();
+        }
+        else if(test.equals("weblinks")) {
+            WebLinksManager.startTest();
+        }
+        else if(test.equals("weblinkeditor")) {
+            WebLinkEditorDialog.startTest();
+        }        
+        else if(test.equals("search")) {
+            LessonSearchWindow.startTest();
+        }
+        else if(test.equals("custom_manager")) {
+            CustomProblemManager.startTest();
+        }
+        else if(test.equals("assignment_add_problem")) {
+            AddProblemDialog.startTest();
+        }
+        else if(test.equals("widget_editor")) {
+            ProblemDesignerEditorWidget.doTest();
+        }
+        else if(test.equals("hint_editor")) {
+            ProblemDesignerEditorHintStep.doTest();
+        }
+        else if(test.equals("whiteboard_templates")) {
+            WhiteboardTemplatesManager.doTest();
+        }
+        else if(test.equals("date_chooser")) {
+            DateRangePickerDialog.doTest();
+        }
+        else if(test.equals("clipboard_image")) {
+            CreateTemplateFromClipboardImage.doTest();
+        }
+        else if(test.equals("custom_problem_designer")) {
+            ProblemDesignerEditor.doTest();
+        }
+        else {
+        	return false;
+        }
+        
+        return true;
+    }
+
+
+	private void loadMainPage() {
         CmLogger.info("Loading CMAdmin main page");
         mainContainer.clear();
 
@@ -349,99 +343,5 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //      });
 //    }
     
-    
-
-    private void setupAnyTests() {
-
-         GWindow gw = new GWindow(true);
-         AssignmentQuestionViewerPanel pan = new
-         AssignmentQuestionViewerPanel();
-         gw.setWidget(pan);
-         gw.setVisible(true);
-         
-         if(true)
-             return;
-         
-//        //
-//        //
-//        // final int uid = UserInfoBase.getInstance().getUid();
-//        // String pid="alg2ptests3_coursetest_1_algebra2practicetest_20_1";
-//        // int groupId=10;
-//        // String name="Test";
-//        // String comments = "Test";
-//        // Date dueDate = new Date();
-//        // CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
-//        // List<Integer> uids = new ArrayList<Integer>();
-//        // final String status="";
-//        // Assignment ass = new
-//        // Assignment(UserInfoBase.getInstance().getUid(),groupId, name,
-//        // comments, dueDate,pids,uids,status);
-//        //
-//        // final ProblemDto problem = new ProblemDto(0,"lesson","label", pid);
-//        //
-//        // CmList<StudentProblemDto> statuses = new
-//        // CmArrayList<StudentProblemDto>() {{
-//        // add(new StudentProblemDto(uid,problem,status));
-//        // }};
-//        // StudentAssignment studentAssignment = new StudentAssignment(uid,ass,
-//        // statuses);
-//        //
-//        // pan.viewQuestion(studentAssignment, problem);
-//
-//        if (false) {
-//            final int uid = 2;
-//            String pid = "test_dynamic_graphs_1_2_3$4";
-//            int groupId = 10;
-//            String name = "Test";
-//            String comments = "Test";
-//            Date dueDate = new Date();
-//            CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
-//            List<Integer> uids = new ArrayList<Integer>();
-//            final String status = "";
-//            Assignment ass = new Assignment(UserInfoBase.getInstance().getUid(), groupId, name, comments, dueDate,
-//                    pids, uids, status);
-//
-//            final ProblemDto problem = new ProblemDto(0, "lesson", "label", pid, null, 0);
-//
-//            CmList<StudentProblemDto> statuses = new CmArrayList<StudentProblemDto>() {
-//                {
-//                    add(new StudentProblemDto(uid, problem, status, true, true));
-//                }
-//            };
-//            StudentAssignment stuAssignment = new StudentAssignment(uid, ass, statuses);
-//            GradeBookDialog gb = new GradeBookDialog(stuAssignment, new CallbackOnComplete() {
-//
-//                @Override
-//                public void isComplete() {
-//                }
-//            });
-//            // AssignmentGradingPanel agp = new
-//            // AssignmentGradingPanel(stuAssignment);
-//
-//            return;
-//        }
-//
-//        if (false) {
-//            StudentModelExt sme = new StudentModelExt();
-//            StudentActivityModel activityModel = new StudentActivityModel();
-//            activityModel.setRunId(1196000);
-//            activityModel.setTestId(0);
-//            sme.setUid(27554);
-//            new StudentShowWorkWindow(sme, activityModel);
-//
-//            return;
-//        }
-//
-//        if (true) {
-//            // new AssignmentManagerDialog2(2);
-//            // return;
-//            AddProblemDialog.showDialog(new AddProblemsCallback() {
-//                @Override
-//                public void problemsAdded(List<ProblemDto> problemsAdded) {
-//                }
-//            });
-//            return;
-//        }
-    }
     
 }

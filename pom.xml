@@ -739,6 +739,9 @@
                                                 <param>CatchupMath-resource_container.css</param>						
 						<param>loading_image.css</param>
 						<param>whiteboard_v2.css</param>
+
+                                                <param>animate.css</param>
+
 					</cssSourceFiles>
 				</configuration>
 			</plugin>

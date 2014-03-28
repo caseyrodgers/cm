@@ -6,7 +6,7 @@ import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 
-public class WidgetEditorImplInteger extends WidgetEditorImplBase {
+public class WidgetEditorImplInteger extends WidgetEditorImplDefault {
 
     TextField _correctIntegerValue;
     public WidgetEditorImplInteger(WidgetDefModel widgetDef) {
@@ -46,6 +46,11 @@ public class WidgetEditorImplInteger extends WidgetEditorImplBase {
         }
         
         return null;
+    }
+    
+    @Override
+    public String getDescription() {
+    	return "Enter an integer";
     }
     
 }

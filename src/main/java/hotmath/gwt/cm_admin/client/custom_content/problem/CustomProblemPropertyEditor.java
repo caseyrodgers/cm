@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_admin.client.teacher.TeacherManager;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
-import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.CreateCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
