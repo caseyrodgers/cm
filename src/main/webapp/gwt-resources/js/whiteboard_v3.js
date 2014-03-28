@@ -2250,7 +2250,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
         $get_Element("#button_rect").style.border = '1px solid #000000';
         $get_Element("#button_oval").style.border = '1px solid #000000';
         $get_Element("#button_eraser").style.border = '1px solid #000000';
+		if ($get_Element("#button_nav")) {
         $get_Element("#button_nav").style.border = '1px solid #000000';
+		}
         if ($get_Element("#button_temp")) {
             $get_Element("#button_temp").style.border = '1px solid #000000';
         }
@@ -5004,7 +5006,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
                     }
                 } else {
-                    var _sobj = findObjUnder(x, y);
+                    /*var _sobj = findObjUnder(x, y);
                     if (_sobj) {
                         if (selectedObj && (_sobj.uid == selectedObj.uid)) {
 
@@ -5034,7 +5036,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
 						if(_cur!=_ccur){
                         $get_Element("#drawsection").style.cursor = cur;
 						}
-                    }
+                    }*/
                 }
                 var bool = isMultitouch_gesture(_event);
                 if (bool) {
