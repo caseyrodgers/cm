@@ -769,8 +769,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 sy = isScaled.ty;
                 if (isRotated) {
                     /*var nr0=getScaleRatio(sx,sy,isRotated.tr)
-			sx=nr0.w
-			sy=nr0.h*/
+            sx=nr0.w
+            sy=nr0.h*/
                 }
                 x0 = x0 - sx
                 y0 = y0 - sy
@@ -801,8 +801,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
             sy = obj.ty;
             if (isRotated) {
                 /*var nr0=getScaleRatio(sx,sy,isRotated.tr)
-			sx=nr0.w
-			sy=nr0.h*/
+            sx=nr0.w
+            sy=nr0.h*/
             }
             x0 = selectedObj.brect.xmin - sx;
             y0 = selectedObj.brect.ymin - sy;
@@ -1057,7 +1057,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
     function transformObj(obj, dx, dy, multi) {
 
-        // var isMoved =  isObjTransformed(selectedObj.uid, 'move');		
+        // var isMoved =  isObjTransformed(selectedObj.uid, 'move');        
         // var isScaled =  isObjTransformed(selectedObj.uid, 'scale');
         // var isRotated =  isObjTransformed(selectedObj.uid, 'rotate')
         if (transMode == 'move') {
@@ -1527,7 +1527,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     xmax: xp + hitH,
                     ymax: yp + hitH
                 })
-				updateBuffer()
+                updateBuffer()
             }
             if (sel && hasShape) {
                 //selectedObj = graphicDataStore[i];
@@ -1612,8 +1612,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
                         var dh = isScaled.ty
                         if (isRotated) {
                             /*var nr0=getScaleRatio(isScaled.tx,isScaled.ty,isRotated.tr)
-			dw=nr0.w
-			dh=nr0.h*/
+            dw=nr0.w
+            dh=nr0.h*/
                         }
                         transformRect(rect, dw, dh, 'scale')
                         //transformRect(rect, isScaled.tx, isScaled.ty,'scale') 
@@ -1686,8 +1686,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
                         var dh = isScaled.ty
                         if (isRotated) {
                             /*var nr0=getScaleRatio(isScaled.tx,isScaled.ty,isRotated.tr)
-			dw=nr0.w
-			dh=nr0.h*/
+            dw=nr0.w
+            dh=nr0.h*/
                         }
                         transformRect(rect, dw, dh, 'scale')
 
@@ -2250,9 +2250,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
         $get_Element("#button_rect").style.border = '1px solid #000000';
         $get_Element("#button_oval").style.border = '1px solid #000000';
         $get_Element("#button_eraser").style.border = '1px solid #000000';
-		if ($get_Element("#button_nav")) {
-        $get_Element("#button_nav").style.border = '1px solid #000000';
-		}
+        if ($get_Element("#button_nav")) {
+                $get_Element("#button_nav").style.border = '1px solid #000000';
+        }
         if ($get_Element("#button_temp")) {
             $get_Element("#button_temp").style.border = '1px solid #000000';
         }
@@ -5026,16 +5026,16 @@ var Whiteboard = function (cont, isStatic, _opts) {
                         } else if (selectionMode) {
                             cur = 'move'
                         }
-						var _ccur=$get_Element("#drawsection").style.cursor
-						_ccur=_ccur.split(",")[0]
-						_ccur=_ccur.split(" ")[0]
-						_ccur=_ccur.substring(_ccur.lastIndexOf("/"))
-						var _cur=cur.split(",")[0]
-						_cur=_cur.split(" ")[0]
-						_cur=_cur.substring(_cur.lastIndexOf("/"))
-						if(_cur!=_ccur){
+                        var _ccur=$get_Element("#drawsection").style.cursor
+                        _ccur=_ccur.split(",")[0]
+                        _ccur=_ccur.split(" ")[0]
+                        _ccur=_ccur.substring(_ccur.lastIndexOf("/"))
+                        var _cur=cur.split(",")[0]
+                        _cur=_cur.split(" ")[0]
+                        _cur=_cur.substring(_cur.lastIndexOf("/"))
+                        if(_cur!=_ccur){
                         $get_Element("#drawsection").style.cursor = cur;
-						}
+                        }
                     }*/
                 }
                 var bool = isMultitouch_gesture(_event);
@@ -5964,15 +5964,15 @@ source: https://gist.github.com/754454
             }
             objectActions[obj.uid][obj.cmd.name].push(obj.cmd.data);
             /*if(obj.cmd.name='move'){
-		
-		//var li=objectActions[uid].length-1
-		//objectActions[uid][li].isTransformed=true;
-		objectActions[uid][obj.cmd.name].push(obj.cmd.data);
-		//objectActions[uid][li].graphicData=transformObj(cloneObjectDeep(getGraphicObj(uid)),obj.cmd.data.tx,ty);
-		//transformGraphic(uid);
-		}else if(obj.cmd.name='delete'){
-		objectActions[uid].isDeleted=true;
-		}*/
+        
+        //var li=objectActions[uid].length-1
+        //objectActions[uid][li].isTransformed=true;
+        objectActions[uid][obj.cmd.name].push(obj.cmd.data);
+        //objectActions[uid][li].graphicData=transformObj(cloneObjectDeep(getGraphicObj(uid)),obj.cmd.data.tx,ty);
+        //transformGraphic(uid);
+        }else if(obj.cmd.name='delete'){
+        objectActions[uid].isDeleted=true;
+        }*/
             var _obj = cloneObject(obj)
             graphicDataStore.push(_obj);
             if (obj.id == 'graph') {
@@ -6334,8 +6334,8 @@ source: https://gist.github.com/754454
                 var h0 = o.h
                 if (isRotated && transMode != 'rotate') {
                     /*var nr0=getScaleRatio(dw,dh,isRotated.tr)
-			dw=nr0.w
-			dh=nr0.h*/
+                    dw=nr0.w
+                    dh=nr0.h*/
                 }
                 var w = w0 + (dw * 2)
                 var h = h0 + (dh * 2)
@@ -6699,8 +6699,8 @@ source: https://gist.github.com/754454
 
         } else {
             /*$(canvas).remove();
-			$(buffercanvas).remove();
-			
+            $(buffercanvas).remove();
+            
                 canvas = null;
                 buffercanvas = null;
                 
@@ -6915,13 +6915,13 @@ source: https://gist.github.com/754454
             'path': path
         });
     }
-	
-	wb.loadFromJson = function(json) {
-    	var arr = eval('(' + json + ')');
-    	for(var i=0;i<arr.length;i++) {
-        	renderObj(arr[i], false);
-			resetArrays();
-    	}    	    
+    
+    wb.loadFromJson = function(json) {
+        var arr = eval('(' + json + ')');
+        for(var i=0;i<arr.length;i++) {
+            renderObj(arr[i], false);
+            resetArrays();
+        }            
     }
 
     return wb;
