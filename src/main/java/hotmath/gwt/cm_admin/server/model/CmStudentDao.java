@@ -507,10 +507,6 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             if (isDuplicate) {
                 throw new CmUserException("The passcode you entered is already in use, please try again.");
             }
-            isDuplicate = checkForDuplicateName(conn, sm);
-            if (isDuplicate) {
-                throw new CmUserException("The name you entered is already in use, please try again.");
-            }
         }
 
         try {
