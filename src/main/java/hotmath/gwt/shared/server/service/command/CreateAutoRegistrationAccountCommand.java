@@ -159,6 +159,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         
         
         rdata.putData("userName", admin.getAdminUserName());
+        rdata.putData("password",  password);
         return rdata;
     }
     
@@ -208,7 +209,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
             else {
             	//TODO: a better message?
                 __logger.error("self registration password '" + password + "' cannot match any existing self-registration template group names.");
-                throw new CmUserException("Please specify a different name or birthday");
+                throw new CmUserException("Sorry, we encountered a problem while generating your password.  Please send an email to support@catchupmath.com for assistance.");
             }
         }
         finally {
