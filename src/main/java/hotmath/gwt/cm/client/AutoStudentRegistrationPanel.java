@@ -46,7 +46,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
 
     TextField firstName;
     TextField lastName;
-    TextField birthDate;
+    TextField birthday;
 
     int LABEL_LEN = 100, FIELD_LEN = 200;
     
@@ -107,13 +107,13 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
         lastName.setEmptyText("-- enter last name --");
         fsProfile.addThing(new MyFieldLabel(lastName, "Last name", LABEL_LEN, FIELD_LEN));
 
-        birthDate = new TextField();
-        birthDate.setAllowBlank(false);
-        birthDate.addValidator(new MyFieldValidator());
-        birthDate.setId("birthDate");
-        birthDate.setEmptyText("-- birth month and day (mmdd) --");
-        birthDate.addValidator(new MyDateFieldValidator());
-        fsProfile.addThing(new MyFieldLabel(birthDate, "Birth date (mmdd)", LABEL_LEN, FIELD_LEN));
+        birthday = new TextField();
+        birthday.setAllowBlank(false);
+        birthday.addValidator(new MyFieldValidator());
+        birthday.setId("birthday");
+        birthday.setEmptyText("-- birth month and day (mmdd) --");
+        birthday.addValidator(new MyDateFieldValidator());
+        fsProfile.addThing(new MyFieldLabel(birthday, "Birthday (mmdd)", LABEL_LEN, FIELD_LEN));
 
         verMain.add(fsProfile);
         
@@ -143,7 +143,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
     }
 
     private boolean isFormValid() {
-        return (birthDate.isValid() && lastName.isValid() && firstName.isValid());
+        return (birthday.isValid() && lastName.isValid() && firstName.isValid());
     }
 
     /**
@@ -158,7 +158,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
             CatchupMathTools.showAlert("Validation problems", "Please correct any problems on the form.");
             return;
         }
-        final String password = (lastName.getValue() + "-" + firstName.getValue() + "-" + birthDate.getValue())
+        final String password = (lastName.getValue() + "-" + firstName.getValue() + "-" + birthday.getValue())
                 .toLowerCase();
 
         CmBusyManager.setBusy(true);
@@ -182,14 +182,11 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
                  */
                 String errorMessage = rdata.getDataAsString("error_message");
                 if (errorMessage != null && errorMessage.length() > 0) {
-                    if (errorMessage.indexOf("passcode you entered") > -1) {
-                        showAlreadyMsg(password);
-                    } else if (errorMessage.indexOf("name you entered") > -1) {
-                        checkIfPasswordMatches(password);
-                    }
+                	CatchupMathTools.showAlert(errorMessage);
                 } else {
                     String key = rdata.getDataAsString("key");
-                    showPasswordAssignment(password, key);
+                    String assignedPassword = rdata.getDataAsString("password");
+                    showPasswordAssignment(assignedPassword, key);
                 }
             }
 
@@ -262,38 +259,6 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
         w.setVisible(true);
     }
 
-    /**
-     * Check to see if only password is in use
-     * 
-     * note: userName is a match, so we are checking for message
-     * 
-     */
-    private void checkIfPasswordMatches(final String password) {
-        new RetryAction<RpcData>() {
-            @Override
-            public void attempt() {
-                CmBusyManager.setBusy(true);
-                CheckUserAccountStatusAction action = new CheckUserAccountStatusAction(password);
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
-
-            // @Override
-            public void oncapture(final RpcData rdata) {
-                CmBusyManager.setBusy(false);
-                String msg = rdata.getDataAsString("message");
-                if (msg.indexOf("duplicate") > -1) {
-                    showAlreadyMsg(password);
-                } else {
-                    msg = "There is another registration with that name, so please add your middle name to the first-name box (e.g., Jim Bob).";
-                    // this means the password including the date portion is
-                    // unique
-                    CatchupMathTools.showAlert("Already Registered", msg);
-                }
-            }
-        }.register();
-    }
-
     private void showForgotPassword() {
 
         final GWindow w = new GWindow(false);
@@ -344,14 +309,14 @@ class MyDateFieldValidator extends AbstractValidator<String> {
     @Override
     public List<EditorError> validate(Editor<String> editor, String value) {
         if (value == null || value.length() == 0)
-            return createError(editor, "The birth date field must be specified", value);
+            return createError(editor, "The birthday field must be specified", value);
         else {
             if (value.length() != 4)
-                return createError(editor, "The birth date field must be four digits, such as 0912", value);
+                return createError(editor, "The birthday field must be four digits, such as 0912", value);
             try {
                 Integer.parseInt(value);
             } catch (NumberFormatException nfe) {
-                return createError(editor, "This birth date field must be only four numbers, such as 0703", value);
+                return createError(editor, "This birthday field must be only four numbers, such as 0703", value);
             }
 
             Integer mon = Integer.parseInt(value.substring(0, 2));
