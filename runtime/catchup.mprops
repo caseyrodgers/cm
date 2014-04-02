@@ -1037,6 +1037,7 @@ select s.id,
        Ifnull(s.school_type, 'NONE')                  as school_name,
        s.responsible_name,
        s.is_college,
+       s.password,
        sc.date_expire                                 as catchup_expire_date,
        sc.service_name,
        st.date_expire                                 as tutoring_expire_date,
@@ -1398,6 +1399,7 @@ where a.aid = ?
 ## Class: CreateAutoRegistrationAccountCommand
 ##
 ## Return group names used as self-registration auto templates
+## and individual user (student) passwords
 ##
 
 .key=AUTO_CREATE_PASSWORD_CHECK
