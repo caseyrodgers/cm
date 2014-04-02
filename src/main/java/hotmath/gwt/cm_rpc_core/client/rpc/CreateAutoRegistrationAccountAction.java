@@ -8,7 +8,9 @@ package hotmath.gwt.cm_rpc_core.client.rpc;
  *
  */
 public class CreateAutoRegistrationAccountAction implements Action<RpcData> {
-    Integer userId;
+	private static final long serialVersionUID = 1489635908171332401L;
+
+	Integer userId;
     String user;
     String password;
 

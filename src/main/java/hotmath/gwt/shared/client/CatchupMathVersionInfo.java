@@ -7,7 +7,7 @@ package hotmath.gwt.shared.client;
  *  @TODO: create this file dynamically during builds.
  *
  *  If client version does not match server call, then client
- *  is out date and a message is shown to request client to
+ *  is out of date and a message is shown to request client to
  *  refresh.
  *
  *  NOTE: This must match the client.version property

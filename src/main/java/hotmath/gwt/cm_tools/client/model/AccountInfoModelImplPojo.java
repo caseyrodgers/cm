@@ -21,6 +21,7 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
     private String hasTutoring;
     private Integer tutoringMinutes;
     private String subscriberId;
+    private String subscriberPassword;
     private String studentCountStyle;
     private Date accountCreateDate;
     private String accountRepEmail;
@@ -152,6 +153,14 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
 	    return subscriberId;
 	}
 	
+	public String getSubscriberPassword() {
+		return subscriberPassword;
+	}
+
+	public void setSubscriberPassword(String subscriberPassword) {
+		this.subscriberPassword = subscriberPassword;
+	}
+
 	public void setStudentCountStyle(String style) {
 	    this.studentCountStyle = style;
 	}

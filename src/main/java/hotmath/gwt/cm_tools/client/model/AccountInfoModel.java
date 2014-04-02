@@ -64,6 +64,10 @@ public interface AccountInfoModel extends Response {
 
     public String getSubscriberId();
 
+    public void setSubscriberPassword(String password);
+
+    public String getSubscriberPassword();
+
     public void setStudentCountStyle(String style);
 
     public String getStudentCountStyle();

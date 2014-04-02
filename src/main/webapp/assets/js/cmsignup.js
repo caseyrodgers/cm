@@ -153,7 +153,7 @@ function checkSelfPayForm() {
 
 	_totalCost=29;
     clearErrorMessages();
-    var isValid = false;
+    var isValid = true;
     
     fld = $get('student_first_name');
     if(fld.value == '') {
@@ -247,8 +247,10 @@ function checkSelfPayForm() {
     if (checkCreditCard() == false)
         isValid = false;
 
+    //TODO: 
+    //isValid = false;
     if (isValid == true)
-    	doSignup();
+    	doSelfPaySignup();
 
     return false;   // always return false;
 }
@@ -411,7 +413,7 @@ function cardnumberIsValid(s) {
  // remove non-numerics
  var v = "0123456789";
  var w = "";
- for (i=0; i < s.length; i++) {
+ for (var i=0; i < s.length; i++) {
      x = s.charAt(i);
      if (v.indexOf(x,0) != -1)
          w += x;
@@ -504,6 +506,27 @@ function showProcessingMessage() {
 	    YAHOO.cm.signup_progress.render(document.body);
 }
 
+function doSelfPaySignup() {
+	var formObject = document.getElementById('sub_form');
+
+	YAHOO.util.Connect.setForm(formObject);
+
+	var requestCallback = {
+		success : function(o) {
+			YAHOO.cm.signup_progress.destroy();
+			selfpayComplete(o.responseText);
+		},
+		failure : function(o) {
+			YAHOO.cm.signup_progress.destroy();
+			alert('Error performing signup: ' + o.status);
+		},
+		argument : null
+	};
+
+	var cObj = YAHOO.util.Connect.asyncRequest('POST', '/selfpay', requestCallback);
+
+	showProcessingMessage();
+}
 
 /** show standard error message */
 function showErrorMessage(msg) {
@@ -531,7 +554,7 @@ function removeAllNonNumeric(s) {
  // remove non-numerics
  var v = "0123456789";
  var w = "";
- for (i=0; i < s.length; i++) {
+ for (var i=0; i < s.length; i++) {
      x = s.charAt(i);
      if (v.indexOf(x,0) != -1)
          w += x;
@@ -605,6 +628,40 @@ function signupComplete(data) {
    window.scrollTo(0,0); 
 }
    
+function selfpayComplete(data) {
+
+   if(data.indexOf("error") == 0) {
+       showAlert('Signup Problem','Error while purchasing Catchup Math: ' + data.substring(6));
+       return;
+   }
+
+   var obj = eval('(' + data + ')');
+
+   var cmKey = obj.key;  // login security key
+   var userId = obj.uid;
+   var loginName = obj.loginName;
+   var password = obj.password;
+
+   var email = $get('student_email').value;
+   var html = "<h1>Catchup Math Signup Success</h1><p><b>Congratulations!</b><br/>You have successfully signed up for Catchup Math.</p>" +
+               "<p>Your login information is: <br/>" +
+               "<div class='login-info'>" +
+               "<div class='col'>Login Name: </div><div class='val'>" + loginName + "</div>" +
+               "<div class='col'>Password: </div><div class='val'>" + password + "</div>" +
+               "</div>" +
+               "</p>" + 
+              "<p>Visit <a href='http://catchupmath.com'>http://catchupmath.com</a>" +
+              " and enter the login information shown above.</p>" +
+              "<p class='info-sent'>Your signup information has also been sent to the email address: " + email + "</p>" +
+              "<p><a href='/login.html'>Begin Using Catchup Math</a></p>";
+
+   var e1 = document.getElementById('signup_page');
+   e1.setAttribute('style', 'display:none');
+   var success = document.getElementById('signup_success');
+   success.innerHTML = html;
+   success.setAttribute('style', 'display:block');
+   window.scrollTo(0,0); 
+}
 function setTotalCost(cost) {
    _totalCost = cost;
    $get('service-total').innerHTML = 'Total: $' + _totalCost + '.00';
