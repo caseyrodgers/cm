@@ -507,23 +507,29 @@ function showProcessingMessage() {
 }
 
 function doSelfPaySignup() {
+	// alert("in doSelfPaySignup(): uid: " +
+	// document.getElementById('uid_fld').value);
 	var formObject = document.getElementById('sub_form');
 
 	YAHOO.util.Connect.setForm(formObject);
 
 	var requestCallback = {
 		success : function(o) {
+			alert("signup success: " + o.responseText);
 			YAHOO.cm.signup_progress.destroy();
 			selfpayComplete(o.responseText);
 		},
 		failure : function(o) {
+			alert("signup failure");
 			YAHOO.cm.signup_progress.destroy();
 			alert('Error performing signup: ' + o.status);
 		},
 		argument : null
 	};
 
+	alert("before asyncRequest()");
 	var cObj = YAHOO.util.Connect.asyncRequest('POST', '/selfpay', requestCallback);
+	alert("after asyncRequest()");
 
 	showProcessingMessage();
 }
