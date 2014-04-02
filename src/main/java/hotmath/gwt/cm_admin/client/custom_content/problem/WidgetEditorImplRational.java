@@ -23,7 +23,7 @@ public class WidgetEditorImplRational extends WidgetEditorImplFraction {
             format = p.length > 0?p[0]:null;
         }
         _format.setValue(format);
-        super._fields.add(new MyFieldLabel(_format, "Format",80, 80));
+        super._fields.add(new MyFieldLabel(_format, "Units",80, 80));
     }
     @Override
     protected WidgetDefModel createWidgetDefModel() {

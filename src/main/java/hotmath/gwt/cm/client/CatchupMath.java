@@ -144,11 +144,6 @@ public class CatchupMath implements EntryPoint {
             _mainPortWrapper.setSouthWidget(footer, new BorderLayoutData(20));
         }
 
-        /** Turn on debugging CSS */
-        if (CmShared.getQueryParameter("debug") != null) {
-            _mainPort.addStyleName("debug-mode");
-        }
-
         /**
          * Add the main panel to the "hm_content" div on the CatchupMath.html
          * 

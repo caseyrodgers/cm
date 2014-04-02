@@ -188,6 +188,10 @@ public class WebLinkOptionsDialog extends GWindow {
         public void setLabel(String label) {
             this.label = label;
         }
+        
+        public String getValue() {
+        	return getLabel();
+        }
     }
     
 }

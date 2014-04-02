@@ -107,8 +107,6 @@ var TutorManager = {
         }
         
         
-        setupStaticWhiteboards();
-        
         
         /** hookup any question steps */
         // HmEvents.eventTutorInitialized.fire();
@@ -455,7 +453,7 @@ function showStepUnit(num) {
         return;
 
     try {
-        var stepElement = TutorManager.stepUnits[num].ele;
+        var stepElement = TutorManager.stepUnits.length == 0?null:TutorManager.stepUnits[num].ele;
         if (stepElement == null)
             return false;
 

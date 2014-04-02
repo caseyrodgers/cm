@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tutor.client.view;
 
 import hotmath.gwt.cm_core.client.CmGwtUtils;
-import hotmath.gwt.cm_core.client.model.WhiteboardModel;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoEvent;
@@ -12,7 +11,6 @@ import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
-import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
@@ -102,6 +100,12 @@ public class TutorWrapperPanel extends Composite {
         this.tutorCallback = tutorCallback;
         this.saveVariableContext = saveVariableContext;
         initWidget(uiBinder.createAndBindUi(this));
+        
+        
+        /** Turn on debugging CSS */
+        if (CmGwtUtils.getQueryParameter("debug") != null) {
+            addStyleName("debug-mode");
+        }
 
         if(!showButtonBar) {
             buttonBar.addClassName("display_none");
@@ -391,6 +395,10 @@ public class TutorWrapperPanel extends Composite {
             jsni_moveToFirstStep();
             _wasWidgetAnswered = true;
         }
+        
+        
+        processStaticWhiteboards();
+        
         CmRpcCore.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
     }
 
@@ -818,7 +826,7 @@ public class TutorWrapperPanel extends Composite {
             setProblemStatusControl(msg);
         }
     
-        native public void processStaticWhiteboards() /*-{
+        static native public void processStaticWhiteboards() /*-{
             $wnd.setupStaticWhiteboards();
         }-*/;
         

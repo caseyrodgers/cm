@@ -118,7 +118,7 @@ public class GroupCombo implements IsWidget {
     }
 
     interface GroupComboProperties extends PropertyAccess<String> {
-        @Path("groupId")
+        @Path("id")
         public ModelKeyProvider<GroupInfoModel> key();
 
         public LabelProvider<GroupInfoModel> groupName();

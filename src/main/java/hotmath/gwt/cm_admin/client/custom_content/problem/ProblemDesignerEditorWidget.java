@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_core.client.JSOModel;
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
@@ -11,6 +12,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -62,7 +64,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
     public ProblemDesignerEditorWidget(SolutionInfo _solutionInfo, String widgetJson, CallbackOnComplete callback) {
         super(false);
         setPixelSize(340, 300);
-        setResizable(false);
+        setResizable(true);
         this._solutionInfo = _solutionInfo;
         this._callback = callback;
 
@@ -84,7 +86,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
         
         
         FlowPanel headerPanel = new FlowPanel();
-        headerPanel.add(new MyFieldLabel(_comboType,"Input Type", 100, 100));
+        headerPanel.add(new MyFieldLabel(_comboType,"Input Type", 100, 200));
         headerPanel.add(_aboutWidgetLabel);
         
         _main.setNorthWidget(headerPanel, bData);
@@ -209,7 +211,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
         store.add(new  WidgetType("number_rational", "Rational","{'type':'number_rational'}"));
         store.add(new  WidgetType("coordinates", "Coordinates","{'type':'coordinates'}"));
         store.add(new  WidgetType("number_mixed_fraction", "Mixed Fraction","{'type':'number_mixed_fraction'}"));
-        store.add(new  WidgetType("widget_plot", "Plot","{'type':'widget_plot', 'value':'1|2|3|4|5|6|7|8'}"));
+        store.add(new  WidgetType("widget_plot", "Plot","{'type':'widget_plot', 'value':'0|0|-10|-10|10|10|1|1'}"));
         //store.add(new  WidgetType("power_form", "Power Form"));
 
 //        store.add(new  WidgetType("power_form", "Power Form"));

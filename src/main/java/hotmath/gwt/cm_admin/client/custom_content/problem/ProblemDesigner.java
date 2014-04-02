@@ -44,6 +44,11 @@ import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
+/** Main custom problem editor
+ * 
+ * @author casey
+ *
+ */
 public class ProblemDesigner extends Composite {
     
     private static final int SCROLL_TO_END = -1;

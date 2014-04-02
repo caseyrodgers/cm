@@ -4,7 +4,9 @@ import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.TextField;
@@ -137,19 +139,27 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements Wid
 	protected void buildUi() {
 		_fields.add(new MyFieldLabel(_xValue, "X Value",  80, 40));
 		_fields.add(new MyFieldLabel(_yValue, "Y Value",  80, 40));
-		_fields.add(new MyFieldLabel(_xMin, "X Min",  80, 40));
-		_fields.add(new MyFieldLabel(_yMin, "Y Min",  80, 40));
-		_fields.add(new MyFieldLabel(_xMax, "X Max",  80, 40));
-		_fields.add(new MyFieldLabel(_yMax, "Y Max",  80, 40));
-		_fields.add(new MyFieldLabel(_xInc, "X Increment",  80, 40));
-		_fields.add(new MyFieldLabel(_yInc, "Y Increment",  80, 40));
 		
-		_fields.add(new TextButton("Default Values", new SelectHandler() {
+		
+		DisclosurePanel advanced = new DisclosurePanel("Advanced Options");
+		VerticalLayoutContainer adFields = new VerticalLayoutContainer();
+		advanced.setContent(adFields);
+		adFields.add(new MyFieldLabel(_xMin, "X Min",  80, 40));
+		adFields.add(new MyFieldLabel(_yMin, "Y Min",  80, 40));
+		adFields.add(new MyFieldLabel(_xMax, "X Max",  80, 40));
+		adFields.add(new MyFieldLabel(_yMax, "Y Max",  80, 40));
+		adFields.add(new MyFieldLabel(_xInc, "X Increment",  80, 40));
+		adFields.add(new MyFieldLabel(_yInc, "Y Increment",  80, 40));
+		
+		adFields.add(new TextButton("Default Values", new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
 				setupFields(null);
 			}
 		}));
+		
+		
+		_fields.add(advanced);
 	}
 	
 	

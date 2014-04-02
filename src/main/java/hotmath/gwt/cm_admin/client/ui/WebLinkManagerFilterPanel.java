@@ -267,6 +267,7 @@ public class WebLinkManagerFilterPanel extends Composite {
     
     
     interface SubjectTypeProps extends PropertyAccess<String> {
+    	@Path("label")
         ModelKeyProvider<SubjectModelLocal> key();
         LabelProvider<SubjectModelLocal> label();
     }

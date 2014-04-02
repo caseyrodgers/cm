@@ -354,4 +354,17 @@ public class CmGwtUtils {
     }
     
     
+    
+    static native public String jsni_encodeBase64(String partText) /*-{
+        return $wnd.Base64.encode(partText);
+    }-*/;
+    
+    static native public String jsni_decodeBase64(String partText) /*-{
+    return $wnd.Base64.decode(partText);
+}-*/;
+
+
+
+    
+    
 }

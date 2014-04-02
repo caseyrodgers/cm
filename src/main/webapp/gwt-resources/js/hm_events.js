@@ -51,6 +51,7 @@ var HmEvents = {
         fire : function(data) {
             var hel = HmEvents.eventTutorWidgetComplete.listeners;
             for ( var i = 0; i < hel.length; i++) {
+                //alert("firing eventTutorWidgetComplete: " + hel[i]);
                 hel[i](null, [ data ]);
             }
         }
