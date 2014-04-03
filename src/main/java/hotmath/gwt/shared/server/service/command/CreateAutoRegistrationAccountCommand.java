@@ -157,8 +157,8 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         
         AccountInfoModel admin = CmAdminDao.getInstance().getAccountInfo(studentModel.getAdminUid());
         
-        
         rdata.putData("userName", admin.getAdminUserName());
+        rdata.putData("loginName", admin.getSubscriberPassword());
         rdata.putData("password",  password);
         return rdata;
     }
