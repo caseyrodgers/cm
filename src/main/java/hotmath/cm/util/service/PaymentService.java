@@ -77,6 +77,7 @@ public class PaymentService {
 
                     StringBuilder sb = new StringBuilder();
                     try {
+                    	sb.append("Thank You!\n\n");
                     	sb.append("Your Catchup Math purchase is complete.\n\n");
                     	sb.append(" Order Number: ").append(result.getOrderNumber()).append("\n");
                     	sb.append(" Login Name: ").append(loginName).append("\n");
@@ -87,7 +88,7 @@ public class PaymentService {
                     	sb.append("Contact: support@catchupmath.com");
                     	
                         SbMailManager.getInstance().sendMessage("Catchup Math Purchase", sb.toString(), email,
-                                "saupport@catchupmath.com", "text/plain", null);
+                                "support@catchupmath.com", "text/plain", null);
                     } catch (SbException e) {
                         __logger.error("error sending email to: " + email, e);
                     }
