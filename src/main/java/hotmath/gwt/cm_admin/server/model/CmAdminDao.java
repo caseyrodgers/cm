@@ -418,9 +418,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                         try {
                             AccountInfoModel ai = new AccountInfoModelImplPojo();
                             ai.setSubscriberId(rs.getString("id"));
-                            /** missing from catchup.mprops 
-                             * ai.setSubscriberPassword(rs.getString("password"));
-                             */
+                            ai.setSubscriberPassword(rs.getString("password"));
                             ai.setSchoolName(rs.getString("school_name"));
                             ai.setSchoolUserName(rs.getString("responsible_name"));
                             ai.setAdminUserName(rs.getString("user_name"));
