@@ -3913,8 +3913,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
                             }
                         }
                     }
+                    var callUndo=wb.options.callInternalUndo?wb.whiteboardOut_local:wb.whiteboardOut
                     for (var j = 0; j < c; j++) {
-                        wb.whiteboardOut('undo', true);
+                        callUndo('undo', true);
                     }
                 };
             }
@@ -6626,6 +6627,24 @@ source: https://gist.github.com/754454
         }
         console.log(data)
     }
+    wb.whiteboardOut_local = function (data, boo) {
+        //alert('WHITEBOARD: whiteboardOut is going nowhere.  Hook up to external process to save data');
+        if (data == 'undo') {
+            if (graphicDataStore.length) {
+                var obj = graphicDataStore.pop()
+                if (obj.type && obj.type == 'cmd') {
+                    if (obj.cmd.name != 'delete') {
+                        objectActions[obj.uid][obj.cmd.name].pop()
+                    }
+                    if (obj.cmd.name == 'delete') {
+                        objectActions[obj.uid]['delete'].pop()
+                    }
+                }
+            }
+            updateCanvas()
+        }
+        console.log(data)
+    }
 
     wb.disconnectWhiteboard = function (documentObject) {
         alert('default whiteboard disconnect');
@@ -6917,11 +6936,15 @@ source: https://gist.github.com/754454
     }
     
     wb.loadFromJson = function(json) {
-        var arr = eval('(' + json + ')');
-        for(var i=0;i<arr.length;i++) {
-            renderObj(arr[i], false);
-            resetArrays();
-        }            
+        try {
+            var arr = eval('(' + json + ')');
+            for(var i=0;i<arr.length;i++) {
+                renderObj(arr[i], false);
+                resetArrays();
+            }   
+        } catch(e){
+            alert(e);
+        }        
     }
 
     return wb;
