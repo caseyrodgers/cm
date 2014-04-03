@@ -16,6 +16,7 @@ public class WidgetDefModel extends JSOBaseModel {
     Integer width;
     Integer height;
     String format;
+	private String ansFormat;
     
     public WidgetDefModel() {
         this(JSOModel.fromJson("{}"));
@@ -85,7 +86,9 @@ public class WidgetDefModel extends JSOBaseModel {
      * @return
      */
     public String getJson() {
-        String json = "{type:'" + type + "',value:'" + value + "', format:'" + (format!=null?format:"") + "|', width:" + width + ", height:" + height + "}";
+    	String formatStr=(format!=null?format:"");
+    	String ansFormatStr=(ansFormat!=null?ansFormat:"");
+        String json = "{type:'" + type + "',value:'" + value + "', format:'" + formatStr + "|', ans_format: '" + ansFormatStr + "', width:" + width + ", height:" + height + "}";
         return json;
     }
     
@@ -108,5 +111,9 @@ public class WidgetDefModel extends JSOBaseModel {
             return 0;
         }
     }
+
+	public void setAnsFormat(String ansFormat) {
+		this.ansFormat = ansFormat;
+	}
     
 }

@@ -28,6 +28,6 @@ public class WidgetEditorImplNoWidget extends WidgetEditorImplDefault {
     
     @Override
     public String getDescription() {
-    	return "No input value";
+    	return "Write and/or draw your answer on the whiteboard.";
     }
 }

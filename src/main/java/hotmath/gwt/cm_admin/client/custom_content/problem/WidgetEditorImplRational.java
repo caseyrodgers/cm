@@ -29,8 +29,15 @@ public class WidgetEditorImplRational extends WidgetEditorImplFraction {
     protected WidgetDefModel createWidgetDefModel() {
         WidgetDefModel wd = super.createWidgetDefModel();
         wd.setType("number_rational");
+        wd.setAnsFormat("lowest_term");
         wd.setFormat(_format.getCurrentValue()!=null?_format.getCurrentValue():null);
         return wd;
+    }
+    
+    
+    @Override
+    public String getDescription() {
+    	return "Enter an integer, decimal number, or fraction (use \"/\"). If a fraction is correct but not in lowest terms, students are prompted to reduce. Answers must be exact.";
     }
     
 }

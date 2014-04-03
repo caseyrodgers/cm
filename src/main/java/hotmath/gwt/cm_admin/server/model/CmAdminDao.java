@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.QueryHelper;
-import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc_core.client.CmUserException;
@@ -418,7 +417,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                         try {
                             AccountInfoModel ai = new AccountInfoModelImplPojo();
                             ai.setSubscriberId(rs.getString("id"));
-                            ai.setSubscriberPassword(rs.getString("password"));
+                            // ai.setSubscriberPassword(rs.getString("password"));
                             ai.setSchoolName(rs.getString("school_name"));
                             ai.setSchoolUserName(rs.getString("responsible_name"));
                             ai.setAdminUserName(rs.getString("user_name"));

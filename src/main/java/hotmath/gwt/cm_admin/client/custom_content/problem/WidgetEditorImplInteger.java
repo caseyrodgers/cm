@@ -9,8 +9,10 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 public class WidgetEditorImplInteger extends WidgetEditorImplDefault {
 
     TextField _correctIntegerValue;
-    public WidgetEditorImplInteger(WidgetDefModel widgetDef) {
+	private String description;
+    public WidgetEditorImplInteger(WidgetDefModel widgetDef, String description) {
         super(widgetDef);
+        this.description = description;
     }
     
     protected void buildUi() {
@@ -50,7 +52,7 @@ public class WidgetEditorImplInteger extends WidgetEditorImplDefault {
     
     @Override
     public String getDescription() {
-    	return "Enter an integer";
+    	return description;
     }
     
 }

@@ -113,7 +113,7 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements Wid
 
 	@Override
 	public String getDescription() {
-		return "Allow plotting a point onto a graph";
+		return "Plot a point on the coordinate plane.";
 	}
 
 	@Override

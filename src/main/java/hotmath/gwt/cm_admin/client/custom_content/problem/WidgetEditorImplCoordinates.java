@@ -51,7 +51,7 @@ public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEd
     
     @Override
     public String getDescription() {
-    	return "Allow entering Coordinates";
+    	return "Enter an x-coordinate and a y-coordinate. Decimals and fractions are accepted. Correct answers not in lowest terms are still marked correct.";
     }
 
     @Override

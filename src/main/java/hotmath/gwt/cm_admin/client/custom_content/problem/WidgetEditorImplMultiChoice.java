@@ -343,6 +343,6 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 
 	@Override
 	public String getDescription() {
-		return "Select one value from a set of choices";
+		return "Select from a set of choices.";
 	}
 }

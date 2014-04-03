@@ -81,12 +81,12 @@ public class ProblemDesignerEditorWidget extends GWindow {
             }
         });
         
-        BorderLayoutData bData = new BorderLayoutData(60);
+        BorderLayoutData bData = new BorderLayoutData(80);
         bData.setMargins(new Margins(10,10,10,10));
         
         
         FlowPanel headerPanel = new FlowPanel();
-        headerPanel.add(new MyFieldLabel(_comboType,"Input Type", 100, 200));
+        headerPanel.add(new MyFieldLabel(_comboType,"Input Type", 100, 150));
         headerPanel.add(_aboutWidgetLabel);
         
         _main.setNorthWidget(headerPanel, bData);
@@ -206,10 +206,10 @@ public class ProblemDesignerEditorWidget extends GWindow {
         store.add(new  WidgetType("number_integer", "Integer","{'type':'number_integer'}"));
         store.add(new  WidgetType("number_decimal", "Decimal", "{'type':'number_decimal'}"));
         store.add(new  WidgetType("inequality", "Inequality", "{'type': 'inequality'}"));
-        store.add(new  WidgetType("number_fraction", "Fraction","{'type': 'number_fraction'}"));
+        store.add(new  WidgetType("number_simple_fraction", "Fraction","{'type': 'number_simple_fraction'}"));
         store.add(new  WidgetType("mChoice", "Multiple Choice", "{'type': 'mChoice', 'value':'THIS|THAT|1'}"));
         store.add(new  WidgetType("number_rational", "Rational","{'type':'number_rational'}"));
-        store.add(new  WidgetType("coordinates", "Coordinates","{'type':'coordinates'}"));
+        store.add(new  WidgetType("coordinates", "Ordered Pair","{'type':'coordinates'}"));
         store.add(new  WidgetType("number_mixed_fraction", "Mixed Fraction","{'type':'number_mixed_fraction'}"));
         store.add(new  WidgetType("widget_plot", "Plot","{'type':'widget_plot', 'value':'0|0|-10|-10|10|10|1|1'}"));
         //store.add(new  WidgetType("power_form", "Power Form"));

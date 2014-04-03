@@ -10,15 +10,15 @@ public class WidgetEditorFactory {
             throw new Exception("Widget type is null");
         }
         else if(type.equals("number_integer")) {
-            return new WidgetEditorImplInteger(widgetDef);
+            return new WidgetEditorImplInteger(widgetDef, "Enter an integer. No decimal points or fraction bars.");
         }
         else if(type.equals("number_decimal")) {
-            return new WidgetEditorImplInteger(widgetDef);
+            return new WidgetEditorImplInteger(widgetDef, "Enter an integer or decimal number.");
         }
         else if(type.equals("inequality")) {
             return new WidgetEditorImplInequality(widgetDef);
         }
-        else if(type.equals("number_fraction")) {
+        else if(type.equals("number_simple_fraction")) {
             return new WidgetEditorImplFraction(widgetDef);
         }
         else if(type.equals("number_mixed_fraction")) {

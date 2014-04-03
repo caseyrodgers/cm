@@ -6,7 +6,6 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.LessonDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;

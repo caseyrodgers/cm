@@ -40,12 +40,12 @@ public class WidgetEditorImplFraction extends WidgetEditorImplDefault {
     
     @Override
     public String getDescription() {
-    	return "Enter a fraction";
+    	return "Enter a numerator and a denominator. If the answer is correct but not in lowest terms, students are prompted to reduce. ";
     }
     
     @Override
     protected String getWidgetType() {
-        return "number_fraction";
+        return "number_simple_fraction";
     }
 
     @Override
