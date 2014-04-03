@@ -259,3 +259,14 @@
     top: 10px;
     left: 10px;
 }
+
+
+
+.wb_json .drawsection {
+    border: none;
+}
+
+
+.wb_json .wb-container {
+    background: transparent;
+}
