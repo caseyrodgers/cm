@@ -17,7 +17,8 @@ public class WidgetDefModel extends JSOBaseModel {
     Integer height;
     String format;
 	private String ansFormat;
-    
+	boolean allowMixed;
+	
     public WidgetDefModel() {
         this(JSOModel.fromJson("{}"));
     }
@@ -30,6 +31,11 @@ public class WidgetDefModel extends JSOBaseModel {
         width = getInt(get("width"));
         height = getInt(get("height"));
         format = get("format");
+        
+        String am = get("allowMixed");
+        if(am != null && am.equals("true")) {
+        	allowMixed = true;
+        }
     }
 
     public String getId() {
@@ -80,15 +86,29 @@ public class WidgetDefModel extends JSOBaseModel {
     public void setFormat(String format) {
         this.format = format;
     }
+    
+    
 
-    /** return the complete definition of this widget
+    public Boolean getAllowMixed() {
+		return allowMixed;
+	}
+
+	public void setAllowMixed(Boolean allowMixed) {
+		this.allowMixed = allowMixed;
+	}
+
+	/** return the complete definition of this widget
      * 
      * @return
      */
     public String getJson() {
     	String formatStr=(format!=null?format:"");
     	String ansFormatStr=(ansFormat!=null?ansFormat:"");
-        String json = "{type:'" + type + "',value:'" + value + "', format:'" + formatStr + "|', ans_format: '" + ansFormatStr + "', width:" + width + ", height:" + height + "}";
+    	
+    	String allowMixedIfNeeded = allowMixed?"', allowMixed: " + allowMixed:"";
+        String json = "{type:'" + type + "',value:'" + value + "', format:'" + formatStr + "|', ans_format: '" + ansFormatStr + "'" + allowMixedIfNeeded;
+        
+        json += ", width:" + width + ", height:" + height + "}";
         return json;
     }
     
@@ -115,5 +135,5 @@ public class WidgetDefModel extends JSOBaseModel {
 	public void setAnsFormat(String ansFormat) {
 		this.ansFormat = ansFormat;
 	}
-    
+
 }

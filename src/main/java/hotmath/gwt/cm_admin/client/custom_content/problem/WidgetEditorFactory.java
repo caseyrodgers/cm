@@ -21,12 +21,12 @@ public class WidgetEditorFactory {
         else if(type.equals("number_simple_fraction")) {
             return new WidgetEditorImplFraction(widgetDef);
         }
-        else if(type.equals("number_mixed_fraction")) {
-            return new WidgetEditorImplMixedFraction(widgetDef);
-        }
         else if(type.equals("number_rational")) {
-            return new WidgetEditorImplRational(widgetDef);
+        	return new WidgetEditorImplRational(widgetDef);
         }
+        else if(type.equals("number_rational_mixed")) {
+        	return new WidgetEditorImplMixedFraction(widgetDef);
+        }        
         else if(type.equals("mChoice")) {
             return new WidgetEditorImplMultiChoice(widgetDef);
         }

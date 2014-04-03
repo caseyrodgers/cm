@@ -6,7 +6,7 @@ import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 
-public class WidgetEditorImplMixedFraction extends WidgetEditorImplFraction {
+public class WidgetEditorImplMixedFraction extends WidgetEditorImplRational {
 
     TextField _wholeNumber = new TextField();
 
@@ -35,7 +35,6 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImplFraction {
             
         	p = toSplit.split("/");
         	if(p.length > 1) {
-        		_wholeNumber.setValue("");
             	_numerator.setValue(p[0]);
         		_denominator.setValue(p[1]);
         	}
@@ -45,7 +44,8 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImplFraction {
     @Override
     public String checkValid() {
     	try {
-	    	if(_wholeNumber.getCurrentValue() == null || Integer.parseInt(_wholeNumber.getCurrentValue()) > 0	) {
+    		Integer.parseInt(_wholeNumber.getCurrentValue());
+	    	if(_wholeNumber.getCurrentValue() == null) {
 	    		return "The whole number needs to be specified";
 	    	}
 	    	else {
@@ -59,15 +59,22 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImplFraction {
 
     @Override
     public String getDescription() {
-    	return "Enter a mixed fraction, containing a whole number";
+    	return "Enter an integer, decimal number, fraction (use \"/\"), or mixed number (use \"m\"). " +
+               "If a fraction is correct but not in lowest terms, students are prompted to reduce.  " +
+    		   "Improper fractions should be written as mixed numbers. Answers must be exact.";
     }
     
     @Override
     protected WidgetDefModel createWidgetDefModel() {
         WidgetDefModel wd = super.createWidgetDefModel();
         wd.setValue("[" + _wholeNumber.getCurrentValue() + "]" + _numerator.getCurrentValue() + "/" + _denominator.getCurrentValue());
-        wd.setType("number_mixed_fraction");
-        wd.setFormat("mixed");
+        
+        // {type:'number_rational',allowMixed:true,value:'$_ans_e', format:'text',ans_format:'lowest_term', width:1, height:1}
+        
+        wd.setType("number_rational_mixed");
+        wd.setAnsFormat("lowest_term");
+        wd.setFormat("text");
+        wd.setAllowMixed(true);
         return wd;
     }
     

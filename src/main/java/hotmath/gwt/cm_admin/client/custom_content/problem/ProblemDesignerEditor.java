@@ -22,7 +22,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -37,330 +36,335 @@ import com.sencha.gxt.widget.core.client.event.ResizeEndEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
-/** Allows editing of a solution step unit.
+/**
+ * Allows editing of a solution step unit.
  * 
  * Contains a rich text area and optional whiteboard
  * 
  * @author casey
- *
+ * 
  */
 public class ProblemDesignerEditor extends GWindow {
 
-    private String whiteboardId;
-    private SolutionInfo solution;
-    private BorderLayoutContainer _main;
-    private EditorCallback callback;
-    private int _countChanges=1;
-    protected String _pidEdit;
-    private CKEditorPanel _ckEditorPanel;
-    private ToggleButton _showWhiteboardToggle;
-    private String editorText;
-    private AreaData areaData;
-    
-    public interface EditorCallback {
-        void editingComplete(String pidEdit,String textPartPlusWhiteboardJson);
-    }
+	private String whiteboardId;
+	private SolutionInfo solution;
+	private BorderLayoutContainer _main;
+	private EditorCallback callback;
+	private int _countChanges = 1;
+	protected String _pidEdit;
+	private CKEditorPanel _ckEditorPanel;
+	private ToggleButton _showWhiteboardToggle;
+	private String editorText;
+	private AreaData areaData;
 
-    
-    public ProblemDesignerEditor() {
-        super(false);
-        setPixelSize(730, 500);
-        setResizable(true);
+	public interface EditorCallback {
+		void editingComplete(String pidEdit, String textPartPlusWhiteboardJson);
+	}
 
-        setHeadingText("Edit Problem Definition");
-        _main = new BorderLayoutContainer();
-        setWidget(_main);
+	public ProblemDesignerEditor() {
+		super(false);
+		setPixelSize(730, 500);
+		setResizable(true);
 
-        _showWhiteboardToggle = new ToggleButton("Show Whiteboard");
-        _showWhiteboardToggle.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                showWhiteboardEditor(_showWhiteboardToggle.getValue());
-            }
-        });
-        addTool(_showWhiteboardToggle);
-        
+		setHeadingText("Edit Problem Definition");
+		_main = new BorderLayoutContainer();
+		setWidget(_main);
 
-        addButton(new MyTextButton("Save",  new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                doSave();
-            }
-        }, "Save any changes"));
-        
-        addButton(new TextButton("Cancel",new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                hide();
-            }
-        }));
-        
-        addBeforeHideHandler(new BeforeHideHandler() {
-            @Override
-            public void onBeforeHide(BeforeHideEvent event) {
-                if(_ckEditorPanel != null) {
-                    destroyEditor();
-                }
-            }
-        });
-        
-        
-        addMaximizeHandler(new MaximizeHandler() {
-            @Override
-            public void onMaximize(MaximizeEvent event) {
-                resizeWhiteboard();
-            }
-        });
-    }
+		_showWhiteboardToggle = new ToggleButton("Show Whiteboard");
+		_showWhiteboardToggle.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				showWhiteboardEditor(_showWhiteboardToggle.getValue());
+			}
+		});
+		addTool(_showWhiteboardToggle);
 
-    private void destroyEditor() {
-        _ckEditorPanel.destroyEditor();
-        _ckEditorPanel = null;
-    }
-    
-    
-    public void show(SolutionInfo solution, String editorText, String whiteboardId, EditorCallback callbackIn) {
-        this.callback = callbackIn;
-        this.solution = solution;
-        this.editorText = editorText;
-        this.whiteboardId = whiteboardId;
-        this.areaData = extractAreaData(editorText);
-        
-        showWhiteboardEditor(true);
-        
-        setVisible(true);
-        
-        
-        
-        if(_lastWbheight > 0) {
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-                @Override
-                public void execute() {
-                    _showWorkPanel.resizeWhiteboard(_lastWbheight);
-                }
-            });
-            
-        }
-    }
+		addButton(new MyTextButton("Save", new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				doSave();
+			}
+		}, "Save any changes"));
 
-    @Override
-    protected void onEndResize(ResizeEndEvent re) {
-        super.onEndResize(re);
-        resizeWhiteboard();
-    }
+		addButton(new TextButton("Cancel", new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				hide();
+			}
+		}));
 
-    int _lastWbheight;
-    private void resizeWhiteboard() {
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-            @Override
-            public void execute() {
-                _lastWbheight = _wbWrapper.getOffsetHeight();
-                _showWorkPanel.resizeWhiteboard(_lastWbheight);
-            }
-        });
+		addBeforeHideHandler(new BeforeHideHandler() {
+			@Override
+			public void onBeforeHide(BeforeHideEvent event) {
+				if (_ckEditorPanel != null) {
+					destroyEditor();
+				}
+			}
+		});
 
-    }
-    
-    protected void doSave() {
-        String wbJson = _showWorkPanel != null?_showWorkPanel.getWhiteboardCommandsAsJson():this.areaData.wbJson;
-        
-        String wbJsonHtml = wbJson!=null?"<div class='wb_json'>" + wbJson + "</div>":"";
-        
-        String textPlusWhiteboardPlusWidget = 
-                "<div class='step_part'>" + _ckEditorPanel.getEditorValue() + 
-                wbJsonHtml +
-                "</div>";
-        
-        textPlusWhiteboardPlusWidget += this.areaData.widgetHtml;
-        callback.editingComplete(_pidEdit,textPlusWhiteboardPlusWidget);
-        hide();
-    }
+		addMaximizeHandler(new MaximizeHandler() {
+			@Override
+			public void onMaximize(MaximizeEvent event) {
+				resizeWhiteboard();
+			}
+		});
+	}
 
-    static int _cnt;
-    private void showWhiteboardEditor(boolean yesNo) {
-        String textValue="";
-        if(_ckEditorPanel != null) {
-            textValue = _ckEditorPanel.getEditorValue();
-            destroyEditor();
-        }
-        else {
-            textValue = this.areaData.textPart;
-        }
-        
-        _ckEditorPanel = new CKEditorPanel("ps_editor",120, textValue, new CallbackOnComplete() {
-            
-            @Override
-            public void isComplete() {
-                setEditorHeight();
-            }
-        });
-        if(yesNo) {
+	private void destroyEditor() {
+		_ckEditorPanel.destroyEditor();
+		_ckEditorPanel = null;
+	}
 
-            if(_showWorkPanel != null) {
-                _showWorkPanel = null;
-            }
-            
-            _showWorkPanel = new ShowWorkPanel2(whiteboardCallBack, true, true, "wb_ps-1", 280, getWidget());
-            
-            BorderLayoutContainer bCon = new BorderLayoutContainer();
-            
-            _wbWrapper = new SimplePanel();
-            _wbWrapper.setWidget(_showWorkPanel);
-            bCon.setCenterWidget(_wbWrapper);
-            bCon.setNorthWidget(_ckEditorPanel, new BorderLayoutData(175));
-            _main.setCenterWidget(bCon);
-        } 
-        else
-        {
-            SimplePanel sp = new SimplePanel();
-            sp.setWidget(_ckEditorPanel);
-            _main.setCenterWidget(sp);            
-        }
-        
-        _main.forceLayout();
+	public void show(SolutionInfo solution, String editorText,
+			String whiteboardId, EditorCallback callbackIn) {
+		this.callback = callbackIn;
+		this.solution = solution;
+		this.editorText = editorText;
+		this.whiteboardId = whiteboardId;
+		this.areaData = extractAreaData(editorText);
 
-        _showWhiteboardToggle.setValue(yesNo);
-    }
-    
-    SimplePanel _wbWrapper;
-    
-    final ShowWorkPanel2Callback whiteboardCallBack = new ShowWorkPanelCallbackDefault() {
-        @Override
-        public void windowResized() {
-        }
+		showWhiteboardEditor(true);
 
-        @Override
-        public void showWorkIsReady(ShowWorkPanel2 showWork) {
-            showWork.loadWhiteboardFromJson(areaData.wbJson);
-        }
+		setVisible(true);
 
-        @Override
-        public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
-            _countChanges++;
-            return null;
-        }
-        
-        
-         @Override
-        public void saveWhiteboardAsTemplate(final ShowWorkPanel2 showWorkPanel2) {
-             String tmplName = Cookies.getCookie("wb_template");
-             final PromptMessageBox mb = new PromptMessageBox("Save As Template", "Template Name");
-             
-             
-             CmMessageBox.confirm("Save",  "Save as template?",  new ConfirmCallback() {
-                @Override
-                public void confirmed(boolean yesNo) {
-                    showWorkPanel2.saveAsTemplate(UserInfoBase.getInstance().getUid(),  new CallbackOnComplete() {
-                        @Override
-                        public void isComplete() {
-                            // silent
-                        }
-                    });
-                }
-            });
-             
-         }
-         
-         
-         @Override
-        public void manageTemplates(ShowWorkPanel2 showWorkPanel2) {
-             new WhiteboardTemplatesManager(showWorkPanel2);
-        }
-    };
-    private ShowWorkPanel2 _showWorkPanel;
-    
-    
-    private void setEditorHeight() {
-//        int h = _showWorkPanel.getParent().getElement().getClientHeight();
-//        //_showWorkPanel.resizeWhiteboard();
-    }
+		if (_lastWbheight > 0) {
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					_showWorkPanel.resizeWhiteboard(_lastWbheight);
+				}
+			});
 
-    
-    native private String jsni_setProblemStatementHtml(String text) /*-{
-        var m = $wnd.$('.cm_problem_text');
-        if(m.length == 0) {
-            alert('no cm_problem_text element');
-            return;
-        }
-        m.html(text);
-    }-*/;
+		}
+	}
 
-    protected void loadWhiteboardTemplates(final ShowWorkPanel2 showWork) {
-        new RetryAction<WhiteboardTemplatesResponse>() {
-            @Override
-            public void attempt() {
-                GetWhiteboardTemplatesAction action = new GetWhiteboardTemplatesAction(UserInfoBase.getInstance().getUid());
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
+	@Override
+	protected void onEndResize(ResizeEndEvent re) {
+		super.onEndResize(re);
+		resizeWhiteboard();
+	}
 
-            @Override
-            public void oncapture(WhiteboardTemplatesResponse templates) {
-                showWork.setWhiteboardTemplates(templates.getJsonRepresentation());
-                /** jsni_setWhiteboardTemplatesAux */
-            }
+	int _lastWbheight;
 
-        }.register();
-    }
-    
-    
-    static public void doTest() {
-        SolutionInfo si = new SolutionInfo("custom_44_140314_set1_1_1", "This is the <b>HTML</b>", "", false);
-        ProblemDesignerEditor.getSharedWindow().show(si,  si.getHtml(), "wb_id", new EditorCallback() {
-            @Override
-            public void editingComplete(String pidEdit, String textPlusWhiteboard) {
-            }
-        });
-    }
-    
-    private AreaData extractAreaData(String text) {
-        String checkFor = "<div class='wb_json'>";
-        int p = text.indexOf(checkFor);
-        String wbJson = null;
-        String textPart = null;
-        if(p > -1) {
-            textPart = text.substring(0, p);
-            wbJson = text.substring(p);
-            wbJson = wbJson.substring(checkFor.length(), wbJson.indexOf("</div>"));
-        }
-        else {
-            textPart = text;
-        }
-        
-        checkFor="<div id='hm_flash_widget'>";
-        p = textPart.indexOf(checkFor);
-        String widgetHtml="";
-        if(p > -1) {
-            widgetHtml = text.substring(p);
-            textPart = text.substring(0, p);
-            //widgetHtml = wbJson.substring(checkFor.length(), wbJson.indexOf("</div></div>"));
-        }
-        
-        AreaData aData = new AreaData(textPart,wbJson, widgetHtml);
-        return aData;
-    }
+	private void resizeWhiteboard() {
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				_lastWbheight = _wbWrapper.getOffsetHeight();
+				_showWorkPanel.resizeWhiteboard(_lastWbheight);
+			}
+		});
 
-    class AreaData {
-        String textPart;
-        String wbJson;
-        String widgetHtml;
-        
-        public AreaData(String textPart, String whiteboardJson, String widgetHtml) {
-            this.textPart = textPart;
-            this.wbJson = whiteboardJson;
-            this.widgetHtml = widgetHtml;
-        }
-        
-    }
+	}
 
+	protected void doSave() {
+		String wbJson = _showWorkPanel != null ? _showWorkPanel
+				.getWhiteboardCommandsAsJson() : this.areaData.wbJson;
 
+		String wbJsonHtml = wbJson != null ? "<div class='wb_json'>" + wbJson
+				+ "</div>" : "";
 
-    static ProblemDesignerEditor __sharedInstance;
-    public static ProblemDesignerEditor getSharedWindow() {
-        if(__sharedInstance == null) {
-            __sharedInstance = new ProblemDesignerEditor();
-        }
-        return __sharedInstance;
-    }    
+		String textPlusWhiteboardPlusWidget = "<div class='step_part'>"
+				+ _ckEditorPanel.getEditorValue() + wbJsonHtml + "</div>";
+
+		textPlusWhiteboardPlusWidget += this.areaData.widgetHtml;
+		callback.editingComplete(_pidEdit, textPlusWhiteboardPlusWidget);
+		hide();
+	}
+
+	static int _cnt;
+
+	private void showWhiteboardEditor(boolean yesNo) {
+
+		String textValue = "";
+		if (_ckEditorPanel != null) {
+			textValue = _ckEditorPanel.getEditorValue();
+			destroyEditor();
+		} else {
+			textValue = this.areaData.textPart;
+		}
+
+		_ckEditorPanel = new CKEditorPanel("ps_editor", 120, textValue,
+				new CallbackOnComplete() {
+
+					@Override
+					public void isComplete() {
+						setEditorHeight();
+					}
+				});
+		if (yesNo) {
+
+			if (_showWorkPanel != null) {
+				_showWorkPanel = null;
+			}
+
+			_showWorkPanel = new ShowWorkPanel2(whiteboardCallBack, true, true,
+					"wb_ps-1", 280, getWidget());
+
+			BorderLayoutContainer bCon = new BorderLayoutContainer();
+
+			_wbWrapper = new SimplePanel();
+			_wbWrapper.setWidget(_showWorkPanel);
+			bCon.setCenterWidget(_wbWrapper);
+			bCon.setNorthWidget(_ckEditorPanel, new BorderLayoutData(175));
+			_main.setCenterWidget(bCon);
+		} else {
+			SimplePanel sp = new SimplePanel();
+			sp.setWidget(_ckEditorPanel);
+			_main.setCenterWidget(sp);
+		}
+
+		_main.forceLayout();
+
+		_showWhiteboardToggle.setValue(yesNo);
+	}
+
+	SimplePanel _wbWrapper;
+
+	final ShowWorkPanel2Callback whiteboardCallBack = new ShowWorkPanelCallbackDefault() {
+		@Override
+		public void windowResized() {
+		}
+
+		@Override
+		public void showWorkIsReady(ShowWorkPanel2 showWork) {
+			if (areaData.wbJson != null) {
+				showWork.loadWhiteboardFromJson(areaData.wbJson);
+			}
+		}
+
+		@Override
+		public Action<? extends Response> createWhiteboardSaveAction(
+				String pid, CommandType commandType, String data) {
+			_countChanges++;
+			return null;
+		}
+
+		@Override
+		public void saveWhiteboardAsTemplate(final ShowWorkPanel2 showWorkPanel2) {
+			String tmplName = Cookies.getCookie("wb_template");
+			final PromptMessageBox mb = new PromptMessageBox(
+					"Save As Template", "Template Name");
+
+			CmMessageBox.confirm("Save", "Save as template?",
+					new ConfirmCallback() {
+						@Override
+						public void confirmed(boolean yesNo) {
+							showWorkPanel2.saveAsTemplate(UserInfoBase
+									.getInstance().getUid(),
+									new CallbackOnComplete() {
+										@Override
+										public void isComplete() {
+											// silent
+										}
+									});
+						}
+					});
+
+		}
+
+		@Override
+		public void manageTemplates(ShowWorkPanel2 showWorkPanel2) {
+			new WhiteboardTemplatesManager(showWorkPanel2);
+		}
+	};
+	private ShowWorkPanel2 _showWorkPanel;
+
+	private void setEditorHeight() {
+		// int h = _showWorkPanel.getParent().getElement().getClientHeight();
+		// //_showWorkPanel.resizeWhiteboard();
+	}
+
+	native private String jsni_setProblemStatementHtml(String text) /*-{
+																	var m = $wnd.$('.cm_problem_text');
+																	if(m.length == 0) {
+																	alert('no cm_problem_text element');
+																	return;
+																	}
+																	m.html(text);
+																	}-*/;
+
+	protected void loadWhiteboardTemplates(final ShowWorkPanel2 showWork) {
+		new RetryAction<WhiteboardTemplatesResponse>() {
+			@Override
+			public void attempt() {
+				GetWhiteboardTemplatesAction action = new GetWhiteboardTemplatesAction(
+						UserInfoBase.getInstance().getUid());
+				setAction(action);
+				CmShared.getCmService().execute(action, this);
+			}
+
+			@Override
+			public void oncapture(WhiteboardTemplatesResponse templates) {
+				showWork.setWhiteboardTemplates(templates
+						.getJsonRepresentation());
+				/** jsni_setWhiteboardTemplatesAux */
+			}
+
+		}.register();
+	}
+
+	static public void doTest() {
+		SolutionInfo si = new SolutionInfo("custom_44_140314_set1_1_1",
+				"This is the <b>HTML</b>", "", false);
+		ProblemDesignerEditor.getSharedWindow().show(si, si.getHtml(), "wb_id",
+				new EditorCallback() {
+					@Override
+					public void editingComplete(String pidEdit,
+							String textPlusWhiteboard) {
+					}
+				});
+	}
+
+	private AreaData extractAreaData(String text) {
+		String checkFor = "<div class='wb_json'>";
+		int p = text.indexOf(checkFor);
+		String wbJson = null;
+		String textPart = null;
+		if (p > -1) {
+			textPart = text.substring(0, p);
+			wbJson = text.substring(p);
+			wbJson = wbJson.substring(checkFor.length(),
+					wbJson.indexOf("</div>"));
+		} else {
+			textPart = text;
+		}
+
+		checkFor = "<div id='hm_flash_widget'>";
+		p = textPart.indexOf(checkFor);
+		String widgetHtml = "";
+		if (p > -1) {
+			widgetHtml = text.substring(p);
+			textPart = text.substring(0, p);
+			// widgetHtml = wbJson.substring(checkFor.length(),
+			// wbJson.indexOf("</div></div>"));
+		}
+
+		AreaData aData = new AreaData(textPart, wbJson, widgetHtml);
+		return aData;
+	}
+
+	class AreaData {
+		String textPart;
+		String wbJson;
+		String widgetHtml;
+
+		public AreaData(String textPart, String whiteboardJson,
+				String widgetHtml) {
+			this.textPart = textPart;
+			this.wbJson = whiteboardJson;
+			this.widgetHtml = widgetHtml;
+		}
+
+	}
+
+	static ProblemDesignerEditor __sharedInstance;
+
+	public static ProblemDesignerEditor getSharedWindow() {
+		if (__sharedInstance == null) {
+			__sharedInstance = new ProblemDesignerEditor();
+		}
+		return __sharedInstance;
+	}
 
 }

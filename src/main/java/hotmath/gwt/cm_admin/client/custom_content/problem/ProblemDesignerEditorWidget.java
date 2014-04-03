@@ -63,7 +63,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
 	private HTML _aboutWidgetLabel = new HTML();
     public ProblemDesignerEditorWidget(SolutionInfo _solutionInfo, String widgetJson, CallbackOnComplete callback) {
         super(false);
-        setPixelSize(340, 300);
+        setPixelSize(390, 350);
         setResizable(true);
         this._solutionInfo = _solutionInfo;
         this._callback = callback;
@@ -81,12 +81,12 @@ public class ProblemDesignerEditorWidget extends GWindow {
             }
         });
         
-        BorderLayoutData bData = new BorderLayoutData(80);
+        BorderLayoutData bData = new BorderLayoutData(100);
         bData.setMargins(new Margins(10,10,10,10));
         
         
         FlowPanel headerPanel = new FlowPanel();
-        headerPanel.add(new MyFieldLabel(_comboType,"Input Type", 100, 150));
+        headerPanel.add(new MyFieldLabel(_comboType,"Input Type", 100, 180));
         headerPanel.add(_aboutWidgetLabel);
         
         _main.setNorthWidget(headerPanel, bData);
@@ -124,17 +124,15 @@ public class ProblemDesignerEditorWidget extends GWindow {
         
         JSOModel model = JSOModel.fromJson(widgetJson);
         WidgetDefModel widgetDef = new WidgetDefModel(model);
-        
-        
         /** Select the correct type in combo
          * 
          */
         for(int i=0, t=_comboType.getStore().getAll().size();i<t;i++) {
             WidgetType type = _comboType.getStore().get(i);
-            if(type.getType().equals(widgetDef.getType())) {
-                _comboType.setValue(type);
-                break;
-            }
+	            if(type.getType().equals(widgetDef.getType())) {
+	                _comboType.setValue(type);
+	                break;
+	            }
         }
         
         /** save any shared values 
@@ -168,8 +166,8 @@ public class ProblemDesignerEditorWidget extends GWindow {
             Window.alert("Could not create input editor: " + e);
         }
     }
-    
-    private void doSave() {
+ 
+	private void doSave() {
         String message=_widgetEditor.checkValid();
         if(message != null) {
             CmMessageBox.showAlert(message);
@@ -200,6 +198,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
     }
 
     ComboTypeProps props = GWT.create(ComboTypeProps.class);
+    String RATIONAL_OR_MIXED="Rational or Mixed Number";
     private ComboBox<WidgetType> createTypeCombo() {
         ListStore<WidgetType> store = new ListStore<WidgetType>(props.key());
 
@@ -208,9 +207,9 @@ public class ProblemDesignerEditorWidget extends GWindow {
         store.add(new  WidgetType("inequality", "Inequality", "{'type': 'inequality'}"));
         store.add(new  WidgetType("number_simple_fraction", "Fraction","{'type': 'number_simple_fraction'}"));
         store.add(new  WidgetType("mChoice", "Multiple Choice", "{'type': 'mChoice', 'value':'THIS|THAT|1'}"));
-        store.add(new  WidgetType("number_rational", "Rational","{'type':'number_rational'}"));
+        store.add(new  WidgetType("number_rational", "Rational","{'type':'number_rational'"));
+        store.add(new  WidgetType("number_rational_mixed", "Rational or Mixed Number","{'type':'number_rational_mixed'}"));
         store.add(new  WidgetType("coordinates", "Ordered Pair","{'type':'coordinates'}"));
-        store.add(new  WidgetType("number_mixed_fraction", "Mixed Fraction","{'type':'number_mixed_fraction'}"));
         store.add(new  WidgetType("widget_plot", "Plot","{'type':'widget_plot', 'value':'0|0|-10|-10|10|10|1|1'}"));
         //store.add(new  WidgetType("power_form", "Power Form"));
 
