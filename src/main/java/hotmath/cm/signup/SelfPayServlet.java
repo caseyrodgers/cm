@@ -1,11 +1,10 @@
 package hotmath.cm.signup;
 
+import hotmath.cm.util.service.PaymentService;
 import hotmath.gwt.cm_rpc_core.client.rpc.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountCommand;
-import hotmath.subscriber.HotMathExceptionPurcaseException;
 import hotmath.subscriber.HotMathSubscriber;
-import hotmath.subscriber.HotMathSubscriberSignupInfo;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -41,9 +40,7 @@ public class SelfPayServlet extends HttpServlet {
     	doPost(req, resp);
     }
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HotMathSubscriber sub=null;
         try {
-
             String remoteIP = req.getRemoteAddr();
             _logger.info("Attempting to create a new Self-Pay account for: " + remoteIP);
 
@@ -59,30 +56,53 @@ public class SelfPayServlet extends HttpServlet {
             String studentId = getFData(formData.get("student_id"));
             String firstName = getFData(formData.get("student_first_name"));
             String lastName  = getFData(formData.get("student_last_name"));
-            String birthday  = getFData(formData.get("student_birth_month")) +
-            		getFData(formData.get("student_birth_day"));
             CreateAutoRegistrationAccountAction action = new CreateAutoRegistrationAccountAction();
-            action.setPassword(firstName+"-"+lastName+"-"+birthday);
+            if (studentId != null && studentId.trim().length() > 0) {
+                action.setPassword(firstName+"-"+lastName+"-"+studentId.trim());
+            }
+            else {
+                String birthday  = getFData(formData.get("student_birth_month")) +
+                		getFData(formData.get("student_birth_day"));
+                action.setPassword(firstName+"-"+lastName+"-"+birthday);
+            }
             String uid = getFData(formData.get("uid_fld"));
-            Integer userId = Integer.parseInt(getFData(formData.get("uid_fld")));
+            Integer userId = Integer.parseInt(uid);
             action.setUser(lastName +", " + firstName);
             action.setUserId(userId);
-            Connection conn=null;
+            Connection conn = null;
             try {
                 conn = HMConnectionPool.getConnection();
                 CreateAutoRegistrationAccountCommand command = new CreateAutoRegistrationAccountCommand();
                 RpcData data = command.execute(conn, action);
                 key = data.getDataAsString("key");
-                
+
                 newUserId = data.getDataAsInt("uid");
-                
+
                 loginName = data.getDataAsString("loginName");
                 uniquePassword = data.getDataAsString("password");
             }
             finally {
                 SqlUtilities.releaseResources(null,null,conn);
             }
-            
+
+            String ccNum  = getFData(formData.get("card_number"));
+            ccNum.replaceAll(" ", "");
+            String ccType = getFData(formData.get("sel_cardtype"));
+            String ccv2   = getFData(formData.get("card_ccv2"));
+            String expMon = getFData(formData.get("sel_card_expire_month"));
+            String expYr  = getFData(formData.get("sel_card_expire_year"));
+            String ccZip  = getFData(formData.get("zip"));
+            String ccState = getFData(formData.get("sel_state"));
+            String ccAddr1 = getFData(formData.get("address1"));
+            String ccAddr2 = getFData(formData.get("address2"));
+            String ccCity  = getFData(formData.get("city"));
+            String ccFname = getFData(formData.get("first_name"));
+            String ccLname = getFData(formData.get("last_name"));
+            String email   = getFData(formData.get("fld_student_email"));
+
+            PaymentService.doPurchase(remoteIP, 29.00, ccNum, ccType, ccv2, expMon, expYr,
+            		ccZip, ccState, ccAddr1, ccAddr2, ccCity, ccFname, ccLname,
+            		newUserId, email, loginName, uniquePassword);
             
             /** Return JSON containing key values
              * 
@@ -94,16 +114,11 @@ public class SelfPayServlet extends HttpServlet {
             resp.getWriter().write(returnJson);
 
         } catch (Exception e) {
-            _logger.error("*** Error creating new account", e);
-            try {
-                sub.addComment(e.getMessage());
-            } catch (Exception ee) {
-                _logger.error("*** Error adding comment", ee);
-            }
+            _logger.error("*** Error creating new user", e);
             
-            /** CHECK: should this throw an Exception?
+            /** TODO: should this throw an Exception?
              * At very least we need to check for this instance
-             * in resources/js/signup.js
+             * in cmsignup.js
              *  
              */
             resp.getWriter().write("error:" + e.getMessage());
@@ -116,74 +131,6 @@ public class SelfPayServlet extends HttpServlet {
         } else {
             return SbUtilities.getStringValue(o);
         }
-    }
-    
-    
-    /** Extract data from request and build SignupInfo to encapsulate request
-     * 
-     * @param req
-     * @return
-     * @throws Exception
-     */
-    private HotMathSubscriberSignupInfo getSignupInfo(HttpServletRequest req) throws Exception {
-        
-        @SuppressWarnings("unchecked")
-        Map<String, String[]> formData = req.getParameterMap();
-        
-        String email = getFData(formData.get("confirm_email"));
-        if (email == null || email.length() == 0)
-            throw new Exception("'email' cannot be null");
-
-        String firstName = getFData(formData.get("first_name"));
-        String lastName = getFData(formData.get("last_name"));
-        String cardholder_address1 = getFData(formData.get("address1"));
-        String cardholder_address2 = getFData(formData.get("address2"));
-        String cardholder_city = getFData(formData.get("city"));
-        String cardholder_zip = getFData(formData.get("zip"));
-        String cardholder_state = getFData(formData.get("sel_state"));
-
-        String ccType = getFData(formData.get("sel_cardtype"));
-        String ccCvv2 = getFData(formData.get("card_ccv2"));
-
-        // extract credit card info
-        String cardNumber = getFData(formData.get("card_number"));
-        String cardExpMonth = getFData(formData.get("sel_card_expire_month"));
-        String cardExpYear = getFData(formData.get("sel_card_expire_year"));
-
-        // remove any spaces in card number
-        cardNumber = SbUtilities.replaceSubString(cardNumber, " ", "");
-
-        if (lastName.equals("error")) {
-            throw new HotMathExceptionPurcaseException("INTENTIONAL SERVER ERROR");
-        }
-        if (cardNumber == null || lastName == null) {
-            throw new HotMathExceptionPurcaseException("Cardnumber and lastname must be specified");
-        }
-
-        
-        /** Move signup data into persistent storage
-         * 
-         */
-        HotMathSubscriberSignupInfo signupInfo = new HotMathSubscriberSignupInfo();
-
-        // save non-secure info
-        signupInfo.setBillingAddress(cardholder_address1 + cardholder_address2);
-        signupInfo.setBillingCity(cardholder_city);
-        signupInfo.setBillingState(cardholder_state);
-        signupInfo.setBillingZip(cardholder_zip);
-        signupInfo.setFirstName(firstName);
-        signupInfo.setLastName(lastName);
-
-        // set the secure data as variables only
-        signupInfo.setCardEmail(email);
-        signupInfo.setCardType(ccType);
-        signupInfo.setCardNumber(cardNumber);
-        signupInfo.setCardCcv(ccCvv2);
-        signupInfo.setCardExpMonth(cardExpMonth);
-        signupInfo.setCardExpYear(cardExpYear);
-        
-        
-        return signupInfo;
     }
 
 }
