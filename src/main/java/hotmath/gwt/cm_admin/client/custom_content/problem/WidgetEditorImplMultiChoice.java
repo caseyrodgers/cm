@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
-import hotmath.gwt.cm_admin.client.custom_content.problem.CpEditingArea.Callback;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;

@@ -30,6 +30,7 @@ public class WidgetEditorImplRational extends WidgetEditorImplFraction {
         WidgetDefModel wd = super.createWidgetDefModel();
         wd.setType("number_rational");
         wd.setAnsFormat("lowest_term");
+        wd.setAllowMixed(true);
         wd.setFormat(_format.getCurrentValue()!=null?_format.getCurrentValue():null);
         return wd;
     }

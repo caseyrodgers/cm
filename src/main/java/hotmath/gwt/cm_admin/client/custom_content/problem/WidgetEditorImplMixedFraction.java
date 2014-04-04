@@ -73,7 +73,6 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImplRational {
         
         wd.setType("number_rational_mixed");
         wd.setAnsFormat("lowest_term");
-        wd.setFormat("text");
         wd.setAllowMixed(true);
         return wd;
     }

@@ -207,7 +207,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
         store.add(new  WidgetType("inequality", "Inequality", "{'type': 'inequality'}"));
         store.add(new  WidgetType("number_simple_fraction", "Fraction","{'type': 'number_simple_fraction'}"));
         store.add(new  WidgetType("mChoice", "Multiple Choice", "{'type': 'mChoice', 'value':'THIS|THAT|1'}"));
-        store.add(new  WidgetType("number_rational", "Rational","{'type':'number_rational'"));
+        store.add(new  WidgetType("number_rational", "Rational","{'type':'number_rational'}"));
         store.add(new  WidgetType("number_rational_mixed", "Rational or Mixed Number","{'type':'number_rational_mixed'}"));
         store.add(new  WidgetType("coordinates", "Ordered Pair","{'type':'coordinates'}"));
         store.add(new  WidgetType("widget_plot", "Plot","{'type':'widget_plot', 'value':'0|0|-10|-10|10|10|1|1'}"));
