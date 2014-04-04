@@ -670,7 +670,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         
         String html = "<div class='cm_problem_text'>" + data + "</div>";
         
-        ts.getProblem().setStatement(html + stmt);
+        ts.getProblem().setStatement(html);
         
         dao.saveSolutionXml(conn, pid, ts.toXml(), ts.getTutorDefine(), true);        
     }
