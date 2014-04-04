@@ -50,7 +50,6 @@ public class ProblemDesignerEditor extends GWindow {
 	private static final int WIN_HEIGHT_NO_WB = 230;
 	private static final int WIN_HEIGHT_WITH_WB = 500;
 	private String whiteboardId;
-	private SolutionInfo solution;
 	private BorderLayoutContainer _main;
 	private EditorCallback callback;
 	private int _countChanges = 1;
@@ -118,10 +117,8 @@ public class ProblemDesignerEditor extends GWindow {
 		_ckEditorPanel = null;
 	}
 
-	public void show(SolutionInfo solution, String editorText,
-			String whiteboardId, EditorCallback callbackIn) {
+	public void show(String editorText,	String whiteboardId, EditorCallback callbackIn) {
 		this.callback = callbackIn;
-		this.solution = solution;
 		this.editorText = editorText;
 		this.whiteboardId = whiteboardId;
 		this.areaData = extractAreaData(editorText);
@@ -196,11 +193,12 @@ public class ProblemDesignerEditor extends GWindow {
 					}
 				});
 		
-		if (yesNo) {
 
-			if (_showWorkPanel != null) {
-				_showWorkPanel = null;
-			}
+		if (_showWorkPanel != null) {
+			_showWorkPanel = null;
+		}
+		
+		if (yesNo) {
 
 			_showWorkPanel = new ShowWorkPanel2(whiteboardCallBack, true, true,
 					"wb_ps-1", 280, getWidget());
@@ -323,9 +321,7 @@ public class ProblemDesignerEditor extends GWindow {
 	}
 
 	static public void doTest() {
-		SolutionInfo si = new SolutionInfo("custom_44_140314_set1_1_1",
-				"This is the <b>HTML</b>", "", false);
-		ProblemDesignerEditor.getSharedWindow().show(si, si.getHtml(), "wb_id",
+		ProblemDesignerEditor.getSharedWindow().show("THE HTML", "wb_id",
 				new EditorCallback() {
 					@Override
 					public void editingComplete(String pidEdit,

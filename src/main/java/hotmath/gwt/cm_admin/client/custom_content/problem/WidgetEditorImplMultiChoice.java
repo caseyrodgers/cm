@@ -126,7 +126,9 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 			for (int i = 0, t = c.length; i < (t - 1); i++) {
 				store.add(new MultiValue(c[i], false));
 			}
-			store.get(correctIndex).setCorrect(true);
+			if(correctIndex < store.size()) {
+				store.get(correctIndex).setCorrect(true);
+			}
 		}
 
 		store.setAutoCommit(true);
@@ -194,15 +196,13 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 	protected void editSelectedChoice() {
 		final MultiValue sel = _grid.getSelectionModel().getSelectedItem();
 		if (sel != null) {
-
-			new CpEditingArea("widget_multi_choice",
-					CmGwtUtils.jsni_decodeBase64(sel.getValue()),
-					new Callback() {
-						@Override
-						public void editingComplete(String partText) {
-							sel.setValue(CmGwtUtils.jsni_encodeBase64(partText));
-						}
-					});
+			ProblemDesignerEditor.getSharedWindow().show(CmGwtUtils.jsni_decodeBase64(sel.getValue()), "widget_multi_choice", new ProblemDesignerEditor.EditorCallback() {
+				@Override
+				public void editingComplete(String pidEdit,	String textPartPlusWhiteboardJson) {
+					sel.setValue(CmGwtUtils.jsni_encodeBase64(textPartPlusWhiteboardJson));
+					_grid.getStore().update(sel);
+				}
+			});
 		}
 	}
 
@@ -233,10 +233,10 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 	}
 
 	private void addChoice() {
-		new CpEditingArea("widget_multi_choice", "", new Callback() {
+		ProblemDesignerEditor.getSharedWindow().show("", "widget_multi_choice", new ProblemDesignerEditor.EditorCallback() {
 			@Override
-			public void editingComplete(String partText) {
-				_grid.getStore().add(new MultiValue(CmGwtUtils.jsni_encodeBase64(partText),	false));
+			public void editingComplete(String pidEdit,	String textPartPlusWhiteboardJson) {
+				_grid.getStore().add(new MultiValue(CmGwtUtils.jsni_encodeBase64(textPartPlusWhiteboardJson),	false));
 			}
 		});
 	}
