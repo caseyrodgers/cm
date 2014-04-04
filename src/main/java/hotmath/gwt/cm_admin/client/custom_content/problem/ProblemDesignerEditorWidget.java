@@ -212,7 +212,6 @@ public class ProblemDesignerEditorWidget extends GWindow {
         store.add(new  WidgetType("coordinates", "Ordered Pair","{'type':'coordinates'}"));
         store.add(new  WidgetType("widget_plot", "Plot","{'type':'widget_plot', 'value':'0|0|-10|-10|10|10|1|1'}"));
         //store.add(new  WidgetType("power_form", "Power Form"));
-
 //        store.add(new  WidgetType("power_form", "Power Form"));
 //        store.add(new  WidgetType("scientific_notation", "Scientific Notation"));
 //        store.add(new  WidgetType("letter", "Text"));

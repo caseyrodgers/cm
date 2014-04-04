@@ -22,6 +22,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -37,7 +38,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
- * Allows editing of a solution step unit.
+ * Allows editing of a solution 'area'.
  * 
  * Contains a rich text area and optional whiteboard
  * 
@@ -46,6 +47,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  */
 public class ProblemDesignerEditor extends GWindow {
 
+	private static final int WIN_HEIGHT_NO_WB = 230;
+	private static final int WIN_HEIGHT_WITH_WB = 500;
 	private String whiteboardId;
 	private SolutionInfo solution;
 	private BorderLayoutContainer _main;
@@ -63,7 +66,7 @@ public class ProblemDesignerEditor extends GWindow {
 
 	public ProblemDesignerEditor() {
 		super(false);
-		setPixelSize(730, 500);
+		setWidth(600); // height depends on whiteboard shown/not shown.
 		setResizable(true);
 
 		setHeadingText("Edit Problem Definition");
@@ -123,7 +126,7 @@ public class ProblemDesignerEditor extends GWindow {
 		this.whiteboardId = whiteboardId;
 		this.areaData = extractAreaData(editorText);
 
-		showWhiteboardEditor(true);
+		showWhiteboardEditor(areaData.wbJson != null);
 
 		setVisible(true);
 
@@ -174,7 +177,7 @@ public class ProblemDesignerEditor extends GWindow {
 
 	static int _cnt;
 
-	private void showWhiteboardEditor(boolean yesNo) {
+	private void showWhiteboardEditor(final boolean yesNo) {
 
 		String textValue = "";
 		if (_ckEditorPanel != null) {
@@ -192,6 +195,7 @@ public class ProblemDesignerEditor extends GWindow {
 						setEditorHeight();
 					}
 				});
+		
 		if (yesNo) {
 
 			if (_showWorkPanel != null) {
@@ -213,10 +217,24 @@ public class ProblemDesignerEditor extends GWindow {
 			sp.setWidget(_ckEditorPanel);
 			_main.setCenterWidget(sp);
 		}
-
-		_main.forceLayout();
-
 		_showWhiteboardToggle.setValue(yesNo);
+		_main.forceLayout();
+		
+		
+		
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				/** optimize the window */
+				if(!yesNo) {
+					setHeight(WIN_HEIGHT_NO_WB);
+				}
+				else {
+					setHeight(WIN_HEIGHT_WITH_WB);
+				}
+				forceLayout();
+			}
+		});
 	}
 
 	SimplePanel _wbWrapper;
