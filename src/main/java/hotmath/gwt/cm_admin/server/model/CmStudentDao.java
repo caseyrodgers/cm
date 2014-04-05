@@ -534,6 +534,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             ps.setInt(8, (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0);
             ps.setInt(9, (sm.getSelfPay() == true) ? 1 : 0);
             ps.setString(10, sm.getBackgroundStyle());
+            ps.setString(11, sm.getEmail());
 
             int count = ps.executeUpdate();
             if (count == 1) {
@@ -728,23 +729,43 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      * 
      */
     public void removeUser(final Connection conn, StudentModelI sm) {
+    	removeUser(conn, sm.getUid());
+    }
+
+    public void removeUser(int userId) {
+    	Connection conn = null;
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		removeUser(conn, userId);
+    	}
+    	catch (Exception e) {
+            __logger.error(String.format("*** Error removing user with Uid: %d", userId), e);
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(null, null, conn);
+    	}
+    	
+    }
+
+    public void removeUser(final Connection conn, int userId) {
         final String REMOVE_USER_SQL = "delete from HA_USER where uid = ?";
 
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            __logger.info("Removing user: " + sm.getUid());
+            __logger.info("Removing userId: " + userId);
             ps = conn.prepareStatement(REMOVE_USER_SQL);
-            ps.setInt(1, sm.getUid());
+            ps.setInt(1, userId);
             if (ps.executeUpdate() == 0) {
                 __logger.warn("User was not removed");
             }
         } catch (Exception e) {
-            __logger.error(String.format("*** Error removing user with Uid: %d", sm.getUid()), e);
+            __logger.error(String.format("*** Error removing user with Uid: %d", userId), e);
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
+    	
     }
 
     public StudentModelI updateStudent(final Connection conn, StudentModelI sm, Boolean studentChanged, Boolean programChanged, Boolean progIsNew,

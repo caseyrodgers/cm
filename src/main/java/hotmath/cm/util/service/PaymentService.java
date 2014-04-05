@@ -39,7 +39,7 @@ public class PaymentService {
 
             addPurchaseResult(result, userId);
 
-            purchaseComplete(result, email, loginName, password); 
+            purchaseComplete(result, email, loginName, password, amount); 
 
         } catch (Throwable t) {
         	__logger.error("Error during purchase", t);
@@ -48,7 +48,7 @@ public class PaymentService {
             } else {
                 // low level error -- give general error
                 throw new HotMathException(t,
-                        "Sorry, we seem to be having difficulties completing this transaction.   Please try again or use our PayPal service.");
+                        "Sorry, we seem to be having difficulties completing this transaction.  Please try again.");
             }
         }
     }
@@ -66,7 +66,8 @@ public class PaymentService {
 		
 	}
 
-	static private void purchaseComplete(final PaymentResult result, final String email, final String loginName, final String password) throws Exception {
+	static private void purchaseComplete(final PaymentResult result, final String email, final String loginName,
+			final String password, final double amount) throws Exception {
         try {
 
             // send mail in separate thread
@@ -82,6 +83,8 @@ public class PaymentService {
                     	sb.append(" Order Number: ").append(result.getOrderNumber()).append("\n");
                     	sb.append(" Login Name: ").append(loginName).append("\n");
                     	sb.append(" Password: ").append(password).append("\n\n");
+
+                    	sb.append(String.format(" Amount Charged: $ %.2f\n\n", amount));
                     	
                     	sb.append("Please retain this information.\n\n");
                     	

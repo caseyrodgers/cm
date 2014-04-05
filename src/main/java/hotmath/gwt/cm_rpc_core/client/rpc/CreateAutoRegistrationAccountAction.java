@@ -13,6 +13,8 @@ public class CreateAutoRegistrationAccountAction implements Action<RpcData> {
 	Integer userId;
     String user;
     String password;
+    String email;
+    boolean isSelfPay;
 
     public CreateAutoRegistrationAccountAction() {
     }
@@ -21,6 +23,13 @@ public class CreateAutoRegistrationAccountAction implements Action<RpcData> {
         this.userId = userId;
         this.user = user;
         this.password = password;
+    }
+
+    public CreateAutoRegistrationAccountAction(Integer userId, String user, String password, String email) {
+        this.userId = userId;
+        this.user = user;
+        this.password = password;
+        this.email = email;
     }
 
     public Integer getUserId() {
@@ -46,5 +55,21 @@ public class CreateAutoRegistrationAccountAction implements Action<RpcData> {
     public void setPassword(String password) {
         this.password = password;
     }
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public boolean isSelfPay() {
+		return isSelfPay;
+	}
+
+	public void setSelfPay(boolean isSelfPay) {
+		this.isSelfPay = isSelfPay;
+	}
     
 }

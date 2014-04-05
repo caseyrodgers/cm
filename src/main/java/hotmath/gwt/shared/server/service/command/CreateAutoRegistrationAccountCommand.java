@@ -77,6 +77,8 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
 
         studentModel.setPasscode(password);
         studentModel.setName(action.getUser());
+        studentModel.setEmail(action.getEmail());
+        studentModel.setSelfPay(action.isSelfPay());
         millis = System.currentTimeMillis();
         studentModel = dao.addStudent(conn, studentModel);
     	if (__logger.isDebugEnabled())
@@ -162,7 +164,6 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         rdata.putData("password",  password);
         return rdata;
     }
-    
 
     private String getUniquePassword(String password, int adminUid, final Connection conn) throws Exception {
         String sqlCheck = CmMultiLinePropertyReader.getInstance().getProperty("AUTO_CREATE_PASSWORD_CHECK");
