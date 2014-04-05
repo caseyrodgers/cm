@@ -507,29 +507,23 @@ function showProcessingMessage() {
 }
 
 function doSelfPaySignup() {
-	// alert("in doSelfPaySignup(): uid: " +
-	// document.getElementById('uid_fld').value);
 	var formObject = document.getElementById('sub_form');
 
 	YAHOO.util.Connect.setForm(formObject);
 
 	var requestCallback = {
 		success : function(o) {
-			alert("signup success: " + o.responseText);
 			YAHOO.cm.signup_progress.destroy();
 			selfpayComplete(o.responseText);
 		},
 		failure : function(o) {
-			alert("signup failure");
 			YAHOO.cm.signup_progress.destroy();
 			alert('Error performing signup: ' + o.status);
 		},
 		argument : null
 	};
 
-	alert("before asyncRequest()");
 	var cObj = YAHOO.util.Connect.asyncRequest('POST', '/selfpay', requestCallback);
-	alert("after asyncRequest()");
 
 	showProcessingMessage();
 }
@@ -643,13 +637,17 @@ function selfpayComplete(data) {
 
    var obj = eval('(' + data + ')');
 
+   var html;
+   var errorMsg = obj.error;
+   if (errorMsg == null) {
+
    var cmKey = obj.key;  // login security key
    var userId = obj.uid;
    var loginName = obj.loginName;
    var password = obj.password;
 
    var email = $get('student_email').value;
-   var html = "<h1>Catchup Math Signup Success</h1><p><b>Congratulations!</b><br/>You have successfully signed up for Catchup Math.</p>" +
+   html = "<h1>Catchup Math Signup Success</h1><p><b>Congratulations!</b><br/>You have successfully signed up for Catchup Math.</p>" +
                "<p>Your login information is: <br/>" +
                "<div class='login-info'>" +
                "<div class='col'>Login Name: </div><div class='val'>" + loginName + "</div>" +
@@ -660,12 +658,17 @@ function selfpayComplete(data) {
               " and enter the login information shown above.</p>" +
               "<p class='info-sent'>Your signup information has also been sent to the email address: " + email + "</p>" +
               "<p><a href='/login.html'>Begin Using Catchup Math</a></p>";
+   }
+   else {
+	   html = "<h1>Catchup Math Signup Error</h1><p><b>Unfortunately, there was a problem processing your request.</b><br/></p>" +
+       "<p>Error message: <br/>" + errorMsg + "</p>";
+   }
 
    var e1 = document.getElementById('signup_page');
    e1.setAttribute('style', 'display:none');
-   var success = document.getElementById('signup_success');
-   success.innerHTML = html;
-   success.setAttribute('style', 'display:block');
+   var result = document.getElementById('signup_success');
+   result.innerHTML = html;
+   result.setAttribute('style', 'display:block');
    window.scrollTo(0,0); 
 }
 function setTotalCost(cost) {
