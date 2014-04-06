@@ -85,7 +85,7 @@ var moreInfo = '' +
     '<li>A self-registration code, e.g., quizme, jones1, or essentials</li>' +
     '<li>Your name and birth date, e.g., smith-robin-0212, if you self-registered</li>' +
     '<li>Your student ID</li>' +
-    '<li>A password that your teacher assigned to you</li>' +
+    '<li>A password that your teacher/professor assigned to you</li>' +
     '</ul>' +
     '<h2>Teachers</h2>' +
     '<p>Ask your Account Manager for your admin password.</p>' +
