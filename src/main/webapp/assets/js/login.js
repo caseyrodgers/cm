@@ -94,3 +94,13 @@ var moreInfo = '' +
 function showMore() {
   showDialog(moreInfo,"More Info");
 }
+
+var moreInfoPersonal = '' +
+'<div class="more-info">' +
+'<p>If you purchased Catchup Math for a school or college course, then use the School/College login method.</p>' +
+'<p>If you forgot your personal password, it should be in the original account email you received, unless you changed the password.</p>'
+'</div>';
+
+function showMorePersonal() {
+showDialog(moreInfoPersonal,"More Info");
+}
