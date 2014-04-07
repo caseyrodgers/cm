@@ -4,7 +4,11 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 
 
@@ -13,7 +17,7 @@ import com.sencha.gxt.widget.core.client.form.TextArea;
  * @author casey
  *
  */
-public class CKEditorPanel extends SimplePanel {
+public class CKEditorPanel extends FlowPanel {
     
     private TextArea _textArea;
     private String _id;
@@ -25,8 +29,7 @@ public class CKEditorPanel extends SimplePanel {
         _id = id;
         this.callback = callback;
         _textArea.setId(_id);
-        setWidget(_textArea);
-        
+        add(_textArea);
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
@@ -82,4 +85,35 @@ public class CKEditorPanel extends SimplePanel {
     public void destroyEditor() {
         jsni_releaseResources(_id);
     }
+
+    CenterLayoutContainer _editDisablePanel; 
+	public void showClickToEdit(boolean forceShow) {
+		
+		if(!forceShow) {
+			/** only show if CURRENTLY active */
+			if(_editDisablePanel == null) {
+				return;
+			}
+		}
+		
+		if(_editDisablePanel != null) {
+			remove(_editDisablePanel);
+		}
+		_editDisablePanel = new CenterLayoutContainer();
+		TextButton closeButton = new TextButton("Click to Edit", new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				remove(_editDisablePanel);
+				_editDisablePanel = null;
+			}
+		});
+		_editDisablePanel.add(closeButton);
+		int height = getElement().getClientHeight();
+		int width = getElement().getClientWidth();
+		
+		_editDisablePanel.setHeight(height);
+		_editDisablePanel.setWidth(width);
+		_editDisablePanel.getElement().setAttribute("style",  "position: absolute;top: 0;left: 0;z-index: 999;opacity: .5;background: grey");
+		add(_editDisablePanel);
+	}
 }

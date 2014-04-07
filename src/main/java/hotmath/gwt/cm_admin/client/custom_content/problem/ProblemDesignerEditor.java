@@ -4,7 +4,6 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.WhiteboardTemplatesResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardTemplatesAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
-import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -22,7 +21,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -111,7 +109,7 @@ public class ProblemDesignerEditor extends GWindow {
 			}
 		});
 	}
-
+	
 	private void destroyEditor() {
 		_ckEditorPanel.destroyEditor();
 		_ckEditorPanel = null;
@@ -132,9 +130,9 @@ public class ProblemDesignerEditor extends GWindow {
 				@Override
 				public void execute() {
 					_showWorkPanel.resizeWhiteboard(_lastWbheight);
+					_ckEditorPanel.showClickToEdit(false);
 				}
 			});
-
 		}
 	}
 
@@ -150,8 +148,10 @@ public class ProblemDesignerEditor extends GWindow {
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				_lastWbheight = _wbWrapper.getOffsetHeight();
-				_showWorkPanel.resizeWhiteboard(_lastWbheight);
+				if(_showWorkPanel != null) {
+					_lastWbheight = _wbWrapper.getOffsetHeight();
+					_showWorkPanel.resizeWhiteboard(_lastWbheight);
+				}
 			}
 		});
 
@@ -253,6 +253,10 @@ public class ProblemDesignerEditor extends GWindow {
 		public Action<? extends Response> createWhiteboardSaveAction(
 				String pid, CommandType commandType, String data) {
 			_countChanges++;
+			
+			/** disable on any whitebaord movement */
+			_ckEditorPanel.showClickToEdit(true);
+			
 			return null;
 		}
 
