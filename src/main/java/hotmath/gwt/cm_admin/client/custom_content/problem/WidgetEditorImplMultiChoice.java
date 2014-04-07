@@ -45,54 +45,6 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 
 	boolean areChanges;
 
-	protected void buildUi_X() {
-
-		FlowPanel _mainFlow = new FlowPanel();
-
-		String choiceData = getWidgetDef().getValue();
-		if (choiceData == null) {
-			choiceData = "";
-		}
-		String c[] = choiceData.split("\\|");
-		int correctIndex = 0;
-		if (c.length > 1) {
-			correctIndex = Integer.parseInt(c[c.length - 1]);
-			// convert to one base
-			if (correctIndex > 0) {
-				correctIndex--;
-			}
-			for (int i = 0, t = c.length; i < (t - 1); i++) {
-
-				HTML html = new HTML(CmGwtUtils.jsni_decodeBase64(c[i]));
-				_mainFlow.add(html);
-			}
-		}
-
-		setWidget(_mainFlow);
-
-		addTool(new TextButton("Add Choice", new SelectHandler() {
-
-			@Override
-			public void onSelect(SelectEvent event) {
-				addChoice();
-			}
-
-		}));
-		addTool(new TextButton("Remove Choice", new SelectHandler() {
-
-			@Override
-			public void onSelect(SelectEvent event) {
-				removeSelectedChoice();
-			}
-		}));
-
-		addTool(new TextButton("Edit", new SelectHandler() {
-			@Override
-			public void onSelect(SelectEvent event) {
-				editSelectedChoice();
-			}
-		}));
-	}
 
 	Grid<MultiValue> _grid;
 
@@ -101,7 +53,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 				props.key());
 		List<ColumnConfig<MultiValue, ?>> cols = new ArrayList<ColumnConfig<MultiValue, ?>>();
 		ColumnConfig<MultiValue, String> nameCol = new ColumnConfig<MultiValue, String>(
-				props.valueDecoded(), 200, "Value");
+				props.valueDecoded(), 150, "Value");
 		ColumnConfig<MultiValue, Boolean> correctCol = new ColumnConfig<MultiValue, Boolean>(
 				props.correct(), 40, "Is Correct?");
 		correctCol.setToolTip(SafeHtmlUtils
@@ -144,8 +96,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 			}
 		});
 
-		GridEditing<MultiValue> editor = new GridInlineEditing<MultiValue>(
-				_grid);
+		GridEditing<MultiValue> editor = new GridInlineEditing<MultiValue>(_grid);
 		editor.addCompleteEditHandler(new CompleteEditHandler<MultiValue>() {
 			@Override
 			public void onCompleteEdit(CompleteEditEvent<MultiValue> event) {
@@ -166,6 +117,9 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 		});
 		editor.addEditor(correctCol, new CheckBox());
 
+		Grid<MultiValue> eg = editor.getEditableGrid();
+		eg.getView().setAutoFill(true);
+		eg.getView().setAutoExpandColumn(cols.get(0));
 		setWidget(editor.getEditableGrid());
 
 		addTool(new TextButton("Add Choice", new SelectHandler() {

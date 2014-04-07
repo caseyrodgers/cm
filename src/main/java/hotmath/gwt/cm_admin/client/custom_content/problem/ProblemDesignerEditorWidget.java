@@ -64,7 +64,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
     public ProblemDesignerEditorWidget(SolutionInfo _solutionInfo, String widgetJson, CallbackOnComplete callback) {
         super(false);
         setPixelSize(390, 350);
-        setResizable(true);
+        setResizable(false);
         this._solutionInfo = _solutionInfo;
         this._callback = callback;
 

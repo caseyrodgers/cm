@@ -3,6 +3,8 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 
+import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 
@@ -23,7 +25,13 @@ public class WidgetEditorImplRational extends WidgetEditorImplFraction {
             format = p.length > 0?p[0]:null;
         }
         _format.setValue(format);
-        super._fields.add(new MyFieldLabel(_format, "Units",80, 80));
+        
+        DisclosurePanel advanced = new DisclosurePanel("Advanced Options");
+		VerticalLayoutContainer adFields = new VerticalLayoutContainer();
+		advanced.setContent(adFields);
+		adFields.add(new MyFieldLabel(_format, "Units",80, 80));
+		
+		_fields.add(advanced);
     }
     @Override
     protected WidgetDefModel createWidgetDefModel() {
@@ -34,7 +42,6 @@ public class WidgetEditorImplRational extends WidgetEditorImplFraction {
         wd.setFormat(_format.getCurrentValue()!=null?_format.getCurrentValue():null);
         return wd;
     }
-    
     
     @Override
     public String getDescription() {

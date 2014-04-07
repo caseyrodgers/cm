@@ -8,7 +8,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 
 public class WidgetEditorImplMixedFraction extends WidgetEditorImplRational {
 
-    TextField _wholeNumber = new TextField();
+    NumericalTextField _wholeNumber = new NumericalTextField();
 
     public WidgetEditorImplMixedFraction(WidgetDefModel widgetDef) {
         super(widgetDef);
@@ -27,9 +27,6 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImplRational {
             	toSplit = p[1];
             }
             else {
-            	_wholeNumber.setValue(p[0]);
-            	_numerator.setValue("");
-            	
                 toSplit = p[0];	
             }
             
@@ -43,17 +40,11 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImplRational {
     
     @Override
     public String checkValid() {
-    	try {
-    		Integer.parseInt(_wholeNumber.getCurrentValue());
-	    	if(_wholeNumber.getCurrentValue() == null) {
-	    		return "The whole number needs to be specified";
-	    	}
-	    	else {
-	    		return super.checkValid();
-	    	}
+    	if(!_wholeNumber.validate()) {
+    		return "Whole number needs to be numeric";
     	}
-    	catch(Exception e) {
-    		return "Invalid mixed fraction";
+    	else {
+    		return super.checkValid();
     	}
     }
 

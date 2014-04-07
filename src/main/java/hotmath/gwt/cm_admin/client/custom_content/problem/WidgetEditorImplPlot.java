@@ -14,14 +14,14 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements WidgetEditor {
 
 
-	TextField _xValue = new TextField();
-	TextField _yValue = new TextField();
-	TextField _xMin = new TextField();
-	TextField _xMax = new TextField();
-	TextField _yMin = new TextField();
-	TextField _yMax = new TextField();
-	TextField _xInc = new TextField();
-	TextField _yInc = new TextField();
+	NumericalTextField _xValue = new NumericalTextField();
+	NumericalTextField _yValue = new NumericalTextField();
+	NumericalTextField _xMin = new NumericalTextField();
+	NumericalTextField _xMax = new NumericalTextField();
+	NumericalTextField _yMin = new NumericalTextField();
+	NumericalTextField _yMax = new NumericalTextField();
+	NumericalTextField _xInc = new NumericalTextField();
+	NumericalTextField _yInc = new NumericalTextField();
 	
 	public WidgetEditorImplPlot(WidgetDefModel widgetDef) {
 		super(widgetDef);
@@ -118,6 +118,16 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements Wid
 
 	@Override
 	public String checkValid() {
+		
+		_xValue.validate();
+		_yValue.validate();
+		_xMin.validate();
+		_xMax.validate();
+		_yMin.validate();
+		_yMax.validate();
+		_xInc.validate();
+		_yInc.validate();
+		
 		PlotInfo pi = getPlotInfo();
 		if(pi != null) {
 			if(pi.xMin < 0 && pi.yMin < 0) {

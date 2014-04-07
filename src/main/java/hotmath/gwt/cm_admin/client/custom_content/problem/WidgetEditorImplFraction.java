@@ -1,14 +1,12 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
-import com.sencha.gxt.widget.core.client.form.TextField;
-
 import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 
 public class WidgetEditorImplFraction extends WidgetEditorImplDefault {
 
-    TextField _numerator;
-    TextField _denominator;
+	NumericalTextField _numerator;
+	NumericalTextField _denominator;
 
     public WidgetEditorImplFraction(WidgetDefModel widgetDef) {
         super(widgetDef);
@@ -16,8 +14,8 @@ public class WidgetEditorImplFraction extends WidgetEditorImplDefault {
 
     @Override
     protected void buildUi() {
-        _numerator = new TextField();
-        _denominator = new TextField();
+        _numerator = new NumericalTextField();
+        _denominator = new NumericalTextField();
         
         
         String value = getWidgetDef().getValue();
@@ -50,17 +48,9 @@ public class WidgetEditorImplFraction extends WidgetEditorImplDefault {
 
     @Override
     public String checkValid() {
-        try {
-            if(_numerator.getCurrentValue() != null) {
-                Integer.parseInt(_numerator.getCurrentValue());
-            }
-            if(_denominator.getCurrentValue() != null) {
-                Integer.parseInt(_denominator.getCurrentValue());
-            }
-        }
-        catch(Exception e) {
-            return "Invalid fraction values.  Make sure both are integers";
-        }
+    	if(!_numerator.validate() || !_denominator.validate()) {
+    		return "Both numerator and denomiator must be numerical values";
+    	}
         return null;
     }
 }

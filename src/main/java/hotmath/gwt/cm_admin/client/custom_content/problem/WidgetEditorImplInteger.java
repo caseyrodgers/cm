@@ -16,7 +16,7 @@ public class WidgetEditorImplInteger extends WidgetEditorImplDefault {
     }
     
     protected void buildUi() {
-        _correctIntegerValue = new TextField();
+        _correctIntegerValue = new NumericalTextField();
         _correctIntegerValue.setValue(getIntValueAsString(_widgetDef.getValue()!=null?_widgetDef.getValue():""));
         _fields.add(new MyFieldLabel(_correctIntegerValue, "Correct Value",80, 100));
     }
@@ -34,19 +34,9 @@ public class WidgetEditorImplInteger extends WidgetEditorImplDefault {
     
     @Override
     public String checkValid() {
-        
-        String currVal = _correctIntegerValue.getCurrentValue();
-        if(currVal == null || currVal.length() == 0) {
-            return "Must be specified";
-        }
-        
-        try {
-            int val = Integer.parseInt(currVal);
-        }
-        catch(Exception e) {
-            return "Invalid value";
-        }
-        
+    	if(!_correctIntegerValue.validate()) {
+    		return "Is invalid";
+    	}
         return null;
     }
     
