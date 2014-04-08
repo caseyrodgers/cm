@@ -27,6 +27,11 @@ public class WidgetEditorImplNoWidget extends WidgetEditorImplDefault {
     }
     
     @Override
+    public String getWidgetJson() {
+    	return null;  // return null to signify no widget
+    }
+    
+    @Override
     public String getDescription() {
     	return "Write and/or draw your answer on the whiteboard.";
     }

@@ -132,7 +132,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         
         Log.debug("CatchupMathAdmin: login complete, is Mobile: " + UserInfoBase.getInstance().isMobile());
 
-        if(checkForDebuggingTest()) {
+        if(CatchupMathAdminTests.runTest()) {
         	return;
         }
 
@@ -166,73 +166,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             new CollectEmailFromUserDialog();
         }
     }
-
-    private boolean checkForDebuggingTest() {
-        String test = CmShared.getQueryParameterValue("test");
-        if(test.equals("final")) {
-            FinalExamCreationManager.startTest();
-        }
-        else if(test.equals("assignments")) {
-            AssignmentManagerDialog2.startTest();
-        }
-        else if(test.equals("assignment_status")) {
-            AssignmentStatusDialog.startTest();
-        }
-        else if(test.equals("assignment_edit")) {
-            EditAssignmentDialog.startTest();
-        }
-        else if(test.equals("ccss")) {
-            CCSSCoverageWindow.startTest();
-        }
-        else if(test.equals("highlights")) {
-            HighlightsDataWindow.getSharedInstance(2).setVisible(true);
-        }
-        else if(test.equals("register")) {
-            RegisterStudent.startTest();
-        }
-        else if(test.equals("activity")) {
-            UserActivityLogDialog.startTest();
-        }
-        else if(test.equals("weblinks")) {
-            WebLinksManager.startTest();
-        }
-        else if(test.equals("weblinkeditor")) {
-            WebLinkEditorDialog.startTest();
-        }        
-        else if(test.equals("search")) {
-            LessonSearchWindow.startTest();
-        }
-        else if(test.equals("custom_manager")) {
-            CustomProblemManager.startTest();
-        }
-        else if(test.equals("assignment_add_problem")) {
-            AddProblemDialog.startTest();
-        }
-        else if(test.equals("widget_editor")) {
-            ProblemDesignerEditorWidget.doTest();
-        }
-        else if(test.equals("hint_editor")) {
-            ProblemDesignerEditorHintStep.doTest();
-        }
-        else if(test.equals("whiteboard_templates")) {
-            WhiteboardTemplatesManager.doTest();
-        }
-        else if(test.equals("date_chooser")) {
-            DateRangePickerDialog.doTest();
-        }
-        else if(test.equals("clipboard_image")) {
-            CreateTemplateFromClipboardImage.doTest();
-        }
-        else if(test.equals("custom_problem_designer")) {
-            ProblemDesignerEditor.doTest();
-        }
-        else {
-        	return false;
-        }
-        
-        return true;
-    }
-
 
 	private void loadMainPage() {
         CmLogger.info("Loading CMAdmin main page");
