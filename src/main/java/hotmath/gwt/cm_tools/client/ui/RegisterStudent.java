@@ -96,13 +96,14 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
     private boolean loading;
     private boolean passPercentReqd;
     private boolean selfPay;
+
     private Integer sectionCount = 0;
     private Integer activeSection = 0;
 
     private StudentModelI stuMdl;
     private StudentSettingsModel stuSettingsMdl;
     protected CmAdminModel cmAdminMdl;
-    private AccountInfoModel acctInfoMdl;
+    protected AccountInfoModel acctInfoMdl;
     private int inProcessCount;
     private String subjectId;
 
@@ -177,8 +178,6 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         if (addSaveButton) {
             addButton(saveButton(_fsProgram));
         }
-        
-        
         
         if(sm != null && (sm.getProgram().getProgramType() == CmProgramType.AUTOENROLL || sm.getProgram().getProgramType() == CmProgramType.ASSIGNMENTSONLY)) {
             stdAdvOptionsBtn.setEnabled(false);
@@ -430,7 +429,6 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 stuSettingsMdl = options.getSettings();
                 passPercent = options.getPassPercent();
                 activeSection = options.getSectionNum();
-                selfPay = options.getSelfPay();;
             }
         };
 
@@ -453,9 +451,6 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 ssm.setTutoringAvailable(acctInfoMdl.getIsTutoringEnabled());
             }
         }
-        boolean isCollege = acctInfoMdl.getIsCollege();
-        options.setSelfPayIsSettable(isCollege);
-        options.setSelfPay(selfPay);
 
         options.setPassPercent(passPercent);
         options.setSettings(ssm);
@@ -1070,7 +1065,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             }
             passPercentReqd = sp.isNeedsPassPercent();
 
-            
+
             if (stdAdvOptionsBtn.isVisible()) {
                 CmProgramType pt = stuMdl.getProgram().getProgramType();
                 if(pt == CmProgramType.AUTOENROLL ||  pt == CmProgramType.PLACEME || pt == CmProgramType.ASSIGNMENTSONLY || pt == CmProgramType.NONE) {
