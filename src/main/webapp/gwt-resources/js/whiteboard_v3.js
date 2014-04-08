@@ -1857,7 +1857,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
         var l = graphicDataStore.length
         for (var i = 0; i < l; i++) {
             var obj = graphicDataStore[i]
-            if (obj.type == 'cmd') {
+            var isGraph=obj.id==11||obj.id==12||obj.id=='graph'
+            isGraph=false;
+            if (obj.type == 'cmd'||isGraph) {
                 continue
             }
             if (isObjDeleted(obj.uid)) {
@@ -5577,10 +5579,20 @@ var Whiteboard = function (cont, isStatic, _opts) {
         buffercanvas.width = canvas.width;
         buffercanvas.height = canvas.height;
         var l = graphicDataStore.length;
+        var graphsTemp=[]
         buffercontext.save();
         buffercontext.translate(scrollPosition.x, scrollPosition.y);
         for (var i = 0; i < l; i++) {
+           /* var _t=graphicDataStore[i]
+            if(_t.type!='cmd'&&_t.id==11||_t.id==12||_t.id=='graph'){
+                graphsTemp.push(_t);
+                continue
+            }*/
             renderToBuffer(graphicDataStore[i], buffercontext);
+        }
+        for (var i = 0; i < graphsTemp.length; i++) {
+            var _t=graphsTemp[i]
+            renderToBuffer(_t, buffercontext);
         }
         buffercontext.restore();
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -5623,7 +5635,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         }
     }
 
-    function erase(x, y, ctx) {
+    function erase(x, y, ctx, skip) {
         var ew = 30
         var ep = ew;
         var cntx = ctx ? ctx : context
@@ -5659,7 +5671,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
             xmax: right,
             ymax: bottom
         }
-        checkForObjectErase(r)
+        if(!skip){
+            checkForObjectErase(r);
+        }
     }
 
 
@@ -6372,7 +6386,7 @@ source: https://gist.github.com/754454
                 x1 = graphic_data[i].x - cx;
                 y1 = graphic_data[i].y - cy;
                 deb += x1 + ":" + y1 + "||"
-                erase(x1, y1, ctx);
+                erase(x1, y1, ctx, true);
 
 
             }
