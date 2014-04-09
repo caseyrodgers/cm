@@ -37,6 +37,8 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImpFractionWithAd
         	}
         }
         
+        super.setFormatValue(_widgetDef.getFormat());
+        
         _fields.add(super.createAdvanced());
     }
     

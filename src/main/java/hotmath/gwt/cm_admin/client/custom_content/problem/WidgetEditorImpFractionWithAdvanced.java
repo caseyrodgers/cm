@@ -30,5 +30,18 @@ public class WidgetEditorImpFractionWithAdvanced extends WidgetEditorImplFractio
 		adFields.add(new MyFieldLabel(_format, "Units",80, 80));
 		return advanced;
 	}
+
+	public void setFormatValue(String format) {
+        if(format !=null) {
+            String p[] = format.split("\\|");
+            format = p.length > 0?p[0]:null;
+        }
+        if(format != null) {
+        	if(format.startsWith("measure_")) {
+        		// strip off measure
+        		_format.setValue(format.substring(8));
+        	}
+        }
+	}
     
 }

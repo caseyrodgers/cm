@@ -150,3 +150,9 @@ solution-searcher-dialog button {
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
 }
+
+
+.wb_json {
+	display: none;
+}	
+}

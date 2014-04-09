@@ -5,19 +5,14 @@ import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 
 public class WidgetEditorImplRational extends WidgetEditorImpFractionWithAdvanced {
-
-    TextField _format = new TextField();
-
     TextField _decimal = new NumericalTextField();
 
 	private TabPanel _tabPanel;
@@ -31,14 +26,8 @@ public class WidgetEditorImplRational extends WidgetEditorImpFractionWithAdvance
         super.buildUi();
         
         _decimal.setAllowBlank(false);
+        super.setFormatValue(_widgetDef.getFormat());
         
-        String format = getWidgetDef().getFormat();
-        if(format !=null) {
-            String p[] = format.split("\\|");
-            format = p.length > 0?p[0]:null;
-        }
-        _format.setValue(format);
-
 		
 		_fields.clear();
 		
@@ -61,6 +50,24 @@ public class WidgetEditorImplRational extends WidgetEditorImpFractionWithAdvance
 		 _fields.add(_tabPanel);
 		 
 		_fields.add(super.createAdvanced());
+		
+		
+		String p[] = (_widgetDef.getValue()!=null?_widgetDef.getValue():"").split("/");
+		if(p.length == 2) {
+			_tabPanel.setActiveWidget(panFrac);
+		}
+		else {
+			_tabPanel.setActiveWidget(_panDec);
+			_decimal.setValue(p[0]);
+		}
+		
+		_tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
+			@Override
+			public void onSelection(SelectionEvent<Widget> event) {
+				if(_tabPanel.getActiveWidget() == _panDec) {
+				}
+			}
+		});
     }
     
     @Override
@@ -80,11 +87,15 @@ public class WidgetEditorImplRational extends WidgetEditorImpFractionWithAdvance
         WidgetDefModel wd = super.createWidgetDefModel();
         wd.setType("number_rational");
         wd.setAnsFormat("lowest_term");
+        wd.setAllowMixed(false);
         
-        if(!isDecimal()) {
-        	wd.setAllowMixed(true);
+        String format = _format.getCurrentValue()!=null?_format.getCurrentValue():null;
+        if(format != null) {
+        	if(!format.startsWith("measure_")) {
+        		format = "measure_"+format;
+        	}
         }
-        wd.setFormat(_format.getCurrentValue()!=null?_format.getCurrentValue():null);
+        wd.setFormat(format);
         return wd;
     }
 
