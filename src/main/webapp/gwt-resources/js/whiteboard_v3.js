@@ -91,6 +91,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
     var totalTempsloaded = 0;
     var graphEditMode = false;
     var editGR;
+    var deleteGR;
+    var rotateGR;
+    var scaleGR;
     var textEditMode = false;
     var cTMaxWidth = null;
     var objOnSel = null;
@@ -200,7 +203,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         title: 'Templates',
         classes: 'big_tool_button button_temp',
         text: "Temp"
-    }]
+    }];
 
         function getNextObjectID() {
             //var l=uidSeed?uidSeed+1:wb.getUIDSeed();
@@ -897,7 +900,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 //context.beginPath();
             }
             context.arc(xLT, yLT, hitR, 0, 2 * Math.PI, false);
+            context.fill()
             context.fillRect(xRB - hitR, yRB - hitR, hitC, hitC);
+            context.beginPath();
+            context.drawImage(rotateGR, xLT - (hitR-4), yLT - (hitR-4), hitC - 8, hitC - 8)
+            context.drawImage(scaleGR, xRB - (hitR-4), yRB - (hitR-4), hitC - 8, hitC - 8)
             //context.arc(x0 + w0+hitR, y0-hitR, hitR, 0, 2 * Math.PI, false);
         }
         //context.arc(x0-hitR, y0-hitR, hitR, 0, 2 * Math.PI, false);
@@ -906,7 +913,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         context.arc(xRT, yRT, hitR, 0, 2 * Math.PI, false);
         context.restore();
         context.fill()
-        context.font = "bold 14px Arial";
+       /* context.font = "bold 14px Arial";
         context.fillStyle = "rgba(255, 255, 255, 0.75)";
         context.textBaseline = 'center';
         var mw = context.measureText('X').width;
@@ -918,7 +925,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
         context.strokeStyle = "rgba(255, 255, 255, 0.75)";
         context.lineWidth = 3;
         context.arc(xRT, yRT, hitR - 5, 0, 2 * Math.PI, false);
-        context.stroke();
+        context.stroke();*/
+        context.drawImage(deleteGR, xRT - (hitR-4), yRT - (hitR-4), hitC - 8, hitC - 8)
         if (selectedObj.id == 'graph' || selectedObj.id == 2) {
 
             context.drawImage(editGR, x0 - (hitC - 4), y0 + h0 + (4), hitC - 8, hitC - 8)
@@ -1531,7 +1539,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             }
             if (sel && hasShape) {
                 //selectedObj = graphicDataStore[i];
-                
+
                 return graphicDataStore[i];
             }
         }
@@ -1857,9 +1865,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
         var l = graphicDataStore.length
         for (var i = 0; i < l; i++) {
             var obj = graphicDataStore[i]
-            var isGraph=obj.id==11||obj.id==12||obj.id=='graph'
-            isGraph=false;
-            if (obj.type == 'cmd'||isGraph) {
+            var isGraph = obj.id == 11 || obj.id == 12 || obj.id == 'graph'
+            if (obj.type == 'cmd' || isGraph) {
                 continue
             }
             if (isObjDeleted(obj.uid)) {
@@ -2011,7 +2018,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             var testLine = line + words[n] + ' ';
             var metrics = context.measureText(testLine);
             var testWidth = metrics.width;
-            if (testWidth >= maxWidth && n > 0) {
+            if (testWidth > maxWidth && n > 0) {
                 context.fillText(line, x, y);
                 w = Math.max(w, context.measureText(line).width);
                 line = words[n] + ' ';
@@ -2071,21 +2078,23 @@ var Whiteboard = function (cont, isStatic, _opts) {
         // alert(txt);
         var cntxt = ctx ? ctx : context;
         var str = txt.split("\n")
+        var _xp = parseFloat($get_jqElement("#inputBox").css("left")) + parseFloat($get_jqElement("#input_box").css("left"))
+        var _yp = parseFloat($get_jqElement("#inputBox").css("top")) + parseFloat($get_jqElement("#input_box").css("top"))
         if (!notEdit && transMode == 'edit' && selectionMode && selectedObj) {
-            xp = parseFloat($get_jqElement("#inputBox").css("left"))
-            yp = parseFloat($get_jqElement("#inputBox").css("top"))
+            xp = _xp
+            yp = _yp
             boo = true;
             col = selectedObj.dataArr[0].color;
         }
-        var x0 = xp ? xp : clickX
-        var y0 = yp ? yp : clickY
+        var x0 = xp ? xp : _xp
+        var y0 = yp ? yp : _yp
         var ht = determineFontHeight(str[0]);
         var sy = y0
         cntxt.font = "20pt Arial";
         cntxt.textBaseline = 'top';
         var colr = col ? col : wb.globalStrokeColor;
         cntxt.fillStyle = colr;
-        var maxWidth = xt ? cTMaxWidth : $get_jqElement("#content").width();
+        var maxWidth = xt ? cTMaxWidth : $get_jqElement("#content").outerWidth();
         /*for (var i = 0; i < str.length; i++) {
             cntxt.fillText(str[i], x0, y0)
             y0 += ht + ht / 3
@@ -2114,6 +2123,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     x: xp,
                     y: yp,
                     text: txt,
+                    textBoxWidth: maxWidth,
                     brect: rect
                 };
                 if (!objectActions[uid]['edit']) {
@@ -2253,7 +2263,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         $get_Element("#button_oval").style.border = '1px solid #000000';
         $get_Element("#button_eraser").style.border = '1px solid #000000';
         if ($get_Element("#button_nav")) {
-                $get_Element("#button_nav").style.border = '1px solid #000000';
+            $get_Element("#button_nav").style.border = '1px solid #000000';
         }
         if ($get_Element("#button_temp")) {
             $get_Element("#button_temp").style.border = '1px solid #000000';
@@ -3744,6 +3754,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
             //
             editGR = new Image();
             editGR.src = imgPath + 'edit.png';
+            deleteGR = new Image();
+            deleteGR.src = imgPath + 'delete.png';
+            rotateGR = new Image();
+            rotateGR.src = imgPath + 'rotate.png';
+            scaleGR = new Image();
+            scaleGR.src = imgPath + 'scale.png';
             //
             offX = $get_Element("#canvas-container").offsetLeft;
             offY = $get_Element("#canvas-container").offsetTop;
@@ -3915,7 +3931,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                             }
                         }
                     }
-                    var callUndo=wb.options.callInternalUndo?wb.whiteboardOut_local:wb.whiteboardOut
+                    var callUndo = wb.options.callInternalUndo ? wb.whiteboardOut_local : wb.whiteboardOut
                     for (var j = 0; j < c; j++) {
                         callUndo('undo', true);
                     }
@@ -4484,8 +4500,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
             };
 
             var ev_onmouseup = function (_event) {
-                if (isReadOnly || currentTool == 'nav' || event_rightclick) {
+                if (isReadOnly || currentTool == 'nav' || event_rightclick || wb.ib_drag == 'drag') {
                     event_rightclick = false;
+                    wb.ib_drag == 'null'
                     return
                 }
                 if (!selectedObj && graphEditMode) {
@@ -5023,7 +5040,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                         objOnSel = null;
                         var cur = 'crosshair'
                         if (currentTool == 'pencil' && !selectionMode) {
-                            cur = 'url("' + _imageBaseDir + 'pencil.png") 0 26,auto'
+                            cur = 'url(' + _imageBaseDir + 'pencil.png) 0 26,auto'
                         } else if (currentTool == 'text' && !selectionMode) {
                             cur = 'text'
                         } else if (selectionMode) {
@@ -5316,8 +5333,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
         if (!$get_Element("#content")) {
 
             var maxW = docWidth - clickX - 50
-            $($("#" + contDiv + " [name='inputBox'] div")[0]).html("<textarea class='content' name='content' style='min-width:60px;min-height:40px;width:60px;height:40px;font:20pt Arial;color:" + wb.globalStrokeColor + "' ></textarea>" + '<div name="dummy_resize" style="max-width:' + maxW + 'px;min-height:40px;display: none;font:20pt Arial;word-wrap:normal;"></div>');
-            $get_jqElement("#inputBox").find("[name='content']").live({
+            /*$($("#" + contDiv + " [name='inputBox'] div")[0]).html("<textarea class='content' name='content' style='white-space:normal;min-width:60px;min-height:40px;width:60px;height:40px;font:20pt Arial;color:" + wb.globalStrokeColor + "' ></textarea>" + '<div name="dummy_resize" style="max-width:' + maxW + 'px;min-height:40px;display: none;font:20pt Arial;word-wrap:normal;white-space:normal;"></div>');*/
+
+            $($("#" + contDiv + " [name='inputBox'] div")[0]).html("<div class='input_box' name='input_box' style='position:absolute;border:1px solid black;left:0px;top:0px;'><textarea class='content' name='content' style='white-space:normal;min-width:60px;min-height:40px;width:60px;height:40px;font:20pt Arial;color:" + wb.globalStrokeColor + ";border:0px;padding:0px;margin:0px;resize:none;overflow:hidden;' ></textarea></div>" + '<div name="dummy_resize" style="max-width:' + maxW + 'px;min-height:40px;display: none;font:20pt Arial;word-wrap:normal;white-space:normal;"></div>');
+            $get_jqElement("#input_box").resizeBox(wb);
+            $("#" + contDiv + " [name='inputBox']").css('border', '0px')
+            /* $get_jqElement("#inputBox").find("[name='content']").live({
                 input: function (e) {
                     var rs = $get_jqElement("#dummy_resize")
                     rs.text($(this).val() + "9.");
@@ -5329,21 +5350,28 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     $(this).css("height", duh + 'px');
                 },
                 mousedown: function (e) {
-                    textAreaW = $get_jqElement("#content").width()
+                    textAreaW = $get_jqElement("#content").outerWidth()
                 },
                 mouseup: function (e) {
-                    var _w = $get_jqElement("#content").width()
+                    var _w = $get_jqElement("#content").outerWidth()
                     if (_w !== textAreaW) {
                         $get_jqElement("#dummy_resize").css('max-width', _w + 'px');
                         $get_jqElement("#content").trigger('input');
                     }
                 }
-            });
+            });*/
         } else {
             var rd = $get_jqElement("#dummy_resize");
             var rs = $get_jqElement("#content");
+            var ri = $get_jqElement("#input_box")
             rs.css('width', '60px');
             rs.css('height', '40px');
+            ri.css('width', '60px');
+            ri.css('height', '40px');
+            $get_jqElement("#inputBox").find("[name='done_btn']").css({
+                'top': ($get_jqElement("#input_box").outerHeight() + 10) + "px",
+                'left': 0 + "px"
+            })
             var maxW = docWidth - clickX - 50;
 
             //rd.css('width','60px');
@@ -5364,20 +5392,29 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
             $get_jqElement("#inputBox").find("[name='content']").val(txt);
             var b = getWhiteboardObjBound('sel')
+            var _w = b.brect.w; //isEdited?isEdited.textBoxWidth:selectedObj.textBoxWidth
             px = data && b ? b.tx : clickX;
             py = data && b ? b.ty : clickY;
             var rs = $get_jqElement("#dummy_resize");
-            rs.css("max-width", b.brect.w + "px");
-            $get_jqElement("#content").css("width", b.brect.w + "px");
+            rs.css("max-width", _w + "px");
+            $get_jqElement("#content").css("width", _w + "px");
             $get_jqElement("#content").css("height", b.brect.h + "px");
+            $get_jqElement("#input_box").css("width", _w + "px");
+            $get_jqElement("#input_box").css("height", b.brect.h + "px");
 
         }
         $get_Element("#inputBox").style.display = 'block';
         $get_Element("#inputBox").style.top = py + "px";
         $get_Element("#inputBox").style.left = px + "px";
+        $get_Element("#input_box").style.top = 0 + "px";
+        $get_Element("#input_box").style.left = 0 + "px";
+        $get_jqElement("#inputBox").find("[name='done_btn']").css({
+            'top': ($get_jqElement("#input_box").outerHeight() + 10) + "px",
+            'left': 0 + "px"
+        })
         //$get_Element("#inputBox").style.color = wb.globalStrokeColor;
         $get_Element("#content").focus();
-        $get_jqElement("#content").trigger('input');
+        //$get_jqElement("#content").trigger('input');
     }
 
     function hideTextBox_html() {
@@ -5579,19 +5616,19 @@ var Whiteboard = function (cont, isStatic, _opts) {
         buffercanvas.width = canvas.width;
         buffercanvas.height = canvas.height;
         var l = graphicDataStore.length;
-        var graphsTemp=[]
+        var graphsTemp = []
         buffercontext.save();
         buffercontext.translate(scrollPosition.x, scrollPosition.y);
         for (var i = 0; i < l; i++) {
-           /* var _t=graphicDataStore[i]
-            if(_t.type!='cmd'&&_t.id==11||_t.id==12||_t.id=='graph'){
+            var _t = graphicDataStore[i]
+            if (_t.type != 'cmd' && _t.id == 11 || _t.id == 12 || _t.id == 'graph') {
                 graphsTemp.push(_t);
                 continue
-            }*/
-            renderToBuffer(graphicDataStore[i], buffercontext);
+            }
+            renderToBuffer(_t, buffercontext);
         }
         for (var i = 0; i < graphsTemp.length; i++) {
-            var _t=graphsTemp[i]
+            var _t = graphsTemp[i]
             renderToBuffer(_t, buffercontext);
         }
         buffercontext.restore();
@@ -5671,8 +5708,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
             xmax: right,
             ymax: bottom
         }
-        if(!skip){
-            checkForObjectErase(r);
+        if (!skip) {
+            checkForObjectErase(r)
         }
     }
 
@@ -6349,8 +6386,8 @@ source: https://gist.github.com/754454
                 var h0 = o.h
                 if (isRotated && transMode != 'rotate') {
                     /*var nr0=getScaleRatio(dw,dh,isRotated.tr)
-                    dw=nr0.w
-                    dh=nr0.h*/
+            dw=nr0.w
+            dh=nr0.h*/
                 }
                 var w = w0 + (dw * 2)
                 var h = h0 + (dh * 2)
@@ -6642,7 +6679,6 @@ source: https://gist.github.com/754454
         console.log(data)
     }
     wb.whiteboardOut_local = function (data, boo) {
-        //alert('WHITEBOARD: whiteboardOut is going nowhere.  Hook up to external process to save data');
         if (data == 'undo') {
             if (graphicDataStore.length) {
                 var obj = graphicDataStore.pop()
@@ -6654,8 +6690,9 @@ source: https://gist.github.com/754454
                         objectActions[obj.uid]['delete'].pop()
                     }
                 }
+                updateCanvas()
             }
-            updateCanvas()
+            
         }
         console.log(data)
     }
@@ -6948,26 +6985,242 @@ source: https://gist.github.com/754454
             'path': path
         });
     }
-    
-    wb.loadFromJson = function(json) {
+    wb.loadFromJson = function (json) {
         try {
             var arr = eval('(' + json + ')');
-            for(var i=0;i<arr.length;i++) {
+            for (var i = 0; i < arr.length; i++) {
                 renderObj(arr[i], false);
                 resetArrays();
-            }   
-        } catch(e){
+            }
+            updateCanvas();
+        } catch (e) {
             alert(e);
-        }        
+        }
     }
-
     return wb;
 
 };
 
+/** textarea plugin inputBox which adds draggable handlers to resize the box
+ */
+(function ($) {
+    var elmX, elmY, elmW, elmH, clickX, clickY, dx, dy;
+    var cont;
+    var wb
+    var getCanvasOffSet = function (scope) {
+        var box = $(scope).get(0).getBoundingClientRect();
+        var body = document.body;
+        var docElem = document.documentElement;
+        var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+        var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+        var clientTop = docElem.clientTop || body.clientTop || 0;
+        var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+        var top = box.top + scrollTop - clientTop;
+        var left = box.left + scrollLeft - clientLeft;
+        var offX = Math.round(left);
+        var offY = Math.round(top);
+        scope.data('offX', offX);
+        scope.data('offY', offY);
+        return {
+            top: offY,
+            left: offX
+        }
+    }
+    var getCursorPos = function (e, scope) {
+        getCanvasOffSet(scope);
+        var offX = scope.data('offX');
+        var offY = scope.data('offY');
+        console.log(offX + "<>" + offY)
+        var ev = e ? e : window.event;
+        isTouchEnabled = ev.type.indexOf('touch') > -1;
+        ev = isTouchEnabled ? ev.changedTouches[0] : ev;
+        var cursor = {
+            x: 0,
+            y: 0
+        };
+        if (ev.pageX !== undefined) {
+            cursor.x = ev.pageX - offX;
+            cursor.y = ev.pageY - offY;
+
+        } else {
+            cursor.x = ev.clientX - offX;
+            cursor.y = ev.clientY - offY;
+
+        }
+        return cursor;
+    }
+    $.fn.resizeBox = function (board) {
+        wb = board
+        cont = $(this);
+        var elm = cont[0];
+        cont.css('height', cont.find("[name='content']").outerHeight() + "px");
+        cont.css('width', cont.find("[name='content']").outerWidth() + "px");
+        cont.parent().parent().find("[name='done_btn']").css({
+            'position': 'relative',
+            'top': "50px"
+        })
+        /* var handles = ['tl', 'tm', 'tr',
+            'ml', 'mr', 'bl', 'bm', 'br'
+        ]*/
+        var handles = ['tl', 'tm', 'tr',
+            'ml', 'mr', 'bl', 'bm', 'br'
+        ]
+        for (var h = 0; h < handles.length; h++) {
+
+            var hDiv = document.createElement('div');
+            hDiv.className = 'dragresize' + ' ' + 'dragresize' + '-' + handles[h];
+            $(hDiv).attr("id", cont.attr('id') + "_" + handles[h]);
+            elm['_handle_' + handles[h]] = elm.appendChild(hDiv);
+            $(hDiv).on('mousedown', function (ev) {
+                ev.preventDefault();
+                wb.ib_drag = 'start';
+                var click = getCursorPos(ev, cont.parent());
+                clickX = click.x;
+                clickY = click.y;
+                elmX = parseFloat(cont.css("left"));
+                elmY = parseFloat(cont.css("top"));
+                elmW = parseFloat(cont.outerWidth());
+                elmH = parseFloat(cont.outerHeight());
+                var id = $(this).attr("id").split("_")[1];
+                $(document).on('mousemove', {
+                    elm: $(this),
+                    id: id
+                }, onMMHandler)
+                $(document).on('mouseup', onMUHandler)
+            })
+        }
 
 
+        return this;
+    };
 
+    function onMUHandler(ev) {
+        ev.preventDefault();
+
+        var click = getCursorPos(ev, cont.parent());
+        dx = click.x - clickX;
+        dy = click.y - clickY;
+        if (Math.abs(dx) > 0 || Math.abs(dy) > 0) {
+            wb.ib_drag = 'end';
+        } else {
+            wb.ib_drag = 'null';
+        }
+        $(document).off('mousemove', onMMHandler);
+        $(document).off('mouseup', onMUHandler);
+    }
+
+    function onMMHandler(ev) {
+        ev.preventDefault();
+        wb.ib_drag = 'drag';
+        var elm = ev.data.elm;
+        var id = ev.data.id;
+        //var cont=$("#cont");
+        var click = getCursorPos(ev, cont.parent());
+        dx = click.x - clickX;
+        dy = click.y - clickY;
+        var x, y, w, h;
+        x = elmX;
+        y = elmY;
+        w = elmW;
+        h = elmH;
+        if (id == 'mr') {
+            w = elmW + dx;
+            if (w < 60) {
+                w = 60
+            }
+        }
+        if (id == 'br') {
+            w = elmW + dx;
+            h = elmH + dy;
+            if (h < 40) {
+                h = 40
+            }
+            if (w < 60) {
+                w = 60
+            }
+        }
+        if (id == 'bm') {
+            h = elmH + dy;
+            if (h < 40) {
+                h = 40
+            }
+        }
+        //
+        if (id == 'tr') {
+            w = elmW + dx;
+            h = elmH - dy;
+            y = elmY + dy;
+            if (h < 40) {
+                h = 40
+                y = elmY + (elmH - h)
+            }
+            if (w < 60) {
+                w = 60
+            }
+        }
+        if (id == 'tm') {
+            h = elmH - dy;
+            y = elmY + dy;
+            if (h < 40) {
+                h = 40
+                y = elmY + (elmH - h)
+            }
+        }
+        if (id == 'bl') {
+            w = elmW - dx;
+            h = elmH + dy;
+            x = elmX + dx;
+            if (h < 40) {
+                h = 40
+            }
+            if (w < 60) {
+                w = 60
+                x = elmX + (elmW - w)
+            }
+        }
+        if (id == 'ml') {
+            w = elmW - dx;
+            x = elmX + dx;
+            if (w < 60) {
+                w = 60
+                x = elmX + (elmW - w)
+            }
+        }
+        if (id == 'tl') {
+            w = elmW - dx;
+            h = elmH - dy;
+            x = elmX + dx;
+            y = elmY + dy;
+            if (h < 40) {
+                h = 40
+                y = elmY + (elmH - h)
+            }
+            if (w < 60) {
+                w = 60
+                x = elmX + (elmW - w)
+            }
+        }
+
+
+        cont.css({
+            'left': x + 'px',
+            'top': y + 'px',
+            'width': w + 'px',
+            'height': h + 'px'
+        })
+        cont.find("[name='content']").css({
+            'width': w + 'px',
+            'height': h + 'px'
+        })
+        cont.parent().parent().find("[name='done_btn']").css({
+            'position': 'relative',
+            'top': parseFloat(cont.css("top")) + (h + 10) + 'px',
+            'left': parseFloat(cont.css("left")) + 'px'
+        })
+    }
+}(jQuery));
+
+//
 /** Math quill has to be setup after the HTML has been rendered
  */
 
