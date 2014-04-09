@@ -13,7 +13,7 @@ public class WidgetEditorFactory {
             return new WidgetEditorImplInteger(widgetDef, "Enter an integer. No decimal points or fraction bars.");
         }
         else if(type.equals("number_decimal")) {
-            return new WidgetEditorImplInteger(widgetDef, "Enter an integer or decimal number.");
+            return new WidgetEditorImplDecimal(widgetDef, "Enter an integer or decimal number.");
         }
         else if(type.equals("inequality")) {
             return new WidgetEditorImplInequality(widgetDef);

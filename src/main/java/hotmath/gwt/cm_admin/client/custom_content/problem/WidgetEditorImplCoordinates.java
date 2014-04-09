@@ -38,10 +38,10 @@ public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEd
                 y = p[1];
             }
         }
-        xField = new TextField();
+        xField = new NumericalTextField();
         xField.setValue(x);
         
-        yField = new TextField();
+        yField = new NumericalTextField();
         yField.setValue(y);
         
         fieldsPanel.add(new MyFieldLabel(xField, "X", 30, 50));
@@ -68,6 +68,10 @@ public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEd
 
     @Override
     public String checkValid() {
+    	if(!xField.validate() || !yField.validate()) {
+    		return "Invalid coordinates";
+    	}
+    	
         String xv = xField.getCurrentValue();
         String yv = yField.getCurrentValue();
         if(xv == null || yv == null || xv.length() == 0 || yv.length() == 0) {

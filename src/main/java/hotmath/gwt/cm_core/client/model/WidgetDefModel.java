@@ -106,7 +106,7 @@ public class WidgetDefModel extends JSOBaseModel {
     	String ansFormatStr=(ansFormat!=null?ansFormat:"");
     	
     	String allowMixedStr = ", allowMixed: " + allowMixed;
-        String json = "{type:'" + type + "',value:'" + value + "', format:'" + formatStr + "|', ans_format: '" + ansFormatStr + "'" + allowMixedStr;
+        String json = "{type:'" + type + "',value:'" + value + "', format:'" + formatStr + "', ans_format: '" + ansFormatStr + "'" + allowMixedStr;
         
         json += ", width:" + width + ", height:" + height + "}";
         return json;

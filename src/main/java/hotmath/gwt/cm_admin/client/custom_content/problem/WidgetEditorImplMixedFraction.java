@@ -1,21 +1,21 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
+import com.google.gwt.user.client.ui.HTML;
+
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 
-import com.sencha.gxt.widget.core.client.form.TextField;
 
+public class WidgetEditorImplMixedFraction extends WidgetEditorImpFractionWithAdvanced {
 
-public class WidgetEditorImplMixedFraction extends WidgetEditorImplRational {
-
-    NumericalTextField _wholeNumber = new NumericalTextField();
+    NumericalTextField _decimal = new NumericalTextField();
 
     public WidgetEditorImplMixedFraction(WidgetDefModel widgetDef) {
         super(widgetDef);
     }
 
     protected void buildUi() {
-        super._fields.add(new MyFieldLabel(_wholeNumber, "Whole",80, 80));
+        super._fields.add(new MyFieldLabel(_decimal, "Decimal",80, 80));
         super.buildUi();
         
         String value = getWidgetDef().getValue();
@@ -23,7 +23,7 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImplRational {
             String p[] = value.split("\\]");
             String toSplit="";
             if(p.length > 1) {
-            	_wholeNumber.setValue(p[0].substring(1));
+            	_decimal.setValue(p[0].substring(1));
             	toSplit = p[1];
             }
             else {
@@ -36,12 +36,14 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImplRational {
         		_denominator.setValue(p[1]);
         	}
         }
+        
+        _fields.add(super.createAdvanced());
     }
     
     @Override
     public String checkValid() {
-    	if(!_wholeNumber.validate()) {
-    		return "Whole number needs to be numeric";
+    	if(!_decimal.validate()) {
+    		return "Decimal number needs to be numeric";
     	}
     	else {
     		return super.checkValid();
@@ -58,7 +60,7 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImplRational {
     @Override
     protected WidgetDefModel createWidgetDefModel() {
         WidgetDefModel wd = super.createWidgetDefModel();
-        wd.setValue("[" + _wholeNumber.getCurrentValue() + "]" + _numerator.getCurrentValue() + "/" + _denominator.getCurrentValue());
+        wd.setValue("[" + (_decimal.getCurrentValue()!=null?_decimal.getCurrentValue() :0) + "]" + _numerator.getCurrentValue() + "/" + _denominator.getCurrentValue());
         
         // {type:'number_rational',allowMixed:true,value:'$_ans_e', format:'text',ans_format:'lowest_term', width:1, height:1}
         

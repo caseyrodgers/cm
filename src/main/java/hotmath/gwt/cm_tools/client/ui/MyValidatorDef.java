@@ -20,7 +20,7 @@ public class MyValidatorDef implements Validator<String> {
     @Override
     public List<EditorError> validate(Editor editor, String value) {
         List<EditorError> errors = null;
-        if(!value.matches(type.regex)){
+        if(value != null && !value.matches(type.regex)){
             errors = new ArrayList<EditorError>();
             errors.add(new DefaultEditorError(editor, value + " isn't a valid " + type.name, value));
         }
