@@ -11,116 +11,188 @@ import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
-
-public class WidgetEditorImplRational extends WidgetEditorImpFractionWithAdvanced {
-    TextField _decimal = new NumericalTextField();
+public class WidgetEditorImplRational extends
+		WidgetEditorImpFractionWithAdvanced {
+	TextField _decimal = new NumericalTextField();
 
 	private TabPanel _tabPanel;
 
 	private FlowLayoutContainer _panDec;
-    public WidgetEditorImplRational(WidgetDefModel widgetDef) {
-        super(widgetDef);
-    }
 
-    protected void buildUi() {
-        super.buildUi();
-        
-        _decimal.setAllowBlank(false);
-        super.setFormatValue(_widgetDef.getFormat());
-        
-		
+	public WidgetEditorImplRational(WidgetDefModel widgetDef) {
+		super(widgetDef);
+	}
+
+	protected void buildUi() {
+		super.buildUi();
+
+		_decimal.setAllowBlank(false);
+		super.setFormatValue(_widgetDef.getFormat());
+
 		_fields.clear();
-		
-		 _panDec = new FlowLayoutContainer();
-		 _panDec.getElement().setAttribute("style",  "background: #DFE8F6;padding: 5px;");
-		 _panDec.add(new HTML("<br/>"));
-		 _panDec.add(new MyFieldLabel(_decimal, "Decimal", 80,50));
-		 _tabPanel = new TabPanel();
-		 _tabPanel.getElement().setAttribute("style",  "background: transparent");
-		 _tabPanel.add(_panDec, "Decimal");
-		 
-		 
-		 FlowLayoutContainer panFrac = new FlowLayoutContainer();
-		 panFrac.getElement().setAttribute("style",  "background: #DFE8F6;padding: 5px;");
-		 panFrac.add(new MyFieldLabel(_numerator, "Numerator", 80, 50));
-		 panFrac.add(new MyFieldLabel(_denominator, "Denominator", 80, 50));
-		 _tabPanel.add(panFrac, "Fraction");
-		 
-		 _fields.add(new HTML("<b>Correct value should be either a decimal or a fraction:</b>"));
-		 _fields.add(_tabPanel);
-		 
+
+		_panDec = new FlowLayoutContainer();
+		_panDec.getElement().setAttribute("style",
+				"background: #DFE8F6;padding: 5px;");
+		_panDec.add(new HTML("<br/>"));
+		_panDec.add(new MyFieldLabel(_decimal, "Decimal", 80, 60));
+		_tabPanel = new TabPanel();
+		_tabPanel.getElement().setAttribute("style", "background: transparent");
+		_tabPanel.add(_panDec, "Decimal");
+
+		FlowLayoutContainer panFrac = new FlowLayoutContainer();
+		panFrac.getElement().setAttribute("style",
+				"background: #DFE8F6;padding: 5px;");
+		panFrac.add(new MyFieldLabel(_numerator, "Numerator", 80, 50));
+		panFrac.add(new MyFieldLabel(_denominator, "Denominator", 80, 50));
+		_tabPanel.add(panFrac, "Fraction");
+
+		_fields.add(new HTML(
+				"<b>Correct value should be either a decimal or a fraction:</b>"));
+		_fields.add(_tabPanel);
+
 		_fields.add(super.createAdvanced());
-		
-		
-		String p[] = (_widgetDef.getValue()!=null?_widgetDef.getValue():"").split("/");
-		if(p.length == 2) {
+
+		String p[] = (_widgetDef.getValue() != null ? _widgetDef.getValue()
+				: "").split("/");
+		if (p.length == 2) {
 			_tabPanel.setActiveWidget(panFrac);
-		}
-		else {
+		} else {
 			_tabPanel.setActiveWidget(_panDec);
 			_decimal.setValue(p[0]);
 		}
-		
+
 		_tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
 			@Override
 			public void onSelection(SelectionEvent<Widget> event) {
-				if(_tabPanel.getActiveWidget() == _panDec) {
+				if (_tabPanel.getActiveWidget() == _panDec) {
+					if (_decimal.getCurrentValue() == null
+							|| _decimal.getCurrentValue().length() == 0) {
+						double n = Integer.parseInt(_numerator
+								.getCurrentValue());
+						double d = Integer.parseInt(_denominator
+								.getCurrentValue());
+
+						double dec = n / d;
+						_decimal.setValue(dec + "");
+					}
+				} else {
+
+					if (_decimal.getCurrentValue() != null
+							&& _decimal.getCurrentValue().length() > 0) {
+						if (_numerator.getCurrentValue() == null
+								|| _numerator.getCurrentValue().length() == 0
+								|| _denominator.getCurrentValue() == null
+								|| _denominator.getCurrentValue().length() == 0) {
+
+							Rational r = new Rational(Double.parseDouble(_decimal.getCurrentValue()));
+							_numerator.setValue(r.getNum() + "");
+							_denominator.setValue(r.getDenom() + "");
+						}
+					}
 				}
 			}
 		});
-    }
-    
-    @Override
-    public String getWidgetJson() {
-    	if(isDecimal()) {
-    		WidgetDefModel wd = createWidgetDefModel();
-    		wd.setValue(_decimal.getCurrentValue());
-    		return wd.getJson();
-    	}
-    	else {
-    		return super.getWidgetJson();
-    	}
-    }
-    
-    @Override
-    protected WidgetDefModel createWidgetDefModel() {
-        WidgetDefModel wd = super.createWidgetDefModel();
-        wd.setType("number_rational");
-        wd.setAnsFormat("lowest_term");
-        wd.setAllowMixed(false);
-        
-        String format = _format.getCurrentValue()!=null?_format.getCurrentValue():null;
-        if(format != null) {
-        	if(!format.startsWith("measure_")) {
-        		format = "measure_"+format;
-        	}
-        }
-        wd.setFormat(format);
-        return wd;
-    }
+	}
 
-    private boolean isDecimal() {
-    	return _tabPanel.getActiveWidget() == _panDec;
-    }
-    
-    @Override
-    public String checkValid() {
-    	if(isDecimal()) {
-    		if(!_decimal.validate()) {
-    			return "Not a valid decimal value";
-    		}
-    		else {
-    			return null;
-    		}
-    	}
-    	else {
-    		return super.checkValid();
-    	}
-    }
-    
-    @Override
-    public String getDescription() {
-    	return "Enter an integer, decimal number, or fraction (use \"/\"). If a fraction is correct but not in lowest terms, students are prompted to reduce. Answers must be exact.";
-    }
-    
+	@Override
+	public String getWidgetJson() {
+		if (isDecimal()) {
+			WidgetDefModel wd = createWidgetDefModel();
+			wd.setValue(_decimal.getCurrentValue());
+			return wd.getJson();
+		} else {
+			return super.getWidgetJson();
+		}
+	}
+
+	@Override
+	protected WidgetDefModel createWidgetDefModel() {
+		WidgetDefModel wd = super.createWidgetDefModel();
+		wd.setType("number_rational");
+		wd.setAnsFormat("lowest_term");
+		wd.setAllowMixed(false);
+
+		String format = _format.getCurrentValue() != null ? _format
+				.getCurrentValue() : null;
+		if (format != null) {
+			if (!format.startsWith("measure_")) {
+				format = "measure_" + format;
+			}
+		}
+		wd.setFormat(format);
+		return wd;
+	}
+
+	private boolean isDecimal() {
+		return _tabPanel.getActiveWidget() == _panDec;
+	}
+
+	@Override
+	public String checkValid() {
+		if (isDecimal()) {
+			if (!_decimal.validate()) {
+				return "Not a valid decimal value";
+			} else {
+				return null;
+			}
+		} else {
+			return super.checkValid();
+		}
+	}
+
+	@Override
+	public String getDescription() {
+		return "Enter an integer, decimal number, or fraction (use \"/\"). If a fraction is correct but not in lowest terms, students are prompted to reduce. Answers must be exact.";
+	}
+
+}
+
+class Rational {
+
+	private int num, denom;
+
+	public int getNum() {
+		return num;
+	}
+
+	public void setNum(int num) {
+		this.num = num;
+	}
+
+	public int getDenom() {
+		return denom;
+	}
+
+	public void setDenom(int denom) {
+		this.denom = denom;
+	}
+
+	public Rational(double d) {
+		String s = String.valueOf(d);
+		int digitsDec = s.length() - 1 - s.indexOf('.');
+
+		int denom = 1;
+		for (int i = 0; i < digitsDec; i++) {
+			d *= 10;
+			denom *= 10;
+		}
+		int num = (int) Math.round(d);
+
+		this.num = num;
+		this.denom = denom;
+	}
+
+	public Rational(int num, int denom) {
+		this.num = num;
+		this.denom = denom;
+	}
+
+	public String toString() {
+		return String.valueOf(num) + "/" + String.valueOf(denom);
+	}
+
+	public static void main(String[] args) {
+		System.out.println(new Rational(123.456));
+	}
 }
