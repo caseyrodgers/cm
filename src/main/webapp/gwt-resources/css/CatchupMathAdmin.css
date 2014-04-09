@@ -168,6 +168,7 @@ body {
 
 .register-student-self-reg-outer-fieldset {
 	height: 140px !important;
+	margin-top: 15px;
 }
 
 .register-student-std-prog-tab {
@@ -616,4 +617,9 @@ program-details-panel .x-ftree2-node-over {
 .hint-step-box {
 	margin: 10px;
 	border: 2px solid blue;
+}
+
+.self-pay-checkbox {
+	padding-top: 5px !important;
+}
 }

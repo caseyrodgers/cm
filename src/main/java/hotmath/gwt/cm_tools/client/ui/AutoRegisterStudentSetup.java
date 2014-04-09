@@ -127,7 +127,8 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
 	private void setupSelfPay() {
         isSelfPay = new CheckBox();
         isSelfPay.setId("self_pay");
-        _selfPayLabel = new MyFieldLabel(isSelfPay, "Student Pays $29", LABEL_WIDTH+10, 15);
+        isSelfPay.addStyleName("self-pay-checkbox");
+        _selfPayLabel = new MyFieldLabel(isSelfPay, "Student Pays $29", LABEL_WIDTH+10, 13);
         _fsProfile.addThing(_selfPayLabel);
 	}
 
