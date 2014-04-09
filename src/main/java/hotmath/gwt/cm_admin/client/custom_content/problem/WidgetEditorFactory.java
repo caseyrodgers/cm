@@ -18,7 +18,7 @@ public class WidgetEditorFactory {
         else if(type.equals("inequality")) {
             return new WidgetEditorImplInequality(widgetDef);
         }
-        else if(type.equals("number_simple_fraction")) {
+        else if(type.equals("number_simple_fraction") || type.equals("number_fraction")) {
             return new WidgetEditorImplFraction(widgetDef);
         }
         else if(type.equals("number_rational")) {
@@ -40,7 +40,7 @@ public class WidgetEditorFactory {
             return new WidgetEditorImplNoWidget(widgetDef);
         }
         
-        throw new Exception("Could not create widget editor for: " + widgetDef);
+        throw new Exception("Could not create widget editor for: " + type);
     }
 
 }
