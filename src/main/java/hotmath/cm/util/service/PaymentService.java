@@ -1,6 +1,7 @@
 package hotmath.cm.util.service;
 
 import hotmath.HotMathException;
+import hotmath.cm.server.model.CmPaymentDao;
 import hotmath.payment.HotMathPayment;
 import hotmath.payment.PaymentResult;
 import hotmath.paypal.PayPalManager;
@@ -10,6 +11,17 @@ import org.apache.log4j.Logger;
 
 import sb.mail.SbMailManager;
 import sb.util.SbException;
+
+/**
+ * 
+ * General purpose payment service
+ * - perform purchase via PayPal
+ * - send confirmation email
+ * - record transaction
+ *
+ * @author bob
+ * 
+ */
 
 public class PaymentService {
 
@@ -37,7 +49,7 @@ public class PaymentService {
                 result = new PaymentResult(String.valueOf(userId), true);
             }
 
-            addPurchaseResult(result, userId);
+            addPurchaseResult(result, userId, amount);
 
             purchaseComplete(result, email, loginName, password, amount); 
 
@@ -53,24 +65,28 @@ public class PaymentService {
         }
     }
 
-	static private void addPurchaseResult(PaymentResult result, int userId) throws Exception {
+	static private void addPurchaseResult(PaymentResult result, int userId, double amount) throws Exception {
 
-		//TODO: persist purchase result
+		CmPaymentDao dao = CmPaymentDao.getInstance();
+		try {
+			dao.create(result, userId, amount);
+		}
+		catch (Exception e) {
+			String msg = String.format("Error saving payment: Order #; %s, userId: %d, amount: %.2f, success: %s, duplicate: %s",
+					result.getOrderNumber(), userId, amount, result.isSuccess(), result.isDuplicateTransaction());
+			__logger.error(msg, e);
+		}
 		
-		if (result.isSuccess() == false) {
-            // addComment("Purchase failed (order_id=" + result.getOrderNumber() + ", approved=" + result.isSuccess() + ")");
-
+		if (result.isSuccess() == false && amount > 0) {
 			throw new HotMathExceptionPurcaseException(result);
 		}
-        // addComment("Purchase complete: " + getTimeStamp());
-		
 	}
 
 	static private void purchaseComplete(final PaymentResult result, final String email, final String loginName,
 			final String password, final double amount) throws Exception {
         try {
 
-            // send mail in separate thread
+            // send email in separate thread
             // to ensure user thread does not lock
             new Thread(new Runnable() {
                 @SuppressWarnings("unchecked")

@@ -1,10 +1,10 @@
 package hotmath.cm.signup;
 
 import hotmath.cm.util.service.PaymentService;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc_core.client.rpc.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.shared.server.service.command.CreateAutoRegistrationAccountCommand;
-import hotmath.subscriber.HotMathSubscriber;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -40,69 +40,28 @@ public class SelfPayServlet extends HttpServlet {
     	doPost(req, resp);
     }
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int newUserId = 0;
         try {
             String remoteIP = req.getRemoteAddr();
             _logger.info("Attempting to create a new Self-Pay account for: " + remoteIP);
 
             String uniquePassword = "";
             String loginName = "";
-            int newUserId = 0;
             String key = "";
 
             /** Extract form data
              */
             @SuppressWarnings("unchecked")
             Map<String, String[]> formData = req.getParameterMap();
-            String studentId = getFData(formData.get("student_id"));
-            String firstName = getFData(formData.get("student_first_name"));
-            String lastName  = getFData(formData.get("student_last_name"));
-            CreateAutoRegistrationAccountAction action = new CreateAutoRegistrationAccountAction();
-            if (studentId != null && studentId.trim().length() > 0) {
-                action.setPassword(firstName+"-"+lastName+"-"+studentId.trim());
-            }
-            else {
-                String birthday  = getFData(formData.get("student_birth_month")) +
-                		getFData(formData.get("student_birth_day"));
-                action.setPassword(firstName+"-"+lastName+"-"+birthday);
-            }
-            String uid = getFData(formData.get("uid_fld"));
-            Integer userId = Integer.parseInt(uid);
-            action.setUser(lastName +", " + firstName);
-            action.setUserId(userId);
-            Connection conn = null;
-            try {
-                conn = HMConnectionPool.getConnection();
-                CreateAutoRegistrationAccountCommand command = new CreateAutoRegistrationAccountCommand();
-                RpcData data = command.execute(conn, action);
-                key = data.getDataAsString("key");
 
-                newUserId = data.getDataAsInt("uid");
+            RpcData data = createUser(formData);
 
-                loginName = data.getDataAsString("loginName");
-                uniquePassword = data.getDataAsString("password");
-            }
-            finally {
-                SqlUtilities.releaseResources(null,null,conn);
-            }
+            key = data.getDataAsString("key");
+            newUserId = data.getDataAsInt("uid");
+            loginName = data.getDataAsString("loginName");
+            uniquePassword = data.getDataAsString("password");
 
-            String ccNum  = getFData(formData.get("card_number"));
-            ccNum.replaceAll(" ", "");
-            String ccType = getFData(formData.get("sel_cardtype"));
-            String ccv2   = getFData(formData.get("card_ccv2"));
-            String expMon = getFData(formData.get("sel_card_expire_month"));
-            String expYr  = getFData(formData.get("sel_card_expire_year"));
-            String ccZip  = getFData(formData.get("zip"));
-            String ccState = getFData(formData.get("sel_state"));
-            String ccAddr1 = getFData(formData.get("address1"));
-            String ccAddr2 = getFData(formData.get("address2"));
-            String ccCity  = getFData(formData.get("city"));
-            String ccFname = getFData(formData.get("first_name"));
-            String ccLname = getFData(formData.get("last_name"));
-            String email   = getFData(formData.get("fld_student_email"));
-
-            PaymentService.doPurchase(remoteIP, 29.00, ccNum, ccType, ccv2, expMon, expYr,
-            		ccZip, ccState, ccAddr1, ccAddr2, ccCity, ccFname, ccLname,
-            		newUserId, email, loginName, uniquePassword);
+            processPayment(remoteIP, newUserId, loginName, uniquePassword, formData);
             
             /** Return JSON containing key values
              * 
@@ -115,17 +74,80 @@ public class SelfPayServlet extends HttpServlet {
 
         } catch (Exception e) {
             _logger.error("*** Error creating new user", e);
-            
-            /** TODO: should this throw an Exception?
-             * At very least we need to check for this instance
-             * in cmsignup.js
-             *  
-             */
-            resp.getWriter().write("error:" + e.getMessage());
+
+            if (newUserId > 0) removeUser(newUserId);
+
+            resp.getWriter().write("{error:'" + e.getMessage() + "'}");
         }
     }
 
-    private String getFData(Object o) {
+    private void processPayment(String remoteIP, int newUserId, String loginName,
+    		String password, Map<String, String[]> formData) throws Exception {
+        String ccNum  = getFData(formData.get("card_number"));
+        ccNum.replaceAll(" ", "");
+        String ccType = getFData(formData.get("sel_cardtype"));
+        String ccv2   = getFData(formData.get("card_ccv2"));
+        String expMon = getFData(formData.get("sel_card_expire_month"));
+        String expYr  = getFData(formData.get("sel_card_expire_year"));
+        String ccZip  = getFData(formData.get("zip"));
+        String ccState = getFData(formData.get("sel_state"));
+        String ccAddr1 = getFData(formData.get("address1"));
+        String ccAddr2 = getFData(formData.get("address2"));
+        String ccCity  = getFData(formData.get("city"));
+        String ccFname = getFData(formData.get("first_name"));
+        String ccLname = getFData(formData.get("last_name"));
+        String email   = getFData(formData.get("fld_student_email"));
+
+        PaymentService.doPurchase(remoteIP, 29.00, ccNum, ccType, ccv2, expMon, expYr,
+        		ccZip, ccState, ccAddr1, ccAddr2, ccCity, ccFname, ccLname,
+        		newUserId, email, loginName, password);
+	}
+
+	private RpcData createUser(Map<String, String[]> formData) throws Exception {
+        String studentId = getFData(formData.get("student_id"));
+        String firstName = getFData(formData.get("student_first_name"));
+        String lastName  = getFData(formData.get("student_last_name"));
+        String email   = getFData(formData.get("fld_student_email"));
+
+        CreateAutoRegistrationAccountAction action = new CreateAutoRegistrationAccountAction();
+        if (studentId != null && studentId.trim().length() > 0) {
+            action.setPassword(firstName+"-"+lastName+"-"+studentId.trim());
+        }
+        else {
+            String birthday  = getFData(formData.get("student_birth_month")) +
+            		getFData(formData.get("student_birth_day"));
+            action.setPassword(firstName+"-"+lastName+"-"+birthday);
+        }
+        String uid = getFData(formData.get("uid_fld"));
+        Integer userId = Integer.parseInt(uid);
+        action.setUser(lastName +", " + firstName);
+        action.setUserId(userId);
+        action.setEmail(email);
+        action.setSelfPay(true);
+        Connection conn = null;
+        RpcData data = null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            CreateAutoRegistrationAccountCommand command = new CreateAutoRegistrationAccountCommand();
+            data = command.execute(conn, action);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null,conn);
+        }
+    	return data;
+    }
+
+    private void removeUser(int newUserId) {
+        try {
+            CmStudentDao dao = CmStudentDao.getInstance();
+            dao.removeUser(newUserId);
+        }
+        catch (Exception e) {
+            _logger.error("*** Error removing new userId: " + newUserId, e);
+        }		
+	}
+
+	private String getFData(Object o) {
         if (o instanceof String[]) {
             return ((String[]) o)[0];
         } else {

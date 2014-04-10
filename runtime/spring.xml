@@ -60,6 +60,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <bean id="hotmath.cm.dao.WebLinkDao" class="hotmath.cm.dao.WebLinkDao" parent="abstractJdbcDao" />
     <bean id="hotmath.testset.ha.WhiteboardDao" class="hotmath.testset.ha.WhiteboardDao" parent="abstractJdbcDao"/>
     <bean id="hotmath.testset.ha.CustomProblemDao" class="hotmath.testset.ha.CustomProblemDao" parent="abstractJdbcDao"/>
+    <bean id="hotmath.cm.server.model.CmPaymentDao" class="hotmath.cm.server.model.CmPaymentDao" parent="abstractJdbcDao"/>
     
 
     <!-- DAOs used by HM Mobile -->    

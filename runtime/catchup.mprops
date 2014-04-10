@@ -5054,3 +5054,15 @@ and exists (
       and g.no_public_weblinks = 0)
 
 order by name      
+
+#
+# CmPaymentDao
+
+#
+# Save Payment
+
+.key=PAYMENT_CREATE
+
+insert into CM_PAYMENT (transaction_id, student_uid, amount, is_success, create_date)
+values(?,?,?,?,now())
+  
