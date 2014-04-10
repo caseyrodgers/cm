@@ -72,8 +72,8 @@ public class PaymentService {
 			dao.create(result, userId, amount);
 		}
 		catch (Exception e) {
-			String msg = String.format("Error saving payment: Order #; %s, userId: %d, amount: %.2f, success: %s, duplicate: %s",
-					result.getOrderNumber(), userId, amount, result.isSuccess(), result.isDuplicateTransaction());
+			String msg = String.format("Error saving payment: Order #; %s, userId: %d, amount: %.2f, success: %s",
+					result.getOrderNumber(), userId, amount, result.isSuccess());
 			__logger.error(msg, e);
 		}
 		
