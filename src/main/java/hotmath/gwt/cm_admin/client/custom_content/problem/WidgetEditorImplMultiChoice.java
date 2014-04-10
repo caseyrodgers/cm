@@ -9,6 +9,8 @@ import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -103,14 +105,14 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 						.get(event.getEditCell().getRow());
 
 				/** only one can be selected */
-				if (ch.isCorrect()) {
-					for (MultiValue s : store.getAll()) {
-						if (s != ch) {
-							s.setCorrect(false);
-							store.update(s);
-						}
-					}
-				}
+//				if (ch.isCorrect()) {
+//					for (MultiValue s : store.getAll()) {
+//						if (s != ch) {
+//							s.setCorrect(false);
+//							store.update(s);
+//						}
+//					}
+//				}
 			}
 		});
 		editor.addEditor(correctCol, new CheckBox());
@@ -273,7 +275,10 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 		}
 
 		public String getValueDecoded() {
-			return CmGwtUtils.jsni_decodeBase64(this.value);
+			
+			Element e = DOM.createElement("div");
+			e.setInnerHTML(CmGwtUtils.jsni_decodeBase64(this.value));
+			return e.getInnerText();
 		}
 	}
 
@@ -300,6 +305,9 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 
 	@Override
 	public String checkValid() {
+		if(_grid.getStore().getAll().size() < 2) {
+			return "There must be at least two choices.";
+		}
 		return null;
 	}
 

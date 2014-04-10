@@ -157,7 +157,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
 
             String valueLabel = _widgetEditor.getValueLabel();
             if(valueLabel != null) {
-            	flow.add(new HTML("<h1 style='font-size: 1.5em;font-weight: bold;margin: 0 0 10px 0;'>" + valueLabel + "</h1>"));
+            	flow.add(new HTML("<h1 class='correct_value_label'>" + valueLabel + ":</h1>"));
             }
             
             flow.add(_widgetEditor.asWidget());

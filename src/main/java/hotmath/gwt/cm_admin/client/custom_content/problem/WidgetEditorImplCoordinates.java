@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
+import hotmath.gwt.cm_tools.client.ui.MyValidators;
 
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -38,10 +39,10 @@ public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEd
                 y = p[1];
             }
         }
-        xField = new NumericalTextField();
+        xField = new NumericalTextField(MyValidators.DECIMAL);
         xField.setValue(x);
         
-        yField = new NumericalTextField();
+        yField = new NumericalTextField(MyValidators.DECIMAL);
         yField.setValue(y);
         
         fieldsPanel.add(new MyFieldLabel(xField, "X", 30, 50));
@@ -89,7 +90,7 @@ public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEd
     
     @Override
     public String getValueLabel() {
-    	return "Correct Value";
+    	return null;
     }
 
 }

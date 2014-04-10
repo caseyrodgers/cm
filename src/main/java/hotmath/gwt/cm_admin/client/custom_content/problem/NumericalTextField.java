@@ -8,7 +8,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 public class NumericalTextField extends TextField {
 	
 	public NumericalTextField() {
-		this(MyValidators.NUMERIC);
+		this(MyValidators.INTEGER);
 	}
 	public NumericalTextField(MyValidators type) {
 		super();

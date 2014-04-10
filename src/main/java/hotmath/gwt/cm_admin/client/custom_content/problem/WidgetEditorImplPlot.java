@@ -9,7 +9,6 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.TextField;
 
 public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements WidgetEditor {
 
@@ -144,6 +143,11 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements Wid
 		return "widget_plot";
 	}
 
+	
+	@Override
+	public String getValueLabel() {
+		return "Initial Window:";
+	}
 
 	@Override
 	protected void buildUi() {

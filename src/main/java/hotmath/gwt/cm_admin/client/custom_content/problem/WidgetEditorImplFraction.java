@@ -20,11 +20,11 @@ public class WidgetEditorImplFraction extends WidgetEditorImplDefault {
 		String value = getWidgetDef().getValue();
 		String p[] = value != null ? value.split("/") : new String[1];
 
-		_numerator.setValue(getIntValueAsString(p[0]));
-		_denominator.setValue(p.length > 1 ? getIntValueAsString(p[1]) : "");
+		_numerator.setValue(p[0]);
+		_denominator.setValue(p.length > 1 ? p[1] : "");
 
-		_fields.add(new MyFieldLabel(_numerator, "Numerator", 80, 80));
-		_fields.add(new MyFieldLabel(_denominator, "Denominator", 80, 80));
+		_fields.add(new MyFieldLabel(_numerator, "Numerator", 80, 60));
+		_fields.add(new MyFieldLabel(_denominator, "Denominator", 80, 60));
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class WidgetEditorImplFraction extends WidgetEditorImplDefault {
 	@Override
 	public String checkValid() {
 		if (!_numerator.validate() || !_denominator.validate()) {
-			return "Both numerator and denomiator must be numerical values";
+			return "Both numerator and denomiator must be integer values";
 		}
 		
 		int n = Integer.parseInt(_numerator.getCurrentValue());
@@ -57,7 +57,7 @@ public class WidgetEditorImplFraction extends WidgetEditorImplDefault {
 
 		if(n == 0) {
 			return "If the answer to the problem is 0, " 
-					+ "it's probably better to use the Rational Input, which allows students to enter " 
+					+ "it's probably better to use the Rational input type, which allows students to enter " 
 			        + "fractions OR whole numbers.";
 		}
 		
