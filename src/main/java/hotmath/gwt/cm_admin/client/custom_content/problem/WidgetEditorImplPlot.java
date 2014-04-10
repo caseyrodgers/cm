@@ -125,7 +125,7 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements Wid
 	@Override
 	public String checkValid() {
 		
-		if(_xValue.validate() || _yValue.validate() ||_xMin.validate() ||_xMax.validate() ||	_yMin.validate() ||	_yMax.validate() ||	_xInc.validate() ||	_yInc.validate()) {
+		if(!_xValue.validate() || !_yValue.validate() || !_xMin.validate() || !_xMax.validate() ||	!_yMin.validate() || !_yMax.validate() || !_xInc.validate() || !_yInc.validate()) {
 			return "Invalid";
 		}
 		
