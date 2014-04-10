@@ -5,8 +5,8 @@ import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 
 public class WidgetEditorImplFraction extends WidgetEditorImplDefault {
 
-	NumericalTextField _numerator;
-	NumericalTextField _denominator;
+	IntegerTextField _numerator;
+	IntegerTextField _denominator;
 
 	public WidgetEditorImplFraction(WidgetDefModel widgetDef) {
 		super(widgetDef);
@@ -14,8 +14,8 @@ public class WidgetEditorImplFraction extends WidgetEditorImplDefault {
 
 	@Override
 	protected void buildUi() {
-		_numerator = new NumericalTextField();
-		_denominator = new NumericalTextField();
+		_numerator = new IntegerTextField();
+		_denominator = new IntegerTextField();
 
 		_fields.add(new MyFieldLabel(_numerator, "Numerator", 80, 60));
 		_fields.add(new MyFieldLabel(_denominator, "Denominator", 80, 60));

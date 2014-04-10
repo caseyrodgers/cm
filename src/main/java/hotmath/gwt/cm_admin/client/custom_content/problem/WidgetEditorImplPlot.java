@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
-import hotmath.gwt.cm_tools.client.ui.MyValidators;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.ui.DisclosurePanel;
@@ -11,18 +10,19 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements WidgetEditor {
 
 
-	NumericalTextField _xValue = new NumericalTextField(MyValidators.DECIMAL);
-	NumericalTextField _yValue = new NumericalTextField(MyValidators.DECIMAL);
-	NumericalTextField _xMin = new NumericalTextField(MyValidators.DECIMAL);
-	NumericalTextField _xMax = new NumericalTextField(MyValidators.DECIMAL);
-	NumericalTextField _yMin = new NumericalTextField(MyValidators.DECIMAL);
-	NumericalTextField _yMax = new NumericalTextField(MyValidators.DECIMAL);
-	NumericalTextField _xInc = new NumericalTextField(MyValidators.DECIMAL);
-	NumericalTextField _yInc = new NumericalTextField(MyValidators.DECIMAL);
+	TextField _xValue = new DecimalTextField();
+	TextField _yValue = new DecimalTextField();
+	TextField _xMin = new DecimalTextField();
+	TextField _xMax = new DecimalTextField();
+	TextField _yMin = new DecimalTextField();
+	TextField _yMax = new DecimalTextField();
+	TextField _xInc = new DecimalTextField();
+	TextField _yInc = new DecimalTextField();
 	
 	public WidgetEditorImplPlot(WidgetDefModel widgetDef) {
 		super(widgetDef);

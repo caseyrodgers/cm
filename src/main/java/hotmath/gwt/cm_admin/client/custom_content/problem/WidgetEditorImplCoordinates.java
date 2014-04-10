@@ -46,9 +46,9 @@ public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEd
     
     private void buildUi() {
         VerticalLayoutContainer fieldsPanel = new VerticalLayoutContainer();
-        
-        xField = new NumericalTextField(MyValidators.DECIMAL);
-        yField = new NumericalTextField(MyValidators.DECIMAL);
+
+        xField = new DecimalTextField();
+        yField = new DecimalTextField();
         
         fieldsPanel.add(new MyFieldLabel(xField, "X", 30, 60));
         fieldsPanel.add(new MyFieldLabel(yField, "Y", 30, 60));

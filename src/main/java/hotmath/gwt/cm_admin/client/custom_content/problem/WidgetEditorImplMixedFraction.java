@@ -6,7 +6,7 @@ import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 
 public class WidgetEditorImplMixedFraction extends WidgetEditorImpFractionWithAdvanced {
 
-    NumericalTextField _decimal = new NumericalTextField();
+    IntegerTextField _decimal = new IntegerTextField();
 
     public WidgetEditorImplMixedFraction(WidgetDefModel widgetDef) {
         super(widgetDef);

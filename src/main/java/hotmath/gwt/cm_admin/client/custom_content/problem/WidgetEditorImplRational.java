@@ -14,7 +14,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 
 public class WidgetEditorImplRational extends
 		WidgetEditorImpFractionWithAdvanced {
-	TextField _decimal = new NumericalTextField(MyValidators.DECIMAL);
+	TextField _decimal = new DecimalTextField();
 
 	private TabPanel _tabPanel;
 

@@ -5,7 +5,7 @@ public enum MyValidators {
     ALPHANUMERIC("^[a-zA-Z0-9_]+$", "alphanumeric"), 
     INTEGER("^[+0-9\\-]+$", "integer"),
     EMAIL("^(\\w+)([-+.][\\w]+)*@(\\w[-\\w]*\\.){1,5}([A-Za-z]){2,4}$", "email"), 
-    DECIMAL("^[0-9-]\\d*(\\.\\d+)?$", "decimal");
+    DECIMAL("^[\\.0-9-]\\d*(\\.\\d+)?$", "decimal");
     String regex;
     String name;
 

@@ -21,7 +21,7 @@ public class WidgetEditorImplInteger extends WidgetEditorImplDefault {
     }
     
     protected void buildUi() {
-        _correctIntegerValue = new NumericalTextField();
+        _correctIntegerValue = new IntegerTextField();
         _fields.add(new MyFieldLabel(_correctIntegerValue, "Integer",80, 60));
     }
 

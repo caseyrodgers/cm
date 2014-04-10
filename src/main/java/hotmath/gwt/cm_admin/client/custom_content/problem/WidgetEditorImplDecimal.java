@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
-import hotmath.gwt.cm_tools.client.ui.MyValidators;
 
 import com.sencha.gxt.widget.core.client.form.TextField;
 
@@ -17,7 +16,7 @@ public class WidgetEditorImplDecimal extends WidgetEditorImplDefault {
     }
     
     protected void buildUi() {
-    	_correctDecimalValue = new NumericalTextField(MyValidators.DECIMAL);
+    	_correctDecimalValue = new DecimalTextField();
         _fields.add(new MyFieldLabel(_correctDecimalValue, "Decimal",80, 60));
     }
     

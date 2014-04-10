@@ -96,7 +96,7 @@ public class ExportStudentData extends SimpleContainer {
 		if (haveEmailAddrCookie()) {
 		    emailAddr.setValue(readEmailAddrCookie());
 		}
-		emailAddr.addValidator(new MyValidatorDef(MyValidators.EMAIL));
+		emailAddr.addValidator(new MyValidatorDef(MyValidators.EMAIL, null));
 		emailAddr.setToolTip("spreadsheet will be emailed to this address");
 		//emailAddr.setMaxLength(300);
 		exportFlds.addThing(new MyFieldLabel(emailAddr, "Email", 100,250));
