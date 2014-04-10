@@ -17,16 +17,19 @@ public class WidgetEditorImplFraction extends WidgetEditorImplDefault {
 		_numerator = new NumericalTextField();
 		_denominator = new NumericalTextField();
 
-		String value = getWidgetDef().getValue();
-		String p[] = value != null ? value.split("/") : new String[1];
-
-		_numerator.setValue(p[0]);
-		_denominator.setValue(p.length > 1 ? p[1] : "");
-
 		_fields.add(new MyFieldLabel(_numerator, "Numerator", 80, 60));
 		_fields.add(new MyFieldLabel(_denominator, "Denominator", 80, 60));
 	}
 
+	
+	@Override
+	public void setupValue() {
+		String value = getWidgetDef().getValue();
+		String p[] = value != null ? value.split("/") : new String[1];
+		_numerator.setValue(p[0]);
+		_denominator.setValue(p.length > 1 ? p[1] : "");
+	}
+	
 	@Override
 	protected WidgetDefModel createWidgetDefModel() {
 		WidgetDefModel wd = super.createWidgetDefModel();

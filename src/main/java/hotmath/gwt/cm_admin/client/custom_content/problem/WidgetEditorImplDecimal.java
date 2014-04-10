@@ -18,8 +18,12 @@ public class WidgetEditorImplDecimal extends WidgetEditorImplDefault {
     
     protected void buildUi() {
     	_correctDecimalValue = new NumericalTextField(MyValidators.DECIMAL);
+        _fields.add(new MyFieldLabel(_correctDecimalValue, "Decimal",80, 60));
+    }
+    
+    @Override
+    public void setupValue() {
     	_correctDecimalValue.setValue(_widgetDef.getValue()!=null?_widgetDef.getValue():"");
-        _fields.add(new MyFieldLabel(_correctDecimalValue, "Decimal",80, 100));
     }
 
     protected WidgetDefModel createWidgetDefModel() {
@@ -36,7 +40,7 @@ public class WidgetEditorImplDecimal extends WidgetEditorImplDefault {
     @Override
     public String checkValid() {
     	if(!_correctDecimalValue.validate()) {
-    		return "Is invalid";
+    		return "Invalid";
     	}
         return null;
     }

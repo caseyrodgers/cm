@@ -2,9 +2,11 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_tools.client.ui.MyValidators;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -13,19 +15,24 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements WidgetEditor {
 
 
-	NumericalTextField _xValue = new NumericalTextField();
-	NumericalTextField _yValue = new NumericalTextField();
-	NumericalTextField _xMin = new NumericalTextField();
-	NumericalTextField _xMax = new NumericalTextField();
-	NumericalTextField _yMin = new NumericalTextField();
-	NumericalTextField _yMax = new NumericalTextField();
-	NumericalTextField _xInc = new NumericalTextField();
-	NumericalTextField _yInc = new NumericalTextField();
+	NumericalTextField _xValue = new NumericalTextField(MyValidators.DECIMAL);
+	NumericalTextField _yValue = new NumericalTextField(MyValidators.DECIMAL);
+	NumericalTextField _xMin = new NumericalTextField(MyValidators.DECIMAL);
+	NumericalTextField _xMax = new NumericalTextField(MyValidators.DECIMAL);
+	NumericalTextField _yMin = new NumericalTextField(MyValidators.DECIMAL);
+	NumericalTextField _yMax = new NumericalTextField(MyValidators.DECIMAL);
+	NumericalTextField _xInc = new NumericalTextField(MyValidators.DECIMAL);
+	NumericalTextField _yInc = new NumericalTextField(MyValidators.DECIMAL);
 	
 	public WidgetEditorImplPlot(WidgetDefModel widgetDef) {
 		super(widgetDef);
-		
-		String val = widgetDef.getValue();
+		setupFields(null);
+	}
+	
+	
+	@Override
+	public void setupValue() {
+		String val = _widgetDef.getValue();
 		if(val == null) {
 			setupFields(null);
 		}
@@ -33,14 +40,14 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements Wid
 			String p[] = val.split("\\|");
 			PlotInfo plotInfo=null;
 			if(p.length == 8) {
-				int x = Integer.parseInt(p[0]);
-				int y = Integer.parseInt(p[1]);
-				int xMin = Integer.parseInt(p[2]);
-				int yMin = Integer.parseInt(p[3]);
-				int xMax = Integer.parseInt(p[4]);
-				int yMax = Integer.parseInt(p[5]);
-				int xInc = Integer.parseInt(p[6]);
-				int yInc = Integer.parseInt(p[7]);
+				double x = Double.parseDouble(p[0]);
+				double y = Double.parseDouble(p[1]);
+				double xMin = Double.parseDouble(p[2]);
+				double yMin = Double.parseDouble(p[3]);
+				double xMax = Double.parseDouble(p[4]);
+				double yMax = Double.parseDouble(p[5]);
+				double xInc = Double.parseDouble(p[6]);
+				double yInc = Double.parseDouble(p[7]);
 				plotInfo = new PlotInfo(x,y, xMin,yMin, xMax,yMax,xInc,yInc);
 			}
 			setupFields(plotInfo);
@@ -49,14 +56,14 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements Wid
 	
 	private PlotInfo getPlotInfo() {
 		try {
-			int x = Integer.parseInt(_xValue.getCurrentValue());
-			int y = Integer.parseInt(_yValue.getCurrentValue());
-			int xMin = Integer.parseInt(_xMin.getCurrentValue());
-			int yMin = Integer.parseInt(_yMin.getCurrentValue());
-			int xMax = Integer.parseInt(_xMax.getCurrentValue());
-			int yMax = Integer.parseInt(_yMax.getCurrentValue());
-			int xInc = Integer.parseInt(_xInc.getCurrentValue());
-			int yInc = Integer.parseInt(_yInc.getCurrentValue());
+			double x = Double.parseDouble(_xValue.getCurrentValue());
+			double y = Double.parseDouble(_yValue.getCurrentValue());
+			double xMin = Double.parseDouble(_xMin.getCurrentValue());
+			double yMin = Double.parseDouble(_yMin.getCurrentValue());
+			double xMax = Double.parseDouble(_xMax.getCurrentValue());
+			double yMax = Double.parseDouble(_yMax.getCurrentValue());
+			double xInc = Double.parseDouble(_xInc.getCurrentValue());
+			double yInc = Double.parseDouble(_yInc.getCurrentValue());
 			return new PlotInfo(x,y,xMin, yMin, xMax,yMax,xInc,yInc);
 		}
 		catch(Exception e) {
@@ -118,14 +125,9 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements Wid
 	@Override
 	public String checkValid() {
 		
-		_xValue.validate();
-		_yValue.validate();
-		_xMin.validate();
-		_xMax.validate();
-		_yMin.validate();
-		_yMax.validate();
-		_xInc.validate();
-		_yInc.validate();
+		if(_xValue.validate() || _yValue.validate() ||_xMin.validate() ||_xMax.validate() ||	_yMin.validate() ||	_yMax.validate() ||	_xInc.validate() ||	_yInc.validate()) {
+			return "Invalid";
+		}
 		
 		PlotInfo pi = getPlotInfo();
 		if(pi != null) {
@@ -134,7 +136,7 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements Wid
 			}
 		}
 		
-		return "All values are numerical and must be specified.  (xMin < 0 and yMin < 0)";
+		return "All values are numerical and must be specified.";
 	}
 
 	
@@ -146,24 +148,29 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements Wid
 	
 	@Override
 	public String getValueLabel() {
-		return "Initial Window:";
+		return null;
 	}
 
 	@Override
 	protected void buildUi() {
-		_fields.add(new MyFieldLabel(_xValue, "X Value",  80, 40));
-		_fields.add(new MyFieldLabel(_yValue, "Y Value",  80, 40));
+		
+		_xValue.setAllowBlank(false);
+		_yValue.setAllowBlank(false);
+		
+		_fields.add(new MyFieldLabel(_xValue, "X Value",  80, 60));
+		_fields.add(new MyFieldLabel(_yValue, "Y Value",  80, 60));
 		
 		
 		DisclosurePanel advanced = new DisclosurePanel("Advanced Options");
 		VerticalLayoutContainer adFields = new VerticalLayoutContainer();
 		advanced.setContent(adFields);
-		adFields.add(new MyFieldLabel(_xMin, "X Min",  80, 40));
-		adFields.add(new MyFieldLabel(_yMin, "Y Min",  80, 40));
-		adFields.add(new MyFieldLabel(_xMax, "X Max",  80, 40));
-		adFields.add(new MyFieldLabel(_yMax, "Y Max",  80, 40));
-		adFields.add(new MyFieldLabel(_xInc, "X Increment",  80, 40));
-		adFields.add(new MyFieldLabel(_yInc, "Y Increment",  80, 40));
+		adFields.add(new HTML("<h2 style='color: black;font: 14pt;margin-top: 6px;margin-bottom: 5px;'>Initial Window:</h2>"));
+		adFields.add(new MyFieldLabel(_xMin, "X Min",  80, 60));
+		adFields.add(new MyFieldLabel(_yMin, "Y Min",  80, 60));
+		adFields.add(new MyFieldLabel(_xMax, "X Max",  80, 60));
+		adFields.add(new MyFieldLabel(_yMax, "Y Max",  80, 60));
+		adFields.add(new MyFieldLabel(_xInc, "X Increment",  80, 60));
+		adFields.add(new MyFieldLabel(_yInc, "Y Increment",  80, 60));
 		
 		adFields.add(new TextButton("Default Values", new SelectHandler() {
 			@Override
@@ -178,10 +185,10 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements Wid
 	
 	
 	class PlotInfo {
-		int x, xMin, xMax, y, yMin, yMax;
-		int xInc, yInc;
+		double x, xMin, xMax, y, yMin, yMax;
+		double xInc, yInc;
 		
-		public PlotInfo(int x, int y, int xMin, int yMin, int xMax, int yMax, int xInc, int yInc) {
+		public PlotInfo(double x, double y, double xMin, double yMin, double xMax, double yMax, double xInc, double yInc) {
 			this.x = x;
 			this.y = y;
 			this.xMin = xMin;

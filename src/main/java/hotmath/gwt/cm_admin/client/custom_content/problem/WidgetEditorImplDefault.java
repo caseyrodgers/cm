@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -65,4 +66,20 @@ public abstract class WidgetEditorImplDefault extends Composite implements Widge
     public String getValueLabel() {
     	return "Correct Value";
     }
+
+
+    /** return true if the current widget is the one
+     *  used to edit the widget defined
+     *  
+     * @return
+     */
+	public boolean isDefinedWidget() {
+		return getWidgetType().equals(_widgetDef.getType());
+	}
+	
+	@Override
+	public void setupValue() {
+		Window.alert("Default Setup Value");
+		/** default setup value ... no value set */
+	}
 }

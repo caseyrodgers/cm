@@ -17,6 +17,10 @@ public class WidgetEditorImplInequality extends SimplePanel implements WidgetEdi
         this.widgetDef = widgetDef;
     }
     
+    @Override
+    public void setupValue() {
+        _inequalityDef.setValue(widgetDef.getValue()!=null?URL.decode(widgetDef.getValue()):null);
+    }
     
     @Override
     public String checkValid() {
@@ -31,7 +35,6 @@ public class WidgetEditorImplInequality extends SimplePanel implements WidgetEdi
     public Widget asWidget() {
         _inequalityDef = new TextField();
         _inequalityDef.setToolTip("Set an inequality, for example x > -3");
-        _inequalityDef.setValue(widgetDef.getValue()!=null?URL.decode(widgetDef.getValue()):null);
         setWidget(new MyFieldLabel(_inequalityDef, "Inequality", 80,  100));
         return this;
     }

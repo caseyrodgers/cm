@@ -26,9 +26,9 @@ public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEd
         return this;
     }
     
-    private void buildUi() {
-        VerticalLayoutContainer fieldsPanel = new VerticalLayoutContainer();
-        
+    
+    @Override
+    public void setupValue() {
         String vals = widgetDef.getValue();
         String x="";
         String y="";
@@ -39,14 +39,19 @@ public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEd
                 y = p[1];
             }
         }
-        xField = new NumericalTextField(MyValidators.DECIMAL);
         xField.setValue(x);
-        
-        yField = new NumericalTextField(MyValidators.DECIMAL);
         yField.setValue(y);
+    }
+    
+    
+    private void buildUi() {
+        VerticalLayoutContainer fieldsPanel = new VerticalLayoutContainer();
         
-        fieldsPanel.add(new MyFieldLabel(xField, "X", 30, 50));
-        fieldsPanel.add(new MyFieldLabel(yField, "Y", 30, 50));
+        xField = new NumericalTextField(MyValidators.DECIMAL);
+        yField = new NumericalTextField(MyValidators.DECIMAL);
+        
+        fieldsPanel.add(new MyFieldLabel(xField, "X", 30, 60));
+        fieldsPanel.add(new MyFieldLabel(yField, "Y", 30, 60));
         setWidget(fieldsPanel);
     }
     

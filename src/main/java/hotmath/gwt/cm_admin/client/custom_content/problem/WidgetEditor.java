@@ -19,4 +19,10 @@ public interface WidgetEditor extends IsWidget {
 	 * @return
 	 */
 	String getValueLabel();
+	
+	/** set the value of the widget
+	 *  by looking at the widgetDef
+	 *  
+	 */
+	void setupValue();
 }

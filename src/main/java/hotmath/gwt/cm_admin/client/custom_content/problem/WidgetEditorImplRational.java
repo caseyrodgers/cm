@@ -20,6 +20,8 @@ public class WidgetEditorImplRational extends
 
 	private FlowLayoutContainer _panDec;
 
+	private FlowLayoutContainer _panFrac;
+
 	public WidgetEditorImplRational(WidgetDefModel widgetDef) {
 		super(widgetDef);
 	}
@@ -41,24 +43,16 @@ public class WidgetEditorImplRational extends
 		_tabPanel.getElement().setAttribute("style", "background: transparent");
 		_tabPanel.add(_panDec, "Decimal");
 
-		FlowLayoutContainer panFrac = new FlowLayoutContainer();
-		panFrac.getElement().setAttribute("style",
+		_panFrac = new FlowLayoutContainer();
+		_panFrac.getElement().setAttribute("style",
 				"background: #DFE8F6;padding: 5px;");
-		panFrac.add(new MyFieldLabel(_numerator, "Numerator", 80, 50));
-		panFrac.add(new MyFieldLabel(_denominator, "Denominator", 80, 50));
-		_tabPanel.add(panFrac, "Fraction");
+		_panFrac.add(new MyFieldLabel(_numerator, "Numerator", 80, 60));
+		_panFrac.add(new MyFieldLabel(_denominator, "Denominator", 80, 60));
+		_tabPanel.add(_panFrac, "Fraction");
 		_fields.add(_tabPanel);
 
 		_fields.add(super.createAdvanced());
 
-		String p[] = (_widgetDef.getValue() != null ? _widgetDef.getValue()
-				: "").split("/");
-		if (p.length == 2) {
-			_tabPanel.setActiveWidget(panFrac);
-		} else {
-			_tabPanel.setActiveWidget(_panDec);
-			_decimal.setValue(p[0]);
-		}
 
 		_tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
 			@Override
@@ -67,6 +61,20 @@ public class WidgetEditorImplRational extends
 		});
 	}
 
+	
+	@Override
+	public void setupValue() {
+		String p[] = (_widgetDef.getValue() != null ? _widgetDef.getValue()
+				: "").split("/");
+		if (p.length == 2) {
+			_tabPanel.setActiveWidget(_panFrac);
+		} else {
+			_tabPanel.setActiveWidget(_panDec);
+			_decimal.setValue(p[0]);
+		}
+	}
+	
+	
 	@Override
 	public String getWidgetJson() {
 		if (isDecimal()) {

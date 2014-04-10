@@ -75,7 +75,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
             
             @Override
             public void onSelection(SelectionEvent<WidgetType> event) {
-                setWidgetEditor(_comboType.getCurrentValue().getWidgetBaseJson());
+                setWidgetEditor(_comboType.getCurrentValue().getWidgetBaseJson(), false);
             }
         });
         
@@ -93,7 +93,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
         
         _main.setCenterWidget(_innerFrame);
 
-        setWidgetEditor(widgetJson);
+        setWidgetEditor(widgetJson, true);
         
         setWidget(uiBinder.createAndBindUi(this));
         
@@ -118,7 +118,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
         setVisible(true);
     }
 
-    private void setWidgetEditor(String widgetJson) {
+    private void setWidgetEditor(String widgetJson, boolean setValue) {
         
         JSOModel model = JSOModel.fromJson(widgetJson);
         WidgetDefModel widgetDef = new WidgetDefModel(model);
@@ -141,14 +141,6 @@ public class ProblemDesignerEditorWidget extends GWindow {
         //vert.add(new MyFieldLabel(_comboType,  "Widget Type", 80, 150));
         try {
             _widgetEditor = WidgetEditorFactory.createEditorFor(widgetDef);
-            
-            
-            /** override any variables already set
-             * 
-             */
-            if(wd != null) {
-               _widgetEditor.getWidgetDef().setValue(wd.getValue()) ;
-            }
 
             _aboutWidgetLabel.setHTML("<div style='font-style: italic'>" + _widgetEditor.getDescription() + "</div>");
             
@@ -161,6 +153,11 @@ public class ProblemDesignerEditorWidget extends GWindow {
             }
             
             flow.add(_widgetEditor.asWidget());
+            
+            if(setValue) {
+            	_widgetEditor.setupValue();
+            }
+            
             _innerFrame.setWidget(flow);
             
             forceLayout();

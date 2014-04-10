@@ -61,25 +61,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 		cols.add(nameCol);
 		cols.add(correctCol);
 
-		String choiceData = getWidgetDef().getValue();
-		if (choiceData == null) {
-			choiceData = "";
-		}
-		String c[] = choiceData.split("\\|");
-		int correctIndex = 0;
-		if (c.length > 1) {
-			correctIndex = Integer.parseInt(c[c.length - 1]);
-			// convert to one base
-			if (correctIndex > 0) {
-				correctIndex--;
-			}
-			for (int i = 0, t = c.length; i < (t - 1); i++) {
-				store.add(new MultiValue(c[i], false));
-			}
-			if (correctIndex < store.size()) {
-				store.get(correctIndex).setCorrect(true);
-			}
-		}
+		
 
 		store.setAutoCommit(true);
 
@@ -145,6 +127,30 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 			}
 		}));
 	}
+
+	@Override
+	public void setupValue() {
+		String choiceData = getWidgetDef().getValue();
+		if (choiceData == null) {
+			choiceData = "";
+		}
+		String c[] = choiceData.split("\\|");
+		int correctIndex = 0;
+		if (c.length > 1) {
+			correctIndex = Integer.parseInt(c[c.length - 1]);
+			// convert to one base
+			if (correctIndex > 0) {
+				correctIndex--;
+			}
+			for (int i = 0, t = c.length; i < (t - 1); i++) {
+				_grid.getStore().add(new MultiValue(c[i], false));
+			}
+			if (correctIndex < _grid.getStore().size()) {
+				_grid.getStore().get(correctIndex).setCorrect(true);
+			}
+		}		
+	}
+	
 
 	protected void editSelectedChoice() {
 		final MultiValue sel = _grid.getSelectionModel().getSelectedItem();
@@ -276,9 +282,24 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 
 		public String getValueDecoded() {
 			
-			Element e = DOM.createElement("div");
-			e.setInnerHTML(CmGwtUtils.jsni_decodeBase64(this.value));
-			return e.getInnerText();
+			Element elem = DOM.createElement("div");
+			String value = CmGwtUtils.jsni_decodeBase64(this.value);
+			elem.setInnerHTML(value);
+			
+			String t = elem.getInnerText();
+			int s = t.indexOf("[{");
+			if(s > -1) {
+				int e = t.indexOf("}]");
+				if(e > -1) {
+					t = t.substring(0, s) + " [Whiteboard]";
+				}
+			}
+			
+			if(value.toLowerCase().indexOf("wiris") > -1) {
+				t = "[Equation] " + t;
+			}
+			
+			return t;
 		}
 	}
 
@@ -307,6 +328,17 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 	public String checkValid() {
 		if(_grid.getStore().getAll().size() < 2) {
 			return "There must be at least two choices.";
+		}
+		
+		boolean hasCorrect=false;
+		for(MultiValue mv: _grid.getStore().getAll()) {
+			if(mv.isCorrect) {
+				hasCorrect=true;
+				break;
+			}
+		}
+		if(!hasCorrect) {
+			return "There must be at least one correct choice.";
 		}
 		return null;
 	}

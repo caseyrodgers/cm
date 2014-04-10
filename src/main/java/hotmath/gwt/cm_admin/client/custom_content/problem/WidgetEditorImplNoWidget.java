@@ -38,4 +38,9 @@ public class WidgetEditorImplNoWidget extends WidgetEditorImplDefault {
     public String getValueLabel() {
     	return null;
     }
+    
+    @Override
+    public void setupValue() {
+    	/** empty */
+    }
 }

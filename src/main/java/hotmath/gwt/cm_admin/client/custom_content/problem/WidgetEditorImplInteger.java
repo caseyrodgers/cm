@@ -14,10 +14,14 @@ public class WidgetEditorImplInteger extends WidgetEditorImplDefault {
         super(widgetDef);
         this.description = description;
     }
+
+    @Override
+    public void setupValue() {
+        _correctIntegerValue.setValue(getIntValueAsString(_widgetDef.getValue()!=null?_widgetDef.getValue():""));
+    }
     
     protected void buildUi() {
         _correctIntegerValue = new NumericalTextField();
-        _correctIntegerValue.setValue(getIntValueAsString(_widgetDef.getValue()!=null?_widgetDef.getValue():""));
         _fields.add(new MyFieldLabel(_correctIntegerValue, "Integer",80, 60));
     }
 
@@ -35,8 +39,14 @@ public class WidgetEditorImplInteger extends WidgetEditorImplDefault {
     @Override
     public String checkValid() {
     	if(!_correctIntegerValue.validate()) {
-    		return "Is invalid";
+    		return "Invalid";
     	}
+    	
+    	int iv = Integer.parseInt(_correctIntegerValue.getCurrentValue());
+    	if(!Integer.toString(iv).equals(_correctIntegerValue.getCurrentValue())) {
+    		return "Invalid";
+    	}
+    	
         return null;
     }
     
