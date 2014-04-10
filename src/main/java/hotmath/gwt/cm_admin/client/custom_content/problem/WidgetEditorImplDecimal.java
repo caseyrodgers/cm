@@ -19,7 +19,7 @@ public class WidgetEditorImplDecimal extends WidgetEditorImplDefault {
     protected void buildUi() {
     	_correctDecimalValue = new NumericalTextField(MyValidators.DECIMAL);
     	_correctDecimalValue.setValue(getIntValueAsString(_widgetDef.getValue()!=null?_widgetDef.getValue():""));
-        _fields.add(new MyFieldLabel(_correctDecimalValue, "Correct Value",80, 100));
+        _fields.add(new MyFieldLabel(_correctDecimalValue, "Decimal: ",80, 100));
     }
 
     protected WidgetDefModel createWidgetDefModel() {

@@ -35,4 +35,9 @@ public class WidgetEditorImplNoWidget extends WidgetEditorImplDefault {
     public String getDescription() {
     	return "Write and/or draw your answer on the whiteboard.";
     }
+    
+    @Override
+    public String getValueLabel() {
+    	return null;
+    }
 }

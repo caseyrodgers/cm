@@ -86,5 +86,10 @@ public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEd
         }
         return null;
     }
+    
+    @Override
+    public String getValueLabel() {
+    	return "Correct Value";
+    }
 
 }

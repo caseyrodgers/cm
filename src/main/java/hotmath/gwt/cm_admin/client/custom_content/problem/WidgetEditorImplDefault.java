@@ -61,5 +61,8 @@ public abstract class WidgetEditorImplDefault extends Composite implements Widge
         return "0";
     }
     
-    
+    @Override
+    public String getValueLabel() {
+    	return "Correct Value";
+    }
 }

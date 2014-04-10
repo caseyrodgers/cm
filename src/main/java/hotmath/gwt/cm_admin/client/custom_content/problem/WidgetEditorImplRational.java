@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_tools.client.ui.MyValidators;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -13,7 +14,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 
 public class WidgetEditorImplRational extends
 		WidgetEditorImpFractionWithAdvanced {
-	TextField _decimal = new NumericalTextField();
+	TextField _decimal = new NumericalTextField(MyValidators.DECIMAL);
 
 	private TabPanel _tabPanel;
 
@@ -46,9 +47,6 @@ public class WidgetEditorImplRational extends
 		panFrac.add(new MyFieldLabel(_numerator, "Numerator", 80, 50));
 		panFrac.add(new MyFieldLabel(_denominator, "Denominator", 80, 50));
 		_tabPanel.add(panFrac, "Fraction");
-
-		_fields.add(new HTML(
-				"<b>Correct value should be either a decimal or a fraction:</b>"));
 		_fields.add(_tabPanel);
 
 		_fields.add(super.createAdvanced());
@@ -65,32 +63,6 @@ public class WidgetEditorImplRational extends
 		_tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
 			@Override
 			public void onSelection(SelectionEvent<Widget> event) {
-				if (_tabPanel.getActiveWidget() == _panDec) {
-					if (_decimal.getCurrentValue() == null
-							|| _decimal.getCurrentValue().length() == 0) {
-						double n = Integer.parseInt(_numerator
-								.getCurrentValue());
-						double d = Integer.parseInt(_denominator
-								.getCurrentValue());
-
-						double dec = n / d;
-						_decimal.setValue(dec + "");
-					}
-				} else {
-
-					if (_decimal.getCurrentValue() != null
-							&& _decimal.getCurrentValue().length() > 0) {
-						if (_numerator.getCurrentValue() == null
-								|| _numerator.getCurrentValue().length() == 0
-								|| _denominator.getCurrentValue() == null
-								|| _denominator.getCurrentValue().length() == 0) {
-
-							Rational r = new Rational(Double.parseDouble(_decimal.getCurrentValue()));
-							_numerator.setValue(r.getNum() + "");
-							_denominator.setValue(r.getDenom() + "");
-						}
-					}
-				}
 			}
 		});
 	}
@@ -133,12 +105,22 @@ public class WidgetEditorImplRational extends
 		if (isDecimal()) {
 			if (!_decimal.validate()) {
 				return "Not a valid decimal value";
-			} else {
-				return null;
 			}
 		} else {
-			return super.checkValid();
+			String mesg = super.checkValid();
+			if(mesg != null && mesg.indexOf("Rational") == -1) {
+				return mesg;
+			}
+			int n = Integer.parseInt(_numerator.getCurrentValue());
+			if(n == 0) {
+				return "Use the Decimal tab for integer values.";
+			}
+			int d = Integer.parseInt(_denominator.getCurrentValue());
+			if(d == 0) {
+				return "Division by zero is undefined";
+			}
 		}
+		return null;
 	}
 
 	@Override
@@ -146,6 +128,10 @@ public class WidgetEditorImplRational extends
 		return "Enter an integer, decimal number, or fraction (use \"/\"). If a fraction is correct but not in lowest terms, students are prompted to reduce. Answers must be exact.";
 	}
 
+	@Override
+	public String getValueLabel() {
+		return "Correct Value (decimal or fraction)";
+	}
 }
 
 class Rational {

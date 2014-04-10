@@ -10,4 +10,13 @@ public interface WidgetEditor extends IsWidget {
     WidgetDefModel getWidgetDef();
     String checkValid();
 	String getDescription();
+	
+
+	/** return string used as value
+	 *  entry form label, or null to 
+	 *  not show it.
+	 *  
+	 * @return
+	 */
+	String getValueLabel();
 }

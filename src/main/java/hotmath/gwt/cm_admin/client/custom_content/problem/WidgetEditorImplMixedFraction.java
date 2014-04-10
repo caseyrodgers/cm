@@ -70,4 +70,9 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImpFractionWithAd
         return wd;
     }
     
+    @Override
+    public String getValueLabel() {
+    	return "Correct Value (decimal, fraction, or mixed number)";
+    }
+    
 }
