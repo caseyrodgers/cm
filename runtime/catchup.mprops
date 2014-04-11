@@ -997,6 +997,16 @@ WHERE      g.admin_id = 0
 ORDER BY   name asc
 
 
+.key=SELECT_GROUP_BY_ID
+
+SELECT     g.id, g.name, g.description, g.is_active, ifnull(is_auto_create_template, 0) as is_auto_create_template
+FROM       CM_GROUP g
+LEFT JOIN  HA_USER u
+       ON  u.group_id = g.id
+      AND  u.is_auto_create_template = 1
+      AND  u.admin_id = ?
+WHERE      g.id = ?
+
 .key=STUDENTS_IN_GROUP
 
 SELECT     g.id as group_id, u.uid, u.user_name

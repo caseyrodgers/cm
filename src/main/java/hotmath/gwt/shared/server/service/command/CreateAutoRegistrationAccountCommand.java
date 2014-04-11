@@ -16,6 +16,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTestDef;
@@ -81,6 +82,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         studentModel.setSelfPay(action.isSelfPay());
         millis = System.currentTimeMillis();
         studentModel = dao.addStudent(conn, studentModel);
+
     	if (__logger.isDebugEnabled())
         	__logger.debug("+++ CARAC addStudent() took: " + (System.currentTimeMillis()-millis) + " msec");
 
@@ -162,6 +164,11 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         rdata.putData("userName", admin.getAdminUserName());
         rdata.putData("loginName", admin.getSubscriberPassword());
         rdata.putData("password",  password);
+
+        // get self-reg Group name
+        GroupInfoModel groupMdl = CmAdminDao.getInstance().getGroupById(studentModel.getGroupId(), studentModel.getAdminUid());
+        rdata.putData("groupName", groupMdl.getGroupName());
+
         return rdata;
     }
 

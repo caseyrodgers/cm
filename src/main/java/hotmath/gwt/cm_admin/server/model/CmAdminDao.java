@@ -108,6 +108,25 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
     	return null;
     }
 
+    public GroupInfoModel getGroupById(int groupId, int adminId) throws Exception {
+        return getJdbcTemplate().query(
+                CmMultiLinePropertyReader.getInstance().getProperty("SELECT_GROUP_BY_ID"),
+                new Object[]{adminId, groupId},
+                new RowMapper<GroupInfoModel>() {
+                    @Override
+                    public GroupInfoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        GroupInfoModel m = new GroupInfoModel();
+                        m.setId(rs.getInt("id"));
+                        m.setGroupName(rs.getString("name"));
+                        m.setDescription(rs.getString("description"));
+                        m.setActive(rs.getInt("is_active") != 0);
+                        m.setSelfReg(rs.getInt("is_auto_create_template") != 0);
+                        return m;
+                    }
+                }
+        ).get(0);
+    }
+
     public List<GroupInfoModel> getActiveGroups(Integer adminUid) throws Exception {
         return getJdbcTemplate().query(
                 CmMultiLinePropertyReader.getInstance().getProperty("SELECT_GROUPS_SQL"),

@@ -43,11 +43,10 @@ public class SelfPayServlet extends HttpServlet {
         int newUserId = 0;
         try {
             String remoteIP = req.getRemoteAddr();
-            _logger.info("Attempting to create a new Self-Pay account for: " + remoteIP);
+            _logger.info("Attempting to create a new Self-Pay account for IP: " + remoteIP);
 
             String uniquePassword = "";
             String loginName = "";
-            String key = "";
 
             /** Extract form data
              */
@@ -56,12 +55,12 @@ public class SelfPayServlet extends HttpServlet {
 
             RpcData data = createUser(formData);
 
-            key = data.getDataAsString("key");
             newUserId = data.getDataAsInt("uid");
             loginName = data.getDataAsString("loginName");
             uniquePassword = data.getDataAsString("password");
+            String groupName = data.getDataAsString("groupName");
 
-            processPayment(remoteIP, newUserId, loginName, uniquePassword, formData);
+            processPayment(remoteIP, newUserId, loginName, uniquePassword, groupName, formData);
             
             /** Return JSON containing key values
              * 
@@ -82,7 +81,7 @@ public class SelfPayServlet extends HttpServlet {
     }
 
     private void processPayment(String remoteIP, int newUserId, String loginName,
-    		String password, Map<String, String[]> formData) throws Exception {
+    		String password, String groupName, Map<String, String[]> formData) throws Exception {
         String ccNum  = getFData(formData.get("card_number"));
         ccNum.replaceAll(" ", "");
         String ccType = getFData(formData.get("sel_cardtype"));
@@ -100,7 +99,7 @@ public class SelfPayServlet extends HttpServlet {
 
         PaymentService.doPurchase(remoteIP, 29.00, ccNum, ccType, ccv2, expMon, expYr,
         		ccZip, ccState, ccAddr1, ccAddr2, ccCity, ccFname, ccLname,
-        		newUserId, email, loginName, password);
+        		newUserId, email, loginName, password, groupName);
 	}
 
 	private RpcData createUser(Map<String, String[]> formData) throws Exception {

@@ -30,7 +30,7 @@ public class PaymentService {
     static public void doPurchase(String ipAddress, double amount, String ccNum, String ccType, String ccv2,
             String expMonth, String expYear, String ccZip, String ccState, String ccAddress1, String ccAddress2,
             String ccCity, String ccFirstName, String ccLastName, int userId, String email,
-            String loginName, String password) throws HotMathException {
+            String loginName, String password, String groupName) throws HotMathException {
         try {
 
             // for testing
@@ -51,7 +51,7 @@ public class PaymentService {
 
             addPurchaseResult(result, userId, amount);
 
-            purchaseComplete(result, email, loginName, password, amount); 
+            purchaseComplete(result, email, loginName, password, groupName, amount); 
 
         } catch (Throwable t) {
         	__logger.error("Error during purchase", t);
@@ -72,7 +72,7 @@ public class PaymentService {
 			dao.create(result, userId, amount);
 		}
 		catch (Exception e) {
-			String msg = String.format("Error saving payment: Order #; %s, userId: %d, amount: %.2f, success: %s",
+			String msg = String.format("Error saving payment: Order #: %s, userId: %d, amount: %.2f, success: %s",
 					result.getOrderNumber(), userId, amount, result.isSuccess());
 			__logger.error(msg, e);
 		}
@@ -83,28 +83,27 @@ public class PaymentService {
 	}
 
 	static private void purchaseComplete(final PaymentResult result, final String email, final String loginName,
-			final String password, final double amount) throws Exception {
+			final String password, final String groupName, final double amount) throws Exception {
         try {
 
             // send email in separate thread
             // to ensure user thread does not lock
             new Thread(new Runnable() {
-                @SuppressWarnings("unchecked")
                 public void run() {
 
                     StringBuilder sb = new StringBuilder();
                     try {
-                    	sb.append("Thank You!\n\n");
-                    	sb.append("Your Catchup Math purchase is complete.\n\n");
-                    	sb.append(" Order Number: ").append(result.getOrderNumber()).append("\n");
+                    	sb.append("Thank You for your Catchup Math purchase for ").append(groupName).append("\n\n");
+                    	sb.append("To log in (as directed by your instructor), go to Catchupmath.com and enter:\n");
                     	sb.append(" Login Name: ").append(loginName).append("\n");
                     	sb.append(" Password: ").append(password).append("\n\n");
-
+                    	sb.append("Please retain this email in case you forget your password.\n\n");
+                    	
+                    	sb.append("Order Number: ").append(result.getOrderNumber()).append("\n");
                     	sb.append(String.format(" Amount Charged: $ %.2f\n\n", amount));
                     	
-                    	sb.append("Please retain this information.\n\n");
-                    	
-                    	sb.append("Contact: support@catchupmath.com");
+                    	sb.append("We wish you every success with Catchup Math!\n\n");
+                    	sb.append("CM Support");
                     	
                         SbMailManager.getInstance().sendMessage("Catchup Math Purchase", sb.toString(), email,
                                 "support@catchupmath.com", "text/plain", null);
