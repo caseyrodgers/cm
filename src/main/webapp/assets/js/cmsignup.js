@@ -647,17 +647,17 @@ function selfpayComplete(data) {
    var password = obj.password;
 
    var email = $get('student_email').value;
-   html = "<h1>Catchup Math Signup Success</h1><p><b>Congratulations!</b><br/>You have successfully signed up for Catchup Math.</p>" +
-               "<p>Your login information is: <br/>" +
-               "<div class='login-info'>" +
-               "<div class='col'>Login Name: </div><div class='val'>" + loginName + "</div>" +
-               "<div class='col'>Password: </div><div class='val'>" + password + "</div>" +
-               "</div>" +
-               "</p>" + 
-              "<p>Visit <a href='http://catchupmath.com'>http://catchupmath.com</a>" +
-              " and enter the login information shown above.</p>" +
-              "<p class='info-sent'>Your signup information has also been sent to the email address: " + email + "</p>" +
-              "<p><a href='/login.html'>Begin Using Catchup Math</a></p>";
+   html = "<h1>Catchup Math Signup Success</h1><p>Congratulations!  You have successfully signed up for Catchup Math.</p>" +
+       "<p>Your personal login information is: " +
+       "<div class='login-info'>" +
+       "<div class='col'>Login Name: </div><div class='val'>" + loginName + "</div>" +
+       "<div class='col'>Password: </div><div class='val'>" + password + "</div>" +
+       "</div>" +
+       "</p>" + 
+       "<p>Visit <a href='http://catchupmath.com'>http://catchupmath.com</a>" +
+       " as directed by your instructor and enter the login information shown above.</p>" +
+       "<p class='info-sent'>A confirmation has also been emailed to: " + email + "</p><br/>" +
+       "<p>Thank you!</p>";
    }
    else {
 	   html = "<h1>Catchup Math Signup Error</h1><p><b>Unfortunately, there was a problem processing your request.</b><br/></p>" +
