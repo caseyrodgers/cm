@@ -61,7 +61,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
 	private HTML _aboutWidgetLabel = new HTML();
     public ProblemDesignerEditorWidget(SolutionInfo _solutionInfo, String widgetJson, CallbackOnComplete callback) {
         super(false);
-        setPixelSize(390, 390);
+        setPixelSize(390, 400);
         setResizable(false);
         this._solutionInfo = _solutionInfo;
         this._callback = callback;
@@ -229,7 +229,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
     }
 
     static public void doTest() {
-        new ProblemDesignerEditorWidget(new SolutionInfo("custom_2_131219_set1_1_1",null,null,false), "{type:'number_integer', value:'1200', format: 'measure_test|'}", new CallbackOnComplete() {
+        new ProblemDesignerEditorWidget(new SolutionInfo("custom_2_131219_set1_1_1",null,null,false), "{type:'number_rational_mixed',value:'1200', format: 'measure_test|'}", new CallbackOnComplete() {
             @Override
             public void isComplete() {
             	

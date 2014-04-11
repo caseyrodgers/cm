@@ -3,51 +3,94 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 
-public class WidgetEditorImplMixedFraction extends WidgetEditorImpFractionWithAdvanced {
 
-    IntegerTextField _decimal = new IntegerTextField();
+public class WidgetEditorImplMixedFraction extends WidgetEditorImplRational {
 
+    IntegerTextField _whole = new IntegerTextField("Whole part");
+    IntegerTextField _numeratorPart = new IntegerTextField("Numerator of fractional part");
+    IntegerTextField _denominatorPart = new IntegerTextField("Demoniator of fractional part");
     public WidgetEditorImplMixedFraction(WidgetDefModel widgetDef) {
         super(widgetDef);
     }
 
     protected void buildUi() {
-        super._fields.add(new MyFieldLabel(_decimal, "Decimal",80, 80));
-        super.buildUi();
         
+    	_whole.setAllowBlank(false);
+    	_numeratorPart.setAllowBlank(false);
+    	_denominatorPart.setAllowBlank(false);
+    	
+        super.buildUi();
+        VerticalLayoutContainer panWhole = new VerticalLayoutContainer();
+        panWhole.addStyleName("widget_panel");
+        panWhole.add(new MyFieldLabel(_whole, "Whole",80, 60));
+        panWhole.add(new MyFieldLabel(_numeratorPart, "Numerator",80, 60));
+        panWhole.add(new MyFieldLabel(_denominatorPart, "Denominator",80, 60));
+        
+        _tabPanel.add(panWhole, "Whole");
+        
+        super.setFormatValue(_widgetDef.getFormat());
+    }
+    
+    @Override
+    public void setupValue() {
         String value = getWidgetDef().getValue();
         if(value !=null) {
             String p[] = value.split("\\]");
             String toSplit="";
             if(p.length > 1) {
-            	_decimal.setValue(p[0].substring(1));
-            	toSplit = p[1];
+            	_tabPanel.setActiveWidget(_tabPanel.getWidget(2));
+            	
+            	_whole.setValue(p[0].substring(1));
+            	p = p[1].split("/");
+            	_numeratorPart.setValue(p[0]);
+        		_denominatorPart.setValue(p[1]);
+            	
             }
             else {
-                toSplit = p[0];	
+            	super.setupValue();
             }
-            
-        	p = toSplit.split("/");
-        	if(p.length > 1) {
-            	_numerator.setValue(p[0]);
-        		_denominator.setValue(p[1]);
-        	}
         }
-        
-        super.setFormatValue(_widgetDef.getFormat());
-        
-        _fields.add(super.createAdvanced());
     }
+    
+    private boolean isWhole() {
+		return !super.isFraction() && !super.isDecimal();
+	}
     
     @Override
     public String checkValid() {
-    	if(!_decimal.validate()) {
-    		return "Decimal number needs to be numeric";
-    	}
-    	else {
+    	
+    	if(!isWhole()) {
     		return super.checkValid();
     	}
+    	
+    	if(!_whole.validate() || !_numeratorPart.validate() || !_denominatorPart.validate()) {
+    		return "Invalid";
+    	}
+    	
+    	int d = Integer.parseInt(_denominatorPart.getCurrentValue());
+    	if(d == 0) {
+    		return "Denominator must not be zero.";
+    	}
+    	
+    	int n = Integer.parseInt(_numeratorPart.getCurrentValue());
+    	if(n == 0) {
+    		return "Use the decimal tab for integer values.";
+    	}
+    			
+    	if(n >= d) {
+    		return "Numerator must be less than denominator";
+    	}
+    	
+    	if(n < 0) {
+    		return "Numerator cannot be negative.";
+    	}
+    	if(d < 0) {
+    		return "Denominator cannot be negative.";
+    	}
+    	
+    	return null;
     }
 
     @Override
@@ -60,9 +103,10 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImpFractionWithAd
     @Override
     protected WidgetDefModel createWidgetDefModel() {
         WidgetDefModel wd = super.createWidgetDefModel();
-        wd.setValue("[" + (_decimal.getCurrentValue()!=null?_decimal.getCurrentValue() :0) + "]" + _numerator.getCurrentValue() + "/" + _denominator.getCurrentValue());
         
-        // {type:'number_rational',allowMixed:true,value:'$_ans_e', format:'text',ans_format:'lowest_term', width:1, height:1}
+        if(isWhole()) {
+        	wd.setValue("[" + (_whole.getCurrentValue()!=null?_whole.getCurrentValue() :0) + "]" + _numeratorPart.getCurrentValue() + "/" + _denominatorPart.getCurrentValue());
+        }
         
         wd.setType("number_rational_mixed");
         wd.setAnsFormat("lowest_term");

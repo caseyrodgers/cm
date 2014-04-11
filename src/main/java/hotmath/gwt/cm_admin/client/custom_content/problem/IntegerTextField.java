@@ -8,6 +8,10 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 
 public class IntegerTextField extends TextField {
 	
+	public IntegerTextField(String tip) {
+		this();
+		setToolTip(tip);
+	}
 	public IntegerTextField() {
 		this(MyValidators.INTEGER, new IntegerVerifier());
 	}

@@ -26,7 +26,7 @@ public class MyValidatorDef implements Validator<String> {
     public List<EditorError> validate(Editor editor, String value) {
         List<EditorError> errors = null;
         
-        if(value != null && (verifier != null && !verifier.verify(value)) || !value.matches(type.regex)) {
+        if(value != null && ((verifier != null && !verifier.verify(value)) || !value.matches(type.regex))) {
             errors = new ArrayList<EditorError>();
             errors.add(new DefaultEditorError(editor, value + " isn't a valid " + type.name, value));
         }

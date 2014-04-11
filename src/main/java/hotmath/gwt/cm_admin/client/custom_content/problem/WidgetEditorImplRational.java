@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
-import hotmath.gwt.cm_tools.client.ui.MyValidators;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -16,7 +15,7 @@ public class WidgetEditorImplRational extends
 		WidgetEditorImpFractionWithAdvanced {
 	TextField _decimal = new DecimalTextField();
 
-	private TabPanel _tabPanel;
+	protected TabPanel _tabPanel;
 
 	private FlowLayoutContainer _panDec;
 
@@ -35,17 +34,14 @@ public class WidgetEditorImplRational extends
 		_fields.clear();
 
 		_panDec = new FlowLayoutContainer();
-		_panDec.getElement().setAttribute("style",
-				"background: #DFE8F6;padding: 5px;");
-		_panDec.add(new HTML("<br/>"));
+		_panDec.addStyleName("widget_panel");
 		_panDec.add(new MyFieldLabel(_decimal, "Decimal", 80, 60));
 		_tabPanel = new TabPanel();
 		_tabPanel.getElement().setAttribute("style", "background: transparent");
 		_tabPanel.add(_panDec, "Decimal");
 
 		_panFrac = new FlowLayoutContainer();
-		_panFrac.getElement().setAttribute("style",
-				"background: #DFE8F6;padding: 5px;");
+		_panFrac.addStyleName("widget_panel");
 		_panFrac.add(new MyFieldLabel(_numerator, "Numerator", 80, 60));
 		_panFrac.add(new MyFieldLabel(_denominator, "Denominator", 80, 60));
 		_tabPanel.add(_panFrac, "Fraction");
@@ -64,10 +60,11 @@ public class WidgetEditorImplRational extends
 	
 	@Override
 	public void setupValue() {
-		String p[] = (_widgetDef.getValue() != null ? _widgetDef.getValue()
-				: "").split("/");
+		String p[] = (_widgetDef.getValue() != null ? _widgetDef.getValue()	: "").split("/");
 		if (p.length == 2) {
 			_tabPanel.setActiveWidget(_panFrac);
+			_numerator.setValue(p[0]);
+			_denominator.setValue(p[1]);
 		} else {
 			_tabPanel.setActiveWidget(_panDec);
 			_decimal.setValue(p[0]);
@@ -104,17 +101,21 @@ public class WidgetEditorImplRational extends
 		return wd;
 	}
 
-	private boolean isDecimal() {
+	protected boolean isDecimal() {
 		return _tabPanel.getActiveWidget() == _panDec;
 	}
 
+	protected boolean isFraction() {
+		return _tabPanel.getActiveWidget() == _panFrac;
+	}
+	
 	@Override
 	public String checkValid() {
 		if (isDecimal()) {
 			if (!_decimal.validate()) {
 				return "Not a valid decimal value";
 			}
-		} else {
+		} else if(isFraction()) {
 			String mesg = super.checkValid();
 			if(mesg != null && mesg.indexOf("Rational") == -1) {
 				return mesg;

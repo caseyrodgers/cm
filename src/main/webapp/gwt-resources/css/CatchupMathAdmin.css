@@ -626,8 +626,14 @@ program-details-panel .x-ftree2-node-over {
 
 .correct_value_label {
 	color: black;
-    font-size: 12pt;
+    font-size: 1.1em;
     font-weight: bold;
     margin: 0 0 10px 0;	
 }
 
+
+
+.widget_panel {
+	background: #DFE8F6;
+	padding: 5px;
+}
