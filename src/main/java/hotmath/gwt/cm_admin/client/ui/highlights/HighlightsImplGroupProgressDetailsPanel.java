@@ -13,9 +13,9 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
  * 
  * Group Report #1
 
-    •  Name: Group Progress
-    •  Tooltip: Shows number of active students (logged in at least once), total logins, lessons viewed, and quizzes passed for each group and enbtire school. Groups with no active students are omitted.
-    •  Sample report
+      Name: Group Progress
+      Tooltip: Shows number of active students (logged in at least once), total logins, lessons viewed, and quizzes passed for each group and enbtire school. Groups with no active students are omitted.
+      Sample report
 
      Group name  Active Logins Lessons Passed
      7th-Graders <n> <n> <n> <n>
@@ -84,10 +84,10 @@ public class HighlightsImplGroupProgressDetailsPanel extends HighlightsImplDetai
         String vars[][] = new String[reportData.size()][5];
         for(int i=0;i<reportData.size();i++) {
             vars[i][0] = reportData.get(i).getName();
-            vars[i][1] = reportData.get(i).getActiveCount() + "";
-            vars[i][2] = reportData.get(i).getLoginCount() + "";
-            vars[i][3] = reportData.get(i).getLessonsViewed() + "";
-            vars[i][4] = reportData.get(i).getQuizzesPassed() + "";
+            vars[i][1] = String.valueOf(reportData.get(i).getActiveCount());
+            vars[i][2] = String.valueOf(reportData.get(i).getLoginCount());
+            vars[i][3] = String.valueOf(reportData.get(i).getLessonsViewed());
+            vars[i][4] = String.valueOf(reportData.get(i).getQuizzesPassed());
         }
         return vars;
     }
