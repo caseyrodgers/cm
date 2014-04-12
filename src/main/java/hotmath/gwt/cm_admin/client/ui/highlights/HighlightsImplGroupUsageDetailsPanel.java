@@ -14,9 +14,9 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
  * 
 Report #2
 
-    •  Name: Group Usage
-    •  Tooltip: Shows the usage of optional learning resources for groups with at least one active student.
-    •  Sample report
+      Name: Group Usage
+      Tooltip: Shows the usage of optional learning resources for groups with at least one active student.
+      Sample report
     Group name  Active Videos Games Activities Flash Cards
     7th-Graders <n> <n> <n> <n> <n>
     8th-Graders <n> <n> <n> <n> <n>
@@ -76,10 +76,10 @@ public class HighlightsImplGroupUsageDetailsPanel extends HighlightsImplDetailsP
         String[][] vals = new String[hd.size()][5];
         for(int i=0;i<hd.size();i++) {
             vals[i][0] = hd.get(i).getName();
-            vals[i][1] = hd.get(i).getName();
-            vals[i][2] = hd.get(i).getName();
-            vals[i][3] = hd.get(i).getName();
-            vals[i][4] = hd.get(i).getName();
+            vals[i][1] = String.valueOf(hd.get(i).getActiveCount());
+            vals[i][2] = String.valueOf(hd.get(i).getVideosViewed());
+            vals[i][3] = String.valueOf(hd.get(i).getGamesViewed());
+            vals[i][4] = String.valueOf(hd.get(i).getActivitiesViewed());
         }
         return vals;
     }
