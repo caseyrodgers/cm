@@ -1,6 +1,5 @@
 package hotmath.testset.ha;
 
-import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.shared.client.CmProgram;
 
 import java.util.List;
@@ -15,7 +14,7 @@ public class HaTestDefPlacement extends HaTestDef {
 	
     
     public interface PlacementAdapter {
-        String getSubTitle(int segment);
+    	String getSubTitle(int segment);
         String[] getSegmentNames();
         int getTotalSegmentCount();
         CmProgram getNextProgram(String testName, int total, int correct);
@@ -126,6 +125,7 @@ public class HaTestDefPlacement extends HaTestDef {
             }
             return t;
         }
+ 
         
         @Override
         public int getTotalSegmentCount() {
