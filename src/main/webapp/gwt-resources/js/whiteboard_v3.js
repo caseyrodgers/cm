@@ -6671,6 +6671,7 @@ source: https://gist.github.com/754454
 
     wb.updateWhiteboard = function (cmdArray) {
         gwt_updatewhiteboard(cmdArray);
+        updateCanvas()
     }
     wb.renderFromStorage = function () {
         if (supports_localStorage()) {
