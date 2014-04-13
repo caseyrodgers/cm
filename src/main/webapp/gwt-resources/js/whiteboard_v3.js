@@ -205,163 +205,163 @@ var Whiteboard = function (cont, isStatic, _opts) {
         text: "Temp"
     }];
 
-        function getNextObjectID() {
-            //var l=uidSeed?uidSeed+1:wb.getUIDSeed();
-            return uidSeed++;
+    function getNextObjectID() {
+        //var l=uidSeed?uidSeed+1:wb.getUIDSeed();
+        return uidSeed++;
+    }
+
+    function getNextGroupID() {
+        //var l=uidSeed?uidSeed+1:wb.getUIDSeed();
+        return gidSeed++;
+    }
+    //
+    /**
+     * methods to create whiteboard gui
+     */
+
+    function createToolBtn(obj) {
+        var btn = $('<button/>', {
+            title: obj.title,
+            name: obj.name,
+            text: obj.text
+        }).addClass(obj.classes);
+        return btn;
+    }
+
+    function buildGUI() {
+        var parentDiv = $("#" + contDiv);
+
+        // only create if HTML structure not already exists
+        if (parentDiv.children().length > 0) {
+            console.log('this whitebaord already created: ' + contDiv);
+            return;
         }
 
-        function getNextGroupID() {
-            //var l=uidSeed?uidSeed+1:wb.getUIDSeed();
-            return gidSeed++;
-        }
-        //
-        /**
-         * methods to create whiteboard gui
-         */
+        var wbc = $('<div style="display:inline-block"></div>').attr('name', 'wb-container').addClass("wb-container").appendTo(parentDiv);
+        var toolCont = buildTools([{
+            name: 'toggleMenu',
+            title: 'Show/Hide Tools',
+            classes: 'big_tool_button',
+            text: "Tools"
+        }]).appendTo(wbc);
 
-        function createToolBtn(obj) {
-            var btn = $('<button/>', {
-                title: obj.title,
-                name: obj.name,
-                text: obj.text
-            }).addClass(obj.classes);
-            return btn;
-        }
-
-        function buildGUI() {
-            var parentDiv = $("#" + contDiv);
-
-            // only create if HTML structure not already exists
-            if (parentDiv.children().length > 0) {
-                console.log('this whitebaord already created: ' + contDiv);
-                return;
+        var canvasCont = buildCanvasLayers().appendTo(wbc);
+        //buildInputTextBox().appendTo(canvasCont);
+        var vScroll = buildScrollBar('v').appendTo(wbc);
+        var hScroll = buildScrollBar('h').appendTo(wbc);
+        var toolMenu = buildToolMenu(toolArr).appendTo(wbc);
+        var tempMenu = buildTempMenu().appendTo(wbc);
+        $get_jqElement("#toggleMenu").on("click", function (e) {
+            hideTemplates()
+            if (graphEditMode) {
+                //showHideGraphModuleEditor(false)
             }
-
-            var wbc = $('<div style="display:inline-block"></div>').attr('name', 'wb-container').addClass("wb-container").appendTo(parentDiv);
-            var toolCont = buildTools([{
-                name: 'toggleMenu',
-                title: 'Show/Hide Tools',
-                classes: 'big_tool_button',
-                text: "Tools"
-            }]).appendTo(wbc);
-
-            var canvasCont = buildCanvasLayers().appendTo(wbc);
-            //buildInputTextBox().appendTo(canvasCont);
-            var vScroll = buildScrollBar('v').appendTo(wbc);
-            var hScroll = buildScrollBar('h').appendTo(wbc);
-            var toolMenu = buildToolMenu(toolArr).appendTo(wbc);
-            var tempMenu = buildTempMenu().appendTo(wbc);
-            $get_jqElement("#toggleMenu").on("click", function (e) {
-                hideTemplates()
-                if (graphEditMode) {
-                    //showHideGraphModuleEditor(false)
-                }
-                positionToolMenu('t', e.originalEvent);
-                $get_jqElement("#wb_menu").toggle();
-            });
-            $get_jqElement("#toggleMenu").on("mouseover", function (e) {
-                hideTemplates()
-                if (graphEditMode) {
-                    //showHideGraphModuleEditor(false)
-                }
-                // positionToolMenu('t', e.originalEvent);
-                //$get_jqElement("#wb_menu").show()
-            });
-            $get_jqElement("#wb_menu").on("mouseleave", function (e) {
-                //$get_jqElement("#wb_menu").hide()
-            });
-            $get_jqElement('#canvas').on("contextmenu", function (e) {
-                hideTemplates()
-                if (!isReadOnly) {
-                    e.preventDefault();
-                    positionToolMenu('mouse', e.originalEvent);
-                    $get_jqElement("#wb_menu").show();
-                    return false;
-                }
-            });
-
-        }
-
-        function buildTools(arr) {
-            var divObj = $("<div/>", {
-                name: 'tools'
-            }).addClass('tools');
-            var tool
-            for (var k = 0; k < arr.length; k++) {
-
-                tool = createToolBtn(arr[k])
-                tool.appendTo(divObj);
+            positionToolMenu('t', e.originalEvent);
+            $get_jqElement("#wb_menu").toggle();
+        });
+        $get_jqElement("#toggleMenu").on("mouseover", function (e) {
+            hideTemplates()
+            if (graphEditMode) {
+                //showHideGraphModuleEditor(false)
             }
-            return divObj
-        }
-
-        function buildToolMenu(arr) {
-            var divObj = $("<div name='wb_menu' class='wb_menu' style='position:absolute;width:215px;top:36px;left:5px;background-color:#eeeeee;padding:5px;-webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);display:none;'></div>");
-            var tool
-            for (var k = 0; k < arr.length; k++) {
-                if (arr[k].text == 'Temp' && !wb.options.showTemplates) {
-                    continue
-                }
-                tool = createToolBtn(arr[k])
-                tool.appendTo(divObj).css("margin", "4px");
+            // positionToolMenu('t', e.originalEvent);
+            //$get_jqElement("#wb_menu").show()
+        });
+        $get_jqElement("#wb_menu").on("mouseleave", function (e) {
+            //$get_jqElement("#wb_menu").hide()
+        });
+        $get_jqElement('#canvas').on("contextmenu", function (e) {
+            hideTemplates()
+            if (!isReadOnly) {
+                e.preventDefault();
+                positionToolMenu('mouse', e.originalEvent);
+                $get_jqElement("#wb_menu").show();
+                return false;
             }
-            return divObj
-        }
+        });
 
-        function positionToolMenu(flag, _event) {
-            var isTouchEnabled = _event.type.indexOf('touch') > -1
-            if (flag == 'mouse' && !isTouchEnabled) {
-                var l, t
-                var event = _event ? _event : window.event;
-                var off = getoffset();
-                var dx, dy
-                if (event.pageX != undefined) {
-                    dx = event.pageX - off.left;
-                    dy = event.pageY - off.top + $get_jqElement("#tools").outerHeight();
-                } else {
-                    dx = event.clientX - off.left;
-                    dy = event.clientY - off.top + $get_jqElement("#tools").outerHeight();
-                }
-                var wlim = $get_jqElement("#drawsection").width();
-                var hlim = $get_jqElement("#drawsection").height() + $get_jqElement("#tools").outerHeight();
-                var wd = $get_jqElement("#wb_menu").outerWidth();
-                var ht = $get_jqElement("#wb_menu").outerHeight();
-                l = dx + wd > wlim ? wlim - wd : dx
-                t = dy + ht > hlim ? hlim - ht : dy
-                $get_jqElement("#wb_menu").css({
-                    "left": l + 'px',
-                    "top": t + "px"
-                })
+    }
+
+    function buildTools(arr) {
+        var divObj = $("<div/>", {
+            name: 'tools'
+        }).addClass('tools');
+        var tool
+        for (var k = 0; k < arr.length; k++) {
+
+            tool = createToolBtn(arr[k])
+            tool.appendTo(divObj);
+        }
+        return divObj
+    }
+
+    function buildToolMenu(arr) {
+        var divObj = $("<div name='wb_menu' class='wb_menu' style='position:absolute;width:215px;top:36px;left:5px;background-color:#eeeeee;padding:5px;-webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);  -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);display:none;'></div>");
+        var tool
+        for (var k = 0; k < arr.length; k++) {
+            if (arr[k].text == 'Temp' && !wb.options.showTemplates) {
+                continue
+            }
+            tool = createToolBtn(arr[k])
+            tool.appendTo(divObj).css("margin", "4px");
+        }
+        return divObj
+    }
+
+    function positionToolMenu(flag, _event) {
+        var isTouchEnabled = _event.type.indexOf('touch') > -1
+        if (flag == 'mouse' && !isTouchEnabled) {
+            var l, t
+            var event = _event ? _event : window.event;
+            var off = getoffset();
+            var dx, dy
+            if (event.pageX != undefined) {
+                dx = event.pageX - off.left;
+                dy = event.pageY - off.top + $get_jqElement("#tools").outerHeight();
             } else {
-                $get_jqElement("#wb_menu").css({
-                    "left": '5px',
-                    "top": $get_jqElement("#tools").outerHeight() + "px"
-                })
+                dx = event.clientX - off.left;
+                dy = event.clientY - off.top + $get_jqElement("#tools").outerHeight();
             }
-        }
-
-        function resizeToolMenu(cl) {
-            var w, t, rcl, acl
-            if (cl == 'small_tool_button') {
-                acl = cl;
-                rcl = 'big_tool_button';
-                w = '135px';
-                t = '31px';
-            } else {
-                acl = cl;
-                rcl = 'small_tool_button';
-                w = '215px';
-                t = '36px';
-            }
-            $get_jqElement("#toggleMenu").removeClass(rcl).addClass(acl)
+            var wlim = $get_jqElement("#drawsection").width();
+            var hlim = $get_jqElement("#drawsection").height() + $get_jqElement("#tools").outerHeight();
+            var wd = $get_jqElement("#wb_menu").outerWidth();
+            var ht = $get_jqElement("#wb_menu").outerHeight();
+            l = dx + wd > wlim ? wlim - wd : dx
+            t = dy + ht > hlim ? hlim - ht : dy
             $get_jqElement("#wb_menu").css({
-                "width": w,
-                "top": t
+                "left": l + 'px',
+                "top": t + "px"
             })
-            if (cl == 'small_tool_button') {
-                $get_jqElement("#toggleMenu").width(45);
-            }
+        } else {
+            $get_jqElement("#wb_menu").css({
+                "left": '5px',
+                "top": $get_jqElement("#tools").outerHeight() + "px"
+            })
         }
+    }
+
+    function resizeToolMenu(cl) {
+        var w, t, rcl, acl
+        if (cl == 'small_tool_button') {
+            acl = cl;
+            rcl = 'big_tool_button';
+            w = '135px';
+            t = '31px';
+        } else {
+            acl = cl;
+            rcl = 'small_tool_button';
+            w = '215px';
+            t = '36px';
+        }
+        $get_jqElement("#toggleMenu").removeClass(rcl).addClass(acl)
+        $get_jqElement("#wb_menu").css({
+            "width": w,
+            "top": t
+        })
+        if (cl == 'small_tool_button') {
+            $get_jqElement("#toggleMenu").width(45);
+        }
+    }
     var event_rightclick = false
 
         function isRightClick(e) {
@@ -626,11 +626,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
                         if (config.xaxis != nconfig.xaxis || config.yaxis != nconfig.yaxis || config.xscale != nconfig.xscale || config.yscale != nconfig.yscale) {
                             updateGraphModule(plot.currentUID, nconfig, true, graphicDataStore[plot.objIndex])
                         }
-                        gedit.hide();
+
                         if (!noupdate) {
                             updateCanvas();
                             setObjSelected(graphicDataStore[plot.objIndex]);
                         }
+                        gedit.hide();
                     }
                 }
 
@@ -720,6 +721,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             buttonHighlite('move');
             updateCanvas();
             setObjSelected(graphicDataStore[graphicDataStore.length - 1]);
+            //alert("GRAPH")
         } else {
 
             var isDeleted = isObjDeleted(uid);
@@ -753,11 +755,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
         if (selectedObj && selectedObj.id == 2 && isEdited) {
             sbrect.w = isEdited.brect.w;
             sbrect.h = isEdited.brect.h;
-            sbrect.xmin=isEdited.brect.xmin;
-            sbrect.ymin=isEdited.brect.ymin;
-            sbrect.xmax=sbrect.xmin+sbrect.w;
-            sbrect.ymax=sbrect.ymin+sbrect.h;
-            
+            sbrect.xmin = isEdited.brect.xmin;
+            sbrect.ymin = isEdited.brect.ymin;
+            sbrect.xmax = sbrect.xmin + sbrect.w;
+            sbrect.ymax = sbrect.ymin + sbrect.h;
+
         }
         if (transMode == 'move') {
             if (boo) {
@@ -770,14 +772,14 @@ var Whiteboard = function (cont, isStatic, _opts) {
             y0 = selectedObj.brect.ymin + obj.ty;
             w0 = sbrect.w;
             h0 = sbrect.h;
-if(isEdited&&selectedObj.id == 2){
-//x0 = sbrect.xmin + obj.tx;
-            //y0 = sbrect.ymin + obj.ty;
-            x0=x0-(selectedObj.brect.xmin-(isEdited.brect.xmin-obj.tx))
-            y0=y0-(selectedObj.brect.ymin-(isEdited.brect.ymin-obj.ty))
-            w0 = sbrect.w;
-            h0 = sbrect.h;
-}
+            if (isEdited && selectedObj.id == 2) {
+                //x0 = sbrect.xmin + obj.tx;
+                //y0 = sbrect.ymin + obj.ty;
+                x0 = x0 - (selectedObj.brect.xmin - (isEdited.brect.xmin - obj.tx))
+                y0 = y0 - (selectedObj.brect.ymin - (isEdited.brect.ymin - obj.ty))
+                w0 = sbrect.w;
+                h0 = sbrect.h;
+            }
             if (isScaled) {
 
                 sx = isScaled.tx;
@@ -915,8 +917,8 @@ if(isEdited&&selectedObj.id == 2){
             context.fill()
             context.fillRect(xRB - hitR, yRB - hitR, hitC, hitC);
             context.beginPath();
-            context.drawImage(rotateGR, xLT - (hitR-4), yLT - (hitR-4), hitC - 8, hitC - 8)
-            context.drawImage(scaleGR, xRB - (hitR-4), yRB - (hitR-4), hitC - 8, hitC - 8)
+            context.drawImage(rotateGR, xLT - (hitR - 4), yLT - (hitR - 4), hitC - 8, hitC - 8)
+            context.drawImage(scaleGR, xRB - (hitR - 4), yRB - (hitR - 4), hitC - 8, hitC - 8)
             //context.arc(x0 + w0+hitR, y0-hitR, hitR, 0, 2 * Math.PI, false);
         }
         //context.arc(x0-hitR, y0-hitR, hitR, 0, 2 * Math.PI, false);
@@ -925,7 +927,7 @@ if(isEdited&&selectedObj.id == 2){
         context.arc(xRT, yRT, hitR, 0, 2 * Math.PI, false);
         context.restore();
         context.fill()
-       /* context.font = "bold 14px Arial";
+        /* context.font = "bold 14px Arial";
         context.fillStyle = "rgba(255, 255, 255, 0.75)";
         context.textBaseline = 'center';
         var mw = context.measureText('X').width;
@@ -938,7 +940,7 @@ if(isEdited&&selectedObj.id == 2){
         context.lineWidth = 3;
         context.arc(xRT, yRT, hitR - 5, 0, 2 * Math.PI, false);
         context.stroke();*/
-        context.drawImage(deleteGR, xRT - (hitR-4), yRT - (hitR-4), hitC - 8, hitC - 8)
+        context.drawImage(deleteGR, xRT - (hitR - 4), yRT - (hitR - 4), hitC - 8, hitC - 8)
         if (selectedObj.id == 'graph' || selectedObj.id == 2) {
 
             context.drawImage(editGR, x0 - (hitC - 4), y0 + h0 + (4), hitC - 8, hitC - 8)
@@ -1395,13 +1397,13 @@ if(isEdited&&selectedObj.id == 2){
 
                     if (__obj.id == '2') {
                         rect.w = isEdited.brect.w
-                        rect.h = isEdited.brect.h                        
+                        rect.h = isEdited.brect.h
                         if (isMoved) {
-                            rect.xmin=rect.xmin-(selectedObj.brect.xmin-(isEdited.brect.xmin-isMoved.tx))
-                            rect.ymin=rect.ymin-(selectedObj.brect.ymin-(isEdited.brect.ymin-isMoved.ty))
-                        }else{
-                        rect.xmin=rect.xmin-(selectedObj.brect.xmin-isEdited.brect.xmin)
-                        rect.ymin=rect.ymin-(selectedObj.brect.ymin-isEdited.brect.ymin)
+                            rect.xmin = rect.xmin - (selectedObj.brect.xmin - (isEdited.brect.xmin - isMoved.tx))
+                            rect.ymin = rect.ymin - (selectedObj.brect.ymin - (isEdited.brect.ymin - isMoved.ty))
+                        } else {
+                            rect.xmin = rect.xmin - (selectedObj.brect.xmin - isEdited.brect.xmin)
+                            rect.ymin = rect.ymin - (selectedObj.brect.ymin - isEdited.brect.ymin)
                         }
                         rect.xmax = rect.xmin + rect.w
                         rect.ymax = rect.ymin + rect.h
@@ -1524,13 +1526,13 @@ if(isEdited&&selectedObj.id == 2){
                     if (__obj.id == '2') {
                         rect.w = isEdited.brect.w
                         rect.h = isEdited.brect.h
-                        
+
                         if (isMoved) {
-                            rect.xmin=rect.xmin-(__obj.brect.xmin-(isEdited.brect.xmin-isMoved.tx))
-                            rect.ymin=rect.ymin-(__obj.brect.ymin-(isEdited.brect.ymin-isMoved.ty))
-                        }else{
-                        rect.xmin=rect.xmin-(__obj.brect.xmin-isEdited.brect.xmin)
-                        rect.ymin=rect.ymin-(__obj.brect.ymin-isEdited.brect.ymin)
+                            rect.xmin = rect.xmin - (__obj.brect.xmin - (isEdited.brect.xmin - isMoved.tx))
+                            rect.ymin = rect.ymin - (__obj.brect.ymin - (isEdited.brect.ymin - isMoved.ty))
+                        } else {
+                            rect.xmin = rect.xmin - (__obj.brect.xmin - isEdited.brect.xmin)
+                            rect.ymin = rect.ymin - (__obj.brect.ymin - isEdited.brect.ymin)
                         }
                         rect.xmax = rect.xmin + rect.w
                         rect.ymax = rect.ymin + rect.h
@@ -1624,7 +1626,7 @@ if(isEdited&&selectedObj.id == 2){
             var _objid = obj.id
             var isGraph = _objid == 11 || _objid == 12
 
-            if (isObjDeleted(obj.uid) || isGraph||_objid===0) {
+            if (isObjDeleted(obj.uid) || isGraph || _objid === 0) {
                 continue
             }
             if (!obj.isErased) {
@@ -1789,13 +1791,13 @@ if(isEdited&&selectedObj.id == 2){
                         if (obj.id == '2') {
                             rect.w = isEdited.brect.w
                             rect.h = isEdited.brect.h
-                            
+
                             if (isMoved) {
-                                rect.xmin=rect.xmin-(obj.brect.xmin-(isEdited.brect.xmin-isMoved.tx))
-                                rect.ymin=rect.ymin-(obj.brect.ymin-(isEdited.brect.ymin-isMoved.ty))
-                            }else{
-                            rect.xmin=rect.xmin-(obj.brect.xmin-isEdited.brect.xmin)
-                            rect.ymin=rect.ymin-(obj.brect.ymin-isEdited.brect.ymin)
+                                rect.xmin = rect.xmin - (obj.brect.xmin - (isEdited.brect.xmin - isMoved.tx))
+                                rect.ymin = rect.ymin - (obj.brect.ymin - (isEdited.brect.ymin - isMoved.ty))
+                            } else {
+                                rect.xmin = rect.xmin - (obj.brect.xmin - isEdited.brect.xmin)
+                                rect.ymin = rect.ymin - (obj.brect.ymin - isEdited.brect.ymin)
                             }
                             rect.xmax = rect.xmin + rect.w
                             rect.ymax = rect.ymin + rect.h
@@ -1935,14 +1937,14 @@ if(isEdited&&selectedObj.id == 2){
                 // var isTransformed = isObjTransformed(obj.uid,transMode)
 
                 // transformRect(rect, scrollPosition.x, scrollPosition.y,transMode)
-               // obj.isErased = intersectRect(rect, r)
-               var sel = intersectRect(rect, r)
+                // obj.isErased = intersectRect(rect, r)
+                var sel = intersectRect(rect, r)
                 var hasShape = false
                 if (sel) {
                     hasShape = getShapeHit(obj, r)
                     updateBuffer()
                 }
-                obj.isErased=hasShape
+                obj.isErased = hasShape
             }
         }
         //return -1
@@ -2201,7 +2203,7 @@ if(isEdited&&selectedObj.id == 2){
             $get_Element("#inputBox").style.display = 'none';
             textEditMode = !true;
             if (boo) {
-               //setObjSelected(selectedObj);
+                //setObjSelected(selectedObj);
             }
         }
         // alert($get_Element("#inputBox").style.display)
@@ -4323,9 +4325,9 @@ if(isEdited&&selectedObj.id == 2){
                     rendering = false;
                     var isOpen = $get_Element("#inputBox").style.display == 'block';
                     if (isOpen) {
-                    if(selectionMode&&selectedObj){
-                    transMode = 'edit';
-                    }
+                        if (selectionMode && selectedObj) {
+                            transMode = 'edit';
+                        }
                         renderText();
                     }
                     if (objOnSel) {
@@ -4374,6 +4376,7 @@ if(isEdited&&selectedObj.id == 2){
                         var dofindSel = true
                         if (selectedObj) {
                             var bsrect = getWhiteboardObjBound('sel');
+                            // alert("A")
                             if (contains(bsrect.brect, x, y)) {
                                 i = selectedObjIndex;
                                 dofindSel = !true
@@ -4383,8 +4386,10 @@ if(isEdited&&selectedObj.id == 2){
                                     return
                                 }
                             } else {
+                                //alert("B")
                                 transMode = selectionOnNode(selectedObj, x, y);
                                 transMode = transMode == null ? 'move' : transMode
+                                // alert(transMode)
                                 if (transMode == 'edit' || transMode == 'delete') {
                                     return
                                 }
@@ -4413,7 +4418,7 @@ if(isEdited&&selectedObj.id == 2){
                             var isMoved = isObjTransformed(selectedObj.uid, 'move');
                             var isScaled = isObjTransformed(selectedObj.uid, 'scale');
                             var isRotated = isObjTransformed(selectedObj.uid, 'rotate');
-                            var isEdited = selectedObj.id=='2'&&isObjTransformed(selectedObj.uid, 'edit');
+                            var isEdited = selectedObj.id == '2' && isObjTransformed(selectedObj.uid, 'edit');
                             if (transMode == 'rotate') {
                                 //var isMoved =  isObjTransformed(selectedObj.uid, 'move');
                                 //var isScaled =  isObjTransformed(selectedObj.uid, 'scale');
@@ -4430,30 +4435,38 @@ if(isEdited&&selectedObj.id == 2){
                                 var dsy = y - cy - scrollPosition.y
                                 clickR = Math.atan2(dsy, dsx)
                             }
-                            if (isTransformed||isEdited) {
-                                
-                                if(isEdited){
-                                drawBoundRect({
-                                    tx: 0,
-                                    ty: 0,
-                                    tr: 0,
-                                    brect: isEdited.brect
-                                })
-                                }else{
-                                drawBoundRect({
-                                    tx: isTransformed.tx,
-                                    ty: isTransformed.ty,
-                                    tr: isTransformed.tr,
-                                    brect: isTransformed.trect
-                                })
+                            if (isTransformed || isEdited) {
+
+                                if (isEdited) {
+                                    drawBoundRect({
+                                        tx: 0,
+                                        ty: 0,
+                                        tr: 0,
+                                        brect: isEdited.brect
+                                    })
+                                } else {
+                                    try {
+                                        drawBoundRect({
+                                            tx: isTransformed.tx,
+                                            ty: isTransformed.ty,
+                                            tr: isTransformed.tr,
+                                            brect: isTransformed.trect
+                                        })
+                                    } catch (e) {
+                                        alert(e);
+                                    }
                                 }
                             } else {
-                                drawBoundRect({
-                                    tx: 0,
-                                    ty: 0,
-                                    tr: 0,
-                                    brect: selectedObj.brect
-                                });
+                                try {
+                                    drawBoundRect({
+                                        tx: 0,
+                                        ty: 0,
+                                        tr: 0,
+                                        brect: selectedObj.brect
+                                    });
+                                } catch (e) {
+                                    alert(e);
+                                }
                             }
                             if (!objectActions[selectedObj.uid]['move']) {
                                 objectActions[selectedObj.uid]['move'] = []
@@ -4567,8 +4580,8 @@ if(isEdited&&selectedObj.id == 2){
                     return;
                 }
                 if (!selectedObj && textEditMode) {
-                    hideTextBox()
-                    penDown = false
+                    // hideTextBox()
+                    // penDown = false
                     return;
                 }
                 if (selectionMode) {
@@ -4856,6 +4869,7 @@ if(isEdited&&selectedObj.id == 2){
                     var dx = x - clickX;
                     var dy = y - clickY;
                     var bool = isMultitouch_gesture(_event);
+                    // alert("A")
                     if (selectionMode && multiSelection && selectedObjects.length) {
                         renderMultiSelectionTrans();
 
@@ -4868,10 +4882,8 @@ if(isEdited&&selectedObj.id == 2){
                             event.returnValue = false
                         };
                     } else if (selectionMode) {
-
                         if (selectedObj && selectionDragMode) {
                             selectionDragged = true;
-
                             //drawTempObj(selectedObj, dx, dy)
                             //var pd=graphicDataStore.pop();
                             //pd=pd.dataArr[0]
@@ -4946,10 +4958,10 @@ if(isEdited&&selectedObj.id == 2){
                                 tr: trans.tr,
                                 trect: pd.brect
                             };
+
                             objectActions[selectedObj.uid][transMode][li] = tdata;
                             //var mobj={id:selectedObj.id,type:'cmd',cmd:{name:'move',data:tdata},dataArr:[]}
                             //graphicDataStore.push(pd);
-
                             updateCanvas();
                             //drawBoundRect(pd);
                             //drawBoundRect({tx:isTransformed.tx+dx,ty:isTransformed.ty+dy,brect:isTransformed.trect});
@@ -5425,7 +5437,7 @@ if(isEdited&&selectedObj.id == 2){
             ri.css('width', '60px');
             ri.css('height', '40px');
             $get_jqElement("#inputBox").find("[name='done_btn']").css({
-                'top': ($get_jqElement("#input_box").outerHeight() + 10) + "px",
+                'top': ($get_jqElement("#input_box").outerHeight() + 30) + "px",
                 'left': 0 + "px"
             })
             var maxW = docWidth - clickX - 50;
@@ -5465,7 +5477,7 @@ if(isEdited&&selectedObj.id == 2){
         $get_Element("#input_box").style.top = 0 + "px";
         $get_Element("#input_box").style.left = 0 + "px";
         $get_jqElement("#inputBox").find("[name='done_btn']").css({
-            'top': ($get_jqElement("#input_box").outerHeight() + 10) + "px",
+            'top': ($get_jqElement("#input_box").outerHeight() + 30) + "px",
             'left': 0 + "px"
         })
         //$get_Element("#inputBox").style.color = wb.globalStrokeColor;
@@ -5474,6 +5486,7 @@ if(isEdited&&selectedObj.id == 2){
     }
 
     function hideTextBox_html() {
+        //alert("D1")
         if ($get_Element("#content")) {
             $get_Element("#content").value = "";
         }
@@ -6515,11 +6528,11 @@ source: https://gist.github.com/754454
             if (transMode == 'edit' && selectedObj && (uid == selectedObj.uid)) {} else {
                 var isEdited = isObjTransformed(uid, 'edit');
                 if (isEdited) {
-                    x0 = _obj.dataArr[0].x-(obj.brect.xmin-isEdited.x) - cx;
-                    y0 = _obj.dataArr[0].y-(obj.brect.ymin-isEdited.y) - cy;
-                    if(isMoved){
-                    x0 = _obj.dataArr[0].x-(obj.brect.xmin-(isEdited.x-isMoved.tx)) - cx;
-                    y0 = _obj.dataArr[0].y-(obj.brect.ymin-(isEdited.y-isMoved.ty)) - cy;
+                    x0 = _obj.dataArr[0].x - (obj.brect.xmin - isEdited.x) - cx;
+                    y0 = _obj.dataArr[0].y - (obj.brect.ymin - isEdited.y) - cy;
+                    if (isMoved) {
+                        x0 = _obj.dataArr[0].x - (obj.brect.xmin - (isEdited.x - isMoved.tx)) - cx;
+                        y0 = _obj.dataArr[0].y - (obj.brect.ymin - (isEdited.y - isMoved.ty)) - cy;
                     }
                     // context.fillText(graphic_data[i].text, x0, y0);
                     xt = isEdited.text;
@@ -6752,7 +6765,7 @@ source: https://gist.github.com/754454
                 }
                 updateCanvas()
             }
-            
+
         }
         console.log(data)
     }
@@ -7067,6 +7080,16 @@ source: https://gist.github.com/754454
     var elmX, elmY, elmW, elmH, clickX, clickY, dx, dy;
     var cont;
     var wb
+    var IS_IPAD = navigator.userAgent.match(/iPad/i) != null;
+    var IS_IE8 = navigator.userAgent.match(/MSIE 8.0/i) != null;
+    var IS_IE9 = navigator.userAgent.match(/MSIE 9.0/i) != null;
+    var IS_IE = IS_IE8 || IS_IE9;
+    var IS_ANDROID = navigator.userAgent.match(/Android/i) != null;
+    var IS_KINDLE = navigator.userAgent.match(/Kindle/i) != null || navigator.userAgent.match(/Silk/i) != null;
+    var IS_IPHONE = navigator.userAgent.match(/iPhone/i) != null;
+    var IS_OPERA = navigator.userAgent.match(/Opera/i) != null;
+    var isTouchEnabled = IS_IPAD || IS_ANDROID || IS_KINDLE || IS_IPHONE
+    var IS_IOS = IS_IPAD || IS_IPHONE
     var getCanvasOffSet = function (scope) {
         var box = $(scope).get(0).getBoundingClientRect();
         var body = document.body;
@@ -7090,9 +7113,9 @@ source: https://gist.github.com/754454
         getCanvasOffSet(scope);
         var offX = scope.data('offX');
         var offY = scope.data('offY');
-        console.log(offX + "<>" + offY)
-        var ev = e ? e : window.event;
-        isTouchEnabled = ev.type.indexOf('touch') > -1;
+        // console.log(offX + "<>" + offY)
+        var ev = e ? e.originalEvent : window.event;
+        var isTouchEnabled = ev.type.indexOf('touch') > -1;
         ev = isTouchEnabled ? ev.changedTouches[0] : ev;
         var cursor = {
             x: 0,
@@ -7117,7 +7140,7 @@ source: https://gist.github.com/754454
         cont.css('width', cont.find("[name='content']").outerWidth() + "px");
         cont.parent().parent().find("[name='done_btn']").css({
             'position': 'relative',
-            'top': "50px"
+            'top': "70px"
         })
         /* var handles = ['tl', 'tm', 'tr',
             'ml', 'mr', 'bl', 'bm', 'br'
@@ -7125,29 +7148,93 @@ source: https://gist.github.com/754454
         var handles = ['tl', 'tm', 'tr',
             'ml', 'mr', 'bl', 'bm', 'br'
         ]
+        var ev_onmouse = function (ev) {
+            ev.preventDefault();
+            wb.ib_drag = 'start';
+            var click = getCursorPos(ev, cont.parent());
+            clickX = click.x;
+            clickY = click.y;
+            elmX = parseFloat(cont.css("left"));
+            elmY = parseFloat(cont.css("top"));
+            elmW = parseFloat(cont.outerWidth());
+            elmH = parseFloat(cont.outerHeight());
+            var id = $(this).attr("id").split("_")[1];
+            $(document).on('mousemove', {
+                elm: $(this),
+                id: id
+            }, onMMHandler)
+            $(document).on('mouseup', onMUHandler)
+        }
+        var ev_ontouch = function (ev) {
+            ev.preventDefault();
+            wb.ib_drag = 'start';
+            var click = getCursorPos(ev, cont.parent());
+            clickX = click.x;
+            clickY = click.y;
+            elmX = parseFloat(cont.css("left"));
+            elmY = parseFloat(cont.css("top"));
+            elmW = parseFloat(cont.outerWidth());
+            elmH = parseFloat(cont.outerHeight());
+            var id = $(this).attr("id").split("_")[1];
+            $(document).on('touchmove', {
+                elm: $(this),
+                id: id
+            }, onMMHandler)
+            $(document).on('touchend', onMUHandler)
+        }
+        //alert(isTouchEnabled)
         for (var h = 0; h < handles.length; h++) {
 
             var hDiv = document.createElement('div');
             hDiv.className = 'dragresize' + ' ' + 'dragresize' + '-' + handles[h];
             $(hDiv).attr("id", cont.attr('id') + "_" + handles[h]);
             elm['_handle_' + handles[h]] = elm.appendChild(hDiv);
-            $(hDiv).on('mousedown', function (ev) {
-                ev.preventDefault();
-                wb.ib_drag = 'start';
-                var click = getCursorPos(ev, cont.parent());
-                clickX = click.x;
-                clickY = click.y;
-                elmX = parseFloat(cont.css("left"));
-                elmY = parseFloat(cont.css("top"));
-                elmW = parseFloat(cont.outerWidth());
-                elmH = parseFloat(cont.outerHeight());
-                var id = $(this).attr("id").split("_")[1];
-                $(document).on('mousemove', {
-                    elm: $(this),
-                    id: id
-                }, onMMHandler)
-                $(document).on('mouseup', onMUHandler)
-            })
+            if (isTouchEnabled) {
+                //alert(hDiv)
+                $(hDiv).on('touchstart', function (ev) {
+                    // alert('D1')
+                    ev.preventDefault();
+                    wb.ib_drag = 'start';
+                    try {
+                        var click = getCursorPos(ev, cont.parent());
+                    } catch (e) {
+                        alert(e)
+                    }
+                    // alert('D2'+click)
+                    clickX = click.x;
+                    clickY = click.y;
+                    elmX = parseFloat(cont.css("left"));
+                    elmY = parseFloat(cont.css("top"));
+                    elmW = parseFloat(cont.outerWidth());
+                    elmH = parseFloat(cont.outerHeight());
+                    var id = $(this).attr("id").split("_")[1];
+                    //  alert(id);
+                    $(document).on('touchmove', {
+                        elm: $(this),
+                        id: id
+                    }, onMMHandler)
+                    $(document).on('touchend', onMUHandler)
+                })
+            } else {
+                $(hDiv).on('mousedown', function (ev) {
+                    ev.preventDefault();
+                    wb.ib_drag = 'start';
+                    var click = getCursorPos(ev, cont.parent());
+                    clickX = click.x;
+                    clickY = click.y;
+                    elmX = parseFloat(cont.css("left"));
+                    elmY = parseFloat(cont.css("top"));
+                    elmW = parseFloat(cont.outerWidth());
+                    elmH = parseFloat(cont.outerHeight());
+                    var id = $(this).attr("id").split("_")[1];
+                    // alert(id);
+                    $(document).on('mousemove', {
+                        elm: $(this),
+                        id: id
+                    }, onMMHandler)
+                    $(document).on('mouseup', onMUHandler)
+                })
+            }
         }
 
 
@@ -7165,8 +7252,13 @@ source: https://gist.github.com/754454
         } else {
             wb.ib_drag = 'null';
         }
-        $(document).off('mousemove', onMMHandler);
-        $(document).off('mouseup', onMUHandler);
+        if (isTouchEnabled) {
+            $(document).off('touchmove', onMMHandler);
+            $(document).off('touchend', onMUHandler);
+        } else {
+            $(document).off('mousemove', onMMHandler);
+            $(document).off('mouseup', onMUHandler);
+        }
     }
 
     function onMMHandler(ev) {
@@ -7274,7 +7366,7 @@ source: https://gist.github.com/754454
         })
         cont.parent().parent().find("[name='done_btn']").css({
             'position': 'relative',
-            'top': parseFloat(cont.css("top")) + (h + 10) + 'px',
+            'top': parseFloat(cont.css("top")) + (h + 30) + 'px',
             'left': parseFloat(cont.css("left")) + 'px'
         })
     }
