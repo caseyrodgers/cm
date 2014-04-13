@@ -369,10 +369,8 @@ public class HaUserFactory {
                         student.setPasscode(demoPwd);
                         student.setAdminUid(adminId);
                         student.setGroupId(1);
-                        student.getProgram().setProgramType(
-                                        CmProgram.PREALG_PROF.getProgramType());
-                        student.getProgram().setSubjectId(
-                                        CmProgram.PREALG_PROF.getSubject());
+                        student.getProgram().setProgramType(CmProgram.ESSENTIALS.getProgramType());
+                        student.getProgram().setSubjectId(CmProgram.ESSENTIALS.getSubject());
                         student.setPassPercent("70%");
                         student.getSettings().setTutoringAvailable(false);
                         student.getSettings().setShowWorkRequired(false);
