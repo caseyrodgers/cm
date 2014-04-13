@@ -3,93 +3,96 @@ package hotmath.gwt.cm_core.client.model;
 import hotmath.gwt.cm_core.client.JSOBaseModel;
 import hotmath.gwt.cm_core.client.JSOModel;
 
-/** Defines a Widget Definition as defined in JSON 
+/**
+ * Defines a Widget Definition as defined in JSON
  * 
  * @author casey
- *
+ * 
  */
 public class WidgetDefModel extends JSOBaseModel {
-    
-    String id;
-    String type;
-    String value;
-    Integer width;
-    Integer height;
-    String format;
+
+	String id;
+	String type;
+	String value;
+	Integer width;
+	Integer height;
+	String format;
 	private String ansFormat;
 	boolean allowMixed;
-	
-    public WidgetDefModel() {
-        this(JSOModel.fromJson("{}"));
-    }
-    
-    public WidgetDefModel(JSOModel data) {
-        super(data);
-        id = get("id");
-        type = get("type");
-        value = get("value");
-        width = getInt(get("width"));
-        height = getInt(get("height"));
-        format = get("format");
-        
-        String am = get("allowMixed");
-        if(am != null && am.equals("true")) {
-        	allowMixed = true;
-        }
-    }
+	private boolean useBase64;
 
-    public String getId() {
-        return id;
-    }
+	public WidgetDefModel() {
+		this(JSOModel.fromJson("{}"));
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public WidgetDefModel(JSOModel data) {
+		super(data);
+		id = get("id");
+		type = get("type");
+		value = get("value");
+		width = getInt(get("width"));
+		height = getInt(get("height"));
+		format = get("format");
 
-    public String getType() {
-        return type;
-    }
+		String am = get("allowMixed");
+		if (am != null && am.equals("true")) {
+			allowMixed = true;
+		}
+	}
 
-    public void setType(String type) {
-        this.type = type;
-    }
+	public void setUseBase64(boolean yesNo) {
+		this.useBase64 = yesNo;
+	}
 
-    public String getValue() {
-        return value;
-    }
-    
-    public void setValue(String value) {
-        this.value = value;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public Integer getWidth() {
-        return width;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
+	public String getType() {
+		return type;
+	}
 
-    public Integer getHeight() {
-        return height;
-    }
+	public void setType(String type) {
+		this.type = type;
+	}
 
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
-    
-    
-    public String getFormat() {
-        return format;
-    }
+	public String getValue() {
+		return value;
+	}
 
-    public void setFormat(String format) {
-        this.format = format;
-    }
-    
-    
+	public void setValue(String value) {
+		this.value = value;
+	}
 
-    public Boolean getAllowMixed() {
+	public Integer getWidth() {
+		return width;
+	}
+
+	public void setWidth(Integer width) {
+		this.width = width;
+	}
+
+	public Integer getHeight() {
+		return height;
+	}
+
+	public void setHeight(Integer height) {
+		this.height = height;
+	}
+
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+	public Boolean getAllowMixed() {
 		return allowMixed;
 	}
 
@@ -97,40 +100,41 @@ public class WidgetDefModel extends JSOBaseModel {
 		this.allowMixed = allowMixed;
 	}
 
-	/** return the complete definition of this widget
-     * 
-     * @return
-     */
-    public String getJson() {
-    	String formatStr=(format!=null?format:"");
-    	String ansFormatStr=(ansFormat!=null?ansFormat:"");
-    	
-    	String allowMixedStr = ", allowMixed: " + allowMixed;
-        String json = "{type:'" + type + "',value:'" + value + "', format:'" + formatStr + "', ans_format: '" + ansFormatStr + "'" + allowMixedStr;
-        
-        json += ", width:" + width + ", height:" + height + "}";
-        return json;
-    }
-    
-    public String getWidgetHtml() {
-        return createWidgetHtml(getJson()) ;
-    }
-    
+	/**
+	 * return the complete definition of this widget
+	 * 
+	 * @return
+	 */
+	public String getJson() {
+		String formatStr = (format != null ? format : "");
+		String ansFormatStr = (ansFormat != null ? ansFormat : "");
 
-    private String createWidgetHtml(String json) {
-        String widgetDiv = 
-            "<div id='hm_flash_widget'><div id='hm_flash_widget_def' style='display: none'>" + json + "</div></div>";
-        return widgetDiv;
-    }
-    
-    public Integer getInt(String o) {
-        try {
-            return Integer.parseInt(o);
-        }
-        catch(Exception e) {
-            return 0;
-        }
-    }
+		String allowMixedStr = ", allowMixed: " + allowMixed;
+		String json = "{type:'" + type + "'" + ", useBase64: " + useBase64
+				+ ",value:'" + value + "', format:'" + formatStr
+				+ "', ans_format: '" + ansFormatStr + "'" + allowMixedStr;
+
+		json += ", width:" + width + ", height:" + height + "}";
+		return json;
+	}
+
+	public String getWidgetHtml() {
+		return createWidgetHtml(getJson());
+	}
+
+	private String createWidgetHtml(String json) {
+		String widgetDiv = "<div id='hm_flash_widget'><div id='hm_flash_widget_def' style='display: none'>"
+				+ json + "</div></div>";
+		return widgetDiv;
+	}
+
+	public Integer getInt(String o) {
+		try {
+			return Integer.parseInt(o);
+		} catch (Exception e) {
+			return 0;
+		}
+	}
 
 	public void setAnsFormat(String ansFormat) {
 		this.ansFormat = ansFormat;

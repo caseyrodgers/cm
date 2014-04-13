@@ -224,6 +224,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 		WidgetDefModel wd = new WidgetDefModel();
 		wd.setType(getWidgetType());
 		wd.setValue(getValueString());
+		wd.setUseBase64(true);
 		return wd;
 	}
 
