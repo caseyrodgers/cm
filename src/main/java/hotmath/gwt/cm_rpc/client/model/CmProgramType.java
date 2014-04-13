@@ -18,7 +18,7 @@ public enum CmProgramType {
     OTHER("Other"),
     ASSIGNMENTSONLY("Assignments Only"),
     UNKNOWN("UnknownType"),
-    PLACEME("PlaceMe"),
+    AUTOENROLLCOLLEGE("Auto-Enroll, College"),
     NONE("none");
 
     
@@ -46,7 +46,7 @@ public enum CmProgramType {
             return null;
         }
         
-        name = name.replaceAll(" ", "").replaceAll("-", "");
+        name = name.replaceAll(" ", "").replaceAll("-", "").replaceAll(",","");
 
         for (CmProgramType e : values()) {
         	String type=e.toString();

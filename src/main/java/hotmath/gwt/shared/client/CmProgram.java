@@ -44,7 +44,7 @@ public enum CmProgram {
     ELEMALG(54,"Elementary Algebra", "ElemAlg", "Prof", true, 9),
     ELEMALG_CHAP(55,"Elementary Algebra - Chapters", "ElemAlg", "Chap",true, 2),
     BASICMATH(56,"Basic Math", "BasicMath", "Prof", true, 11),
-    AUTO_ENROLL_COLLEGE(57,"Auto-Enrollment College","","Auto-Enroll College",true, 0), 
+    AUTO_ENROLL_COLLEGE(57,"Auto-Enrollment, College","","Auto-Enroll, College",true, 0), 
     
     /** Represents no current program assigned */
     NONE(58,"No Program","","none",true,0);
