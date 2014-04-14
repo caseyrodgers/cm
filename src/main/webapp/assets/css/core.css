@@ -961,3 +961,11 @@ div#postit  a + p {
 #signup_panel {
 	width: 535px;
 }
+
+
+.postit-bottom {
+    font-style: italic;
+    margin-left: 80px;
+    font-size: .9em;
+    color: #6DAD00;
+}
