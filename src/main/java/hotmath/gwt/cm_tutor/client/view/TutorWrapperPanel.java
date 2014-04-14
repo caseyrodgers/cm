@@ -460,7 +460,7 @@ public class TutorWrapperPanel extends Composite {
             boolean shouldExpandSolution,String solutionContext, String submitButtonText, String indicateWidgetStatus, boolean installCustomSteps) /*-{
             
             
-        $wnd.debug =  @hotmath.gwt.cm_core.client.CmGwtUtils::gwt_log(Ljava/lang/String;);
+        // $wnd.debug =  @hotmath.gwt.cm_core.client.CmGwtUtils::gwt_log(Ljava/lang/String;);
         
         var that = this;
         
