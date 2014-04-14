@@ -458,6 +458,9 @@ public class TutorWrapperPanel extends Composite {
     private native void jsni_initializeTutorNative(Widget instance, String pid, String jsonConfig, 
             String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,
             boolean shouldExpandSolution,String solutionContext, String submitButtonText, String indicateWidgetStatus, boolean installCustomSteps) /*-{
+            
+            
+        $wnd.debug =  @hotmath.gwt.cm_core.client.CmGwtUtils::gwt_log(Ljava/lang/String;);
         
         var that = this;
         
