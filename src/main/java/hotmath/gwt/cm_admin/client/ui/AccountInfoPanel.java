@@ -106,7 +106,7 @@ public class AccountInfoPanel extends FlowLayoutContainer implements CmAdminData
         sb.append("Manage ").append(ai.getSchoolName()).append(" Students");
         // _gridContainer.setHeading(sb.toString());
 
-        if((ai.getTotalStudents() - ai.getCountFreeStudents() )> ai.getMaxStudents()) {
+        if((ai.getTotalStudents() - ai.getCountFreeStudents() -ai.getCountCommunityStudents() )> ai.getMaxStudents()) {
             if(!haveDisplayedOverLimitMsg) {
                 String msg = "Your student registration now exceeds the licensed total. " +
                              "We will contact you soon about upgrading your license, or you " +
