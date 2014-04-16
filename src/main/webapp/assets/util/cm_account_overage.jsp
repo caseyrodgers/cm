@@ -1,6 +1,5 @@
 <%@ page import="hotmath.util.*" %>
 <%@ page import="hotmath.util.sql.SqlUtilities" %>
-<%@ page import="hotmath.gwt.cm_rpc.server.rpc.ContextListener" %>
 <%@ page import="hotmath.cm.util.CmMultiLinePropertyReader" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.sql.Connection" %>
@@ -58,7 +57,7 @@
     }
 %>
 
-<%@page import="hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher"%><html>
+<html>
   <body>
     <h2>
       CM Account Overage Report
