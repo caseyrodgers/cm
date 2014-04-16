@@ -963,9 +963,6 @@ div#postit  a + p {
 }
 
 
-.postit-bottom {
-    font-style: italic;
-    margin-left: 80px;
-    font-size: .9em;
-    color: #6DAD00;
+.postit-top {
+    margin-left: 40px;
 }
