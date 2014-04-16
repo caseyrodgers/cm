@@ -193,7 +193,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         title: 'Undo',
         classes: 'big_tool_button button_undo',
         text: "Undo"
-    }, {
+    } /**, {
         name: 'button_nav',
         title: 'Navigator',
         classes: 'big_tool_button button_nav',
@@ -203,7 +203,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         title: 'Templates',
         classes: 'big_tool_button button_temp',
         text: "Temp"
-    }];
+    }*/];
 
     function getNextObjectID() {
         //var l=uidSeed?uidSeed+1:wb.getUIDSeed();
