@@ -29,10 +29,13 @@ import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.MyResources;
 import hotmath.gwt.shared.client.util.SystemSyncChecker;
 
+import org.cobogw.gwt.user.client.ui.Rating;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -51,7 +54,8 @@ public class HeaderPanel extends FlowLayoutContainer {
     StudentAssignmentButton _assignmentsAnchor;
 
     MyResources myResources = GWT.create(MyResources.class);
-
+    
+    
     public HeaderPanel() {
         __instance = this;
         setStyleName("header-panel");
@@ -63,6 +67,11 @@ public class HeaderPanel extends FlowLayoutContainer {
             }
         });
 
+        int badgeRange = Random.nextInt(7);
+        Rating rating = new Rating(badgeRange, badgeRange);
+        rating.setReadOnly(true);;
+        add(rating);
+        
         add(_helloInfo);
 
         helpButton = new MyIconButton("header-panel-help-btn");
