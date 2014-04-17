@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
+import hotmath.gwt.cm_mobile_shared.client.ad.MobileAdFramework;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.BackPageLoadedEvent;
@@ -204,7 +205,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             
             __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
             
-            
+            MobileAdFramework.getInstance();
         }
         catch(Exception e) {
             e.printStackTrace();
