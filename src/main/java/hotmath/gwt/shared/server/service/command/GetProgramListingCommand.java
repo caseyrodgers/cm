@@ -19,7 +19,7 @@ public class GetProgramListingCommand implements ActionHandler<GetProgramListing
 
     @Override
     public ProgramListing execute(final Connection conn, GetProgramListingAction action) throws Exception {
-        ProgramListing pr = new CmProgramListingDao().getProgramListing(action.getAdminId());
+        ProgramListing pr = new CmProgramListingDao().getProgramListing();
         return pr;
     }
 

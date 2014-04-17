@@ -35,15 +35,12 @@ public class CmProgramListingDao {
     public CmProgramListingDao() {
     }
 
-    /** why adminId?  The listing will always be same ... plus we can cache it when complete
-     *  and share.
+    /** 
      *  
-     * @param conn
-     * @param adminId
      * @return
      * @throws Exception
      */
-    public ProgramListing getProgramListing(int __adminId) throws Exception {
+    public ProgramListing getProgramListing() throws Exception {
         String sql = "select * from HA_PROG_DEF where id in ('Prof','Chap','Grad Prep') order by load_order asc";
         PreparedStatement stmt = null;
         ResultSet rs = null;
