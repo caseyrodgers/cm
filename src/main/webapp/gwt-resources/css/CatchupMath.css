@@ -1343,10 +1343,3 @@ SolutionSetCompleteDialog .results{
 	text-align: center;
 }
 
-
-
-.cbg-Rating {
-	position: absolute;
-	left: 300px;
-	top: 10px;
-}

@@ -67,11 +67,6 @@ public class HeaderPanel extends FlowLayoutContainer {
             }
         });
 
-        int badgeRange = Random.nextInt(7);
-        Rating rating = new Rating(badgeRange, badgeRange);
-        rating.setReadOnly(true);;
-        add(rating);
-        
         add(_helloInfo);
 
         helpButton = new MyIconButton("header-panel-help-btn");
