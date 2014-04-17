@@ -1,5 +1,4 @@
-<%@ page import="hotmath.flusher.HotmathFlusher" %>
-<%@ page import="java.sql.Connection, java.util.List" %>
+<%@ page import="java.util.List" %>
 <%@ page import="hotmath.gwt.cm_admin.server.model.CmProgramListingDao" %>
 <%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapter" %>
 <%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson" %>
@@ -7,8 +6,6 @@
 <%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSection" %>
 <%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSubject" %>
 <%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramType" %>
-<%@ page import="hotmath.gwt.shared.client.CmProgram" %>
-<%@ page import="hotmath.util.HMConnectionPool" %>
 
 <%
 try {
@@ -36,10 +33,8 @@ class GetLessonInfo {
     			List<ProgramSubject> subjList = type.getProgramSubjects();
     			for (ProgramSubject subj : subjList) {
     				if (subj.getName().equalsIgnoreCase("BASICMATH")) {
-    					System.out.println("TestDefId: " + subj.getTestDefId());
     					List<ProgramChapter> chapList = subj.getChapters();
     					for (ProgramChapter chap : chapList){
-    						System.out.println("Chapter: " + chap.getLabel());
     						List<ProgramSection> sectList = chap.getSections();
     						for (ProgramSection sect : sectList) {
         						System.out.println("Section: " + sect.getNumber());
@@ -49,7 +44,6 @@ class GetLessonInfo {
         	
         						StringBuilder sb = new StringBuilder();
         						for (ProgramLesson lesson : lessonList) {
-        							//System.out.println("lesson: " + lesson.getName());
         							sb.append(lesson.getName()).append(", ");
         						}
         						String lessons = sb.toString();
