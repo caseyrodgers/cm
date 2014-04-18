@@ -102,6 +102,8 @@ public class SolutionEditor implements EntryPoint {
         if(__pidToLoad != null) {
             _stepEditorViewer.loadSolution(__pidToLoad.split("$")[0]);  // strip off any context reference
         }
+        
+        Login.getInstance().makeSureLoggedIn();
     }
 
     private Widget createToolbar() {
@@ -207,6 +209,13 @@ public class SolutionEditor implements EntryPoint {
         });
 
 
+        tb.add(new Button("Login", new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				Login.getInstance().login();
+			}
+		}));
+        
 
         return tb;
     }

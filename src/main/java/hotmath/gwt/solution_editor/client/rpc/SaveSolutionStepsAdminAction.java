@@ -21,10 +21,12 @@ public class SaveSolutionStepsAdminAction implements Action<RpcData>{
     List<StepUnitPair> steps;
     String tutorDefine;
     boolean isActive;
+    String userName;
     
     public SaveSolutionStepsAdminAction(){}
     
-    public SaveSolutionStepsAdminAction(String md5OnRead, String pid, String statement,String statementFigure, List<StepUnitPair> steps, String tutorDefine,boolean isActive) {
+    public SaveSolutionStepsAdminAction(String userName, String md5OnRead, String pid, String statement,String statementFigure, List<StepUnitPair> steps, String tutorDefine,boolean isActive) {
+    	this.userName = userName;
         this.md5OnRead = md5OnRead;
         this.statement=statement;
         this.statementFigure = statementFigure;
@@ -34,7 +36,16 @@ public class SaveSolutionStepsAdminAction implements Action<RpcData>{
         this.isActive = isActive;
     }
     
-    public boolean isActive() {
+    
+    public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public boolean isActive() {
         return isActive;
     }
 

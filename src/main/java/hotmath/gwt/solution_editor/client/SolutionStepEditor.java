@@ -277,7 +277,7 @@ public class SolutionStepEditor extends ContentPanel {
         }
         
         String statementFigure = _meta.getFigure();
-        final SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(_meta.getMd5OnRead(), asPid,statement,statementFigure,stepPairs,_meta.getTutorDefine(),_meta.isActive());
+        final SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(Login.getInstance().getUser().getUserName(), _meta.getMd5OnRead(), asPid,statement,statementFigure,stepPairs,_meta.getTutorDefine(),_meta.isActive());
         action.setFromPid(_meta.getPid());
         saveSolution(action, asPid);
     }
