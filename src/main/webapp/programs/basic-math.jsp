@@ -254,10 +254,12 @@ class GetLessonInfo {
                     
                     <div class='yui3-u-1-3'>
                            <div id='main-content-right'>
+                               <div class='postit-top'>
+                                   <img src='/assets/images/making_math_easier.png'/>
+                               </div>
                                <div id='postit' class='postit_2'>
                                     &nbsp;
                                </div>
-                           
 					    <!-- InstanceBeginEditable name="main-content-right" -->
  
                        <!-- InstanceEndEditable -->
