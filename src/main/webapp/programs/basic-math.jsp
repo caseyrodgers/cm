@@ -46,79 +46,17 @@ pageTracker._trackPageview();
 </style>
 <!-- InstanceBeginEditable name="head" -->
 
-<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
-<%@ page import="hotmath.gwt.cm_admin.server.model.CmProgramListingDao" %>
-<%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapter" %>
+<%@ page import="hotmath.gwt.cm_rpc.client.rpc.GetSubjectProficiencySectionsAction" %>
+<%@ page import="hotmath.gwt.shared.server.service.command.GetSubjectProficiencySectionsCommand" %>
 <%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson" %>
-<%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing" %>
 <%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSection" %>
-<%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSubject" %>
-<%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramType" %>
 
 <%
-List<ProgramSection> sectionList = new ArrayList<ProgramSection>();
-GetLessonInfo gli = new GetLessonInfo();
-try {
-	gli.getBasicMathProfSections(sectionList);
-} catch (Exception e) {
-	e.printStackTrace();
-}
-%>
-<%!
-class GetLessonInfo {
-
-	CmProgramListingDao dao = new CmProgramListingDao();
-	ProgramChapter chapter;
-	ProgramSubject subject;
-
-    GetLessonInfo() {
-    }
-
-    public CmProgramListingDao getDao() {
-    	return dao;
-    }
-
-    public ProgramChapter getChap() {
-    	return chapter;
-    }
-
-    public ProgramSubject getSubj() {
-    	return subject;
-    }
-
-    public void getBasicMathProfSections(List<ProgramSection> sectionList) throws Exception {
-    	ProgramListing progListing = dao.getProgramListing();
-
-    	List<ProgramType> typeList = progListing.getProgramTypes();
-
-    	for (ProgramType type : typeList) {
-    		if (type.getType().equalsIgnoreCase("PROF")) {
-    			List<ProgramSubject> subjList = type.getProgramSubjects();
-    			for (ProgramSubject subj : subjList) {
-    				if (subj.getName().equalsIgnoreCase("BASICMATH")) {
-    					subject = subj;
-    					List<ProgramChapter> chapList = subj.getChapters();
-    					for (ProgramChapter chap : chapList){
-    						chapter = chap;
-    						sectionList.addAll(chap.getSections());
-    						return;
-    					}
-    				}
-    			}
-    		}
-    	}
-    }
-
-    public void listLessons(List<ProgramLesson> list, String name) {
-        System.out.println("Lessons for: " + name);
-        int i = 0;
-        for (ProgramLesson lesson : list) {
-	        System.out.println("[" + i++ + "]: " + lesson.getName());
-        }
-    }
-}
-
+    GetSubjectProficiencySectionsAction action = new GetSubjectProficiencySectionsAction();
+    action.setSubject("BASICMATH");
+    GetSubjectProficiencySectionsCommand command = new GetSubjectProficiencySectionsCommand();
+    List<ProgramSection> sectionList = command.execute(null, action); 
 %>
 <link rel="stylesheet" type="text/css" href="/assets/css/cm_plus.css">
 <script>
@@ -224,9 +162,7 @@ class GetLessonInfo {
  for(ProgramSection sect : sectionList) {
 	 String sectionLabel = sect.getLabel(); 
 
-	 List<ProgramLesson> lessonList = gli.getDao().getLessonsFor(
-    		 gli.getSubj().getTestDefId(),
-			 sect.getNumber(), gli.getChap().getLabel(), 99);
+	 List<ProgramLesson> lessonList = sect.getLessons();
 
      StringBuilder sb = new StringBuilder();
      for (ProgramLesson lesson : lessonList) {
