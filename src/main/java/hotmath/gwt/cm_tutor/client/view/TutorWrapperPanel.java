@@ -20,6 +20,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteEvent;
+import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCorrectEvent;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
 import hotmath.gwt.cm_tutor.client.view.TutorCallback.WidgetStatusIndication;
 
@@ -299,6 +300,8 @@ public class TutorWrapperPanel extends Composite {
                 if(!_wasWidgetAnswered) {
                     saveTutorWidgetAsComplete(tutorCallback.getSaveTutorWidgetCompleteAction(inputValue, correct));
                     _wasWidgetAnswered=true;
+                    
+                    CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCorrectEvent(true));
                 }
                 
                 this.tutorCallback.tutorWidgetComplete(inputValue, correct);

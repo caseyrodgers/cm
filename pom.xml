@@ -29,12 +29,6 @@
 	<repositories>
 
 		<repository>
-			<id>cobogw</id>
-			<name>Cobogw repository at googlecode</name>
-			<url>http://cobogw.googlecode.com/svn/maven2</url>
-		</repository>
-
-		<repository>
 			<id>sencha-commercial-release</id>
 			<name>Sencha commercial releases</name>
 			<url>https://maven.sencha.com/repo/commercial-release/</url>
@@ -91,13 +85,6 @@
 	</repositories>
 
 	<dependencies>
-
-		<dependency>
-			<groupId>org.cobogw.gwt</groupId>
-			<artifactId>cobogw</artifactId>
-			<version>1.3.2</version>
-		</dependency>
-
 		<dependency>
 			<groupId>wiriplugin</groupId>
 			<artifactId>wiriplugin</artifactId>
