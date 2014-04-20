@@ -1,5 +1,9 @@
 package hotmath.gwt.cm_core.client.award;
 
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCorrectEvent;
+import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCorrectHandler;
+
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
@@ -7,10 +11,22 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 
 public class CmAwardPanel extends Composite {
+	
+	static {
+		CmRpcCore.EVENT_BUS.addHandler(TutorWidgetInputCorrectEvent.TYPE, new TutorWidgetInputCorrectHandler() {
+			@Override
+			public void widgetWasCorrect(boolean firstTime) {
+				__instance.addStar();
+			}
+		});
+	}
+	
 	private FlowPanel _starPanel;
 	private int _stars;
 
+	private static CmAwardPanel __instance;
 	public CmAwardPanel() {
+		__instance = this;
 		_starPanel = new FlowPanel();
 		_starPanel.addStyleName("cm-awards");
 		_starPanel.getElement().setAttribute("style", "position: absolute");

@@ -17,8 +17,6 @@ import hotmath.gwt.cm_tools.client.ui.MyIconButton;
 import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.ui.ShowUserProgramStatusDialog;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
-import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCorrectEvent;
-import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCorrectHandler;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedHandler;
 import hotmath.gwt.shared.client.CmShared;
@@ -293,13 +291,5 @@ public class HeaderPanel extends FlowLayoutContainer {
 						__instance.updateAssignmentMessage(assInfo);
 					}
 				});
-		
-		CmRpcCore.EVENT_BUS.addHandler(TutorWidgetInputCorrectEvent.TYPE, new TutorWidgetInputCorrectHandler() {
-			@Override
-			public void widgetWasCorrect(boolean firstTime) {
-				__instance._awards.addStar();
-			}
-		});
-
 	}
 }
