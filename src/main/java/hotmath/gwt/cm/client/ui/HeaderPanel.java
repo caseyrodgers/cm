@@ -1,7 +1,7 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
-import hotmath.gwt.cm.client.ui.awards.CmAwards;
+import hotmath.gwt.cm_core.client.award.CmAwardPanel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
@@ -36,8 +36,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Random;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -57,7 +55,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 
 	MyResources myResources = GWT.create(MyResources.class);
 
-	private CmAwards _awards;
+	private CmAwardPanel _awards;
 
 	public HeaderPanel() {
 		__instance = this;
@@ -70,18 +68,8 @@ public class HeaderPanel extends FlowLayoutContainer {
 			}
 		});
 
-		_awards = new CmAwards();
+		_awards = new CmAwardPanel();
 		add(_awards);
-//		new Timer() {
-//			@Override
-//			public void run() {
-//				int stars = Random.nextInt(7);
-//				rating.setStars(stars);
-//				
-//				rating.addStar();
-//			}
-//		}.scheduleRepeating(10000);
-
 		add(_helloInfo);
 
 		helpButton = new MyIconButton("header-panel-help-btn");

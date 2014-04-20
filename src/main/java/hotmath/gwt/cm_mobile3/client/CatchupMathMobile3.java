@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile3.client;
 
 import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.award.CmAwardPanel;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
@@ -464,9 +465,10 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
         FlowPanel mainPanel = new FlowPanel();
         mainPanel.setStyleName("app-panel");
-
         mainPanel.add(headerPanel);
         mainPanel.add(pagesPanel.getPanel());
+        
+        mainPanel.add(new CmAwardPanel());
 
         _pageStack = new ObservableStack<IPage>();
         pagesPanel.bind(_pageStack);
