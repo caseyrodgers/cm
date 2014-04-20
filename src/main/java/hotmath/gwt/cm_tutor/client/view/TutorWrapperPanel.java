@@ -301,7 +301,9 @@ public class TutorWrapperPanel extends Composite {
                     saveTutorWidgetAsComplete(tutorCallback.getSaveTutorWidgetCompleteAction(inputValue, correct));
                     _wasWidgetAnswered=true;
                     
-                    CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCorrectEvent(true));
+                    if(correct) {
+                    	CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCorrectEvent(true));
+                    }
                 }
                 
                 this.tutorCallback.tutorWidgetComplete(inputValue, correct);
