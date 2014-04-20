@@ -16,7 +16,7 @@ public class CmAwardPanel extends Composite {
 		_starPanel.getElement().setAttribute("style", "position: absolute");
 		initWidget(_starPanel);
 
-		startTest();
+		//startTest();
 	}
 
 	/**

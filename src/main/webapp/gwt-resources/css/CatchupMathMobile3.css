@@ -992,3 +992,12 @@ span.group-item-dot {
     width: 320px;
     color:  black;
 }	
+
+
+
+.cm-awards {
+     right: 15px;
+     top: 54px;
+     width: 100px;
+     text-align: right;
+}
