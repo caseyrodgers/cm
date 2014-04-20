@@ -1,585 +1,691 @@
-
-h1, h2, h3, h4 {
-  font-size: 100%;
+h1,h2,h3,h4 {
+	font-size: 100%;
 }
 
 .main-container p .gold {
-        color: #AAC656;
+	color: #AAC656;
 }
 
 .main-container p {
-        color: black;
+	color: black;
 }
 
 .pc-template-btn {
-        display: block;
-        font-size: 16pt;
+	display: block;
+	font-size: 16pt;
 }
+
 #pc-template-img {
-        margin-top: 20px;
+	margin-top: 20px;
 }
+
 .header-panel {
-        background-color: white;
-        background-image: url(../images/logo_1.gif);
-        background-position: 5 5;
-        background-repeat: no-repeat;
-        text-align: left;
+	background-color: white;
+	background-image: url(../images/logo_1.gif);
+	background-position: 5 5;
+	background-repeat: no-repeat;
+	text-align: left;
 }
 
 .main-port {
-        border: 1px solid blue;
-        text-align: center;
-        width: 100%;
+	border: 1px solid blue;
+	text-align: center;
+	width: 100%;
 }
+
 .resource-accord-panel-list-view-selected {
-        color: yellow;
+	color: yellow;
 }
+
 .accordian-resource-list-panel .x-view-item {
-        border: none;
+	border: none;
 }
+
 .accordian-resource-list-panel .x-panel-body {
-        background: #43464B;
+	background: #43464B;
 }
+
 .accordian-resource-list-panel .x-view-item-sel {
-        background: #43464B;
+	background: #43464B;
 }
+
 .accordian-resource-list-panel .x-view-item-over {
-        background: #43464B;
+	background: #43464B;
 }
+
 .resource-accord-panel-list-view x-view-item x-view-item-sel {
+	
 }
+
 .accordian-resource-list-panel-standard {
-        background: #191c1e;
+	background: #191c1e;
 }
+
 .accordian-resource-list-panel-standard .x-view-item {
-        border: #191c1e;
+	border: #191c1e;
 }
+
 .accordian-resource-list-panel-standard .x-panel-body {
-        background: #191c1e;
+	background: #191c1e;
 }
+
 .accordian-resource-list-panel-standard .x-view-item-sel {
-        background: #191c1e;
+	background: #191c1e;
 }
+
 .accordian-resource-list-panel-standard .x-view-item-over {
-        background: #191c1e;
+	background: #191c1e;
 }
-.accordian-resource-list-panel-standard .resource-accord-panel-list-view {
-        background: #191c1e;
+
+.accordian-resource-list-panel-standard .resource-accord-panel-list-view
+	{
+	background: #191c1e;
 }
+
 .footer-panel {
-        background-color: white;
-        color: #929292;
-        font-size: 10px;
+	background-color: white;
+	color: #929292;
+	font-size: 10px;
 }
+
 .footer-panel ul {
-        margin-left: 150px;
-        margin-top: 3px;
+	margin-left: 150px;
+	margin-top: 3px;
 }
+
 .footer-panel li {
-        float: left;
-        margin-right: 20px;
+	float: left;
+	margin-right: 20px;
 }
+
 .resource-accord-panel {
-        background: #43464B;
-        color: #5E8005;
-        font-weight: bold;
+	background: #43464B;
+	color: #5E8005;
+	font-weight: bold;
 }
+
 .topic-selector {
-        width: 400px;
+	width: 400px;
 }
+
 .login-panel {
-        text-align: center;
+	text-align: center;
 }
 
 .login-panel-container {
-        background: url(../images/login_bkg.png) no-repeat;
-        height: 120px;
-        left: 50%;
-        margin: auto;
-        margin-left: -229px;
-        margin-top: -44px;
-        position: absolute;
-        top: 50%;
-        width: 458px;
+	background: url(../images/login_bkg.png) no-repeat;
+	height: 120px;
+	left: 50%;
+	margin: auto;
+	margin-left: -229px;
+	margin-top: -44px;
+	position: absolute;
+	top: 50%;
+	width: 458px;
 }
+
 .login-panel-container .field {
-        margin-right: 10px;
-        text-align: right;
-        width: 90px;
+	margin-right: 10px;
+	text-align: right;
+	width: 90px;
 }
+
 .login-panel-form {
-        margin-top: 15px;
+	margin-top: 15px;
 }
+
 .login-panel-form .row {
-        margin-bottom: 5px;
+	margin-bottom: 5px;
 }
+
 .login-panel-container value {
+	
 }
+
 .login-panel-container {
+	
 }
+
 .login-panel-container-horizontal {
-        margin: 0 0 0 40px;
+	margin: 0 0 0 40px;
 }
+
 .login-panel-container-horizontal button {
-        margin-left: 20px;
+	margin-left: 20px;
 }
+
 .login-panel-form-title {
-        color: blue;
-        font-weight: bold;
-        margin-bottom: 10px;
+	color: blue;
+	font-weight: bold;
+	margin-bottom: 10px;
 }
+
 .login-panel-form-forgot {
-        display: block;
-        float: left;
-        font-size: 60%;
-        margin-left: 10px;
+	display: block;
+	float: left;
+	font-size: 60%;
+	margin-left: 10px;
 }
+
 .login-action-background {
-        background: url(../images/login_button.png) no-repeat;
+	background: url(../images/login_button.png) no-repeat;
 }
+
 .do-next-panel {
-        margin: 20px;
+	margin: 20px;
 }
+
 .topics-panel {
-        margin-bottom: 10px;
-        margin-top: 10px;
+	margin-bottom: 10px;
+	margin-top: 10px;
 }
+
 .current-topic {
-        font-color: blue;
-        text-align: center;
+	font-color: blue;
+	text-align: center;
 }
+
 .header-title {
-        position: absolute;
-        right: 20px;
-        text-align: left;
-        top: 18px;
-        width: 200px;
+	position: absolute;
+	right: 20px;
+	text-align: left;
+	top: 18px;
+	width: 200px;
 }
+
 .header-toolbar-title {
-        color: red;
-        font-weight: bold;
-        text-align: right;
-        width: 200px;
+	color: red;
+	font-weight: bold;
+	text-align: right;
+	width: 200px;
 }
+
 .percent-complete {
-        background: green;
-        border: 1px solid red;
-        font-weight: bold;
-        text-align: right;
+	background: green;
+	border: 1px solid red;
+	font-weight: bold;
+	text-align: right;
 }
+
 .percent-complete-wrapper {
-        background-color: red;
-        height: 4px;
-        margin-top: 20px;
-        width: 100%;
+	background-color: red;
+	height: 4px;
+	margin-top: 20px;
+	width: 100%;
 }
+
 .percent-complete-wrapper img {
-        height: 2px;
+	height: 2px;
 }
+
 .percent-complete-title {
-        display: block;
-        position: absolute;
-        right: 0;
-        width: 200px;
+	display: block;
+	position: absolute;
+	right: 0;
+	width: 200px;
 }
+
 #hm_content h1 {
-        color: blue;
+	color: blue;
 }
+
 .header-panel-cmu-btn-icon {
-        background: url(../images/catch_me_up.png) no-repeat center left
-                !important;
+	background: url(../images/catch_me_up.png) no-repeat center left
+		!important;
 }
+
 .header-panel-cmu-btn-icon-over {
-        background: url(../images/catch_me_up-over.png) no-repeat center left
-                !important;
+	background: url(../images/catch_me_up-over.png) no-repeat center left
+		!important;
 }
 
 .header-panel-logout-btn {
-        background: url(../images/logout.png) no-repeat center left !important;
-        height: 34px !important;
-        position: absolute;
-        right: 100px;
-        top: 2px;
-        width: 92px !important;
+	background: url(../images/logout.png) no-repeat center left !important;
+	height: 34px !important;
+	position: absolute;
+	right: 100px;
+	top: 2px;
+	width: 92px !important;
 }
+
 .header-panel-logout-btn-over {
-        background: url(../images/logout-over.png) no-repeat center left !important;
+	background: url(../images/logout-over.png) no-repeat center left
+		!important;
 }
 
 .header-panel-logout-btn_cm-partner-lcom {
-        background: url(/lcom/logo_close.png) no-repeat center left !important;
-        height: 34px !important;
-        position: absolute;
-        right: 100px;
-        top: 2px;
-        width: 92px !important;
+	background: url(/lcom/logo_close.png) no-repeat center left !important;
+	height: 34px !important;
+	position: absolute;
+	right: 100px;
+	top: 2px;
+	width: 92px !important;
 }
+
 .header-panel-logout-btn_cm-partner-lcom-over {
-        background: url(/lcom/logo_close-over.png) no-repeat center left !important;
+	background: url(/lcom/logo_close-over.png) no-repeat center left
+		!important;
 }
 
 .header-panel-help-btn {
-        background: url(../images/help.png) no-repeat center left !important;
-        height: 34px !important;
-        position: absolute;
-        right: 20px;
-        top: 2px;
-        width: 76px !important;
+	background: url(../images/help.png) no-repeat center left !important;
+	height: 34px !important;
+	position: absolute;
+	right: 20px;
+	top: 2px;
+	width: 76px !important;
 }
+
 .header-panel-help-btn-over {
-        background: url(../images/help-over.png) no-repeat center left!important;
+	background: url(../images/help-over.png) no-repeat center left
+		!important;
 }
+
 .header-panel-cmu-btn {
-        height: 34px;
-        left: 44%;
-        position: absolute;
-        top: 2px;
-        width: 154px;
-        z-index: 2;
+	height: 34px;
+	left: 44%;
+	position: absolute;
+	top: 2px;
+	width: 154px;
+	z-index: 2;
 }
+
 .quiz-page-resource {
-        background: #43464B;
-        padding: 20px 10px;
+	background: #43464B;
+	padding: 20px 10px;
 }
+
 .quiz-page-resource p {
-        color: #D1D5D8;
-        margin-bottom: 10px;
-        text-align: middle;
+	color: #D1D5D8;
+	margin-bottom: 10px;
+	text-align: middle;
 }
+
 .next-dialg {
+	
 }
+
 .next-dialog-panel {
-        padding: 20px;
+	padding: 20px;
 }
+
 .quiz-next-panel div {
-        display: inline;
+	display: inline;
 }
+
 .prescription-next-panel ul {
-        margin-top: 2px;
+	margin-top: 2px;
 }
+
 .prescription-next-panel li {
-        display: inline;
-        list-style: none;
-        margin-left: 10px;
+	display: inline;
+	list-style: none;
+	margin-left: 10px;
 }
+
 .main-panel-west {
-        background: #43464B !important;
-        font-size: 12px;
+	background: #43464B !important;
+	font-size: 12px;
 }
+
 .header-panel-title {
-        color: #85C652;
-        left: 180px;
-        position: absolute;
-        top: 15px;
-        z-index: 10;
+	color: #85C652;
+	left: 180px;
+	position: absolute;
+	top: 15px;
+	z-index: 10;
 }
+
 #inmh_goto {
-        display: none;
+	display: none;
 }
+
 .show-work-button {
-        color: #E43C00;
-        position: absolute;
-        right: 80px;
-        top: 5px;
-        width: 130px;
+	color: #E43C00;
+	position: absolute;
+	right: 80px;
+	top: 5px;
+	width: 130px;
 }
+
 .hide-work-button {
-        color: #E43C00;
-        position: absolute;
-        right: 160px;
-        top: 5px;
-        width: 130px;
+	color: #E43C00;
+	position: absolute;
+	right: 160px;
+	top: 5px;
+	width: 130px;
 }
+
 .flvplayer-widget {
+	
 }
+
 #wrapper,#container {
-        height: 500px;
-        width: 600px;
+	height: 500px;
+	width: 600px;
 }
+
 #wrapper {
-        bottom: 50%;
-        position: absolute;
-        right: 50%;
+	bottom: 50%;
+	position: absolute;
+	right: 50%;
 }
+
 #container {
-        left: 50%;
-        position: relative;
-        top: 50%;
+	left: 50%;
+	position: relative;
+	top: 50%;
 }
+
 .cm-main-panel-button-panel {
-        height: 100px;
-        position: relative;
-        color: inherit;
+	height: 100px;
+	position: relative;
+	color: inherit;
 }
 
 .cm-main-panel-choose-icon {
-        background: url(/gwt-resources/images/choose_topic.png) no-repeat center
-                left !important;
-        height: 46px !important;
-        position: absolute;
-        right: 2px;
-        top: 2px;
-        width: 244px !important;
+	background: url(/gwt-resources/images/choose_topic.png) no-repeat center
+		left !important;
+	height: 46px !important;
+	position: absolute;
+	right: 2px;
+	top: 2px;
+	width: 244px !important;
 }
+
 .cm-main-panel-choose-icon-over {
-        background: url(/gwt-resources/images/choose_topic-over.png) no-repeat
-                center left !important;
+	background: url(/gwt-resources/images/choose_topic-over.png) no-repeat
+		center left !important;
 }
 
 .cm-main-panel-prev-icon {
-        background: url(/gwt-resources/images/prev_topic.png) no-repeat center
-                left !important;
-        height: 46px;
-        left: 0;
-        position: absolute;
-        top: 2px;
-        width: 113px;
+	background: url(/gwt-resources/images/prev_topic.png) no-repeat center
+		left !important;
+	height: 46px;
+	left: 0;
+	position: absolute;
+	top: 2px;
+	width: 113px;
 }
+
 .cm-main-panel-prev-icon-over {
-        background: url(/gwt-resources/images/prev_topic-over.png) no-repeat
-                center left !important;
+	background: url(/gwt-resources/images/prev_topic-over.png) no-repeat
+		center left !important;
 }
+
 .cm-main-panel-next-icon {
-        background: url(/gwt-resources/images/next_topic.png) no-repeat center
-                left !important;
-        height: 46px;
-        position: absolute;
-        right: 0;
-        top: 2px;
-        width: 113px;
+	background: url(/gwt-resources/images/next_topic.png) no-repeat center
+		left !important;
+	height: 46px;
+	position: absolute;
+	right: 0;
+	top: 2px;
+	width: 113px;
 }
+
 .cm-main-panel-next-icon-over {
-        background: url(/gwt-resources/images/next_topic-over.png) no-repeat
-                center left !important;
+	background: url(/gwt-resources/images/next_topic-over.png) no-repeat
+		center left !important;
 }
+
 .cm-main-panel-prev-next-text {
-    position: relative;
-    left: 0;
-    top: 50px;
-    color: yellow;
-    padding-left: 5px;
-    padding-top: 5px;
-    width: 219px;
-    height: 20px;
-    background-color: #43464B;
+	position: relative;
+	left: 0;
+	top: 50px;
+	color: yellow;
+	padding-left: 5px;
+	padding-top: 5px;
+	width: 219px;
+	height: 20px;
+	background-color: #43464B;
 }
+
 .cm-main-panel-next-quiz {
-        background: url(/gwt-resources/images/check_quiz.png) no-repeat center left !important;
-        background: url(/gwt-resources/images/choose_topic.png) no-repeat center left !important;
-        height: 46px !important;
-        width: 244px !important;
-        position: absolute;
-        right: 2px;
-        top: 2px;
+	background: url(/gwt-resources/images/check_quiz.png) no-repeat center
+		left !important;
+	background: url(/gwt-resources/images/choose_topic.png) no-repeat center
+		left !important;
+	height: 46px !important;
+	width: 244px !important;
+	position: absolute;
+	right: 2px;
+	top: 2px;
 }
+
 .cm-main-panel-next-quiz-over {
-        background: url(/gwt-resources/images/check_quiz-over.png) no-repeat
-                center left !important;
+	background: url(/gwt-resources/images/check_quiz-over.png) no-repeat
+		center left !important;
 }
+
 .cm-main-panel-quiz-text {
-    position: relative;
-    left: 0;
-    top: 50px;
-    color: yellow;
-    padding-left: 5px;
-    padding-top: 5px;
-    width: 100%;
-    height: 20px;
-    background-color: #43464B;
+	position: relative;
+	left: 0;
+	top: 50px;
+	color: yellow;
+	padding-left: 5px;
+	padding-top: 5px;
+	width: 100%;
+	height: 20px;
+	background-color: #43464B;
 }
+
 .resource-wrapper {
+	
 }
-
-
 
 .prescription-info-panel {
-        background: transparent;
-        padding: 20px;
+	background: transparent;
+	padding: 20px;
 }
+
 .prescription-info-panel p {
-        margin-bottom: 10px;
-        color: #D1D5D8;
+	margin-bottom: 10px;
+	color: #D1D5D8;
 }
-
-
 
 .cm-main-panel-header div {
 	font-size: 1em !important;
 }
 
 .cm-main-panel-header {
-        background: #43464B !important;
-        color: #CBFF07 !important;
-        font-size: 1.2em !important;
-        height: 55px !important;
-        text-align: center !important;
+	background: #43464B !important;
+	color: #CBFF07 !important;
+	font-size: 1.2em !important;
+	height: 55px !important;
+	text-align: center !important;
 }
+
 .cm-main-panel-header h2 {
-        color: white;
-        font-size: 1em;
-        text-align: center;
+	color: white;
+	font-size: 1em;
+	text-align: center;
 }
+
 .accordian-resource-list-panel {
-        background: #43464B;
+	background: #43464B;
 }
+
 .accordian-resource-list-panel img.resource-type {
-        display: none;
+	display: none;
 }
+
 .accordian-resource-list-panel img.resource-item {
-        display: none;
+	display: none;
 }
+
 .resource-type-complete img.resource-type {
-        display: block;
+	display: block;
 }
+
 img.resource-item-complete {
-        display: inline;
+	display: inline;
 }
+
 .resource-item-complete img {
-        display: inline;
+	display: inline;
 }
+
 .login-background-img {
-        border: 1.2px solid #F0F0F0;
-        margin: 10px;
+	border: 1.2px solid #F0F0F0;
+	margin: 10px;
 }
+
 .question_solution_link {
-        display: none;
+	display: none;
 }
+
 .hello-info {
-        font-size: .9em;
-        margin-top: 3px;
-        position: absolute;
-        right: 200px;
-        width: 250px;
+	font-size: .9em;
+	margin-top: 3px;
+	position: absolute;
+	right: 200px;
+	width: 250px;
 }
+
 .resource-accord-panel-loading {
-        color: #E2FFFF;
-        margin: 10px 15px;
+	color: #E2FFFF;
+	margin: 10px 15px;
 }
+
 #tutoroutput p {
-        margin: 0 0 10px;
-        margin-right: 15px;
+	margin: 0 0 10px;
+	margin-right: 15px;
 }
 
-#tutor_embedded, #tutoroutput, #tutoroutput .step, #tutoroutput .hint, #steps_tail  {
-        width: auto;
+#tutor_embedded,#tutoroutput,#tutoroutput .step,#tutoroutput .hint,#steps_tail
+	{
+	width: auto;
 }
 
-#tutor_embedded a.button:link,#tutor_embedded a.button:active,#tutor_embedded a.button:visited,#tutor_embedded a.button:hover {
-        color: #FFFF00;
-        font-family: Tahoma, Arial;
-        font-size: 11px;
-        font-weight: bold;
-        margin-left: 15px;
-        text-decoration: none;
+#tutor_embedded a.button:link,#tutor_embedded a.button:active,#tutor_embedded a.button:visited,#tutor_embedded a.button:hover
+	{
+	color: #FFFF00;
+	font-family: Tahoma, Arial;
+	font-size: 11px;
+	font-weight: bold;
+	margin-left: 15px;
+	text-decoration: none;
 }
+
 #tutor_embedded a.debug-off {
-        display: none;
+	display: none;
 }
+
 .debug-on #tutor_embedded a.debug-off {
-        display: inline;
+	display: inline;
 }
+
 #steps_head {
-        background-image: none;
-        display:none;
-}
-#steps_tail {
-        height: 40px;
-        padding: 5px;
+	background-image: none;
+	display: none;
 }
 
 #steps_tail {
-    margin-top: 0;
-    padding-top: 10px;
+	height: 40px;
+	padding: 5px;
 }
 
+#steps_tail {
+	margin-top: 0;
+	padding-top: 10px;
+}
 
 #steps_info {
-        width: 200px;
+	width: 200px;
 }
 
 .resource-close {
-        margin: 5px 0 5px 10px;
-}
-.resource-viewer-close-button {
-        color: #E43C00;
-        position: absolute;
-        right: 10px;
-        text-align: right;
-        top: 5px;
-        width: 100px;
-}
-.resource-viewer-impl-tutor,
-.resource-viewer-impl-tutor .whiteboard-container {
-        background: transparent;
+	margin: 5px 0 5px 10px;
 }
 
+.resource-viewer-close-button {
+	color: #E43C00;
+	position: absolute;
+	right: 10px;
+	text-align: right;
+	top: 5px;
+	width: 100px;
+}
+
+.resource-viewer-impl-tutor,.resource-viewer-impl-tutor .whiteboard-container
+	{
+	background: transparent;
+}
 
 #show-work-button {
-        left: 8px;
-        position: absolute;
-        top: 8px;
+	left: 8px;
+	position: absolute;
+	top: 8px;
 }
+
 .resource-viewer-container #hm_content {
-        background-color: white;
-        color: black;
-        margin: 20px;
-        padding: 10px;
-        width: auto;
+	background-color: white;
+	color: black;
+	margin: 20px;
+	padding: 10px;
+	width: auto;
 }
+
 #hm_content p {
-        color: black;
+	color: black;
 }
 
 .quiz-results-status-window .head {
-        background: transparent url(/images/trifco/design/quiz_head-500x24.gif)
-                no-repeat scroll 0 0;
-        height: 24px;
-        width: 500px;
+	background: transparent url(/images/trifco/design/quiz_head-500x24.gif)
+		no-repeat scroll 0 0;
+	height: 24px;
+	width: 500px;
 }
 
-.auto-assignment-window, 
-.x-window-dlg,
-.help-window {
-/** 	overflow: auto; *//** to stop bleed through Flash */
+.auto-assignment-window,.x-window-dlg,.help-window {
+	/** 	overflow: auto; */ /** to stop bleed through Flash */
+	
 }
 
 .help-window-bg-combo {
-        width: 100%;
+	width: 100%;
 }
+
 .help-window-message-area {
-        font-color: blue;
-        margin-bottom: 10px;
-        margin-top: 5px;
+	font-color: blue;
+	margin-bottom: 10px;
+	margin-top: 5px;
 }
+
 .help-window li {
-        font-size: 1em;
+	font-size: 1em;
 }
 
 .bg-image-label {
-        color: blue;
-        margin-bottom: 10px;
-        margin-top: 5px;
+	color: blue;
+	margin-bottom: 10px;
+	margin-top: 5px;
 }
+
 .help-window fieldset {
-        color: blue;
+	color: blue;
 }
-.help-window .x-btn {
-        #width: 200px;
+
+.help-window .x-btn { #
+	width: 200px;
 }
+
 .help-window-additional-options table {
-        display: inline;
+	display: inline;
 }
+
 .activity-widget {
-        margin: 5px;
+	margin: 5px;
 }
+
 .auto-assignment-window p {
-        padding: 10px;
-        font-size: 1.2em;
+	padding: 10px;
+	font-size: 1.2em;
 }
 
 .auto-assignment-window b {
-        font-size: 1.3em;
-        font-weight: bold;
+	font-size: 1.3em;
+	font-weight: bold;
 }
 
 .auto-assignment-window .pass-percent {
@@ -597,198 +703,236 @@ img.resource-item-complete {
 }
 
 .debug-hide {
-        color: white;
-        display: none;
+	color: white;
+	display: none;
 }
 
 .debug-show {
-        display: block;
+	display: block;
 }
+
 .debug-hide {
 	display: none;
 }
+
 .debug-mode .debug-hide {
-        color: red;
-        display: block;
-        text-align: center;
-}
-.help-window .version {
-        font-size: .8em;
-}
-.help-window {
-        z-index: 100;
-}
-.demo-complete-window p {
-        font-size: 1.2em;
-        margin: 10px 15px;
+	color: red;
+	display: block;
+	text-align: center;
 }
 
+.help-window .version {
+	font-size: .8em;
+}
+
+.help-window {
+	z-index: 100;
+}
+
+.demo-complete-window p {
+	font-size: 1.2em;
+	margin: 10px 15px;
+}
 
 .bottom {
-        margin-top: 1px;
+	margin-top: 1px;
 }
+
 .resource-viewer-container .check-quiz-link {
-        display: none;
+	display: none;
 }
 
 .show-work-window {
-        left: 10px;
-        position: absolute;
-        top: 10px;
+	left: 10px;
+	position: absolute;
+	top: 10px;
 }
-.student-show-work-window #tutor_embedded #steps_head_title,.student-show-work-window #tutor_embedded .button {
-        display: none;
+
+.student-show-work-window #tutor_embedded #steps_head_title,.student-show-work-window #tutor_embedded .button
+	{
+	display: none;
 }
+
 .tutor_solution_wrapper {
+	
 }
+
 #show-work-force {
-        display: block;
-        height: 18px;
-        left: 9px;
-        position: absolute;
-        text-align: center;
-        top: 3px;
-        width: 140px;
+	display: block;
+	height: 18px;
+	left: 9px;
+	position: absolute;
+	text-align: center;
+	top: 3px;
+	width: 140px;
 }
+
 .student-details-panel {
+	
 }
 
 .student-details-window {
+	
 }
 
-.date-range-label{
-    position: absolute;
-    left: 0;
-    top: 0;
-    color: blue;
-    padding: 5px 10px 0 0;
+.date-range-label {
+	position: absolute;
+	left: 0;
+	top: 0;
+	color: blue;
+	padding: 5px 10px 0 0;
 }
 
 .student-details-window-container {
-        height: 412px;
-        width: 580px;
+	height: 412px;
+	width: 580px;
 }
+
 .student-details-panel-grid {
 	height: 250px;
-    margin-top: 45px;
-    padding-bottom: 45px;
+	margin-top: 45px;
+	padding-bottom: 45px;
 }
+
 .student-details-panel-sw-btn {
-        padding-bottom: 10px;
-        padding-left: 10px;
-        margin-top: 7px !important;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	margin-top: 7px !important;
 }
+
 .student-details-panel-pr-btn {
-        padding-bottom: 10px;
-        padding-right: 10px;
+	padding-bottom: 10px;
+	padding-right: 10px;
 }
+
 .student-details-window .students-count {
-        float: left;
-        margin-right: 10px;
-        margin-top: 8px;
+	float: left;
+	margin-right: 10px;
+	margin-top: 8px;
 }
+
 .student-detail-info {
-        font-size: 12px;
-        height: 65px;
-        position: relative;
+	font-size: 12px;
+	height: 65px;
+	position: relative;
 }
 
 #flash-alt-content {
-        margin: auto;
-        margin-top: 20px;
-        text-align: center;
-        width: 300px;
+	margin: auto;
+	margin-top: 20px;
+	text-align: center;
+	width: 300px;
 }
+
 .auto-advance-window {
-        font-size: 1.5em;
+	font-size: 1.5em;
 }
+
 .auto-advance-window .completed {
+	
 }
+
 .auto-advance-window p {
-        padding: 5px;
+	padding: 5px;
 }
+
 .auto-advance-window .advanced-to {
-        margin-top: 10px;
+	margin-top: 10px;
 }
+
 .auto-advance-window .plan {
-        font-size: 1.3em;
-        font-weight: bold;
-        padding: 10px;
-        text-align: center;
+	font-size: 1.3em;
+	font-weight: bold;
+	padding: 10px;
+	text-align: center;
 }
+
 .show-work-example-window {
+	
 }
+
 .prescription-cm-gui-definition-resource-panel {
-        background: #43464B;
-        padding: 10px 15px 15px 15px;
+	background: #43464B;
+	padding: 10px 15px 15px 15px;
 }
-.prescription-cm-gui-definition-resource-panel .resource-filler{
+
+.prescription-cm-gui-definition-resource-panel .resource-filler {
 	height: 5px;
 }
 
-
 .prescription-cm-gui-definition-resource-panel .resource-separator {
 	color: #94C3F5; /** #0071BC; */
-	padding: 0; 
+	padding: 0;
 	margin: auto;
-	margin-top: 20px; 
+	margin-top: 20px;
 	width: 50%;
 }
 
 .resource-menu-button-complete-icon {
-        background: url(/gwt-resources/images/check_black.png) no-repeat center
-                left !important;
+	background: url(/gwt-resources/images/check_black.png) no-repeat center
+		left !important;
 }
+
 .prescription-resource-panel {
-        background: #43464B;
+	background: #43464B;
 }
+
 #loading-error {
-        font-weight: bold;
+	font-weight: bold;
 }
 
 .context-change-message {
-        text-align: center;
+	text-align: center;
 }
+
 .context-change-message p {
-        margin-bottom: 10px;
-        margin-top: 10px;
+	margin-bottom: 10px;
+	margin-top: 10px;
 }
+
 .context-change-message b {
-        font-size: 1.3em;
-        color: #0066AA;
+	font-size: 1.3em;
+	color: #0066AA;
 }
-.context-change-message a:link,.context-change-message a:visited,.context-change-message a:active,.context-change-message a:hover {
-        margin-left: 10px;
-        text-decoration: none;
+
+.context-change-message a:link,.context-change-message a:visited,.context-change-message a:active,.context-change-message a:hover
+	{
+	margin-left: 10px;
+	text-decoration: none;
 }
+
 .context-change-message .suggest-div {
-        text-align: left;
+	text-align: left;
 }
+
 .context-change-message .suggest-div ul {
-        margin: 10px;
+	margin: 10px;
 }
+
 .context-change-message .suggest-div li {
-        list-style: disc;
-        list-style-position: inside;
+	list-style: disc;
+	list-style-position: inside;
 }
+
 .suggest-div {
 	display: none;
 }
 
 .auto-student-registration-forgot-password p {
-        padding: 10px;
+	padding: 10px;
 }
 
 .cm-welcome-panel {
+	
 }
 
 .cm-welcome-panel .welcome-wrapper {
-    background:#DEDEDE;
+	background: #DEDEDE;
 }
 
 .cm-welcome-panel h1 {
-        margin-top: 15px;
-        padding: 0 0 0 10px;
+	margin-top: 15px;
+	padding: 0 0 0 10px;
 }
 
 .welcome-wrapper-internal {
@@ -798,72 +942,65 @@ img.resource-item-complete {
 }
 
 .cm-welcome-panel ul {
-        padding: 10px;
+	padding: 10px;
 }
 
 .cm-welcome-panel li {
-        list-style: disc;
-        list-style-position: inside;
-}
-.cm-welcome-panel a:link,.cm-welcome-panel a:visited,.cm-welcome-panel a:active,.cm-welcome-panel a:hover {
-        margin-left: 10px;
-        text-decoration: none;
+	list-style: disc;
+	list-style-position: inside;
 }
 
-
-
-
+.cm-welcome-panel a:link,.cm-welcome-panel a:visited,.cm-welcome-panel a:active,.cm-welcome-panel a:hover
+	{
+	margin-left: 10px;
+	text-decoration: none;
+}
 
 .printer-icon {
-        background: url(/gwt-resources/images/icons/printer-icon.png) no-repeat center left !important;
+	background: url(/gwt-resources/images/icons/printer-icon.png) no-repeat
+		center left !important;
 }
-.prescription-help-panel .info{
+
+.prescription-help-panel .info {
 	background-color: #303030;
 	padding: 25px;
 	color: white;
-	
-	-moz-border-radius:10px;
-    border-radius: 10px;
-    
-    border: 2px solid #6E84A2;
-    
-    -moz-box-shadow: 3px 3px 3px #666;
-    -webkit-box-shadow: 3px 3px 3px #666;
-    box-shadow: 3px 3px 3px #666;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	border: 2px solid #6E84A2;
+	-moz-box-shadow: 3px 3px 3px #666;
+	-webkit-box-shadow: 3px 3px 3px #666;
+	box-shadow: 3px 3px 3px #666;
 }
 
 .prescription-help-panel ul {
-		margin-top: 10px;
-		list-style-position: outside;
-		margin-left: 20px;
+	margin-top: 10px;
+	list-style-position: outside;
+	margin-left: 20px;
 }
 
 .prescription-help-panel li {
 	list-style-type: disc;;
+}
+
+.prescription-help-panel {
 	
 }
 
-
-.prescription-help-panel {
-
-}
-
 .prescription-help-panel h2 {
-   color: #E42400;
+	color: #E42400;
 }
-
 
 /** Quiz Panel definition */
-
 #testset_div {
-        position: relative;
-        margin: 0;
-        padding: 0;
+	position: relative;
+	margin: 0;
+	padding: 0;
 }
 
 #testset_footer .check-quiz-link {
-        display: block;
-        text-align: center;
+	display: block;
+	text-align: center;
 }
 
 #testset_div #hm_flash_widget {
@@ -875,9 +1012,8 @@ img.resource-item-complete {
 	display: none;
 }
 
-
-
 .resource-viewer-impl-results  input {
+	
 }
 
 .resource-viewer-impl-results .response_div_text {
@@ -885,153 +1021,145 @@ img.resource-item-complete {
 	float: right;
 }
 
-
 .resource-viewer-impl-results p {
-	margin-right: 10px;  /** add margin on right to show when scrollbar is visible */
+	margin-right: 10px;
+	/** add margin on right to show when scrollbar is visible */
 }
-	
-#testset_div a.check-quiz-link:link,#testset_div a.check-quiz-link:active,#testset_div a.check-quiz-link:visited,#testset_div a.check-quiz-link:hover {
-        color: black;
-        text-decoration: underline;
+
+#testset_div a.check-quiz-link:link,#testset_div a.check-quiz-link:active,#testset_div a.check-quiz-link:visited,#testset_div a.check-quiz-link:hover
+	{
+	color: black;
+	text-decoration: underline;
 }
+
 #testset_div {
-        background-color: transparent;
+	background-color: transparent;
 }
+
 #testset_div .question_wrapper {
-        background-color: #E2E2E2;
+	background-color: #E2E2E2;
 }
+
 #testset_head {
-        background: none;
-        display: none;
+	background: none;
+	display: none;
 }
 
 #testset_footer {
-    display: block;
-    background: #F1F1F1;
-    width: auto;
+	display: block;
+	background: #F1F1F1;
+	width: auto;
 }
 
 #testset_div .question_head {
-        font-size: 11px;
+	font-size: 11px;
 }
 
 #testset_div h1 {
-        margin-bottom: 15px;
+	margin-bottom: 15px;
 }
 
 #testset_div {
-        width: auto;
+	width: auto;
 }
 
 #testset_div .question_head {
-   width: auto;
+	width: auto;
 }
 
 .response_div {
-   margin-right: 17px;
+	margin-right: 17px;
 }
 
 /** Target the background of the resource container for the tutor*/
 /** .cm-resource-viewer-container .resource-viewer-impl-tutor .x-panel-body */
-
-
 .cm-resource-viewer-container {
 	
 }
- 
+
 .cm-resource-viewer-container .x-panel-body {
-    background: transparent;
-    border: none;
+	background: transparent;
+	border: none;
 }
 
-.resource-viewer-impl-activity,
-.resource-viewer-impl-review,
-.resource-viewer-impl-results,
-.resource-viewer-impl-video,
-.quiz-cm-gui-definition-resource {
-   background: white;
+.resource-viewer-impl-activity,.resource-viewer-impl-review,.resource-viewer-impl-results,.resource-viewer-impl-video,.quiz-cm-gui-definition-resource
+	{
+	background: white;
 }
 
 .quiz-cm-gui-definition-resource {
-  padding-bottom: 10px;
+	padding-bottom: 10px;
 }
-
 
 /** Show Work Panel Full screen / maximized */
 .show-work-panel {
-  border: #E0E0E0 1px solid;
-  border-top: none;
-  padding: 0;
-  position: relative;
-  z-index: 10;
+	border: #E0E0E0 1px solid;
+	border-top: none;
+	padding: 0;
+	position: relative;
+	z-index: 10;
 }
 
 .show-work-panel-full {
-  background: white;
-}  
-
+	background: white;
+}
 
 #problem-statement-panel .tutoroutput {
-    font-family:"Times New Roman",Times,serif;
-    font-size:12pt;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 12pt;
 }
 
 #problem-statement-panel p {
-        margin: 0 0 10px;
-        font-size: 12pt;
+	margin: 0 0 10px;
+	font-size: 12pt;
 }
 
 #problem-statement-panel .problem_statement {
 	font-size: 20px;
 	color: black;
-    background:#F1F1F1;
-    padding:10pt;
-    vertical-align:middle;
+	background: #F1F1F1;
+	padding: 10pt;
+	vertical-align: middle;
 }
-
-
-
 
 .resource-viewer-impl-review table td {
-    font-family:"Times New Roman",Times,serif;
-    font-size:12pt;
+	font-family: "Times New Roman", Times, serif;
+	font-size: 12pt;
 }
-
 
 .resource-viewer-impl-review em {
-    font-style: italic;
+	font-style: italic;
 }
-
 
 #testset_div li {
 	margin-bottom: 1em;
 }
 
-
 /** gwt-log z-order */
- .log-panel {
-    z-index: 2000 !important;
-  }
- 
-/** status bar styles */
+.log-panel {
+	z-index: 2000 !important;
+}
 
+/** status bar styles */
 .status_bar {
-    height: 12px;width: 100%;
+	height: 12px;
+	width: 100%;
 }
 
 #status_bar div {
-   float: right;
+	float: right;
 }
-#status_bar .done { 
-    background: blue;
+
+#status_bar .done {
+	background: blue;
 }
 
 #status_bar .active {
-    background: yellow;
+	background: yellow;
 }
 
 #status_bar .todo {
-    background: red;
+	background: red;
 }
 
 .hm_flash_widget {
@@ -1040,29 +1168,28 @@ img.resource-item-complete {
 }
 
 .status-image-panel {
-	margin-top:5px;
+	margin-top: 5px;
 	position: relative;
 }
 
 .status-image-panel img {
 	margin-left: 15px;
 }
+
 .status-image-panel span {
 	font-size: 11px;
 	position: absolute;
 	top: 10px;
 	left: 5px;
-	width: 180px; 
+	width: 180px;
 	top: 145px;
 	text-align: center;
 	color: #CCCCCC;
 }
 
-
 .cm-info-popup-box  .x-info-body {
 	font-size: 1.3em;
 }
-
 
 .location-bar a {
 	color: white;
@@ -1084,19 +1211,13 @@ img.resource-item-complete {
 	font-size: .8em;
 }
 
-.location-bar a:link
- {
+.location-bar a:link {
 	text-decoration: none;
 }
 
-.location-bar a:hover,
-.location-bar a:active
- {
+.location-bar a:hover,.location-bar a:active {
 	text-decoration: underline;
 }
-
-
-
 
 .x-window-plain .x-window-mc {
 	background-color: white;
@@ -1105,7 +1226,7 @@ img.resource-item-complete {
 
 .x-window-mc {
 	background-color: white;
-	font-family: tahoma;	
+	font-family: tahoma;
 }
 
 .required-practice-complete-dialog p {
@@ -1117,13 +1238,9 @@ img.resource-item-complete {
 	padding: 10px;
 }
 
-
-
 #hm_flash_widget.not_used {
 	display: block;
 }
-
-
 
 #hm_flash_object div {
 	display: none;
@@ -1133,29 +1250,25 @@ img.resource-item-complete {
 	display: none;
 }
 
-
 #testset_div .hm_question_def .edit-button {
 	display: none;
 }
 
-#testset_div .hm_question_def,
-#testset_div .hm_question_def p,
-#testset_div .hm_question_def ul {
-	#font-family: Georgia,"Bitstream Charter",serif;
+#testset_div .hm_question_def,#testset_div .hm_question_def p,#testset_div .hm_question_def ul
+	{ #
+	font-family: Georgia, "Bitstream Charter", serif;
 }
 
 .debug-on #testset_div .hm_question_def .edit-button {
-    display: block;	
-    position: absolute;
-    top: -10;
-    right: 0;
+	display: block;
+	position: absolute;
+	top: -10;
+	right: 0;
 }
-
 
 .hm_question_def .MathJax_Display {
 	display: inline;
 }
-
 
 #testset_div .hm_question_def {
 	position: relative;
@@ -1163,55 +1276,55 @@ img.resource-item-complete {
 
 /** the question text */
 .hm_question_def>div {
-  margin:10px 0;
-  padding: 5px;
+	margin: 10px 0;
+	padding: 5px;
 }
 
 .hm_question_defdiv
 #hm_flash_widget.not_used {
-   width: 325px;
+	width: 325px;
 }
 
 .not_used #hm_flash_widget_head {
-   display: none;
+	display: none;
 }
 
 #tutoroutput .not_used p {
-   margin: 0;
+	margin: 0;
 }
 
 /** hide the answer when showing quiz results */
-.resource-viewer-impl-results .hm_question_def ul li div+div{
+.resource-viewer-impl-results .hm_question_def ul li div+div {
 	display: none;
 }
 
 .passed-section-window p {
-   font-size: 1.2em;
-   margin: 10px;
-   padding: 5px;
+	font-size: 1.2em;
+	margin: 10px;
+	padding: 5px;
 }
 
-
-SolutionSetCompleteDialog .results{
+SolutionSetCompleteDialog .results {
 	padding: 15px;
 	font-size: 1.3em;
 }
 
 .parallel-program-usage-panel {
+	
 }
 
 .parallel-program-usage-window {
+	
 }
 
 .parallel-program-usage-window-container {
-	    height: 310px;
-        width: 480px;
+	height: 310px;
+	width: 480px;
 }
 
 .parallel-program-usage-panel-grid {
 	height: 280px;
 }
-
 
 .PrescriptionLessonChooserDialog {
 	font-size: 1.5em;
@@ -1219,19 +1332,17 @@ SolutionSetCompleteDialog .results{
 
 .PrescriptionLessonChooserDialog .selected {
 	/** nothing for now */
+	
 }
-
 
 .PrescriptionLessonChooserDialog .is_complete {
 	text-align: center;
 }
 
-
-
 /* hide second part of RPP default message
 */
 .is_epp .dont_show_if_epp {
-   display: none;
+	display: none;
 }
 
 .custom-archived {
@@ -1240,6 +1351,7 @@ SolutionSetCompleteDialog .results{
 
 .register-student-outer-fieldset {
 	/*height: 155px !important;*/
+	
 }
 
 .register-student-inner-fieldset {
@@ -1248,31 +1360,28 @@ SolutionSetCompleteDialog .results{
 	border: none !important;
 }
 
-
-.resource-viewer-impl-results .hm_question_def ul{
-   padding-left: 10px;
-   margin: 0px;
+.resource-viewer-impl-results .hm_question_def ul {
+	padding-left: 10px;
+	margin: 0px;
 }
 
-
 .hm_question_def li.was_selected {
-    border-radius: 10px;
-    border: 2px solid #6E84A2;
-    padding: 3px;
-    -moz-box-shadow: 3px 3px 3px #666;
-    -webkit-box-shadow: 3px 3px 3px #666;
-    box-shadow: 3px 3px 3px #666;
-    margin-left: -7px;
+	border-radius: 10px;
+	border: 2px solid #6E84A2;
+	padding: 3px;
+	-moz-box-shadow: 3px 3px 3px #666;
+	-webkit-box-shadow: 3px 3px 3px #666;
+	box-shadow: 3px 3px 3px #666;
+	margin-left: -7px;
 }
 
 .hm_question_def li.is_incorrect {
-    border: 2px solid red;
- }
-
-.hm_question_def li.is_correct {
-    border: 2px solid green;
+	border: 2px solid red;
 }
 
+.hm_question_def li.is_correct {
+	border: 2px solid green;
+}
 
 .training-videos-window {
 	padding-left: 10px;
@@ -1293,24 +1402,16 @@ SolutionSetCompleteDialog .results{
 	font-size: 12px;
 }
 
-
-
-
-
 .StudentAssignmentViewerPanel .header {
-   padding: 20px;
+	padding: 20px;
 }
-
 
 .background_transparent {
 	background: transparent;
 }
 
-
 /** Assignments */
-
-.assign-showwork-admin,
-.assign-showwork-admin-unseen {
+.assign-showwork-admin,.assign-showwork-admin-unseen {
 	color: blue;
 	font-weight: bold;
 	font-size: 1.1em;
@@ -1324,22 +1425,23 @@ SolutionSetCompleteDialog .results{
 	float: left;
 }
 
-
 .student-assignment-button {
 	position: absolute;
 	left: 200px;
-	top:4px;
+	top: 4px;
 }
 
-
-
-.lesson-resource-view  #hm_content{
+.lesson-resource-view  #hm_content {
 	padding: 5px 15px;
 }
 
 /** CCSS */
-
 .ccss-strand-coverage-grid {
 	text-align: center;
 }
 
+.cm-awards {
+	left: 200px;
+	top: 10px;
+	width: 200px;
+}
