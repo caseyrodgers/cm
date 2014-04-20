@@ -69,8 +69,16 @@ public class CmAwardPanel extends Composite {
 
 	private String createStars(int stars, boolean animateLast) {
 		String html = "";
-		for (int i = 0; i < stars; i++) {
-			boolean isLast = i==stars-1;
+		
+		int star10s = stars / 6;
+		int starSingles = stars % 6;
+		
+		for(int i=0;i<star10s;i++) {
+			html += "<img src='/gwt-resources/images/awards/star_10.png'/>";
+		}
+		
+		for (int i = 0; i < starSingles; i++) {
+			boolean isLast = i==starSingles-1;
 			html += "<img " + (animateLast && isLast?" class='animated " + getRandomAnimationIn() + "' ":"") + 
 					" src='/gwt-resources/images/awards/star.png'/>";
 		}
@@ -88,7 +96,7 @@ public class CmAwardPanel extends Composite {
 			public void run() {
 				addStar();
 			}
-		}.scheduleRepeating(10000);
+		}.scheduleRepeating(500);
 	}
 
 }
