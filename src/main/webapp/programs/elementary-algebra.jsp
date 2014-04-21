@@ -56,7 +56,7 @@ pageTracker._trackPageview();
     GetSubjectProficiencySectionsAction action = new GetSubjectProficiencySectionsAction();
     action.setSubject("ELEMALG");
     GetSubjectProficiencySectionsCommand command = new GetSubjectProficiencySectionsCommand();
-    List<ProgramSection> sectionList = command.execute(null, action); 
+    List<ProgramSection> sectionList = command.execute(null, action);
 %>
 <link rel="stylesheet" type="text/css" href="/assets/css/cm_plus.css">
 <script>
