@@ -110,7 +110,13 @@ public class CmCacheManager  {
 		 * their statuses for each problem.
 		 * 
 		 */
-		ASSIGNMENT_STUDENTS 
+		ASSIGNMENT_STUDENTS,
+
+		/** Subject Proficiency Sections for each Proficiency
+		 *  subject
+		 */
+	    SUBJECT_PROF_SECTIONS
+
 	};
 
 	final static public String KEY_ALL="all";
