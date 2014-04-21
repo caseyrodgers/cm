@@ -130,5 +130,8 @@
 		overflowToDisk="false" timeToLiveSeconds="600">
 	</cache>
 
+    <cache name="SUBJECT_PROF_SECTIONS" maxElementsInMemory="15"
+		overflowToDisk="false">
+	</cache>
 
 </ehcache>

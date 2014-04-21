@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmProgramListingDao;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapter;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
@@ -32,7 +34,13 @@ public class GetSubjectProficiencySectionsCommand implements ActionHandler<GetSu
     @Override
     public CmList<ProgramSection> execute(Connection conn, GetSubjectProficiencySectionsAction action) throws Exception {
 
-    	CmList<ProgramSection> sectionList = new CmArrayList<ProgramSection>();
+		@SuppressWarnings("unchecked")
+		CmList<ProgramSection> sectionList = (CmList<ProgramSection>)CmCacheManager.getInstance().retrieveFromCache(CacheName.SUBJECT_PROF_SECTIONS, action.getSubject());
+		if(sectionList != null) {
+			return sectionList;
+		}
+
+    	sectionList = new CmArrayList<ProgramSection>();
 
     	dao = new CmProgramListingDao();
 
@@ -45,6 +53,9 @@ public class GetSubjectProficiencySectionsCommand implements ActionHandler<GetSu
     				sect.getNumber(), chapter.getLabel(), 99);
     		sect.setLessons(lessonList);
     	}
+
+        CmCacheManager.getInstance().addToCache(CacheName.SUBJECT_PROF_SECTIONS, action.getSubject(), sectionList);                 
+
     	return sectionList;
     }
 
