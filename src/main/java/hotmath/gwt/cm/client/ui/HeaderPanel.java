@@ -41,6 +41,7 @@ import com.sencha.gxt.widget.core.client.button.IconButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.tips.ToolTip;
 
 public class HeaderPanel extends FlowLayoutContainer {
 
@@ -67,6 +68,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 		});
 
 		_awards = new CmAwardPanel();
+		new ToolTip(_awards).setToolTip("Shows your awards for the current session");
 		add(_awards);
 		add(_helloInfo);
 

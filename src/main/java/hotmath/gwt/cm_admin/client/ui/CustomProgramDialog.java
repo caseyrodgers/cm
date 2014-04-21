@@ -21,6 +21,7 @@ import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.IntValueHolder;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.ArchiveCustomQuizAction;
+import hotmath.gwt.shared.client.rpc.action.CustomProgramAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction.ActionType;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramUsageCountAction;
@@ -51,8 +52,10 @@ import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.Window;
 
 /**
  * Provides lists of available custom programs and quizzes
@@ -111,6 +114,19 @@ public class CustomProgramDialog extends CmWindow {
 
         TabItem tabCustomProgram = new TabItem("Custom Programs");
         tabCustomProgram.setLayout(new FitLayout());
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+        	Menu contextMenu = new Menu();
+        	contextMenu.add(new MenuItem("Export", new SelectionListener<MenuEvent>() {
+        		@Override
+        		public void componentSelected(MenuEvent ce) {
+        			doExportSelectedCustomProgram();
+        		}
+			}));
+        	_listViewCp.setContextMenu(contextMenu);
+        }
+        	
+        
         tabCustomProgram.add(_listViewCp);
         tabPanelType.add(tabCustomProgram);
 
@@ -240,7 +256,40 @@ public class CustomProgramDialog extends CmWindow {
         add(_includeArchivedChkBoxGrp,new BorderLayoutData(LayoutRegion.SOUTH, 40));
     }
 
-    /**
+    protected void doExportSelectedCustomProgram() {
+    	 final CustomProgramModel sel1 = _listViewCp.getSelectionModel().getSelectedItem();
+    	 if(sel1 == null) {
+    		 CmMessageBoxGxt2.showAlert("No selected custom program");
+    		 return;
+    	 }
+    	 String value = Window.prompt("Enter admin id to copy selected program into", "0");
+    	 if(value == null) {
+    		 return;
+    	 }
+    	 final int uidToCopyTo = Integer.parseInt(value);
+    	 
+    	 new RetryAction<CmList<CustomLessonModel>>() {
+             @Override
+             public void attempt() {
+                 CmBusyManager.setBusy(true);
+                 CustomProgramAction action = new CustomProgramAction(CustomProgramAction.ActionType.COPY);
+                 action.setDestAdminId(uidToCopyTo);
+                 action.setProgramId(sel1.getProgramId());
+                 setAction(action);
+                 CmShared.getCmService().execute(action, this);
+             }
+
+             @Override
+             public void oncapture(CmList<CustomLessonModel> result) {
+                 CmBusyManager.setBusy(false);
+                 
+                 CmMessageBoxGxt2.showAlert("Custom program was copied");
+             }
+         }.register();    	 
+    	 
+	}
+
+	/**
      * Return true if the Custom Programs tab is selected
      * 
      * @return

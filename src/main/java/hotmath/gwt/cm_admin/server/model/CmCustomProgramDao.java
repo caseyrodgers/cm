@@ -931,7 +931,8 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
 
         CustomProgramModel destCp = getCustomProgram(conn, destAdminId, existingCp.getProgramName());
         if(destCp != null) {
-            deleteCustomProgram(conn,  destCp.getProgramId());
+        	// deleteCustomProgram(conn,  destCp.getProgramId());
+        	throw new Exception("A custom program already exists with that name");
         }
 
         createNewCustomProgram(conn, destAdminId,existingCp.getProgramName(),getCustomProgramLessons(conn,  existingCp.getProgramId(), 1) );
