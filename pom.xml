@@ -718,6 +718,11 @@
 						<param>whiteboard_v2.css</param>
 
 						<param>animate.css</param>
+						
+						
+						
+                                                <param>../jlibs/alertify.js-0.3.11/themes/alertify.core.css</param>
+                                                <param>../jlibs/alertify.js-0.3.11/themes/alertify.default.css</param>
 
 					</cssSourceFiles>
 				</configuration>

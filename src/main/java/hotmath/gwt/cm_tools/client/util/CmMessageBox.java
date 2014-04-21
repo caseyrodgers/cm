@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.util;
 
+import hotmath.gwt.cm_core.client.util.CmAlertify;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -10,9 +11,10 @@ import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 public class CmMessageBox {
+	static CmAlertify __alertify = new CmAlertify();
+	
     public static void showAlert(String message) {
         showAlert("Important Message", message);
-
     }
 
     public static void showAlert(String title, String message) {
@@ -20,20 +22,23 @@ public class CmMessageBox {
     }
 
     public static void showAlert(String title,String msg, final CallbackOnComplete onComplete) {
-        AlertMessageBox d = new AlertMessageBox(title, msg);
-        d.setWidth(300);
-        HideHandler hideHandler = new HideHandler() {
-            @Override
-            public void onHide(HideEvent event) {
-                if (onComplete != null) {
-                    onComplete.isComplete();
-                }
-            }
-        };
-        d.addHideHandler(hideHandler);
-        d.show();
-        
-        d.toFront();
+    	
+    	__alertify.alert(msg, onComplete);
+    	
+//        AlertMessageBox d = new AlertMessageBox(title, msg);
+//        d.setWidth(300);
+//        HideHandler hideHandler = new HideHandler() {
+//            @Override
+//            public void onHide(HideEvent event) {
+//                if (onComplete != null) {
+//                    onComplete.isComplete();
+//                }
+//            }
+//        };
+//        d.addHideHandler(hideHandler);
+//        d.show();
+//        
+//        d.toFront();
     }
 
     public static void showMessage(String title,String msg) {

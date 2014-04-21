@@ -1,39 +1,18 @@
 package hotmath.gwt.cm_admin.client;
 
-import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
-import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditorHintStep;
-import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditor;
-import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditorWidget;
 import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
-import hotmath.gwt.cm_admin.client.ui.AssignmentManagerDialog2;
-import hotmath.gwt.cm_admin.client.ui.AssignmentStatusDialog;
 import hotmath.gwt.cm_admin.client.ui.FooterPanel;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
-import hotmath.gwt.cm_admin.client.ui.WebLinkEditorDialog;
-import hotmath.gwt.cm_admin.client.ui.WebLinksManager;
-import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog;
-import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentQuestionViewerPanel;
-import hotmath.gwt.cm_admin.client.ui.assignment.EditAssignmentDialog;
-import hotmath.gwt.cm_admin.client.ui.assignment.FinalExamCreationManager;
-import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.search.LessonSearchWindow;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tools.client.ui.DateRangePickerDialog;
-import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
-import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
-import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
-import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
-import hotmath.gwt.cm_tools.client.util.CreateTemplateFromClipboardImage;
-import hotmath.gwt.cm_tools.client.util.WhiteboardTemplatesManager;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -135,7 +114,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         if(CatchupMathAdminTests.runTest()) {
         	return;
         }
-
+        
         new MessageOfTheDayDialog(new CallbackGeneric() {
             @Override
             public void callbackReady() {

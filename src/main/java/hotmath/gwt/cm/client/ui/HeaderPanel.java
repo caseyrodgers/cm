@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm_core.client.award.CmAwardPanel;
+import hotmath.gwt.cm_core.client.award.CmAwardPanel.AwardCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
@@ -42,6 +43,7 @@ import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.tips.ToolTip;
+import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 
 public class HeaderPanel extends FlowLayoutContainer {
 
@@ -67,8 +69,14 @@ public class HeaderPanel extends FlowLayoutContainer {
 			}
 		});
 
-		_awards = new CmAwardPanel();
-		new ToolTip(_awards).setToolTip("Shows your awards for the current session");
+		final ToolTip awardTip = new ToolTip(_awards);
+		awardTip.setToolTip("Shows your awards for the current session");
+		_awards = new CmAwardPanel(new AwardCallback() {
+			public void awardPosted(int totalAwards) {
+				awardTip.update(new ToolTipConfig("THerea re now " + totalAwards));
+			}
+		});
+		
 		add(_awards);
 		add(_helloInfo);
 

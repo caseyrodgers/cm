@@ -32,6 +32,9 @@
         	../../../../../../hotmath2/web/js/hm_mathjax-min.js
 
                 whiteboard_static.js
+
+                ../jlibs/alertify.js-0.3.11/lib/alertify.js
+
               " />
         </concat>
     </target>
@@ -62,6 +65,8 @@
                    CatchupMathMobile3-min.js
 
                    whiteboard_static.js
+
+                   ../jlibs/alertify.js-0.3.11/lib/alertify.js
               " />
         </concat>
     </target>
@@ -115,8 +120,8 @@
 
                 gwt-resources/css/animate.css
 
-                  
-
+                gwt-resources/jlibs/alertify.js-0.3.11/themes/alertify.default.css
+                gwt-resources/jlibs/alertify.js-0.3.11/themes/alertify.core.css
              " />
         </concat>
     </target>
@@ -150,6 +155,10 @@
                 gwt-resources/css/tutor_layout_tablet.css
             	gwt-resources/css/mobile_core.css
                 gwt-resources/css/HmMobile.css
+
+                gwt-resources/jlibs/alertify.js-0.3.11/themes/alertify.default.css
+                gwt-resources/jlibs/alertify.js-0.3.11/themes/alertify.core.css
+
              " />
         </concat>
     </target>
