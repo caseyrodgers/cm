@@ -76,10 +76,10 @@ public class HeaderPanel extends FlowLayoutContainer {
 			public void awardPosted(int totalAwards) {
 				String tip = null;
 				if(totalAwards == 1) {
-					tip = "You got this check for solving 1 problem correctly on the first attempt.";
+					tip = "You've solved 1 problem correctly on the first attempt so far this session.";
 				}
 				else {
-					tip = "You got these checks by solving " + totalAwards +" problems correctly on the first attempt.";
+					tip = "You've solved " + totalAwards + " problems correctly on the first attempt so far this session.";
 				}
 
 				awardTip.setToolTip(tip);
