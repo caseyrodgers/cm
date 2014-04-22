@@ -84,8 +84,8 @@ public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEd
             return "Both X and Y need to be specified";
         }
         try {
-            Integer.parseInt(xv);
-            Integer.parseInt(yv);
+            Double.parseDouble(xv);
+            Double.parseDouble(yv);
         }
         catch(Exception e) {
             return "Invalid values";

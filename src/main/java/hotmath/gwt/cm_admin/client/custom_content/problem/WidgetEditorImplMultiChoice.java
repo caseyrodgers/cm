@@ -87,14 +87,14 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 						.get(event.getEditCell().getRow());
 
 				/** only one can be selected */
-//				if (ch.isCorrect()) {
-//					for (MultiValue s : store.getAll()) {
-//						if (s != ch) {
-//							s.setCorrect(false);
-//							store.update(s);
-//						}
-//					}
-//				}
+				if (ch.isCorrect()) {
+					for (MultiValue s : store.getAll()) {
+						if (s != ch) {
+							s.setCorrect(false);
+							store.update(s);
+						}
+					}
+				}
 			}
 		});
 		editor.addEditor(correctCol, new CheckBox());
@@ -331,15 +331,14 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 			return "There must be at least two choices.";
 		}
 		
-		boolean hasCorrect=false;
+		int  correctAnswers=0;
 		for(MultiValue mv: _grid.getStore().getAll()) {
 			if(mv.isCorrect) {
-				hasCorrect=true;
-				break;
+				correctAnswers++;
 			}
 		}
-		if(!hasCorrect) {
-			return "There must be at least one correct choice.";
+		if(correctAnswers != 1) {
+			return "There must be exactly one correct answer.";
 		}
 		return null;
 	}
