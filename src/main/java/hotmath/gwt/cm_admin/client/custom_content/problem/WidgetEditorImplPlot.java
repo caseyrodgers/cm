@@ -159,6 +159,8 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements Wid
 		
 		_fields.add(new MyFieldLabel(_xValue, "X Value",  80, 60));
 		_fields.add(new MyFieldLabel(_yValue, "Y Value",  80, 60));
+		_fields.add(new HTML("<div style='padding: 3px;font-style: italic'>Test to make sure the point is plottable.</div>"));
+
 		
 		
 		DisclosurePanel advanced = new DisclosurePanel("Advanced Options");
@@ -171,6 +173,7 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements Wid
 		adFields.add(new MyFieldLabel(_yMax, "Y Max",  80, 60));
 		adFields.add(new MyFieldLabel(_xInc, "X Increment",  80, 60));
 		adFields.add(new MyFieldLabel(_yInc, "Y Increment",  80, 60));
+		
 		
 		adFields.add(new TextButton("Default Values", new SelectHandler() {
 			@Override
