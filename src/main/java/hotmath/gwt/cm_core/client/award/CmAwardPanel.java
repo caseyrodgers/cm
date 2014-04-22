@@ -166,7 +166,7 @@ public class CmAwardPanel extends Composite {
 		return animations[Random.nextInt(animations.length - 1)];
 	}
 
-	private void startTest() {
+	public void startTest() {
 		new Timer() {
 			@Override
 			public void run() {

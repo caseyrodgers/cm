@@ -38,13 +38,11 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.sencha.gxt.widget.core.client.button.IconButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 
 public class HeaderPanel extends FlowLayoutContainer {
 
@@ -86,6 +84,12 @@ public class HeaderPanel extends FlowLayoutContainer {
 			}
 		});
 		awardTip.setWidget(_awards);
+		
+		
+		if(CmShared.getQueryParameterValue("test").equals("awards")) {
+			_awards.startTest();
+		}
+		
 		add(awardTip);
 		add(_helloInfo);
 
