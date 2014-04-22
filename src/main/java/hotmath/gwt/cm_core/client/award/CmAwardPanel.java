@@ -67,12 +67,12 @@ public class CmAwardPanel extends Composite {
 				
 				final Element bigImage = DOM.getElementById("award-big-button");
 				if(bigImage != null) {
-					bigImage.addClassName("animated " + getRandomAnimationOut());
+					bigImage.addClassName("animated fadeOutUpBig");
 					new Timer() {
 						public void run() {
 							setStars(_stars + 1, true);
 						}
-					}.schedule(1000);
+					}.schedule(1500);
 				}
 				else {
 					setStars(_stars + 1, true);
