@@ -69,15 +69,14 @@ public class CmAwardPanel extends Composite {
 					bigImage.addClassName("animated slideOutUp");
 					new Timer() {
 						public void run() {
-							setStars(_stars + 1, true);
+							bigImage.removeFromParent();
 						}
 					}.schedule(1500);
 				}
-				else {
-					setStars(_stars + 1, true);
-				}
 			}
 		}.schedule(2000);
+		
+		setStars(_stars + 1, true);
 	}
 
 	public int getStars() {
