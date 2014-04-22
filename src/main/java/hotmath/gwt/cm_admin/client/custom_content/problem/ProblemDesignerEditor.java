@@ -65,6 +65,7 @@ public class ProblemDesignerEditor extends GWindow {
 		super(false);
 		setWidth(600); // height depends on whiteboard shown/not shown.
 		setResizable(true);
+		setMaximizable(true);
 
 		setHeadingText("Edit Problem Statement");
 		_main = new BorderLayoutContainer();

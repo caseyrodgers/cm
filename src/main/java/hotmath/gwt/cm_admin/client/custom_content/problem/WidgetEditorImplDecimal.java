@@ -17,6 +17,7 @@ public class WidgetEditorImplDecimal extends WidgetEditorImplDefault {
     
     protected void buildUi() {
     	_correctDecimalValue = new DecimalTextField();
+    	_correctDecimalValue.setAllowBlank(false);
         _fields.add(new MyFieldLabel(_correctDecimalValue, "Decimal",80, 60));
     }
     
@@ -41,6 +42,14 @@ public class WidgetEditorImplDecimal extends WidgetEditorImplDefault {
     	if(!_correctDecimalValue.validate()) {
     		return "Invalid";
     	}
+    	
+    	try {
+    		Float.parseFloat(_correctDecimalValue.getCurrentValue());
+    	}
+    	catch(Exception e) {
+    		return "Invalid value";
+    	}
+    	
         return null;
     }
     

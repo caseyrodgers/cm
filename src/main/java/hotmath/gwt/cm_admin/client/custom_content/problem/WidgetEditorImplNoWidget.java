@@ -2,6 +2,8 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 
+import com.google.gwt.user.client.ui.HTML;
+
 
 public class WidgetEditorImplNoWidget extends WidgetEditorImplDefault {
 
@@ -11,7 +13,7 @@ public class WidgetEditorImplNoWidget extends WidgetEditorImplDefault {
     
     @Override
     protected void buildUi() {
-        // _fields.add(new HTML("<h1>No Input</h1>"));
+    	_fields.add(new HTML("<h1>Students will enter their answer using the Whiteboard.</h1>"));
     };
     
     @Override

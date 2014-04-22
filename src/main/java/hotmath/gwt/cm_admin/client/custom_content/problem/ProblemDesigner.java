@@ -348,6 +348,8 @@ public class ProblemDesigner extends Composite {
        $wnd.$('#hm_flash_widget').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Click to Edit Input</button></div>");
        
        
+       $wnd.$('.widget-not-used').replaceWith('<p>Input Type: whiteboard</p>');
+       
        var clickDef = "<div class='cp_designer-toolbar'>" +
                       "<button onclick='window.gwt_editPart(\"hint-remove\",window.gwt_getHintNumber(this))'>Click to Remove Hint/Step</button>" +
                       "<button onclick='window.gwt_editPart(\"hint-moveUp\",window.gwt_getHintNumber(this))'>^</button>" +
