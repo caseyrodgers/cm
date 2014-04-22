@@ -58,49 +58,25 @@ public class CmAwardPanel extends Composite {
 	 */
 	public void addStar() {
 
-		HasWidgets parent = null;
-		/** try to show big widget right on widget panel */
-		Element widget = DOM.getElementById("hm_flash_widget");
-		int topOfWidget = 0;
-		int leftOfWidget = 0;
-
-		Element imageIcon = null;
-		if (widget != null) {
-			// show big image on widget
-			if (widget.getParentNode() != null) {
-				// topOfWidget = widget.getAbsoluteTop();
-				leftOfWidget = widget.getOffsetLeft() - 30;
-
-				Element img = DOM.createElement("img");
-				img.setAttribute("src",
-						"/gwt-resources/images/awards/star_big.png");
-				img.setAttribute("style", "position: absolute;top: " + 0
-						+ "px;left: " + leftOfWidget + "px;");
-				img.setAttribute("class", "animated " + getRandomAnimationIn());
-
-				widget.appendChild(img);
-
-				imageIcon = img;
-			}
-		}
-
-		final Element fImage = imageIcon != null ? imageIcon : null;
+		
+		String html = "<img id='award-big-button' src='/gwt-resources/images/awards/star_big.png' class='animated " + getRandomAnimationIn() + "'/>";
+		_starPanel.add(new HTML(html));
 		new Timer() {
 			@Override
 			public void run() {
-				if (fImage != null) {
-					fImage.setAttribute("class", "animated "
-							+ getRandomAnimationOut());
+				
+				final Element bigImage = DOM.getElementById("award-big-button");
+				if(bigImage != null) {
+					bigImage.addClassName("animated " + getRandomAnimationOut());
 					new Timer() {
 						public void run() {
-							fImage.removeFromParent();
 							setStars(_stars + 1, true);
 						}
-					}.schedule(0);
-				} else {
+					}.schedule(2000);
+				}
+				else {
 					setStars(_stars + 1, true);
 				}
-
 			}
 		}.schedule(2000);
 	}
