@@ -72,13 +72,13 @@ public class CmAwardPanel extends Composite {
 						public void run() {
 							setStars(_stars + 1, true);
 						}
-					}.schedule(2000);
+					}.schedule(1000);
 				}
 				else {
 					setStars(_stars + 1, true);
 				}
 			}
-		}.schedule(2000);
+		}.schedule(1000);
 	}
 
 	public int getStars() {
@@ -148,6 +148,6 @@ public class CmAwardPanel extends Composite {
 			public void run() {
 				addStar();
 			}
-		}.scheduleRepeating(5000);
+		}.scheduleRepeating(10000);
 	}
 }
