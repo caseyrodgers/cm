@@ -47,6 +47,7 @@ pageTracker._trackPageview();
 <!-- InstanceBeginEditable name="head" -->
 
 <%@ page import="java.util.List" %>
+<%@ page import="hotmath.cm.util.NumberToText" %>
 <%@ page import="hotmath.gwt.cm_rpc.client.rpc.GetSubjectProficiencySectionsAction" %>
 <%@ page import="hotmath.gwt.shared.server.service.command.GetSubjectProficiencySectionsCommand" %>
 <%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson" %>
@@ -57,6 +58,7 @@ pageTracker._trackPageview();
     action.setSubject("GEOM");
     GetSubjectProficiencySectionsCommand command = new GetSubjectProficiencySectionsCommand();
     List<ProgramSection> sectionList = command.execute(null, action);
+    String numberOfSectionsText = NumberToText.getText(sectionList.size());
 %>
 <link rel="stylesheet" type="text/css" href="/assets/css/cm_plus.css">
 <script>
@@ -151,7 +153,7 @@ pageTracker._trackPageview();
 <h2>Overview</h2>
 <p>
   The Catchup Math Geometry Proficiency Program reviews the course content covered in Geometry
-  textbooks and is divided into six sequential sections.  Pre-tests (quizzes) are given for each section,
+  textbooks and is divided into <%= numberOfSectionsText %> sequential sections.  Pre-tests (quizzes) are given for each section,
   and students are assigned lessons based on incorrect answers. Re-teaching includes text lessons (in both
   English and Spanish), videos, activities, and practice problems with tutorial solutions.  A student takes
   repeat quizzes and receives lesson-prescriptions until passing each section. Teachers can review student

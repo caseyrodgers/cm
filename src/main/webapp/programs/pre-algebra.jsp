@@ -47,6 +47,7 @@ pageTracker._trackPageview();
 <!-- InstanceBeginEditable name="head" -->
 
 <%@ page import="java.util.List" %>
+<%@ page import="hotmath.cm.util.NumberToText" %>
 <%@ page import="hotmath.gwt.cm_rpc.client.rpc.GetSubjectProficiencySectionsAction" %>
 <%@ page import="hotmath.gwt.shared.server.service.command.GetSubjectProficiencySectionsCommand" %>
 <%@ page import="hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson" %>
@@ -57,6 +58,7 @@ pageTracker._trackPageview();
     action.setSubject("PRE-ALG");
     GetSubjectProficiencySectionsCommand command = new GetSubjectProficiencySectionsCommand();
     List<ProgramSection> sectionList = command.execute(null, action);
+    String numberOfSectionsText = NumberToText.getText(sectionList.size());
 %>
 <link rel="stylesheet" type="text/css" href="/assets/css/cm_plus.css">
 <script>
