@@ -68,8 +68,8 @@ public class CmAwardPanel extends Composite {
 		if (widget != null) {
 			// show big image on widget
 			if (widget.getParentNode() != null) {
-				topOfWidget = widget.getAbsoluteTop();
-				leftOfWidget = widget.getOffsetLeft();
+				// topOfWidget = widget.getAbsoluteTop();
+				leftOfWidget = widget.getOffsetLeft() - 30;
 
 				Element img = DOM.createElement("img");
 				img.setAttribute("src",
@@ -172,6 +172,6 @@ public class CmAwardPanel extends Composite {
 			public void run() {
 				addStar();
 			}
-		}.scheduleRepeating(10000);
+		}.scheduleRepeating(5000);
 	}
 }
