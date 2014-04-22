@@ -38,11 +38,12 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.sencha.gxt.widget.core.client.button.IconButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.tips.ToolTip;
 import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 
 public class HeaderPanel extends FlowLayoutContainer {
@@ -69,15 +70,23 @@ public class HeaderPanel extends FlowLayoutContainer {
 			}
 		});
 
-		final ToolTip awardTip = new ToolTip(_awards);
+		final SimpleContainer awardTip = new SimpleContainer(); 
 		awardTip.setToolTip("Shows your awards for the current session");
 		_awards = new CmAwardPanel(new AwardCallback() {
 			public void awardPosted(int totalAwards) {
-				awardTip.update(new ToolTipConfig("THerea re now " + totalAwards));
+				String tip = null;
+				if(totalAwards == 1) {
+					tip = "You got this star for solving 1 problem correctly on the first attempt.";
+				}
+				else {
+					tip = "You got these stars for solving " + totalAwards +" problems correctly on the first attempt.";
+				}
+
+				awardTip.setToolTip(tip);
 			}
 		});
-		
-		add(_awards);
+		awardTip.setWidget(_awards);
+		add(awardTip);
 		add(_helloInfo);
 
 		helpButton = new MyIconButton("header-panel-help-btn");

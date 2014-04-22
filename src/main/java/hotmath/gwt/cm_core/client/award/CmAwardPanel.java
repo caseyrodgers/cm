@@ -44,7 +44,7 @@ public class CmAwardPanel extends Composite {
 		_starPanel.getElement().setAttribute("style", "position: absolute");
 		initWidget(_starPanel);
 
-		// startTest();
+		startTest();
 	}
 
 	public CmAwardPanel(AwardCallback awardCallback) {
@@ -172,6 +172,6 @@ public class CmAwardPanel extends Composite {
 			public void run() {
 				addStar();
 			}
-		}.scheduleRepeating(5000);
+		}.scheduleRepeating(10000);
 	}
 }
