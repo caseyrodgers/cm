@@ -64,7 +64,6 @@ public class CmAwardPanel extends Composite {
 		new Timer() {
 			@Override
 			public void run() {
-				
 				final Element bigImage = DOM.getElementById("award-big-button");
 				if(bigImage != null) {
 					bigImage.addClassName("animated slideOutUp");
@@ -78,7 +77,7 @@ public class CmAwardPanel extends Composite {
 					setStars(_stars + 1, true);
 				}
 			}
-		}.schedule(1000);
+		}.schedule(2000);
 	}
 
 	public int getStars() {
