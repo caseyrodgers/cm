@@ -23,22 +23,22 @@ public class CmMessageBox {
 
     public static void showAlert(String title,String msg, final CallbackOnComplete onComplete) {
     	
-    	__alertify.alert(msg, onComplete);
+    	// __alertify.alert(msg, onComplete);
     	
-//        AlertMessageBox d = new AlertMessageBox(title, msg);
-//        d.setWidth(300);
-//        HideHandler hideHandler = new HideHandler() {
-//            @Override
-//            public void onHide(HideEvent event) {
-//                if (onComplete != null) {
-//                    onComplete.isComplete();
-//                }
-//            }
-//        };
-//        d.addHideHandler(hideHandler);
-//        d.show();
-//        
-//        d.toFront();
+        AlertMessageBox d = new AlertMessageBox(title, msg);
+        d.setWidth(300);
+        HideHandler hideHandler = new HideHandler() {
+            @Override
+            public void onHide(HideEvent event) {
+                if (onComplete != null) {
+                    onComplete.isComplete();
+                }
+            }
+        };
+        d.addHideHandler(hideHandler);
+        d.show();
+        
+        d.toFront();
     }
 
     public static void showMessage(String title,String msg) {
