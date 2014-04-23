@@ -109,7 +109,7 @@ public class CmAwardPanel extends Composite {
 					awardCallback.awardPosted(stars);
 				}
 			}
-		}.schedule(2000);
+		}.schedule(1000);
 	}
 
 	private String createStars(int stars, boolean animateLast) {
