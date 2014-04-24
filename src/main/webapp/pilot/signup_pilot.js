@@ -112,16 +112,9 @@ function checkForm() {
   function isAlphabet(v){
 		var alphaExp = /^[a-zA-Z]+$/;
 		return v.match(alphaExp);
-	}  
+  }
   
-  function showSuccess() {
-	  $get('email-address').innerHTML = $get('fld_email').value; 
-	  $get('signup_panel').style.display = 'none';
-	  $get('success_panel').style.display = 'block';
-  }  
-
-  function showSuccess() {
-	  
+  function showSuccess(text) {
 	  $get('email-address').innerHTML = $get('fld_email').value; 
 	  $get('signup_panel').style.display = 'none';
 	  $get('success_panel').style.display = 'block';
