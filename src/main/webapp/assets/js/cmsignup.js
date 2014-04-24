@@ -618,7 +618,9 @@ function signupComplete(data) {
               "<p>Visit <a href='http://catchupmath.com'>http://catchupmath.com</a>" +
               " and enter the login information shown above.</p>" +
               "<p class='info-sent'>Your signup information has also been sent to the email address: " + email + "</p>" +
-              "<p><a href='/loginService?uid=" + userId + "'>Begin Using Catchup Math</a></p>";
+              "<p class='info-sent'>If you do not receive your account email within a few minutes, please check your spam folder. " +
+              "If not there, please email <a href='mailto:support@catchupmath.com'>support@catchupmath.com</a></p><br/>" +
+              "<p><a href='/loginService?uid=" + userId + "'>Begin Using Catchup Math</a></p>"; 
 
    var e1 = document.getElementById('signup_page');
    e1.setAttribute('style', 'display:none');
@@ -656,7 +658,9 @@ function selfpayComplete(data) {
        "</p>" + 
        "<p>Visit <a href='http://catchupmath.com'>http://catchupmath.com</a>" +
        " as directed by your instructor and enter the login information shown above.</p>" +
-       "<p class='info-sent'>A confirmation has also been emailed to: " + email + "</p><br/>" +
+       "<p class='info-sent'>A confirmation has also been emailed to: " + email + "</p>" +
+       "<p class='info-sent'>If you do not receive your account email within a few minutes, please check your spam folder. " +
+       "If not there, please email <a href='mailto:support@catchupmath.com'>support@catchupmath.com</a></p><br/>" +
        "<p>Thank you!</p>";
    }
    else {
