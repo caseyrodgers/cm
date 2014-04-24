@@ -43,6 +43,13 @@ import sb.mail.SbMailManager;
  * program - gradprepTX - a self-reg group with show work req and our TAKS
  * (Texas grad prep) program
  * 
+ * plus, for college accounts:
+ * 
+ * Auto-enrollment: PlaceMe
+ * College Elementary Algebra: ElemAlg
+ * College Basic Math: BasicMath
+ *
+ * 
  * 
  * Make sure there is a Catchup service
  */
@@ -60,7 +67,7 @@ public class CmPilotCreate {
     public CmPilotCreate() {
     }
 
-    public CmPilotCreate(String subscriberId, Boolean tutoringEnabled, Integer tutoringHours, Boolean showWorkRequired,Integer maxStudentCount, CmPartner partner) throws Exception {
+    public CmPilotCreate(String subscriberId, Boolean tutoringEnabled, Integer tutoringHours, Boolean showWorkRequired,Integer maxStudentCount, CmPartner partner, boolean isCollege) throws Exception {
 
         HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(subscriberId);
 
@@ -134,7 +141,7 @@ public class CmPilotCreate {
              * setup default groups for user
              * 
              */
-            setupPilotGroups(conn, aid);
+            setupPilotGroups(conn, aid, isCollege);
             
             /**
              * add new HA_USER attached to
@@ -154,7 +161,7 @@ public class CmPilotCreate {
         }
     }
 
-    private void setupPilotGroups(final Connection conn, Integer aid) throws Exception {
+    static public void setupPilotGroups(final Connection conn, Integer aid, boolean isCollege) throws Exception {
     	
     	CmAdminDao dao = CmAdminDao.getInstance();
 
@@ -187,6 +194,18 @@ public class CmPilotCreate {
 
         // - exitexam - a self-ref group for nationals program
         dao.createSelfRegistrationGroup(conn, aid, "exitexam", CmProgram.NATIONAL, false, false);
+        
+        if(isCollege) {
+	        // Auto-enrollment: PlaceMe
+	        dao.createSelfRegistrationGroup(conn, aid, "placeme", CmProgram.AUTO_ENROLL_COLLEGE, false, false);
+	        
+	        // College Elementary Algebra: ElemAlg
+	        dao.createSelfRegistrationGroup(conn, aid, "elemalg", CmProgram.ELEMALG, false, false);
+	                
+	        // College Basic Math: BasicMath
+	        dao.createSelfRegistrationGroup(conn, aid, "basicmath", CmProgram.BASICMATH, false, false);
+        }
+        
     }
 
     public List<String> getMessages() {
@@ -368,7 +387,7 @@ public class CmPilotCreate {
             /** setup the CM pilot in CM_ADMIN
              * 
              */
-            CmPilotCreate pilot = new CmPilotCreate(sub.getId(),false,0,false,1000,partner);
+            CmPilotCreate pilot = new CmPilotCreate(sub.getId(),false,0,false,1000,partner, isCollegePilot);
             
             
             if(sendEmailConfirmation) {
