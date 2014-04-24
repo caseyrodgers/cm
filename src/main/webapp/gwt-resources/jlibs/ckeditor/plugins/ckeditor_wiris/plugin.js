@@ -6,7 +6,7 @@ document.getElementsByTagName('head')[0].appendChild(script);
 
 // Configuration
 var _wrs_conf_editorEnabled = true;		// Specifies if fomula editor is enabled.
-var _wrs_conf_CASEnabled = true;		// Specifies if WIRIS cas is enabled.
+var _wrs_conf_CASEnabled = false;		// Specifies if WIRIS cas is enabled.
 
 var _wrs_conf_imageMathmlAttribute = 'data-mathml';	// Specifies the image tag where we should save the formula editor mathml code.
 var _wrs_conf_CASMathmlAttribute = 'alt';	// Specifies the image tag where we should save the WIRIS cas mathml code.
