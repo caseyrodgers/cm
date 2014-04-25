@@ -24,7 +24,7 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImplRational {
         super.buildUi();
         VerticalLayoutContainer panWhole = new VerticalLayoutContainer();
         panWhole.addStyleName("widget_panel");
-        panWhole.add(new MyFieldLabel(_whole, "Whole",80, 60));
+        panWhole.add(new MyFieldLabel(_whole, "Mixed",80, 60));
         panWhole.add(new MyFieldLabel(_numeratorPart, "Numerator",80, 60));
         panWhole.add(new MyFieldLabel(_denominatorPart, "Denominator",80, 60));
         
