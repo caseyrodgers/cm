@@ -84,12 +84,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 			}
 		});
 		awardTip.setWidget(_awards);
-		
-		
-		if(CmShared.getQueryParameterValue("test").equals("awards")) {
-			_awards.startTest();
-		}
-		
+
 		add(awardTip);
 		add(_helloInfo);
 

@@ -3,6 +3,7 @@ package hotmath.gwt.cm_core.client.award;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCorrectEvent;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCorrectHandler;
+import hotmath.gwt.shared.client.CmShared;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -23,6 +24,8 @@ public class CmAwardPanel extends Composite {
 						__instance.addStar();
 					}
 				});
+		
+		
 	}
 	
 	
@@ -44,7 +47,11 @@ public class CmAwardPanel extends Composite {
 		_starPanel.getElement().setAttribute("style", "position: absolute");
 		initWidget(_starPanel);
 
-		//startTest();
+		
+		
+		if(CmShared.getQueryParameterValue("test").equals("awards")) {
+			startTest();
+		}
 	}
 
 	public CmAwardPanel(AwardCallback awardCallback) {
