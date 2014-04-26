@@ -63,6 +63,7 @@ public class ProblemDesignerEditor extends GWindow {
 
 	public ProblemDesignerEditor() {
 		super(false);
+
 		setWidth(600); // height depends on whiteboard shown/not shown.
 		setResizable(true);
 		setMaximizable(true);

@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_core.client.award;
 
+import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCorrectEvent;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCorrectHandler;
@@ -46,10 +48,8 @@ public class CmAwardPanel extends Composite {
 		_starPanel.addStyleName("cm-awards");
 		_starPanel.getElement().setAttribute("style", "position: absolute");
 		initWidget(_starPanel);
-
 		
-		
-		if(CmShared.getQueryParameterValue("test").equals("awards")) {
+		if(CmGwtUtils.getQueryParameterValue("test").equals("awards")) {
 			startTest();
 		}
 	}

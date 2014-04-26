@@ -38,6 +38,11 @@ public class CKEditorPanel extends FlowPanel {
         });
     }
     
+    private void gwt_WirisSetFrameSource(String source) {
+    	new WirisEditorDialog(source);
+    }
+
+    
     private void ckeditorIsReady() {
         callback.isComplete();
     }
@@ -50,7 +55,7 @@ public class CKEditorPanel extends FlowPanel {
         var that = this;
         $wnd.CKEDITOR.replace( id,
             {
-                __customConfig : '','height' : height
+                __customConfig : '','height' : height 
            });                
         $wnd.CKEDITOR.instances[id].setData(text);
         $wnd.CKEDITOR.on("instanceReady", function(event) {
