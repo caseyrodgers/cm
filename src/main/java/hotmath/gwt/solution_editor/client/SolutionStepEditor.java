@@ -13,6 +13,7 @@ import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
+import hotmath.gwt.solution_editor.client.StepEditorPlainTextDialog.EditCallback;
 import hotmath.gwt.solution_editor.client.WidgetListDialog.Callback;
 import hotmath.gwt.solution_editor.client.rpc.SaveSolutionStepsAdminAction;
 
@@ -164,7 +165,18 @@ public class SolutionStepEditor extends ContentPanel {
     }
     
     public void showDefineEditor() {
-        new StepEditorDefineDialog(_meta.getTutorDefine());
+    	new StepEditorPlainTextDialog(new EditCallback() {
+			@Override
+			public String getTextToEdit() {
+				return _meta.getTutorDefine();
+			}
+
+			@Override
+			public void saveTextToEdit(String editedText) {
+				_meta.setTutorDefine(editedText);
+                EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));
+			}
+		});
     }
     
     public void fireChanged() {

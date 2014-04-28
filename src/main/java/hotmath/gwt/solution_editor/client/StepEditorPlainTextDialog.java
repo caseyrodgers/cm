@@ -1,10 +1,7 @@
 package hotmath.gwt.solution_editor.client;
 
 
-import hotmath.gwt.cm_core.client.CmEvent;
-import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
-import hotmath.gwt.solution_editor.client.SolutionResourceListDialog.Callback;
 import hotmath.gwt.solution_editor.client.rpc.FormatXmlAdminAction;
 import hotmath.gwt.solution_editor.client.rpc.MathMlResource;
 import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
@@ -40,8 +37,15 @@ import com.google.gwt.user.client.ui.TextArea;
 public class StepEditorPlainTextDialog extends Window {
 
     TextArea _textArea;
+	private EditCallback callback;
 
-    public StepEditorPlainTextDialog(final StepUnitItem item) {
+    public interface EditCallback {
+    	String getTextToEdit();
+    	void saveTextToEdit(String editedText);
+    }
+    
+    public StepEditorPlainTextDialog(EditCallback callbackIn) {
+    	this.callback = callbackIn;
         setLayout(new FitLayout());
 
         _textArea = new TextArea(); // new HtmlEditorApplet();
@@ -55,7 +59,7 @@ public class StepEditorPlainTextDialog extends Window {
         setAnimCollapse(true);
         setDraggable(false);
         setModal(true);
-        _textArea.setValue(item.getEditorText());
+        _textArea.setValue(callback.getTextToEdit());
         
         setHeading("Text Editor (F11 for full screen toggle)");
         
@@ -71,11 +75,8 @@ public class StepEditorPlainTextDialog extends Window {
         	@Override
         	public void componentSelected(ButtonEvent ce) {
         		String text = getTextEditorValue();
-        		item.setEditorText(text);
+        		callback.saveTextToEdit(text);
         		hide();
-        		EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
-        		EventBus.getInstance().fireEvent(
-        				new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));
         	}
 		}));
         
@@ -103,7 +104,7 @@ public class StepEditorPlainTextDialog extends Window {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 setVisible(false);
-                new SolutionResourceListDialog(new Callback() {
+                new SolutionResourceListDialog(new SolutionResourceListDialog.Callback() {
                     @Override
                     public void resourceSelected(SolutionResource resource) {
                         setVisible(true);

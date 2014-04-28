@@ -433,7 +433,9 @@ public class CmShared implements EntryPoint {
         $wnd.resetProgram_Gwt = @hotmath.gwt.shared.client.CmShared::resetProgram_Gwt();
                                                      
         $wnd.gwt_debugLog = function(msg) {
-             @hotmath.gwt.shared.client.CmShared::gwt_debugLog(Ljava/lang/String;)(msg);
+             $wnd.console.log(msg);
+             
+             // @hotmath.gwt.shared.client.CmShared::gwt_debugLog(Ljava/lang/String;)(msg);
         }
         
     }-*/;

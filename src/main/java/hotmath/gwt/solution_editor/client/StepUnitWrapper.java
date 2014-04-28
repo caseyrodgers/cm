@@ -1,6 +1,9 @@
 package hotmath.gwt.solution_editor.client;
 
+import hotmath.gwt.cm_core.client.CmEvent;
+import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
+import hotmath.gwt.solution_editor.client.StepEditorPlainTextDialog.EditCallback;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.BoxComponentEvent;
@@ -28,7 +31,22 @@ class StepUnitWrapper extends LayoutContainer {
         edit.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                new StepEditorPlainTextDialog(item);
+                new StepEditorPlainTextDialog(new EditCallback() {
+					
+					@Override
+					public void saveTextToEdit(String editedText) {
+		        		item.setEditorText(editedText);
+		        		hide();
+		        		EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
+		        		EventBus.getInstance().fireEvent(
+		        				new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));						
+					}
+					
+					@Override
+					public String getTextToEdit() {
+						return item.getEditorText();
+					}
+				});
             }
         });
         edit.setStyleAttribute("position", "absolute");
@@ -47,7 +65,24 @@ class StepUnitWrapper extends LayoutContainer {
                         new StepEditorRtfDialog(item);
                     }
                     else {
-                        new StepEditorPlainTextDialog(item);
+                        new StepEditorPlainTextDialog(new StepEditorPlainTextDialog.EditCallback() {
+							
+							@Override
+							public void saveTextToEdit(String editedText) {
+				        		item.setEditorText(editedText);
+				        		hide();
+				        		EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
+				        		EventBus.getInstance().fireEvent(
+				        				new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));						
+							}
+							
+							@Override
+							public String getTextToEdit() {
+								return item.getEditorText();								
+							}
+							
+                        }
+						);
                     }
 
                 }

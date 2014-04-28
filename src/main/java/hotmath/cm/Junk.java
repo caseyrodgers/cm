@@ -13,37 +13,27 @@ public class Junk {
 
     public Junk() throws Exception {
 
-        String sql = "select id,comments from SUBSCRIBERS where comments like '%cc_email%'";
+        String sql = "select * from HA_SOLUTION_GLOBAL_CONTEXT where id = 62778";
         Connection conn = null;
         try {
             conn = HMConnectionPool.getConnection();
-
-            _ps = conn.prepareStatement("insert into SUBSCRIBERS_INFO(subscriber_id,type,value)values(?,'cc_email',?)");
-
+            _ps = conn.prepareStatement("update HA_SOLUTION_GLOBAL_CONTEXT set variables = ? where id = ? ");
+            
             ResultSet rs = conn.createStatement().executeQuery(sql);
-            while (rs.next()) {
-                extractCcEmails(conn, rs.getString("id"), rs.getString("comments"));
+            rs.first();
+            String v = rs.getString("variables");
+            
+            _ps.setString(1,  v);
+            _ps.setInt(2,  62698);
+            int cnt = _ps.executeUpdate();
+            if(cnt != 1) {
+            	throw new Exception("Could not update record!");
             }
         } finally {
             SqlUtilities.releaseResources(null, null, conn);
         }
     }
 
-    private void extractCcEmails(Connection conn, String id, String comments) {
-        try {
-            String s[] = comments.split("[cC][cC]\\_[eE]mails[:=]");
-            String ccEmails = s[1].split("[\\n\\)]")[0];
-            for (String teacherEmail : ccEmails.split(",")) {
-                _ps.setString(1, id);
-                _ps.setString(2, teacherEmail.trim());
-                if(_ps.executeUpdate() != 1) {
-                    System.out.println("Could not save record ...?");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     static public void main(String as[]) {
         try {
