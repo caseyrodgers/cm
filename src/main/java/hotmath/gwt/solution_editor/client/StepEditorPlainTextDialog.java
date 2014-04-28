@@ -48,14 +48,16 @@ public class StepEditorPlainTextDialog extends Window {
         _textArea.getElement().setId("solution-editor-area");
         add(_textArea);
 
-        setSize(700, 550);
+        setSize(700, 390);
         setScrollMode(Scroll.AUTO);
-        setResizable(true);
-        setMaximizable(true);
+        setResizable(false);
+        setMaximizable(false);
         setAnimCollapse(true);
         setDraggable(false);
         setModal(true);
         _textArea.setValue(item.getEditorText());
+        
+        setHeading("Text Editor (F11 for full screen toggle)");
         
         getHeader().addTool(new Button("Format", new SelectionListener<ButtonEvent>() {
 			
@@ -83,21 +85,7 @@ public class StepEditorPlainTextDialog extends Window {
 				hide();
 			}
 		}));
-        
-        
-//        _textArea.setCallback(new HtmlEditorApplet.Callback() {
-//
-//            @Override
-//            public void saveAndCloseWindow(String text) {
-//                item.setEditorText(text);
-//
-//                text = item.getEditorText();
-//                hide();
-//                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
-//                EventBus.getInstance().fireEvent(
-//                        new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));
-//            }
-//        });
+
 
         getHeader().addTool(new Button("MathML Editor", new SelectionListener<ButtonEvent>() {
             @Override
@@ -163,7 +151,8 @@ public class StepEditorPlainTextDialog extends Window {
             alert('solution-editor-area was not found!');
             return;
         }
-       $wnd._theCodeMirror = $wnd.CodeMirror.fromTextArea(myTextArea, {smartIndent: false, electricChars: false});
+       $wnd._theCodeMirror = $wnd.CodeMirror.fromTextArea(myTextArea, {smartIndent: false, electricChars: false,extraKeys: {"F11": function(cm) {cm.setOption("fullScreen", !cm.getOption("fullScreen"));},"EscNOT": function(cm) {if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);}}});
+       //$wnd.__theCodeMirror.setSize('100%', '100%');
     }-*/;
 
 
