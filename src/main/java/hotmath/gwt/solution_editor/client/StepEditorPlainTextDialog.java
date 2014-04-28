@@ -1,8 +1,8 @@
 package hotmath.gwt.solution_editor.client;
 
+
 import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.EventBus;
-import hotmath.gwt.cm_core.client.EventTypes;
 import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
 import hotmath.gwt.solution_editor.client.SolutionResourceListDialog.Callback;
 import hotmath.gwt.solution_editor.client.rpc.FormatXmlAdminAction;
@@ -15,7 +15,10 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.TextArea;
 
 /**
  * Encapsulates the Java Plugin editor used to allowing plain editing.
@@ -36,12 +39,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class StepEditorPlainTextDialog extends Window {
 
-    HtmlEditorApplet _textArea;
+    TextArea _textArea;
 
     public StepEditorPlainTextDialog(final StepUnitItem item) {
         setLayout(new FitLayout());
 
-        _textArea = new HtmlEditorApplet();
+        _textArea = new TextArea(); // new HtmlEditorApplet();
+        _textArea.getElement().setId("solution-editor-area");
         add(_textArea);
 
         setSize(700, 550);
@@ -52,19 +56,48 @@ public class StepEditorPlainTextDialog extends Window {
         setDraggable(false);
         setModal(true);
         _textArea.setValue(item.getEditorText());
-        _textArea.setCallback(new HtmlEditorApplet.Callback() {
-
-            @Override
-            public void saveAndCloseWindow(String text) {
-                item.setEditorText(text);
-
-                text = item.getEditorText();
-                hide();
-                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
-                EventBus.getInstance().fireEvent(
-                        new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));
-            }
-        });
+        
+        getHeader().addTool(new Button("Format", new SelectionListener<ButtonEvent>() {
+			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				formatXml();
+			}
+		}));
+        
+        addButton(new Button("Save", new SelectionListener<ButtonEvent>() {
+        	@Override
+        	public void componentSelected(ButtonEvent ce) {
+        		String text = getTextEditorValue();
+        		item.setEditorText(text);
+        		hide();
+        		EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
+        		EventBus.getInstance().fireEvent(
+        				new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));
+        	}
+		}));
+        
+        addButton(new Button("Cancel", new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				hide();
+			}
+		}));
+        
+        
+//        _textArea.setCallback(new HtmlEditorApplet.Callback() {
+//
+//            @Override
+//            public void saveAndCloseWindow(String text) {
+//                item.setEditorText(text);
+//
+//                text = item.getEditorText();
+//                hide();
+//                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
+//                EventBus.getInstance().fireEvent(
+//                        new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));
+//            }
+//        });
 
         getHeader().addTool(new Button("MathML Editor", new SelectionListener<ButtonEvent>() {
             @Override
@@ -91,6 +124,14 @@ public class StepEditorPlainTextDialog extends Window {
             }
         }));
 
+        
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				jsni_setupJavascriptEditor();
+			}
+		});
+        
 
         setVisible(true);
 
@@ -98,9 +139,35 @@ public class StepEditorPlainTextDialog extends Window {
 
         layout();
     }
-
     
-    private String getWidgetDefinitionJson(String html) {
+    public String getTextEditorValue() {
+    	return jsni_getTextEditorValue();
+    }
+
+    public void setTextEditorValue(String text) {
+    	jsni_setTextEditorValue(text);
+    }
+    
+    
+    native private void jsni_setTextEditorValue(String text) /*-{
+        $wnd._theCodeMirror.setValue(text);
+    }-*/;
+
+	native private String jsni_getTextEditorValue() /*-{
+        return $wnd._theCodeMirror.getValue();
+    }-*/;
+
+	native protected void jsni_setupJavascriptEditor() /*-{
+        var myTextArea = $doc.getElementById("solution-editor-area");
+        if(myTextArea == null) {
+            alert('solution-editor-area was not found!');
+            return;
+        }
+       $wnd._theCodeMirror = $wnd.CodeMirror.fromTextArea(myTextArea, {smartIndent: false, electricChars: false});
+    }-*/;
+
+
+	private String getWidgetDefinitionJson(String html) {
         String startToken = "<div style='display: none' id='hm_flash_object'>";
         String endToken = "</div></div>";
         int startPos = html.indexOf(startToken);
@@ -115,11 +182,11 @@ public class StepEditorPlainTextDialog extends Window {
     }   
     
     private void formatXml() {
-        FormatXmlAdminAction action = new FormatXmlAdminAction(_textArea.getValue());
+        FormatXmlAdminAction action = new FormatXmlAdminAction(getTextEditorValue());
         SolutionEditor.__status.setBusy("Formatting XML ...");
         SolutionEditor.getCmService().execute(action, new AsyncCallback<SolutionAdminResponse>() {
             public void onSuccess(SolutionAdminResponse solutionResponse) {
-                _textArea.setValue(solutionResponse.getXml());
+                setTextEditorValue(solutionResponse.getXml());
                 SolutionEditor.__status.clearStatus("");
             }
 
