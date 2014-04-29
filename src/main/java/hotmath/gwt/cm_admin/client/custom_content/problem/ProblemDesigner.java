@@ -343,15 +343,15 @@ public class ProblemDesigner extends Composite {
        
        // add hooks on double click to bring up appropriate editor
        //
-       $wnd.$('#problem_statement').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Click to Edit Problem Statement</button></div>");
+       $wnd.$('#problem_statement').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Problem Statement</button></div>");
     
-       $wnd.$('#hm_flash_widget').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Click to Edit Input</button></div>");
+       $wnd.$('#hm_flash_widget').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Input</button></div>");
        
        
        $wnd.$('.widget-not-used').replaceWith('<p>Input Type: whiteboard</p>');
        
        var clickDef = "<div class='cp_designer-toolbar'>" +
-                      "<button onclick='window.gwt_editPart(\"hint-remove\",window.gwt_getHintNumber(this))'>Click to Remove Hint/Step</button>" +
+                      "<button onclick='window.gwt_editPart(\"hint-remove\",window.gwt_getHintNumber(this))'>Remove Hint/Step</button>" +
                       "<button onclick='window.gwt_editPart(\"hint-moveUp\",window.gwt_getHintNumber(this))'>^</button>" +
                       "<button onclick='window.gwt_editPart(\"hint-moveDown\",window.gwt_getHintNumber(this))'>v</button></div>";
                       
