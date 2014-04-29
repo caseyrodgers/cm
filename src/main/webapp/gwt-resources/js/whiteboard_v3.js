@@ -1903,7 +1903,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         for (var i = 0; i < l; i++) {
             var obj = graphicDataStore[i]
             var isGraph = obj.id == 11 || obj.id == 12 || obj.id == 'graph'
-            if (obj.type == 'cmd' || isGraph) {
+            if (obj.type == 'cmd' || isGraph||obj.isErased||obj.id===0) {
                 continue
             }
             if (isObjDeleted(obj.uid)) {
