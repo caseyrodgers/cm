@@ -3,6 +3,10 @@
  */ 
 YUI().use('event',function(Y) {
   Y.on("domready", function() {
+      
+    document.getElementById("fld_pwd").value = '';
+    document.getElementById("fld_user").value = '';
+    
     document.getElementById('fld_user').focus();
   }, Y, "The DOMContentLoaded event fired.  The DOM is now safe to modify via script.");
 });
