@@ -333,12 +333,18 @@ public class ShowWorkPanel2 extends Composite {
                 // Log.debug("processing whiteboard command: " +
                 // commands.get(i));
             	
-            	long mills = System.currentTimeMillis();
-            	 String cmd = commands.get(i).getCommand();
+            	long mills=0;
+            	String cmd=null;
+            	if(Log.isDebugEnabled()) {
+            		mills = System.currentTimeMillis();
+            		cmd = commands.get(i).getCommand();
+            	}
             	 
                 jsni_updateWhiteboard(this.whiteboardId, commands.get(i).getCommand(), commands.get(i).getData());
                 
-                Log.debug("WHITEBOARD COMMAND: " + cmd + ", " + jsni_getWhiteboardCommandId(commands.get(i).getData()) + ", len = " + commands.get(i).getData().length() + ", time=" + (System.currentTimeMillis() - mills));
+                if(Log.isDebugEnabled()) {
+                	Log.debug("WHITEBOARD COMMAND: " + cmd + ", " + jsni_getWhiteboardCommandId(commands.get(i).getData()) + ", len = " + commands.get(i).getData().length() + ", time=" + (System.currentTimeMillis() - mills));
+                }
             } catch (Exception e) {
                 Log.error("Error processing whiteboard command: " + e.getMessage(), e);
             }

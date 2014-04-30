@@ -1,6 +1,7 @@
 <module rename-to='cm_rpc_core'>
 
-	<inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
+  <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
+  <extend-property name="log_level" values="DEBUG,WARN"/>
 	
 	<!-- Hide the Log window, just send to stdout <set-property name="log_DivLogger" 
 		value="DISABLED" /> <extend-property name="log_level" values="INFO"/> -->
