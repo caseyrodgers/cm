@@ -36,7 +36,6 @@ class StepUnitWrapper extends LayoutContainer {
 					@Override
 					public void saveTextToEdit(String editedText) {
 		        		item.setEditorText(editedText);
-		        		hide();
 		        		EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
 		        		EventBus.getInstance().fireEvent(
 		        				new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));						
@@ -70,7 +69,6 @@ class StepUnitWrapper extends LayoutContainer {
 							@Override
 							public void saveTextToEdit(String editedText) {
 				        		item.setEditorText(editedText);
-				        		hide();
 				        		EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
 				        		EventBus.getInstance().fireEvent(
 				        				new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));						

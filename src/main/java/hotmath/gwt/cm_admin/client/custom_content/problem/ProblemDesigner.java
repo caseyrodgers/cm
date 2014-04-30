@@ -343,9 +343,9 @@ public class ProblemDesigner extends Composite {
        
        // add hooks on double click to bring up appropriate editor
        //
-       $wnd.$('#problem_statement').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Statement</button></div>");
+       $wnd.$('#problem_statement').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Edit Problem</button></div>");
     
-       $wnd.$('#hm_flash_widget').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Input</button></div>");
+       $wnd.$('#hm_flash_widget').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Edit Input</button></div>");
        
        
        $wnd.$('.widget-not-used').replaceWith('<p>Input Type: whiteboard</p>');
