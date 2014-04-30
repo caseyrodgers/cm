@@ -332,7 +332,13 @@ public class ShowWorkPanel2 extends Composite {
             try {
                 // Log.debug("processing whiteboard command: " +
                 // commands.get(i));
+            	
+            	long mills = System.currentTimeMillis();
+            	 String cmd = commands.get(i).getCommand();
+            	 
                 jsni_updateWhiteboard(this.whiteboardId, commands.get(i).getCommand(), commands.get(i).getData());
+                
+                Log.debug("WHITEBOARD COMMAND: " + cmd + ", len = " + commands.get(i).getData().length() + ", time=" + (System.currentTimeMillis() - mills));
             } catch (Exception e) {
                 Log.error("Error processing whiteboard command: " + e.getMessage(), e);
             }

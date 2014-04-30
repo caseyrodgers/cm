@@ -96,7 +96,9 @@ public class CatchupMathTest implements EntryPoint {
         if (gotoWhiteboard != null) {
             String p[] = gotoWhiteboard.split(",");
             _forceStop = true;
-            readWhiteboardFromServer(Integer.parseInt(p[0]), Integer.parseInt(p[1]), p[2]);
+            loadGotoInfo(gotoWhiteboard);
+            
+            // readWhiteboardFromServer(Integer.parseInt(p[0]), Integer.parseInt(p[1]), p[2]);
         }
 
         // startTests();
