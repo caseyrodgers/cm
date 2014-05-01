@@ -4,8 +4,10 @@ import hotmath.gwt.cm_admin.client.teacher.TeacherManager;
 import hotmath.gwt.cm_admin.client.teacher.TeacherManager.Callback;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.CopyCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteCustomProblemAction;
@@ -17,6 +19,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_tools.client.ui.MyTextButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
@@ -74,7 +77,7 @@ public class CustomProblemManager extends GWindow {
         __instance = this;
         setLocalTitle();
 
-        setPixelSize(700, 600);
+        setPixelSize(800, 600);
         setMaximizable(true);
         
         buildGui();
@@ -93,13 +96,15 @@ public class CustomProblemManager extends GWindow {
         ListStore<CustomProblemModel> store = new ListStore<CustomProblemModel>(_gridProps.key());
         List<ColumnConfig<CustomProblemModel, ?>> cols = new ArrayList<ColumnConfig<CustomProblemModel, ?>>();
         
-        cols.add(new ColumnConfig<CustomProblemModel, String>(_gridProps.teacherName(), 50, "Teacher"));
-        cols.add(new ColumnConfig<CustomProblemModel, Integer>(_gridProps.problemNumber(), 20, "Problem"));
+        cols.add(new ColumnConfig<CustomProblemModel, String>(_gridProps.teacherName(), 70, "Teacher"));
+        cols.add(new ColumnConfig<CustomProblemModel, Integer>(_gridProps.problemNumber(), 25, "#"));
+        cols.add(new ColumnConfig<CustomProblemModel, String>(_gridProps.comments(), 100, "Comments"));
+        cols.add(new ColumnConfig<CustomProblemModel, String>(_gridProps.lessonList(), 100, "Lessons"));
         
         ColumnModel<CustomProblemModel> colModel = new ColumnModel<CustomProblemModel>(cols);
         _grid = new Grid<CustomProblemModel>(store,  colModel, createGridView());
-        _grid.getView().setAutoExpandColumn(cols.get(0));
-        _grid.getView().setAutoFill(true);
+        //_grid.getView().setAutoExpandColumn(cols.get(cols.size()-1));
+        // _grid.getView().setAutoFill(true);
         
         _grid.getSelectionModel().addSelectionHandler(new SelectionHandler<CustomProblemModel>() {
             @Override
@@ -158,8 +163,8 @@ public class CustomProblemManager extends GWindow {
                 
                 CustomProblemSearchDialog.getInstance(getLessonsInStore(), new CustomProblemSearchDialog.Callback() {
                     @Override
-                    public void selectionChanged(List<? extends LessonModel> models) {
-                        applyFilter(models);
+                    public void selectionChanged(List<? extends LessonModel> models, String comments) {
+                        applyFilter(models, comments);
                     }
                 }).setVisible(true);
                 _filterButton.setValue(true);
@@ -168,8 +173,28 @@ public class CustomProblemManager extends GWindow {
         gridPanel.addTool(_filterButton);
 
         
+        TextButton btn = new MyTextButton("Properties", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+            	CustomProblemModel customProblem = _grid.getSelectionModel().getSelectedItem();
+            	if(customProblem == null) {
+            		CmMessageBox.showAlert("Please select a problem first.");
+            		return;
+            	}
+                CustomProblemPropertiesDialog.getInstance(new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.SOLUTION));
+                    }
+                }, customProblem).setVisible(true);
+            }
+        }, "Edit comments and link to lessons");
+        
+        gridPanel.addTool(btn);
+        
+        
         if(CmShared.getQueryParameter("debug") != null) {
-            gridPanel.addTool(new TextButton("Refresh", new SelectHandler() {
+            addTool(new TextButton("Refresh", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
                     readFromServer();
@@ -208,7 +233,11 @@ public class CustomProblemManager extends GWindow {
         flow.add(selTeach);
         flow.getElement().setAttribute("style",  "padding-left: 3px;");
         gridCont.setSouthWidget(flow, new BorderLayoutData(30));
-        _main.setWestWidget(gridCont, new BorderLayoutData(200));
+        
+        BorderLayoutData bld = new BorderLayoutData(300);
+        bld.setSplit(true);
+        // bld.setCollapseMini(true);
+        _main.setWestWidget(gridCont,bld );
         
         
         _filter = new StoreFilter<CustomProblemModel>() {
@@ -314,9 +343,9 @@ public class CustomProblemManager extends GWindow {
 
     
 
-    private void applyFilter(List<? extends LessonModel> models) {
+    private void applyFilter(List<? extends LessonModel> models, String comments) {
         
-        if(models == null || models.size() == 0) {
+        if(models == null || (models.size() == 0 && comments == null)) {
             setGridStore(_allProblems);
             _filterButton.setValue(false);
             return;
@@ -325,23 +354,40 @@ public class CustomProblemManager extends GWindow {
         List<CustomProblemModel> listFiltered = new ArrayList<CustomProblemModel>();
         List<CustomProblemModel> list = _allProblems;
         boolean found=false;
-        for(CustomProblemModel m: list) {
-            for(LessonModel lm: m.getLinkedLessons()) {
-                
-                for(LessonModel modelToCheck: models) {
-                    if(modelToCheck.getLessonFile().equals(lm.getLessonFile())) {
-                        
-                        // this store record has at least one of the selected models
-                        listFiltered.add(m);
-                        found=true;
-                        break;
-                    }
-                    if(found) {
-                        break;
-                    }
-                }
-            }
+        
+        if(models.size() == 0) {
+        	listFiltered.addAll(_allProblems);
         }
+        else {
+	        for(CustomProblemModel m: list) {
+	        	
+	            for(LessonModel lm: m.getLinkedLessons()) {
+	                
+	                for(LessonModel modelToCheck: models) {
+	                    if(modelToCheck.getLessonFile().equals(lm.getLessonFile())) {
+	                        
+	                        // this store record has at least one of the selected models
+	                        listFiltered.add(m);
+	                        found=true;
+	                        break;
+	                    }
+	                    if(found) {
+	                        break;
+	                    }
+	                }
+	            }
+	        }
+        }
+        
+        if(comments != null) {
+        	for(int i=listFiltered.size()-1;i>-1;i--) {
+        		CustomProblemModel pm = listFiltered.get(i);
+        		if(pm.getComments() == null || !(pm.getComments().toLowerCase().contains(comments.toLowerCase()))) {
+        			listFiltered.remove(i);
+        		}
+        	}
+        }
+        
         setGridStore(listFiltered);
     }
 
@@ -516,11 +562,12 @@ interface GridProperties extends PropertyAccess<String> {
 
     @Path("pid")
     ModelKeyProvider<CustomProblemModel> key();
-
-    ValueProvider<CustomProblemModel, Integer> problemNumber();
-
+    
+    ValueProvider<CustomProblemModel, String> lessonList();
+	ValueProvider<CustomProblemModel, String> comments();
+	ValueProvider<CustomProblemModel, Integer> problemNumber();
+	
     @Path("teacher.teacherName")
     ValueProvider<CustomProblemModel, String> teacherName();
-
     ValueProvider<CustomProblemModel, String> pid();
 }

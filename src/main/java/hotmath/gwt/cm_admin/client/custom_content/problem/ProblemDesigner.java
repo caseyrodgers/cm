@@ -67,19 +67,7 @@ public class ProblemDesigner extends Composite {
     public ProblemDesigner() {
         __lastInstance = this;
 
-        TextButton btn = new MyTextButton("Properties", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                CustomProblemPropertiesDialog.getInstance(new CallbackOnComplete() {
-                    @Override
-                    public void isComplete() {
-                        CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.SOLUTION));
-                    }
-                }, _customProblem).setVisible(true);
-            }
-        }, "Edit comments and link to lessons");
-        
-        _problemPanel.addTool(btn);
+
         
         
         if(_editMode == null) {

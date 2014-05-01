@@ -29,6 +29,22 @@ public class CustomProblemModel implements Response {
     public void setLinkedLessons(List<LessonModel> linkedLessons) {
         this.linkedLessons = linkedLessons;
     }
+    
+    /** return single string representation of linked lessons 
+     * 
+     * @return
+     */
+    public String getLessonList() {
+    	String label="";
+    	
+    	for(LessonModel lm: linkedLessons) {
+    		if(label.length() > 0) {
+    			label += "; ";
+    		}
+    		label += lm.getLessonName();
+    	}
+    	return label;
+    }
 
     public String getLabel() {
         return teacher.getTeacherName() + "-" + problemNumber;

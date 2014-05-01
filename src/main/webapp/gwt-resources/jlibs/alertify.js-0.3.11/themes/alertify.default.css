@@ -3,7 +3,7 @@
  */
 .alertify,
 .alertify-log {
-	font-family: sans-serif;
+	font-family: inherit;   /* sans-serif; */
 }
 .alertify {
 	background: #FFF;

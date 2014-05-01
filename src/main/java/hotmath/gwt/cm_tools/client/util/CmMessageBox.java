@@ -23,7 +23,10 @@ public class CmMessageBox {
 
     public static void showAlert(String title,String msg, final CallbackOnComplete onComplete) {
     	
-    	// __alertify.alert(msg, onComplete);
+    	__alertify.alert(msg, onComplete);
+    	if(true) {
+    		return;
+    	}
     	
         AlertMessageBox d = new AlertMessageBox(title, msg);
         d.setWidth(300);

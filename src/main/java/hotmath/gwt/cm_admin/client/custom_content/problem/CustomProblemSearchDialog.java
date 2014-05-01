@@ -3,12 +3,16 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -18,6 +22,7 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
@@ -38,7 +43,7 @@ public class CustomProblemSearchDialog extends GWindow {
     
     
     interface Callback {
-        void selectionChanged(List<? extends LessonModel> models);
+        void selectionChanged(List<? extends LessonModel> models, String comments);
     }
     
     Callback _callback;
@@ -84,7 +89,7 @@ public class CustomProblemSearchDialog extends GWindow {
             @Override
             public void onSelect(SelectEvent event) {
                 _grid.getSelectionModel().deselectAll();
-                _callback.selectionChanged(null);
+                _callback.selectionChanged(null, null);
                 hide();
             }
         }));
@@ -122,10 +127,24 @@ public class CustomProblemSearchDialog extends GWindow {
     GridProps props = GWT.create(GridProps.class);
     
     Grid<LessonModel> _grid;
+    TextField comments = new TextField();
     private void buildUi() {
         BorderLayoutContainer bCont = new BorderLayoutContainer();
         bCont.setNorthWidget(new HTML("<p style='margin: 10px'>Select the topics you would like to see problems for.</p>"), new BorderLayoutData(40));
         
+        comments.setToolTip("Filter on comment text");
+        comments.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				_callback.selectionChanged(_grid.getSelectionModel().getSelectedItems(), comments.getCurrentValue());
+			}
+		});
+        
+        SimplePanel commentPanel = new SimplePanel();
+        commentPanel.getElement().setAttribute("style",  "padding: 15px");
+        commentPanel.setWidget(new MyFieldLabel(comments,  "Comments", 80, 200));
+        
+        bCont.setSouthWidget(commentPanel,new BorderLayoutData(60));
         
         ListStore<LessonModel> store = new ListStore<LessonModel>(props.lessonFile());
         List<ColumnConfig<LessonModel, ?>> list = new ArrayList<ColumnConfig<LessonModel, ?>>();
@@ -138,7 +157,7 @@ public class CustomProblemSearchDialog extends GWindow {
         _grid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<LessonModel>() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent<LessonModel> event) {
-                _callback.selectionChanged(_grid.getSelectionModel().getSelectedItems());
+                _callback.selectionChanged(_grid.getSelectionModel().getSelectedItems(),comments.getCurrentValue());
             }
         });
         bCont.setCenterWidget(_grid);
