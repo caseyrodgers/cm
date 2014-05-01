@@ -343,7 +343,7 @@ public class ShowWorkPanel2 extends Composite {
                 jsni_updateWhiteboard(this.whiteboardId, commands.get(i).getCommand(), commands.get(i).getData());
                 
                 if(Log.isDebugEnabled()) {
-                	Log.debug("WHITEBOARD COMMAND: " + cmd + ", " + jsni_getWhiteboardCommandId(commands.get(i).getData()) + ", len = " + commands.get(i).getData().length() + ", time=" + (System.currentTimeMillis() - mills));
+                	Log.debug("WHITEBOARD COMMAND: " + cmd + ", time=" + (System.currentTimeMillis() - mills) + ", commands=" + jsni_getWhiteboardCommandId(commands.get(i).getData()) + ", len = " + commands.get(i).getData().length() );
                 }
             } catch (Exception e) {
                 Log.error("Error processing whiteboard command: " + e.getMessage(), e);
@@ -352,16 +352,7 @@ public class ShowWorkPanel2 extends Composite {
     }
 
     native private String jsni_getWhiteboardCommandId(String data) /*-{
-        var d = $wnd.JSON.parse(data);
-        
-        var ids = "";
-        for(var i=0;i<d.dataArr.length;i++) {
-            if(ids != "") {
-                ids += ", ";
-            }
-            ids += d.dataArr[i].id;
-        }
-        return ids;
+        return $wnd._debugGetCommandInfoLabel(data);
     }-*/;
 
 	private void saveWhiteboardToServer() {

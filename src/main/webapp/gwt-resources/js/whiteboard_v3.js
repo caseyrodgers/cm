@@ -7071,9 +7071,44 @@ source: https://gist.github.com/754454
             alert(e);
         }
     }
-    return wb;
 
+    return wb;
 };
+
+
+
+/** return information about commands in json 
+ * 
+ */ 
+function _debugGetCommandInfoLabel(json) {
+   var data = JSON.parse(json);
+   
+   var idMap = {};
+   var dataArr = data.dataArr;
+   for(var i=0;i<dataArr.length;i++) {
+       var cmd = dataArr[i];
+       var id = cmd.id;
+       
+       var m = idMap[id];
+       if(!m) {
+           idMap[id] = 1;
+       }
+       else {
+           idMap[id] = (m + 1);
+       }
+   }
+
+   var label='';
+   for (key in idMap) {
+       if(label != "") {
+           label += ", ";
+       }
+       var keyVal = idMap[key];
+       label += key + "[" + keyVal + "]";
+   }
+   return label;
+}
+
 
 /** textarea plugin inputBox which adds draggable handlers to resize the box
  */
