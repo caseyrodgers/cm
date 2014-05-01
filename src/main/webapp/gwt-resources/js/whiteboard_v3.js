@@ -98,6 +98,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
     var cTMaxWidth = null;
     var objOnSel = null;
     var textAreaW = null;
+    var shapeHitCanvas,shapeHitCtx;
     // --- /gwt-resources/images/whiteboard/
     var imgPath = '/gwt-resources/images/whiteboard/'
     //imgPath = './'
@@ -402,15 +403,18 @@ var Whiteboard = function (cont, isStatic, _opts) {
             canvasCont.appendTo(divObj);
             if (buffercontext) {
                 buffercanvas.width = buffercanvas.height = 0;
+                shapeHitcanvas.width = shapeHitcanvas.height = 0;
             } else {
                 buffercanvas = document.createElement('canvas');
-
+                shapeHitcanvas = document.createElement('canvas');
                 if (typeof G_vmlCanvasManager != "undefined") {
                     $(buffercanvas).appendTo(canvasCont)
                     G_vmlCanvasManager.initElement(buffercanvas);
-
+                    $(shapeHitcanvas).appendTo(canvasCont)
+                    G_vmlCanvasManager.initElement(shapeHitcanvas);
                 }
                 buffercontext = buffercanvas.getContext('2d');
+                shapeHitCtx = shapeHitcanvas.getContext('2d');
             }
             return divObj
         }
@@ -1875,17 +1879,17 @@ var Whiteboard = function (cont, isStatic, _opts) {
     }
 
     function getShapeHit(obj, rect) {
-        buffercontext.clearRect(0, 0, buffercanvas.width, buffercanvas.height);
-        buffercanvas.width = canvas.width;
-        buffercanvas.height = canvas.height;
-        buffercontext.save();
-        buffercontext.translate(scrollPosition.x, scrollPosition.y);
-        renderToBuffer(obj, buffercontext);
+        shapeHitCtx.clearRect(0, 0, buffercanvas.width, buffercanvas.height);
+        shapeHitcanvas.width = canvas.width;
+        shapeHitcanvas.height = canvas.height;
+        shapeHitCtx.save();
+        shapeHitCtx.translate(scrollPosition.x, scrollPosition.y);
+        renderToBuffer(obj, shapeHitCtx);
         var __w = rect.xmax - rect.xmin;
         var __h = rect.ymax - rect.ymin;
         __w = Math.max(__w, hitW * 2);
         __h = Math.max(__h, hitH * 2);
-        var imgd = buffercontext.getImageData(rect.xmin, rect.ymin, __w, __h);
+        var imgd = shapeHitCtx.getImageData(rect.xmin, rect.ymin, __w, __h);
         var pix = imgd.data;
         var hasColorData = false;
         for (var i = 0, n = pix.length; i < n; i += 4) {
@@ -1894,7 +1898,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 break
             }
         }
-        buffercontext.restore();
+        shapeHitCtx.restore();
         return hasColorData
     }
 
@@ -1942,7 +1946,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 var hasShape = false
                 if (sel) {
                     hasShape = getShapeHit(obj, r)
-                    updateBuffer()
+                    //updateBuffer()
                 }
                 obj.isErased = hasShape
             }
@@ -3126,6 +3130,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
             var _width = 0;
             buffercanvas.width = canvas.width = _width;
             buffercanvas.height = canvas.height = _width;
+            //
+            shapeHitcanvas.width =  _width;
+            shapeHitcanvas.height =  _width;
             if (isIE) {
                 $(canvas).css({
                     'width': '0px',
@@ -3137,6 +3144,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     'height': '0px'
                 })
                 $(buffercanvas).empty();
+                $(shapeHitcanvas).css({
+                    'width': '0px',
+                    'height': '0px'
+                })
+                $(shapeHitcanvas).empty();
 
             } else {
                 canvas = null;
@@ -3144,6 +3156,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
                 context = null;
                 buffercontext = null;
+                
+                shapeHitcanvas=null;
+                shapeHitCtx=null;
 
             }
         }
@@ -3268,12 +3283,15 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     console_log("DEBUG_IE: parent_cont.removeChild" + parent_cont.removeChild);
                     parent_cont.removeChild(canvas)
                     parent_cont.removeChild(buffercanvas)
-
+                    parent_cont.removeChild(shapeHitcanvas)
                     canvas = null;
                     buffercanvas = null;
 
                     context = null;
                     buffercontext = null;
+                    
+                    shapeHitcanvas=null
+                    shapeHitCtx=null;
 
                     //
                     canvas = document.createElement('canvas')
@@ -3282,12 +3300,14 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     $(canvas).attr('class', 'canvas')
                     //
                     buffercanvas = document.createElement('canvas');
+                    shapeHitcanvas = document.createElement('canvas');
                     //
                     $(parent_cont).prepend(canvas);
                     $(parent_cont).prepend(buffercanvas);
+                    $(parent_cont).prepend(shapeHitcanvas);
                     G_vmlCanvasManager.initElement(canvas);
                     G_vmlCanvasManager.initElement(buffercanvas);
-
+                    G_vmlCanvasManager.initElement(shapeHitcanvas);
                 }
             } catch (error) {
                 console_log("DEBUG_IE:" + error);
@@ -3773,7 +3793,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             // docWidth + ":" + docHeight + ":" + leftOff + ":" + topOff);
             context = canvas.getContext("2d");
             buffercontext = buffercanvas.getContext("2d");
-
+            shapeHitCtx = shapeHitcanvas.getContext("2d");
             // canvas.width=origcanvas.width=graphcanvas.width=topcanvas.width=5000;
             // canvas.height=origcanvas.height=graphcanvas.height=topcanvas.height=5000;
             width = screen_width; // canvas.width;
@@ -5549,11 +5569,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
         // origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width
         // = width;
         buffercontext.clearRect(0, 0, canvas.width, canvas.height);
-
+        shapeHitCtx.clearRect(0, 0, canvas.width, canvas.height);
         context.clearRect(0, 0, canvas.width, canvas.height);
         var _width = canvas.width;
-        buffercanvas.width = canvas.width = _width
-
+        buffercanvas.width = canvas.width = _width;
+        shapeHitcanvas.width = _width;
         drawingLayer = '1'
         $get_Element("#button_gr2D").style.border = '1px solid #000000';
         $get_Element("#button_nL").style.border = '1px solid #000000';
