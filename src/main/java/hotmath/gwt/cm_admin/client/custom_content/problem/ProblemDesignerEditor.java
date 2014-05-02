@@ -68,7 +68,7 @@ public class ProblemDesignerEditor extends GWindow {
 		setResizable(true);
 		setMaximizable(true);
 
-		setHeadingText("Edit Problem Statement");
+		setHeadingText("Catchup Math Step Editor");
 		_main = new BorderLayoutContainer();
 		setWidget(_main);
 
@@ -131,8 +131,10 @@ public class ProblemDesignerEditor extends GWindow {
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
 				public void execute() {
-					_showWorkPanel.resizeWhiteboard(_lastWbheight);
-					_ckEditorPanel.showClickToEdit(false);
+					if(_showWorkPanel != null) {
+						_showWorkPanel.resizeWhiteboard(_lastWbheight);
+						_ckEditorPanel.showClickToEdit(false);
+					}
 				}
 			});
 		}
