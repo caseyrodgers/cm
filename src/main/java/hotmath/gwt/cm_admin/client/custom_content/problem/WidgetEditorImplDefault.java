@@ -82,4 +82,14 @@ public abstract class WidgetEditorImplDefault extends Composite implements Widge
 		Window.alert("Default Setup Value");
 		/** default setup value ... no value set */
 	}
+	
+	@Override
+	public String getWidgetTypeLabel() {
+		return "Integer";
+	}
+	
+	@Override
+	public String getWidgetValueLabel() {
+		return getWidgetDef().getValue(); 
+	}
 }

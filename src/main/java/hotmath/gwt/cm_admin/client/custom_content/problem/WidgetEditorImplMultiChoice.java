@@ -352,4 +352,19 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 	public String getValueLabel() {
 		return null;
 	}
+
+	@Override
+	public String getWidgetTypeLabel() {
+		return "Multiple Choice";
+	}
+	
+	@Override
+	public String getWidgetValueLabel() {
+		String choiceData = getWidgetDef().getValue();
+		if (choiceData == null) {
+			choiceData = "";
+		}
+		String c[] = choiceData.split("\\|");
+		return "1 of " + (c.length-1); 
+	}
 }

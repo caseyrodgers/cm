@@ -98,4 +98,23 @@ public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEd
     	return null;
     }
 
+    @Override
+    public String getWidgetTypeLabel() {
+    	return "Ordered Pair";
+    }
+    
+    @Override
+    public String getWidgetValueLabel() {
+        String vals = widgetDef.getValue();
+        String x="";
+        String y="";
+        if(vals != null) {
+            String p[] = vals.split("\\|");
+            if(p.length == 2) {
+                x = p[0];
+                y = p[1];
+            }
+        }
+        return x + ", " + y;
+    }
 }

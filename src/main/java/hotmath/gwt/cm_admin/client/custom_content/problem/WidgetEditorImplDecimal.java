@@ -58,4 +58,14 @@ public class WidgetEditorImplDecimal extends WidgetEditorImplDefault {
     	return description;
     }
     
+    @Override
+    public String getWidgetTypeLabel() {
+    	return "Decimal";
+    }
+    
+    @Override
+    public String getWidgetValueLabel() {
+    	return getWidgetDef().getValue();
+    }
+    
 }

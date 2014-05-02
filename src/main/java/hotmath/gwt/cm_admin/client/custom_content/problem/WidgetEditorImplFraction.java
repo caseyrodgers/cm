@@ -48,6 +48,23 @@ public class WidgetEditorImplFraction extends WidgetEditorImplDefault {
 	protected String getWidgetType() {
 		return "number_simple_fraction";
 	}
+	
+	
+	@Override
+	public String getWidgetTypeLabel() {
+		return "Fraction";
+	}
+	
+	@Override
+	public String getWidgetValueLabel() {
+		String value = getWidgetDef().getValue();
+		String p[] = value != null ? value.split("/") : new String[1];
+		String n = p[0];
+		String d = p.length > 1 ? p[1] : "";
+		
+		return n + "/" + d;
+	}
+
 
 	@Override
 	public String checkValid() {

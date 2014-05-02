@@ -2,10 +2,10 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditor.EditorCallback;
 import hotmath.gwt.cm_core.client.CmGwtTestUi;
+import hotmath.gwt.cm_core.client.JSOModel;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
+import hotmath.gwt.cm_core.client.model.WidgetDefModel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
-import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
@@ -15,12 +15,10 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction.SaveType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
-import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.ui.MyTextButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
@@ -32,12 +30,14 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
@@ -333,8 +333,9 @@ public class ProblemDesigner extends Composite {
        //
        $wnd.$('#problem_statement').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Edit Problem</button></div>");
     
-       $wnd.$('#hm_flash_widget').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Edit Input</button></div>");
+       // $wnd.$('#hm_flash_widget').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Edit Input</button></div>");
        
+       $wnd.$('#hm_flash_widget').html("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Edit Input</button></div><div id='widget_info'></div>");
        
        $wnd.$('.widget-not-used').replaceWith('<p>Input Type: whiteboard</p>');
        
@@ -405,11 +406,43 @@ public class ProblemDesigner extends Composite {
             jsni_SetupStepEditHooks(solutionMeta.getSteps().size()==0);
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                 @Override
-                native public void execute() /*-{
-                    if($wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue) {
-                        $wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue();
+                public void execute() {
+                	String widgetJson = TutorWrapperPanel.jsni_getWidgetJson();
+                    JSOModel model = JSOModel.fromJson(widgetJson);
+                    WidgetDefModel widgetDef=null;
+                    if(model != null) {
+                    	widgetDef = new WidgetDefModel(model);
                     }
-                }-*/;
+                    else {
+                    	widgetDef = new WidgetDefModel();
+                    	widgetDef.setType("");
+                    }
+                    try {
+                    	WidgetEditor wid = WidgetEditorFactory.createEditorFor(widgetDef);
+                    	
+                    	Element widgetInfo = DOM.getElementById("widget_info");
+                    	if(widgetInfo == null) {
+                    		CmMessageBox.showAlert("Widget Info div not found");
+                    		return;
+                    	}
+
+                    	/** Create human reading label identifing input type and value */
+                    	String html = "<b>Input Type</b>: " + wid.getWidgetTypeLabel();
+                    	
+                    	html += wid.getWidgetValueLabel() != null?"<br/><b>Correct Value</b>: " + wid.getWidgetValueLabel():"";
+                    	widgetInfo.setInnerHTML(html);
+                    }
+                    catch(Exception e) {
+                    	e.printStackTrace();
+                    }
+                }
+                
+                
+//                native public void execute() /*-{
+//                    if($wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue) {
+//                        // $wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue();
+//                    }
+//                }-*/;
             });
         }
 

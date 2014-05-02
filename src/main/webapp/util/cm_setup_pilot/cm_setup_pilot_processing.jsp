@@ -16,8 +16,9 @@ Integer aid=null;
 if(te != null) {
     Boolean showWorkRequired = SbUtilities.getBoolean(request.getParameter("show_work_required"));
     Integer maxStudentCount = SbUtilities.getInt(request.getParameter("max_student_count"));
+    boolean isPilot=SbUtilities.getBoolean(request.getParameter("is_college"));
     
-    aid=new CmPilotCreate(_subscriberId,false, 0, showWorkRequired, maxStudentCount,null).getAid();
+    aid=new CmPilotCreate(_subscriberId,false, 0, showWorkRequired, maxStudentCount,null, isPilot).getAid();
 }
 else {
     throw new Exception("Pilot configuration information was not found");

@@ -61,4 +61,14 @@ public class WidgetEditorImplInequality extends SimplePanel implements WidgetEdi
     public String getValueLabel() {
     	return "Correct Value";
     }
+
+    @Override
+    public String getWidgetValueLabel() {
+    	return "Inequality";
+    }
+    
+    @Override
+    public String getWidgetTypeLabel() {
+    	return getWidgetDef().getValue();
+    }
 }

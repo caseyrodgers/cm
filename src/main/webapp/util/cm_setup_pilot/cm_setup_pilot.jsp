@@ -51,6 +51,10 @@ if(_subscriberId == null)
 					Max Number of Students
 					<input id="max_student_count" name="max_student_count" type="text" value="1000" /> 
 				</label>
+				<label for="is_college"> 
+                    Is College
+                 <input type='checkbox' id="max_student_count" name="is_college" value="1" /> 
+                </label>
    			    <input type='submit' value='Create Pilot'/>
 			</fieldset> 
 		</form> 

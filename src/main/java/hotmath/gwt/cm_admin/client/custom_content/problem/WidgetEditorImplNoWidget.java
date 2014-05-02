@@ -45,4 +45,14 @@ public class WidgetEditorImplNoWidget extends WidgetEditorImplDefault {
     public void setupValue() {
     	/** empty */
     }
+    
+    @Override
+    public String getWidgetTypeLabel() {
+    	return "Whiteboard";
+    }
+    
+    @Override
+    public String getWidgetValueLabel() {
+    	return null;
+    }
 }

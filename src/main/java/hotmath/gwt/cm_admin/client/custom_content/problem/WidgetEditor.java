@@ -25,4 +25,13 @@ public interface WidgetEditor extends IsWidget {
 	 *  
 	 */
 	void setupValue();
+	
+	
+	/** return HTML used to simply identify the widget
+	 *  and its value.... not the actual widget.
+	 * 
+	 * @return
+	 */
+	String getWidgetTypeLabel();
+	String getWidgetValueLabel();
 }
