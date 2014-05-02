@@ -3,11 +3,14 @@ package hotmath.gwt.cm_tools.client.model;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 public class StudentActivityModel  implements Response {
-	
+
+	private static final long serialVersionUID = -7576878140605684669L;
+
 	static int __idKey;
 	
 	int id;
 	String activity;
+	boolean isAssignment;
 	boolean isCustomQuiz;
 	boolean isPassing;
 	boolean isQuiz;
@@ -24,7 +27,7 @@ public class StudentActivityModel  implements Response {
 	String start;
 	String stop;
 	int testId;
-	int timeOnTask;
+	int activeTime;
 	String useDate;
 	boolean isArchived;
 	String isArchivedStyle;
@@ -46,7 +49,15 @@ public class StudentActivityModel  implements Response {
         this.activity = activity;
     }
 
-    public boolean isCustomQuiz() {
+    public boolean isAssignment() {
+		return isAssignment;
+	}
+
+	public void setAssignment(boolean isAssignment) {
+		this.isAssignment = isAssignment;
+	}
+
+	public boolean isCustomQuiz() {
         return isCustomQuiz;
     }
 
@@ -171,12 +182,12 @@ public class StudentActivityModel  implements Response {
         this.testId = testId;
     }
 
-    public int getTimeOnTask() {
-        return timeOnTask;
+    public int getActiveTime() {
+        return activeTime;
     }
 
-    public void setTimeOnTask(int timeOnTask) {
-        this.timeOnTask = timeOnTask;
+    public void setActiveTime(int timeOnTask) {
+        this.activeTime = timeOnTask;
     }
 
     public String getUseDate() {
