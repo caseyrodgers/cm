@@ -458,7 +458,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         int sectionCount = rs.getInt("segment_count");
         m.setSectionCount(sectionCount);
         String progId = rs.getString("prog_id");
-        m.setTimeOnTask(rs.getInt("time_on_task"));
+        m.setActiveTime(rs.getInt("time_on_task"));
         m.setProgramType(rs.getString("prog_type"));
         m.setArchived(rs.getBoolean("is_archived"));
 
@@ -522,7 +522,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             m.setLessonsCompleted(lessonsCompleted);
             lessonsCompletedMap.put(runId, lessonsCompleted);
 
-            m.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
+            m.setActiveTime(rs.getInt("time_on_task") * lessonsViewed);
 
             if (lessonsCompleted >= 0) {
                 if (totalSessions < 1) {
@@ -565,7 +565,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         	 */
         	StudentActivityModel sam = findReviewForTimeOnTask(tot, samList);
         	if (sam != null) {
-        		sam.setTimeOnTask(sam.getTimeOnTask() + tot.timeOnTask);
+        		sam.setActiveTime(sam.getActiveTime() + tot.timeOnTask);
         		continue;
         	}
 
@@ -577,7 +577,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 sam = samList.get(index);
 			    StudentActivityModel samCopy = copyStudentActivityModel(sam);
 			    samCopy.setUseDate(tot.date);
-        		samCopy.setTimeOnTask(tot.timeOnTask);
+        		samCopy.setActiveTime(tot.timeOnTask);
 
         		/*
         		 * if "result" is empty, attempt to fix
@@ -599,7 +599,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 sam = samList.get(index);
 			    StudentActivityModel samCopy = copyStudentActivityModel(sam);
 			    samCopy.setUseDate(tot.date);
-			    samCopy.setTimeOnTask(tot.timeOnTask);
+			    samCopy.setActiveTime(tot.timeOnTask);
 
         		if (samCopy.getResult().trim().length() < 1) {
         			fixLessonStatus(samList, sam, samCopy, index);
@@ -654,7 +654,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			int foundIndex, TimeOnTask tot, StudentActivityModel samToCopy) {
 		
 		StudentActivityModel samToAdd = copyStudentActivityModel(samToCopy);
-		samToAdd.setTimeOnTask(tot.timeOnTask);
+		samToAdd.setActiveTime(tot.timeOnTask);
 		samToAdd.setUseDate(tot.date);
 		samList.add(++foundIndex, samToAdd);
 		if (LOGGER.isDebugEnabled())
