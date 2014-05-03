@@ -38,11 +38,13 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentU
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentLessonDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemExtended;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
+import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
@@ -51,8 +53,6 @@ import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.sql.SqlUtilities;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -66,10 +66,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -79,11 +75,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import sb.util.SbUtilities;
 
@@ -900,35 +891,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         if (__logger.isDebugEnabled())
             __logger.debug("in getAssignmentWorkForStudent(" + userId + ")");
 
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENT_WORK_FOR_STUDENT");
         String stuName = null;
 
-        String dates[] = QueryHelper.getDateTimeRange(fromDate, toDate);
-
-        List<StudentProblemDto> problemStatuses = new ArrayList<StudentProblemDto>();
         final Map<Integer, Boolean> asgGradedMap = new HashMap<Integer, Boolean>();
-        try {
-            problemStatuses = getJdbcTemplate().query(sql, new Object[] { dates[0], dates[1], userId, userId, userId }, new RowMapper<StudentProblemDto>() {
-                @Override
-                public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    StudentProblemDto prob = new StudentProblemDto();
-                    int uid = rs.getInt("uid");
-                    prob.setUid(uid);
-
-                    LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
-                    ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), lesson, rs.getString("label"), rs
-                            .getString("pid"), rs.getInt("assign_key"));
-                    prob.setProblem(probDto);
-                    prob.setStatus(rs.getString("status"));
-                    prob.setGraded(rs.getInt("is_graded") > 0);
-                    asgGradedMap.put(rs.getInt("assign_key"), rs.getInt("assignment_graded") > 0);
-                    return prob;
-                }
-            });
-        } catch (Exception e) {
-            __logger.error("Failed to load problem statuses", e);
-            throw e;
-        }
+        List<StudentProblemExtended> problemStatuses = getProblemStatusesForStudent(userId, fromDate, toDate, asgGradedMap);
 
         /**
          * create student/assignments for all assignments
@@ -1114,6 +1080,49 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         assignmentInfo.setErrors(errorCount);
         assignmentInfo.setMessage(messages);
         return assignmentInfo;
+    }
+
+    public List<StudentActivityModel> getAssignmentActivityForStudent(int userId) throws Exception {
+        return getAssignmentActivityForStudent(userId, null, null);
+    }
+
+    public List<StudentActivityModel> getAssignmentActivityForStudent(int userId, Date fromDate, Date toDate) throws Exception {
+        final Map<Integer, Boolean> asgGradedMap = new HashMap<Integer, Boolean>();
+        List<StudentProblemExtended> problemStatuses = getProblemStatusesForStudent(userId, fromDate, toDate, asgGradedMap);
+
+        return null;
+    }
+
+    private List<StudentProblemExtended> getProblemStatusesForStudent(int userId, Date fromDate, Date toDate,
+    		final Map<Integer, Boolean> asgGradedMap) throws Exception {
+        List<StudentProblemExtended> problemStatuses = new ArrayList<StudentProblemExtended>();
+        String dates[] = QueryHelper.getDateTimeRange(fromDate, toDate);
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENT_WORK_FOR_STUDENT");
+
+        try {
+            problemStatuses = getJdbcTemplate().query(sql, new Object[] { dates[0], dates[1], userId, userId, userId }, new RowMapper<StudentProblemExtended>() {
+                @Override
+                public StudentProblemExtended mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    StudentProblemExtended prob = new StudentProblemExtended();
+                    int uid = rs.getInt("uid");
+                    prob.setUid(uid);
+
+                    LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
+                    ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), lesson, rs.getString("label"), rs
+                            .getString("pid"), rs.getInt("assign_key"));
+                    prob.setProblem(probDto);
+                    prob.setStatus(rs.getString("status"));
+                    prob.setGraded(rs.getInt("is_graded") > 0);
+                    prob.setCreateDate(rs.getDate("update_datetime"));
+                    asgGradedMap.put(rs.getInt("assign_key"), rs.getInt("assignment_graded") > 0);
+                    return prob;
+                }
+            });
+        } catch (Exception e) {
+            __logger.error("Failed to load problem statuses", e);
+            throw e;
+        }
+        return problemStatuses;
     }
 
     private void unassignStudentsFromAssignment(final int assignKey) {
