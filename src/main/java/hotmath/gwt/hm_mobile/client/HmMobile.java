@@ -205,7 +205,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             
             __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
             
-            MobileAdFramework.getInstance();
+            // MobileAdFramework.getInstance();
         }
         catch(Exception e) {
             e.printStackTrace();
