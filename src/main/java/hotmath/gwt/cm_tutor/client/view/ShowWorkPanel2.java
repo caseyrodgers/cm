@@ -24,6 +24,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -314,7 +315,16 @@ public class ShowWorkPanel2 extends Composite {
      *
      * @param commands
      */
-    public void loadWhiteboard(List<WhiteboardCommand> commands) {
+    public void loadWhiteboard(final List<WhiteboardCommand> commands) {
+    	new Timer() {
+    		@Override
+    		public void run() {
+    			loadWhiteboard_Aux(commands);
+    		}
+    	}.schedule(0);
+    }
+    
+    public void loadWhiteboard_Aux(List<WhiteboardCommand> commands) {
         if(commands == null) {
             _lastCommands = new ArrayList<WhiteboardCommand>();
             jsni_clearWhiteboard();

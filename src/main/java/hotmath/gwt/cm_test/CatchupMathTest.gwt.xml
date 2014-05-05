@@ -3,5 +3,6 @@
     <inherits name="com.extjs.gxt.ui.GXT"/>
     <inherits name="hotmath.gwt.cm_rpc.CmRpc"/>
     <inherits name="hotmath.gwt.cm_tutor.CmTutor"/>
+    
     <entry-point class='hotmath.gwt.cm_test.client.CatchupMathTest'/>
 </module>
