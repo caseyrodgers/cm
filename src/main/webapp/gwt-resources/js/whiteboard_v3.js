@@ -6120,7 +6120,7 @@ source: https://gist.github.com/754454
                 //wb.addGraphModule(obj.config.gtype, undefined, undefined, false, obj);
                 updateGraphModule(_obj.uid, _obj.config, !true, null, true)
             }
-            updateCanvas();
+            ////updateCanvas();
             if (obj.groupid !== undefined) {
                 gidSeed = obj.groupid
                 gidSeed++
@@ -6407,7 +6407,7 @@ source: https://gist.github.com/754454
             graphicDataStore.push(cloneObject(obj));
         }
         if (doUpdateCanvas) {
-            updateCanvas();
+           //// updateCanvas();
         }
         canvas_drawing_width = rect.xmax > canvas_drawing_width ? rect.xmax : canvas_drawing_width;
         canvas_drawing_height = rect.ymax > canvas_drawing_height ? rect.ymax : canvas_drawing_height;
@@ -6691,7 +6691,10 @@ source: https://gist.github.com/754454
 
     wb.updateWhiteboard = function (cmdArray) {
         gwt_updatewhiteboard(cmdArray);
-        updateCanvas()
+        //updateCanvas()
+    }
+    wb.whiteboardLoadComplete=function(){
+    updateCanvas();
     }
     wb.renderFromStorage = function () {
         if (supports_localStorage()) {
