@@ -68,9 +68,11 @@ public class CKEditorPanel extends FlowPanel {
     }
     
     native private void jsni_resizeEditor(String id, int height) /*-{
-    if(true) { return; }
         var o = $wnd.CKEDITOR.instances[id];
-        if(o) {
+        if(!o) {
+            alert('could not find CKEDITOR instance ' + id);
+        }
+        else {
             o.resize( '100%', height, false );
         }
     }-*/;

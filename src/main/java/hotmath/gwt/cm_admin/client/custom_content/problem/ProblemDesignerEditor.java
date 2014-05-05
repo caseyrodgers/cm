@@ -32,6 +32,8 @@ import com.sencha.gxt.widget.core.client.event.BeforeHideEvent.BeforeHideHandler
 import com.sencha.gxt.widget.core.client.event.MaximizeEvent;
 import com.sencha.gxt.widget.core.client.event.MaximizeEvent.MaximizeHandler;
 import com.sencha.gxt.widget.core.client.event.ResizeEndEvent;
+import com.sencha.gxt.widget.core.client.event.RestoreEvent;
+import com.sencha.gxt.widget.core.client.event.RestoreEvent.RestoreHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -107,17 +109,30 @@ public class ProblemDesignerEditor extends GWindow {
 		addMaximizeHandler(new MaximizeHandler() {
 			@Override
 			public void onMaximize(MaximizeEvent event) {
-				resizeWhiteboard();
+				resizeWidgetAndWhiteboard();
+			}
+		});
+
+		addRestoreHandler(new RestoreHandler() {
+			@Override
+			public void onRestore(RestoreEvent event) {
+				resizeWidgetAndWhiteboard();
 			}
 		});
 	}
-	
+
+	private void resizeWidgetAndWhiteboard() {
+		setEditorHeight();
+		resizeWhiteboard();
+	}
+
 	private void destroyEditor() {
 		_ckEditorPanel.destroyEditor();
 		_ckEditorPanel = null;
 	}
 
-	public void show(String editorText,	String whiteboardId, EditorCallback callbackIn) {
+	public void show(String editorText, String whiteboardId,
+			EditorCallback callbackIn) {
 		this.callback = callbackIn;
 		this.editorText = editorText;
 		this.whiteboardId = whiteboardId;
@@ -131,7 +146,7 @@ public class ProblemDesignerEditor extends GWindow {
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
 				public void execute() {
-					if(_showWorkPanel != null) {
+					if (_showWorkPanel != null) {
 						_showWorkPanel.resizeWhiteboard(_lastWbheight);
 						_ckEditorPanel.showClickToEdit(false);
 					}
@@ -143,7 +158,7 @@ public class ProblemDesignerEditor extends GWindow {
 	@Override
 	protected void onEndResize(ResizeEndEvent re) {
 		super.onEndResize(re);
-		resizeWhiteboard();
+		resizeWidgetAndWhiteboard();
 	}
 
 	int _lastWbheight;
@@ -152,13 +167,12 @@ public class ProblemDesignerEditor extends GWindow {
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				if(_showWorkPanel != null) {
+				if (_showWorkPanel != null) {
 					_lastWbheight = _wbWrapper.getOffsetHeight();
 					_showWorkPanel.resizeWhiteboard(_lastWbheight);
 				}
 			}
 		});
-
 	}
 
 	protected void doSave() {
@@ -178,7 +192,7 @@ public class ProblemDesignerEditor extends GWindow {
 
 	static int _cnt;
 
-	private void showWhiteboardEditor(final boolean yesNo) {
+	private void showWhiteboardEditor(final boolean showWHiteboard) {
 
 		String textValue = "";
 		if (_ckEditorPanel != null) {
@@ -196,13 +210,12 @@ public class ProblemDesignerEditor extends GWindow {
 						setEditorHeight();
 					}
 				});
-		
 
 		if (_showWorkPanel != null) {
 			_showWorkPanel = null;
 		}
-		
-		if (yesNo) {
+
+		if (showWHiteboard) {
 
 			_showWorkPanel = new ShowWorkPanel2(whiteboardCallBack, true, true,
 					"wb_ps-1", 280, getWidget());
@@ -212,27 +225,30 @@ public class ProblemDesignerEditor extends GWindow {
 			_wbWrapper = new SimplePanel();
 			_wbWrapper.setWidget(_showWorkPanel);
 			bCon.setCenterWidget(_wbWrapper);
-			bCon.setNorthWidget(_ckEditorPanel, new BorderLayoutData(175));
+
+			_editorPanel = new SimplePanel();
+			_editorPanel.setWidget(_ckEditorPanel);
+			bCon.setNorthWidget(_editorPanel, new BorderLayoutData(.50));
 			_main.setCenterWidget(bCon);
 		} else {
-			SimplePanel sp = new SimplePanel();
-			sp.setWidget(_ckEditorPanel);
-			_main.setCenterWidget(sp);
+			_editorPanel = new SimplePanel();
+			_editorPanel.setWidget(_ckEditorPanel);
+			_main.setCenterWidget(_editorPanel);
 		}
-		_showWhiteboardToggle.setValue(yesNo);
+		_showWhiteboardToggle.setValue(showWHiteboard);
 		_main.forceLayout();
-		
-		
-		
+
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
 				/** optimize the window */
-				if(!yesNo) {
-					setHeight(WIN_HEIGHT_NO_WB);
-				}
-				else {
-					setHeight(WIN_HEIGHT_WITH_WB);
+				if (!showWHiteboard) {
+					// setHeight(WIN_HEIGHT_NO_WB);
+				} else {
+					// set min height for whiteboard
+					if (getElement().getHeight(true) < WIN_HEIGHT_WITH_WB) {
+						setHeight(WIN_HEIGHT_WITH_WB);
+					}
 				}
 				forceLayout();
 			}
@@ -240,6 +256,7 @@ public class ProblemDesignerEditor extends GWindow {
 	}
 
 	SimplePanel _wbWrapper;
+	SimplePanel _editorPanel;
 
 	final ShowWorkPanel2Callback whiteboardCallBack = new ShowWorkPanelCallbackDefault() {
 		@Override
@@ -248,6 +265,7 @@ public class ProblemDesignerEditor extends GWindow {
 
 		@Override
 		public void showWorkIsReady(ShowWorkPanel2 showWork) {
+			resizeWhiteboard();
 			if (areaData.wbJson != null) {
 				showWork.loadWhiteboardFromJson(areaData.wbJson);
 			}
@@ -257,10 +275,10 @@ public class ProblemDesignerEditor extends GWindow {
 		public Action<? extends Response> createWhiteboardSaveAction(
 				String pid, CommandType commandType, String data) {
 			_countChanges++;
-			
+
 			/** disable on any whitebaord movement */
 			_ckEditorPanel.showClickToEdit(true);
-			
+
 			return null;
 		}
 
@@ -295,8 +313,13 @@ public class ProblemDesignerEditor extends GWindow {
 	private ShowWorkPanel2 _showWorkPanel;
 
 	private void setEditorHeight() {
-		// int h = _showWorkPanel.getParent().getElement().getClientHeight();
-		// //_showWorkPanel.resizeWhiteboard();
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				int height = _editorPanel.getOffsetHeight();
+				_ckEditorPanel.resizeEditor(height);				
+			}
+		});
 	}
 
 	native private String jsni_setProblemStatementHtml(String text) /*-{
