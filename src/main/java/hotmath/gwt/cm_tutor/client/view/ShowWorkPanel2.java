@@ -315,18 +315,8 @@ public class ShowWorkPanel2 extends Composite {
      *
      * @param commands
      */
-    public void loadWhiteboard(final List<WhiteboardCommand> commands) {
-    	Log.debug("Starting background whiteboard load thread...");
-    	new Timer() {
-    		@Override
-    		public void run() {
-    			loadWhiteboard_Aux(commands);
-    		}
-    	}.schedule(0);
-    	Log.debug("Releasing back ...");
-    }
-    
-    public void loadWhiteboard_Aux(List<WhiteboardCommand> commands) {
+
+    public void loadWhiteboard(List<WhiteboardCommand> commands) {
         if(commands == null) {
             _lastCommands = new ArrayList<WhiteboardCommand>();
             jsni_clearWhiteboard();
