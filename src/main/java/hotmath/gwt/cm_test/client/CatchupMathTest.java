@@ -18,6 +18,8 @@ import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefa
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -204,7 +206,13 @@ public class CatchupMathTest implements EntryPoint {
 
             @Override
             public void showWorkIsReady(ShowWorkPanel2 showWork) {
-                _showWork.loadWhiteboard(result);
+            	Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+					
+					@Override
+					public void execute() {
+		                _showWork.loadWhiteboard(result);
+					}
+				});
 
                 logMessage(getWhiteboardSize() + "\t" + message);
             }

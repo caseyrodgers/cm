@@ -321,6 +321,8 @@ public class ShowWorkPanel2 extends Composite {
             return;
         }
         
+        long _whiteboardLoadTime=System.currentTimeMillis();
+        
         _lastCommands = commands;
         Log.debug("Loading whiteboard with " + commands.size() + " commands");
         try {
@@ -349,6 +351,8 @@ public class ShowWorkPanel2 extends Composite {
                 Log.error("Error processing whiteboard command: " + e.getMessage(), e);
             }
         }
+        
+        Log.debug("Whiteboard load time: " + (System.currentTimeMillis() - _whiteboardLoadTime));
     }
 
     native private String jsni_getWhiteboardCommandId(String data) /*-{
