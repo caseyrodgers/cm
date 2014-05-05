@@ -354,8 +354,19 @@ public class ShowWorkPanel2 extends Composite {
             }
         }
         
+        jsni_whiteboardComplete(this.whiteboardId);
+        
         Log.debug("Whiteboard load time: " + (System.currentTimeMillis() - _whiteboardLoadTime));
     }
+    
+    native private void jsni_whiteboardComplete(String whiteboardId) /*-{
+        var theWhiteboard  = $wnd._cmWhiteboards[whiteboardId];
+        if(!theWhiteboard) {
+            alert('whiteboard ' + whiteboardId + ' cannot be found in jsni_whiteboardComplete');
+            return;
+        }
+        theWhiteboard.jsni_whiteboardComplete();
+    }-*/;
 
     native private String jsni_getWhiteboardCommandId(String data) /*-{
         return $wnd._debugGetCommandInfoLabel(data);

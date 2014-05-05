@@ -13,30 +13,23 @@ CKEDITOR.editorConfig = function( config ) {
     config.extraPlugins += (config.extraPlugins.length == 0 ? '' : ',') + 'ckeditor_wiris';
 
 
-//	// The toolbar groups arrangement, optimized for two toolbar rows.
-//	config.toolbarGroups = [
-//		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-//		{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
-//		{ name: 'links' },
-//		{ name: 'insert' },
-//		{ name: 'forms' },
-//		{ name: 'tools' },
-//		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
-//		{ name: 'others' },
-//		'/',
-//		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-//		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
-//		{ name: 'styles' },
-//		{ name: 'colors' },
-//		{ name: 'about' }
-//	];
-    
-    
-    // The toolbar groups arrangement, optimized for two toolbar rows.
-    config.toolbarGroups = [
-        { name: 'basicstyles'}
-    ];
-
+	// The toolbar groups arrangement, optimized for two toolbar rows.
+	config.toolbarGroups = [
+		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
+		{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
+		{ name: 'links' },
+		{ name: 'insert' },
+		{ name: 'forms' },
+		{ name: 'tools' },
+		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
+		{ name: 'others' },
+		'/',
+		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+		{ name: 'styles' },
+		{ name: 'colors' },
+		{ name: 'about' }
+	];
 
 	if(!CKEDITOR.stylesSet.get('my_styles')) {
 		CKEDITOR.stylesSet.add( 'my_styles', [
@@ -53,8 +46,11 @@ CKEDITOR.editorConfig = function( config ) {
 	
 	
 	config.toolbarGroups = [
-                            { name: 'basicstyles'},
+	                		{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
+	                		{ name: 'insert' },
 	                		{ name: 'tools' },
+	                		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
+	                		{ name: 'others' },
 	                		{ name: 'styles' },
 	                		{ name: 'colors' }
 	                	];
