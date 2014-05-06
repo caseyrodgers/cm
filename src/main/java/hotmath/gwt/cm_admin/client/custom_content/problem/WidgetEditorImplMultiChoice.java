@@ -17,6 +17,9 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.dnd.core.client.DND.Feedback;
+import com.sencha.gxt.dnd.core.client.GridDragSource;
+import com.sencha.gxt.dnd.core.client.GridDropTarget;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
@@ -61,8 +64,6 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 		cols.add(nameCol);
 		cols.add(correctCol);
 
-		
-
 		store.setAutoCommit(true);
 
 		ColumnModel<MultiValue> colModel = new ColumnModel<MultiValue>(cols);
@@ -103,6 +104,11 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 		eg.getView().setAutoFill(true);
 		eg.getView().setAutoExpandColumn(cols.get(0));
 		setWidget(editor.getEditableGrid());
+
+		new GridDragSource(_grid);
+		GridDropTarget dt = new GridDropTarget(_grid);
+		dt.setFeedback(Feedback.BOTH);
+		dt.setAllowSelfAsSource(true);
 
 		addTool(new TextButton("Add Choice", new SelectHandler() {
 
@@ -148,9 +154,8 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 			if (correctIndex < _grid.getStore().size()) {
 				_grid.getStore().get(correctIndex).setCorrect(true);
 			}
-		}		
+		}
 	}
-	
 
 	protected void editSelectedChoice() {
 		final MultiValue sel = _grid.getSelectionModel().getSelectedItem();
@@ -282,24 +287,24 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 		}
 
 		public String getValueDecoded() {
-			
+
 			Element elem = DOM.createElement("div");
 			String value = CmGwtUtils.jsni_decodeBase64(this.value);
 			elem.setInnerHTML(value);
-			
+
 			String t = elem.getInnerText();
 			int s = t.indexOf("[{");
-			if(s > -1) {
+			if (s > -1) {
 				int e = t.indexOf("}]");
-				if(e > -1) {
+				if (e > -1) {
 					t = t.substring(0, s) + " [Whiteboard]";
 				}
 			}
-			
-			if(value.toLowerCase().indexOf("wiris") > -1) {
+
+			if (value.toLowerCase().indexOf("wiris") > -1) {
 				t = "[Equation] " + t;
 			}
-			
+
 			return t;
 		}
 	}
@@ -327,17 +332,17 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 
 	@Override
 	public String checkValid() {
-		if(_grid.getStore().getAll().size() < 2) {
+		if (_grid.getStore().getAll().size() < 2) {
 			return "There must be at least two choices.";
 		}
-		
-		int  correctAnswers=0;
-		for(MultiValue mv: _grid.getStore().getAll()) {
-			if(mv.isCorrect) {
+
+		int correctAnswers = 0;
+		for (MultiValue mv : _grid.getStore().getAll()) {
+			if (mv.isCorrect) {
 				correctAnswers++;
 			}
 		}
-		if(correctAnswers != 1) {
+		if (correctAnswers != 1) {
 			return "There must be exactly one correct answer.";
 		}
 		return null;
@@ -347,7 +352,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 	public String getDescription() {
 		return "Select from a set of choices.";
 	}
-	
+
 	@Override
 	public String getValueLabel() {
 		return null;
@@ -357,7 +362,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 	public String getWidgetTypeLabel() {
 		return "Multiple Choice";
 	}
-	
+
 	@Override
 	public String getWidgetValueLabel() {
 		String choiceData = getWidgetDef().getValue();
@@ -365,6 +370,6 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 			choiceData = "";
 		}
 		String c[] = choiceData.split("\\|");
-		return "1 of " + (c.length-1); 
+		return "1 of " + (c.length - 1);
 	}
 }
