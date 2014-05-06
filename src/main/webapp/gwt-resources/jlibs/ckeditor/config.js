@@ -45,22 +45,22 @@ CKEDITOR.editorConfig = function( config ) {
 	config.stylesSet = 'my_styles';
 	config.fontSize_sizes = '16/16px;24/24px;48/48px;';
 	
-    config.toolbar = 'Easy';
+//    config.toolbar = 'Easy';
+//
+//            config.toolbar_Easy =
+//	          [
+//	              ['Styles','Format','FontSize','Bold','Italic','Underline'], ['Table'],
+//	              ['Subscript', 'Superscript', 'TextColor'],['Others']
+//	          ];
 
-            config.toolbar_Easy =
-	          [
-	              ['Styles','Format','FontSize','Bold','Italic','Underline'], ['Table'],
-	              ['Subscript', 'Superscript', 'TextColor'],['Other']
-	          ];
-
 	
 	
 	
-//	config.toolbarGroups = [
-//                            {name: 'basicstyles'},
-//                            {name: 'styles'},
-//	                		{name: 'others' }
-//	                	];
+	config.toolbarGroups = [
+                            {name: 'basicstyles'},
+                            {name: 'styles'},
+	                		{name: 'others' }
+	                	];
 
 
 	
