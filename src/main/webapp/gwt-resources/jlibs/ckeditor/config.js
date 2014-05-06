@@ -10,26 +10,26 @@ CKEDITOR.editorConfig = function( config ) {
 	
 	
 	// Add WIRIS to the plugin list
-    config.extraPlugins += (config.extraPlugins.length == 0 ? '' : ',') + 'ckeditor_wiris';
+    config.extraPlugins += (config.extraPlugins.length == 0 ? '' : ',') + 'ckeditor_wiris,font';
 
 
-	// The toolbar groups arrangement, optimized for two toolbar rows.
-	config.toolbarGroups = [
-		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-		{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
-		{ name: 'links' },
-		{ name: 'insert' },
-		{ name: 'forms' },
-		{ name: 'tools' },
-		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
-		{ name: 'others' },
-		'/',
-		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
-		{ name: 'styles' },
-		{ name: 'colors' },
-		{ name: 'about' }
-	];
+//	// The toolbar groups arrangement, optimized for two toolbar rows.
+//	config.toolbarGroups = [
+//		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
+//		{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
+//		{ name: 'links' },
+//		{ name: 'insert' },
+//		{ name: 'forms' },
+//		{ name: 'tools' },
+//		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
+//		{ name: 'others' },
+//		'/',
+//		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+//		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+//		{ name: 'styles' },
+//		{ name: 'colors' },
+//		{ name: 'about' }
+//	];
 
 	if(!CKEDITOR.stylesSet.get('my_styles')) {
 		CKEDITOR.stylesSet.add( 'my_styles', [
@@ -43,18 +43,52 @@ CKEDITOR.editorConfig = function( config ) {
 		                                  ]);
 	}
 	config.stylesSet = 'my_styles';
+	config.fontSize_sizes = '16/16px;24/24px;48/48px;';
 	
-	
-	config.toolbarGroups = [
-	                		{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
-	                		{ name: 'insert' },
-	                		{ name: 'tools' },
-	                		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
-	                		{ name: 'others' },
-	                		{ name: 'styles' },
-	                		{ name: 'colors' }
-	                	];
+    config.toolbar = 'Easy';
 
+            config.toolbar_Easy =
+	          [
+	              ['Styles','Format','FontSize','Bold','Italic','Underline'], ['Table'],
+	              ['Subscript', 'Superscript', 'TextColor'],['Other']
+	          ];
+
+	
+	
+	
+//	config.toolbarGroups = [
+//                            {name: 'basicstyles'},
+//                            {name: 'styles'},
+//	                		{name: 'others' }
+//	                	];
+
+
+	
+	// config.toolbar_Basic = [
+//  [ 'Source', '-', 'Bold', 'Italic',  ]
+//];
+//config.toolbar = 'Basic';
+
+
+	
+//	   config.toolbar = 'Easy';
+//
+//	      config.toolbar_Easy =
+//	        [
+//	            ['Source','-','Preview'],
+//	            ['Cut','Copy','Paste','PasteText','PasteFromWord',],
+//	            ['Undo','Redo','-','SelectAll','RemoveFormat'],
+//	            ['Styles','Format','FontSize'],['Maximize','-','About'],
+//	            ['Subscript', 'Superscript', 'TextColor'],
+//	            ['Bold','Italic','Underline','Strike'], ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
+//	            ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+//	            ['Link','Unlink','Anchor'],
+//	          /*   ['Image', 'Attachment', 'Flash', 'Embed'], */
+//	            ['Table','HorizontalRule','Smiley','SpecialChar','PageBreak']
+//	        ];
+	      
+	
+	
     config.removeButtons = 'Source';
     
     
