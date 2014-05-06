@@ -55,7 +55,7 @@ public class CKEditorPanel extends FlowPanel {
         var that = this;
         $wnd.CKEDITOR.replace( id,
             {
-                customConfig : '','height' : height
+                __customConfig : '','height' : height
            });                
         $wnd.CKEDITOR.instances[id].setData(text);
         $wnd.CKEDITOR.on("instanceReady", function(event) {
