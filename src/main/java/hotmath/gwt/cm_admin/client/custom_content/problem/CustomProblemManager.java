@@ -39,6 +39,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -112,6 +113,7 @@ public class CustomProblemManager extends GWindow {
                 showProblem(event.getSelectedItem());
             }
         });
+        _grid.getSelectionModel().setSelectionMode(SelectionMode.SIMPLE);
         _emptyPage = new DefaultGxtLoadingPanel("Click on a problem or create a new one");
         
         _main.setCenterWidget(_emptyPage);
