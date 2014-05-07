@@ -113,7 +113,7 @@ public class CustomProblemManager extends GWindow {
                 showProblem(event.getSelectedItem());
             }
         });
-        _grid.getSelectionModel().setSelectionMode(SelectionMode.SIMPLE);
+        _grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         _emptyPage = new DefaultGxtLoadingPanel("Click on a problem or create a new one");
         
         _main.setCenterWidget(_emptyPage);
