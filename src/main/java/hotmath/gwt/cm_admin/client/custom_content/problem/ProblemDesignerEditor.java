@@ -243,7 +243,7 @@ public class ProblemDesignerEditor extends GWindow {
 			public void execute() {
 				/** optimize the window */
 				if (!showWHiteboard) {
-					// setHeight(WIN_HEIGHT_NO_WB);
+					setHeight(WIN_HEIGHT_NO_WB);
 				} else {
 					// set min height for whiteboard
 					if (getElement().getHeight(true) < WIN_HEIGHT_WITH_WB) {

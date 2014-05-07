@@ -8,10 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -54,20 +58,25 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 		final ListStore<MultiValue> store = new ListStore<MultiValue>(
 				props.key());
 		List<ColumnConfig<MultiValue, ?>> cols = new ArrayList<ColumnConfig<MultiValue, ?>>();
-		ColumnConfig<MultiValue, String> nameCol = new ColumnConfig<MultiValue, String>(
-				props.valueDecoded(), 150, "Value");
-		ColumnConfig<MultiValue, Boolean> correctCol = new ColumnConfig<MultiValue, Boolean>(
-				props.correct(), 40, "Is Correct?");
-		correctCol.setToolTip(SafeHtmlUtils
-				.fromString("Which choice is the correct one?"));
+		ColumnConfig<MultiValue, String> valCol = new ColumnConfig<MultiValue, String>(props.valueDecoded(), 150, "Value");
+		valCol.setToolTip(SafeHtmlUtils.fromString("Use drag and drop to order the choices"));
+		ColumnConfig<MultiValue, Boolean> correctCol = new ColumnConfig<MultiValue, Boolean>(props.correct(), 40, "Is Correct?");
+		correctCol.setCell(new SimpleSafeHtmlCell<Boolean>(new AbstractSafeHtmlRenderer<Boolean>() {
+		        @Override
+		        public SafeHtml render(Boolean object) {
+		          return SafeHtmlUtils.fromString(object ? "True" : "False");
+		        }
+		      }));
+		correctCol.setToolTip(SafeHtmlUtils.fromString("Which choice is the correct one?"));
 
-		cols.add(nameCol);
+		cols.add(valCol);
 		cols.add(correctCol);
 
 		store.setAutoCommit(true);
 
 		ColumnModel<MultiValue> colModel = new ColumnModel<MultiValue>(cols);
 		_grid = new Grid<MultiValue>(store, colModel);
+		_grid.setHeight(130);
 		_grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		_grid.getView().setAutoExpandColumn(colModel.getColumn(0));
 		_grid.getView().setAutoFill(true);
@@ -78,8 +87,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 			}
 		});
 
-		GridEditing<MultiValue> editor = new GridInlineEditing<MultiValue>(
-				_grid);
+		GridEditing<MultiValue> editor = new GridInlineEditing<MultiValue>(_grid);
 		editor.addCompleteEditHandler(new CompleteEditHandler<MultiValue>() {
 			@Override
 			public void onCompleteEdit(CompleteEditEvent<MultiValue> event) {
@@ -105,6 +113,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 		eg.getView().setAutoExpandColumn(cols.get(0));
 		setWidget(editor.getEditableGrid());
 
+		/** enable drag and drop */
 		new GridDragSource(_grid);
 		GridDropTarget dt = new GridDropTarget(_grid);
 		dt.setFeedback(Feedback.BOTH);
@@ -350,7 +359,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 
 	@Override
 	public String getDescription() {
-		return "Select from a set of choices.";
+		return "Select from a set of choices.<br/><br/><br/><br/>Use drag-and-drop to order choices";
 	}
 
 	@Override
