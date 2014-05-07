@@ -184,12 +184,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
         title: 'Select/Move',
         classes: 'big_tool_button button_move',
         text: ""
-    }, {
+    }, /* {
         name: 'button_delete',
         title: 'Delete',
         classes: 'big_tool_button button_delete',
         text: "Delete"
-    }, {
+    }, */ {
         name: 'button_undo',
         title: 'Undo',
         classes: 'big_tool_button button_undo',
@@ -199,12 +199,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
         title: 'Navigator',
         classes: 'big_tool_button button_nav',
         text: ""
-    }, {
+    } */, {
         name: 'button_temp',
-        title: 'Templates',
+        title: 'Figures',
         classes: 'big_tool_button button_temp',
-        text: "Temp"
-    }*/];
+        text: "Figure"
+    }];
 
     function getNextObjectID() {
         //var l=uidSeed?uidSeed+1:wb.getUIDSeed();

@@ -282,7 +282,7 @@ public class ProblemDesignerEditor extends GWindow {
 				String pid, CommandType commandType, String data) {
 			_countChanges++;
 
-			/** disable on any whitebaord movement */
+			/** disable on any whiteboard movement */
 			_ckEditorPanel.showClickToEdit(true);
 
 			return null;

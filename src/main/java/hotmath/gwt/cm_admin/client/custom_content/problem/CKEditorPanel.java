@@ -94,6 +94,7 @@ public class CKEditorPanel extends FlowPanel {
     }
 
     CenterLayoutContainer _editDisablePanel; 
+    /** Show Click to Edit message when whiteboard is active */
 	public void showClickToEdit(boolean forceShow) {
 		
 		if(!forceShow) {

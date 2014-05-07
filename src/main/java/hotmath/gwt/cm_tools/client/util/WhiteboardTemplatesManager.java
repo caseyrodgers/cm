@@ -19,6 +19,8 @@ import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.resources.client.ClientBundle;
@@ -61,10 +63,10 @@ public class WhiteboardTemplatesManager extends GWindow {
 
         this.showWorkPanel2 = showWorkPanel2;
         
-        setHeadingText("Template Manager");
+        setHeadingText("Figures");
 
         
-        addTool(new TextButton("Use Template", new SelectHandler() {
+        addTool(new TextButton("Use Figure", new SelectHandler() {
             
             @Override
             public void onSelect(SelectEvent event) {
@@ -116,7 +118,7 @@ public class WhiteboardTemplatesManager extends GWindow {
 
     protected void createFromExistingWhiteboard() {
         String tmplName = Cookies.getCookie("wb_template");
-        final PromptMessageBox mb = new PromptMessageBox("Save As Template", "Template Name");
+        final PromptMessageBox mb = new PromptMessageBox("Save As Figure", "Figure Name");
         mb.getTextField().setValue(tmplName != null?tmplName:"My Template");
         mb.addHideHandler(new HideHandler() {
           public void onHide(HideEvent event) {
@@ -139,7 +141,7 @@ public class WhiteboardTemplatesManager extends GWindow {
     private void useTemplate() {
         final WhiteboardTemplate item = _listView.getSelectionModel().getSelectedItem();
         if(item == null) {
-            CmMessageBox.showAlert("Select a template first");
+            CmMessageBox.showAlert("Select a Figure first");
             return;
         }
         showWorkPanel2.setWhiteboardTemplate(item.getPath());
@@ -150,16 +152,16 @@ public class WhiteboardTemplatesManager extends GWindow {
     protected void deleteSelected() {
         final WhiteboardTemplate item = _listView.getSelectionModel().getSelectedItem();
         if(item == null) {
-            CmMessageBox.showAlert("Select a template first");
+            CmMessageBox.showAlert("Select a Figure first");
             return;
         }
 
         if(item.getPath().startsWith("/gwt-resources")) {
-            CmMessageBox.showAlert("This is a system template and cannot be deleted.");
+            CmMessageBox.showAlert("This is a system Figure and cannot be deleted.");
             return;
         }
         
-        CmMessageBox.confirm("Delete Template",  "Are you sure your want to delete this template?", new ConfirmCallback() {
+        CmMessageBox.confirm("Delete Figure",  "Are you sure your want to delete this Figure?", new ConfirmCallback() {
             @Override
             public void confirmed(boolean yesNo) {
                 if(!yesNo) {
@@ -310,6 +312,13 @@ public class WhiteboardTemplatesManager extends GWindow {
                 //panel.setHeadingText("Simple ListView (" + event.getSelection().size() + " items selected)");
             }
         });
+        
+        view.addHandler(new DoubleClickHandler() {
+        	@Override
+        	public void onDoubleClick(DoubleClickEvent event) {
+        		useTemplate();
+        	}
+        }, DoubleClickEvent.getType());
         
         return view;
     }
