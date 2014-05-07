@@ -446,6 +446,19 @@ public class ShowWorkPanel2 extends Composite {
         _whiteboardOutCallback.manageTemplates(this);
     }
 
+    public void setInternalUndo(boolean yesNo) {
+    	jsni_setInternalUndo(whiteboardId, yesNo);
+    }
+    
+    native private void jsni_setInternalUndo(String whiteboardId, boolean yesNo) /*-{
+    	var theWhiteboard = $wnd._cmWhiteboards[whiteboardId];
+    	if(theWhiteboard == null) {
+    	    alert('Cannot find requested whiteboard instance: ' + whiteboardId);
+    	    return;
+    	}
+    	
+    	theWhiteboard.options.callInternalUndo = yesNo;
+    }-*/;
 
     private native void jsni_initializeWhiteboard(String whiteboardId, Element ele, boolean isStatic, int heightIn)/*-{
 

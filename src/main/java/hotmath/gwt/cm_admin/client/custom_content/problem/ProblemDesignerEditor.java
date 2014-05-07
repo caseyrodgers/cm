@@ -274,6 +274,7 @@ public class ProblemDesignerEditor extends GWindow {
 			if (areaData.wbJson != null) {
 				showWork.loadWhiteboardFromJson(areaData.wbJson);
 			}
+			_showWorkPanel.setInternalUndo(true);
 		}
 
 		@Override
