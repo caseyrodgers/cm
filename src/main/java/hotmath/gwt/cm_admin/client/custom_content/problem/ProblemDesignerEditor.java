@@ -179,6 +179,11 @@ public class ProblemDesignerEditor extends GWindow {
 		String wbJson = _showWorkPanel != null ? _showWorkPanel
 				.getWhiteboardCommandsAsJson() : this.areaData.wbJson;
 
+				
+		if(wbJson != null && (wbJson.length() == 0 || wbJson.equals("[]"))) {
+			wbJson = null;
+		}
+		
 		String wbJsonHtml = wbJson != null ? "<div class='wb_json'>" + wbJson
 				+ "</div>" : "";
 
