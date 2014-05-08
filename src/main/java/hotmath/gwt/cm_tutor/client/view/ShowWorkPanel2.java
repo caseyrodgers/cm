@@ -365,7 +365,13 @@ public class ShowWorkPanel2 extends Composite {
             alert('whiteboard ' + whiteboardId + ' cannot be found in jsni_whiteboardComplete');
             return;
         }
-        theWhiteboard.whiteboardLoadComplete();
+        
+        // prevent error if function not defined due to 
+        // old copy of whiteboard_v3.js
+        // TODO: remove after 1 month
+        if(theWhiteboard.whiteboardLoadComplete) {
+        	theWhiteboard.whiteboardLoadComplete();
+        }
     }-*/;
 
     native private String jsni_getWhiteboardCommandId(String data) /*-{
