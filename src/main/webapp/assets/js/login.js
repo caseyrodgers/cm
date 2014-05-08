@@ -4,7 +4,7 @@
 YUI().use('event',function(Y) {
   Y.on("domready", function() {
       
-    document.getElementById("fld_pwd").value = '';
+    //document.getElementById("fld_pwd").value = '';
     document.getElementById("fld_user").value = '';
     
     document.getElementById('fld_user').focus();
