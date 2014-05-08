@@ -43,7 +43,7 @@ CKEDITOR.editorConfig = function( config ) {
 		                                  ]);
 	}
 	config.stylesSet = 'my_styles';
-	config.fontSize_sizes = '16/16px;24/24px;48/48px;';
+	config.fontSize_sizes = '12/12pt;16/16pt;24/24pt;48/48pt;';
 	
 //    config.toolbar = 'Easy';
 //
@@ -56,20 +56,25 @@ CKEDITOR.editorConfig = function( config ) {
 	
 	
 	
-	config.toolbarGroups = [
-                            {name: 'basicstyles'},
-                            {name: 'styles'},
-	                		{name: 'others' }
-	                	];
+//	config.toolbarGroups = [
+//                            {name: 'basicstyles'},
+//                            {name: 'styles'},
+//	                		{name: 'others' }
+//	                	];
 
 
+	config.toolbar = 'CM';
+	config.toolbar_CM = 
+	    [
+         ['Bold','Italic','Underline','Strike', 'Superscript', 'Subscript'],
+         ['Font','FontSize'],
+	     ['Table'],
+	     ['ckeditor_wiris_formulaEditor']
+	     
+	    ];
 	
-	// config.toolbar_Basic = [
-//  [ 'Source', '-', 'Bold', 'Italic',  ]
-//];
-//config.toolbar = 'Basic';
-
-
+	
+	
 	
 //	   config.toolbar = 'Easy';
 //
