@@ -115,6 +115,6 @@ public class WidgetEditorImplCoordinates extends SimplePanel implements WidgetEd
                 y = p[1];
             }
         }
-        return x + ", " + y;
+        return '(' + x + ", " + y + ')';
     }
 }

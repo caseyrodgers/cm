@@ -241,7 +241,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         var wbc = $('<div style="display:inline-block"></div>').attr('name', 'wb-container').addClass("wb-container").appendTo(parentDiv);
         var toolCont = buildTools([{
             name: 'toggleMenu',
-            title: 'Show/Hide Tools',
+            title: 'Show/Hide Tools (right mouse click for context menu)',
             classes: 'big_tool_button',
             text: "Tools"
         }]).appendTo(wbc);

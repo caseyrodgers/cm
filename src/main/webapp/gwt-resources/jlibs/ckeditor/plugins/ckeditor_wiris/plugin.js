@@ -157,7 +157,7 @@ CKEDITOR.plugins.add('ckeditor_wiris', {
 			});
 			
 			editor.ui.addButton('ckeditor_wiris_formulaEditor', {
-				'label': 'WIRIS editor',
+				'label': 'Math Typography',
 				'command': 'ckeditor_wiris_openFormulaEditor',
 				'icon': _wrs_int_editorIcon
 			});

@@ -34,10 +34,10 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
@@ -64,11 +64,11 @@ public class ProblemDesigner extends Composite {
     private CustomProblemModel _customProblem;
 
     static private ToggleButton _editMode;
-    public ProblemDesigner() {
+    CallbackOnComplete callback;
+    
+    public ProblemDesigner(CallbackOnComplete callbackIn) {
         __lastInstance = this;
-
-
-        
+        this.callback = callbackIn;
         
         if(_editMode == null) {
             _editMode = new ToggleButton("Preview Mode");
@@ -86,6 +86,14 @@ public class ProblemDesigner extends Composite {
         _main.setCenterWidget(new DefaultGxtLoadingPanel());
         
 
+        _problemPanel.addTool(new TextButton("Close", new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				if(callback != null) {
+					callback.isComplete();
+				}
+			}
+		}));
         _problemPanel.addTool(_editMode);
         
         initWidget(_main);
@@ -158,7 +166,7 @@ public class ProblemDesigner extends Composite {
     
     
     
-    CallbackOnComplete callback = new CallbackOnComplete() {
+    CallbackOnComplete reloadCallback = new CallbackOnComplete() {
         @Override
         public void isComplete() {
             int scrollPosition = _tutorFlow.getScrollSupport().getVerticalScrollPosition();
@@ -197,7 +205,7 @@ public class ProblemDesigner extends Composite {
                 widgetJson = "{type:''}";
             }
             Log.debug("Widget json: " + widgetJson);
-            new ProblemDesignerEditorWidget(_solutionInfo,widgetJson, callback);
+            new ProblemDesignerEditorWidget(_solutionInfo,widgetJson, reloadCallback);
         }
         else if(partType.equals("hint")) {
             int which = Integer.parseInt(data);
@@ -399,7 +407,7 @@ public class ProblemDesigner extends Composite {
 
 
 
-        boolean shouldExpand = !_editMode.getValue();
+        boolean shouldExpand = true; // !_editMode.getValue();
         _tutorWrapper.externallyLoadedTutor(solution, getWidget(), "", "Solution Title", false, shouldExpand, null);
 
         if(!_editMode.getValue()) {
@@ -471,7 +479,7 @@ public class ProblemDesigner extends Composite {
         public void startTest() {
             String testPid="test_casey_1_1_1_1";
             testPid="cmextras_dynamic_oops_basic_1_1";
-            new ProblemDesigner().loadProblem(new CustomProblemModel(testPid, 0, null, null, ProblemType.UNKNOWN),0);
+            new ProblemDesigner(null).loadProblem(new CustomProblemModel(testPid, 0, null, null, ProblemType.UNKNOWN),0);
         }
     }
 

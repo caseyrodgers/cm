@@ -59,8 +59,10 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 				props.key());
 		List<ColumnConfig<MultiValue, ?>> cols = new ArrayList<ColumnConfig<MultiValue, ?>>();
 		ColumnConfig<MultiValue, String> valCol = new ColumnConfig<MultiValue, String>(props.valueDecoded(), 150, "Value");
+		valCol.setSortable(false);
 		valCol.setToolTip(SafeHtmlUtils.fromString("Use drag and drop to order the choices"));
 		ColumnConfig<MultiValue, Boolean> correctCol = new ColumnConfig<MultiValue, Boolean>(props.correct(), 40, "Is Correct?");
+		correctCol.setSortable(false);
 		correctCol.setCell(new SimpleSafeHtmlCell<Boolean>(new AbstractSafeHtmlRenderer<Boolean>() {
 		        @Override
 		        public SafeHtml render(Boolean object) {

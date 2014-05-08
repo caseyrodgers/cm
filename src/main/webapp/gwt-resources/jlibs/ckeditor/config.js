@@ -89,7 +89,7 @@ CKEDITOR.editorConfig = function( config ) {
 	      
 	
 	
-    config.removeButtons = 'Source';
+    config.removeButtons = 'Source,Styles,Normal,Format';
     
     
     config.removePlugins = 'elementspath';

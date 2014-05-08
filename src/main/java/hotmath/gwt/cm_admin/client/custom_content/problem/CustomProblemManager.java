@@ -489,7 +489,11 @@ public class CustomProblemManager extends GWindow {
         else {
             
             _selectedSolution = selectedItem.getPid();
-            ProblemDesigner problemDesigner = new ProblemDesigner();
+            ProblemDesigner problemDesigner = new ProblemDesigner(new CallbackOnComplete() {
+				@Override
+				public void isComplete() {
+					_main.setCenterWidget(_emptyPage);				}
+			});
             _main.setCenterWidget(problemDesigner);
             forceLayout();
             problemDesigner.loadProblem(selectedItem, 0);
