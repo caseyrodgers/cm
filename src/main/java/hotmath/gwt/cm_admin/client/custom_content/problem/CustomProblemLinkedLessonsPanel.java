@@ -49,7 +49,7 @@ public class CustomProblemLinkedLessonsPanel extends ContentPanel {
     
     private void drawGui() {
         _main = new BorderLayoutContainer();
-        _main.setNorthWidget(new HTML("<b style='display: block;margin: 10px 5px'>Lessons that are linked to this problem.</b>"), new BorderLayoutData(35));
+        _main.setNorthWidget(new HTML("<b style='display: block;margin: 10px 5px'>List this problem under the following topics:</b>"), new BorderLayoutData(35));
         _main.setCenterWidget(new DefaultGxtLoadingPanel());
 
 
@@ -141,7 +141,7 @@ public class CustomProblemLinkedLessonsPanel extends ContentPanel {
         ListStore<LessonModel> store = new ListStore<LessonModel>(props.key());
         List<ColumnConfig<LessonModel, ?>> cols = new ArrayList<ColumnConfig<LessonModel, ?>>();
 
-        cols.add(new ColumnConfig<LessonModel, String>(props.lessonName(), 100, "Lesson Name"));
+        cols.add(new ColumnConfig<LessonModel, String>(props.lessonName(), 100, ""));
 
         ColumnModel<LessonModel> colModel = new ColumnModel<LessonModel>(cols);
         _grid = new Grid<LessonModel>(store, colModel);

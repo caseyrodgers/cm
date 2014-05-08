@@ -17,7 +17,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.toolbar = 'CM';
 	config.toolbar_CM = 
 	    [
-         ['Bold','Italic','Underline','Strike', 'Superscript', 'Subscript'],
+         ['Bold','Italic','Underline','Superscript', 'Subscript'],
          ['Font','FontSize'],
 	     ['Table'],
 	     ['ckeditor_wiris_formulaEditor']

@@ -23,6 +23,7 @@ import hotmath.spring.SpringManager;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,6 +38,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.filter.Filter;
+import org.jdom.input.SAXBuilder;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -333,6 +338,32 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
     }
     
     static public String stripProblemStatmentText(String html) {
+    	
+    	
+        SAXBuilder parser = new SAXBuilder();
+        try {
+            //get the dom-document
+            Document doc = parser.build(new StringReader(html));
+            Filter f = new Filter() {
+                
+                @Override
+                public boolean matches(Object obj) {
+                    if(obj instanceof Element) {
+                        //((Element)obj).getAt
+                    }
+                    return false;
+                }
+            };
+            Iterator list = doc.getDescendants(f);
+            while(list.hasNext()) {
+                System.out.println("TEST: " + list.next());
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
+    	
         String START_TOKEN = "<div class='cm_problem_text";
         int startPos = html.indexOf(START_TOKEN);
         if (startPos == -1) {

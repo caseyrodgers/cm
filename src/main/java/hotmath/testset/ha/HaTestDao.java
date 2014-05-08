@@ -3,6 +3,7 @@ package hotmath.testset.ha;
 import hotmath.HotMathException;
 import hotmath.HotMathProperties;
 import hotmath.assessment.AssessmentPrescription;
+import hotmath.assessment.AssessmentPrescriptionFactory;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.server.model.CmUserProgramDao;
@@ -519,8 +520,8 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
          * 
          * Throw exception to help find this bug!
          */
-        Integer count = getJdbcTemplate().queryForObject(
-                "select count(*) from HA_TEST_RUN where test_id = ?",
+        List<Integer> testRuns = getJdbcTemplate().query(
+                "select run_id from HA_TEST_RUN where test_id = ?",
                 new Object[] { testId },
                 new RowMapper<Integer>() {
                     @Override
@@ -531,92 +532,101 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
 
         try {
 
-            if (count > 0) {
-                throw new Exception("This test has already been checked");
+        	HaTestRun testRun = null;
+            if (testRuns.size() > 0) {
+            	testRun = HaTestRunDao.getInstance().lookupTestRun(testRuns.get(0));
+	            testRun.getHaTest().getUser().setActiveTestRunId(testRun.getRunId());
+	            testRun.getHaTest().getUser().setActiveTest(0); // if test_run is active, test is
+	                                             // not
+	            testRun.getHaTest().getUser().update();
+	            
+	            throw new Exception("This test has already been checked.");
+
             }
-
-            /**
-             * Determine if user passed this quiz/test
-             * 
-             * This information is used to move to the next quiz slot.
-             * 
-             */
-            CmUserProgramDao dao = CmUserProgramDao.getInstance();
-            StudentUserProgramModel pinfo = dao.loadProgramInfoCurrent(studentUid);
-            int passPercentRequired = pinfo.getConfig().getPassPercent();
-            int testCorrectPercent = GetPrescriptionCommand.getTestPassPercent(answeredCorrect + answeredIncorrect
-                    + notAnswered, answeredCorrect);
-
-            ClientEnvironment clientEnv = HaUserDao.getInstance().getLatestClientEnvironment(studentUid);
-            /**
-             * if user passed quiz or if the custom program which always is
-             * passing
-             */
-            boolean passedQuiz = pinfo.getCustomProgramId() > 0 || (testCorrectPercent >= passPercentRequired);
-
-            HaTest test = HaTestDao.getInstance().loadTest(testId);
-            String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, " +
-                    " answered_incorrect, not_answered,run_session,is_passing,is_html5_only)values(?,?,?,?,?,1,?,?)";
-            pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            HaTestRun testRun = new HaTestRun();
-
-            pstat.setInt(1, testId);
-            Timestamp ts = new Timestamp(System.currentTimeMillis());
-            pstat.setTimestamp(2, ts);
-            pstat.setInt(3, answeredCorrect);
-            pstat.setInt(4, answeredIncorrect);
-            pstat.setInt(5, notAnswered);
-            pstat.setInt(6, passedQuiz ? 1 : 0);
-            pstat.setInt(7, clientEnv.isFlashEnabled() ? 0 : 0);
-
-            int cnt = pstat.executeUpdate();
-            if (cnt != 1)
-                throw new HotMathException("Could not create new test for: " + testId);
-
-            int runId = -1;
-            rs = pstat.getGeneratedKeys();
-            if (rs.next()) {
-                runId = rs.getInt(1);
-            } else {
-                throw new HotMathException("Error creating PK for test");
+            else {
+	            /**
+	             * Determine if user passed this quiz/test
+	             * 
+	             * This information is used to move to the next quiz slot.
+	             * 
+	             */
+	            CmUserProgramDao dao = CmUserProgramDao.getInstance();
+	            StudentUserProgramModel pinfo = dao.loadProgramInfoCurrent(studentUid);
+	            int passPercentRequired = pinfo.getConfig().getPassPercent();
+	            int testCorrectPercent = GetPrescriptionCommand.getTestPassPercent(answeredCorrect + answeredIncorrect
+	                    + notAnswered, answeredCorrect);
+	
+	            ClientEnvironment clientEnv = HaUserDao.getInstance().getLatestClientEnvironment(studentUid);
+	            /**
+	             * if user passed quiz or if the custom program which always is
+	             * passing
+	             */
+	            boolean passedQuiz = pinfo.getCustomProgramId() > 0 || (testCorrectPercent >= passPercentRequired);
+	
+	            HaTest test = HaTestDao.getInstance().loadTest(testId);
+	            String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, " +
+	                    " answered_incorrect, not_answered,run_session,is_passing,is_html5_only)values(?,?,?,?,?,1,?,?)";
+	            pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+	            testRun = new HaTestRun();
+	
+	            pstat.setInt(1, testId);
+	            Timestamp ts = new Timestamp(System.currentTimeMillis());
+	            pstat.setTimestamp(2, ts);
+	            pstat.setInt(3, answeredCorrect);
+	            pstat.setInt(4, answeredIncorrect);
+	            pstat.setInt(5, notAnswered);
+	            pstat.setInt(6, passedQuiz ? 1 : 0);
+	            pstat.setInt(7, clientEnv.isFlashEnabled() ? 0 : 0);
+	
+	            int cnt = pstat.executeUpdate();
+	            if (cnt != 1)
+	                throw new HotMathException("Could not create new test for: " + testId);
+	
+	            int runId = -1;
+	            rs = pstat.getGeneratedKeys();
+	            if (rs.next()) {
+	                runId = rs.getInt(1);
+	            } else {
+	                throw new HotMathException("Error creating PK for test");
+	            }
+	
+	            testRun.setRunId(runId);
+	            testRun.setRunTime(ts.getTime());
+	            testRun.setHaTest(test);
+	            testRun.setAnsweredCorrect(answeredCorrect);
+	            testRun.setAnsweredIncorrect(answeredIncorrect);
+	            testRun.setNotAnswered(notAnswered);
+	            testRun.setPassing(passedQuiz);
+	
+	            /**
+	             * transfer current selections to this test run
+	             * 
+	             */
+	            testRun.transferCurrentToTestRun(conn);
+	
+	            /**
+	             * Clear all existing selections for this test
+	             * 
+	             */
+	            clearCurrentResults(conn, testId);
+	
+	            /**
+	             * update this User's row to indicate new action test run
+	             */
+	            test.getUser().setActiveTestRunId(testRun.getRunId());
+	            test.getUser().setActiveTest(0); // if test_run is active, test is
+	                                             // not
+	            test.getUser().update();
+	
+	            updateTestRunSessions(conn, runId);
+	
+	            /*
+	             * shouldn't update Quiz columns for CP "test runs"
+	             * (pinfo.getCustomProgramId() > 0)
+	             */
+	            if (pinfo.getCustomProgramId() <= 0)
+	                HaUserExtendedDao.updateUserExtended(conn, studentUid, testRun);
             }
-
-            testRun.setRunId(runId);
-            testRun.setRunTime(ts.getTime());
-            testRun.setHaTest(test);
-            testRun.setAnsweredCorrect(answeredCorrect);
-            testRun.setAnsweredIncorrect(answeredIncorrect);
-            testRun.setNotAnswered(notAnswered);
-            testRun.setPassing(passedQuiz);
-
-            /**
-             * transfer current selections to this test run
-             * 
-             */
-            testRun.transferCurrentToTestRun(conn);
-
-            /**
-             * Clear all existing selections for this test
-             * 
-             */
-            clearCurrentResults(conn, testId);
-
-            /**
-             * update this User's row to indicate new action test run
-             */
-            test.getUser().setActiveTestRunId(testRun.getRunId());
-            test.getUser().setActiveTest(0); // if test_run is active, test is
-                                             // not
-            test.getUser().update();
-
-            updateTestRunSessions(conn, runId);
-
-            /*
-             * shouldn't update Quiz columns for CP "test runs"
-             * (pinfo.getCustomProgramId() > 0)
-             */
-            if (pinfo.getCustomProgramId() <= 0)
-                HaUserExtendedDao.updateUserExtended(conn, studentUid, testRun);
 
             return testRun;
         } catch (HotMathException hme) {
