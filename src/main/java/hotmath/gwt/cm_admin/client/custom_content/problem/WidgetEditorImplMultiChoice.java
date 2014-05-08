@@ -381,6 +381,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 			choiceData = "";
 		}
 		String c[] = choiceData.split("\\|");
-		return "1 of " + (c.length - 1);
+		int correctAnswer = Integer.parseInt(c[c.length-1]);
+		return correctAnswer + " of " + (c.length - 1);
 	}
 }
