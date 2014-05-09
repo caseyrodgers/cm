@@ -1,11 +1,13 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.JsonUtil;
 import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_admin.server.model.activity.StudentActivitySummaryModel;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.spring.SpringManager;
@@ -19,6 +21,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -107,12 +111,17 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         	String from = (fromDate != null) ? sdf.format(fromDate) : null;
         	String to = (toDate != null) ? sdf.format(toDate) : null;
 
+            List<StudentActivityModel> assignmentActivity =
+         		   AssignmentDao.getInstance().getAssignmentActivityForStudent(uid, fromDate, toDate);
+
+            List<StudentActivityModel> combinedActivity = combineActivity(smList, assignmentActivity);
+
             // reverse order of list and apply date range if defined
-            samList = new ArrayList<StudentActivityModel>(smList.size());
-            for (int i = (smList.size() - 1); i >= 0; i--) {
-            	if ( (from != null && from.compareTo(smList.get(i).getUseDate()) > 0) ||
-            	     (to != null && to.compareTo(smList.get(i).getUseDate()) < 0) ) continue;
-                samList.add(smList.get(i));
+            samList = new ArrayList<StudentActivityModel>(combinedActivity.size());
+            for (int i = (combinedActivity.size() - 1); i >= 0; i--) {
+            	if ( (from != null && from.compareTo(combinedActivity.get(i).getUseDate()) > 0) ||
+            	     (to != null && to.compareTo(combinedActivity.get(i).getUseDate()) < 0) ) continue;
+                samList.add(combinedActivity.get(i));
             }
             
         } catch (Exception e) {
@@ -123,6 +132,68 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         }
         return samList;
     }
+
+    private List<StudentActivityModel> combineActivity(List<StudentActivityModel> activity,
+			List<StudentActivityModel> assignmentActivity) {
+
+    	List<StudentActivityModel> combined = new CmArrayList<StudentActivityModel>();
+
+    	combined.addAll(activity);
+    	combined.addAll(assignmentActivity);
+
+    	// sort by ascending "date"
+    	Collections.sort(combined, new Comparator<StudentActivityModel>() {
+
+			@Override
+			public int compare(StudentActivityModel o1, StudentActivityModel o2) {
+				int compare = o1.getUseDate().compareTo(o2.getUseDate());
+				if (compare == 0) {
+					if (o1.isAssignment() == true) {
+						return (o2.isAssignment() == false) ? 1 : 0; 
+					}
+					else {
+						return (o2.isAssignment() == true) ? -1 : 0;
+					}
+				}
+				return o1.getUseDate().compareTo(o2.getUseDate());
+			}
+    		
+    	});
+    	
+    	// transfer program info to Assignment activity
+    	int index = 0;
+    	for (StudentActivityModel model : combined) {
+    		if (model.isAssignment()) {
+    			if (index > 0) {
+    				model.setProgram(combined.get(index-1).getProgram());
+    				model.setProgramDescr(combined.get(index-1).getProgramDescr());
+    				model.setProgramType(combined.get(index-1).getProgramType());
+    			}
+    			else {
+    				StudentActivityModel sam = findNonAssignmentActivity(combined);
+    				model.setProgram(sam.getProgram());
+    				model.setProgramDescr(sam.getProgramDescr());
+    				model.setProgramType(sam.getProgramType());    				
+    			}
+    		}
+    		index++;
+    	}
+
+		return combined;
+	}
+
+	private StudentActivityModel findNonAssignmentActivity(
+			List<StudentActivityModel> combined) {
+		for (StudentActivityModel model : combined) {
+			if (model.isAssignment() == false) {
+				return model;
+			}
+		}
+		StudentActivityModel sam = new StudentActivityModel();
+		sam.setProgram("Assignment");
+		sam.setProgramType("ASSGN");
+		return sam;
+	}
 
 	public List<TimeOnTask> getTimeOnTaskForRunIDs(final Connection conn, List<StudentActivityModel> samList,
             int uid) throws Exception {

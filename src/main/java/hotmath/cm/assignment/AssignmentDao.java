@@ -58,9 +58,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -83,6 +86,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     static Logger __logger = Logger.getLogger(AssignmentDao.class);
 
     static private AssignmentDao __instance;
+
+    private static final SimpleDateFormat DATE_FMT = new SimpleDateFormat("yyyy-MM-dd");
 
     static public AssignmentDao getInstance() throws Exception {
         if (__instance == null) {
@@ -1087,13 +1092,108 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     public List<StudentActivityModel> getAssignmentActivityForStudent(int userId, Date fromDate, Date toDate) throws Exception {
-        final Map<Integer, Boolean> asgGradedMap = new HashMap<Integer, Boolean>();
-        List<StudentProblemExtended> problemStatuses = getProblemStatusesForStudent(userId, fromDate, toDate, asgGradedMap);
 
-        return null;
+    	final Map<Integer, Boolean> asgGradedMap = new HashMap<Integer, Boolean>();
+
+    	List<StudentProblemExtended> problemStatuses = getProblemStatusesForStudent(userId, fromDate, toDate, asgGradedMap);
+    	System.out.println("problemStatuses.size(): " + problemStatuses.size());
+
+    	problemStatuses = removeStatusesWithNullDate(problemStatuses);
+    	System.out.println("after null removal, problemStatuses.size(): " + problemStatuses.size());
+
+        sortAssignmentActivity(problemStatuses);
+
+        //TODO: ? get each Assignment
+        /* only needed for "Submitted N of M"
+        Map<Integer, Assignment> map = new HashMap<Integer, Assignment>();
+        for (StudentProblemExtended prob : problemStatuses) {
+        	Integer key = prob.getProblem().getAssignKey(); 
+        	if (map.get(key) != null) continue;
+        	Assignment assign = getAssignment(prob.getProblem().getAssignKey());
+        	map.put(key, assign);
+        }
+        */
+
+        // for each date, count number of problems submitted
+        List<Date> dateList = new ArrayList<Date>();
+        List<Integer> countList = new ArrayList<Integer>();
+        int index = 0;
+        Date curDate = (problemStatuses.size() > 0) ? problemStatuses.get(0).getCreateDate() : null;
+        int submittedCount = 0;
+        for (StudentProblemExtended prob : problemStatuses) {
+    	    if (curDate.compareTo(prob.getCreateDate()) != 0) {
+    	        dateList.add(index, curDate);
+    	        countList.add(index++, submittedCount);
+    		    submittedCount = 0;
+    		    curDate = prob.getCreateDate();
+    	    }
+    	    submittedCount += 1;
+        }
+        if (submittedCount > 0) {
+	        dateList.add(index, curDate);
+	        countList.add(index, submittedCount);
+        }
+
+        //TODO: ? make counts cumulative
+        /*
+        index = 0;
+        int cumulativeCount = 0; 
+        for (Integer count : countList) {
+        	cumulativeCount += count;
+        	countList.set(index++, cumulativeCount);
+        }
+        */
+
+        // create Activity data
+        List<StudentActivityModel> activityList = new ArrayList<StudentActivityModel>();
+        index = 0;
+        for (Date date : dateList){
+        	StudentActivityModel model = new StudentActivityModel();
+        	model.setActivity("Assignment");
+        	model.setResult("Submitted " + countList.get(index++));
+        	model.setUseDate(DATE_FMT.format(date));
+        	model.setAssignment(true);
+        	activityList.add(model);
+        }
+    	System.out.println("activityList.size(): " + activityList.size());
+
+        return activityList;
     }
 
-    private List<StudentProblemExtended> getProblemStatusesForStudent(int userId, Date fromDate, Date toDate,
+    private List<StudentProblemExtended> removeStatusesWithNullDate(
+			List<StudentProblemExtended> problemStatuses) {
+    	List<StudentProblemExtended> keep = new ArrayList<StudentProblemExtended>();
+    	for (StudentProblemExtended status : problemStatuses) {
+    		if (status.getCreateDate() != null) {
+    			keep.add(status);
+    		}
+    	}
+    	return keep;
+	}
+
+	/**
+     * sort by date and assign key
+     * 
+     * @param problemStatuses
+     */
+    private void sortAssignmentActivity(List<StudentProblemExtended> problemStatuses) {
+    	Collections.sort(problemStatuses, new Comparator<StudentProblemExtended>() {
+
+			@Override
+			public int compare(StudentProblemExtended o1, StudentProblemExtended o2) {
+				int rval = o1.getCreateDate().compareTo(o2.getCreateDate());
+				if (rval == 0) {
+    				ProblemDto p1 = o1.getProblem();
+	    			ProblemDto p2 = o2.getProblem();
+	    			rval = p1.getAssignKey() - p2.getAssignKey();
+				}
+				return rval;
+			}
+    		
+    	});
+	}
+
+	private List<StudentProblemExtended> getProblemStatusesForStudent(int userId, Date fromDate, Date toDate,
     		final Map<Integer, Boolean> asgGradedMap) throws Exception {
         List<StudentProblemExtended> problemStatuses = new ArrayList<StudentProblemExtended>();
         String dates[] = QueryHelper.getDateTimeRange(fromDate, toDate);
@@ -1108,8 +1208,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     prob.setUid(uid);
 
                     LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
-                    ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), lesson, rs.getString("label"), rs
-                            .getString("pid"), rs.getInt("assign_key"));
+                    ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), lesson,
+                    		rs.getString("label"), rs.getString("pid"), rs.getInt("assign_key"));
                     prob.setProblem(probDto);
                     prob.setStatus(rs.getString("status"));
                     prob.setGraded(rs.getInt("is_graded") > 0);
