@@ -1,78 +1,21 @@
-<div class="gwt-HTML">
-	<a name="$question.questionTag" id="$question.questionTag">&nbsp;
-	</a>
-	<div class="question_head">
-		<button style="display: none" class="quiz_whiteboard_button sexybutton sexysmall"
-			onclick="showWhiteboard_Gwt(&quot;cahseehm2_CourseTest_2_PracticeTest_34_2&quot;)">whiteboard</button>
-		<button style="display: none" class="quiz_edit_button sexybutton sexysmall"
-			onclick="editQuizQuestion(&quot;cahseehm2_CourseTest_2_PracticeTest_34_2&quot;)" ;>
-			<span>
-				<span>edit</span>
-			</span>
-		</button>
-		<div class="question_head_text"> Problem 4 </div>
-		<div class="response_div" style="display: block; ">
-			<img id="response_image_cahseehm2_CourseTest_2_PracticeTest_34_2"
-				src="/gwt-resources/images/check_notanswered.png" />
-			<div style="float: right;color: #3E3E3E;"
-				id="response_text_cahseehm2_CourseTest_2_PracticeTest_34_2" class="response_div_text">Not
-				answered</div>
-		</div>
+<?xml version="1.0"?> 
+<!DOCTYPE some_name [
+<!ENTITY nbsp "&#160;">
+]>
+<wrapper>
+<div class='step_part'>
+	<p>12&nbsp;The
+		problem 3 312(34)2
+	</p>
+	<p>&nbsp;
+	</p>
+	<div class='wb_json'>[{"dataArr":[{"x":7,"y":30,"id":"move","color":0,"name":"","layer":"1"},{"x":0,"y":1,"id":"line"},{"x":-1,"y":10,"id":"line"},{"x":-1,"y":16,"id":"line"},{"x":-1,"y":18,"id":"line"},{"x":-1,"y":19,"id":"line"},{"x":4,"y":13,"id":"line"},{"x":12,"y":-1,"id":"line"},{"x":17,"y":-11,"id":"line"},{"x":22,"y":-21,"id":"line"},{"x":23,"y":-23,"id":"line"},{"x":25,"y":-26,"id":"line"},{"x":26,"y":-27,"id":"line"},{"x":28,"y":-26,"id":"line"},{"x":31,"y":-26,"id":"line"},{"x":36,"y":-23,"id":"line"},{"x":36,"y":-21,"id":"line"},{"x":36,"y":-20,"id":"line"},{"x":36,"y":-18,"id":"line"},{"x":34,"y":-14,"id":"line"},{"x":31,"y":-9,"id":"line"},{"x":27,"y":-6,"id":"line"},{"x":27,"y":-5,"id":"line"},{"x":26,"y":-5,"id":"line"},{"x":26,"y":-5,"id":"line"}],"id":1,"uid":0,"brect":{"xmin":6,"ymin":3,"w":37,"h":46,"x":6,"y":3,"xmax":43,"ymax":49}},{"dataArr":[{"x":84,"y":19,"id":"move","color":0,"name":"","layer":"1"},{"x":-1,"y":0,"id":"line"},{"x":-12,"y":2,"id":"line"},{"x":-13,"y":3,"id":"line"},{"x":-12,"y":3,"id":"line"},{"x":-11,"y":4,"id":"line"},{"x":-9,"y":6,"id":"line"},{"x":-7,"y":8,"id":"line"},{"x":-5,"y":9,"id":"line"},{"x":-3,"y":11,"id":"line"},{"x":8,"y":18,"id":"line"},{"x":13,"y":21,"id":"line"},{"x":13,"y":22,"id":"line"},{"x":13,"y":24,"id":"line"},{"x":7,"y":24,"id":"line"},{"x":-16,"y":26,"id":"line"},{"x":-21,"y":30,"id":"line"},{"x":-25,"y":30,"id":"line"},{"x":-26,"y":30,"id":"line"},{"x":-26,"y":30,"id":"line"}],"id":1,"uid":1,"brect":{"xmin":58,"ymin":19,"w":39,"h":30,"x":58,"y":19,"xmax":97,"ymax":49}}]
 	</div>
-	<div class="question_div" id="question_div_3"
-		guid="cahseehm2_CourseTest_2_PracticeTest_34_2">
-		<p></p>
-		<div id="question_266" class="question_stepunit">
-			<p></p>
-			<p>The five members of a band are getting new outfits. Shirts cost
-				$21 each, pants cost $34 each, and boots cost $57 a pair. What is
-				the total cost of the new outfits for all of the members?</p>
-			<p></p>
-			<ul class="question_responses">
-				<li>
-					<input onclick="" id="question_guess_1053" type="radio"
-						name="question_266" value="false" disabled="true" />
-					<label for="question_guess_1053">
-						<p>A. $112</p>
-					</label>
-					<div style="display: none">
-					</div>
-				</li>
-				<li>
-					<input onclick="" id="question_guess_1054" type="radio"
-						name="question_266" value="false" disabled="true" />
-					<label for="question_guess_1054">
-						<p>B. $224</p>
-					</label>
-					<div style="display: none">
-					</div>
-				</li>
-				<li>
-					<input onclick="" id="question_guess_1055" type="radio"
-						name="question_266" value="true" disabled="true" />
-					<label for="question_guess_1055">
-						<p>C. $560</p>
-					</label>
-					<div style="display: none">
-					</div>
-				</li>
-				<li>
-					<input onclick="" id="question_guess_1056" type="radio"
-						name="question_266" value="false" disabled="true" />
-					<label for="question_guess_1056">
-						<p>D. $630</p>
-					</label>
-					<div style="display: none">
-					</div>
-				</li>
-			</ul>
-		</div>
-		<div class="question_solution_link">
-			<a href="#"
-				onclick="gotoTestGUID(&quot;cahseehm2_CourseTest_2_PracticeTest_34_2&quot;)">
-				<img src="/images/trifco/view_solution-88x18.gif" />
-			</a>
-		</div>
-	</div>
-	<div class="debug-hide">cahseehm2_CourseTest_2_PracticeTest_34_2</div>
 </div>
+
+<div id='hm_flash_widget'>
+	<div id='hm_flash_widget_def' style='display: none'>{type:'number_integer',
+		useBase64: false,value:'34', format:'', ans_format: '', allowMixed:
+		false, width:0, height:0}</div>
+</div>
+</wrapper>

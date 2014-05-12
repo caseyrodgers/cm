@@ -202,7 +202,7 @@ public class WidgetEditorImplPlot extends WidgetEditorImplDefault implements
 		double x = Double.parseDouble(p[0]);
 		double y = Double.parseDouble(p[1]);
 
-		return '(' + x + ", " + y + ')';
+		return "(" + x + ", " + y + ")";
 	}
 
 }
