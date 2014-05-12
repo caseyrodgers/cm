@@ -119,4 +119,9 @@ public class WidgetEditorImplMixedFraction extends WidgetEditorImplRational {
     	return "Correct Value (decimal, fraction, or mixed number)";
     }
     
+    @Override
+    public String getWidgetTypeLabel() {
+    	return "Mixed Fraction";
+    }
+    
 }

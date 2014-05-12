@@ -97,8 +97,8 @@ public class CustomProblemManager extends GWindow {
         ListStore<CustomProblemModel> store = new ListStore<CustomProblemModel>(_gridProps.key());
         List<ColumnConfig<CustomProblemModel, ?>> cols = new ArrayList<ColumnConfig<CustomProblemModel, ?>>();
         
-        cols.add(new ColumnConfig<CustomProblemModel, String>(_gridProps.teacherName(), 70, "Teacher"));
-        cols.add(new ColumnConfig<CustomProblemModel, Integer>(_gridProps.problemNumber(), 25, "#"));
+        cols.add(new ColumnConfig<CustomProblemModel, String>(_gridProps.label(), 70, "Problem"));
+        // cols.add(new ColumnConfig<CustomProblemModel, Integer>(_gridProps.problemNumber(), 25, "#"));
         cols.add(new ColumnConfig<CustomProblemModel, String>(_gridProps.comments(), 100, "Comments"));
         cols.add(new ColumnConfig<CustomProblemModel, String>(_gridProps.lessonList(), 100, "Lessons"));
         
@@ -569,7 +569,9 @@ interface GridProperties extends PropertyAccess<String> {
     @Path("pid")
     ModelKeyProvider<CustomProblemModel> key();
     
-    ValueProvider<CustomProblemModel, String> lessonList();
+    ValueProvider<CustomProblemModel, String> label();
+
+	ValueProvider<CustomProblemModel, String> lessonList();
 	ValueProvider<CustomProblemModel, String> comments();
 	ValueProvider<CustomProblemModel, Integer> problemNumber();
 	

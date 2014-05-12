@@ -62,7 +62,7 @@ public class WidgetEditorImplFraction extends WidgetEditorImplDefault {
 		String n = p[0];
 		String d = p.length > 1 ? p[1] : "";
 		
-		return n + "/" + d;
+		return n + (d != null && d.length() > 0?"/":"") + d;
 	}
 
 

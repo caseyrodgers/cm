@@ -47,7 +47,8 @@ public class CustomProblemModel implements Response {
     }
 
     public String getLabel() {
-        return teacher.getTeacherName() + "-" + problemNumber;
+    	String label =  ("0000" + problemNumber);
+        return teacher.getTeacherName() + "-"  +label.substring(label.length()-3);
     }
 
     

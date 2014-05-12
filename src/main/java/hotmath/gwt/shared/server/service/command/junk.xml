@@ -1,21 +1,13 @@
-<?xml version="1.0"?> 
-<!DOCTYPE some_name [
-<!ENTITY nbsp "&#160;">
-]>
-<wrapper>
-<div class='step_part'>
-	<p>12&nbsp;The
-		problem 3 312(34)2
-	</p>
-	<p>&nbsp;
-	</p>
-	<div class='wb_json'>[{"dataArr":[{"x":7,"y":30,"id":"move","color":0,"name":"","layer":"1"},{"x":0,"y":1,"id":"line"},{"x":-1,"y":10,"id":"line"},{"x":-1,"y":16,"id":"line"},{"x":-1,"y":18,"id":"line"},{"x":-1,"y":19,"id":"line"},{"x":4,"y":13,"id":"line"},{"x":12,"y":-1,"id":"line"},{"x":17,"y":-11,"id":"line"},{"x":22,"y":-21,"id":"line"},{"x":23,"y":-23,"id":"line"},{"x":25,"y":-26,"id":"line"},{"x":26,"y":-27,"id":"line"},{"x":28,"y":-26,"id":"line"},{"x":31,"y":-26,"id":"line"},{"x":36,"y":-23,"id":"line"},{"x":36,"y":-21,"id":"line"},{"x":36,"y":-20,"id":"line"},{"x":36,"y":-18,"id":"line"},{"x":34,"y":-14,"id":"line"},{"x":31,"y":-9,"id":"line"},{"x":27,"y":-6,"id":"line"},{"x":27,"y":-5,"id":"line"},{"x":26,"y":-5,"id":"line"},{"x":26,"y":-5,"id":"line"}],"id":1,"uid":0,"brect":{"xmin":6,"ymin":3,"w":37,"h":46,"x":6,"y":3,"xmax":43,"ymax":49}},{"dataArr":[{"x":84,"y":19,"id":"move","color":0,"name":"","layer":"1"},{"x":-1,"y":0,"id":"line"},{"x":-12,"y":2,"id":"line"},{"x":-13,"y":3,"id":"line"},{"x":-12,"y":3,"id":"line"},{"x":-11,"y":4,"id":"line"},{"x":-9,"y":6,"id":"line"},{"x":-7,"y":8,"id":"line"},{"x":-5,"y":9,"id":"line"},{"x":-3,"y":11,"id":"line"},{"x":8,"y":18,"id":"line"},{"x":13,"y":21,"id":"line"},{"x":13,"y":22,"id":"line"},{"x":13,"y":24,"id":"line"},{"x":7,"y":24,"id":"line"},{"x":-16,"y":26,"id":"line"},{"x":-21,"y":30,"id":"line"},{"x":-25,"y":30,"id":"line"},{"x":-26,"y":30,"id":"line"},{"x":-26,"y":30,"id":"line"}],"id":1,"uid":1,"brect":{"xmin":58,"ymin":19,"w":39,"h":30,"x":58,"y":19,"xmax":97,"ymax":49}}]
+<div class='cm_problem_text'>
+	<div class='step_part'>
+		<p>This is problem text test test</p>
+		<div class='wb_json'>[{"dataArr":[{"x":82,"y":21,"id":"move","color":0,"name":"","layer":"1"},{"x":2,"y":2,"id":"line"},{"x":10,"y":7,"id":"line"},{"x":17,"y":15,"id":"line"},{"x":29,"y":20,"id":"line"},{"x":44,"y":30,"id":"line"},{"x":51,"y":35,"id":"line"},{"x":64,"y":43,"id":"line"},{"x":68,"y":46,"id":"line"},{"x":69,"y":46,"id":"line"},{"x":72,"y":48,"id":"line"},{"x":72,"y":48,"id":"line"}],"id":1,"uid":0,"brect":{"x":82,"y":21,"w":72,"h":48,"xmin":82,"xmax":154,"ymin":21,"ymax":69}}]
+		</div>
+	</div>
+	<div id='hm_flash_widget'>
+		<div id='hm_flash_widget_def' style='display: none'>{type:'number_integer',
+			useBase64: false,value:'111', format:'', ans_format: '', allowMixed:
+			false, width:0, height:0}</div>
 	</div>
 </div>
-
-<div id='hm_flash_widget'>
-	<div id='hm_flash_widget_def' style='display: none'>{type:'number_integer',
-		useBase64: false,value:'34', format:'', ans_format: '', allowMixed:
-		false, width:0, height:0}</div>
 </div>
-</wrapper>
