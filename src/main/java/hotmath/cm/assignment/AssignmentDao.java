@@ -1096,23 +1096,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     	final Map<Integer, Boolean> asgGradedMap = new HashMap<Integer, Boolean>();
 
     	List<StudentProblemExtended> problemStatuses = getProblemStatusesForStudent(userId, fromDate, toDate, asgGradedMap);
-    	System.out.println("problemStatuses.size(): " + problemStatuses.size());
 
-    	problemStatuses = removeStatusesWithNullDate(problemStatuses);
-    	System.out.println("after null removal, problemStatuses.size(): " + problemStatuses.size());
+    	problemStatuses = removeUnansweredProblems(problemStatuses);
 
         sortAssignmentActivity(problemStatuses);
-
-        //TODO: ? get each Assignment
-        /* only needed for "Submitted N of M"
-        Map<Integer, Assignment> map = new HashMap<Integer, Assignment>();
-        for (StudentProblemExtended prob : problemStatuses) {
-        	Integer key = prob.getProblem().getAssignKey(); 
-        	if (map.get(key) != null) continue;
-        	Assignment assign = getAssignment(prob.getProblem().getAssignKey());
-        	map.put(key, assign);
-        }
-        */
 
         // for each date, count number of problems submitted
         List<Date> dateList = new ArrayList<Date>();
@@ -1134,16 +1121,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 	        countList.add(index, submittedCount);
         }
 
-        //TODO: ? make counts cumulative
-        /*
-        index = 0;
-        int cumulativeCount = 0; 
-        for (Integer count : countList) {
-        	cumulativeCount += count;
-        	countList.set(index++, cumulativeCount);
-        }
-        */
-
         // create Activity data
         List<StudentActivityModel> activityList = new ArrayList<StudentActivityModel>();
         index = 0;
@@ -1155,17 +1132,16 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         	model.setAssignment(true);
         	activityList.add(model);
         }
-    	System.out.println("activityList.size(): " + activityList.size());
 
         return activityList;
     }
 
-    private List<StudentProblemExtended> removeStatusesWithNullDate(
+    private List<StudentProblemExtended> removeUnansweredProblems(
 			List<StudentProblemExtended> problemStatuses) {
     	List<StudentProblemExtended> keep = new ArrayList<StudentProblemExtended>();
-    	for (StudentProblemExtended status : problemStatuses) {
-    		if (status.getCreateDate() != null) {
-    			keep.add(status);
+    	for (StudentProblemExtended problemStatus : problemStatuses) {
+    		if (problemStatus.getStatus().toLowerCase().indexOf("viewed") < 0) {
+    			keep.add(problemStatus);
     		}
     	}
     	return keep;
@@ -1901,8 +1877,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 int maxAttempts = 10;
                 while (maxAttempts-- > 0) {
                     problemToUse = lookupPersonalizedAlternateProblem(problem);
-
-                    System.out.println("Checking problem touse: " + problemToUse);
 
                     if (!personalPids.contains(problemToUse)) {
                         foundOneToUse = true;
@@ -3001,7 +2975,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             problem.setProblemType(ProblemType.MULTI_CHOICE);
             ProblemDto res = ad.lookupPersonalizedAlternateProblem(problem);
 
-            System.out.println(res);
         } catch (Exception e) {
             e.printStackTrace();
         }
