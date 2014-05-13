@@ -1126,7 +1126,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         index = 0;
         for (Date date : dateList){
         	StudentActivityModel model = new StudentActivityModel();
-        	model.setActivity("Assignment");
+        	model.setProgramDescr("Assignments");
+        	model.setProgramType("N/A");
+        	model.setActivity("Solving");
         	model.setResult("Submitted " + countList.get(index++));
         	model.setUseDate(DATE_FMT.format(date));
         	model.setAssignment(true);
