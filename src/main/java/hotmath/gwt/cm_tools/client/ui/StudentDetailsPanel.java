@@ -281,15 +281,14 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                 String dl = desc.toLowerCase();
                 if (dl.indexOf("auto") > -1)
                     _showTopicsBtn.disable();
-                else
-                    _showTopicsBtn.enable();
 
                 if (sam.isQuiz() && sam.getRunId() > 0) {
                     _showQuizResults.enable();
                     _showWorkButton.disable();
                 } else {
                     _showQuizResults.disable();
-                    _showWorkButton.enable();
+                    if (sam.isAssignment() == true)
+                    	_showWorkButton.disable();
                 }
             }
         }
