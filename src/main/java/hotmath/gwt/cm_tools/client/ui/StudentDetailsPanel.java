@@ -355,6 +355,11 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             return;
         }
 
+        if (sam.isAssignment()) {
+            CatchupMathTools.showAlert("For more details, click \"Assignments Report\" or use the Assignments tool.");
+            return;
+        }
+
         /**
          * only show list if a Review is selected, quizzes do not have lessons
          * 
@@ -377,6 +382,12 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             CatchupMathTools.showAlert("Select a Review from the list first");
             return;
         }
+
+        if (sam.isAssignment()) {
+            CatchupMathTools.showAlert("For more details, click \"Assignments Report\" or use the Assignments tool.");
+            return;
+        }
+
         new StudentShowWorkWindow(studentModel, sam);
     }
 
