@@ -161,6 +161,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     	});
     	
     	// transfer program info to Assignment activity
+    	/* not needed ?
     	int index = 0;
     	for (StudentActivityModel model : combined) {
     		if (model.isAssignment()) {
@@ -178,6 +179,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     		}
     		index++;
     	}
+    	*/
 
 		return combined;
 	}
