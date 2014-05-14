@@ -48,7 +48,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
     var IS_OPERA = navigator.userAgent.match(/Opera/i) != null;
     var IS_TOUCH_ONLY = IS_IPAD || IS_ANDROID || IS_KINDLE || IS_IPHONE
     var IS_IOS = IS_IPAD || IS_IPHONE
-    //boolean whether calculator is enabled for this whiteboard
+        //boolean whether calculator is enabled for this whiteboard
     var enable_calc = true;
     var isReadOnly = isStatic ? isStatic : false;
     var lastGesture = null;
@@ -98,8 +98,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
     var cTMaxWidth = null;
     var objOnSel = null;
     var textAreaW = null;
-    var shapeHitCanvas,shapeHitCtx;
-    // --- /gwt-resources/images/whiteboard/
+    var shapeHitCanvas, shapeHitCtx;
+    var eraseObjStore = {};
+    var objsErased = {};
+    var checkForErase = {};
+        // --- /gwt-resources/images/whiteboard/
     var imgPath = '/gwt-resources/images/whiteboard/'
     //imgPath = './'
     var opts = {
@@ -135,76 +138,81 @@ var Whiteboard = function (cont, isStatic, _opts) {
     }
     //
     var toolArr = [{
-        name: 'button_text',
-        title: 'Text',
-        classes: 'big_tool_button button_text',
-        text: ""
-    }, {
-        name: 'button_pencil',
-        title: 'Draw or Write',
-        classes: 'big_tool_button button_pencil',
-        text: ""
-    }, {
-        name: 'button_line',
-        title: 'Lines',
-        classes: 'big_tool_button button_line',
-        text: ""
-    }, {
-        name: 'button_rect',
-        title: 'Rectangles',
-        classes: 'big_tool_button button_rect',
-        text: ""
-    }, {
-        name: 'button_oval',
-        title: 'Circles/Ellipses',
-        classes: 'big_tool_button button_oval',
-        text: ""
-    }, {
-        name: 'button_eraser',
-        title: 'Erase',
-        classes: 'big_tool_button button_eraser',
-        text: ""
-    }, {
-        name: 'button_gr2D',
-        title: '2D Graph',
-        classes: 'big_tool_button button_gr2D',
-        text: ""
-    }, {
-        name: 'button_nL',
-        title: 'Number line',
-        classes: 'big_tool_button button_nL',
-        text: ""
-    }, {
-        name: 'button_clear',
-        title: 'Clear Whiteboard',
-        classes: 'big_tool_button button_clear',
-        text: "Clear"
-    }, {
-        name: 'button_move',
-        title: 'Select/Move',
-        classes: 'big_tool_button button_move',
-        text: ""
-    }, /* {
-        name: 'button_delete',
-        title: 'Delete',
-        classes: 'big_tool_button button_delete',
-        text: "Delete"
-    }, */ {
-        name: 'button_undo',
-        title: 'Undo',
-        classes: 'big_tool_button button_undo',
-        text: "Undo"
-    } /**, {
+            name: 'button_text',
+            title: 'Text',
+            classes: 'big_tool_button button_text',
+            text: ""
+        }, {
+            name: 'button_pencil',
+            title: 'Draw or Write',
+            classes: 'big_tool_button button_pencil',
+            text: ""
+        }, {
+            name: 'button_line',
+            title: 'Lines',
+            classes: 'big_tool_button button_line',
+            text: ""
+        }, {
+            name: 'button_rect',
+            title: 'Rectangles',
+            classes: 'big_tool_button button_rect',
+            text: ""
+        }, {
+            name: 'button_oval',
+            title: 'Circles/Ellipses',
+            classes: 'big_tool_button button_oval',
+            text: ""
+        }, {
+            name: 'button_eraser',
+            title: 'Erase',
+            classes: 'big_tool_button button_eraser',
+            text: ""
+        }, {
+            name: 'button_gr2D',
+            title: '2D Graph',
+            classes: 'big_tool_button button_gr2D',
+            text: ""
+        }, {
+            name: 'button_nL',
+            title: 'Number line',
+            classes: 'big_tool_button button_nL',
+            text: ""
+        }, {
+            name: 'button_clear',
+            title: 'Clear Whiteboard',
+            classes: 'big_tool_button button_clear',
+            text: "Clear"
+        }, {
+            name: 'button_move',
+            title: 'Select/Move',
+            classes: 'big_tool_button button_move',
+            text: ""
+        },
+        /* {
+            name: 'button_delete',
+            title: 'Delete',
+            classes: 'big_tool_button button_delete',
+            text: "Delete"
+        },*/
+        {
+            name: 'button_undo',
+            title: 'Undo',
+            classes: 'big_tool_button button_undo',
+            text: "Undo"
+        }
+        /**, {
         name: 'button_nav',
         title: 'Navigator',
         classes: 'big_tool_button button_nav',
         text: ""
-    } */, {
-        name: 'button_temp',
-        title: 'Figures',
-        classes: 'big_tool_button button_temp',
-        text: "Figure"
-    }];
+    }*/
+        , {
+            name: 'button_temp',
+            title: 'Figures',
+            classes: 'big_tool_button button_temp',
+            text: "Figure"
+        }
+    ];
 
     function getNextObjectID() {
         //var l=uidSeed?uidSeed+1:wb.getUIDSeed();
@@ -365,125 +373,147 @@ var Whiteboard = function (cont, isStatic, _opts) {
     }
     var event_rightclick = false
 
-        function isRightClick(e) {
-            e = e || window.event;
-            if (!e.which && e.button !== undefined) {
-                e.which = (e.button & 1 ? 1 : (e.button & 2 ? 3 : (e.button & 4 ? 2 : 0)));
+    function isRightClick(e) {
+        e = e || window.event;
+        if (!e.which && e.button !== undefined) {
+            e.which = (e.button & 1 ? 1 : (e.button & 2 ? 3 : (e.button & 4 ? 2 : 0)));
+        }
+        event_rightclick = e.which === 3
+        return event_rightclick;
+    }
+
+    function buildCanvasLayers() {
+        var divObj = $("<div/>", {
+            name: 'drawsection'
+        }).addClass('drawsection');
+        var canvasCont = $("<div/>", {
+            name: 'canvas-container',
+            width: 800,
+            height: 600
+        }).addClass('canvas-container');
+        $("<canvas/>", {
+            name: 'canvas',
+            text: "(Your browser doesn't support canvas)"
+        }).addClass('canvas').appendTo(canvasCont);
+
+        var itxt = $("<div/>", {
+            name: 'inputBox'
+        }).addClass('inputBox');
+        var mqbox = $('<div><span class="mathquill-editable" id="editable-math"></span></div>');
+        var dbtn = $("<button/>", {
+            name: 'done_btn',
+            text: 'DONE'
+
+        }).addClass('done_btn');
+        mqbox.appendTo(itxt);
+        dbtn.appendTo(itxt);
+        itxt.appendTo(canvasCont);
+        canvasCont.appendTo(divObj);
+        if (buffercontext) {
+            buffercanvas.width = buffercanvas.height = 0;
+            shapeHitcanvas.width = shapeHitcanvas.height = 0;
+        } else {
+            buffercanvas = document.createElement('canvas');
+            shapeHitcanvas = document.createElement('canvas');
+            if (typeof G_vmlCanvasManager != "undefined") {
+                $(buffercanvas).appendTo(canvasCont)
+                G_vmlCanvasManager.initElement(buffercanvas);
+                $(shapeHitcanvas).appendTo(canvasCont)
+                G_vmlCanvasManager.initElement(shapeHitcanvas);
             }
-            event_rightclick = e.which === 3
-            return event_rightclick;
+            buffercontext = buffercanvas.getContext('2d');
+            shapeHitCtx = shapeHitcanvas.getContext('2d');
         }
+        return divObj
+    }
 
-        function buildCanvasLayers() {
-            var divObj = $("<div/>", {
-                name: 'drawsection'
-            }).addClass('drawsection');
-            var canvasCont = $("<div/>", {
-                name: 'canvas-container',
-                width: 800,
-                height: 600
-            }).addClass('canvas-container');
-            $("<canvas/>", {
-                name: 'canvas',
-                text: "(Your browser doesn't support canvas)"
-            }).addClass('canvas').appendTo(canvasCont);
+    function buildInputTextBox() {
+        var divObj
+        return divObj
+    }
 
-            var itxt = $("<div/>", {
-                name: 'inputBox'
-            }).addClass('inputBox');
-            var mqbox = $('<div><span class="mathquill-editable" id="editable-math"></span></div>');
-            var dbtn = $("<button/>", {
-                name: 'done_btn',
-                text: 'DONE'
+    function buildScrollBar(dir) {
+        var divObj
+        if (dir == 'v') {
+            divObj = $("<div name='vscroller' class='vscroller'><div name='vscroll_track' class='scroll_track vscroll_track'></div><div name='vscroll_thumb' class='scroll_thumb vscroll_thumb'></div></div>");
+        } else {
+            divObj = $("<div name='hscroller' class='hscroller'><div name='hscroll_track' class='scroll_track hscroll_track'></div><div name='hscroll_thumb' class='scroll_thumb hscroll_thumb'></div></div>");
+        }
+        return divObj
+    }
 
-            }).addClass('done_btn');
-            mqbox.appendTo(itxt);
-            dbtn.appendTo(itxt);
-            itxt.appendTo(canvasCont);
-            canvasCont.appendTo(divObj);
-            if (buffercontext) {
-                buffercanvas.width = buffercanvas.height = 0;
-                shapeHitcanvas.width = shapeHitcanvas.height = 0;
-            } else {
-                buffercanvas = document.createElement('canvas');
-                shapeHitcanvas = document.createElement('canvas');
-                if (typeof G_vmlCanvasManager != "undefined") {
-                    $(buffercanvas).appendTo(canvasCont)
-                    G_vmlCanvasManager.initElement(buffercanvas);
-                    $(shapeHitcanvas).appendTo(canvasCont)
-                    G_vmlCanvasManager.initElement(shapeHitcanvas);
-                }
-                buffercontext = buffercanvas.getContext('2d');
-                shapeHitCtx = shapeHitcanvas.getContext('2d');
+    function createEditableGraph(type, w, h) {
+        var egraph = $get_Element("#egraph");
+        if (egraph) {
+            $(egraph).remove();
+        }
+        var board_hold = $get_Element("#wb-container");
+        var board = $("<div name='egraph' class='egraph' style='max-width:400px;width:400px;position:absolute;top:35px;display:none;'/>")
+        board.appendTo($(board_hold));
+        if (!wb.graphModules) {
+            wb.graphModules = {}
+            wb.plotModules = {}
+        }
+        var gtype = type ? type : 'xy'
+        var graph = new Graph(document, board.get(0), gtype, -5, 5, -5, 5, 1, 1, undefined, true, true, w ? w : 300, h ? h : (gtype == 'xy' ? 300 : 150), true, true, false);
+        wb.graphModule = new Plotter(graph, 'point', {
+            data: "['interactive']"
+        }, 'GridToGrid', true, false, false, false);
+        var cntrlCont = createToolBtn({
+            name: 'toggleGraphEdit',
+            title: 'Show/Hide Graph Edit',
+            classes: 'big_tool_button',
+            text: "Edit Graph"
+        }).appendTo($get_jqElement("#tools")).css({
+            "position": "absolute",
+            "right": "5px",
+            "font-size": "0.9em",
+            "display": "none"
+        }).click(function () {
+            var egraph = $get_jqElement("#egraph")
+            var visib = egraph.is(":visible");
+            showHideGraphModuleEditor(!visib);
+        });
+        $(graph.createGTool("done")).click(function () {
+            //var egraph = $get_jqElement("#egraph")
+            //var visib = egraph.is(":visible");
+            transMode = 'move'
+            showHideGraphModuleEditor(false);
+        });
+    }
+
+    function getGraphModuleConfig() {
+        var p = wb.graphModule;
+        var g = p.graphObj;
+        p.setAxisDatas();
+        var obj = p.getGraphData()
+        obj.plot_data = eval(p.plot_datas);
+        return (obj);
+    }
+
+    function plotFunctionToGraphModule(config) {
+        if (config) {
+            var plot = wb.graphModule
+            var graph = plot.graphObj
+            graph.setAxis(config.xaxis, config.yaxis);
+            graph.scaleGraph(config.xscale, config.yscale);
+            if (config.plot_data) {
+                plot.setAxisDatas()
+                plot.renderData({
+                    data: convertObjToString(config.plot_data)
+                }, config.labelPlot, config.node_data, false, config.actions);
             }
-            return divObj
         }
+    }
 
-        function buildInputTextBox() {
-            var divObj
-            return divObj
-        }
-
-        function buildScrollBar(dir) {
-            var divObj
-            if (dir == 'v') {
-                divObj = $("<div name='vscroller' class='vscroller'><div name='vscroll_track' class='scroll_track vscroll_track'></div><div name='vscroll_thumb' class='scroll_thumb vscroll_thumb'></div></div>");
-            } else {
-                divObj = $("<div name='hscroller' class='hscroller'><div name='hscroll_track' class='scroll_track hscroll_track'></div><div name='hscroll_thumb' class='scroll_thumb hscroll_thumb'></div></div>");
+    function updateGraphModule(uid, config, rerender, data, boo) {
+        //var config=eval(data.config)
+        showHideGraphToggler(false)
+        if (!rerender) {
+            if (!config || (wb.graphModule && (config.gtype != wb.graphModule.graph_type))) {
+                createEditableGraph(config.gtype, config.width, config.height)
             }
-            return divObj
-        }
 
-        function createEditableGraph(type, w, h) {
-            var egraph = $get_Element("#egraph");
-            if (egraph) {
-                $(egraph).remove();
-            }
-            var board_hold = $get_Element("#wb-container");
-            var board = $("<div name='egraph' class='egraph' style='max-width:400px;width:400px;position:absolute;top:35px;display:none;'/>")
-            board.appendTo($(board_hold));
-            if (!wb.graphModules) {
-                wb.graphModules = {}
-                wb.plotModules = {}
-            }
-            var gtype = type ? type : 'xy'
-            var graph = new Graph(document, board.get(0), gtype, -5, 5, -5, 5, 1, 1, undefined, true, true, w ? w : 300, h ? h : (gtype == 'xy' ? 300 : 150), true, true, false);
-            wb.graphModule = new Plotter(graph, 'point', {
-                data: "['interactive']"
-            }, 'GridToGrid', true, false, false, false);
-            var cntrlCont = createToolBtn({
-                name: 'toggleGraphEdit',
-                title: 'Show/Hide Graph Edit',
-                classes: 'big_tool_button',
-                text: "Edit Graph"
-            }).appendTo($get_jqElement("#tools")).css({
-                "position": "absolute",
-                "right": "5px",
-                "font-size": "0.9em",
-                "display": "none"
-            }).click(function () {
-                var egraph = $get_jqElement("#egraph")
-                var visib = egraph.is(":visible");
-                showHideGraphModuleEditor(!visib);
-            });
-            $(graph.createGTool("done")).click(function () {
-                //var egraph = $get_jqElement("#egraph")
-                //var visib = egraph.is(":visible");
-                transMode = 'move'
-                showHideGraphModuleEditor(false);
-            });
-        }
-
-        function getGraphModuleConfig() {
-            var p = wb.graphModule;
-            var g = p.graphObj;
-            p.setAxisDatas();
-            var obj = p.getGraphData()
-            obj.plot_data = eval(p.plot_datas);
-            return (obj);
-        }
-
-        function plotFunctionToGraphModule(config) {
             if (config) {
                 var plot = wb.graphModule
                 var graph = plot.graphObj
@@ -497,150 +527,128 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 }
             }
         }
-
-        function updateGraphModule(uid, config, rerender, data, boo) {
-            //var config=eval(data.config)
-            showHideGraphToggler(false)
-            if (!rerender) {
-                if (!config || (wb.graphModule && (config.gtype != wb.graphModule.graph_type))) {
-                    createEditableGraph(config.gtype, config.width, config.height)
-                }
-
-                if (config) {
-                    var plot = wb.graphModule
-                    var graph = plot.graphObj
-                    graph.setAxis(config.xaxis, config.yaxis);
-                    graph.scaleGraph(config.xscale, config.yscale);
-                    if (config.plot_data) {
-                        plot.setAxisDatas()
-                        plot.renderData({
-                            data: convertObjToString(config.plot_data)
-                        }, config.labelPlot, config.node_data, false, config.actions);
-                    }
-                }
+        //graphicData.config=getGraphModuleConfig()
+        var plot = wb.graphModule
+        var graph = plot.graphObj
+        var gData = graph.canvas.toDataURL();
+        var pData = graph.canvas.toDataURL();
+        var gImage, pImage;
+        if (!wb.graphModules[uid]) {
+            wb.graphModules[uid] = new Image();
+            wb.plotModules[uid] = new Image();
+        }
+        gImage = wb.graphModules[uid]
+        pImage = wb.plotModules[uid]
+        gImage.src = gData;
+        pImage.src = pData;
+        wb.graphModules[uid] = gImage;
+        wb.plotModules[uid] = pImage;
+        //var bound = plot.selObjBound.brect
+        //context.drawImage(gImage, bound.xmin, bound.ymin);
+        //context.drawImage(pImage, bound.xmin, bound.ymin);
+        var tdata = getGraphModuleConfig();
+        if (!objectActions[uid]['edit']) {
+            objectActions[uid]['edit'] = [{}];
+        }
+        var li = objectActions[uid]['edit'].length - 1;
+        objectActions[uid]['edit'][li] = tdata;
+        if (!boo) {
+            var mobj = {
+                id: data.id,
+                uid: data.uid,
+                type: 'cmd',
+                config: tdata,
+                cmd: {
+                    name: 'edit',
+                    data: tdata
+                },
+                dataArr: []
             }
-            //graphicData.config=getGraphModuleConfig()
-            var plot = wb.graphModule
-            var graph = plot.graphObj
-            var gData = graph.canvas.toDataURL();
-            var pData = graph.canvas.toDataURL();
-            var gImage, pImage;
-            if (!wb.graphModules[uid]) {
-                wb.graphModules[uid] = new Image();
-                wb.plotModules[uid] = new Image();
-            }
-            gImage = wb.graphModules[uid]
-            pImage = wb.plotModules[uid]
-            gImage.src = gData;
-            pImage.src = pData;
-            wb.graphModules[uid] = gImage;
-            wb.plotModules[uid] = pImage;
-            //var bound = plot.selObjBound.brect
-            //context.drawImage(gImage, bound.xmin, bound.ymin);
-            //context.drawImage(pImage, bound.xmin, bound.ymin);
-            var tdata = getGraphModuleConfig();
-            if (!objectActions[uid]['edit']) {
-                objectActions[uid]['edit'] = [{}];
-            }
-            var li = objectActions[uid]['edit'].length - 1;
-            objectActions[uid]['edit'][li] = tdata;
-            if (!boo) {
-                var mobj = {
-                    id: data.id,
-                    uid: data.uid,
-                    type: 'cmd',
-                    config: tdata,
-                    cmd: {
-                        name: 'edit',
-                        data: tdata
-                    },
-                    dataArr: []
-                }
-                updateDataToSERVER(null, mobj);
+            updateDataToSERVER(null, mobj);
 
-            } else {
-                updateCanvas();
-            }
-
+        } else {
+            updateCanvas();
         }
 
-        function showHideGraphToggler(boo) {
-            var togg = $get_jqElement("#toggleGraphEdit");
-            boo ? togg.show() : togg.hide()
+    }
 
+    function showHideGraphToggler(boo) {
+        var togg = $get_jqElement("#toggleGraphEdit");
+        boo ? togg.show() : togg.hide()
+
+    }
+
+    function showHideGraphModuleEditor(boo, noupdate) {
+        var plot
+        var graph
+        var config = selectedObj ? eval(selectedObj.config) : null;
+        var gedit = $get_jqElement("#egraph");
+        var togg = $get_jqElement("#toggleGraphEdit");
+        if (boo) {
+            togg.text("Edit Done")
+        } else {
+            togg.text("Edit Graph")
         }
-
-        function showHideGraphModuleEditor(boo, noupdate) {
-            var plot
-            var graph
-            var config = selectedObj ? eval(selectedObj.config) : null;
-            var gedit = $get_jqElement("#egraph");
-            var togg = $get_jqElement("#toggleGraphEdit");
-            if (boo) {
-                togg.text("Edit Done")
-            } else {
-                togg.text("Edit Graph")
+        if (boo) {
+            if ((wb.graphModule && (config.gtype != wb.graphModule.graph_type))) {
+                createEditableGraph(config.gtype, config.width, config.height)
             }
-            if (boo) {
-                if ((wb.graphModule && (config.gtype != wb.graphModule.graph_type))) {
-                    createEditableGraph(config.gtype, config.width, config.height)
-                }
+            plot = wb.graphModule
+            graph = plot.graphObj
+            var uid = selectedObj.uid
+            var li = objectActions[selectedObj.uid]['edit'] ? objectActions[selectedObj.uid]['edit'].length - 1 : -1;
+            if (li > -1) {
+                config = objectActions[uid]['edit'][li]
+            }
+            if (config) {
+                graph.setAxis(config.xaxis, config.yaxis);
+                graph.scaleGraph(config.xscale, config.yscale);
+            }
+            graphEditMode = true;
+            var bound = getWhiteboardObjBound('sel');
+            if (selectedObj) {
+                plot.currentUID = selectedObj.uid;
+                plot.objIndex = selectedObjIndex;
+                plot.selObjBound = bound;
+            } else {
+                config = plot.objIndex !== undefined ? eval(graphicDataStore[plot.objIndex].config) : null;
+            }
+
+            var pos = bound.brect;
+            var off = {
+                left: 0.5,
+                top: $get_jqElement("#tools").outerHeight() + 0.5
+            };
+            removeBoundRect();
+            updateCanvas();
+            gedit.css({
+                'left': pos.xmin + off.left + 'px',
+                'top': pos.ymin + off.top + 'px',
+                'display': 'block'
+            })
+            //gedit.show();
+        } else {
+            graphEditMode = !true;
+            if (wb.graphModule) {
                 plot = wb.graphModule
                 graph = plot.graphObj
-                var uid = selectedObj.uid
-                var li = objectActions[selectedObj.uid]['edit'] ? objectActions[selectedObj.uid]['edit'].length - 1 : -1;
-                if (li > -1) {
-                    config = objectActions[uid]['edit'][li]
-                }
+                config = plot.objIndex !== undefined ? eval(graphicDataStore[plot.objIndex].config) : null;
                 if (config) {
-                    graph.setAxis(config.xaxis, config.yaxis);
-                    graph.scaleGraph(config.xscale, config.yscale);
-                }
-                graphEditMode = true;
-                var bound = getWhiteboardObjBound('sel');
-                if (selectedObj) {
-                    plot.currentUID = selectedObj.uid;
-                    plot.objIndex = selectedObjIndex;
-                    plot.selObjBound = bound;
-                } else {
-                    config = plot.objIndex !== undefined ? eval(graphicDataStore[plot.objIndex].config) : null;
-                }
-
-                var pos = bound.brect;
-                var off = {
-                    left: 0.5,
-                    top: $get_jqElement("#tools").outerHeight() + 0.5
-                };
-                removeBoundRect();
-                updateCanvas();
-                gedit.css({
-                    'left': pos.xmin + off.left + 'px',
-                    'top': pos.ymin + off.top + 'px',
-                    'display': 'block'
-                })
-                //gedit.show();
-            } else {
-                graphEditMode = !true;
-                if (wb.graphModule) {
-                    plot = wb.graphModule
-                    graph = plot.graphObj
-                    config = plot.objIndex !== undefined ? eval(graphicDataStore[plot.objIndex].config) : null;
-                    if (config) {
-                        var nconfig = getGraphModuleConfig()
-                        if (config.xaxis != nconfig.xaxis || config.yaxis != nconfig.yaxis || config.xscale != nconfig.xscale || config.yscale != nconfig.yscale) {
-                            updateGraphModule(plot.currentUID, nconfig, true, graphicDataStore[plot.objIndex])
-                        }
-
-                        if (!noupdate) {
-                            updateCanvas();
-                            setObjSelected(graphicDataStore[plot.objIndex]);
-                        }
-                        gedit.hide();
+                    var nconfig = getGraphModuleConfig()
+                    if (config.xaxis != nconfig.xaxis || config.yaxis != nconfig.yaxis || config.xscale != nconfig.xscale || config.yscale != nconfig.yscale) {
+                        updateGraphModule(plot.currentUID, nconfig, true, graphicDataStore[plot.objIndex])
                     }
-                }
 
+                    if (!noupdate) {
+                        updateCanvas();
+                        setObjSelected(graphicDataStore[plot.objIndex]);
+                    }
+                    gedit.hide();
+                }
             }
+
         }
+    }
     wb.addGraphModule = function (t, x, y, boo, data) {
         //alert("ADD "+temp.name+" from "+temp.path)
         if (selectedObj && selectionMode && selectedObj.id == 'graph') {
@@ -1295,6 +1303,20 @@ var Whiteboard = function (cont, isStatic, _opts) {
         return -1;
     }
 
+    function findUIDIndex(uid) {
+        var l = graphicDataStore.length
+        for (var i = l - 1; i >= 0; i--) {
+            var __obj = graphicDataStore[i];
+            if (__obj.type == 'cmd') {
+                continue
+            }
+            if (__obj.uid == uid) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     function selectionOnNode(obj, xp, yp) {
         var rect = cloneObject(obj.brect);
         var rectM = getMoveNode(rect);
@@ -1420,7 +1442,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 if (isScaled) {
                     transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
                     transformRect(rectM, isScaled.tx, isScaled.ty, 'move')
-                    transformRect(rectR, isScaled.tx, -isScaled.ty, 'move')
+                    transformRect(rectR, -isScaled.tx, -isScaled.ty, 'move')
                     transformRect(rectE, isScaled.tx, isScaled.ty, 'move')
                     transformRect(rectD, isScaled.tx, isScaled.ty, 'move')
                 }
@@ -1633,7 +1655,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             if (isObjDeleted(obj.uid) || isGraph || _objid === 0) {
                 continue
             }
-            if (!obj.isErased) {
+            if (!wb.isErased(obj)) {
                 var r1 = obj.brect;
                 var rect = cloneObject(r1);
                 var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
@@ -1703,7 +1725,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             if (isObjDeleted(obj.uid)) {
                 continue
             }
-            if (!obj.isErased) {
+            if (!wb.isErased(obj)) {
                 var r1 = obj.brect;
                 var rect = cloneObject(r1);
                 /* var isTransformed = isObjTransformed(obj.uid,transMode)
@@ -1902,18 +1924,20 @@ var Whiteboard = function (cont, isStatic, _opts) {
         return hasColorData
     }
 
-    function checkForObjectErase(r) {
-        var l = graphicDataStore.length
+    function checkForObjectErase(r, arr) {
+        var _graphicDataStore = arr ? arr : graphicDataStore
+        var l = _graphicDataStore.length
+        var eobjs = []
         for (var i = 0; i < l; i++) {
-            var obj = graphicDataStore[i]
+            var obj = _graphicDataStore[i]
             var isGraph = obj.id == 11 || obj.id == 12 || obj.id == 'graph'
-            if (obj.type == 'cmd' || isGraph||obj.isErased||obj.id===0) {
+            if (obj.type == 'cmd' || isGraph || wb.isErased(obj) || obj.id === 0) {
                 continue
             }
             if (isObjDeleted(obj.uid)) {
                 continue
             }
-            if (!obj.isErased) {
+            if (!wb.isErased(obj)) {
                 var r1 = obj.brect;
 
                 var rect = cloneObject(r1);
@@ -1941,17 +1965,22 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 // var isTransformed = isObjTransformed(obj.uid,transMode)
 
                 // transformRect(rect, scrollPosition.x, scrollPosition.y,transMode)
-                // obj.isErased = intersectRect(rect, r)
+                // obj.isErased() = intersectRect(rect, r)
                 var sel = intersectRect(rect, r)
                 var hasShape = false
                 if (sel) {
                     hasShape = getShapeHit(obj, r)
                     //updateBuffer()
                 }
-                obj.isErased = hasShape
+                //obj.isErased() = hasShape
+                objsErased[obj.uid] = hasShape;
+                if (hasShape) {
+                    eobjs.push(obj.uid);
+                }
             }
         }
         //return -1
+        return eobjs
     }
 
     //
@@ -2033,14 +2062,14 @@ var Whiteboard = function (cont, isStatic, _opts) {
         var my = event.layerY ? event.layerY : event.pageY - offY;
         var box = $get_jqElement('#canvas-container').position();
         var xp, yp, wi, hi
-            xp = screen_width - 325 - box.left
-            yp = 0 - box.top
-            wi = 325
-            hi = $get_jqElement('#calc_hold').height()
-            //console_log(xp + ":" + yp + ":" + wi + ":" + hi + ":" + mx + ":" + my + ":" + event.layerX + ":" + event.pageX)
-            if ((mx >= xp && mx <= xp + wi) && (my >= yp && my <= yp + hi)) {
-                return true;
-            }
+        xp = screen_width - 325 - box.left
+        yp = 0 - box.top
+        wi = 325
+        hi = $get_jqElement('#calc_hold').height()
+        //console_log(xp + ":" + yp + ":" + wi + ":" + hi + ":" + mx + ":" + my + ":" + event.layerX + ":" + event.pageX)
+        if ((mx >= xp && mx <= xp + wi) && (my >= yp && my <= yp + hi)) {
+            return true;
+        }
         return false;
     }
     //end of calc internal methods
@@ -2224,7 +2253,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         var ht = 15;
         var holder_x = x0
         var holder_y = y0
-        // mq_holder.src="http://latex.codecogs.com/png.latex?"+txt;
+            // mq_holder.src="http://latex.codecogs.com/png.latex?"+txt;
 
         if (false) {
             context.drawImage(mq_holder, holder_x, holder_y);
@@ -2664,11 +2693,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
     function createTempBtn(obj) {
         var btn = $('<button/>', {
-            title: obj.title ? obj.title : "Template",
-            name: obj.name,
-            path: obj.url,
-            text: ""
-        }).addClass('small_tool_button')
+                title: obj.title ? obj.title : "Template",
+                name: obj.name,
+                path: obj.url,
+                text: ""
+            }).addClass('small_tool_button')
             .css({
                 "background-image": "url(" + obj.icon + ")",
                 "background-repeat": "no-repeat",
@@ -2897,7 +2926,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 continue
             }
             var b = obj.brect
-            addPix(b.xmin, b.ymin, obj.isErased)
+            addPix(b.xmin, b.ymin, wb.isErased(obj))
         }
         if ($get_jqElement("#graph_cont").length) {
             var el = $get_jqElement("#graph_cont");
@@ -3131,8 +3160,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
             buffercanvas.width = canvas.width = _width;
             buffercanvas.height = canvas.height = _width;
             //
-            shapeHitcanvas.width =  _width;
-            shapeHitcanvas.height =  _width;
+            shapeHitcanvas.width = _width;
+            shapeHitcanvas.height = _width;
             if (isIE) {
                 $(canvas).css({
                     'width': '0px',
@@ -3156,9 +3185,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
                 context = null;
                 buffercontext = null;
-                
-                shapeHitcanvas=null;
-                shapeHitCtx=null;
+
+                shapeHitcanvas = null;
+                shapeHitCtx = null;
 
             }
         }
@@ -3257,7 +3286,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             var addScrollerH = scroll_window['width'] > docWidth
             var addScrollerV = scroll_window['height'] > docHeight
             var addScroller = addScrollerH || addScrollerV
-            //
+                //
             if (IS_IPHONE || docWidth <= 600) {
                 dox = IS_IPHONE ? 5 : 19
                 doy = IS_IPHONE ? 5 : 19
@@ -3289,9 +3318,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
                     context = null;
                     buffercontext = null;
-                    
-                    shapeHitcanvas=null
-                    shapeHitCtx=null;
+
+                    shapeHitcanvas = null
+                    shapeHitCtx = null;
 
                     //
                     canvas = document.createElement('canvas')
@@ -3520,7 +3549,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 var addScrollerH = scroll_window['width'] > docWidth
                 var addScrollerV = scroll_window['height'] > docHeight
                 var addScroller = addScrollerH || addScrollerV
-                //
+                    //
                 if (IS_IPHONE || docWidth <= 600) {
                     dox = IS_IPHONE ? 5 : 19
                     doy = IS_IPHONE ? 5 : 19
@@ -4423,7 +4452,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                         console.log(selectedObj)
                         if (i > -1) {
 
-                            if (selectedObj.isErased) {
+                            if (wb.isErased(selectedObj)) {
                                 penDown = !true
                                 wb.removeSelectionMode(true);
                                 alert("Sorry! Erased objects cannot be moved!!")
@@ -4543,7 +4572,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
                         context.beginPath();
                         context.moveTo(clickX, clickY);
                     } else if (currentTool == 'eraser') {
-                        erase(x, y);
+                        var eo = erase(x, y);
+                        if (eo && eo.length) {
+                            if (!eraseObjStore[graphicData.uid]) {
+                                eraseObjStore[graphicData.uid] = []
+                            }
+                            eraseObjStore[graphicData.uid] = eraseObjStore[graphicData.uid].concat(eo);
+                        }
                     }
                     drawcolor = colorToNumber(context.strokeStyle)
                     if (currentTool == 'text') {
@@ -4793,6 +4828,14 @@ var Whiteboard = function (cont, isStatic, _opts) {
                             y: yp,
                             id: "line"
                         };
+                        if (currentTool == 'eraser') {
+                            var eo = eraseObjStore[graphicData.uid];
+                            graphicData.hasErasedObj = false
+                            if (eo && eo.length) {
+                                graphicData.hasErasedObj = true;
+                                graphicData.erasedObjs = eo
+                            }
+                        }
                         if (currentTool != 'eraser') {
 
                             rect = getBoundRect(graphicData.dataArr[0].x, graphicData.dataArr[0].y, xp - scrollPosition.x, yp - scrollPosition.y)
@@ -4937,12 +4980,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
                                 dy = nr0.h
                             }
                             var trans = {
-                                tx: transMode == 'rotate' ? dr : dx,
-                                ty: transMode == 'rotate' ? dr : dy,
-                                tr: transMode == 'rotate' ? dr : 0,
-                                trect: selectedObj.brect
-                            }
-                            /*if (isTransformed) {
+                                    tx: transMode == 'rotate' ? dr : dx,
+                                    ty: transMode == 'rotate' ? dr : dy,
+                                    tr: transMode == 'rotate' ? dr : 0,
+                                    trect: selectedObj.brect
+                                }
+                                /*if (isTransformed) {
                                 trans = {
                                     tx: isTransformed.tx + dx,
                                     ty: isTransformed.ty + dy,
@@ -5030,7 +5073,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
                             context.moveTo(clickX, clickY);
                             drawLine();
                         } else if (currentTool == 'eraser') {
-                            erase(x, y);
+                            var eo = erase(x, y);
+                            if (eo && eo.length) {
+                                if (!eraseObjStore[graphicData.uid]) {
+                                    eraseObjStore[graphicData.uid] = []
+                                }
+                                eraseObjStore[graphicData.uid] = eraseObjStore[graphicData.uid].concat(eo);
+                            }
                             graphicData.dataArr[graphicData.dataArr.length] = {
                                 x: x - scrollPosition.x,
                                 y: y - scrollPosition.y,
@@ -5313,7 +5362,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 currPos = currPos > 0 ? 0 : currPos
                 currPos = currPos < -(scroll_window.height - screen_height) ? -(scroll_window.height - screen_height) : currPos;
                 var scrub = (scroll_window.height - screen_height) / (screen_height - 30)
-                //$get_Element('#canvas-container').style.top = currPos + "px";
+                    //$get_Element('#canvas-container').style.top = currPos + "px";
                 $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
                 scrollPosition['y'] = currPos;
                 updateNavThumb(scrollPosition['x'], scrollPosition['y'])
@@ -5421,7 +5470,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         if (!$get_Element("#content")) {
 
             var maxW = docWidth - clickX - 50
-            /*$($("#" + contDiv + " [name='inputBox'] div")[0]).html("<textarea class='content' name='content' style='white-space:normal;min-width:60px;min-height:40px;width:60px;height:40px;font:20pt Arial;color:" + wb.globalStrokeColor + "' ></textarea>" + '<div name="dummy_resize" style="max-width:' + maxW + 'px;min-height:40px;display: none;font:20pt Arial;word-wrap:normal;white-space:normal;"></div>');*/
+                /*$($("#" + contDiv + " [name='inputBox'] div")[0]).html("<textarea class='content' name='content' style='white-space:normal;min-width:60px;min-height:40px;width:60px;height:40px;font:20pt Arial;color:" + wb.globalStrokeColor + "' ></textarea>" + '<div name="dummy_resize" style="max-width:' + maxW + 'px;min-height:40px;display: none;font:20pt Arial;word-wrap:normal;white-space:normal;"></div>');*/
 
             $($("#" + contDiv + " [name='inputBox'] div")[0]).html("<div class='input_box' name='input_box' style='position:absolute;border:1px solid black;left:0px;top:0px;'><textarea class='content' name='content' style='white-space:normal;min-width:60px;min-height:40px;width:60px;height:40px;font:20pt Arial;color:" + wb.globalStrokeColor + ";border:0px;padding:0px;margin:0px;resize:none;overflow:hidden;' ></textarea></div>" + '<div name="dummy_resize" style="max-width:' + maxW + 'px;min-height:40px;display: none;font:20pt Arial;word-wrap:normal;white-space:normal;"></div>');
             $get_jqElement("#input_box").resizeBox(wb);
@@ -5610,7 +5659,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             $get_Element("#button_gr2D").style.border = '1px solid #000000';
             $get_Element("#button_nL").style.border = '1px solid #000000';
             var gr, xp, yp, xs, ys
-                graphMode = flag;
+            graphMode = flag;
             var cposX = parseInt($get_Element("#canvas-container").style.left);
             var cposY = parseInt($get_Element("#canvas-container").style.top);
             cposX = cposX ? cposX : 0;
@@ -5761,32 +5810,36 @@ var Whiteboard = function (cont, isStatic, _opts) {
         }
     }
 
-    function erase(x, y, ctx, skip) {
+    function erase(x, y, ctx, skip, check, arr) {
         var ew = 30
         var ep = ew;
-        var cntx = ctx ? ctx : context
-        if (isIE) {
-            var x0 = x;
-            var y0 = y;
-            var graphics = cntx;
-            var eR = ep / 2;
-            cntx.save();
-            cntx.beginPath();
-            cntx.fillStyle = 'white';
-            cntx.lineWidth = 0;
-            // context.fillRect(x - ep / 2, y - ep / 2, ew, ew);
-            graphics.moveTo(x0 - eR, y0 - eR);
-            graphics.lineTo(x0 + eR, y0 - eR);
-            graphics.lineTo(x0 + eR, y0 + eR);
-            graphics.lineTo(x0 - eR, y0 + eR);
-            graphics.lineTo(x0 - eR, y0 - eR);
+        if (!check) {
+            var cntx = ctx ? ctx : context
+            if (isIE) {
+                var x0 = x;
+                var y0 = y;
+                var graphics = cntx;
+                var eR = ep / 2;
+                cntx.save();
+                cntx.beginPath();
+                cntx.fillStyle = 'white';
+                cntx.lineWidth = 0;
+                // context.fillRect(x - ep / 2, y - ep / 2, ew, ew);
+                graphics.moveTo(x0 - eR, y0 - eR);
+                graphics.lineTo(x0 + eR, y0 - eR);
+                graphics.lineTo(x0 + eR, y0 + eR);
+                graphics.lineTo(x0 - eR, y0 + eR);
+                graphics.lineTo(x0 - eR, y0 - eR);
 
-            cntx.closePath();
-            cntx.fill();
-            cntx.restore();
-            return;
+                cntx.closePath();
+                cntx.fill();
+                cntx.restore();
+
+                //return;
+            } else {
+                cntx.clearRect(x - ep / 2, y - ep / 2, ew, ew);
+            }
         }
-        cntx.clearRect(x - ep / 2, y - ep / 2, ew, ew);
         var left = x - (ep / 2);
         var right = x + ew - (ep / 2);
         var top = y - (ep / 2);
@@ -5798,8 +5851,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
             ymax: bottom
         }
         if (!skip) {
-            checkForObjectErase(r)
+            return checkForObjectErase(r, arr)
         }
+        return null
     }
 
 
@@ -5874,7 +5928,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
                 // alert('test 6');
                 var nname = header.name
-                // ExternalInterface.call("console.log","B")
+                    // ExternalInterface.call("console.log","B")
                 var segC = 0;
                 var nheader;
 
@@ -6100,11 +6154,19 @@ source: https://gist.github.com/754454
     function renderObjAux(obj, boo) {
         graphicData = obj
         if (obj.type && obj.type == 'cmd') {
-            if (!objectActions[obj.uid][obj.cmd.name]) {
-                objectActions[obj.uid][obj.cmd.name] = []
-            }
-            objectActions[obj.uid][obj.cmd.name].push(obj.cmd.data);
-            /*if(obj.cmd.name='move'){
+            if (obj.cmd.name == 'erase') {
+                var eo = eraseObjStore[obj.uid] = obj.erasedObjs;
+                //checkForErase[obj.uid] = false;
+                for (var c = 0; c < eo.length; c++) {
+                    objsErased[eo[c]] = true;
+                }
+            } else {
+                if (!objectActions[obj.uid][obj.cmd.name]) {
+                    objectActions[obj.uid][obj.cmd.name] = []
+                }
+                objectActions[obj.uid][obj.cmd.name].push(obj.cmd.data);
+
+                /*if(obj.cmd.name='move'){
         
         //var li=objectActions[uid].length-1
         //objectActions[uid][li].isTransformed=true;
@@ -6114,16 +6176,17 @@ source: https://gist.github.com/754454
         }else if(obj.cmd.name='delete'){
         objectActions[uid].isDeleted=true;
         }*/
-            var _obj = cloneObject(obj)
-            graphicDataStore.push(_obj);
-            if (obj.id == 'graph') {
-                //wb.addGraphModule(obj.config.gtype, undefined, undefined, false, obj);
-                updateGraphModule(_obj.uid, _obj.config, !true, null, true)
-            }
-            ////updateCanvas();
-            if (obj.groupid !== undefined) {
-                gidSeed = obj.groupid
-                gidSeed++
+                var _obj = cloneObject(obj)
+                graphicDataStore.push(_obj);
+                if (obj.id == 'graph') {
+                    //wb.addGraphModule(obj.config.gtype, undefined, undefined, false, obj);
+                    updateGraphModule(_obj.uid, _obj.config, !true, null, true)
+                }
+                ////updateCanvas();
+                if (obj.groupid !== undefined) {
+                    gidSeed = obj.groupid
+                    gidSeed++
+                }
             }
             return
         }
@@ -6167,16 +6230,34 @@ source: https://gist.github.com/754454
         var deb = ""
         console_log("RENDER_DATA_FOR: " + graphic_id)
         if (graphic_id === 0) {
+            var _skip = obj.hasErasedObj
+            var eo = []
             for (var i = 0; i < dLength; i++) {
 
                 x1 = graphic_data[i].x + scrollPosition.x;
                 y1 = graphic_data[i].y + scrollPosition.y;
                 deb += x1 + ":" + y1 + "||"
-                erase(x1, y1);
+                var _eo = erase(x1, y1, null, _skip);
+                eo = eo.concat(_eo);
                 if (isIE) {
                     // updateCanvas();
                     doUpdateCanvas = true;
                 }
+
+            }
+            if (obj.hasErasedObj) {
+                eo = eraseObjStore[obj.uid] = obj.erasedObjs;
+                //checkForErase[obj.uid] = false;
+                for (var c = 0; c < eo.length; c++) {
+                    objsErased[eo[c]] = true;
+                }
+            } else {
+                eraseObjStore[obj.uid] = eo;
+                checkForErase[obj.uid] = {
+                    data: cloneObject(obj),
+                    id: obj.uid,
+                    arr: eo
+                };
 
             }
         }
@@ -6353,7 +6434,7 @@ source: https://gist.github.com/754454
         if (graphic_id === 11 || graphic_id === 12) {
             idName = graphic_id == 11 ? "gr2D" : "nL";
             var _obj = cloneObject(obj)
-            //showHideGraph(idName, graphic_data[0].x + scrollPosition.x, graphic_data[0].y + scrollPosition.y, graphic_data[0].addImage);
+                //showHideGraph(idName, graphic_data[0].x + scrollPosition.x, graphic_data[0].y + scrollPosition.y, graphic_data[0].addImage);
             if (wb.options.showTemplates) {
 
                 var config = {
@@ -6407,7 +6488,7 @@ source: https://gist.github.com/754454
             graphicDataStore.push(cloneObject(obj));
         }
         if (doUpdateCanvas) {
-           //// updateCanvas();
+            //// updateCanvas();
         }
         canvas_drawing_width = rect.xmax > canvas_drawing_width ? rect.xmax : canvas_drawing_width;
         canvas_drawing_height = rect.ymax > canvas_drawing_height ? rect.ymax : canvas_drawing_height;
@@ -6452,9 +6533,9 @@ source: https://gist.github.com/754454
 
                 var cx = o.xmin + (o.w / 2)
                 var cy = o.ymin + (o.h / 2)
-                //ctx.save()
-                //ctx.translate(,-scrollPosition.y)
-                //ctx.save()
+                    //ctx.save()
+                    //ctx.translate(,-scrollPosition.y)
+                    //ctx.save()
                 ctx.translate(cx, cy)
                 ctx.rotate(r);
                 ctx.translate(-cx, -cy)
@@ -6505,7 +6586,7 @@ source: https://gist.github.com/754454
             ctx.strokeStyle = col;
         }
         var deb = ""
-        //console_log("RENDER_DATA_FOR: " + graphic_id)
+            //console_log("RENDER_DATA_FOR: " + graphic_id)
         if (graphic_id === 0) {
             for (var i = 0; i < dLength; i++) {
 
@@ -6693,8 +6774,73 @@ source: https://gist.github.com/754454
         gwt_updatewhiteboard(cmdArray);
         //updateCanvas()
     }
-    wb.whiteboardLoadComplete=function(){
-    updateCanvas();
+    /** will be overriden in GWT/parent */
+    wb.updateWhiteboardData = function (index, newJSON) {
+        //
+        console.log('updateWhiteboardData');
+        console.log(index)
+        console.log(newJSON)
+    }
+    wb.whiteboardLoadComplete = function () {
+        //var c = []
+        for (var m in checkForErase) {
+            var _obj = checkForErase[m];
+            if (_obj && _obj.arr && _obj.arr.length) {
+                //c.push(m)
+
+                var _data = _obj.data;
+                var eo = _obj.arr
+                _data.hasErasedObj = true;
+                _data.erasedObjs = eo;
+                var _uid = _obj.id;
+                var _idx = findUIDIndex(_uid);
+                //var nobj = cloneObject(_data);
+                graphicDataStore[_idx] = _data;
+                var _json = convertObjToString(_data);
+                wb.updateWhiteboardData(_idx, _json);
+            }
+        }
+        /* if (c.length) {
+            var l = c.length
+            for (var j = 0; j < l; j++) {
+                var idx = findUIDIndex(c[j])
+                var arr = graphicDataStore.slice(0, idx)
+                var eobj = graphicDataStore[idx]
+                var graphic_data = eobj.dataArr;
+                var dLength = graphic_data.length;
+                var x1, y1
+                var eo = []
+                for (var i = 0; i < dLength; i++) {
+
+                    x1 = graphic_data[i].x + scrollPosition.x;
+                    y1 = graphic_data[i].y + scrollPosition.y;
+                    var _eo = erase(x1, y1, null, false, true,arr);
+                    if (_eo && _eo.length) {
+                        eo = eo.concat(_eo);
+                    }
+
+                }
+                if (eo.length) {
+
+                    eraseObjStore[eobj.uid] = eo;
+                    var mobj = {
+                    id: 0,
+                    uid: eobj.uid,
+
+                    type: 'cmd',
+                    erasedObjs:eo,
+                    cmd: {
+                        name: 'erase'
+                        
+                    },                    
+                    dataArr: []
+                }
+
+                updateDataToSERVER(null, mobj);
+                }
+            }
+        }*/
+        updateCanvas();
     }
     wb.renderFromStorage = function () {
         if (supports_localStorage()) {
@@ -7000,18 +7146,18 @@ source: https://gist.github.com/754454
             return null
         }
         var mselobj = multiSelection ? {
-            tx: mSelRect.xmin,
-            ty: mSelRect.ymin,
-            brect: {
-                xmin: mSelRect.xmin,
-                ymin: mSelRect.ymin,
-                xmax: mSelRect.xmax,
-                ymax: mSelRect.ymax,
-                w: mSelRect.xmax - mSelRect.xmin,
-                h: mSelRect.ymax - mSelRect.ymin
-            }
-        } : {}
-        //var obj = multiSelection?mselobj:selectedObj;
+                tx: mSelRect.xmin,
+                ty: mSelRect.ymin,
+                brect: {
+                    xmin: mSelRect.xmin,
+                    ymin: mSelRect.ymin,
+                    xmax: mSelRect.xmax,
+                    ymax: mSelRect.ymax,
+                    w: mSelRect.xmax - mSelRect.xmin,
+                    h: mSelRect.ymax - mSelRect.ymin
+                }
+            } : {}
+            //var obj = multiSelection?mselobj:selectedObj;
         var obj;
 
         if (multiSelection && selectionMode) {
@@ -7094,6 +7240,12 @@ source: https://gist.github.com/754454
             alert(e);
         }
     }
+    wb.isErased = function (obj) {
+        var id = obj.uid;
+
+        return objsErased[id]
+
+    }
 
     return wb;
 };
@@ -7101,35 +7253,34 @@ source: https://gist.github.com/754454
 
 
 /** return information about commands in json 
- * 
- */ 
+ *
+ */
 function _debugGetCommandInfoLabel(json) {
-   var data = JSON.parse(json);
-   
-   var idMap = {};
-   var dataArr = data.dataArr;
-   for(var i=0;i<dataArr.length;i++) {
-       var cmd = dataArr[i];
-       var id = cmd.id;
-       
-       var m = idMap[id];
-       if(!m) {
-           idMap[id] = 1;
-       }
-       else {
-           idMap[id] = (m + 1);
-       }
-   }
+    var data = JSON.parse(json);
 
-   var label='';
-   for (key in idMap) {
-       if(label != "") {
-           label += ", ";
-       }
-       var keyVal = idMap[key];
-       label += key + "[" + keyVal + "]";
-   }
-   return label;
+    var idMap = {};
+    var dataArr = data.dataArr;
+    for (var i = 0; i < dataArr.length; i++) {
+        var cmd = dataArr[i];
+        var id = cmd.id;
+
+        var m = idMap[id];
+        if (!m) {
+            idMap[id] = 1;
+        } else {
+            idMap[id] = (m + 1);
+        }
+    }
+
+    var label = '';
+    for (key in idMap) {
+        if (label != "") {
+            label += ", ";
+        }
+        var keyVal = idMap[key];
+        label += key + "[" + keyVal + "]";
+    }
+    return label;
 }
 
 
@@ -7225,23 +7376,23 @@ function _debugGetCommandInfoLabel(json) {
             $(document).on('mouseup', onMUHandler)
         }
         var ev_ontouch = function (ev) {
-            ev.preventDefault();
-            wb.ib_drag = 'start';
-            var click = getCursorPos(ev, cont.parent());
-            clickX = click.x;
-            clickY = click.y;
-            elmX = parseFloat(cont.css("left"));
-            elmY = parseFloat(cont.css("top"));
-            elmW = parseFloat(cont.outerWidth());
-            elmH = parseFloat(cont.outerHeight());
-            var id = $(this).attr("id").split("_")[1];
-            $(document).on('touchmove', {
-                elm: $(this),
-                id: id
-            }, onMMHandler)
-            $(document).on('touchend', onMUHandler)
-        }
-        //alert(isTouchEnabled)
+                ev.preventDefault();
+                wb.ib_drag = 'start';
+                var click = getCursorPos(ev, cont.parent());
+                clickX = click.x;
+                clickY = click.y;
+                elmX = parseFloat(cont.css("left"));
+                elmY = parseFloat(cont.css("top"));
+                elmW = parseFloat(cont.outerWidth());
+                elmH = parseFloat(cont.outerHeight());
+                var id = $(this).attr("id").split("_")[1];
+                $(document).on('touchmove', {
+                    elm: $(this),
+                    id: id
+                }, onMMHandler)
+                $(document).on('touchend', onMUHandler)
+            }
+            //alert(isTouchEnabled)
         for (var h = 0; h < handles.length; h++) {
 
             var hDiv = document.createElement('div');
