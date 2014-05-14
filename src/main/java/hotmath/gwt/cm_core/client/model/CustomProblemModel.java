@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomProblemModel implements Response {
@@ -13,7 +14,7 @@ public class CustomProblemModel implements Response {
     int problemNumber;
     String comments;
     private ProblemType problemType;
-    private List<LessonModel> linkedLessons;
+    private List<LessonModel> linkedLessons = new ArrayList<LessonModel>();
 
     public CustomProblemModel(){}
             

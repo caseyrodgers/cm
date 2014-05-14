@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
+import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemTreeTable.TreeTableCallback;
 import hotmath.gwt.cm_admin.client.teacher.TeacherManager;
 import hotmath.gwt.cm_admin.client.teacher.TeacherManager.Callback;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
@@ -18,7 +19,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.ui.MyTextButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
@@ -36,12 +36,8 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
-import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.data.shared.Store;
@@ -54,15 +50,12 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderL
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
-import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
-import com.sencha.gxt.widget.core.client.grid.ColumnModel;
-import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.GridView;
 import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 public class CustomProblemManager extends GWindow {
     BorderLayoutContainer _main;
-    Grid<CustomProblemModel> _grid;
+    CustomProblemTreeTable _treeTable;
     GridProperties _gridProps = GWT.create(GridProperties.class);
     private DefaultGxtLoadingPanel _emptyPage;
     private CheckBox _showAllTeachers;
@@ -91,37 +84,56 @@ public class CustomProblemManager extends GWindow {
         setHeadingText("Custom Problem Manager: " + TeacherManager.getTeacher().getTeacherName());
     }
 
+    
+    private void buildTreeGrid(List<CustomProblemModel> problems) {
+    	CustomProblemModel selectedProblem=null;
+    	if(_treeTable != null) {
+    		selectedProblem = _treeTable.getSelectedCustomProblem();
+    	}
+        _treeTable = new CustomProblemTreeTable(problems, new TreeTableCallback() {
+			
+			@Override
+			public void problemSelected(CustomProblemModel problem) {
+				showProblem(problem);
+			}
+			
+			@Override
+			public void redrawUi() {
+				forceLayout();
+			}
+		});
+        new QuickTip(_treeTable.getTree());
+        _gridPanel.setWidget(_treeTable);
+        
+        _treeTable.setTreeSelections(selectedProblem);
+        
+        forceLayout();
+    }
+    
+    ContentPanel _gridPanel;
     private void buildGui() {
        
         _main = new BorderLayoutContainer();
-        ListStore<CustomProblemModel> store = new ListStore<CustomProblemModel>(_gridProps.key());
-        List<ColumnConfig<CustomProblemModel, ?>> cols = new ArrayList<ColumnConfig<CustomProblemModel, ?>>();
         
-        cols.add(new ColumnConfig<CustomProblemModel, String>(_gridProps.label(), 70, "Problem"));
-        // cols.add(new ColumnConfig<CustomProblemModel, Integer>(_gridProps.problemNumber(), 25, "#"));
-        cols.add(new ColumnConfig<CustomProblemModel, String>(_gridProps.comments(), 100, "Comments"));
-        cols.add(new ColumnConfig<CustomProblemModel, String>(_gridProps.lessonList(), 100, "Lessons"));
-        
-        ColumnModel<CustomProblemModel> colModel = new ColumnModel<CustomProblemModel>(cols);
-        _grid = new Grid<CustomProblemModel>(store,  colModel, createGridView());
+        _gridPanel = new ContentPanel();
+        _gridPanel.setWidget(new DefaultGxtLoadingPanel());
+
         //_grid.getView().setAutoExpandColumn(cols.get(cols.size()-1));
         // _grid.getView().setAutoFill(true);
         
-        _grid.getSelectionModel().addSelectionHandler(new SelectionHandler<CustomProblemModel>() {
-            @Override
-            public void onSelection(SelectionEvent<CustomProblemModel> event) {
-                showProblem(event.getSelectedItem());
-            }
-        });
-        _grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+//        _grid.getSelectionModel().addSelectionHandler(new SelectionHandler<CustomProblemModel>() {
+//            @Override
+//            public void onSelection(SelectionEvent<CustomProblemModel> event) {
+//                showProblem(event.getSelectedItem());
+//            }
+//        });
+
         _emptyPage = new DefaultGxtLoadingPanel("Click on a problem or create a new one");
         
         _main.setCenterWidget(_emptyPage);
 
-        ContentPanel gridPanel = new ContentPanel();
-        gridPanel.setWidget(_grid);
         
-        gridPanel.addTool(new TextButton("New",new SelectHandler() {
+        _gridPanel.addTool(new TextButton("New",new SelectHandler() {
             
             @Override
             public void onSelect(SelectEvent event) {
@@ -139,7 +151,7 @@ public class CustomProblemManager extends GWindow {
                 }
             }
         }));
-        gridPanel.addTool(new TextButton("Del", new SelectHandler() {
+        _gridPanel.addTool(new TextButton("Del", new SelectHandler() {
             
             @Override
             public void onSelect(SelectEvent event) {
@@ -147,7 +159,7 @@ public class CustomProblemManager extends GWindow {
             }
         }));
         
-        gridPanel.addTool(new TextButton("Copy", new SelectHandler() {
+        _gridPanel.addTool(new TextButton("Copy", new SelectHandler() {
             
             @Override
             public void onSelect(SelectEvent event) {
@@ -172,13 +184,13 @@ public class CustomProblemManager extends GWindow {
                 _filterButton.setValue(true);
             }
         });
-        gridPanel.addTool(_filterButton);
+        _gridPanel.addTool(_filterButton);
 
         
         TextButton btn = new MyTextButton("Properties", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-            	CustomProblemModel customProblem = _grid.getSelectionModel().getSelectedItem();
+            	CustomProblemModel customProblem = _treeTable.getSelectedCustomProblem();
             	if(customProblem == null) {
             		CmMessageBox.showAlert("Please select a problem first.");
             		return;
@@ -192,7 +204,7 @@ public class CustomProblemManager extends GWindow {
             }
         }, "Edit comments and link to lessons");
         
-        gridPanel.addTool(btn);
+        _gridPanel.addTool(btn);
         
         
         if(CmShared.getQueryParameter("debug") != null) {
@@ -205,7 +217,7 @@ public class CustomProblemManager extends GWindow {
         }
 
         BorderLayoutContainer gridCont = new BorderLayoutContainer();
-        gridCont.setCenterWidget(gridPanel);
+        gridCont.setCenterWidget(_gridPanel);
         HorizontalPanel flow = new HorizontalPanel();
         _showAllTeachers = new CheckBox();
         _showAllTeachers.setToolTip("If selected, all teachers will be listed");
@@ -213,10 +225,10 @@ public class CustomProblemManager extends GWindow {
         _showAllTeachers.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                _grid.getStore().setEnableFilters(_showAllTeachers.getValue());
+                _treeTable.getTree().getStore().setEnableFilters(_showAllTeachers.getValue());
             }
         });
-        flow.add(new MyFieldLabel(_showAllTeachers,"All Teachers",75, 20));
+        // flow.add(new MyFieldLabel(_showAllTeachers,"All Teachers",75, 20));
         
         TextButton selTeach = new TextButton("Select Teacher", new SelectHandler() {
             @Override
@@ -234,7 +246,7 @@ public class CustomProblemManager extends GWindow {
         selTeach.setToolTip("Choose your teacher identity");
         flow.add(selTeach);
         flow.getElement().setAttribute("style",  "padding-left: 3px;");
-        gridCont.setSouthWidget(flow, new BorderLayoutData(30));
+       //  gridCont.setSouthWidget(flow, new BorderLayoutData(30));
         
         BorderLayoutData bld = new BorderLayoutData(300);
         bld.setSplit(true);
@@ -253,8 +265,6 @@ public class CustomProblemManager extends GWindow {
                 }
             }
         };
-        
-        new QuickTip(_grid);
         
         setWidget(_main);
     }
@@ -350,6 +360,8 @@ public class CustomProblemManager extends GWindow {
         if(models == null || (models.size() == 0 && comments == null)) {
             setGridStore(_allProblems);
             _filterButton.setValue(false);
+            
+            forceLayout();
             return;
         }
         
@@ -391,21 +403,17 @@ public class CustomProblemManager extends GWindow {
         }
         
         setGridStore(listFiltered);
+        _treeTable.setTreeSelections(null);
     }
 
     private void setGridStore(List<CustomProblemModel> problems) {
-        _grid.getStore().clear();
-        _grid.getStore().addAll(problems);
-        _grid.getStore().removeFilters();
-        _grid.getStore().addFilter(_filter);
-        if(!_showAllTeachers.getValue()) {
-            _grid.getStore().setEnableFilters(true);
-        }            
+    	buildTreeGrid(problems);
+    	// _treeTable.loadProblems(problems);
     }
 
 
     protected void deleteSelectedProblem() {
-        final CustomProblemModel problem = _grid.getSelectionModel().getSelectedItem();
+        final CustomProblemModel problem = _treeTable.getSelectedCustomProblem();
         if(problem == null) {
             CmMessageBox.showAlert("Select a problem to delete");
             return;
@@ -442,7 +450,7 @@ public class CustomProblemManager extends GWindow {
 
 
     protected void copySelectedProblem() {
-        final CustomProblemModel problem = _grid.getSelectionModel().getSelectedItem();
+        final CustomProblemModel problem = _treeTable.getSelectedCustomProblem();
         if(problem == null) {
             CmMessageBox.showAlert("Select a problem to copy");
             return;
@@ -524,7 +532,7 @@ public class CustomProblemManager extends GWindow {
                     for(int i=0;i<problems.size();i++) {
                         CustomProblemModel m = problems.get(i);
                         if(m.getPid().equals(_selectedSolution)) {
-                            _grid.getSelectionModel().select(m, false);
+                            // _grid.getSelectionModel().select(m, false);
                             break;
                         }
                     }

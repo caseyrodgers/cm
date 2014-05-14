@@ -66,6 +66,14 @@ public class CmMessageBox {
     }
 
     public static void confirm(String title, String msg, final ConfirmCallback onComplete) {
+    	
+    	
+    	__alertify.confirm(title, msg, onComplete);
+    	if(true) {
+    		return;
+    	}
+    	
+    	
 
         final ConfirmMessageBox confirm = new ConfirmMessageBox(title, msg);
         HideHandler hideHandler = new HideHandler() {

@@ -4,6 +4,7 @@ import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditor;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditorHintStep;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditorWidget;
+import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemTreeTable;
 import hotmath.gwt.cm_admin.client.ui.AssignmentManagerDialog2;
 import hotmath.gwt.cm_admin.client.ui.AssignmentStatusDialog;
 import hotmath.gwt.cm_admin.client.ui.WebLinkEditorDialog;
@@ -92,6 +93,9 @@ public class CatchupMathAdminTests {
         }
         else if(test.equals("custom_problem_designer")) {
             ProblemDesignerEditor.doTest();
+        }
+        else if(test.equals("tree_table")) {
+        	CustomProblemTreeTable.doTest();
         }
         else {
         	return false;
