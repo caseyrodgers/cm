@@ -11,9 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -24,8 +23,13 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.data.shared.TreeStore;
 import com.sencha.gxt.dnd.core.client.DND.Feedback;
+import com.sencha.gxt.dnd.core.client.DndDragStartEvent;
+import com.sencha.gxt.dnd.core.client.DndDragStartEvent.DndDragStartHandler;
+import com.sencha.gxt.dnd.core.client.DndDropEvent;
+import com.sencha.gxt.dnd.core.client.DndDropEvent.DndDropHandler;
 import com.sencha.gxt.dnd.core.client.TreeGridDragSource;
 import com.sencha.gxt.dnd.core.client.TreeGridDropTarget;
+import com.sencha.gxt.fx.client.Draggable;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
@@ -41,6 +45,8 @@ import com.sencha.gxt.widget.core.client.treegrid.TreeGrid;
 public class CustomProblemTreeTable extends SimpleContainer {
 
 	final TreeGrid<BaseDto> _tree;
+	CustomProblemFolderNode _dndTargetModel;
+	CustomProblemLeafNode _dndSourceModel; 
 
 	class KeyProvider implements ModelKeyProvider<BaseDto> {
 		@Override
@@ -184,7 +190,38 @@ public class CustomProblemTreeTable extends SimpleContainer {
 					}
 				});
 
-		new TreeGridDragSource(_tree);
+		final TreeGridDragSource s = new TreeGridDragSource(_tree);
+		s.addDropHandler(new DndDropHandler() {
+			@Override
+			public void onDrop(DndDropEvent event) {
+				Element itemDroppedOnElement = (Element) event.getDragEndEvent().getNativeEvent().getEventTarget().cast();
+				BaseDto target = (BaseDto)_tree.findNode(itemDroppedOnElement).getModel();
+				
+				if(target instanceof CustomProblemFolderNode) {
+					_dndTargetModel = (CustomProblemFolderNode)target;
+					CmMessageBox.showAlert("dragging " + _dndSourceModel + ", " + _dndTargetModel);
+				}
+				else {
+					CmMessageBox.showAlert("Invalid drag target");
+				}
+				
+			}
+		});
+		
+		s.addDragStartHandler(new DndDragStartHandler() {
+			@Override
+			public void onDragStart(DndDragStartEvent event) {
+				Element itemDroppedOnElement = (Element) event.getDragStartEvent().getNativeEvent().getEventTarget().cast();
+				BaseDto source = (BaseDto)_tree.findNode(itemDroppedOnElement).getModel();
+				if(source instanceof CustomProblemFolderNode) {
+					CmMessageBox.showAlert("Invalid drag source");
+					event.setCancelled(true);
+				}
+				else {
+					_dndSourceModel = (CustomProblemLeafNode)source;
+				}
+			}
+		});
 		TreeGridDropTarget dt = new TreeGridDropTarget(_tree);
 		dt.setFeedback(Feedback.BOTH);
 		dt.setAllowSelfAsSource(true);
