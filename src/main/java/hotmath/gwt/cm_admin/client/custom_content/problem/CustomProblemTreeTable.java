@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_admin.client.teacher.TeacherManager;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -39,8 +41,10 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.GridView;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 import com.sencha.gxt.widget.core.client.treegrid.TreeGrid;
+import com.sencha.gxt.widget.core.client.treegrid.TreeGridView;
 
 public class CustomProblemTreeTable extends SimpleContainer {
 
@@ -301,14 +305,84 @@ public class CustomProblemTreeTable extends SimpleContainer {
 
 		v.add(buttonBar, new VerticalLayoutData(1, -1));
 		v.add(_tree, new VerticalLayoutData(1, 1));
-
+		
+		_tree.setView(createGridView());
+		
 		// v.getElement().setAttribute("style",
 		// "height: 100%;border: 3px solid black");
 		setWidget(v);
-
 	}
 
 	
+	private TreeGridView<BaseDto> createGridView() {
+		TreeGridView<BaseDto> view = new TreeGridView<BaseDto>() {
+			@Override
+			protected void processRows(int startRow, boolean skipStripe) {
+				super.processRows(startRow, skipStripe);
+
+				NodeList<Element> rows = getRows();
+				for (int i = 0, len = rows.getLength(); i < len; i++) {
+					Element row = rows.getItem(i).cast();
+					BaseDto link = ds.get(i);
+
+					if(link instanceof CustomProblemLeafNode) {
+						
+						CustomProblemModel problem = ((CustomProblemLeafNode)link).getCustomProblem();
+						
+						// whatever tooltip you want with optional qtitle
+						String label = "<b>Problem: </b><br/>" + problem.getLabel()
+								+ "</div><br/>";
+						String comments = problem.getComments() == null ? ""
+								: "<b>Comments</b><br/>" + problem.getComments()
+										+ "<br/><br/>";
+						String linkedLessons = "";
+						for (LessonModel lessonModel : problem.getLinkedLessons()) {
+							linkedLessons += "<li>" + lessonModel.getLessonName()
+									+ "</li>";
+						}
+						linkedLessons = linkedLessons.length() == 0 ? ""
+								: "<b>Linked Lessons</b><ul>" + linkedLessons
+										+ "</ul>";
+	
+						String tip = "<div style='width: 140px;'>" + label
+								+ comments + linkedLessons + "</div>";
+	
+						row.setAttribute("qtip", tip);
+					}
+					// row.setAttribute("qtitle", "ToolTip&nbsp;Title");
+				}
+			}
+		};
+		return view;
+	}
+
+	
+	protected String getToolTipFor(CustomProblemLeafNode leaf) {
+		
+		CustomProblemModel link = leaf.getCustomProblem();
+
+		// whatever tooltip you want with optional qtitle
+		String label = "<b>Problem: </b><br/>" + link.getLabel()
+				+ "</div><br/>";
+		String comments = link.getComments() == null ? ""
+				: "<b>Comments</b><br/>" + link.getComments()
+						+ "<br/><br/>";
+		String linkedLessons = "";
+		for (LessonModel lessonModel : link.getLinkedLessons()) {
+			linkedLessons += "<li>" + lessonModel.getLessonName()
+					+ "</li>";
+		}
+		linkedLessons = linkedLessons.length() == 0 ? ""
+				: "<b>Linked Lessons</b><ul>" + linkedLessons
+						+ "</ul>";
+
+		String tip = "<div style='width: 140px;'>" + label
+				+ comments + linkedLessons + "</div>";
+		
+		return tip;
+	}
+
+
 	public void setTreeSelections(final CustomProblemModel selectedProblem) {
 		
 		new Timer() {
