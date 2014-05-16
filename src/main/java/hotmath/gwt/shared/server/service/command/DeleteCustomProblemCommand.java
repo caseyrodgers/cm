@@ -13,7 +13,7 @@ public class DeleteCustomProblemCommand implements ActionHandler<DeleteCustomPro
 
     @Override
     public RpcData execute(Connection conn, DeleteCustomProblemAction action) throws Exception {
-        CustomProblemDao.getInstance().deleteCustomProblem(action.getProblem());
+        CustomProblemDao.getInstance().deleteCustomProblem(action.getProblem().getPid());
         return new RpcData("status=OK");
     }
 

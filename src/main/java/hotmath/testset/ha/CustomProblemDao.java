@@ -283,7 +283,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 		return problems;
 	}
 
-	public void deleteCustomProblem(final CustomProblemModel problem)
+	public void deleteCustomProblem(final String pid)
 			throws Exception {
 
 		getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -292,7 +292,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 					throws SQLException {
 				String sql = "delete from CM_CUSTOM_PROBLEM where pid = ?";
 				PreparedStatement ps = con.prepareStatement(sql);
-				ps.setString(1, problem.getPid());
+				ps.setString(1, pid);
 				return ps;
 			}
 		});
@@ -303,7 +303,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 					throws SQLException {
 				String sql = "delete from SOLUTIONS where problemindex = ?";
 				PreparedStatement ps = con.prepareStatement(sql);
-				ps.setString(1, problem.getPid());
+				ps.setString(1, pid);
 				return ps;
 			}
 		});
@@ -314,7 +314,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 					throws SQLException {
 				String sql = "delete from SOLUTION_WHITEBOARD where pid = ?";
 				PreparedStatement ps = con.prepareStatement(sql);
-				ps.setString(1, problem.getPid());
+				ps.setString(1, pid);
 				return ps;
 			}
 		});
@@ -908,12 +908,43 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 		 */
 		if(deleteChildren) {
 			__logger.debug("Removing tree path children: " + teacher + ", " + path);
-			List<CustomProblemModel> probs = getCustomProblemsFor(teacher);
-			for(CustomProblemModel cp: probs) {
-				if(cp.getTreePath() != null && cp.getTreePath().equals(path)) {
-					deleteCustomProblem(cp);
-				}
-			}
+			String sql = "select teacher_id, pid, tree_path from CM_CUSTOM_PROBLEM where teacher_id = ?";
+			getJdbcTemplate().query(sql,
+					new Object[] { teacher.getTeacherId() }, new RowMapper<Integer>() {
+						public Integer mapRow(ResultSet rs, int rowNum)	throws SQLException {
+							
+							String tp = rs.getString("tree_path");
+							int tid = rs.getInt("teacher_id");
+							String pid = rs.getString("pid");
+							boolean doDelete=false;
+							if(tid == teacher.getTeacherId()) {
+								
+								// is the parent node
+								if(path == null) {
+									doDelete = true;
+								}
+								else {
+									// is the custom folder
+									if( path.equals(tp) ) {
+										doDelete = true;
+									}
+								}
+								
+								
+							}
+							
+							if(doDelete) {
+								try {
+									deleteCustomProblem(pid);
+								}
+								catch(Exception e) {
+									__logger.error("Error deleting custom problems: " + e);
+								}
+							}
+							
+							return 0; // unused
+						}
+					});
 		}
 	}
 	
