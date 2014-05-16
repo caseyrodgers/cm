@@ -117,11 +117,11 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
          		   AssignmentDao.getInstance().getAssignmentActivityForStudent(uid, fromDate, toDate);
 
             if (assignmentActivity != null && assignmentActivity.size() > 0) {
-            	// if Student is "Assignments Only", set Program to "Assignments"
+            	// if Student is "Assignments Only", set Program Type to "Assignments Only"
             	StudentModelI sm = CmStudentDao.getInstance().getStudentModel(uid);
             	if (sm.getProgram().getProgramType() == CmProgramType.ASSIGNMENTSONLY) {
             		for (StudentActivityModel sam : assignmentActivity) {
-            			sam.setProgramDescr("Assignments");
+            			sam.setProgramType("Assignments Only");
             		}
             	}
             }
