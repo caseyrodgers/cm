@@ -270,7 +270,7 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
     }
 
     public List<WhiteboardTemplate> getWhiteboardTemplates(int adminId) {
-        String sql = "select * from CM_WHITEBOARD_TEMPLATE where admin_id = ? order by last_modified desc";
+        String sql = "select * from CM_WHITEBOARD_TEMPLATE where (admin_id = 0 OR admin_id = ?) order by admin_id, last_modified desc";
 
         List<WhiteboardTemplate> list = getJdbcTemplate().query(sql, new Object[] { adminId}, new RowMapper<WhiteboardTemplate>() {
             @Override
