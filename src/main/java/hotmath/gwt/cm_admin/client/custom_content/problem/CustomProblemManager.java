@@ -566,11 +566,23 @@ public class CustomProblemManager extends GWindow {
 					@Override
 					public void confirmed(boolean yesNo) {
 						if(yesNo) {
-							doDeletePath(node.getName());
+							doDeletePath(node.getName(), false);
 						}
 					}
 				});
-			} else {
+			} 
+			else if(isCurrentTeacherFolder(node)) {
+				CmMessageBox.confirm("Delete",	"Delete all problems for teacher '" + node.getName() + "?", new ConfirmCallback() {
+					
+					@Override
+					public void confirmed(boolean yesNo) {
+						if(yesNo) {
+							doDeletePath(node.getName(), true);
+						}
+					}
+				});
+			}
+			else {
 				CmMessageBox
 						.showAlert("You can only delete custom folders in your teacher folder '"
 								+ teacher.getTeacherName() + "'");
@@ -589,13 +601,33 @@ public class CustomProblemManager extends GWindow {
 		
 		return false;
 	}
-
-	protected void doDeletePath(final String name) {
+	
+	/** Is the current teacher's node
+	 * 
+	 * @param node
+	 * @return
+	 */
+	private boolean isCurrentTeacherFolder(BaseDto node) {
+		if(node != null) {
+			BaseDto parent = node.getParent();
+			if(parent == null) {
+				if(node instanceof CustomProblemFolderNode) {
+					if( ((CustomProblemFolderNode)node).getFolderName().equals(TeacherManager.getTeacher().getTeacherName())) {
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	protected void doDeletePath(final String name, final boolean isTeacherNode) {
 		
 		new RetryAction<RpcData>() {
 			@Override
 			public void attempt() {
-				DeleteCustomProblemTreePathAction action = new DeleteCustomProblemTreePathAction(TeacherManager.getTeacher(), name);
+				DeleteCustomProblemTreePathAction action = new DeleteCustomProblemTreePathAction(TeacherManager.getTeacher(), name, isTeacherNode);
 				setAction(action);
 				CmShared.getCmService().execute(action,  this);
 			}
