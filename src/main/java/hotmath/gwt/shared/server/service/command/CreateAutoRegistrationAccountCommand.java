@@ -74,7 +74,15 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
     	if (__logger.isDebugEnabled())
         	__logger.debug("+++ CARAC getStudentModel took: " + (System.currentTimeMillis()-millis) + " msec");
 
-    	String password = getUniquePassword(action.getPassword(), studentModel.getAdminUid(), conn);
+    	String password;
+    	if (action.isSelfPay() == true) {
+    		// only get unique passwords for self-pay
+    	    password = getUniquePassword(action.getPassword(), studentModel.getAdminUid(), conn);
+    	}
+    	else {
+    		checkPassword(studentModel.getAdminUid(), action.getPassword(), conn);
+			password = action.getPassword();
+    	}
 
         studentModel.setPasscode(password);
         studentModel.setName(action.getUser());
@@ -172,7 +180,35 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         return rdata;
     }
 
-    private String getUniquePassword(String password, int adminUid, final Connection conn) throws Exception {
+    private void checkPassword(int adminUid, String password, final Connection conn) throws Exception {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        long millis = 0;
+        String sqlCheck = CmMultiLinePropertyReader.getInstance().getProperty("AUTO_CREATE_TEMPLATE_CHECK");
+        try {
+            stmt = conn.prepareStatement(sqlCheck);
+            stmt.setInt(1, adminUid);
+            stmt.setString(2, password);
+            
+            millis = System.currentTimeMillis();
+            rs = stmt.executeQuery();
+            if(rs.first()) {
+            	//TODO: different message since password is generated not selected?
+                __logger.error("self registration password '" + password + "' cannot match any existing self-registration template group names.");
+                throw new CmUserException("Please choose a different password");
+            }
+        }
+        finally {
+        	if (__logger.isDebugEnabled())
+            	__logger.debug("+++ CARAC check password took: " + (System.currentTimeMillis()-millis) + " msec");
+            SqlUtilities.releaseResources(rs, stmt, null);
+        }
+		// TODO Auto-generated method stub
+		
+	}
+
+	private String getUniquePassword(String password, int adminUid, final Connection conn) throws Exception {
         String sqlCheck = CmMultiLinePropertyReader.getInstance().getProperty("AUTO_CREATE_PASSWORD_CHECK");
         PreparedStatement stmt = null;
         ResultSet rs = null;
