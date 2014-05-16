@@ -2,6 +2,8 @@ package hotmath.gwt.cm_core.client.util;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox.PromptCallback;
+
 
 /** Wrapper around external JS alertify.js
  * 
@@ -10,27 +12,29 @@ import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
  */
 public class CmAlertify {
 
-	private CallbackOnComplete callback;
-	private ConfirmCallback confirmCallback;
 
+	CallbackOnComplete _callbackComplete;
+	PromptCallback _promptCallback;
+	ConfirmCallback _confirmCallback;
+	
 	public void alert(String message) {
 		jsni_alert(message);
 	}
 	
 	public void alert(String message, CallbackOnComplete callback) {
-		this.callback = callback;
+		this._callbackComplete = callback;
 		jsni_alert(message);
 	}
 	
 	private void afterComplete() {
-		if(callback != null) {
-			callback.isComplete();
+		if(_callbackComplete != null) {
+			_callbackComplete.isComplete();
 		}
 	}
 	
 	private void afterConfirm(boolean yesNo) {
-		if(confirmCallback != null) {
-			confirmCallback.confirmed(yesNo);
+		if(_confirmCallback != null) {
+			_confirmCallback.confirmed(yesNo);
 		}
 	}
 	
@@ -47,11 +51,29 @@ public class CmAlertify {
 	        that.@hotmath.gwt.cm_core.client.util.CmAlertify::afterConfirm(Z)(e==true);
 	    });		
     }-*/;
-
+	
+	private void afterPrompt(String value) {
+		if(_promptCallback != null) {
+			_promptCallback.promptValue(value);
+		}
+	}
+	
+	native private void jsni_prompt(String title, String message, String defaultValue) /*-{
+        var that=this;
+        $wnd.alertify.prompt(title, function (e, str) {
+            alert('value: ' + str);
+            that.@hotmath.gwt.cm_core.client.util.CmAlertify::afterPrompt(Ljava/lang/String;)(str);
+        }, defaultValue);
+    }-*/;
 	
 	
 	public void confirm(String title, String msg, ConfirmCallback onComplete) {
-		this.confirmCallback = onComplete;
+		this._confirmCallback = onComplete;
 		jsni_confirm(msg);
+	}
+
+	public void prompt(String title, String message,String defaultMessage, PromptCallback callback) {
+		this._promptCallback = callback;
+		jsni_prompt(title, message,defaultMessage);
 	}
 }

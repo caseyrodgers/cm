@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.model.CustomProblemInfo;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.GetCustomProblemAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
@@ -56,7 +57,7 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
     Grid<LessonDto> _grid;
     Tree<BaseDto, String> _tree;
 
-    protected CmList<CustomProblemModel> _allLessons;
+    protected List<CustomProblemModel> _allLessons;
 
 
     public AssignmentTreeCustomProblemsListingPanel(CallbackOnSelectedCustomProblem callBack) {
@@ -67,7 +68,7 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
 
     private void readDataAndBuildTree() {
         CatchupMathTools.setBusy(true);
-        new RetryAction<CmList<CustomProblemModel>>() {
+        new RetryAction<CustomProblemInfo>() {
             @Override
             public void attempt() {
                 GetCustomProblemAction action = new GetCustomProblemAction(new TeacherIdentity(UserInfoBase.getInstance().getUid(),"", 0));
@@ -75,7 +76,8 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
                 CmShared.getCmService().execute(action, this);
             }
 
-            public void oncapture(CmList<CustomProblemModel> lessons) {
+            public void oncapture(CustomProblemInfo results) {
+            	List<CustomProblemModel> lessons = results.getProblems();
                 CatchupMathTools.setBusy(false);
                 _allLessons = lessons;
                 makeTree(_allLessons);
@@ -121,7 +123,7 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
 
 
     static int autoId;
-    public void makeTree(CmList<CustomProblemModel> custProblems) {
+    public void makeTree(List<CustomProblemModel> custProblems) {
         
         _treeStore = setupTreeStore(custProblems);
         
@@ -222,7 +224,7 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
     };        
 
     
-    private TreeStore<BaseDto> setupTreeStore(CmList<CustomProblemModel> custProbs) {
+    private TreeStore<BaseDto> setupTreeStore(List<CustomProblemModel> custProbs) {
         
         List<LessonDto> ll2 = new ArrayList<LessonDto>();
         TreeStore<BaseDto> treeStore = new TreeStore<BaseDto>(new TreeKeyProvider());

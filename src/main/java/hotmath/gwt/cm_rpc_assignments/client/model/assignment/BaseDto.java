@@ -12,7 +12,7 @@ public class BaseDto implements Serializable {
     private BaseDto parent;
     private int level;
     
-    static protected int __nextId() {
+    static public int __nextId() {
     	return (++autoId);
     }
     

@@ -3,6 +3,7 @@ package hotmath.testset.ha;
 import hotmath.ProblemID;
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.util.service.SolutionDef;
+import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemTreeTable;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc.client.model.LessonLinkedModel;
@@ -187,19 +188,29 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con)
 					throws SQLException {
-				String sql = "insert into CM_CUSTOM_PROBLEM(pid,teacher_id, teacher_problem_number, comments)values(?,?,?,?)";
+				String sql = "insert into CM_CUSTOM_PROBLEM(pid,teacher_id, teacher_problem_number, comments, tree_path)values(?,?,?,?,?)";
 				PreparedStatement ps = con.prepareStatement(sql);
 				ps.setString(1, newPid);
 				ps.setInt(2, problem.getTeacher().getTeacherId());
 				ps.setInt(3, problemNumber);
 				ps.setString(4, problem.getComments());
+				ps.setString(5, problem.getTreePath());
 
 				return ps;
 			}
 		});
+		
+		
+		/** make sure the tree_path exists for this admin
+		 * 
+		 */
+		if(problem.getTreePath() != null) {
+			addTreePath(problem.getTeacher(), problem.getTreePath());
+		}
 
 		return solution;
 	}
+
 
 	/**
 	 * Create a new solution PID
@@ -250,7 +261,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 										.getInt("teacher_id")), rs
 										.getString("comments"), SolutionDao
 										.determineProblemType(rs
-												.getString("solutionxml")));
+												.getString("solutionxml")), rs.getString("tree_path"));
 						cp.setLinkedLessons(getCustomProblemLinkedLessons(cp
 								.getPid()));
 						return cp;
@@ -559,7 +570,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 
 	public List<CustomProblemModel> getCustomProblemsLinkedToLesson(
 			String lessonFile) {
-		String sql = "select distinct cp.pid, cp.teacher_id, cp.comments, cp.teacher_problem_number, cl.lesson_name, cl.lesson_file, s.solutionxml"
+		String sql = "select distinct cp.pid, cp.teacher_id, cp.comments, cp.teacher_problem_number, cp.tree_path, cl.lesson_name, cl.lesson_file, s.solutionxml"
 				+ " from CM_CUSTOM_PROBLEM_LINKED_LESSONS cl "
 				+ " JOIN CM_CUSTOM_PROBLEM  cp "
 				+ " on cp.pid = cl.pid "
@@ -578,7 +589,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 								getTeacherIdentity(rs.getInt("teacher_id")), rs
 										.getString("comments"), SolutionDao
 										.determineProblemType(rs
-												.getString("solutionxml")));
+												.getString("solutionxml")),rs.getString("tree_path"));
 					}
 				});
 		return problems;
@@ -751,13 +762,13 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 												.getInt("teacher_id")),
 										rs.getString("comments"),
 										SolutionDao
-												.determineProblemType(solutionXml));
+												.determineProblemType(solutionXml), rs.getString("tree_path"));
 							}
 						});
 
 		CustomProblemModel newProblem = new CustomProblemModel(null, 0,
 				problemToCopy.getTeacher(), null,
-				problemToCopy.getProblemType());
+				problemToCopy.getProblemType(), problemToCopy.getTreePath());
 		final SolutionInfo newSolution = createNewCustomProblem(newProblem);
 
 		/**
@@ -853,5 +864,98 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 
 		dao.saveSolutionXml(conn, pid, ts.toXml(), ts.getTutorDefine(), true);
 	}
+
+	/** Get all paths defined by this admin_id.  Each path is the full path
+	 * including the teacher name.  
+	 * @param adminId
+	 * @return
+	 */
+	public List<String> getCustomTreePaths(int adminId) {
+		String sql = "select p.*, t.teacher_name from CM_CUSTOM_PROBLEM_TREE_PATH p JOIN CM_CUSTOM_PROBLEM_TEACHER t "
+				     + "on p.teacher_id = t.teacher_id where t.admin_id = ? order by tree_path";
+		
+		return getJdbcTemplate().query(sql,
+				new Object[] { adminId }, new RowMapper<String>() {
+					public String mapRow(ResultSet rs, int rowNum)
+							throws SQLException {
+						return rs.getString("teacher_name") + "/" + rs.getString("tree_path");
+					}
+				});
+	}
+
+	/** Delete the full teacher path, including any problems underneath.
+	 * 
+	 * @param teacher
+	 * @param path
+	 */
+	public void deleteTreePath(final TeacherIdentity teacher, final String path, boolean deleteChildren) throws Exception {
+		__logger.debug("Removing tree path: " + teacher + ", " + path);
+		getJdbcTemplate().update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con)
+					throws SQLException {
+				String sql = "delete from CM_CUSTOM_PROBLEM_TREE_PATH where teacher_id = ? and tree_path = ?";
+
+				PreparedStatement ps = con.prepareStatement(sql);
+				ps.setInt(1, teacher.getTeacherId());
+				ps.setString(2, path);
+				return ps;
+			}
+		});
+		
+		/** find all problems under this path
+		 * 
+		 */
+		if(deleteChildren) {
+			__logger.debug("Removing tree path children: " + teacher + ", " + path);
+			List<CustomProblemModel> probs = getCustomProblemsFor(teacher);
+			for(CustomProblemModel cp: probs) {
+				if(cp.getTreePath() != null && cp.getTreePath().equals(path)) {
+					deleteCustomProblem(cp);
+				}
+			}
+		}
+	}
+	
+	public void addTreePath(final TeacherIdentity teacher, final String treePath) throws Exception {
+		final String fullPath = teacher.getTeacherName() + "/" + treePath;
+
+		/** make sure to remove first, do not want duplicate exception */
+		deleteTreePath(teacher,  treePath, false);
+		
+		getJdbcTemplate().update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con)
+					throws SQLException {
+				String sql = "insert into CM_CUSTOM_PROBLEM_TREE_PATH(teacher_id, tree_path)values(?,?)";
+				PreparedStatement ps = con.prepareStatement(sql);
+				ps.setInt(1, teacher.getTeacherId());
+				ps.setString(2, treePath);
+				return ps;
+			}
+		});		
+	}
+
+	public void updateCustomProblem(Connection conn,	final CustomProblemModel problem) {
+		int cnt = getJdbcTemplate().update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con)
+					throws SQLException {
+				String sql = "update CM_CUSTOM_PROBLEM set tree_path = ? where teacher_id = ? and pid = ?";
+				PreparedStatement ps = con.prepareStatement(sql);
+				
+				ps.setString(1, problem.getTreePath());
+				ps.setInt(2, problem.getTeacher().getTeacherId());
+				ps.setString(3, problem.getPid());
+				
+				return ps;
+			}
+		});		
+		
+		if(cnt != 1) {
+			__logger.warn("No record updated: " + problem);
+		}
+	}
+
 
 }

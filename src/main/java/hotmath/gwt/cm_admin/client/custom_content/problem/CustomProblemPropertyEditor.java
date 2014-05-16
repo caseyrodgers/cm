@@ -8,6 +8,8 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_tools.client.ui.MyValidatorDef;
+import hotmath.gwt.cm_tools.client.ui.MyValidators;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -34,7 +36,7 @@ public class CustomProblemPropertyEditor extends GWindow {
     public interface Callback {
         void solutionCreated(SolutionInfo solution);
     }
-    public CustomProblemPropertyEditor(CustomProblemModel problem, Callback callback) {
+    public CustomProblemPropertyEditor(CustomProblemModel problem,Callback callback) {
         super(false);
         
         assert(problem != null);
@@ -84,6 +86,7 @@ public class CustomProblemPropertyEditor extends GWindow {
         problem.getTeacher().setTeacherName(_teacherName.getCurrentValue());
         
         problem.setComments(_comments.getValue());
+        problem.setTreePath(_treePath.getCurrentValue());
         
         new RetryAction<SolutionInfo>() {
             @Override
@@ -111,6 +114,9 @@ public class CustomProblemPropertyEditor extends GWindow {
         if(_teacherName.getValue() == null || _teacherName.getValue().length() == 0) {
             return "Teacher must be specified";
         }
+        if(!_treePath.validate()) {
+        	return "Folder name is invalid.";
+        }
         return null;
     }
 
@@ -118,8 +124,16 @@ public class CustomProblemPropertyEditor extends GWindow {
     TextField _teacherName = new TextField();
     TextArea _comments = new TextArea();
     TextField _problemNumber = new TextField();
+    TextField _treePath = new TextField();
     private void buildGui() {
         FramedPanel frame = new FramedPanel();
+
+        _treePath.addValidator(new MyValidatorDef(MyValidators.ALPHANUMERIC,new MyValidatorDef.Verifier() {
+			@Override
+			public boolean verify(String value) {
+				return true;
+			}
+		}));
 
         _teacherName.setToolTip("Unique teacher name.  To select a differnt teacher, cancel and use the Select Teacher button.");
         _teacherName.setEnabled(false);
@@ -127,10 +141,12 @@ public class CustomProblemPropertyEditor extends GWindow {
         _comments.setValue(problem.getComments());
         _problemNumber.setToolTip("The unique problem number automatically assigned");
         _problemNumber.setEnabled(false);
-
+        
+        _treePath.setValue(problem.getTreePath() != null?problem.getTreePath():"");
         VerticalLayoutContainer form = new VerticalLayoutContainer();
         form.add(new MyFieldLabel(_teacherName, "Teacher", 100));
         form.add(new MyFieldLabel(_comments, "Comment", 100, 270));
+        form.add(new MyFieldLabel(_treePath, "Folder", 100, 150));
         //form.add(new MyFieldLabel(_problemNumber, "Number", 100, 40));
         
         

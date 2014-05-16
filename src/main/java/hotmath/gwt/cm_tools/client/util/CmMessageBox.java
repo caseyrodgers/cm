@@ -12,6 +12,7 @@ import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 public class CmMessageBox {
 	static CmAlertify __alertify = new CmAlertify();
+
 	
     public static void showAlert(String message) {
         showAlert("Important Message", message);
@@ -81,7 +82,7 @@ public class CmMessageBox {
             public void onHide(HideEvent event) {
                 if (onComplete != null) {
                     boolean isConfirmed = confirm.getHideButton() == confirm.getButtonById(PredefinedButton.YES.name());
-                    onComplete.confirmed( isConfirmed);
+                    onComplete.confirmed(isConfirmed);
                 }
             }
         };
@@ -94,4 +95,16 @@ public class CmMessageBox {
     static public interface ConfirmCallback {
         void confirmed(boolean yesNo);
     }
+    
+    static public interface PromptCallback {
+    	void promptValue(String value);
+    }
+
+
+	public static void prompt(String title, String message,String defaultValue, PromptCallback callback) {
+		__alertify.prompt(title, message,defaultValue, callback);
+    	if(true) {
+    		return;
+    	}
+	}
 }

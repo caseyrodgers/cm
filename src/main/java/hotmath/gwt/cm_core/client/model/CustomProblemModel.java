@@ -13,21 +13,34 @@ public class CustomProblemModel implements Response {
     TeacherIdentity teacher;
     int problemNumber;
     String comments;
+    String treePath;
+    
     private ProblemType problemType;
+    
     private List<LessonModel> linkedLessons = new ArrayList<LessonModel>();
 
     public CustomProblemModel(){}
             
-    public CustomProblemModel(String pid, int problemNumber, TeacherIdentity teacher, String comments, ProblemType type) {
+    public CustomProblemModel(String pid, int problemNumber, TeacherIdentity teacher, String comments, ProblemType type, String treePath) {
         this.pid = pid;
         this.problemNumber = problemNumber;
         this.teacher = teacher;
         this.comments = comments;
         this.problemType = type;
+        this.treePath = treePath;
     }
     
+    
 
-    public void setLinkedLessons(List<LessonModel> linkedLessons) {
+    public String getTreePath() {
+		return treePath;
+	}
+
+	public void setTreePath(String treePath) {
+		this.treePath = treePath;
+	}
+
+	public void setLinkedLessons(List<LessonModel> linkedLessons) {
         this.linkedLessons = linkedLessons;
     }
     

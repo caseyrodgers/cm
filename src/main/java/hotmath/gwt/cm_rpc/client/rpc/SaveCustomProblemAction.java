@@ -1,17 +1,20 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
+import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
 public class SaveCustomProblemAction implements Action<RpcData> {
     
-    public enum SaveType{WIDGET, HINTSTEP, PROBLEM_STATEMENT_TEXT}
+    public enum SaveType{WIDGET, HINTSTEP, PROBLEM_STATEMENT_TEXT, UPDATE_PROBLEM}
 
     private String pid;
     private SaveType type;
     private String data;
-    private SolutionMeta solutionMeta;;
+    private SolutionMeta solutionMeta;
+    private CustomProblemModel customProblemModel;
+    
     public SaveCustomProblemAction() {}
     
     public SaveCustomProblemAction(String pid, SaveType type, String data) {
@@ -25,7 +28,20 @@ public class SaveCustomProblemAction implements Action<RpcData> {
         this.solutionMeta = solutionMeta;
     }
 
-    public String getPid() {
+    public SaveCustomProblemAction(CustomProblemModel problem) {
+    	this.type = SaveType.UPDATE_PROBLEM;
+    	this.customProblemModel = problem;
+	}
+
+	public CustomProblemModel getCustomProblemModel() {
+		return customProblemModel;
+	}
+
+	public void setCustomProblemModel(CustomProblemModel customProblemModel) {
+		this.customProblemModel = customProblemModel;
+	}
+
+	public String getPid() {
         return pid;
     }
 

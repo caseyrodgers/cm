@@ -275,14 +275,13 @@
 
 				html += "<a id=\"alertify-resetFocus\" class=\"alertify-resetFocus\" href=\"#\">Reset Focus</a>";
 				html += "</div>";
-
 				switch (type) {
 				case "confirm":
-					html = html.replace("{{buttons}}", this.appendButtons(dialogs.buttons.cancel, dialogs.buttons.ok));
+					html = html.replace("{{buttons}}", this.appendButtons(dialogs.buttons.ok, dialogs.buttons.cancel));
 					html = html.replace("{{ok}}", this.labels.ok).replace("{{cancel}}", this.labels.cancel);
 					break;
 				case "prompt":
-					html = html.replace("{{buttons}}", this.appendButtons(dialogs.buttons.cancel, dialogs.buttons.submit));
+					html = html.replace("{{buttons}}", this.appendButtons(dialogs.buttons.submit, dialogs.buttons.cancel));
 					html = html.replace("{{ok}}", this.labels.ok).replace("{{cancel}}", this.labels.cancel);
 					break;
 				case "alert":
