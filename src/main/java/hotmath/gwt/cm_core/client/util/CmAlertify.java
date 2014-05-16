@@ -61,7 +61,6 @@ public class CmAlertify {
 	native private void jsni_prompt(String title, String message, String defaultValue) /*-{
         var that=this;
         $wnd.alertify.prompt(title, function (e, str) {
-            alert('value: ' + str);
             that.@hotmath.gwt.cm_core.client.util.CmAlertify::afterPrompt(Ljava/lang/String;)(str);
         }, defaultValue);
     }-*/;
