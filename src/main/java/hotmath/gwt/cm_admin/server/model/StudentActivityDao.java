@@ -7,9 +7,11 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.JsonUtil;
 import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_admin.server.model.activity.StudentActivitySummaryModel;
+import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.spring.SpringManager;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -113,6 +115,16 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
             List<StudentActivityModel> assignmentActivity =
          		   AssignmentDao.getInstance().getAssignmentActivityForStudent(uid, fromDate, toDate);
+
+            if (assignmentActivity != null && assignmentActivity.size() > 0) {
+            	// if Student is "Assignments Only", set Program to "Assignments"
+            	StudentModelI sm = CmStudentDao.getInstance().getStudentModel(uid);
+            	if (sm.getProgram().getProgramType() == CmProgramType.ASSIGNMENTSONLY) {
+            		for (StudentActivityModel sam : assignmentActivity) {
+            			sam.setProgramDescr("Assignments");
+            		}
+            	}
+            }
 
             List<StudentActivityModel> combinedActivity = combineActivity(smList, assignmentActivity);
 
