@@ -1425,6 +1425,12 @@ from HA_USER u
 where u.admin_id = ?
   and u.user_passcode like ?
 
+.key=AUTO_CREATE_TEMPLATE_CHECK
+
+select  g.name as group_name 
+from  HA_USER u JOIN CM_GROUP g on u.group_id = g.id 
+where u.is_auto_create_template = 1 and u.admin_id = ? 
+and   g.name = ?  
 
 ##
 ## Class: NONE
