@@ -13,7 +13,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.shared.client.rpc.RetryActionManager;
 import hotmath.gwt.solution_editor.client.SolutionSearcherDialog.Callback;
 import hotmath.gwt.solution_editor.client.rpc.SolutionResource;

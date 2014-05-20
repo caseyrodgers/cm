@@ -13,35 +13,54 @@ import java.sql.Connection;
 
 import org.apache.log4j.Logger;
 
-/** Save a single whiteboard command into database
+/**
+ * Save a single whiteboard command into database
  * 
- *  Return RpcData with single var (status == OK)
- *  
+ * Return RpcData with single var (status == OK)
+ * 
  * @author casey
- *
+ * 
  */
-public class SaveWhiteboardDataCommand implements ActionHandler<SaveWhiteboardDataAction, RpcData> {
+public class SaveWhiteboardDataCommand implements
+		ActionHandler<SaveWhiteboardDataAction, RpcData> {
 
-    static Logger logger = Logger.getLogger(SaveWhiteboardDataCommand.class);
-    
-    @Override
-    public RpcData execute(Connection conn, SaveWhiteboardDataAction action) throws Exception {
-        RpcData rData = new RpcData();
-        
-        if(action.getCommandType() == CommandType.CLEAR) {
-            rData = new ClearWhiteboardDataCommand().execute(conn,new ClearWhiteboardDataAction(action.getUid(), action.getRid(),action.getPid()));
-        }
-        else if(action.getCommandType() == CommandType.DELETE) {
-            CmTutoringDao.deleteWhiteboardData(conn,action.getUid(),action.getRid(),action.getPid(),action.getIndex());
-        }
-        else {
-            CmTutoringDao.saveWhiteboardData(conn,action.getUid(),action.getRid(),action.getPid(),action.getCommandData(), action.getCommandType());
-        }
-        return rData;
-    }
+	static Logger logger = Logger.getLogger(SaveWhiteboardDataCommand.class);
 
-    @Override
-    public Class<? extends Action<? extends Response>> getActionType() {
-        return SaveWhiteboardDataAction.class;
-    }
+	@Override
+	public RpcData execute(Connection conn, SaveWhiteboardDataAction action)
+			throws Exception {
+		RpcData rData = new RpcData();
+
+		switch (action.getCommandType()) {
+		case CLEAR:
+			rData = new ClearWhiteboardDataCommand().execute(
+					conn,
+					new ClearWhiteboardDataAction(action.getUid(), action
+							.getRid(), action.getPid()));
+			break;
+
+		case DELETE:
+			CmTutoringDao.deleteWhiteboardData(conn, action.getUid(),
+					action.getRid(), action.getPid(), action.getIndex());
+			break;
+			
+		case UPDATE:
+			CmTutoringDao.updateWhiteboardData(conn, action.getUid(),
+					action.getRid(), action.getPid(), action.getIndex(), action.getCommandData());
+			break;
+			
+
+		default:
+			CmTutoringDao.saveWhiteboardData(conn, action.getUid(),
+					action.getRid(), action.getPid(), action.getCommandData(),
+					action.getCommandType());
+			break;
+		}
+		return rData;
+	}
+
+	@Override
+	public Class<? extends Action<? extends Response>> getActionType() {
+		return SaveWhiteboardDataAction.class;
+	}
 }

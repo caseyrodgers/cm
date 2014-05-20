@@ -270,12 +270,12 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
     }
 
     public List<WhiteboardTemplate> getWhiteboardTemplates(int adminId) {
-        String sql = "select * from CM_WHITEBOARD_TEMPLATE where (admin_id = 0 OR admin_id = ?) order by admin_id, last_modified desc";
+        String sql = "select admin_id, template_path from CM_WHITEBOARD_TEMPLATE where (admin_id = 0 OR admin_id = ?) order by admin_id, last_modified desc";
 
         List<WhiteboardTemplate> list = getJdbcTemplate().query(sql, new Object[] { adminId}, new RowMapper<WhiteboardTemplate>() {
             @Override
             public WhiteboardTemplate mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new WhiteboardTemplate(rs.getString("template_path")); 
+                return new WhiteboardTemplate(rs.getInt("admin_id"), rs.getString("template_path")); 
             }
         });
         return list;

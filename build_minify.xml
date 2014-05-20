@@ -61,12 +61,13 @@
 
                    cm_core-min.js
                    mobile_core.js
-                                     
+
+
+                     ../jlibs/alertify.js-0.3.11/lib/alertify.js
+
                    CatchupMathMobile3-min.js
 
                    whiteboard_static.js
-
-                   ../jlibs/alertify.js-0.3.11/lib/alertify.js
               " />
         </concat>
     </target>

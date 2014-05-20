@@ -17,7 +17,7 @@ import hotmath.gwt.cm_tools.client.ui.PassPercent;
 import hotmath.gwt.cm_tools.client.ui.PassPercentCombo;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;

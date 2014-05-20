@@ -12,7 +12,7 @@ import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageByStrandWindow;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageChartWindow;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventType;

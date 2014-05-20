@@ -1,8 +1,6 @@
 package hotmath.gwt.cm_core.client.util;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox.PromptCallback;
 
 
 /** Wrapper around external JS alertify.js
@@ -12,6 +10,15 @@ import hotmath.gwt.cm_tools.client.util.CmMessageBox.PromptCallback;
  */
 public class CmAlertify {
 
+    
+    static public interface ConfirmCallback {
+        void confirmed(boolean yesNo);
+    }
+    
+    static public interface PromptCallback {
+    	void promptValue(String value);
+    }
+    
 
 	CallbackOnComplete _callbackComplete;
 	PromptCallback _promptCallback;
@@ -40,6 +47,12 @@ public class CmAlertify {
 	
 	native private void jsni_alert(String message) /*-{
 	    var that=this;
+	    
+	    if(typeof $wnd.alertify == 'undefined') {
+	        alert('Alertify not defined');
+	        return;
+	    }
+	    	
 		$wnd.alertify.alert(message,function(e) {
 	        that.@hotmath.gwt.cm_core.client.util.CmAlertify::afterComplete()();
 	    });		
@@ -75,4 +88,14 @@ public class CmAlertify {
 		this._promptCallback = callback;
 		jsni_prompt(title, message,defaultMessage);
 	}
+	
+	
+	static private CmAlertify __theInstance; 
+	static public CmAlertify getSharedInstance() {
+		if(__theInstance == null) {
+			__theInstance = new CmAlertify();
+		}
+		return __theInstance;
+	}
 }
+

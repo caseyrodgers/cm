@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_tools.client.util;
 
 import hotmath.gwt.cm_core.client.util.CmAlertify;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.CmAlertify.PromptCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -11,7 +13,7 @@ import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 public class CmMessageBox {
-	static CmAlertify __alertify = new CmAlertify();
+	static CmAlertify __alertify = CmAlertify.getSharedInstance();
 
 	
     public static void showAlert(String message) {
@@ -91,14 +93,7 @@ public class CmMessageBox {
         
         confirm.toFront();
     }
-    
-    static public interface ConfirmCallback {
-        void confirmed(boolean yesNo);
-    }
-    
-    static public interface PromptCallback {
-    	void promptValue(String value);
-    }
+
 
 
 	public static void prompt(String title, String message,String defaultValue, PromptCallback callback) {

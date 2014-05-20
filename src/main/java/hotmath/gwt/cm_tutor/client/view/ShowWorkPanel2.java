@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tutor.client.view;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
@@ -16,6 +17,8 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.CmTutor;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -369,8 +371,16 @@ public class ShowWorkPanel2 extends Composite {
         // prevent error if function not defined due to 
         // old copy of whiteboard_v3.js
         // TODO: remove after 1 month
+        
+        // alert('calling complete');
         if(theWhiteboard.whiteboardLoadComplete) {
-        	theWhiteboard.whiteboardLoadComplete();
+            try {
+        	    theWhiteboard.whiteboardLoadComplete();
+        	    // alert('call complete');
+        	}
+        	catch(e) {
+        	    alert('error calling whiteboardLoadComplete: ' + e);
+            }
         }
     }-*/;
 
@@ -446,6 +456,14 @@ public class ShowWorkPanel2 extends Composite {
 
     private void gwt_saveWhiteboardAsTemplate() {
         _whiteboardOutCallback.saveWhiteboardAsTemplate(this);
+    }
+    
+    private void updateWhiteboardData_Gwt(int index, final String newJson) {
+    	Log.info("updateWhiteboardData update whiteboard index on server: " + index + ", " + newJson);
+    	
+		whiteboardActions.getActions().add(new SaveWhiteboardDataAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(), pid, CommandType.UPDATE, newJson));
+		saveWhiteboardToServer();
+
     }
     
     private void manageTemplates() {
@@ -525,10 +543,17 @@ public class ShowWorkPanel2 extends Composite {
             theWhiteboard.gwt_saveWhiteboardAsTemplate = function() {
                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::gwt_saveWhiteboardAsTemplate()();
             }
+           
+            theWhiteboard.updateWhiteboardData = function (index, newJSON) {
+               that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::updateWhiteboardData_Gwt(ILjava/lang/String;)(index, newJSON);
+            }
+
 
            $wnd.gwt_manageTemplates = function() {
                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::manageTemplates()();
             }
+            
+
             
         } catch (e) {
             alert('error initializing whiteboard: ' + e);
