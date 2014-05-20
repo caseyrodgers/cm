@@ -23,6 +23,7 @@ public class LoginAction implements Action<HaUserLoginInfo> {
     
     String  type;
     String  key;
+    String  subject;
     boolean isDebug;
     int     uid;
     
@@ -87,6 +88,14 @@ public class LoginAction implements Action<HaUserLoginInfo> {
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String programSubject) {
+		this.subject = programSubject;
 	}
 
 	public boolean isDebug() {

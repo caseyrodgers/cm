@@ -327,7 +327,7 @@ public class HaUserFactory {
                 Connection conn = null;
                 try {
                         conn = HMConnectionPool.getConnection();
-                        return createDemoUser(conn);
+                        return createDemoUser(conn, null);
                 }
                 finally {
 
@@ -339,7 +339,7 @@ public class HaUserFactory {
          *
          * @throws Exception
          */
-        static public HaBasicUser createDemoUser(final Connection conn) throws Exception {
+        static public HaBasicUser createDemoUser(final Connection conn, final String subject) throws Exception {
 
                 PreparedStatement pstat = null;
                 ResultSet rs = null;
@@ -364,13 +364,15 @@ public class HaUserFactory {
 
                         CmStudentDao cmDao = CmStudentDao.getInstance();
 
+                        CmProgram cmProgram = findProficiencyProgram(subject);
+
                         StudentModel student = new StudentModel();
                         student.setName("Student: " + System.currentTimeMillis());
                         student.setPasscode(demoPwd);
                         student.setAdminUid(adminId);
                         student.setGroupId(1);
-                        student.getProgram().setProgramType(CmProgram.ESSENTIALS.getProgramType());
-                        student.getProgram().setSubjectId(CmProgram.ESSENTIALS.getSubject());
+                        student.getProgram().setProgramType(cmProgram.getProgramType());
+                        student.getProgram().setSubjectId(cmProgram.getSubject());
                         student.setPassPercent("70%");
                         student.getSettings().setTutoringAvailable(false);
                         student.getSettings().setShowWorkRequired(false);
@@ -386,7 +388,21 @@ public class HaUserFactory {
                 }
         }
 
-        /**
+        private static CmProgram findProficiencyProgram(String subject) {
+        	if (subject != null) {
+        		CmProgram programs[] = CmProgram.values();
+        		for (CmProgram program : programs) {
+        			if (program.isActive() == false) continue;
+        			if (program.getSubject().equalsIgnoreCase(subject) &&
+        				program.getProgramType().equalsIgnoreCase("PROF")) {
+        				return program;
+        			}
+        		}
+        	}
+			return CmProgram.ESSENTIALS;
+		}
+
+		/**
          * Create a unique demo user, created by reading a template record
          *
          * @throws Exception

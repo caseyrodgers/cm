@@ -152,7 +152,7 @@ public class LoginService extends HttpServlet {
 			loginAction.setUserName(user);
 			loginAction.setBrowserInfo(req.getHeader("User-Agent"));
 			loginAction.setRealLogin(isRealLogin);
-
+			loginAction.setSubject(req.getParameter("prog"));
 
 			/** Try to log in, Action will throw exception on 
 			 * any login error which will be caught below
