@@ -46,15 +46,15 @@ function showSampleSessionDialog(msg, title, indexVal) {
     var head = '<a href="#" onclick="closeGeneralDialog();return false" class="close"><span>close</span> X</a>' + title;
     YUI().use('overlay', function(Y) {
         _overlay = new Y.Overlay({
-            width : "220px",
+            width : "260px",
             //centered : true,
             headerContent : head,
             bodyContent : html,
             zIndex : indexVal,
             visible : true
         });
-        _overlay.set("x", 890);
-        _overlay.set("y", 635)
+        _overlay.set("x", 853);
+        _overlay.set("y", 422)
 
         _overlay.render();
     });
