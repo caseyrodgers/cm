@@ -277,7 +277,7 @@ public class AssignmentManagerDialog2  {
     }
 
     public static void startTest() {
-        new AssignmentManagerDialog2(2298, 2);
+        new AssignmentManagerDialog2(151718, 2);
     }
     
 }

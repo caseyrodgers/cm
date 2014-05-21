@@ -180,9 +180,10 @@ public class CustomProblemTreeTable extends SimpleContainer {
         // }
         // _root.addChild(firstNode);
 
-        ColumnConfig<BaseDto, String> cc1 = new ColumnConfig<BaseDto, String>(props.name(), 200, "Problem");
+        ColumnConfig<BaseDto, String> problemCol = new ColumnConfig<BaseDto, String>(props.name(), 200, "Problem");
+        problemCol.setSortable(false);
 
-        ColumnConfig<BaseDto, String> cc2 = new ColumnConfig<BaseDto, String>(new ValueProvider<BaseDto, String>() {
+        ColumnConfig<BaseDto, String> commentCol = new ColumnConfig<BaseDto, String>(new ValueProvider<BaseDto, String>() {
             @Override
             public String getValue(BaseDto object) {
                 if (object == null) {
@@ -203,8 +204,8 @@ public class CustomProblemTreeTable extends SimpleContainer {
                 return "comment";
             }
         });
-        cc2.setHeader("Comment");
-        ColumnConfig<BaseDto, String> cc3 = new ColumnConfig<BaseDto, String>(new ValueProvider<BaseDto, String>() {
+        commentCol.setHeader("Comment");
+        ColumnConfig<BaseDto, String> lessonsCol = new ColumnConfig<BaseDto, String>(new ValueProvider<BaseDto, String>() {
             @Override
             public String getValue(BaseDto object) {
                 return object instanceof CustomProblemLeafNode ? ((CustomProblemLeafNode) object).getCustomProblem()
@@ -220,15 +221,15 @@ public class CustomProblemTreeTable extends SimpleContainer {
                 return "lesson";
             }
         });
-        cc3.setHeader("Lessons");
+        lessonsCol.setHeader("Lessons");
 
         List<ColumnConfig<BaseDto, ?>> l = new ArrayList<ColumnConfig<BaseDto, ?>>();
-        l.add(cc1);
-        l.add(cc2);
-        l.add(cc3);
+        l.add(problemCol);
+        l.add(commentCol);
+        l.add(lessonsCol);
         ColumnModel<BaseDto> cm = new ColumnModel<BaseDto>(l);
 
-        _tree = new TreeGrid<BaseDto>(_store, cm, cc1);
+        _tree = new TreeGrid<BaseDto>(_store, cm, problemCol);
         _tree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         _tree.getSelectionModel().addSelectionHandler(new SelectionHandler<BaseDto>() {

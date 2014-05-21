@@ -180,7 +180,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                 ps.setString(1, newPid);
                 ps.setInt(2, problem.getTeacher().getTeacherId());
                 ps.setInt(3, problemNumber);
-                ps.setString(4, problem.getProblemName() == null ?createCustomProblemNameDefault(problemNumber,  problem.getTeacher().getTeacherName()) : problem.getProblemName());
+                ps.setString(4, problem.getProblemName() == null ?createCustomProblemNameDefault(problemNumber) : problem.getProblemName());
                 ps.setString(5, problem.getComments());
                 ps.setString(6, problem.getTreePath());
 
@@ -199,9 +199,9 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         return solution;
     }
 
-    static private String createCustomProblemNameDefault(int problemNumber, String teacherName) {
+    static private String createCustomProblemNameDefault(int problemNumber) {
         String label = ("0000" + problemNumber);
-        return teacherName + "-" + label.substring(label.length() - 3);
+        return label.substring(label.length() - 3);
     }
 
     /**
@@ -230,7 +230,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         String sql = "select cp.*, ct.admin_id, ct.teacher_name, s.solutionxml " + " from   CM_CUSTOM_PROBLEM cp "
                 + " JOIN CM_CUSTOM_PROBLEM_TEACHER ct " + " on ct.teacher_id = cp.teacher_id " + " JOIN SOLUTIONS s "
                 + " on s.problemindex = cp.pid " + " where  (ct.admin_id = ?) "
-                + " order  by ct.teacher_name, teacher_problem_number ";
+                + " order  by teacher_name, cp.problem_name ";
 
         List<CustomProblemModel> problems = getJdbcTemplate().query(sql, new Object[] { adminId },
                 new RowMapper<CustomProblemModel>() {
@@ -531,7 +531,8 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                 + " on cp.pid = cl.pid "
                 + " JOIN SOLUTIONS s "
                 + " on s.problemindex = cp.pid "
-                + " where cl.lesson_file = ?";
+                + " where cl.lesson_file = ?" 
+                + " order by cp.problem_name";
 
         List<CustomProblemModel> problems = getJdbcTemplate().query(sql, new Object[] { lessonFile },
                 new RowMapper<CustomProblemModel>() {
@@ -945,13 +946,13 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
             ResultSet rs = conn
                     .createStatement()
                     .executeQuery(
-                            "select distinct admin_id from CM_CUSTOM_PROBLEM c JOIN CM_CUSTOM_PROBLEM_TEACHER t on t.teacher_id = c.teacher_id where (problem_name is null or problem_name = '') order by pid");
+                            "select distinct admin_id from CM_CUSTOM_PROBLEM c JOIN CM_CUSTOM_PROBLEM_TEACHER t on t.teacher_id = c.teacher_id where admin_id = 2 order by pid");
             while (rs.next()) {
 
                 int adminId = rs.getInt("admin_id");
                 List<CustomProblemModel> probs = CustomProblemDao.getInstance().getCustomProblemsFor(adminId);
                 for (CustomProblemModel m : probs) {
-                    String sql = "update CM_CUSTOM_PROBLEM set problem_name = '" + createCustomProblemNameDefault(0,  "") + "' where pid = '"
+                    String sql = "update CM_CUSTOM_PROBLEM set problem_name = '" + createCustomProblemNameDefault(m.getProblemNumber()) + "' where pid = '"
                             + m.getPid() + "'";
                     conn.createStatement().executeUpdate(sql);
                 }

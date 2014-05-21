@@ -198,11 +198,14 @@ public class AssignmentLessonPidSelector {
             pCount=0;
             for (CustomProblemModel p : customProblems) {
                 ++pCount;
-                ProblemDto prob = new ProblemDto(pCount,pCount,new LessonModel(lessonFile,lessonFile),"[custom] " + p.getProblemName(),p.getPid(),0);
+                String subFolder=p.getTreePath()!=null?"/" + p.getTreePath():"";
+                String custProbName = p.getTeacher().getTeacherName() + subFolder + "/" + p.getProblemName();
+                ProblemDto prob = new ProblemDto(pCount,pCount,new LessonModel(lessonFile,lessonFile),"[custom] " + custProbName,p.getPid(),0);
                 prob.setProblemType(p.getProblemType());
                 problems.add(prob);
             }
-            problemsAll.addAll(problems);
+            /** custom problems shown at top of list */
+            problemsAll.addAll(0, problems);
         }
     }
 
