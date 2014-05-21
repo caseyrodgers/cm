@@ -128,7 +128,7 @@ public class CustomProblemPropertyEditor extends GWindow {
     private void buildGui() {
         FramedPanel frame = new FramedPanel();
 
-        _treePath.addValidator(new MyValidatorDef(MyValidators.ALPHANUMERIC,new MyValidatorDef.Verifier() {
+        _treePath.addValidator(new MyValidatorDef(MyValidators.EVERYTHING,new MyValidatorDef.Verifier() {
 			@Override
 			public boolean verify(String value) {
 				return true;
