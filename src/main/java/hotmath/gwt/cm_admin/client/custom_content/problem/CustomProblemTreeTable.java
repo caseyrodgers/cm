@@ -538,6 +538,14 @@ public class CustomProblemTreeTable extends SimpleContainer {
      */
     public String getSelectedCustomFolderNode() {
         BaseDto node = _tree.getSelectionModel().getSelectedItem();
-        return node.getParent() != null?node.getParent().getName():null;
+        if(node.getParent() == null) {
+            return null;
+        }
+        else if(node instanceof CustomProblemFolderNode) {
+            return ((CustomProblemFolderNode)node).getFolderName();
+        }
+        else {
+            return node.getParent() != null?node.getParent().getName():null;
+        }
     }
 }

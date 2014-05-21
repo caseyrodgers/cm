@@ -96,7 +96,7 @@ public class CustomProblemManager extends GWindow {
 
     private void buildTreeGrid(List<CustomProblemModel> problems, List<String> paths) {
         String selectedProblem = null;
-        if (_selectedSolution == null && _treeTable != null) {
+        if (_selectedSolution == null && _treeTable != null && _treeTable.getSelectedCustomProblem() != null) {
             selectedProblem = _treeTable.getSelectedCustomProblem().getPid();
         }
         else {
