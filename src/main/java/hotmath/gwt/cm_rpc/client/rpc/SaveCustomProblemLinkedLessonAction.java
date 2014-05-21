@@ -11,17 +11,29 @@ public class SaveCustomProblemLinkedLessonAction implements Action<RpcData>{
     private String pid;
     private CmList<LessonModel> lessons;
     private String comments;
+    String problemName;
+	private int teacherId;
 
     public SaveCustomProblemLinkedLessonAction() {}
     
-    public SaveCustomProblemLinkedLessonAction(int adminId, String pid, String comments, CmList<LessonModel> lessons) {
+    public SaveCustomProblemLinkedLessonAction(int adminId, int teacherId, String pid, String comments, CmList<LessonModel> lessons, String problemName) {
         this.adminId = adminId;
+        this.teacherId = teacherId;
         this.pid = pid;
         this.comments = comments;
         this.lessons = lessons;
+        this.problemName = problemName;
     }
 
-    public String getComments() {
+    public String getProblemName() {
+		return problemName;
+	}
+
+	public void setProblemName(String problemName) {
+		this.problemName = problemName;
+	}
+
+	public String getComments() {
         return comments;
     }
 
@@ -53,4 +65,11 @@ public class SaveCustomProblemLinkedLessonAction implements Action<RpcData>{
         this.lessons = lessons;
     }
 
+	public int getTeacherId() {
+		return teacherId;
+	}
+
+	public void setTeacherId(int teacherId) {
+		this.teacherId = teacherId;
+	}
 }

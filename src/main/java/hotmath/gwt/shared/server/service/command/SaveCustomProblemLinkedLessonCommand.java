@@ -21,8 +21,7 @@ public class SaveCustomProblemLinkedLessonCommand implements ActionHandler<SaveC
     @Override
     public RpcData execute(Connection conn, SaveCustomProblemLinkedLessonAction action) throws Exception {
         
-        CustomProblemDao.getInstance().setCustomProblemLinkedLessons(action.getAdminId(), action.getPid(), action.getLessons());
-        CustomProblemDao.getInstance().setCustomProblemComment(action.getPid(), action.getComments());
+        CustomProblemDao.getInstance().updateCustomProblem(conn, action.getAdminId(), action.getTeacherId(),  action.getPid(), action.getComments(), action.getLessons(), action.getProblemName());
         return new RpcData("status=OK");
     }
     

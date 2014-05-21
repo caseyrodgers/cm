@@ -18,6 +18,7 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.NotActiveProgramWindow;
 import hotmath.gwt.shared.client.util.SystemSyncChecker;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
@@ -113,9 +114,18 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         }
     }
 
+    /** Must be called to finalize the action, send
+     * null if exception handled 
+     * 
+     */
     public void onFailure(Throwable error) {
         RetryActionManager.getInstance().requestComplete(this);
+        CmBusyManager.resetBusy();
+        Log.info("RetryAction " + instanceCount + " failure [" + getRequestTime() + "] (" + activeAction + ") : " + getClass().getName());
         
+        if(error == null) {
+            return;
+        }
         
 //        /** provide auto retry of operation
 //         * 
@@ -128,10 +138,10 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
 //        }
         
         error.printStackTrace();
-        CmLogger.info("RetryAction " + instanceCount + " failure [" + getRequestTime() + "] (" + activeAction + ") : " + getClass().getName());
+
         
-        CmBusyManager.resetBusy();
-        
+ 
+
         try {
             throw error;
         } catch (IncompatibleRemoteServiceException remoteServiceException) {

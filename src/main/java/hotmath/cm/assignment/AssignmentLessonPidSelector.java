@@ -198,7 +198,7 @@ public class AssignmentLessonPidSelector {
             pCount=0;
             for (CustomProblemModel p : customProblems) {
                 ++pCount;
-                ProblemDto prob = new ProblemDto(pCount,pCount,new LessonModel(lessonFile,lessonFile),"[custom] " + p.getLabel(),p.getPid(),0);
+                ProblemDto prob = new ProblemDto(pCount,pCount,new LessonModel(lessonFile,lessonFile),"[custom] " + p.getProblemName(),p.getPid(),0);
                 prob.setProblemType(p.getProblemType());
                 problems.add(prob);
             }

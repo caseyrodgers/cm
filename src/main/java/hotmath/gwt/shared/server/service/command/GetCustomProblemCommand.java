@@ -15,7 +15,7 @@ public class GetCustomProblemCommand implements ActionHandler<GetCustomProblemAc
     public CustomProblemInfo execute(Connection conn, GetCustomProblemAction action) throws Exception {
         
     	return new CustomProblemInfo(
-    			CustomProblemDao.getInstance().getCustomProblemsFor(action.getTeacher()),
+    			CustomProblemDao.getInstance().getCustomProblemsFor(action.getTeacher().getAdminId()),
     			CustomProblemDao.getInstance().getCustomTreePaths(action.getTeacher().getAdminId()));
     }
 

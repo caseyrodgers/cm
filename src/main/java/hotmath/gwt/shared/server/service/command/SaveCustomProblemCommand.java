@@ -28,7 +28,7 @@ public class SaveCustomProblemCommand implements ActionHandler<SaveCustomProblem
             break;
             
         case UPDATE_PROBLEM:
-        	CustomProblemDao.getInstance().updateCustomProblem(conn, action.getCustomProblemModel());
+        	CustomProblemDao.getInstance().updateCustomProblemTreePath(conn, action.getCustomProblemModel());
         	break;
         	
         	

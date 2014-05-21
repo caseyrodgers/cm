@@ -2,17 +2,19 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
 
 
 public class CustomProblemLeafNode extends BaseDto {
 	private CustomProblemModel customProblem;
 
-	public CustomProblemLeafNode(String name) {
+	public CustomProblemLeafNode(String name, BaseDto parent) {
 		super(__nextId(), name);
+		setParent(parent);
 	}
 
-	public CustomProblemLeafNode(CustomProblemModel customProblem) {
-		this(customProblem.getLabel());
+	public CustomProblemLeafNode(CustomProblemModel customProblem, FolderDto parent) {
+		this(customProblem.getProblemName(), parent);
 		this.customProblem = customProblem;
 	}
 
