@@ -10,7 +10,6 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.LessonDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
@@ -21,12 +20,16 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.FolderNotFoundException;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -42,6 +45,7 @@ import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent.CheckChangedHandler;
 import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.tips.QuickTip;
 import com.sencha.gxt.widget.core.client.tree.Tree;
 import com.sencha.gxt.widget.core.client.tree.Tree.CheckCascade;
 
@@ -123,7 +127,7 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
 
 
     static int autoId;
-    public void makeTree(List<CustomProblemModel> custProblems) {
+    public void makeTree(final List<CustomProblemModel> custProblems) {
         
         _treeStore = setupTreeStore(custProblems);
         
@@ -184,6 +188,30 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
                     }
                 }
             }
+            
+            @Override
+            public void render(com.google.gwt.cell.client.Cell.Context context, String data, SafeHtmlBuilder sb) {
+                String tip=null;
+                for(BaseDto n: _tree.getStore().getAll()) {
+                    String nk = _tree.getStore().getKeyProvider().getKey(n);
+                    if(nk.equals(context.getKey())) {
+                        if(n instanceof FolderDto) {
+                            // do nothing on folder nodes
+                        }
+                        else {
+                            tip = n.getName();
+                        }
+                        break;
+                    }
+                }
+                // BaseDto node = _tree.getStore().getAll().get(index);
+                Element element = DOM.createElement("span");
+                if(tip != null) {
+                    element.setAttribute("qtip",  tip);
+                }
+                element.setInnerText(data);
+                sb.appendHtmlConstant(element.getString());
+            }
         };
         _tree.setCell(cell);
 
@@ -195,6 +223,8 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
         });
         // tree.getStyle().setLeafIcon(ExampleImages.INSTANCE.music());
         flowContainer.add(_tree);
+        
+        new QuickTip(_tree);
 
         setWidget(flowContainer);
         forceLayout();
