@@ -11,27 +11,17 @@ public class SaveCustomProblemLinkedLessonAction implements Action<RpcData>{
     private String pid;
     private CmList<LessonModel> lessons;
     private String comments;
-    String problemName;
 	private int teacherId;
 
     public SaveCustomProblemLinkedLessonAction() {}
     
-    public SaveCustomProblemLinkedLessonAction(int adminId, int teacherId, String pid, String comments, CmList<LessonModel> lessons, String problemName) {
+    public SaveCustomProblemLinkedLessonAction(int adminId, int teacherId, String pid, String comments, CmList<LessonModel> lessons) {
         this.adminId = adminId;
         this.teacherId = teacherId;
         this.pid = pid;
         this.comments = comments;
         this.lessons = lessons;
-        this.problemName = problemName;
     }
-
-    public String getProblemName() {
-		return problemName;
-	}
-
-	public void setProblemName(String problemName) {
-		this.problemName = problemName;
-	}
 
 	public String getComments() {
         return comments;

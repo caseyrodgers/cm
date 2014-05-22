@@ -14,7 +14,7 @@ public class CustomProblemLeafNode extends BaseDto {
 	}
 
 	public CustomProblemLeafNode(CustomProblemModel customProblem, FolderDto parent) {
-		this(customProblem.getProblemName(), parent);
+		this(customProblem.getProblemNumber() + "", parent);
 		this.customProblem = customProblem;
 	}
 

@@ -112,10 +112,13 @@ public class CustomProblemPropertyEditor extends GWindow {
 
     private String verifyFields() {
         if(_teacherName.getValue() == null || _teacherName.getValue().length() == 0) {
-            return "Teacher must be specified";
+            return "Teacher must be specified.";
         }
         if(!_treePath.validate()) {
         	return "Folder name is invalid.";
+        }
+        if(!_comments.validate()) {
+            return "Comment must be specified.";
         }
         return null;
     }
@@ -127,7 +130,7 @@ public class CustomProblemPropertyEditor extends GWindow {
     TextField _treePath = new TextField();
     private void buildGui() {
         FramedPanel frame = new FramedPanel();
-
+        
         _treePath.addValidator(new MyValidatorDef(MyValidators.EVERYTHING,new MyValidatorDef.Verifier() {
 			@Override
 			public boolean verify(String value) {
@@ -138,6 +141,7 @@ public class CustomProblemPropertyEditor extends GWindow {
         _teacherName.setToolTip("Unique teacher name.  To select a differnt teacher, cancel and use the Select Teacher button.");
         _teacherName.setEnabled(false);
         _comments.setHeight(100);
+        _comments.setAllowBlank(false);
         _comments.setValue(problem.getComments());
         _problemNumber.setToolTip("The unique problem number automatically assigned");
         _problemNumber.setEnabled(false);

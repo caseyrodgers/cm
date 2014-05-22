@@ -33,6 +33,7 @@ import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
@@ -43,6 +44,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -366,7 +368,7 @@ public class CustomProblemManager extends GWindow {
 
         String folderNode = _treeTable.getSelectedCustomFolderNode();
 
-        CustomProblemModel problem = new CustomProblemModel(null, 0, TeacherManager.getTeacher(), null, null, null,folderNode != null ? folderNode: "");
+        CustomProblemModel problem = new CustomProblemModel(null, 0, TeacherManager.getTeacher(), getDateTimeStamp(), null,folderNode != null ? folderNode: "");
         new CustomProblemPropertyEditor(problem, new CustomProblemPropertyEditor.Callback() {
             @Override
             public void solutionCreated(SolutionInfo solution) {
@@ -374,6 +376,10 @@ public class CustomProblemManager extends GWindow {
                 readFromServer();
             }
         });
+    }
+
+    private String getDateTimeStamp() {
+        return DateTimeFormat.getFormat("yyyy.MM.dd 'at' HH:mm").format(new Date());
     }
 
     /**
@@ -430,7 +436,7 @@ public class CustomProblemManager extends GWindow {
                     CustomProblemModel link = ds.get(i);
 
                     // whatever tooltip you want with optional qtitle
-                    String label = "<b>Problem: </b><br/>" + link.getProblemName() + "</div><br/>";
+                    String label = "<b>Problem: </b><br/>" + link.getProblemNumber() + "</div><br/>";
                     String comments = link.getComments() == null ? "" : "<b>Comments</b><br/>" + link.getComments()
                             + "<br/><br/>";
                     String linkedLessons = "";

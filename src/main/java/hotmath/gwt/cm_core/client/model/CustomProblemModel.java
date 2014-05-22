@@ -18,27 +18,18 @@ public class CustomProblemModel implements Response {
     private ProblemType problemType;
     
     private List<LessonModel> linkedLessons = new ArrayList<LessonModel>();
-	private String problemName;
 
     public CustomProblemModel(){}
             
-    public CustomProblemModel(String pid, int problemNumber, TeacherIdentity teacher, String problemName, String comments, ProblemType type, String treePath) {
+    public CustomProblemModel(String pid, int problemNumber, TeacherIdentity teacher, String comments, ProblemType type, String treePath) {
         this.pid = pid;
         this.problemNumber = problemNumber;
         this.teacher = teacher;
-        this.problemName = problemName;
+
         this.comments = comments;
         this.problemType = type;
         this.treePath = treePath;
     }
-
-    public String getProblemName() {
-		return problemName;
-	}
-
-	public void setProblemName(String problemName) {
-		this.problemName = problemName;
-	}
 
 	public String getTreePath() {
 		return treePath;
@@ -117,11 +108,16 @@ public class CustomProblemModel implements Response {
     public List<LessonModel> getLinkedLessons() {
         return linkedLessons;
     }
+    
+    public String getFullPath() {
+        String folder = treePath != null?"/" + treePath : "";
+        return teacher.getTeacherName() + folder + "/" + getComments();
+    }
 
+    
     @Override
     public String toString() {
         return "CustomProblemModel [pid=" + pid + ", teacher=" + teacher + ", problemNumber=" + problemNumber + ", comments=" + comments + "]";
     }
-
 }
 

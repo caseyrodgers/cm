@@ -134,10 +134,9 @@ public class ProblemDesigner extends Composite {
     public void loadProblem(CustomProblemModel customProblem, final int scrollPosition) {
         _customProblem = customProblem;
         final String pid = customProblem.getPid();
-        String name = customProblem.getProblemName();
         
-        if(name != null) {
-           _problemPanel.setHeadingText("Problem: " + name);
+        if(customProblem.getProblemNumber() > 0) {
+           _problemPanel.setHeadingText("Problem: " + customProblem.getProblemNumber());
         }
         
         CmBusyManager.setBusy(true);
@@ -479,7 +478,7 @@ public class ProblemDesigner extends Composite {
         public void startTest() {
             String testPid="test_casey_1_1_1_1";
             testPid="cmextras_dynamic_oops_basic_1_1";
-            new ProblemDesigner(null).loadProblem(new CustomProblemModel(testPid, 0, null, null, null, ProblemType.UNKNOWN,null),0);
+            new ProblemDesigner(null).loadProblem(new CustomProblemModel(testPid, 0, null, null, ProblemType.UNKNOWN,null),0);
         }
     }
 

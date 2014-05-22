@@ -249,7 +249,7 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
                 children.add(parentNode);
             }
             
-            ProblemDto prob = new ProblemDto(0, BaseDto.autoId++, new LessonModel("Custom: " + cp.getTeacherName(), "Custom"), cp.getPid(), cp.getPid(), 0);
+            ProblemDto prob = new ProblemDto(0, BaseDto.autoId++, new LessonModel("Custom: " + cp.getTeacherName(), "Custom"), cp.getFullPath(), cp.getPid(), 0);
             prob.setProblemType(cp.getProblemType());
             parentNode.addChild(prob);            
         }

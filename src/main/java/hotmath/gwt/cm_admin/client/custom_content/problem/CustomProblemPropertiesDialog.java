@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
-import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
@@ -10,9 +9,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_tools.client.ui.MyValidatorDef;
-import hotmath.gwt.cm_tools.client.ui.MyValidatorDef.Verifier;
-import hotmath.gwt.cm_tools.client.ui.MyValidators;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -21,7 +17,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.Component;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -30,7 +26,6 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderL
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.TextArea;
-import com.sencha.gxt.widget.core.client.form.TextField;
 
 public class CustomProblemPropertiesDialog extends GWindow {
 
@@ -55,13 +50,10 @@ public class CustomProblemPropertiesDialog extends GWindow {
         _customProblem = problem;
         _lessonsPanel.setSolution(problem.getPid());
         _comments.setValue(problem.getComments());
-        _problemName.setValue(problem.getProblemName());
     }
 
     CustomProblemLinkedLessonsPanel _lessonsPanel;
     TextArea _comments = new TextArea();
-    TextField _problemName = new TextField();
-    
     public CustomProblemPropertiesDialog() {
         super(false);
         setHeadingText("Setup Custom Problem properties");
@@ -116,17 +108,16 @@ public class CustomProblemPropertiesDialog extends GWindow {
     
 
     private void saveLessonsToServer(final String pid, final String comments, final List<LessonModel> lessons) {
-
-    	if(!_problemName.validate()) {
-    		CmMessageBox.showAlert("Problem name must be valid.");
-    		return;
-    	}
-    	
+        if(!_comments.validate()) {
+            CmMessageBox.showAlert("Comment must be specified.");
+            return;
+        }
+        
         CmBusyManager.setBusy(true);
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
-                SaveCustomProblemLinkedLessonAction action = new SaveCustomProblemLinkedLessonAction(UserInfoBase.getInstance().getUid(), _customProblem.getTeacher().getTeacherId(), pid, comments, new CmArrayList<LessonModel>(lessons), _problemName.getCurrentValue());
+                SaveCustomProblemLinkedLessonAction action = new SaveCustomProblemLinkedLessonAction(UserInfoBase.getInstance().getUid(), _customProblem.getTeacher().getTeacherId(), pid, comments, new CmArrayList<LessonModel>(lessons));
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -158,10 +149,9 @@ public class CustomProblemPropertiesDialog extends GWindow {
         BorderLayoutContainer bl = new BorderLayoutContainer();
         FramedPanel fp1 = new FramedPanel();
         BorderLayoutContainer bl2 = new BorderLayoutContainer();
-        FlowPanel flow = new FlowPanel();
-        flow.add(new MyFieldLabel(_problemName, "Problem Name", 100));
-        bl2.setNorthWidget(flow, new BorderLayoutData(35));
-        bl2.setCenterWidget(new MyFieldLabel(_comments, "Comments", 100));
+        bl2.setNorthWidget(new HTML("<b>Comment</b>"), new BorderLayoutData(15));
+        _comments.setAllowBlank(false);
+        bl2.setCenterWidget(_comments);
         
         fp1.setWidget(bl2);
         fp1.setHeaderVisible(false);
@@ -171,15 +161,6 @@ public class CustomProblemPropertiesDialog extends GWindow {
 
         _lessonsPanel = new CustomProblemLinkedLessonsPanel();
         bl.setCenterWidget(_lessonsPanel);
-        
-        _problemName.addValidator(new MyValidatorDef(MyValidators.EVERYTHING,new Verifier() {
-        	@Override
-        	public boolean verify(String value) {
-        		return true;
-        	}
-        }));
-        _problemName.setAllowBlank(false);
-        
         
         setWidget(bl);
     }

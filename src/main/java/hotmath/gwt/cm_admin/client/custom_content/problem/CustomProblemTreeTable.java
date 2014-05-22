@@ -68,9 +68,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
     public interface DataProperties extends PropertyAccess<BaseDto> {
         @Path("id")
         ModelKeyProvider<BaseDto> key();
-
         ValueProvider<BaseDto, String> name();
-        // ValueProvider<BaseDto, String> value();
     }
 
     TreeStore<BaseDto> _store;
@@ -180,17 +178,16 @@ public class CustomProblemTreeTable extends SimpleContainer {
         // }
         // _root.addChild(firstNode);
 
-        ColumnConfig<BaseDto, String> problemCol = new ColumnConfig<BaseDto, String>(props.name(), 200, "Problem");
-        problemCol.setSortable(false);
-
-        ColumnConfig<BaseDto, String> commentCol = new ColumnConfig<BaseDto, String>(new ValueProvider<BaseDto, String>() {
+        ColumnConfig<BaseDto, String> problemCol = new ColumnConfig<BaseDto, String>(new ValueProvider<BaseDto, String>() {
             @Override
             public String getValue(BaseDto object) {
                 if (object == null) {
                     return "";
-                } else {
-                    return object instanceof CustomProblemLeafNode ? ((CustomProblemLeafNode) object)
-                            .getCustomProblem().getComments() : "";
+                } else if(object instanceof CustomProblemLeafNode){
+                    return ((CustomProblemLeafNode) object).getCustomProblem().getComments();
+                }
+                else {
+                    return object.getName();
                 }
             }
 
@@ -201,10 +198,13 @@ public class CustomProblemTreeTable extends SimpleContainer {
 
             @Override
             public String getPath() {
-                return "comment";
+                return "problem";
             }
         });
-        commentCol.setHeader("Comment");
+        problemCol.setWidth(200);
+        problemCol.setSortable(false);
+        
+        
         ColumnConfig<BaseDto, String> lessonsCol = new ColumnConfig<BaseDto, String>(new ValueProvider<BaseDto, String>() {
             @Override
             public String getValue(BaseDto object) {
@@ -225,7 +225,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
 
         List<ColumnConfig<BaseDto, ?>> l = new ArrayList<ColumnConfig<BaseDto, ?>>();
         l.add(problemCol);
-        l.add(commentCol);
+        //l.add(commentCol);
         l.add(lessonsCol);
         ColumnModel<BaseDto> cm = new ColumnModel<BaseDto>(l);
 
@@ -343,7 +343,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
                         CustomProblemModel problem = ((CustomProblemLeafNode) link).getCustomProblem();
 
                         // whatever tooltip you want with optional qtitle
-                        String label = "<b>Problem: </b><br/>" + problem.getProblemName() + "</div><br/>";
+                        String label = "<b>Problem: </b><br/>" + problem.getProblemNumber() + "</div><br/>";
                         String comments = problem.getComments() == null ? "" : "<b>Comments</b><br/>"
                                 + problem.getComments() + "<br/><br/>";
                         String linkedLessons = "";
@@ -369,7 +369,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
         CustomProblemModel link = leaf.getCustomProblem();
 
         // whatever tooltip you want with optional qtitle
-        String label = "<b>Problem: </b><br/>" + link.getProblemName() + "</div><br/>";
+        String label = "<b>Problem: </b><br/>" + link.getProblemNumber() + "</div><br/>";
         String comments = link.getComments() == null ? "" : "<b>Comments</b><br/>" + link.getComments() + "<br/><br/>";
         String linkedLessons = "";
         for (LessonModel lessonModel : link.getLinkedLessons()) {
@@ -539,7 +539,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
      */
     public String getSelectedCustomFolderNode() {
         BaseDto node = _tree.getSelectionModel().getSelectedItem();
-        if(node.getParent() == null) {
+        if(node == null || node.getParent() == null) {
             return null;
         }
         else if(node instanceof CustomProblemFolderNode) {

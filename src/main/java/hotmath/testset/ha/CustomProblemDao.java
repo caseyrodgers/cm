@@ -175,14 +175,13 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                String sql = "insert into CM_CUSTOM_PROBLEM(pid,teacher_id, teacher_problem_number, problem_name, comments, tree_path)values(?,?,?,?,?,?)";
+                String sql = "insert into CM_CUSTOM_PROBLEM(pid,teacher_id, teacher_problem_number, comments, tree_path)values(?,?,?,?,?)";
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setString(1, newPid);
                 ps.setInt(2, problem.getTeacher().getTeacherId());
                 ps.setInt(3, problemNumber);
-                ps.setString(4, problem.getProblemName() == null ?createCustomProblemNameDefault(problemNumber) : problem.getProblemName());
-                ps.setString(5, problem.getComments());
-                ps.setString(6, problem.getTreePath());
+                ps.setString(4, problem.getComments());
+                ps.setString(5, problem.getTreePath());
 
                 return ps;
             }
@@ -230,7 +229,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         String sql = "select cp.*, ct.admin_id, ct.teacher_name, s.solutionxml " + " from   CM_CUSTOM_PROBLEM cp "
                 + " JOIN CM_CUSTOM_PROBLEM_TEACHER ct " + " on ct.teacher_id = cp.teacher_id " + " JOIN SOLUTIONS s "
                 + " on s.problemindex = cp.pid " + " where  (ct.admin_id = ?) "
-                + " order  by teacher_name, cp.problem_name ";
+                + " order  by teacher_name, teacher_problem_number ";
 
         List<CustomProblemModel> problems = getJdbcTemplate().query(sql, new Object[] { adminId },
                 new RowMapper<CustomProblemModel>() {
@@ -238,7 +237,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                     public CustomProblemModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         CustomProblemModel cp = new CustomProblemModel(rs.getString("pid"), rs
                                 .getInt("teacher_problem_number"), new TeacherIdentity(rs.getInt("admin_id"), rs
-                                .getString("teacher_name"), rs.getInt("teacher_id")), rs.getString("problem_name"), rs
+                                .getString("teacher_name"), rs.getInt("teacher_id")), rs
                                 .getString("comments"), SolutionDao.determineProblemType(rs.getString("solutionxml")),
                                 rs.getString("tree_path"));
                         cp.setLinkedLessons(getCustomProblemLinkedLessons(cp.getPid()));
@@ -525,21 +524,21 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
     }
 
     public List<CustomProblemModel> getCustomProblemsLinkedToLesson(String lessonFile) {
-        String sql = "select distinct cp.pid, cp.problem_name, cp.teacher_id, cp.comments, cp.teacher_problem_number, cp.tree_path, cl.lesson_name, cl.lesson_file, s.solutionxml"
+        String sql = "select distinct cp.pid, cp.teacher_id, cp.comments, cp.teacher_problem_number, cp.tree_path, cl.lesson_name, cl.lesson_file, s.solutionxml"
                 + " from CM_CUSTOM_PROBLEM_LINKED_LESSONS cl "
                 + " JOIN CM_CUSTOM_PROBLEM  cp "
                 + " on cp.pid = cl.pid "
                 + " JOIN SOLUTIONS s "
                 + " on s.problemindex = cp.pid "
                 + " where cl.lesson_file = ?" 
-                + " order by cp.problem_name";
+                + " order by cp.comments";
 
         List<CustomProblemModel> problems = getJdbcTemplate().query(sql, new Object[] { lessonFile },
                 new RowMapper<CustomProblemModel>() {
                     @Override
                     public CustomProblemModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         return new CustomProblemModel(rs.getString("pid"), rs.getInt("teacher_problem_number"),
-                                getTeacherIdentity(rs.getInt("teacher_id")), rs.getString("problem_name"), rs
+                                getTeacherIdentity(rs.getInt("teacher_id")), rs
                                         .getString("comments"), SolutionDao.determineProblemType(rs
                                         .getString("solutionxml")), rs.getString("tree_path"));
                     }
@@ -688,12 +687,12 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                     public CustomProblemModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         return new CustomProblemModel(rs.getString("pid"), rs.getInt("teacher_problem_number"),
                                 new TeacherIdentity(rs.getInt("admin_id"), rs.getString("teacher_name"), rs
-                                        .getInt("teacher_id")), rs.getString("problem_name"), rs.getString("comments"),
+                                        .getInt("teacher_id")), rs.getString("comments"),
                                 SolutionDao.determineProblemType(solutionXml), rs.getString("tree_path"));
                     }
                 });
 
-        CustomProblemModel newProblem = new CustomProblemModel(null, 0, problemToCopy.getTeacher(), null, null,
+        CustomProblemModel newProblem = new CustomProblemModel(null, 0, problemToCopy.getTeacher(),  null,
                 problemToCopy.getProblemType(), problemToCopy.getTreePath());
         final SolutionInfo newSolution = createNewCustomProblem(newProblem);
 
@@ -905,37 +904,10 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
     }
 
     public void updateCustomProblem(Connection conn, int adminId, int teacherId, String pid, String comments,
-            CmList<LessonModel> lessons, String problemName) throws Exception {
+            CmList<LessonModel> lessons) throws Exception {
 
         updateCustomProblemLinkedLessons(adminId, pid, lessons);
         updateCustomProblemComment(pid, comments);
-        updateCustomProblemName(teacherId, pid, problemName);
-    }
-
-    /**
-     * Update the treepath for the named custom problem
-     * 
-     * @param conn
-     * @param problem
-     */
-    public void updateCustomProblemName(final int teacherId, final String pid, final String problemName) {
-        int cnt = getJdbcTemplate().update(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                String sql = "update CM_CUSTOM_PROBLEM set problem_name = ? where teacher_id = ? and pid = ?";
-                PreparedStatement ps = con.prepareStatement(sql);
-
-                ps.setString(1, problemName);
-                ps.setInt(2, teacherId);
-                ps.setString(3, pid);
-
-                return ps;
-            }
-        });
-
-        if (cnt != 1) {
-            __logger.warn("No problem name updated: " + teacherId + ", " + pid);
-        }
     }
 
     static public void main(String as[]) {
@@ -946,7 +918,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
             ResultSet rs = conn
                     .createStatement()
                     .executeQuery(
-                            "select distinct admin_id from CM_CUSTOM_PROBLEM c JOIN CM_CUSTOM_PROBLEM_TEACHER t on t.teacher_id = c.teacher_id where admin_id = 2 order by pid");
+                            "select distinct admin_id from CM_CUSTOM_PROBLEM c JOIN CM_CUSTOM_PROBLEM_TEACHER t on t.teacher_id = c.teacher_id order by pid");
             while (rs.next()) {
 
                 int adminId = rs.getInt("admin_id");
