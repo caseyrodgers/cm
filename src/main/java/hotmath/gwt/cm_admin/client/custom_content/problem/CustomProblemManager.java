@@ -686,6 +686,7 @@ public class CustomProblemManager extends GWindow {
             ProblemDesigner problemDesigner = new ProblemDesigner(new CallbackOnComplete() {
                 @Override
                 public void isComplete() {
+                    _treeTable.getTree().getSelectionModel().deselectAll();
                     _main.setCenterWidget(_emptyPage);
                 }
             });
