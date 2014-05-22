@@ -1,30 +1,14 @@
-//
-//  Copyright (c) 2011, Maths for More S.L. http://www.wiris.com
-//  This file is part of WIRIS Plugin.
-//
-//  WIRIS Plugin is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  any later version.
-//
-//  WIRIS Plugin is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with WIRIS Plugin. If not, see <http://www.gnu.org/licenses/>.
-//
+// ${license.statement}
 
 var wrs_int_opener;
 var closeFunction;
 
-if (window.opener) {							// For popup mode.
+if (window.opener) {							// For popup mode
 	wrs_int_opener = window.opener;
 	closeFunction = window.close;
 }
 /* FCKeditor integration begin */
-else {											// For iframe mode.
+else {											// For iframe mode
 	wrs_int_opener = window.parent;
 	
 	while (wrs_int_opener.InnerDialogLoaded) {
@@ -32,51 +16,80 @@ else {											// For iframe mode.
 	}
 }
 
-if (window.parent.InnerDialogLoaded) {			// iframe mode.
+// Insert editor
+var lang = new RegExp("lang=([^&]*)","i").exec(window.location);
+lang = (lang!=null && lang.length>1) ? lang[1]:"en";
+var script = document.createElement('script');
+script.type = 'text/javascript';
+var editorUrl = wrs_int_opener._wrs_conf_editorUrl;
+// Change to https if necessary
+if (true || window.location.href.indexOf("https://")==0) {
+	if (editorUrl.indexOf("http://")==0) {
+		editorUrl = "https"+editorUrl.substring(4);
+	}
+}
+script.src = editorUrl+"?lang="+lang;
+document.getElementsByTagName('head')[0].appendChild(script);
+
+// Insert strings
+var script = document.createElement('script');
+script.type = 'text/javascript';
+script.src = "../lang/"+lang+"/strings.js";
+document.getElementsByTagName('head')[0].appendChild(script);
+
+if (window.parent.InnerDialogLoaded) {			// iframe mode
 	window.parent.InnerDialogLoaded();
 	closeFunction = window.parent.Cancel;
 }
-else if (window.opener.parent.FCKeditorAPI) {	// popup mode.
+else if (window.opener.parent.FCKeditorAPI) {	// popup mode
 	wrs_int_opener = window.opener.parent;
 }
 /* FCKeditor integration end */
 
 wrs_int_opener.wrs_addEvent(window, 'load', function () {
-	var applet = document.getElementById('applet');
+	var queryParams = wrs_int_opener.wrs_getQueryParams(window);
+	var editor;
 	
-	// Mathml content.
+	wrs_attributes = wrs_int_opener._wrs_conf_editorParameters;
+	wrs_attributes.language = queryParams['lang'];
+
+	if (wrs_int_opener._wrs_conf_editorToolbar.length>0) {
+		wrs_attributes['toolbar'] = wrs_int_opener._wrs_conf_editorToolbar;
+	}
+
+	if (com.wiris.jsEditor.defaultBasePath) {
+		editor = com.wiris.jsEditor.JsEditor.newInstance(wrs_attributes);
+	}	
+	else {
+		editor = new com.wiris.jsEditor.JsEditor('editor', null);
+	}
+	
+	var editorElement = editor.getElement();
+	var editorContainer = document.getElementById('editorContainer');
+	editor.insertInto(editorContainer);
+	//editorContainer.appendChild(editorElement);
+	
+	// Mathml content
 	if (!wrs_int_opener._wrs_isNewElement) {
 		var mathml;
 		var attributeValue = wrs_int_opener._wrs_temporalImage.getAttribute(wrs_int_opener._wrs_conf_imageMathmlAttribute);
-			
+		
 		if (attributeValue == null) {
 			attributeValue = wrs_int_opener._wrs_temporalImage.getAttribute('alt');
 		}
 		
-		if (wrs_int_opener._wrs_conf_useDigestInsteadOfMathml) {		
+		if (wrs_int_opener._wrs_conf_useDigestInsteadOfMathml) {
 			mathml = wrs_int_opener.wrs_getCode(wrs_int_opener._wrs_conf_digestPostVariable, attributeValue);
 		}
 		else {
 			mathml = wrs_int_opener.wrs_mathmlDecode(attributeValue);
 		}
 		
-		function setAppletMathml() {
-			// Internet explorer fails on "applet.isActive". It only supports "applet.isActive()".
-			
-			try {
-				if (applet.isActive()) {
-					applet.setContent(mathml);
-				}
-				else {
-					setTimeout(setAppletMathml, 50);
-				}
-			}
-			catch (e) {
-				setTimeout(setAppletMathml, 50);
-			}
-		}
-
-		setAppletMathml();
+		editor.setMathML(mathml);
+	}
+	
+	if (typeof strings == 'undefined') {
+		strings = new Object();
 	}
 	
 	// Submit button.
@@ -89,21 +102,14 @@ wrs_int_opener.wrs_addEvent(window, 'load', function () {
 		submitButton.value = 'Accept';
 	}
 	
+	
 	wrs_int_opener.wrs_addEvent(submitButton, 'click', function () {
-		//Used to close WIRIS editor if the main editor doesn't exist anymore.
-		if (!('wrs_int_updateFormula' in wrs_int_opener)){
-			window.close();
-			return;
-		}
-		
 		var mathml = '';
 	
-		if (!applet.isFormulaEmpty()) {
-			mathml += applet.getContent();							// If isn't empty, get mathml code to mathml variable.
+		if (!editor.isFormulaEmpty()) {
+			mathml += editor.getMathML();							// If isn't empty, get mathml code to mathml variable.
 			mathml = wrs_int_opener.wrs_mathmlEntities(mathml);		// Apply a parse.
 		}
-		
-		var queryParams = wrs_int_opener.wrs_getQueryParams(window);
 		
 		/* FCKeditor integration begin */
 		if (window.parent.InnerDialogLoaded && window.parent.FCKBrowserInfo.IsIE) {			// On IE, we must close the dialog for push the caret on the correct position.
@@ -130,6 +136,7 @@ wrs_int_opener.wrs_addEvent(window, 'load', function () {
 	}else{
 		cancelButton.value = 'Cancel';
 	}
+
 	
 	wrs_int_opener.wrs_addEvent(cancelButton, 'click', function () {
 		closeFunction();
@@ -138,14 +145,36 @@ wrs_int_opener.wrs_addEvent(window, 'load', function () {
 	controls.appendChild(cancelButton);
 
 	var manualLink = document.getElementById('a_manual');
-	if (strings['manual'] != null){
+	if (typeof manualLink != 'undefined' && strings['manual'] != null){
 		manualLink.innerHTML = strings['manual'];
+	}
+
+	var latexLink = document.getElementById('a_latex');
+	if (typeof latexLink != 'undefined' && strings['latex'] != null){
+		latexLink.innerHTML = strings['latex'];
+	}
+
+	var queryLang = '';
+	if ('lang' in queryParams){
+		queryLang = queryParams['lang'].substr(0, 2);
+	}
+	
+	if ((queryParams['dir'] == 'rtl') || ((queryLang == 'he' || queryLang == 'ar') && queryParams['dir'] != 'ltr')){
+		var body = document.getElementsByTagName('BODY');
+		body[0].setAttribute("dir","rtl");
+		var links = document.getElementById('links');
+		links.id = 'links_rtl';
+		var controls = document.getElementById('controls');
+		controls.id = 'controls_rtl';
 	}
 	
 	// Auto resizing.
-	
 	setInterval(function () {
-		applet.style.height = (document.getElementById('container').offsetHeight - controls.offsetHeight - 10) + 'px';
+		editorElement.style.height = (document.getElementById('container').offsetHeight - controls.offsetHeight - 10) + 'px';
+	}, 100);
+	
+	setTimeout(function () {
+		editor.focus();
 	}, 100);
 });
 

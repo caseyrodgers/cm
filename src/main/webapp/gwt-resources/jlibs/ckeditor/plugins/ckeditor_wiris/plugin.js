@@ -1,31 +1,27 @@
+// Define variables needed by core/core.js
+var _wrs_int_conf_file = "/pluginwiris_engine/app/configurationjs";
+var _wrs_int_conf_async = false;
+
+var _wrs_conf_path = CKEDITOR.basePath + '/plugins/ckeditor_wiris';
+
+// Load configuration synchronously
+if (!_wrs_int_conf_async) {
+	var httpRequest = typeof XMLHttpRequest != 'undefined' ? new XMLHttpRequest():new ActiveXObject('Microsoft.XMLHTTP');
+	var configUrl = _wrs_int_conf_file.indexOf("/")==0 || _wrs_int_conf_file.indexOf("http")==0 ? _wrs_int_conf_file : _wrs_conf_path + "/" + _wrs_int_conf_file;
+	httpRequest.open('GET', configUrl, false);
+	httpRequest.send(null);
+	eval(httpRequest.responseText);
+}
+
 // Including core.js
 var script = document.createElement('script');
 script.type = 'text/javascript';
-script.src = CKEDITOR.basePath + '/plugins/ckeditor_wiris/core/core.js';
+script.src = _wrs_conf_path + '/core/core.js';
 document.getElementsByTagName('head')[0].appendChild(script);
 
-// Configuration
-var _wrs_conf_editorEnabled = true;		// Specifies if fomula editor is enabled.
-var _wrs_conf_CASEnabled = false;		// Specifies if WIRIS cas is enabled.
-
-var _wrs_conf_imageMathmlAttribute = 'data-mathml';	// Specifies the image tag where we should save the formula editor mathml code.
-var _wrs_conf_CASMathmlAttribute = 'alt';	// Specifies the image tag where we should save the WIRIS cas mathml code.
-
-var _wrs_conf_editorPath = '/pluginwiris_engine/app/editor';        // _wrs_conf_editorPath = '/pluginwiris_engine/app/editor';        // _wrs_conf_editorPath = '/pluginwiris_engine/app/editor';        // _wrs_conf_editorPath = CKEDITOR.basePath + '/plugins/ckeditor_wiris/integration/editor.php';			// Specifies where is the editor HTML code (for popup window).
-var _wrs_conf_editorAttributes = 'width=570, height=450, scroll=no, resizable=yes';							// Specifies formula editor window options.
-var _wrs_conf_CASPath = '/pluginwiris_engine/app/cas';        // _wrs_conf_CASPath = '/pluginwiris_engine/app/cas';        // _wrs_conf_CASPath = '/pluginwiris_engine/app/cas';        // _wrs_conf_CASPath = CKEDITOR.basePath + '/plugins/ckeditor_wiris/integration/cas.php';					// Specifies where is the WIRIS cas HTML code (for popup window).
-var _wrs_conf_CASAttributes = 'width=640, height=480, scroll=no, resizable=yes';							// Specifies WIRIS cas window options.
-
-var _wrs_conf_createimagePath = '/pluginwiris_engine/app/createimage';        // _wrs_conf_createimagePath = '/pluginwiris_engine/app/createimage';        // _wrs_conf_createimagePath = '/pluginwiris_engine/app/createimage';        // _wrs_conf_createimagePath = CKEDITOR.basePath + '/plugins/ckeditor_wiris/integration/createimage.php';			// Specifies where is createimage script.
-var _wrs_conf_createcasimagePath = '/pluginwiris_engine/app/createcasimage';        // _wrs_conf_createcasimagePath = '/pluginwiris_engine/app/createcasimage';        // _wrs_conf_createcasimagePath = '/pluginwiris_engine/app/createcasimage';        // _wrs_conf_createcasimagePath = CKEDITOR.basePath + '/plugins/ckeditor_wiris/integration/createcasimage.php';	// Specifies where is createcasimage script.
-
-var _wrs_conf_getmathmlPath = '/pluginwiris_engine/app/getmathml';        // _wrs_conf_getmathmlPath = '/pluginwiris_engine/app/getmathml';        // _wrs_conf_getmathmlPath = '/pluginwiris_engine/app/getmathml';        // _wrs_conf_getmathmlPath = CKEDITOR.basePath + '/plugins/ckeditor_wiris/integration/getmathml.php';			// Specifies where is the getmathml script.
-var _wrs_conf_servicePath = '/pluginwiris_engine/app/service';        // _wrs_conf_servicePath = '/pluginwiris_engine/app/service';        // _wrs_conf_servicePath = '/pluginwiris_engine/app/service';        // _wrs_conf_servicePath = CKEDITOR.basePath + '/plugins/ckeditor_wiris/integration/service.php';			// Specifies where is the service script.
-
-var _wrs_conf_saveMode = 'xml';					// This value can be 'tags', 'xml' or 'safeXml'.
-var _wrs_conf_parseModes = ['latex'];				// This value can contain 'latex'.
-
-var _wrs_conf_enableAccessibility = true;
+// Define variables needed at initialization time
+// var _wrs_conf_editorEnabled = true;		// Specifies if formula editor is enabled.
+// var _wrs_conf_CASEnabled = true;		// Specifies if WIRIS cas is enabled.
 
 // Vars
 var _wrs_int_editorIcon = CKEDITOR.basePath + '/plugins/ckeditor_wiris/core/icons/formula.gif';
@@ -37,33 +33,37 @@ var _wrs_int_window_opened = false;
 var _wrs_int_temporalImageResizing;
 var _wrs_int_wirisProperties;
 var _wrs_int_directionality;
+var _wrs_int_disableDoubleClick = false;
 
 // Plugin integration
 CKEDITOR.plugins.add('ckeditor_wiris', {
 	'init': function (editor) {
-		/*
-		 * Fix for a bug when there is more than one editor in the same page.
-		 * It removes wiris element from config array when more than one is found.
-		 */
-		var _wrs_toolbarName = 'toolbar_' + editor.config.toolbar;
-		 
-		if (CKEDITOR.config[_wrs_toolbarName] != null) {
-			var wirisButtonIncluded = false;
+		var iframe;
+		
+		if (parseFloat(CKEDITOR.version) < 4.0){
+			/*
+			 * Fix for a bug in CKEditor 3.x when there is more than one editor in the same page
+			 * It removes wiris element from config array when more than one is found
+			 */
+			var _wrs_toolbarName = 'toolbar_' + editor.config.toolbar;
 			
-			for (var i = 0; i < CKEDITOR.config[_wrs_toolbarName].length; ++i) {
-				if (CKEDITOR.config[_wrs_toolbarName][i].name == 'wiris') {
-					if (!wirisButtonIncluded) {
-						wirisButtonIncluded = true;
-					}
-					else {
-						CKEDITOR.config[_wrs_toolbarName].splice(i, 1);
-						i--;
+			if (CKEDITOR.config[_wrs_toolbarName]) {
+				var wirisButtonIncluded = false;
+				
+				for (var i = 0; i < CKEDITOR.config[_wrs_toolbarName].length; ++i) {
+					if (CKEDITOR.config[_wrs_toolbarName][i].name == 'wiris') {
+						if (!wirisButtonIncluded) {
+							wirisButtonIncluded = true;
+						}
+						else {
+							CKEDITOR.config[_wrs_toolbarName].splice(i, 1);
+							i--;
+						}
 					}
 				}
 			}
 		}
 		
-		var element;
 		_wrs_int_directionality = editor.config.contentsLangDirection;
 		
 		var lastDataSet = null;
@@ -72,11 +72,17 @@ CKEDITOR.plugins.add('ckeditor_wiris', {
 			lastDataSet = editor.getData();
 		});
 		
+		editor.on('doubleclick', function (event) {
+			if (event.data.element.$.nodeName.toLowerCase() == 'img' && wrs_containsClass(event.data.element.$, _wrs_conf_imageClassName) || wrs_containsClass(event.data.element.$, _wrs_conf_CASClassName)) {
+				event.data.dialog = null;
+			}
+		});
+		
+		var element = null;
+		
 		function whenDocReady() {
-			if (window.wrs_initParse && lastDataSet != null) {
-				var newData = wrs_initParse(lastDataSet);
-				
-				editor.setData(newData, function (e) {
+			if (window.wrs_initParse && typeof _wrs_conf_configuration_loaded != 'undefined' && lastDataSet != null) { // WIRIS plugin core.js and configuration loaded properly
+				editor.setData(wrs_initParse(lastDataSet), function () {
 					var changingMode = false;
 					
 					editor.on('beforeSetMode', function (e) {
@@ -95,9 +101,43 @@ CKEDITOR.plugins.add('ckeditor_wiris', {
 						e.data.dataValue = wrs_endParse(e.data.dataValue);
 					});
 					
-					if (editor._.events.doubleclick) {					// When the element is double clicked, a dialog is open. This must be avoided.
-						editor._.events.doubleclick.listeners = [];
+					function checkElement() {
+						try {
+							var newElement;
+							
+							if (editor.elementMode == CKEDITOR.ELEMENT_MODE_INLINE) {
+								newElement = editor.element.$;
+							}
+							else {
+								var elem = document.getElementById('cke_contents_' + editor.name) ? document.getElementById('cke_contents_' + editor.name) : document.getElementById('cke_' + editor.name);
+								newElement = elem.getElementsByTagName('iframe')[0];
+							}
+							
+							if (!newElement.wirisActive) {
+								if (editor.elementMode == CKEDITOR.ELEMENT_MODE_INLINE) {
+									wrs_addElementEvents(newElement, function (div, element, event) {
+										wrs_int_doubleClickHandlerForDiv(editor, div, element, event);
+									}, wrs_int_mousedownHandler, wrs_int_mouseupHandler);
+									
+									newElement.wirisActive = true;
+									element = newElement;
+								}
+								else if (newElement.contentWindow != null) {
+									wrs_addIframeEvents(newElement, function (iframe, element, event) {
+										wrs_int_doubleClickHandlerForIframe(editor, iframe, element, event);
+									}, wrs_int_mousedownHandler, wrs_int_mouseupHandler);
+									
+									newElement.wirisActive = true;
+									element = newElement;
+								}
+							}
+						}
+						catch (e) {
+						}
 					}
+					
+					// CKEditor replaces several times the element element during its execution, so we must assign the events again.
+					setInterval(checkElement, 500);
 				});
 			}
 			else {
@@ -107,49 +147,17 @@ CKEDITOR.plugins.add('ckeditor_wiris', {
 		
 		whenDocReady();
 		
-		function checkElement() {
-			try {
-				var newElement;
-				
-				if (editor.elementMode == CKEDITOR.ELEMENT_MODE_INLINE) {
-					newElement = editor.element.$;
-				}
-				else {
-					var elem = document.getElementById('cke_contents_' + editor.name) ? document.getElementById('cke_contents_' + editor.name) : document.getElementById('cke_' + editor.name);
-					newElement = elem.getElementsByTagName('iframe')[0];
-				}
-				
-				if (element != newElement) {
-					if (editor.elementMode == CKEDITOR.ELEMENT_MODE_INLINE) {
-						wrs_addElementEvents(newElement, function (div, element) {
-							wrs_int_doubleClickHandlerForDiv(editor, div, element);
-						}, wrs_int_mousedownHandler, wrs_int_mouseupHandler);
-					}
-					else {
-						wrs_addIframeEvents(newElement, function (iframe, element) {
-							wrs_int_doubleClickHandlerForIframe(editor, iframe, element);
-						}, wrs_int_mousedownHandler, wrs_int_mouseupHandler);
-					}
-						
-					element = newElement;
-				}
-			}
-			catch (e) {
-			}
-		}
-		
-		// CKEditor replaces several times the element element during its execution, so we must assign the events again.
-		setInterval(checkElement, 500);
+		// editor command
 		
 		if (_wrs_conf_editorEnabled) {
-			_wrs_int_directionality = editor.config.contentsLangDirection;
+			var allowedContent = 'img[align,' + _wrs_conf_imageMathmlAttribute + ',src,alt](!Wirisformula)';
 			
 			editor.addCommand('ckeditor_wiris_openFormulaEditor', {
 				'async': false,
-				'canUndo': false,
-				'editorFocus': false,
-				'allowedContent': 'img[align,' + _wrs_conf_imageMathmlAttribute + ',src,alt](!Wirisformula)',
-				'requiredContent': 'img[align,' + _wrs_conf_imageMathmlAttribute + ',src,alt](Wirisformula)',
+				'canUndo': true,
+				'editorFocus': true,
+				'allowedContent': allowedContent,
+				'requiredContent': allowedContent,
 				
 				'exec': function (editor) {
 					wrs_int_openNewFormulaEditor(element, editor.langCode, editor.elementMode != CKEDITOR.ELEMENT_MODE_INLINE);
@@ -157,11 +165,11 @@ CKEDITOR.plugins.add('ckeditor_wiris', {
 			});
 			
 			editor.ui.addButton('ckeditor_wiris_formulaEditor', {
-				'label': 'Math Typography',
+				'label': 'WIRIS editor',
 				'command': 'ckeditor_wiris_openFormulaEditor',
 				'icon': _wrs_int_editorIcon
 			});
-
+			
 			_wrs_int_wirisProperties = {};
 
 			if ('wirisimagecolor' in editor.config) {
@@ -201,21 +209,19 @@ CKEDITOR.plugins.add('ckeditor_wiris', {
 			}
 		}
 		
+		// CAS command
+		
 		if (_wrs_conf_CASEnabled) {
-			var allowedContent = 'img[width,height,align,src,' + _wrs_conf_CASMathmlAttribute + '](!Wiriscas); ';
+			allowedContent = 'img[width,height,align,src,' + _wrs_conf_CASMathmlAttribute + '](!Wiriscas); ';
 			allowedContent += 'applet[width,height,align,code,archive,codebase,alt,src](!Wiriscas); ';
 			allowedContent += 'param[name,value]';
 			
-			var requiredContent = 'img[width,height,align,src,' + _wrs_conf_CASMathmlAttribute + '](Wiriscas); ';
-			requiredContent += 'applet[width,height,align,code,archive,codebase,alt,src](!Wiriscas); ';
-			requiredContent += 'param[name,value]';
-			
 			editor.addCommand('ckeditor_wiris_openCAS', {
 				'async': false,								// The command need some time to complete after exec function returns.
-				'canUndo': false,
-				'editorFocus': false,
+				'canUndo': true,
+				'editorFocus': true,
 				'allowedContent': allowedContent,
-				'requiredContent': requiredContent,
+				'requiredContent': allowedContent,
 				
 				'exec': function (editor) {
 					wrs_int_openNewCAS(element, editor.elementMode != CKEDITOR.ELEMENT_MODE_INLINE, editor.langCode);
@@ -229,7 +235,7 @@ CKEDITOR.plugins.add('ckeditor_wiris', {
 			});
 		}
 	}
-});
+})
 
 /**
  * Opens formula editor.
@@ -270,8 +276,8 @@ function wrs_int_openNewCAS(element, isIframe, language) {
  * @param object div Target
  * @param object element Element double clicked
  */
-function wrs_int_doubleClickHandlerForDiv(editor, div, element) {
-	wrs_int_doubleClickHandler(editor, div, false, element);
+function wrs_int_doubleClickHandlerForDiv(editor, div, element, event) {
+	wrs_int_doubleClickHandler(editor, div, false, element, event);
 }
 
 /**
@@ -279,8 +285,8 @@ function wrs_int_doubleClickHandlerForDiv(editor, div, element) {
  * @param object div Target
  * @param object element Element double clicked
  */
-function wrs_int_doubleClickHandlerForIframe(editor, iframe, element) {
-	wrs_int_doubleClickHandler(editor, iframe, true, element);
+function wrs_int_doubleClickHandlerForIframe(editor, iframe, element, event) {
+	wrs_int_doubleClickHandler(editor, iframe, true, element, event);
 }
 
 /**
@@ -288,7 +294,7 @@ function wrs_int_doubleClickHandlerForIframe(editor, iframe, element) {
  * @param object target Target
  * @param object element Element double clicked
  */
-function wrs_int_doubleClickHandler(editor, target, isIframe, element) {
+function wrs_int_doubleClickHandler(editor, target, isIframe, element, event) {
 	if (element.nodeName.toLowerCase() == 'img') {
 		if (wrs_containsClass(element, _wrs_conf_imageClassName)) {
 			if (!_wrs_int_window_opened) {
