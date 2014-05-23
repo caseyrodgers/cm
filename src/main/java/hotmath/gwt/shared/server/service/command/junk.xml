@@ -1,13 +1,33 @@
 <div class='cm_problem_text'>
 	<div class='step_part'>
-		<p>This is problem text test test</p>
-		<div class='wb_json'>[{"dataArr":[{"x":82,"y":21,"id":"move","color":0,"name":"","layer":"1"},{"x":2,"y":2,"id":"line"},{"x":10,"y":7,"id":"line"},{"x":17,"y":15,"id":"line"},{"x":29,"y":20,"id":"line"},{"x":44,"y":30,"id":"line"},{"x":51,"y":35,"id":"line"},{"x":64,"y":43,"id":"line"},{"x":68,"y":46,"id":"line"},{"x":69,"y":46,"id":"line"},{"x":72,"y":48,"id":"line"},{"x":72,"y":48,"id":"line"}],"id":1,"uid":0,"brect":{"x":82,"y":21,"w":72,"h":48,"xmin":82,"xmax":154,"ymin":21,"ymax":69}}]
-		</div>
+		<p>
+			<math xmlns="http://www.w3.org/1998/Math/MathML">
+				<mfrac bevelled="true">
+					<mn>1</mn>
+					<mn>2</mn>
+				</mfrac>
+			</math>
+		</p>
+
+		<p>&nbsp;
+		</p>
 	</div>
 	<div id='hm_flash_widget'>
-		<div id='hm_flash_widget_def' style='display: none'>{type:'number_integer',
-			useBase64: false,value:'111', format:'', ans_format: '', allowMixed:
-			false, width:0, height:0}</div>
+		<div id='hm_flash_widget_def' style='display: none'>{type:'number_rational',
+			useBase64: false,value:'12', format:'', ans_format: 'lowest_term',
+			allowMixed: false, width:0, height:0}</div>
 	</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>

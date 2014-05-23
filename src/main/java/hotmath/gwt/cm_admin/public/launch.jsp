@@ -65,7 +65,8 @@
    
    <script src='/gwt-resources/js/whiteboard_v3.js'></script>
    
-   <script src='/gwt-resources/jlibs/ckeditor/ckeditor.js'></script>
+   <script src='/gwt-resources/jlibs/ckeditor-4.4.1/ckeditor.js'></script>
+   <script src="/gwt-resources/jlibs/ckeditor-4.4.1/plugins/ckeditor_wiris/core/WIRISplugins.js?viewer=image"></script>    
     
     
     <!-- 

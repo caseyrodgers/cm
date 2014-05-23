@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -25,6 +26,10 @@ public class CKEditorPanel extends FlowPanel {
 
     CallbackOnComplete callback;
     public CKEditorPanel(String id, final int height, final String text, final CallbackOnComplete callback) {
+        
+        Log.info("Text: " + text);
+        
+        
         _textArea = new TextArea();
         _id = id;
         this.callback = callback;
@@ -57,6 +62,7 @@ public class CKEditorPanel extends FlowPanel {
             {
                 __customConfig : '','height' : height, startupFocus : true
            });                
+           
         $wnd.CKEDITOR.instances[id].setData(text);
         $wnd.CKEDITOR.on("instanceReady", function(event) {
             that.@hotmath.gwt.cm_admin.client.custom_content.problem.CKEditorPanel::ckeditorIsReady()();
