@@ -10,7 +10,7 @@ CKEDITOR.editorConfig = function( config ) {
 	
 	
 	// Add WIRIS to the plugin list
-    config.extraPlugins += (config.extraPlugins.length == 0 ? '' : ',') + 'ckeditor_wiris,font';
+        config.extraPlugins += (config.extraPlugins.length == 0 ? '' : ',') + 'ckeditor_wiris,font';
 	config.fontSize_sizes = '12/12pt;16/16pt;24/24pt;48/48pt;';
 
 

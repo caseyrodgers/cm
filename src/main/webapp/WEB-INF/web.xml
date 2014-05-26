@@ -28,17 +28,20 @@
   </listener>
 
   <!-- WIRIS (math) editor servlet defs -->
-    <servlet>
-        <servlet-name>MainServlet</servlet-name>
-        <servlet-class>com.wiris.plugin.dispatchers.MainServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>MainServlet</servlet-name>
-        <url-pattern>/app/*</url-pattern>
-    </servlet-mapping>
-
+  <servlet>
+     <servlet-name>pluginwiris</servlet-name>
+     <servlet-class>com.wiris.plugin.Main</servlet-class>
+     <init-param>
+         <param-name>com.wiris.editor.configurationPath</param-name>
+        <param-value>/dev2/cm/src/main/webapp/WEB-INF/pluginwiris/configuration.ini</param-value>
+   </init-param>
+  </servlet>
+  <servlet-mapping>
+     <servlet-name>pluginwiris</servlet-name>
+     <url-pattern>/pluginwiris_engine/app/*</url-pattern>
+  </servlet-mapping>
+  
   <!--  END WIRIS editor configuration -->  
-
   <servlet>
     <servlet-name>cm-init</servlet-name>
     <servlet-class>hotmath.cm.CmInitialzation</servlet-class>
