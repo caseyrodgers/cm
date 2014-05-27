@@ -57,6 +57,12 @@ public class HeaderPanel extends FlowLayoutContainer {
 
 	private CmAwardPanel _awards;
 
+	public static void showPercent(boolean showPercent) {
+		if (__instance != null) {
+			__instance.setLoginInfo(showPercent);
+		}
+	}
+
 	public HeaderPanel() {
 		__instance = this;
 		setStyleName("header-panel");
@@ -254,7 +260,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 		}
 	}
 
-	public void setLoginInfo() {
+	public void setLoginInfo(boolean showPercent) {
 		UserInfo user = UserInfo.getInstance();
 		int viewCount = UserInfo.getInstance().getViewCount();
 		if (user != null) {
@@ -274,8 +280,8 @@ public class HeaderPanel extends FlowLayoutContainer {
 			String s = "Welcome <b>" + nameCap + "</b>.";
 			if (viewCount > 1) {
 				s += "  You have completed " + viewCount + " problems. ";
-				if (UserInfo.getInstance().getTutorInputWidgetStats()
-						.getCountWidgets() > 0) {
+				if (UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() > 0 &&
+					showPercent == true) {
 					s += "Your <a href='#'>score</a> is "
 							+ UserInfo.getInstance().getTutorInputWidgetStats()
 									.getCorrectPercent() + "%";
@@ -283,6 +289,10 @@ public class HeaderPanel extends FlowLayoutContainer {
 			}
 			_helloInfo.setHTML(s);
 		}
+	}
+
+	public void setLoginInfo() {
+		setLoginInfo(true);
 	}
 
 	/**

@@ -477,11 +477,13 @@ public class CatchupMath implements EntryPoint {
                 final Widget assignmentViewer = new StudentAssignmentViewerPanel(assignKey, pid, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {
+                        HeaderPanel.showPercent(true);
                         _mainPortWrapper.setCenterWidget(_mainContainer);
                         _mainPort.forceLayout();
                     }
                 });
                 _mainPortWrapper.remove(_mainContainer);
+            	HeaderPanel.showPercent(false);
                 BorderLayoutData bdata = new BorderLayoutData();
                 _mainPortWrapper.setCenterWidget(assignmentViewer, bdata);
                 _mainPort.forceLayout();
