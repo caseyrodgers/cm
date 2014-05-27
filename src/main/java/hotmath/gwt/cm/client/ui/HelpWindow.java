@@ -166,7 +166,7 @@ public class HelpWindow extends GWindow {
                         }
                     }
                     
-                    CmMessageBox.showAlert("Make the problem you want to reset is loaded.");
+                    CmMessageBox.showAlert("Load the problem you want to reset.");
                 }
             }));
             

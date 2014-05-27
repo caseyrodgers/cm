@@ -692,7 +692,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                     }
                 });
 
-        CustomProblemModel newProblem = new CustomProblemModel(null, 0, problemToCopy.getTeacher(),  null,
+        CustomProblemModel newProblem = new CustomProblemModel(null, 0, problemToCopy.getTeacher(),  problemToCopy.getComments() + " (Copy)",
                 problemToCopy.getProblemType(), problemToCopy.getTreePath());
         final SolutionInfo newSolution = createNewCustomProblem(newProblem);
 
