@@ -322,6 +322,11 @@ public class HaUserFactory {
                 }
         }
 
+        /**
+         * Create a unique demo user, created by reading a template record
+         *
+         * @throws Exception
+         */
         static public HaBasicUser createDemoUser() throws Exception {
 
                 Connection conn = null;
@@ -333,6 +338,16 @@ public class HaUserFactory {
 
                 }
         }
+
+        /**
+         * Create a unique demo user, created by reading a template record
+         *
+         * @throws Exception
+         */
+        static public HaBasicUser createDemoUser(final Connection conn) throws Exception {
+        	return createDemoUser(conn, null);
+        }
+
 
         /**
          * Create a unique demo user, created by reading a template record
@@ -388,6 +403,12 @@ public class HaUserFactory {
                 }
         }
 
+        /**
+         * 
+         * @param subject  NOTE: if null, default to Essentials
+         * 
+         * @return
+         */
         private static CmProgram findProficiencyProgram(String subject) {
         	if (subject != null) {
         		CmProgram programs[] = CmProgram.values();
