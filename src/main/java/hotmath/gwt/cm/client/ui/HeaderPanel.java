@@ -57,9 +57,9 @@ public class HeaderPanel extends FlowLayoutContainer {
 
 	private CmAwardPanel _awards;
 
-	public static void showPercent(boolean showPercent) {
+	public static void showRppDetails(boolean showRppDetails) {
 		if (__instance != null) {
-			__instance.setLoginInfo(showPercent);
+			__instance.setLoginInfo(showRppDetails);
 		}
 	}
 
@@ -260,7 +260,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 		}
 	}
 
-	public void setLoginInfo(boolean showPercent) {
+	public void setLoginInfo(boolean showRppDetails) {
 		UserInfo user = UserInfo.getInstance();
 		int viewCount = UserInfo.getInstance().getViewCount();
 		if (user != null) {
@@ -278,10 +278,9 @@ public class HeaderPanel extends FlowLayoutContainer {
 			nameCap = nameCap.substring(0, 1).toUpperCase()
 					+ nameCap.substring(1);
 			String s = "Welcome <b>" + nameCap + "</b>.";
-			if (viewCount > 1) {
+			if (viewCount > 1  && showRppDetails == true) {
 				s += "  You have completed " + viewCount + " problems. ";
-				if (UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() > 0 &&
-					showPercent == true) {
+				if (UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() > 0) {
 					s += "Your <a href='#'>score</a> is "
 							+ UserInfo.getInstance().getTutorInputWidgetStats()
 									.getCorrectPercent() + "%";
