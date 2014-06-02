@@ -261,11 +261,6 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
                                          // LessonDto(autoId++,0,"All",l.getLessonName()));
         }
 
-        if (CmShared.getQueryParameter("debug") != null) {
-            LessonDto customNodes = new LessonDto(++BaseDto.autoId, 0, "Custom Problems", "Custom Problems", null);
-            children.add(customNodes);
-        }
-
         _root.setChildren(children);
 
         FolderDto root = _root;

@@ -2,7 +2,6 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.lwl.CmTutoringDao;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
-import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;

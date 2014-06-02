@@ -52,12 +52,12 @@ import com.sencha.gxt.widget.core.client.treegrid.TreeGridView;
 
 public class CustomProblemTreeTable extends SimpleContainer {
 
-    private static final String EMPTY_NODE = "-- Empty --";
+    public static final String EMPTY_NODE = "-- Empty --";
     final TreeGrid<BaseDto> _tree;
     CustomProblemFolderNode _dndTargetModel;
     CustomProblemLeafNode _dndSourceModel;
 
-    class KeyProvider implements ModelKeyProvider<BaseDto> {
+    static public class KeyProvider implements ModelKeyProvider<BaseDto> {
         @Override
         public String getKey(BaseDto item) {
             return item.getId() + "";// (item instanceof FolderDto ? "f-" :
@@ -97,77 +97,9 @@ public class CustomProblemTreeTable extends SimpleContainer {
         panel.add(v);
 
         DataProperties props = GWT.create(DataProperties.class);
-
-        _store = new TreeStore<BaseDto>(new KeyProvider());
-        _root = new CustomProblemFolderNode("Teachers");
-        _store.add(_root);
-
-        // for each distinct teacher
-        Map<Integer, List<CustomProblemModel>> teachers = new HashMap<Integer, List<CustomProblemModel>>();
-
-        CustomProblemFolderNode teacherNode = null;
-        List<CustomProblemModel> problemsInCustomFolder = new ArrayList<CustomProblemModel>();
-        for (int i = 0; i < problems.size(); i++) {
-            CustomProblemModel p = problems.get(i);
-
-            List<CustomProblemModel> teacherProbs = teachers.get(p.getTeacher().getTeacherId());
-            if (teacherProbs == null) {
-                teacherProbs = new ArrayList<CustomProblemModel>();
-                teachers.put(p.getTeacher().getTeacherId(), teacherProbs);
-
-                teacherNode = new CustomProblemFolderNode(p.getTeacherName());
-                _root.addChild(teacherNode);
-
-                // see if this teacher has any specified nodes
-                if (paths != null) {
-                    for (String path : paths) {
-                        String pos[] = path.split("/");
-                        String pName = pos[0];
-                        if (p.getTeacherName().equals(pName)) {
-                            CustomProblemFolderNode customFolder = new CustomProblemFolderNode(pos[1]);
-                            customFolder.setParent(teacherNode);
-                            teacherNode.addChild(customFolder);
-
-                            /**
-                             * add all problems associated with this custom
-                             * folder, removing from normal flow by adding to a
-                             * look table.
-                             * 
-                             */
-                            for (CustomProblemModel cm : problems) {
-                                String tp = cm.getTreePath();
-                                if (tp != null) {
-                                    if (cm.getTeacher().getTeacherName().equals(p.getTeacherName())) {
-                                        if (customFolder.getFolderName().equals(tp)) {
-                                            CustomProblemLeafNode leaf = new CustomProblemLeafNode(cm, customFolder);
-                                            customFolder.addChild(leaf);
-
-                                            problemsInCustomFolder.add(cm);
-                                        }
-                                    }
-                                }
-                            }
-                            if (customFolder.getChildren().size() == 0) {
-                                customFolder.addChild(new BaseDto(BaseDto.__nextId(), EMPTY_NODE));
-                            }
-
-                        }
-                    }
-                }
-
-            }
-
-            if (teacherNode != null) {
-                if (!problemsInCustomFolder.contains(p)) {
-                    teacherNode.addChild(new CustomProblemLeafNode(p, teacherNode));
-                } else {
-                    // System.out.println("already in subfolder");
-                }
-            }
-        }
-
-        processFolder(_store, _root);
-
+        
+        _store = createTeacherProblemMap(problems, paths);
+        _root = (CustomProblemFolderNode)_store.getAll().get(0);
         //
         //
         // CustomProblemFolderNode firstNode = new
@@ -327,6 +259,91 @@ public class CustomProblemTreeTable extends SimpleContainer {
         setWidget(v);
     }
 
+
+    /** Create a map of each distinct teacher and their problems
+     * 
+     * @TODO: change from static,public to private
+     * 
+     * @param problems
+     * @param paths
+     * @return
+     */
+    public static TreeStore<BaseDto> createTeacherProblemMap(List<CustomProblemModel> problems, List<String> existingCustomPaths) {
+
+        TreeStore<BaseDto> store = new TreeStore<BaseDto>(new KeyProvider());
+        CustomProblemFolderNode root = new CustomProblemFolderNode("Teachers");
+        store.add(root);
+
+        // for each distinct teacher
+        Map<Integer, List<CustomProblemModel>> teachers = new HashMap<Integer, List<CustomProblemModel>>();
+        CustomProblemFolderNode teacherNode = null;
+        
+        List<CustomProblemModel> problemsInCustomFolder = new ArrayList<CustomProblemModel>();
+        
+        for (int i = 0; i < problems.size(); i++) {
+            CustomProblemModel p = problems.get(i);
+
+            List<CustomProblemModel> teacherProbs = teachers.get(p.getTeacher().getTeacherId());
+            if (teacherProbs == null) {
+                teacherProbs = new ArrayList<CustomProblemModel>();
+                teachers.put(p.getTeacher().getTeacherId(), teacherProbs);
+
+                teacherNode = new CustomProblemFolderNode(p.getTeacherName());
+                root.addChild(teacherNode);
+
+                // see if this teacher has any specified nodes
+                if (existingCustomPaths != null) {
+                    for (String path : existingCustomPaths) {
+                        String pos[] = path.split("/");
+                        String pName = pos[0];
+                        if (p.getTeacherName().equals(pName)) {
+                            CustomProblemFolderNode customFolder = new CustomProblemFolderNode(pos[1]);
+                            customFolder.setParent(teacherNode);
+                            teacherNode.addChild(customFolder);
+
+                            /**
+                             * add all problems associated with this custom
+                             * folder, removing from normal flow by adding to a
+                             * look table.
+                             * 
+                             */
+                            for (CustomProblemModel cm : problems) {
+                                String tp = cm.getTreePath();
+                                if (tp != null) {
+                                    if (cm.getTeacher().getTeacherName().equals(p.getTeacherName())) {
+                                        if (customFolder.getFolderName().equals(tp)) {
+                                            CustomProblemLeafNode leaf = new CustomProblemLeafNode(cm, customFolder);
+                                            customFolder.addChild(leaf);
+
+                                            problemsInCustomFolder.add(cm);
+                                        }
+                                    }
+                                }
+                            }
+                            if (customFolder.getChildren().size() == 0) {
+                                customFolder.addChild(new BaseDto(BaseDto.__nextId(), EMPTY_NODE));
+                            }
+
+                        }
+                    }
+                }
+
+            }
+
+            if (teacherNode != null) {
+                if (!problemsInCustomFolder.contains(p)) {
+                    teacherNode.addChild(new CustomProblemLeafNode(p, teacherNode));
+                } else {
+                    // System.out.println("already in subfolder");
+                }
+            }
+        }
+        
+        processFolder(store,root);
+        
+        return store;
+    }
+
     private TreeGridView<BaseDto> createGridView() {
         TreeGridView<BaseDto> view = new TreeGridView<BaseDto>() {
             @Override
@@ -450,7 +467,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
         return null;
     }
 
-    private void processFolder(TreeStore<BaseDto> store, FolderDto folder) {
+    static private void processFolder(TreeStore<BaseDto> store, FolderDto folder) {
         for (BaseDto child : folder.getChildren()) {
             store.add(folder, child);
             if (child instanceof FolderDto) {

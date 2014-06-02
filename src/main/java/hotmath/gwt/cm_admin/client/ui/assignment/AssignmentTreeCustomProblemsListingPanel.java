@@ -1,10 +1,12 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemFolderNode;
+import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemLeafNode;
+import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemTreeTable;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.CustomProblemInfo;
-import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.GetCustomProblemAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
@@ -16,11 +18,12 @@ import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.testset.ha.CustomProblemDao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.mail.FolderNotFoundException;
+import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -84,7 +87,7 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
             	List<CustomProblemModel> lessons = results.getProblems();
                 CatchupMathTools.setBusy(false);
                 _allLessons = lessons;
-                makeTree(_allLessons);
+                makeTree(_allLessons, results.getPaths());
             }
 
         }.register();
@@ -115,21 +118,12 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
     }
 
 
-    
-    private void processFolder(TreeStore<BaseDto> store, FolderDto folder) {
-        for (BaseDto child : folder.getChildren()) {
-          store.add(folder, child);
-          if (child instanceof FolderDto) {
-            processFolder(store, (FolderDto) child);
-          }
-        }
-      }
-
 
     static int autoId;
-    public void makeTree(final List<CustomProblemModel> custProblems) {
-        
-        _treeStore = setupTreeStore(custProblems);
+    public void makeTree(final List<CustomProblemModel> custProblems, List<String> paths) {
+        _treeStore = CustomProblemTreeTable.createTeacherProblemMap(custProblems,  paths);
+        _root = (CustomProblemFolderNode)_treeStore.getAll().get(0);
+
         
         TreeLoader<BaseDto> loader = new TreeLoader<BaseDto>(proxy) {
             @Override
@@ -179,13 +173,26 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
                 Log.info("Browser event: " + event);
                 
                 if (BrowserEvents.CLICK.equals(event.getType())) {
+                    ProblemDto problem=null;
                     BaseDto base = _tree.getSelectionModel().getSelectedItem();
-                    if (base instanceof ProblemDto) {
-                        ProblemDto p = (ProblemDto)base;
-                        Log.debug("View Question", "Viewing " + p.getLabel());
-                        
-                        QuestionViewerPanel.getInstance().viewQuestion(p, false);
+                    if(base instanceof CustomProblemLeafNode) {
+                        CustomProblemModel customProblem = ((CustomProblemLeafNode)base).getCustomProblem();
+                        problem = new ProblemDto();
+                        problem.setPid(customProblem.getPid());
+                        problem.setLabel(customProblem.getTreePath());
                     }
+                    else if (base instanceof ProblemDto) {
+                        problem = (ProblemDto)base;
+                    }
+                    
+                    if(problem != null) {
+                        Log.debug("View Question", "Viewing " + problem.getLabel());
+                        QuestionViewerPanel.getInstance().viewQuestion(problem, false);
+                    }
+                    else {
+                        QuestionViewerPanel.getInstance().removeQuestion();
+                    }
+                    
                 }
             }
             
@@ -221,6 +228,7 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
                 _callBack.nodeWasChecked();
             }
         });
+        
         // tree.getStyle().setLeafIcon(ExampleImages.INSTANCE.music());
         flowContainer.add(_tree);
         
@@ -228,6 +236,9 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
 
         setWidget(flowContainer);
         forceLayout();
+        
+        
+        _tree.expandAll();  
     }
 
     RpcProxy<BaseDto, List<BaseDto>> proxy = new RpcProxy<BaseDto, List<BaseDto>>() {
@@ -251,51 +262,11 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
                 callback.onSuccess(loadConfig.getChildren());
             }
         }
-    };        
+    };
+
+    private TreeStore<BaseDto> _store;        
 
     
-    private TreeStore<BaseDto> setupTreeStore(List<CustomProblemModel> custProbs) {
-        
-        List<LessonDto> ll2 = new ArrayList<LessonDto>();
-        TreeStore<BaseDto> treeStore = new TreeStore<BaseDto>(new TreeKeyProvider());
-        TreeLoader<BaseDto> loader = new TreeLoader<BaseDto>(proxy) {
-            @Override
-            public boolean hasChildren(BaseDto parent) {
-                return parent instanceof FolderDto;
-            }
-        };
-        loader.addLoadHandler(new ChildTreeStoreBinding<BaseDto>(treeStore));
-
-
-        _root = makeFolder("Root");
-        List<BaseDto> children = new ArrayList<BaseDto>();
-        
-        int teacherId = -1;
-        FolderDto parentNode=null;
-        for(CustomProblemModel cp: custProbs) {
-            if(teacherId == -1 || teacherId != cp.getTeacher().getTeacherId()) {
-                teacherId = cp.getTeacher().getTeacherId();
-                parentNode = makeFolder("Custom Problems: " + cp.getTeacherName());
-                children.add(parentNode);
-            }
-            
-            ProblemDto prob = new ProblemDto(0, BaseDto.autoId++, new LessonModel("Custom: " + cp.getTeacherName(), "Custom"), cp.getFullPath(), cp.getPid(), 0);
-            prob.setProblemType(cp.getProblemType());
-            parentNode.addChild(prob);            
-        }
-        
-        _root.setChildren(children);
-        
-        FolderDto root = _root;
-        for (BaseDto base : root.getChildren()) {
-          treeStore.add(base);
-          if (base instanceof FolderDto) {
-            processFolder(treeStore, (FolderDto) base);
-          }
-        }
-
-        return treeStore;
-    }
 
     public void refreshData() {
         if(_treeStore != null) {

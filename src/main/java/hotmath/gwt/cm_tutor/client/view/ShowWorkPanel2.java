@@ -362,6 +362,9 @@ public class ShowWorkPanel2 extends Composite {
     }
     
     native private void jsni_whiteboardComplete(String whiteboardId) /*-{
+    
+    alert('calling whiteboardLoadComplete');
+    
         var theWhiteboard  = $wnd._cmWhiteboards[whiteboardId];
         if(!theWhiteboard) {
             alert('whiteboard ' + whiteboardId + ' cannot be found in jsni_whiteboardComplete');

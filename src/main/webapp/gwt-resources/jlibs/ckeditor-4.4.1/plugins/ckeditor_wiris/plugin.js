@@ -22,7 +22,7 @@ var _wrs_conf_createcasimagePath = '/pluginwiris_engine/app/createcasimage';    
 var _wrs_conf_getmathmlPath = '/pluginwiris_engine/app/getmathml';        // _wrs_conf_getmathmlPath = '/pluginwiris_engine/app/getmathml';        // _wrs_conf_getmathmlPath = '/pluginwiris_engine/app/getmathml';        // _wrs_conf_getmathmlPath = CKEDITOR.basePath + '/plugins/ckeditor_wiris/integration/getmathml.php';			// Specifies where is the getmathml script.
 var _wrs_conf_servicePath = '/pluginwiris_engine/app/service';        // _wrs_conf_servicePath = '/pluginwiris_engine/app/service';        // _wrs_conf_servicePath = '/pluginwiris_engine/app/service';        // _wrs_conf_servicePath = CKEDITOR.basePath + '/plugins/ckeditor_wiris/integration/service.php';			// Specifies where is the service script.
 
-var _wrs_conf_saveMode = 'xml';					// This value can be 'tags', 'xml' or 'safeXml'.
+var _wrs_conf_saveMode = 'tags';					// This value can be 'tags', 'xml' or 'safeXml'.
 var _wrs_conf_parseModes = ['latex'];				// This value can contain 'latex'.
 
 var _wrs_conf_enableAccessibility = true;
