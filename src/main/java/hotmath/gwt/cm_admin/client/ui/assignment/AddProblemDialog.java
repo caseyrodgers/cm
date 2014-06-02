@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemLeafNode;
 import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentTreeAllLessonsListingPanel.CallbackOnSelectedLesson;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentTreeCustomProblemsListingPanel.CallbackOnSelectedCustomProblem;
+import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
@@ -314,6 +316,10 @@ public class AddProblemDialog extends GWindow {
                 if (d.getChildren() == null || d.getChildren().size() == 0) {
                     lessonsNeeded.add((LessonDto) d);
                 }
+            }
+            else if(d instanceof CustomProblemLeafNode) {
+                CustomProblemModel customProblem = ((CustomProblemLeafNode)d).getCustomProblem();
+                problems.add(new ProblemDto(customProblem));
             }
             else if (d instanceof ProblemDto) {
                 problems.add((ProblemDto) d);

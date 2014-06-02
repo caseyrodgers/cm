@@ -18,12 +18,9 @@ import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.testset.ha.CustomProblemDao;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.ValueUpdater;
