@@ -139,7 +139,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         final String newPid = createNewCustomProblemPid(problem.getTeacher().getTeacherId(), problemNumber);
         Connection conn = null;
         try {
-            String CUSTOM_WHITEBOARD_XML_PROBLEM_STATMENT = "<![CDATA[<div class='cm_whiteboard' wb_id='wb_ps'></div>]]>";
+            String CUSTOM_WHITEBOARD_XML_PROBLEM_STATMENT = "<![CDATA[<div/>]]>";
             conn = getJdbcTemplate().getDataSource().getConnection();
             new CmSolutionManagerDao().createNewSolution(getJdbcTemplate().getDataSource().getConnection(), newPid,
                     CUSTOM_WHITEBOARD_XML_PROBLEM_STATMENT);

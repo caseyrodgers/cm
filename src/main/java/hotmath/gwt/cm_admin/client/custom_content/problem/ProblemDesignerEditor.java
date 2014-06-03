@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.WhiteboardTemplatesResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardTemplatesAction;
@@ -9,7 +10,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyTextButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.WhiteboardTemplatesManager;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
@@ -20,7 +20,10 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -317,6 +320,7 @@ public class ProblemDesignerEditor extends GWindow {
 		}
 	};
 	private ShowWorkPanel2 _showWorkPanel;
+    private String widgetHtml;
 
 	private void setEditorHeight() {
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -368,34 +372,67 @@ public class ProblemDesignerEditor extends GWindow {
 	}
 
 	private AreaData extractAreaData(String text) {
-		String checkFor = "<div class='wb_json'>";
-		int p = text.indexOf(checkFor);
-		String wbJson = null;
-		String textPart = null;
-		if (p > -1) {
-			textPart = text.substring(0, p);
-			wbJson = text.substring(p);
-			wbJson = wbJson.substring(checkFor.length(),
-					wbJson.indexOf("</div>"));
-		} else {
-			textPart = text;
-		}
+	    Element el = DOM.createElement("div");
+	    el.setInnerHTML(text);
+	    NodeList<Element> tags = el.getElementsByTagName("div");
 
-		checkFor = "<div id='hm_flash_widget'>";
-		p = textPart.indexOf(checkFor);
-		String widgetHtml = "";
-		if (p > -1) {
-			widgetHtml = text.substring(p);
-			textPart = text.substring(0, p);
-			// widgetHtml = wbJson.substring(checkFor.length(),
-			// wbJson.indexOf("</div></div>"));
-		}
-
+	    String wbJson=extractWhiteboardJson(tags);
+	    String textPart=extractTextPart(tags);
+        String widgetHtml = extractWidgetHtml(tags);
+	    
 		AreaData aData = new AreaData(textPart, wbJson, widgetHtml);
 		return aData;
 	}
 
-	class AreaData {
+	private String extractWidgetHtml(NodeList<Element> tags) {
+	    String html="";
+        for(int i=0;i<tags.getLength();i++) {
+            Element t = tags.getItem(i);
+            String id = t.getAttribute("id");
+            if(id != null) {
+                if(id.equals("hm_flash_widget")) {
+                    html = t.getString();
+                    break;
+                }
+            }
+        }
+        return html;
+    }
+
+    private String extractWhiteboardJson(NodeList<Element> tags) {
+        String wbJson=null;
+        for(int i=0;i<tags.getLength();i++) {
+            Element t = tags.getItem(i);
+            String className = t.getAttribute("class");
+            if(className != null) {
+                if(className.equals("wb_json")) {
+                    wbJson = t.getInnerHTML();
+                    
+                    t.removeFromParent();
+                    break;
+                }
+            }
+        }
+        return wbJson;
+    }
+
+    private String extractTextPart(NodeList<Element> tags) {
+        String stepPart=null;
+        for(int i=0;i<tags.getLength();i++) {
+            Element t = tags.getItem(i);
+            String className = t.getAttribute("class");
+            if(className != null) {
+                if(className.equals("step_part")) {
+                    stepPart = t.getString();
+                    break;
+                }
+            }
+        }
+        return stepPart;
+        
+    }
+
+    class AreaData {
 		String textPart;
 		String wbJson;
 		String widgetHtml;

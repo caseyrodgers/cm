@@ -200,7 +200,7 @@ public class AssignmentLessonPidSelector {
                 ++pCount;
                 String subFolder=p.getTreePath()!=null?"/" + p.getTreePath():"";
                 String custProbName = p.getTeacher().getTeacherName() + subFolder + "/" + p.getComments();
-                ProblemDto prob = new ProblemDto(pCount,pCount,new LessonModel(lessonFile,lessonFile),"[custom] " + custProbName,p.getPid(),0);
+                ProblemDto prob = new ProblemDto(pCount,pCount,new LessonModel(lessonFile,lessonFile),custProbName,p.getPid(),0);
                 prob.setProblemType(p.getProblemType());
                 problems.add(prob);
             }

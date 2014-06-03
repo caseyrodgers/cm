@@ -1,33 +1,14 @@
 <div class='cm_problem_text'>
 	<div class='step_part'>
-		<p>
-			<math xmlns="http://www.w3.org/1998/Math/MathML">
-				<mfrac bevelled="true">
-					<mn>1</mn>
-					<mn>2</mn>
-				</mfrac>
-			</math>
-		</p>
-
-		<p>&nbsp;
-		</p>
+		<p>test 2 test</p>
+		<div class='wb_json'>[{"dataArr":[{"x":202,"y":16,"id":"move","color":0,"name":"","layer":"1"},{"x":0,"y":2,"id":"line"},{"x":0,"y":6,"id":"line"},{"x":1,"y":9,"id":"line"},{"x":1,"y":16,"id":"line"},{"x":1,"y":21,"id":"line"},{"x":2,"y":32,"id":"line"},{"x":16,"y":71,"id":"line"},{"x":16,"y":71,"id":"line"}],"id":1,"uid":0,"brect":{"x":202,"y":16,"w":16,"h":71,"xmin":202,"xmax":218,"ymin":16,"ymax":87}}]
+		</div>
 	</div>
 	<div id='hm_flash_widget'>
-		<div id='hm_flash_widget_def' style='display: none'>{type:'number_rational',
-			useBase64: false,value:'12', format:'', ans_format: 'lowest_term',
-			allowMixed: false, width:0, height:0}</div>
+		<div id='hm_flash_widget_def' style='display: none'>{type:'mChoice', useBase64:
+			true,value:'PGRpdiBjbGFzcz0nc3RlcF9wYXJ0Jz48cD4xPC9wPgo8L2Rpdj4=|PGRpdiBjbGFzcz0nc3RlcF9wYXJ0Jz48cD4yPC9wPgo8L2Rpdj4=|2',
+			format:'', ans_format: '', allowMixed: false, width:0, height:0}
+		</div>
 	</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
 </div>
 </div>
