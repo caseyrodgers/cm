@@ -362,9 +362,6 @@ public class ShowWorkPanel2 extends Composite {
     }
     
     native private void jsni_whiteboardComplete(String whiteboardId) /*-{
-    
-    alert('calling whiteboardLoadComplete');
-    
         var theWhiteboard  = $wnd._cmWhiteboards[whiteboardId];
         if(!theWhiteboard) {
             alert('whiteboard ' + whiteboardId + ' cannot be found in jsni_whiteboardComplete');
@@ -374,12 +371,9 @@ public class ShowWorkPanel2 extends Composite {
         // prevent error if function not defined due to 
         // old copy of whiteboard_v3.js
         // TODO: remove after 1 month
-        
-        // alert('calling complete');
         if(theWhiteboard.whiteboardLoadComplete) {
             try {
         	    theWhiteboard.whiteboardLoadComplete();
-        	    // alert('call complete');
         	}
         	catch(e) {
         	    alert('error calling whiteboardLoadComplete: ' + e);
@@ -463,10 +457,11 @@ public class ShowWorkPanel2 extends Composite {
     
     private void updateWhiteboardData_Gwt(int index, final String newJson) {
     	Log.info("updateWhiteboardData update whiteboard index on server: " + index + ", " + newJson);
-    	
-		whiteboardActions.getActions().add(new SaveWhiteboardDataAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(), pid, CommandType.UPDATE, newJson));
+    	UserInfo u = UserInfo.getInstance(); 
+    	SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(u.getUid(),u.getRunId(), pid, CommandType.UPDATE, newJson);
+    	action.setIndex(index);
+		whiteboardActions.getActions().add(action);
 		saveWhiteboardToServer();
-
     }
     
     private void manageTemplates() {
