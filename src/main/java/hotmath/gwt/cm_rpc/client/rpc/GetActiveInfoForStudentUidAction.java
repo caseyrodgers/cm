@@ -7,20 +7,21 @@ public class GetActiveInfoForStudentUidAction implements Action<StudentActiveInf
     
 	private static final long serialVersionUID = 5916971365418745422L;
 
-	int userId;
+	int studentUid;
     
-    public GetActiveInfoForStudentUidAction() {}
+    public GetActiveInfoForStudentUidAction() {
+    }
 
     public int getUserId() {
-        return userId;
+        return studentUid;
     }
 
     public void setUserId(int userId) {
-        this.userId = userId;
+        this.studentUid = userId;
     }
 
     @Override
     public String toString() {
-        return "GetActiveInfoForStudentUidAction [userId=" + userId + "]";
+        return "GetActiveInfoForStudentUidAction [studentUid=" + studentUid + "]";
     }
 }
