@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.util;
 
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.WhiteboardTemplate;
 import hotmath.gwt.cm_rpc.client.model.WhiteboardTemplatesResponse;
@@ -11,7 +12,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
 import hotmath.gwt.shared.client.CmShared;
@@ -77,6 +77,13 @@ public class WhiteboardTemplatesManager extends GWindow {
         
         TextButton createNewBtn = new TextButton("Create New");
         Menu createMenu = new Menu();
+        createMenu.add(new MenuItem("From File", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                createFromExternalFile();
+            }
+        }));
+
         createMenu.add(new MenuItem("From Existing Whiteboard", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
@@ -107,6 +114,10 @@ public class WhiteboardTemplatesManager extends GWindow {
         setVisible(true);
     }
     
+    protected void createFromExternalFile() {
+        new WhiteboardTemplateFileUploadDialog();
+    }
+
     protected void createFromImageInClipboard() {
         new CreateTemplateFromClipboardImage(this.showWorkPanel2, new CallbackOnComplete() {
             @Override
@@ -207,10 +218,10 @@ public class WhiteboardTemplatesManager extends GWindow {
         /** add standard templates
          * 
          */
-        templates.getTemplates().add(0, new WhiteboardTemplate("/gwt-resources/images/whiteboard/nL.png"));
-        templates.getTemplates().add(0, new WhiteboardTemplate("/gwt-resources/images/whiteboard/gr2D.png"));
-        templates.getTemplates().add(0, new WhiteboardTemplate("/gwt-resources/images/whiteboard/templates/math1.png"));
-        templates.getTemplates().add(0, new WhiteboardTemplate("/gwt-resources/images/whiteboard/templates/math2.png"));
+//        templates.getTemplates().add(0, new WhiteboardTemplate("/gwt-resources/images/whiteboard/nL.png"));
+//        templates.getTemplates().add(0, new WhiteboardTemplate("/gwt-resources/images/whiteboard/gr2D.png"));
+//        templates.getTemplates().add(0, new WhiteboardTemplate("/gwt-resources/images/whiteboard/templates/math1.png"));
+//        templates.getTemplates().add(0, new WhiteboardTemplate("/gwt-resources/images/whiteboard/templates/math2.png"));
         
         _listView.getStore().addAll(templates.getTemplates());
     }

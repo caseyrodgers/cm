@@ -10,20 +10,20 @@ CKEDITOR.editorConfig = function( config ) {
 	
 	
 	// Add WIRIS to the plugin list
-        config.extraPlugins += (config.extraPlugins.length == 0 ? '' : ',') + 'ckeditor_wiris,font';
-	config.fontSize_sizes = '12/12pt;16/16pt;24/24pt;48/48pt;';
+    config.extraPlugins += (config.extraPlugins.length == 0 ? '' : ',') + 'ckeditor_wiris,font,specialchar';
+ 	config.fontSize_sizes = '12/12pt;16/16pt;24/24pt;48/48pt;';
 
-
+ 	
 	config.toolbar = 'CM';
 	config.toolbar_CM = 
 	    [
          ['Bold','Italic','Underline','Superscript', 'Subscript'],
          ['Font','FontSize'],
 	     ['Table'],
-	     ['ckeditor_wiris_formulaEditor']
+	     ['SpecialChar', 'ckeditor_wiris_formulaEditor']
 	    ];
-            config.removePlugins = 'elementspath';
-            config.resize_enabled = false;
+        config.removePlugins = 'elementspath';
+        config.resize_enabled = false;
 	
 
 	// Make dialogs simpler.
