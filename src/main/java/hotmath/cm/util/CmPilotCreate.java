@@ -415,7 +415,7 @@ public class CmPilotCreate {
 	                    + "\nStudent count: " + studentCount + "\nComments: " + userComments
 	                    + "\nMotivation: " + motivation 
 	                    + "\nCC emails: " + ccEmailText
-	                    + "\nsalesZone: " + salesPerson.getRepId();
+	                    + "\nsalesZone: " + ((isCollegePilot == false) ? salesPerson.getRepId() : COLLEGE_SALES_REP);
 	            try {
 	                
 	                /** send to sales rep and chuck if NOT College Pilot request, 
