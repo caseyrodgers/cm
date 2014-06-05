@@ -1540,12 +1540,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
             }
             if (sel && hasShape) {
                 selectedObj = graphicDataStore[i];
-                updateBuffer()
+                //updateBuffer()
                 return i;
             }
         }
         selectedObj = null
-        updateBuffer()
+        //updateBuffer()
         return -1
     }
 
@@ -1619,7 +1619,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     xmax: xp + hitH,
                     ymax: yp + hitH
                 })
-                updateBuffer()
+               // updateBuffer()
             }
             if (sel && hasShape) {
                 //selectedObj = graphicDataStore[i];
@@ -1741,7 +1741,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 }
             }
         }
-        updateBuffer()
+       // updateBuffer()
         return _arr
     }
 
@@ -2801,7 +2801,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
         yp = y ? y : sh - cposY
         xs = x ? x : sw - cposX
         ys = y ? y : sh - cposY
-        
+         var buf=30
+        xp=xs=xp-scrollPosition.x<buf?buf:xp;
+        yp=ys=yp-scrollPosition.y<buf?buf:yp;
+        xp=xs=xp-scrollPosition.x+w>scroll_window.width-buf?scroll_window.width-buf-w+scrollPosition.x:xp;
+        yp=ys=yp-scrollPosition.y+h>scroll_window.height-buf?scroll_window.height-buf-h+scrollPosition.y:yp;
         //graphcontext.drawImage(gr, xp, yp);
 
 
@@ -4761,9 +4765,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
                                     }
                                 }
                             }
-                            var dd=checkforBoundry(pd,trans.tx, trans.ty);
+                           /* var dd=checkforBoundry(pd,trans.tx, trans.ty);
                             trans.tx=dd.dx;
-                            trans.ty=dd.dy;
+                            trans.ty=dd.dy;*/
                             transformObj(pd, trans.tx, trans.ty);
                             drawBoundRect({
                                 tx: trans.tx,
@@ -5046,9 +5050,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
                                     }
                                 }
                             }
-                            var dd=checkforBoundry(pd,trans.tx, trans.ty);
+                            /*var dd=checkforBoundry(pd,trans.tx, trans.ty);
                             trans.tx=dd.dx;
-                            trans.ty=dd.dy;
+                            trans.ty=dd.dy;*/
 
                             transformObj(pd, trans.tx, trans.ty);
 
