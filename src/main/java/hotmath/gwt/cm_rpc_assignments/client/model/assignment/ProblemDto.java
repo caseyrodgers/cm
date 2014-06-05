@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_rpc_assignments.client.model.assignment;
 
-import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
@@ -29,9 +28,9 @@ public class ProblemDto extends BaseDto implements Response {
         this.assignKey = assignKey;
     }
 
-    public ProblemDto(CustomProblemModel customProblem) {
-        setPid(customProblem.getPid());
-        setLabel(customProblem.getFullPath());
+    public ProblemDto(String pid, String fullPath) {
+        setPid(pid);
+        setLabel(fullPath);
     }
 
 

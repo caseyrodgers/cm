@@ -319,7 +319,7 @@ public class AddProblemDialog extends GWindow {
             }
             else if(d instanceof CustomProblemLeafNode) {
                 CustomProblemModel customProblem = ((CustomProblemLeafNode)d).getCustomProblem();
-                problems.add(new ProblemDto(customProblem));
+                problems.add(new ProblemDto(customProblem.getPid(), customProblem.getFullPath()));
             }
             else if (d instanceof ProblemDto) {
                 problems.add((ProblemDto) d);

@@ -47,6 +47,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.data.shared.Store;
@@ -368,14 +369,29 @@ public class CustomProblemManager extends GWindow {
 
         String folderNode = _treeTable.getSelectedCustomFolderNode();
 
+        List<String> paths = getPathsUsedByProblems();
         CustomProblemModel problem = new CustomProblemModel(null, 0, TeacherManager.getTeacher(), getDateTimeStamp(), null,folderNode != null ? folderNode: "");
-        new CustomProblemPropertyEditor(problem, _lastPaths, new CustomProblemPropertyEditor.Callback() {
+        new CustomProblemPropertyEditor(problem, paths, new CustomProblemPropertyEditor.Callback() {
             @Override
             public void solutionCreated(SolutionInfo solution) {
                 _selectedSolution = solution.getPid();
                 readFromServer();
             }
         });
+    }
+
+    private List<String> getPathsUsedByProblems() {
+        List<String> paths = new ArrayList<String>();
+        ListStore<BaseDto> ls = _treeTable.getTree().getStore();
+        for(BaseDto l: ls.getAll()) {
+            if(l instanceof CustomProblemFolderNode) {
+                CustomProblemFolderNode folder = (CustomProblemFolderNode)l;
+                if(folder.getParent() != null) {
+                    paths.add(folder.getParent().getName() + "/" + folder.getFolderName());
+                }
+            }
+        }
+        return paths;
     }
 
     private String getDateTimeStamp() {
