@@ -202,6 +202,9 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
                         if(n instanceof FolderDto) {
                             // do nothing on folder nodes
                         }
+                        else if(n instanceof CustomProblemLeafNode) {
+                            tip = ((CustomProblemLeafNode)n).getCustomProblem().getComments();
+                        }
                         else {
                             tip = n.getName();
                         }
@@ -212,8 +215,12 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
                 Element element = DOM.createElement("span");
                 if(tip != null) {
                     element.setAttribute("qtip",  tip);
+                    element.setInnerText(tip);
                 }
-                element.setInnerText(data);
+                else {
+                    element.setInnerText(data);
+                }
+                
                 sb.appendHtmlConstant(element.getString());
             }
         };
