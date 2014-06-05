@@ -698,6 +698,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
         yp = y ? y - h / 2 : sh - cposY
         xs = x ? x - w / 2 : sw - cposX
         ys = y ? y - h / 2 : sh - cposY
+        var buf=30
+        xp=xs=xp-scrollPosition.x<buf?buf:xp;
+        yp=ys=yp-scrollPosition.y<buf?buf:yp;
+        xp=xs=xp-scrollPosition.x+300>scroll_window.width-buf?scroll_window.width-buf-300+scrollPosition.x:xp;
+        yp=ys=yp-scrollPosition.y+300>scroll_window.height-buf?scroll_window.height-buf-300+scrollPosition.y:yp;
         var gData = graph.canvas.toDataURL();
         var pData = graph.canvas.toDataURL();
         var gImage, pImage;
@@ -1118,8 +1123,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
         var _selectedObj = multi ? multi : selectedObj
         var sa = _selectedObj.dataArr[0]
         var sobj = da[0]
-        sobj.x = sa.x + dx
-        sobj.y = sa.y + dy
+        sobj.x = sa.x + dx;
+        sobj.y = sa.y + dy;
+        
         obj.dataArr[0] = sobj;
         da = _selectedObj.brect;
         for (var m in da) {
@@ -1132,6 +1138,29 @@ var Whiteboard = function (cont, isStatic, _opts) {
         }
         return obj
 
+    }
+    function checkforBoundry(obj,dx,dy,multi){
+        var _selectedObj = multi ? multi : selectedObj
+        var sa = _selectedObj.dataArr[0];
+        var buf=30
+        if(obj.id=='graph'||obj.id==11||obj.id==12){
+            var xp=sa.x+dx;
+            var yp=sa.y+dy
+            if(xp<buf){
+                dx=-sa.x+buf;               
+            }
+            if(yp<buf){
+                dy=-sa.y+buf;
+               
+            }
+            if(xp>scroll_window.width-buf-300){
+                dx=-sa.x+scroll_window.width-buf-300;   
+            }
+            if(yp>scroll_window.height-buf-300){
+                dy=-sa.y+scroll_window.height-buf-300;   
+            }
+        }
+        return {dx:dx,dy:dy}
     }
 
     function scaleObj(obj, dx, dy, multi) {
@@ -2772,13 +2801,14 @@ var Whiteboard = function (cont, isStatic, _opts) {
         yp = y ? y : sh - cposY
         xs = x ? x : sw - cposX
         ys = y ? y : sh - cposY
-        context.drawImage(img, xp, yp);
+        
         //graphcontext.drawImage(gr, xp, yp);
 
 
 
 
         if (!boo) {
+            context.drawImage(img, xp, yp);
             graphicData.dataArr.push({
                 x: xs - scrollPosition.x,
                 y: ys - scrollPosition.y,
@@ -4678,6 +4708,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                             //graphicDataStore.push(cloneObject(selectedObj))
 
                             //transformObj(selectedObj, dx, dy);
+                            
                             var pd = cloneObjectDeep(selectedObj);
                             var li = objectActions[selectedObj.uid][transMode].length - 1;
                             var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, transMode, true) : false;
@@ -4730,6 +4761,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
                                     }
                                 }
                             }
+                            var dd=checkforBoundry(pd,trans.tx, trans.ty);
+                            trans.tx=dd.dx;
+                            trans.ty=dd.dy;
                             transformObj(pd, trans.tx, trans.ty);
                             drawBoundRect({
                                 tx: trans.tx,
@@ -4950,6 +4984,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                             //drawTempObj(selectedObj, dx, dy)
                             //var pd=graphicDataStore.pop();
                             //pd=pd.dataArr[0]
+                            
                             var pd = cloneObjectDeep(selectedObj);
 
                             //transformObj(pd, dx, dy);
@@ -5011,6 +5046,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
                                     }
                                 }
                             }
+                            var dd=checkforBoundry(pd,trans.tx, trans.ty);
+                            trans.tx=dd.dx;
+                            trans.ty=dd.dy;
 
                             transformObj(pd, trans.tx, trans.ty);
 
@@ -5754,18 +5792,44 @@ var Whiteboard = function (cont, isStatic, _opts) {
         buffercanvas.width = canvas.width;
         buffercanvas.height = canvas.height;
         var l = graphicDataStore.length;
-        var graphsTemp = []
+        /*var graphsTemp = []
         buffercontext.save();
         buffercontext.translate(scrollPosition.x, scrollPosition.y);
         for (var i = 0; i < l; i++) {
             var _t = graphicDataStore[i]
-            if (_t.type != 'cmd' && _t.id == 11 || _t.id == 12 || _t.id == 'graph') {
+            if (_t.type != 'cmd' && (_t.id == 11 || _t.id == 12 || _t.id == 'graph')) {
                 graphsTemp.push(_t);
                 continue
             }
+
             renderToBuffer(_t, buffercontext);
         }
         for (var i = 0; i < graphsTemp.length; i++) {
+            var _t = graphsTemp[i]
+            renderToBuffer(_t, buffercontext);
+        }*/
+        var graphsTemp = [];
+        var objTemp = [];
+        buffercontext.save();
+        buffercontext.translate(scrollPosition.x, scrollPosition.y);
+        for (var i = 0; i < l; i++) {
+            var _t = graphicDataStore[i]
+            if (_t.type != 'cmd' && (_t.id == 11 || _t.id == 12 || _t.id == 'graph')) {
+                graphsTemp.push(_t);
+                continue
+            }
+            if (_t.type != 'cmd' && _t.id == 'template') {
+                renderToBuffer(_t, buffercontext);
+            }else{
+            objTemp.push(_t)
+            }
+            //renderToBuffer(_t, buffercontext);
+        }
+        for ( i = 0; i < objTemp.length; i++) {
+            var _t = objTemp[i]
+            renderToBuffer(_t, buffercontext);
+        }
+        for ( i = 0; i < graphsTemp.length; i++) {
             var _t = graphsTemp[i]
             renderToBuffer(_t, buffercontext);
         }
@@ -5996,7 +6060,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
             canvas_drawing_height = rect.ymax > canvas_drawing_height ? rect.ymax : canvas_drawing_height;
             console_log("Sending json string: " + jsonStr);
         }
+        /*if(!nobj.cmd&&nobj.id == 'template'){
+       // graphicDataStore.unshift(cloneObject(jsdata));
+       graphicDataStore.push(cloneObject(jsdata));
+        }else{*/
         graphicDataStore.push(cloneObject(jsdata));
+        //}
         wb.whiteboardOut(jsonStr, true);
 
         try {
