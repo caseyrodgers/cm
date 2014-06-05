@@ -63,7 +63,7 @@ public class ProblemDesigner extends Composite {
 
     private CustomProblemModel _customProblem;
 
-    static private ToggleButton _editMode;
+    private ToggleButton _editMode;
     CallbackOnComplete callback;
     
     public ProblemDesigner(CallbackOnComplete callbackIn) {
