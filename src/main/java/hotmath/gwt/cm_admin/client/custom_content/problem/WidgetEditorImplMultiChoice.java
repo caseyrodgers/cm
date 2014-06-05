@@ -66,7 +66,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 		correctCol.setCell(new SimpleSafeHtmlCell<Boolean>(new AbstractSafeHtmlRenderer<Boolean>() {
 		        @Override
 		        public SafeHtml render(Boolean object) {
-		          return SafeHtmlUtils.fromString(object ? "True" : "False");
+		          return SafeHtmlUtils.fromString(object ? "Correct" : "Incorrect");
 		        }
 		      }));
 		correctCol.setToolTip(SafeHtmlUtils.fromString("Which choice is the correct one?"));
@@ -382,6 +382,6 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 		}
 		String c[] = choiceData.split("\\|");
 		int correctAnswer = Integer.parseInt(c[c.length-1]);
-		return correctAnswer + " of " + (c.length - 1);
+		return "#" + correctAnswer + " of " + (c.length - 1) + " choices";
 	}
 }

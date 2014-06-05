@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.client.util;
 
 
+import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.event.CmLogoutEvent;
 import hotmath.gwt.cm_core.client.event.CmLogoutHandler;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
@@ -17,7 +18,6 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;

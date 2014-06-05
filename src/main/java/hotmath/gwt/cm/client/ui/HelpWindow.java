@@ -14,6 +14,7 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.MyOptionButton;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
@@ -534,14 +535,6 @@ class BackgroundModel  {
     
 }
 
-class MyOptionButton extends TextButton {
-
-    public MyOptionButton(String name, String tooltip, SelectHandler selHandler) {
-        super(name,selHandler);
-        setToolTip(tooltip);
-        setWidth(110);
-    }
-}
 
 class ComputerCheckWindow extends GWindow {
     public ComputerCheckWindow() {

@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_core.client.model;
 
+import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-import hotmath.gwt.shared.client.model.UserInfoBase;
 
 public class TeacherIdentity implements Response {
     private int adminId;

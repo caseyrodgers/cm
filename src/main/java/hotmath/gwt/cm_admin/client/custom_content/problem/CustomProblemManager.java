@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemTreeTable.TreeTableCallback;
 import hotmath.gwt.cm_admin.client.teacher.TeacherManager;
 import hotmath.gwt.cm_admin.client.teacher.TeacherManager.Callback;
+import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
@@ -29,7 +30,6 @@ import hotmath.gwt.cm_tools.client.ui.MyTextButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -369,7 +369,7 @@ public class CustomProblemManager extends GWindow {
         String folderNode = _treeTable.getSelectedCustomFolderNode();
 
         CustomProblemModel problem = new CustomProblemModel(null, 0, TeacherManager.getTeacher(), getDateTimeStamp(), null,folderNode != null ? folderNode: "");
-        new CustomProblemPropertyEditor(problem, new CustomProblemPropertyEditor.Callback() {
+        new CustomProblemPropertyEditor(problem, _lastPaths, new CustomProblemPropertyEditor.Callback() {
             @Override
             public void solutionCreated(SolutionInfo solution) {
                 _selectedSolution = solution.getPid();
@@ -379,7 +379,7 @@ public class CustomProblemManager extends GWindow {
     }
 
     private String getDateTimeStamp() {
-        return DateTimeFormat.getFormat("yyyy.MM.dd 'at' HH:mm").format(new Date());
+        return DateTimeFormat.getFormat("yyyy-MM-dd 'at' HH:mm").format(new Date());
     }
 
     /**

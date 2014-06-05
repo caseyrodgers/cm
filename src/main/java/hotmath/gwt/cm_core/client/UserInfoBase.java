@@ -1,4 +1,6 @@
-package hotmath.gwt.shared.client.model;
+package hotmath.gwt.cm_core.client;
+
+import hotmath.gwt.shared.client.model.CmPartner;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

@@ -1,5 +1,7 @@
 package hotmath.gwt.cm.client.ui.context;
 
+import hotmath.gwt.cm_core.client.UserInfoBase;
+import hotmath.gwt.cm_core.client.UserInfoBase.Mode;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
@@ -16,8 +18,6 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.model.UserInfoBase;
-import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;

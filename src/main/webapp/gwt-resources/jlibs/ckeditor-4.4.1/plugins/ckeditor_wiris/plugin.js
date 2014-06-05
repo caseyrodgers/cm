@@ -28,7 +28,8 @@ var _wrs_conf_parseModes = ['latex'];				// This value can contain 'latex'.
 var _wrs_conf_enableAccessibility = true;
 
 // Vars
-var _wrs_int_editorIcon = CKEDITOR.basePath + '/plugins/ckeditor_wiris/core/icons/formula.gif';
+// var _wrs_int_editorIcon = CKEDITOR.basePath + '/plugins/ckeditor_wiris/core/icons/formula.gif';
+var _wrs_int_editorIcon = '/gwt-resources/jlibs/images/wiris_editor.png';
 var _wrs_int_CASIcon = CKEDITOR.basePath + '/plugins/ckeditor_wiris/core/icons/cas.gif';
 var _wrs_int_temporalElement;
 var _wrs_int_temporalElementIsIframe;

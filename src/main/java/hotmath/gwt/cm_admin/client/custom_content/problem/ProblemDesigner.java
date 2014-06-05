@@ -5,6 +5,7 @@ import hotmath.gwt.cm_core.client.CmGwtTestUi;
 import hotmath.gwt.cm_core.client.JSOModel;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
@@ -19,8 +20,8 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.MyTextButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
@@ -37,7 +38,6 @@ import com.google.gwt.user.client.Window;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
@@ -85,15 +85,14 @@ public class ProblemDesigner extends Composite {
         _main = new BorderLayoutContainer();
         _main.setCenterWidget(new DefaultGxtLoadingPanel());
         
-
-        _problemPanel.addTool(new TextButton("Close", new SelectHandler() {
+        _problemPanel.addTool(new MyTextButton("Remove",new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
 				if(callback != null) {
 					callback.isComplete();
 				}
 			}
-		}));
+		}, "Remove the current problem"));
         _problemPanel.addTool(_editMode);
         
         initWidget(_main);

@@ -1,6 +1,8 @@
 package hotmath.gwt.shared.client;
 
 import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.UserInfoBase;
+import hotmath.gwt.cm_core.client.UserInfoBase.Mode;
 import hotmath.gwt.cm_core.client.util.LoginInfoEmbedded;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
@@ -14,8 +16,6 @@ import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmPartner;
-import hotmath.gwt.shared.client.model.UserInfoBase;
-import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmException;
