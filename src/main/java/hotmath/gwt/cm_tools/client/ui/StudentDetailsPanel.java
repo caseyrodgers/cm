@@ -116,6 +116,10 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         toolBar.add(displayReportCardToolItem(studentModel));
 
         toolBar.add(displayAssignmentReportToolItem(studentModel));
+        if (CmShared.getQueryParameter("XdebugX") != null) {
+            toolBar.add(displayAssignmentWorkToolItem(studentModel));
+        }
+
         toolBar.add(createCCSSButton(studentModel));
         
         toolBar.add(showQuizResultsBtn());
@@ -441,6 +445,19 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         });
         // ti.setIconStyle("printer-icon");
         ti.setToolTip("Display a printable assignment report");
+        ti.addStyleName("student-grid-panel-button");
+
+        return ti;
+    }
+
+    private TextButton displayAssignmentWorkToolItem(final StudentModelI sm) {
+        TextButton ti = new TextButton("Assignment Work", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+            	new StudentAssignmentWorkWindow(sm);
+            }
+        });
+        ti.setToolTip("Show student's assignment work");
         ti.addStyleName("student-grid-panel-button");
 
         return ti;
