@@ -38,8 +38,7 @@ public class StudentAssignment implements Response {
     
     boolean assigned; // is this user assigned to this assignment?
 
-
-StudentAssignmentStatuses studentStatuses;
+    StudentAssignmentStatuses studentStatuses;
 
     public StudentAssignment(){}
     
@@ -111,6 +110,18 @@ StudentAssignmentStatuses studentStatuses;
 	        }
 	    }
 		return homeworkGrade;
+	}
+
+	public int getAssignKey() {
+		return (assignment != null) ? assignment.getAssignKey() : 0;
+	}
+
+	public Date getDueDate() {
+		return (assignment != null) ? assignment.getDueDate() : null;
+	}
+
+	public String getComments() {
+		return (assignment != null) ? assignment.getComments() : "";
 	}
 
 	public void setHomeworkGrade(String homeworkGrade) {
