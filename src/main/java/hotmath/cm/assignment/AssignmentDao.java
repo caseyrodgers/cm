@@ -960,6 +960,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     sa.setProblemCompletedCount(totCompleted);
                     sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
                     sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit, sa.isGraded()));
+                    setStudentDetailStatus(sa);
                     if (__logger.isDebugEnabled())
                         __logger.debug(String.format(
                                 "getAssignmentWorkForStudent(): totCount: %d, totCompleted: %d, totPending: %d, totGraded: %d, totViewed: %d", totCount,
@@ -1029,6 +1030,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             sa.setProblemCompletedCount(totCompleted);
             sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
             sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit, sa.isGraded()));
+            setStudentDetailStatus(sa);
             if (__logger.isDebugEnabled())
                 __logger.debug(String.format("getAssignmentWorkForStudent(): totCount: %d, totCompleted: %d, totPending: %d, totGraded: %d, totViewed: %d",
                         totCount, totCompleted, totPending, totGraded, totViewed));
