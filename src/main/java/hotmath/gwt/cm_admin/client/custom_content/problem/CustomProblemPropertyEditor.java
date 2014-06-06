@@ -95,7 +95,7 @@ public class CustomProblemPropertyEditor extends GWindow {
         problem.getTeacher().setTeacherName(_teacherName.getCurrentValue());
         
         problem.setComments(_comments.getValue());
-        problem.setTreePath(_treePath.getCurrentValue().getFolder());
+        problem.setTreePath(_treePath.getCurrentValue()!=null?_treePath.getCurrentValue().getFolder():null);
         
         new RetryAction<SolutionInfo>() {
             @Override
@@ -206,7 +206,7 @@ public class CustomProblemPropertyEditor extends GWindow {
             }
         }
         
-        return _treePath.getStore().getAll().get(0);
+        return null;
     }
 
 }
