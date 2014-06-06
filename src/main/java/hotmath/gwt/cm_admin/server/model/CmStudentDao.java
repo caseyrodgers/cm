@@ -893,6 +893,14 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     // TODO: assumes a single Admin per school
     private static final String CHECK_DUPLICATE_NAME_SQL = "CHECK_DUPLICATE_NAME";
 
+    public boolean checkForDuplicateName(final Connection conn, int adminUid, String name) throws Exception {
+    	StudentModelI sm = new StudentModelBase();
+    	sm.setAdminUid(adminUid);
+    	sm.setName(name);
+    	sm.setUid(-1);
+    	return checkForDuplicateName(conn, sm);
+    }
+
     public Boolean checkForDuplicateName(final Connection conn, StudentModelI sm) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;

@@ -362,6 +362,12 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             throw new CmUserException(String.format("The group name you entered, %s, already exists, please try again.", name));	
         }
 
+        // check for match with a student name
+        if (CmStudentDao.getInstance().checkForDuplicateName(conn, adminUid, name) == true) {
+        	throw new CmUserException(String.format("The group name you entered, %s, matches a student name, please try again.", name));
+        }
+        
+
     }
     /**
      * Do not allow groups to be named as already existing default names
