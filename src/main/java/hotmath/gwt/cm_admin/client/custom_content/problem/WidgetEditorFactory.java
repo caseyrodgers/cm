@@ -36,6 +36,9 @@ public class WidgetEditorFactory {
         else if(type.equals("widget_plot")) {
             return new WidgetEditorImplPlot(widgetDef);
         }
+        else if(type.equals("whiteboard")) {
+            return new WidgetEditorImplWhiteboard(widgetDef);
+        }
         else if(type.equals("")) {
             return new WidgetEditorImplNoWidget(widgetDef);
         }

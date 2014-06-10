@@ -85,7 +85,7 @@ public class ProblemDesigner extends Composite {
         _main = new BorderLayoutContainer();
         _main.setCenterWidget(new DefaultGxtLoadingPanel());
         
-        _problemPanel.addTool(new MyTextButton("Remove",new SelectHandler() {
+        _problemPanel.addTool(new MyTextButton("Hide",new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
 				if(callback != null) {
@@ -135,7 +135,7 @@ public class ProblemDesigner extends Composite {
         final String pid = customProblem.getPid();
         
         if(customProblem.getProblemNumber() > 0) {
-           _problemPanel.setHeadingText("Problem: " + customProblem.getProblemNumber());
+           _problemPanel.setHeadingText("Problem: " + customProblem.getFullPath());
         }
         
         CmBusyManager.setBusy(true);

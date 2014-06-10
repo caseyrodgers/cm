@@ -13,7 +13,7 @@ public class WidgetEditorImplNoWidget extends WidgetEditorImplDefault {
     
     @Override
     protected void buildUi() {
-    	_fields.add(new HTML("<h1>Students will enter their answer using the Whiteboard.</h1>"));
+    	_fields.add(new HTML("<h1>Not Selected</h1>"));
     };
     
     @Override
@@ -33,7 +33,7 @@ public class WidgetEditorImplNoWidget extends WidgetEditorImplDefault {
     
     @Override
     public String getDescription() {
-    	return "Write and/or draw your answer on the whiteboard.";
+    	return "Click 'Edit Input' to select an input type.";
     }
     
     @Override
@@ -48,7 +48,7 @@ public class WidgetEditorImplNoWidget extends WidgetEditorImplDefault {
     
     @Override
     public String getWidgetTypeLabel() {
-    	return "Whiteboard";
+    	return "Not Selected";
     }
     
     @Override

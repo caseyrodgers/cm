@@ -3,7 +3,7 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
 import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
 import hotmath.gwt.cm_core.client.UserInfoBase;
-import hotmath.gwt.cm_core.client.model.TeacherIdentity;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.model.StringHolder;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -24,7 +24,6 @@ import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentPanelButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -44,7 +43,6 @@ import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -416,15 +414,18 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
         toolbar.add(highlightsButton());
 
-        TextButton customButton = new StudentPanelButton("Custom", new SelectHandler() {
+        TextButton customButton = new TextButton("Custom");
+        customButton.setToolTip("Create and manage custom content");
+        Menu customMenu = new Menu();
+        customMenu.add(createManageCustomProblemsButton());
+        
+        MenuItem mi = new MenuItem("Custom Programs and Quizzes",new SelectionHandler<MenuItem>() {
             @Override
-            public void onSelect(SelectEvent event) {
-                
+            public void onSelection(SelectionEvent<MenuItem> event) {
                 if(UserInfoBase.getInstance().isMobile()) {
                     new FeatureNotAvailableToMobile();
                     return;
                 }
-                
                 
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
@@ -434,6 +435,12 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                 });
             }
         });
+        mi.setToolTip("Create and manage custom programs and quizzes");
+        customMenu.add(mi);
+        
+        
+        customButton.setMenu(customMenu);
+        
         toolbar.add(customButton);
 
         toolbar.add(new StudentPanelButton("Program Details", new SelectHandler() {
@@ -455,10 +462,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         toolbar.add(createEditAssignmentButton());
         
         toolbar.add(createWebLinksButton());
-
-        if(CmShared.getQueryParameter("debug") != null) {
-            toolbar.add(createManageCustomProblemsButton());
-        }
 
         toolbar.add(new FillToolItem());
 
@@ -804,9 +807,9 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
     
     private Widget createManageCustomProblemsButton() {
-        return new TextButton("Custom Problems",new SelectHandler() {
+        MenuItem mi = new MenuItem("Custom Problems", new SelectionHandler<MenuItem>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void onSelection(SelectionEvent<MenuItem> event) {
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
@@ -814,6 +817,8 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                     }
                 });                
             }});
+        mi.setToolTip("Create and manage custom problems");
+        return mi;
     }
 
     private TextButton displayPrintableReportToolItem(final Grid<StudentModelI> grid) {

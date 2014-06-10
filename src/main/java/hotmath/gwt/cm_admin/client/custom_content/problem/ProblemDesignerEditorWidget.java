@@ -140,6 +140,9 @@ public class ProblemDesignerEditorWidget extends GWindow {
         
         //vert.add(new MyFieldLabel(_comboType,  "Widget Type", 80, 150));
         try {
+            if(widgetDef.getType() == null || widgetDef.getType().equals("")) {
+                widgetDef.setType("whiteboard");
+            }
             _widgetEditor = WidgetEditorFactory.createEditorFor(widgetDef);
 
             _aboutWidgetLabel.setHTML("<div style='font-style: italic'>" + _widgetEditor.getDescription() + "</div>");
@@ -219,7 +222,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
 //        store.add(new  WidgetType("point_slope_form", "Point Slope Form"));
 //        store.add(new  WidgetType("inequality_exact", "Inequality, Exact"));
 
-        store.add(new  WidgetType("", "Whiteboard", "{'type': ''}"));
+        store.add(new  WidgetType("", "Whiteboard", "{'type': 'whiteboard'}"));
 
         _comboType = new ComboBox<WidgetType>(store, props.label());
         _comboType.setAllowBlank(false);

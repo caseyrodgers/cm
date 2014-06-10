@@ -173,8 +173,11 @@ public class CustomProblemManager extends GWindow {
         _main.setCenterWidget(_emptyPage);
 
         TextButton menuButton = new TextButton("New");
+        menuButton.setToolTip("Create a new Custom Problem or Folder");
+        
         Menu menu = new Menu();
         MenuItem newButn = new MenuItem("Problem");
+        newButn.setToolTip("Create a new Custom Problem");
         newButn.addSelectionHandler(new SelectionHandler<Item>() {
 
             @Override
@@ -194,6 +197,7 @@ public class CustomProblemManager extends GWindow {
         menu.add(newButn);
 
         MenuItem newFolder = new MenuItem("Folder");
+        newFolder.setToolTip("Create a new Folder");
         newFolder.addSelectionHandler(new SelectionHandler<Item>() {
 
             @Override
@@ -222,23 +226,24 @@ public class CustomProblemManager extends GWindow {
         menuButton.setMenu(menu);
 
         _gridPanel.addTool(menuButton);
-        _gridPanel.addTool(new TextButton("Del", new SelectHandler() {
+        _gridPanel.addTool(new MyTextButton("Del", new SelectHandler() {
 
             @Override
             public void onSelect(SelectEvent event) {
                 deleteSelectedNode();
             }
-        }));
+        },"Delete selected problem or folder"));
 
-        _gridPanel.addTool(new TextButton("Copy", new SelectHandler() {
+        _gridPanel.addTool(new MyTextButton("Copy", new SelectHandler() {
 
             @Override
             public void onSelect(SelectEvent event) {
                 copySelectedProblem();
             }
-        }));
+        }, "Copy selected problem"));
 
         _filterButton = new ToggleButton("Filter");
+        _filterButton.setToolTip("Apply filters to list of problems");
         _filterButton.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
