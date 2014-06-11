@@ -20,6 +20,7 @@ public class GetAssignmentHTMLCommand_Test extends CmDbTestCase {
     public void testGetAssignnentHTML() throws Exception {
     	GetAssignmentHTMLAction action = new GetAssignmentHTMLAction();
     	action.setAssignKey(3);
+    	action.setNumWorkLines(15);
     	
     	GetAssignmentHTMLCommand cmd = new GetAssignmentHTMLCommand();
     	String html = cmd.execute(conn, action).getHtml();

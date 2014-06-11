@@ -8,6 +8,7 @@ public class GetAssignmentHTMLAction implements Action<AssignmentHTML>{
 	private static final long serialVersionUID = 7964158950220045553L;
 
 	private int assignKey;
+	private int numWorkLines;
 
     public GetAssignmentHTMLAction() {}
     
@@ -23,8 +24,16 @@ public class GetAssignmentHTMLAction implements Action<AssignmentHTML>{
         this.assignKey = assignKey;
     }
 
-    @Override
+    public int getNumWorkLines() {
+		return numWorkLines;
+	}
+
+	public void setNumWorkLines(int numWorkLines) {
+		this.numWorkLines = numWorkLines;
+	}
+
+	@Override
     public String toString() {
-        return "GetAssignmentHTMLAction [assignKey=" + assignKey + "]";
+        return "GetAssignmentHTMLAction [assignKey=" + assignKey + ", numWorkLines=" + numWorkLines + "]";
     }
 }
