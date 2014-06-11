@@ -272,15 +272,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          * now read all pids assigned to this Assignment
          * 
          */
-        String sql = "select * from CM_ASSIGNMENT_PIDS where assign_key = ? order by id";
-        List<ProblemDto> pids = getJdbcTemplate().query(sql, new Object[] { assKey }, new RowMapper<ProblemDto>() {
-            @Override
-            public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                String pid = rs.getString("pid");
-                LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
-                return new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), lesson, rs.getString("label"), pid, 0);
-            }
-        });
+        List<ProblemDto> pids = getProblemsForAssignment(assKey);
         CmList<ProblemDto> cmPids = new CmArrayList<ProblemDto>();
         cmPids.addAll(pids);
         assignment.setPids(cmPids);
@@ -290,6 +282,24 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return assignment;
     }
 
+    /**
+     * 
+     * @param assignKey
+     * @return List of ProblemDto
+     */
+    public List<ProblemDto> getProblemsForAssignment(int assignKey) {
+        String sql = "select * from CM_ASSIGNMENT_PIDS where assign_key = ? order by id";
+        List<ProblemDto> list = getJdbcTemplate().query(sql, new Object[] { assignKey }, new RowMapper<ProblemDto>() {
+            @Override
+            public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                String pid = rs.getString("pid");
+                LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
+                return new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), lesson, rs.getString("label"), pid, 0);
+            }
+        });
+
+        return list;
+    }
     /**
      * Set the appropriate problem types for all problems in assignment. THis is
      * dynamic because the type can be changed by the author at any time.
