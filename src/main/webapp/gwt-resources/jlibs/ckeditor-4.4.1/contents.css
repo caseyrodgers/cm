@@ -22,11 +22,19 @@ body
 	margin: 20px;
 }
 
+.Wirisformula {
+   vertical-align: middle;
+   border: 1px solid black;
+}
+
+
 .cke_editable
 {
 	font-size: 12pt;
 	line-height: 1.6;
 }
+
+
 
 blockquote
 {

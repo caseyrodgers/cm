@@ -20,8 +20,7 @@ CKEDITOR.editorConfig = function( config ) {
 	    [
          ['Bold','Italic','Underline','Superscript', 'Subscript'],
          ['Font','FontSize'],
-	     ['Table'],
-	     ['SpecialChar', 'ckeditor_wiris_formulaEditor']
+	 ['Table'], ['SpecialChar'],['ckeditor_wiris_formulaEditor']
 	    ];
         config.removePlugins = 'elementspath';
         config.resize_enabled = false;

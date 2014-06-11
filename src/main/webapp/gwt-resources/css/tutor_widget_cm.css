@@ -38,3 +38,8 @@ border-right:1px inset #000000;
 #tutoroutput td {
    padding: 2px 5px;
 }
+
+.cke_editable img {
+   border: 1px solid black;
+   vertical-align: middle;
+}
