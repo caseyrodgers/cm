@@ -49,6 +49,6 @@ public class WidgetEditorImplWhiteboard extends WidgetEditorImplDefault {
     
     @Override
     public String getWidgetValueLabel() {
-    	return "Whiteboard";
+    	return null;
     }
 }
