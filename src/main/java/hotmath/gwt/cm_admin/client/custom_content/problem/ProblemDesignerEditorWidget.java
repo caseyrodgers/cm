@@ -222,10 +222,11 @@ public class ProblemDesignerEditorWidget extends GWindow {
 //        store.add(new  WidgetType("point_slope_form", "Point Slope Form"));
 //        store.add(new  WidgetType("inequality_exact", "Inequality, Exact"));
 
-        store.add(new  WidgetType("", "Whiteboard", "{'type': 'whiteboard'}"));
+        store.add(new  WidgetType("whiteboard", "Whiteboard", "{'type': 'whiteboard'}"));
 
         _comboType = new ComboBox<WidgetType>(store, props.label());
         _comboType.setAllowBlank(false);
+        _comboType.setEmptyText("Select Input Type");
         _comboType.setEditable(false);
         _comboType.setTriggerAction(TriggerAction.ALL);
         return _comboType;
