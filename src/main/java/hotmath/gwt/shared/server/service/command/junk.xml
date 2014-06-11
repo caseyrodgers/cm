@@ -1,7 +1,139 @@
-<div class='cm_problem_text'>
-	<div class='step_part'>
-		<p>test</p>
-		<div class='wb_json'>[{"dataArr":[{"x":54,"y":18,"id":"move","color":0,"name":"","layer":"1"},{"x":0,"y":2,"id":"line"},{"x":-1,"y":5,"id":"line"},{"x":-1,"y":13,"id":"line"},{"x":-2,"y":20,"id":"line"},{"x":0,"y":24,"id":"line"},{"x":0,"y":29,"id":"line"},{"x":1,"y":33,"id":"line"},{"x":1,"y":41,"id":"line"},{"x":1,"y":47,"id":"line"},{"x":1,"y":53,"id":"line"},{"x":3,"y":55,"id":"line"},{"x":3,"y":59,"id":"line"},{"x":3,"y":60,"id":"line"},{"x":3,"y":62,"id":"line"},{"x":3,"y":63,"id":"line"},{"x":3,"y":65,"id":"line"},{"x":3,"y":66,"id":"line"},{"x":3,"y":67,"id":"line"},{"x":3,"y":68,"id":"line"},{"x":3,"y":68,"id":"line"}],"id":1,"uid":0,"brect":{"x":52,"y":18,"w":5,"h":68,"xmin":52,"xmax":57,"ymin":18,"ymax":86}}]
+<div class='prob-stmt' style='margin-bottom:15em;'>
+	<div class='hm_question_def'>
+		<div>
+			<p class=MsoNormal>The top, side, and front views of an object built with
+				cubes are shown.</p>
+			<p class=MsoNormal> How many cubes are needed to construct this
+				object?</p>
 		</div>
+		<ul>
+			<li correct='no'>
+				<div>
+					<p class=MsoNormal>6</p>
+				</div>
+				<div>&nbsp;
+				</div>
+			</li>
+			<li correct='no'>
+				<div>
+					<p class=MsoNormal>8</p>
+				</div>
+				<div>&nbsp;
+				</div>
+			</li>
+			<li correct='yes'>
+				<div>
+					<p class=MsoNormal>10</p>
+				</div>
+				<div>&nbsp;
+				</div>
+			</li>
+			<li correct='no'>
+				<div>
+					<p class=MsoNormal>12</p>
+				</div>
+				<div>&nbsp;
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class='prob-stmt' style='margin-bottom:15em;'>
+	<div class='hm_question_def'>
+		<div>
+			<p class=MsoNormal>Match the three dimensional block with the side, front,
+				and top view shown.
+
+
+			</p>
+		</div>
+		<ul>
+			<li correct='no'>
+				<div>
+					<p class=MsoNormal>
+						<img
+							src='/help/solutions/alg1ptests3/customquiz/23/1/alg1ptests3_customquiz_23_1_1_1/resources/2d3d_1_1_2.gif'
+							class='solution_resource' />
+
+
+					</p>
+				</div>
+				<div>&nbsp;
+				</div>
+			</li>
+			<li correct='no'>
+				<div>
+					<p class=MsoNormal>
+						<img
+							src='/help/solutions/alg1ptests3/customquiz/23/1/alg1ptests3_customquiz_23_1_1_1/resources/2d3d_1_1_3.gif'
+							class='solution_resource' />
+
+					</p>
+				</div>
+				<div>&nbsp;
+				</div>
+			</li>
+			<li correct='no'>
+				<div>
+					<p class=MsoNormal>
+						<img
+							src='/help/solutions/alg1ptests3/customquiz/23/1/alg1ptests3_customquiz_23_1_1_1/resources/2d3d_1_1_3.gif'
+							class='solution_resource' />
+					</p>
+				</div>
+				<div>&nbsp;
+				</div>
+			</li>
+			<li correct='yes'>
+				<div>
+					<p class=MsoNormal>
+						<img
+							src='/help/solutions/alg1ptests3/customquiz/23/1/alg1ptests3_customquiz_23_1_1_1/resources/2d3d_1_1_1.gif'
+							class='solution_resource' />
+					</p>
+				</div>
+				<div>&nbsp;
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class='prob-stmt' style='margin-bottom:15em;'>
+	<p class=MsoNormal>
+		In the figures,
+		<sub>
+			<img width=68 height=21
+				src="/help/solutions/genericgeo/9/3/ArcsandChords/genericgeo_9_3_ArcsandChords_15_3/image103.gif"
+				class=text-bottom>
+		</sub>
+		. Find
+		<i>x</i>
+		.
+	</p>
+	<div id='hm_flash_widget'>
+		<div id='hm_flash_widget_def' style='display: none'>{type:'number_rational',value:'9',
+			format:'x%20%3D%20|', width:1, height:1}</div>
+	</div>
+</div>
+<div class='prob-stmt' style='margin-bottom:15em;'>
+	<p class=MsoNormal>
+		In
+		<sub>
+			<img width=32 height=21
+				src="/help/solutions/genericgeo/9/3/ArcsandChords/genericgeo_9_3_ArcsandChords_16_3/image111.gif"
+				class=text-bottom>
+		</sub>
+		<i>AB</i>
+		= 18 and
+		<i>CD</i>
+		= 3
+		<i>x</i>
+		. What is the value of
+		<i>x</i>
+		?
+	</p>
+	<div id='hm_flash_widget'>
+		<div id='hm_flash_widget_def' style='display: none'>{type:'number_rational',value:'6',
+			format:'x%20%3D%20|', width:1, height:1}</div>
 	</div>
 </div>
