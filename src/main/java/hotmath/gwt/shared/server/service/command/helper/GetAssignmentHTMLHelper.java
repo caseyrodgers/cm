@@ -47,6 +47,9 @@ public class GetAssignmentHTMLHelper {
 				TutorSolution solution = solutionDao.getTutorSolution(conn, prob.getPid());
 
 				String html = solution.getProblem().getStatement();
+				
+				html = html.replaceAll("id=", "class=");
+				html = html.replaceAll(" class=MsoNormal", "");
 
 				htmlSb.append(html).append(DIV_CLOSE);
 
