@@ -370,7 +370,7 @@ public class ProblemDesignerEditor extends GWindow {
 	}
 
 	static public void doTest() {
-		ProblemDesignerEditor.getSharedWindow("Testing").show("THE HTML", "wb_id",
+		ProblemDesignerEditor.getSharedWindow("Debugging/Testing").show("THE HTML", "wb_id",
 				new EditorCallback() {
 					@Override
 					public void editingComplete(String pidEdit,
@@ -460,8 +460,7 @@ public class ProblemDesignerEditor extends GWindow {
 		if (__sharedInstance == null) {
 			__sharedInstance = new ProblemDesignerEditor();
 		}
-		
-		__sharedInstance.setHeadingHtml("Custom Problem Editor: " + title);
+		__sharedInstance.setHeadingHtml(title);
 		return __sharedInstance;
 	}
 
