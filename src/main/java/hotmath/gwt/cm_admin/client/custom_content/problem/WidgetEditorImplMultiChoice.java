@@ -171,7 +171,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 	protected void editSelectedChoice() {
 		final MultiValue sel = _grid.getSelectionModel().getSelectedItem();
 		if (sel != null) {
-			ProblemDesignerEditor.getSharedWindow().show(
+			ProblemDesignerEditor.getSharedWindow("Multiple Choice").show(
 					CmGwtUtils.jsni_decodeBase64(sel.getValue()),
 					"widget_multi_choice",
 					new ProblemDesignerEditor.EditorCallback() {
@@ -213,7 +213,7 @@ public class WidgetEditorImplMultiChoice extends ContentPanel implements
 	}
 
 	private void addChoice() {
-		ProblemDesignerEditor.getSharedWindow().show("", "widget_multi_choice",
+		ProblemDesignerEditor.getSharedWindow("Multiple Choice").show("", "widget_multi_choice",
 				new ProblemDesignerEditor.EditorCallback() {
 					@Override
 					public void editingComplete(String pidEdit,

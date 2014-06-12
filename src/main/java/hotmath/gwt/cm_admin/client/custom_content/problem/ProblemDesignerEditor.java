@@ -73,6 +73,7 @@ public class ProblemDesignerEditor extends GWindow {
 		super(false);
 
 		setWidth(600); // height depends on whiteboard shown/not shown.
+		setHeight(400);
 		setResizable(true);
 		setMaximizable(true);
 
@@ -369,7 +370,7 @@ public class ProblemDesignerEditor extends GWindow {
 	}
 
 	static public void doTest() {
-		ProblemDesignerEditor.getSharedWindow().show("THE HTML", "wb_id",
+		ProblemDesignerEditor.getSharedWindow("Testing").show("THE HTML", "wb_id",
 				new EditorCallback() {
 					@Override
 					public void editingComplete(String pidEdit,
@@ -455,10 +456,12 @@ public class ProblemDesignerEditor extends GWindow {
 
 	static ProblemDesignerEditor __sharedInstance;
 
-	public static ProblemDesignerEditor getSharedWindow() {
+	public static ProblemDesignerEditor getSharedWindow(String title) {
 		if (__sharedInstance == null) {
 			__sharedInstance = new ProblemDesignerEditor();
 		}
+		
+		__sharedInstance.setHeadingHtml("Custom Problem Editor: " + title);
 		return __sharedInstance;
 	}
 
