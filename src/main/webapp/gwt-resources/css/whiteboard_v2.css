@@ -324,3 +324,34 @@
  right: -18px;
  cursor: se-resize;
 }
+
+.canvas-container .input_box {
+    position:absolute;
+    border:1px solid black;
+    left:0px;
+    top:0px;
+}
+
+.canvas-container .input_box [name='dummy_resize'] {
+	min-height:40px;
+	display: none;
+	font-family: Ariel;
+	font-size: 15pt;
+	word-wrap:normal;
+	white-space:normal;
+}
+
+.canvas-container .content {
+    white-space:normal;
+    min-width:60px;
+    min-height:40px;
+    width:60px;
+    height:40px;
+    font-family: Ariel;
+    font-size: 15pt;
+    border:0px;
+    padding:0px;
+    margin:0px;
+    resize:none;
+    overflow:hidden;	
+}
