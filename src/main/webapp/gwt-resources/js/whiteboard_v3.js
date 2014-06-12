@@ -2178,6 +2178,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         }
     }
 
+    var _textToolFont="15pt Arial";
     function renderText_html(xt, xp, yp, col, ctx, notEdit) {
         var boo = false;
         var txt = xt ? xt : $get_Element("#content").value;
@@ -2196,7 +2197,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         var y0 = yp ? yp : _yp
         var ht = determineFontHeight(str[0]);
         var sy = y0
-        cntxt.font = "20pt Arial";
+        cntxt.font = _textToolFont;
         cntxt.textBaseline = 'top';
         var colr = col ? col : wb.globalStrokeColor;
         cntxt.fillStyle = colr;
@@ -5514,7 +5515,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
             var maxW = docWidth - clickX - 50
                 /*$($("#" + contDiv + " [name='inputBox'] div")[0]).html("<textarea class='content' name='content' style='white-space:normal;min-width:60px;min-height:40px;width:60px;height:40px;font:20pt Arial;color:" + wb.globalStrokeColor + "' ></textarea>" + '<div name="dummy_resize" style="max-width:' + maxW + 'px;min-height:40px;display: none;font:20pt Arial;word-wrap:normal;white-space:normal;"></div>');*/
 
-            $($("#" + contDiv + " [name='inputBox'] div")[0]).html("<div class='input_box' name='input_box' style='position:absolute;border:1px solid black;left:0px;top:0px;'><textarea class='content' name='content' style='white-space:normal;min-width:60px;min-height:40px;width:60px;height:40px;font:20pt Arial;color:" + wb.globalStrokeColor + ";border:0px;padding:0px;margin:0px;resize:none;overflow:hidden;' ></textarea></div>" + '<div name="dummy_resize" style="max-width:' + maxW + 'px;min-height:40px;display: none;font:20pt Arial;word-wrap:normal;white-space:normal;"></div>');
+            
+            var ttHtml = "<div class='input_box' name='input_box' style='position:absolute;border:1px solid black;left:0px;top:0px;'>" +
+                         "<textarea class='content' name='content' style='white-space:normal;min-width:60px;min-height:40px;width:60px;height:40px;font:" + _textToolFont + ";color:" + wb.globalStrokeColor + ";border:0px;padding:0px;margin:0px;resize:none;overflow:hidden;'> " +
+                         "</textarea></div>" + "<div name='dummy_resize' style='max-width: " + maxW + "px;min-height:40px;display: none;font:" + _textToolFont + ";word-wrap:normal;white-space:normal;'></div>";            
+            $($("#" + contDiv + " [name='inputBox'] div")[0]).html(ttHtml);
             $get_jqElement("#input_box").resizeBox(wb);
             $("#" + contDiv + " [name='inputBox']").css('border', '0px')
             /* $get_jqElement("#inputBox").find("[name='content']").live({
