@@ -22,9 +22,13 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;
@@ -58,7 +62,6 @@ public class ProblemDesignerEditor extends GWindow {
 	private int _countChanges = 1;
 	protected String _pidEdit;
 	private CKEditorPanel _ckEditorPanel;
-	private ToggleButton _showWhiteboardToggle;
 	private String editorText;
 	private AreaData areaData;
 
@@ -76,15 +79,6 @@ public class ProblemDesignerEditor extends GWindow {
 		setHeadingText("Catchup Math Step Editor");
 		_main = new BorderLayoutContainer();
 		setWidget(_main);
-
-		_showWhiteboardToggle = new ToggleButton("Show Whiteboard");
-		_showWhiteboardToggle.addSelectHandler(new SelectHandler() {
-			@Override
-			public void onSelect(SelectEvent event) {
-				showWhiteboardEditor(_showWhiteboardToggle.getValue());
-			}
-		});
-		addTool(_showWhiteboardToggle);
 
 		addButton(new MyTextButton("Save", new SelectHandler() {
 			@Override
@@ -151,7 +145,7 @@ public class ProblemDesignerEditor extends GWindow {
 				public void execute() {
 					if (_showWorkPanel != null) {
 						_showWorkPanel.resizeWhiteboard(_lastWbheight);
-						_ckEditorPanel.showClickToEdit(false);
+						//_ckEditorPanel.showClickToEdit(false);
 					}
 				}
 			});
@@ -223,27 +217,35 @@ public class ProblemDesignerEditor extends GWindow {
 			_showWorkPanel = null;
 		}
 
-		if (showWHiteboard) {
+		_showWorkPanel = new ShowWorkPanel2(whiteboardCallBack, true, true,	"wb_ps-1", 280, getWidget());
 
-			_showWorkPanel = new ShowWorkPanel2(whiteboardCallBack, true, true,
-					"wb_ps-1", 280, getWidget());
+	    BorderLayoutContainer bCon = new BorderLayoutContainer();
 
-			BorderLayoutContainer bCon = new BorderLayoutContainer();
+	    _wbWrapper = new SimplePanel();
+	    _wbWrapper.setWidget(_showWorkPanel);
+	    bCon.setCenterWidget(_wbWrapper);
 
-			_wbWrapper = new SimplePanel();
-			_wbWrapper.setWidget(_showWorkPanel);
-			bCon.setCenterWidget(_wbWrapper);
-
-			_editorPanel = new SimplePanel();
-			_editorPanel.setWidget(_ckEditorPanel);
-			bCon.setNorthWidget(_editorPanel, new BorderLayoutData(.50));
-			_main.setCenterWidget(bCon);
-		} else {
-			_editorPanel = new SimplePanel();
-			_editorPanel.setWidget(_ckEditorPanel);
-			_main.setCenterWidget(_editorPanel);
-		}
-		_showWhiteboardToggle.setValue(showWHiteboard);
+	    _editorPanel = new SimplePanel();
+		_editorPanel.setWidget(_ckEditorPanel);
+		
+		final TabPanel tabPanel = new TabPanel();
+		tabPanel.add(_editorPanel, "Editor");
+		tabPanel.add(_wbWrapper, "Whiteboard");
+		
+		tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
+            @Override
+            public void onSelection(SelectionEvent<Widget> event) {
+                if(tabPanel.getActiveWidget() == _wbWrapper) {
+                    resizeWhiteboard();
+                }
+                else {
+                    setEditorHeight();
+                }
+            }
+        });
+		
+		_main.setCenterWidget(tabPanel);
+		
 		_main.forceLayout();
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -251,14 +253,19 @@ public class ProblemDesignerEditor extends GWindow {
 			public void execute() {
 				/** optimize the window */
 				if (!showWHiteboard) {
-					setHeight(WIN_HEIGHT_NO_WB);
+					// setHeight(WIN_HEIGHT_NO_WB);
 				} else {
 					// set min height for whiteboard
 					if (getElement().getHeight(true) < WIN_HEIGHT_WITH_WB) {
-						setHeight(WIN_HEIGHT_WITH_WB);
+						//setHeight(WIN_HEIGHT_WITH_WB);
 					}
+				       
+			        if(showWHiteboard) {
+			           tabPanel.setActiveWidget(_wbWrapper);
+			           forceLayout();
+			        }
 				}
-				forceLayout();
+				
 			}
 		});
 	}
@@ -286,7 +293,7 @@ public class ProblemDesignerEditor extends GWindow {
 			_countChanges++;
 
 			/** disable on any whiteboard movement */
-			_ckEditorPanel.showClickToEdit(true);
+			//_ckEditorPanel.showClickToEdit(true);
 
 			return null;
 		}
