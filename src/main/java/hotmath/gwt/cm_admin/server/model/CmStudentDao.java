@@ -504,8 +504,13 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
         if(checkForDups) {
             boolean isDuplicate = checkForDuplicatePasscode(conn, sm.getAdminUid(), -1, sm.getPasscode());
-            if (isDuplicate) {
+            if (isDuplicate == true) {
                 throw new CmUserException("The passcode you entered is already in use, please try again.");
+            }
+
+            // check for match with a group name
+            if (CmStudentDao.getInstance().checkForDuplicateName(conn, sm.getAdminUid(), sm.getName()) == true) {
+            	throw new CmUserException(String.format("The student name you entered, %s, matches a group name, please try again.", sm.getName()));
             }
         }
 
