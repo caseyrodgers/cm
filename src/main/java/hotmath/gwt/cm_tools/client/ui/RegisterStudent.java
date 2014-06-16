@@ -947,7 +947,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             @Override
             public void onFailure(Throwable caught) {
                 CmBusyManager.setBusy(false);
-                if (caught.getMessage().indexOf("already in use") > -1) {
+                if (caught.getMessage().indexOf("please try again") > -1) {
                 	if (caught.getMessage().indexOf("pass") > -1)
                         CmMessageBox.showAlert("Passcode In Use", caught.getMessage());
                 	else if (caught.getMessage().indexOf("name") > -1)
