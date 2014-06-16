@@ -509,7 +509,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             }
 
             // check for match with a group name
-            if (CmStudentDao.getInstance().checkForDuplicateName(conn, sm.getAdminUid(), sm.getName()) == true) {
+            if (CmAdminDao.getInstance().checkForDuplicateGroup(conn, sm.getAdminUid(), sm.getName()) == true) {
             	throw new CmUserException(String.format("The student name you entered, %s, matches a group name, please try again.", sm.getName()));
             }
         }
@@ -786,6 +786,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
             if (checkForDuplicatePasscode(conn, sm.getAdminUid(), sm.getUid(), sm.getPasscode())) {
                 throw new CmUserException("The passcode you entered is already in use, please try again.");
+            }
+        }
+        if (studentChanged == true) {
+            // check for match with a group name
+            if (CmAdminDao.getInstance().checkForDuplicateGroup(conn, sm.getAdminUid(), sm.getName()) == true) {
+            	throw new CmUserException(String.format("The student name you entered, %s, matches a group name, please try again.", sm.getName()));
             }
         }
         if (progIsNew) {
