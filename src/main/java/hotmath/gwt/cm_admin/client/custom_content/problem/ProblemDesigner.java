@@ -188,7 +188,7 @@ public class ProblemDesigner extends Composite {
         // Window.alert("Part: " + partType + ", " + data);
         if(partType.equals("whiteboard")) {
             
-            ProblemDesignerEditor.getSharedWindow("Edit problem statement using Editor and/or Whiteboard").show(_solutionMeta.getProblemStatement(), "wb_ps", new EditorCallback() {
+            ProblemDesignerEditor.getSharedWindow("Edit problem statement using text Editor and/or Whiteboard").show(_solutionMeta.getProblemStatement(), "wb_ps", new EditorCallback() {
                 
                 @Override
                 public void editingComplete(String pidEdit, String textPluswhiteboardJson) {
@@ -210,7 +210,7 @@ public class ProblemDesigner extends Composite {
             int which = Integer.parseInt(data);
             final SolutionMetaStep step = _solutionMeta.getSteps().get(which);
 
-            ProblemDesignerEditor.getSharedWindow("Edit hint using Editor and/or Whiteboard").show(step.getHint(), "wb_hint", new EditorCallback() {
+            ProblemDesignerEditor.getSharedWindow("Edit hint using text Editor and/or Whiteboard").show(step.getHint(), "wb_hint", new EditorCallback() {
                 @Override
                 public void editingComplete(String pidEdit, String textPartPlusWhiteboardJson) {
                     step.setHint(textPartPlusWhiteboardJson);
@@ -221,7 +221,7 @@ public class ProblemDesigner extends Composite {
         else if(partType.equals("step")) {
             int which = Integer.parseInt(data);
             final SolutionMetaStep step = _solutionMeta.getSteps().get(which);
-            ProblemDesignerEditor.getSharedWindow("Edit step using Editor and/or Whiteboard").show(step.getText(), "wb_step", new EditorCallback() {
+            ProblemDesignerEditor.getSharedWindow("Edit step using text Editor and/or Whiteboard").show(step.getText(), "wb_step", new EditorCallback() {
                 @Override
                 public void editingComplete(String pidEdit, String textPartPlusWhiteboardJson) {
                     step.setText(textPartPlusWhiteboardJson);
@@ -338,7 +338,7 @@ public class ProblemDesigner extends Composite {
        
        // add hooks on double click to bring up appropriate editor
        //
-       $wnd.$('#problem_statement').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Edit Problem</button></div>");
+       $wnd.$('#problem_statement').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Edit Problem Statement</button></div>");
     
        // $wnd.$('#hm_flash_widget').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Edit Input</button></div>");
        

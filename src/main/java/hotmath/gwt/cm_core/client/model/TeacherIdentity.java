@@ -7,7 +7,7 @@ public class TeacherIdentity implements Response {
     private int adminId;
     private int teacherId;
     String teacherName;
-    final int UNKNOWN = -1;
+    static final int UNKNOWN = -1;
     public TeacherIdentity() {}
     public TeacherIdentity(int adminId, String teacherName, int teacherId) {
         this.adminId = adminId;
@@ -16,12 +16,7 @@ public class TeacherIdentity implements Response {
     }
     
     public TeacherIdentity(String serializedTeacher) {
-        if(serializedTeacher == null) {
-            this.adminId = UserInfoBase.getInstance().getUid();
-            this.teacherId = UNKNOWN;
-            this.teacherName = "Unknown Teacher";
-        }
-        else {
+        if(serializedTeacher != null) {
             String p[] = serializedTeacher.split("\\|");
             this.adminId = Integer.parseInt(p[0]);
             this.teacherId = Integer.parseInt(p[1]);
@@ -50,5 +45,9 @@ public class TeacherIdentity implements Response {
     }
     public void setTeacherName(String teacherName) {
         this.teacherName = teacherName;
+    }
+    
+    public static TeacherIdentity getUnknownTeacher() {
+        return new TeacherIdentity(UserInfoBase.getInstance().getUid(),"Unknown Teacher", UNKNOWN);
     }
 }

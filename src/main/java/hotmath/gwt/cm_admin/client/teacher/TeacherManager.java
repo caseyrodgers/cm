@@ -67,6 +67,10 @@ public class TeacherManager extends GWindow {
         addButton(new TextButton("OK", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
+                if(!_combo.isValid()) {
+                    CmMessageBox.showAlert("Please select a teacher name");
+                    return;
+                }
                 __currentTeacherIdentity = getSelectedTeacher();
                 
                 String val = __currentTeacherIdentity.getAdminId() + "|" + __currentTeacherIdentity.getTeacherId() + "|" + __currentTeacherIdentity.getTeacherName();
@@ -234,7 +238,14 @@ public class TeacherManager extends GWindow {
     public static TeacherIdentity getTeacher() {
         if(__currentTeacherIdentity == null || __currentTeacherIdentity.isUnknown()) {
             String val = Storage.getLocalStorage().getItem("current_teacher");
-            __currentTeacherIdentity = new TeacherIdentity(val); 
+            TeacherIdentity currTeacher = new TeacherIdentity(val);
+            /** only if current logged into the correct admin account */
+            if(currTeacher.getAdminId() == UserInfoBase.getInstance().getUid()) { 
+                __currentTeacherIdentity = currTeacher;
+            }
+            else {
+                __currentTeacherIdentity = TeacherIdentity.getUnknownTeacher();
+            }
         }
         return __currentTeacherIdentity;
     }
