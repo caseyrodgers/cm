@@ -25,24 +25,12 @@ public class GetAssignmentHTMLHelper {
 	private static final String DIV_CLOSE = "</div>";
 	private static final int DEFAULT_WORK_LINES = 15;
 
-	private static final String ASSIGNMENT_TEMPLATE_1 =
-		"<html><head>" +
-        "<meta http-equiv='content-type' content='text/html; charset=iso-8859-1'>" +
-        "<title>Assignment</title>" +
-        "<link rel='stylesheet' type='text/css' href='/gwt-resources/css/CatchupMath.css></head>" +
-        "<body><div id='main-content' class='assignment'>";
-	private static final String ASSIGNMENT_TEMPLATE_2 = 
-        "</div>"+
-        "<script type='text/javascript' language='javascript' src='/gwt-resources/js/CatchupMath_combined.js'></script>" +
-        "</body></html>";
-
 	private AssignmentDao assignmentDao;
 	private CmSolutionManagerDao solutionDao;
 
 	public GetAssignmentHTMLHelper() throws Exception {
 		assignmentDao = AssignmentDao.getInstance();
 		solutionDao = new CmSolutionManagerDao();
-		
 	}
 
 	public String getAssignmentHTML(int assignKey, int numWorkLines, final Connection conn) throws Exception {
@@ -50,7 +38,6 @@ public class GetAssignmentHTMLHelper {
 		List<ProblemDto> probs = assignmentDao.getProblemsForAssignment(assignKey);
 
 		StringBuilder htmlSb = new StringBuilder();
-		htmlSb.append(ASSIGNMENT_TEMPLATE_1);
 		int idx = 1;
 		for(ProblemDto prob : probs) {
 
@@ -60,13 +47,11 @@ public class GetAssignmentHTMLHelper {
 
 			TutorSolution solution = solutionDao.getTutorSolution(conn, prob.getPid());
 			String html = solution.getProblem().getStatement();
-			html = html.replaceAll("id=", "class=");
 			html = html.replaceAll(" class=MsoNormal", "");
 
 			htmlSb.append(html).append(DIV_CLOSE);
 
 		}
-		htmlSb.append(ASSIGNMENT_TEMPLATE_2);
 		
 		return htmlSb.toString();
 	}
