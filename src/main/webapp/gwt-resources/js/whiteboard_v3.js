@@ -102,9 +102,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
     var eraseObjStore = {};
     var objsErased = {};
     var checkForErase = {};
-        // --- /gwt-resources/images/whiteboard/
+    // --- /gwt-resources/images/whiteboard/
     var imgPath = '/gwt-resources/images/whiteboard/'
-    //imgPath = './'
+        //imgPath = './'
     var opts = {
         "templates": [{
             "type": "img",
@@ -220,13 +220,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
     }
 
     function getNextGroupID() {
-        //var l=uidSeed?uidSeed+1:wb.getUIDSeed();
-        return gidSeed++;
-    }
-    //
-    /**
-     * methods to create whiteboard gui
-     */
+            //var l=uidSeed?uidSeed+1:wb.getUIDSeed();
+            return gidSeed++;
+        }
+        //
+        /**
+         * methods to create whiteboard gui
+         */
 
     function createToolBtn(obj) {
         var btn = $('<button/>', {
@@ -622,11 +622,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
             removeBoundRect();
             updateCanvas();
             gedit.css({
-                'left': pos.xmin + off.left + 'px',
-                'top': pos.ymin + off.top + 'px',
-                'display': 'block'
-            })
-            //gedit.show();
+                    'left': pos.xmin + off.left + 'px',
+                    'top': pos.ymin + off.top + 'px',
+                    'display': 'block'
+                })
+                //gedit.show();
         } else {
             graphEditMode = !true;
             if (wb.graphModule) {
@@ -650,109 +650,109 @@ var Whiteboard = function (cont, isStatic, _opts) {
         }
     }
     wb.addGraphModule = function (t, x, y, boo, data) {
-        //alert("ADD "+temp.name+" from "+temp.path)
-        if (selectedObj && selectionMode && selectedObj.id == 'graph') {
-            //showHideGraphModuleEditor(true)
-            return
-        }
-        var config = {
-            gtype: t ? t : 'xy',
-            xmin: -5,
-            ymin: -5,
-            xmax: 5,
-            ymax: 5,
-            xinc: 1,
-            yinc: 1
-        }
-        if (!boo) {
-            graphicData.dataArr = [];
-            graphicData.id = 'graph';
-            graphicData.uid = data ? (data.uid ? data.uid : getNextObjectID()) : getNextObjectID();
-            objectActions[graphicData.uid] = {};
-        } else {
-            graphicData = data
-            config = graphicData.config
-        }
-        var uid = graphicData.uid
-        if (!data || !wb.graphModule || (wb.graphModule && (config.gtype != wb.graphModule.graph_type))) {
-            createEditableGraph(config.gtype, config.width, config.height)
-        }
-        var plot = wb.graphModule
-        var graph = plot.graphObj
-        if (boo && config) {
-            graph.setAxis(config.xaxis, config.yaxis);
-            graph.scaleGraph(config.xscale, config.yscale);
-        }
-
-        var w = graph.width;
-        var h = graph.height;
-        graphicData.config = getGraphModuleConfig()
-        var gr, xp, yp, xs, ys
-        var cposX = parseInt($get_Element("#canvas-container").style.left);
-        var cposY = parseInt($get_Element("#canvas-container").style.top);
-        cposX = cposX ? cposX : 0;
-        cposY = cposY ? cposY : 0;
-        var sw = (screen_width - w) / 2
-        var sh = (screen_height - h) / 2
-        xp = x ? x - w / 2 : sw - cposX
-        yp = y ? y - h / 2 : sh - cposY
-        xs = x ? x - w / 2 : sw - cposX
-        ys = y ? y - h / 2 : sh - cposY
-        var buf=30
-        xp=xs=xp-scrollPosition.x<buf?buf:xp;
-        yp=ys=yp-scrollPosition.y<buf?buf:yp;
-        xp=xs=xp-scrollPosition.x+300>scroll_window.width-buf?scroll_window.width-buf-300+scrollPosition.x:xp;
-        yp=ys=yp-scrollPosition.y+300>scroll_window.height-buf?scroll_window.height-buf-300+scrollPosition.y:yp;
-        var gData = graph.canvas.toDataURL();
-        var pData = graph.canvas.toDataURL();
-        var gImage, pImage;
-        if (!wb.graphModules[uid]) {
-            wb.graphModules[uid] = new Image();
-            wb.plotModules[uid] = new Image();
-        }
-        gImage = wb.graphModules[uid]
-        pImage = wb.plotModules[uid]
-        gImage.src = gData;
-        pImage.src = pData;
-        wb.graphModules[uid] = gImage;
-        wb.plotModules[uid] = pImage;
-        context.drawImage(gImage, xp, yp);
-        context.drawImage(pImage, xp, yp);
-        //graphcontext.drawImage(gr, xp, yp);
-
-
-
-
-        if (!boo) {
-            graphicData.dataArr.push({
-                x: xs - scrollPosition.x,
-                y: ys - scrollPosition.y,
-                w: w,
-                h: h
-            });
-            graphicData.brect = getBoundRect(xs - scrollPosition.x, ys - scrollPosition.y, w, h);
-            sendData();
-            if (!selectionMode) {
-                selectionMode = true;
+            //alert("ADD "+temp.name+" from "+temp.path)
+            if (selectedObj && selectionMode && selectedObj.id == 'graph') {
+                //showHideGraphModuleEditor(true)
+                return
             }
-            buttonHighlite('move');
-            updateCanvas();
-            setObjSelected(graphicDataStore[graphicDataStore.length - 1]);
-            //alert("GRAPH")
-        } else {
+            var config = {
+                gtype: t ? t : 'xy',
+                xmin: -5,
+                ymin: -5,
+                xmax: 5,
+                ymax: 5,
+                xinc: 1,
+                yinc: 1
+            }
+            if (!boo) {
+                graphicData.dataArr = [];
+                graphicData.id = 'graph';
+                graphicData.uid = data ? (data.uid ? data.uid : getNextObjectID()) : getNextObjectID();
+                objectActions[graphicData.uid] = {};
+            } else {
+                graphicData = data
+                config = graphicData.config
+            }
+            var uid = graphicData.uid
+            if (!data || !wb.graphModule || (wb.graphModule && (config.gtype != wb.graphModule.graph_type))) {
+                createEditableGraph(config.gtype, config.width, config.height)
+            }
+            var plot = wb.graphModule
+            var graph = plot.graphObj
+            if (boo && config) {
+                graph.setAxis(config.xaxis, config.yaxis);
+                graph.scaleGraph(config.xscale, config.yscale);
+            }
 
-            var isDeleted = isObjDeleted(uid);
-            var isMoved = isObjTransformed(uid, 'move');
-            var isScaled = isObjTransformed(uid, 'scale');
-            var isRotated = isObjTransformed(uid, 'rotate');
-            var isModified = isMoved || isScaled || isRotated || isDeleted; //isObjTransformed(uid);
-            if (isModified) {
+            var w = graph.width;
+            var h = graph.height;
+            graphicData.config = getGraphModuleConfig()
+            var gr, xp, yp, xs, ys
+            var cposX = parseInt($get_Element("#canvas-container").style.left);
+            var cposY = parseInt($get_Element("#canvas-container").style.top);
+            cposX = cposX ? cposX : 0;
+            cposY = cposY ? cposY : 0;
+            var sw = (screen_width - w) / 2
+            var sh = (screen_height - h) / 2
+            xp = x ? x - w / 2 : sw - cposX
+            yp = y ? y - h / 2 : sh - cposY
+            xs = x ? x - w / 2 : sw - cposX
+            ys = y ? y - h / 2 : sh - cposY
+            var buf = 30
+            xp = xs = xp - scrollPosition.x < buf ? buf : xp;
+            yp = ys = yp - scrollPosition.y < buf ? buf : yp;
+            xp = xs = xp - scrollPosition.x + 300 > scroll_window.width - buf ? scroll_window.width - buf - 300 + scrollPosition.x : xp;
+            yp = ys = yp - scrollPosition.y + 300 > scroll_window.height - buf ? scroll_window.height - buf - 300 + scrollPosition.y : yp;
+            var gData = graph.canvas.toDataURL();
+            var pData = graph.canvas.toDataURL();
+            var gImage, pImage;
+            if (!wb.graphModules[uid]) {
+                wb.graphModules[uid] = new Image();
+                wb.plotModules[uid] = new Image();
+            }
+            gImage = wb.graphModules[uid]
+            pImage = wb.plotModules[uid]
+            gImage.src = gData;
+            pImage.src = pData;
+            wb.graphModules[uid] = gImage;
+            wb.plotModules[uid] = pImage;
+            context.drawImage(gImage, xp, yp);
+            context.drawImage(pImage, xp, yp);
+            //graphcontext.drawImage(gr, xp, yp);
+
+
+
+
+            if (!boo) {
+                graphicData.dataArr.push({
+                    x: xs - scrollPosition.x,
+                    y: ys - scrollPosition.y,
+                    w: w,
+                    h: h
+                });
+                graphicData.brect = getBoundRect(xs - scrollPosition.x, ys - scrollPosition.y, w, h);
+                sendData();
+                if (!selectionMode) {
+                    selectionMode = true;
+                }
+                buttonHighlite('move');
                 updateCanvas();
-            }
+                setObjSelected(graphicDataStore[graphicDataStore.length - 1]);
+                //alert("GRAPH")
+            } else {
 
+                var isDeleted = isObjDeleted(uid);
+                var isMoved = isObjTransformed(uid, 'move');
+                var isScaled = isObjTransformed(uid, 'scale');
+                var isRotated = isObjTransformed(uid, 'rotate');
+                var isModified = isMoved || isScaled || isRotated || isDeleted; //isObjTransformed(uid);
+                if (isModified) {
+                    updateCanvas();
+                }
+
+            }
         }
-    }
-    //
+        //
 
     function drawBoundRect(obj, boo) {
         var dx = x - clickX
@@ -772,8 +772,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
         if (selectedObj && selectedObj.id == 2 && isEdited) {
             sbrect.w = isEdited.brect.w;
             sbrect.h = isEdited.brect.h;
-            sbrect.xmin = isEdited.brect.xmin;
-            sbrect.ymin = isEdited.brect.ymin;
+            sbrect.xmin = selectedObj.brect.xmin + isEdited.brect.xmin;
+            sbrect.ymin = selectedObj.brect.ymin + isEdited.brect.ymin;
             sbrect.xmax = sbrect.xmin + sbrect.w;
             sbrect.ymax = sbrect.ymin + sbrect.h;
 
@@ -790,10 +790,10 @@ var Whiteboard = function (cont, isStatic, _opts) {
             w0 = sbrect.w;
             h0 = sbrect.h;
             if (isEdited && selectedObj.id == 2) {
-                //x0 = sbrect.xmin + obj.tx;
-                //y0 = sbrect.ymin + obj.ty;
-                x0 = x0 - (selectedObj.brect.xmin - (isEdited.brect.xmin - obj.tx))
-                y0 = y0 - (selectedObj.brect.ymin - (isEdited.brect.ymin - obj.ty))
+                x0 = sbrect.xmin + obj.tx;
+                y0 = sbrect.ymin + obj.ty;
+                //x0 = x0 - (selectedObj.brect.xmin - (isEdited.brect.xmin - obj.tx))
+                //y0 = y0 - (selectedObj.brect.ymin - (isEdited.brect.ymin - obj.ty))
                 w0 = sbrect.w;
                 h0 = sbrect.h;
             }
@@ -847,8 +847,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
             if (isMoved) {
                 x0 = x0 + isMoved.tx
                 y0 = y0 + isMoved.ty
-                //w0=obj.brect.w+(isScaled.tx*2)
-                //h0=obj.brect.h+(isScaled.ty*2)
+                    //w0=obj.brect.w+(isScaled.tx*2)
+                    //h0=obj.brect.h+(isScaled.ty*2)
             }
             if (isRotated) {
                 x0 = x0 ? x0 : selectedObj.brect.xmin
@@ -878,8 +878,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
             if (isMoved) {
                 x0 = x0 + isMoved.tx
                 y0 = y0 + isMoved.ty
-                //w0=obj.brect.w+(isScaled.tx*2)
-                //h0=obj.brect.h+(isScaled.ty*2)
+                    //w0=obj.brect.w+(isScaled.tx*2)
+                    //h0=obj.brect.h+(isScaled.ty*2)
             }
             if (isScaled) {
                 x0 = x0 - isScaled.tx
@@ -936,7 +936,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             context.beginPath();
             context.drawImage(rotateGR, xLT - (hitR - 4), yLT - (hitR - 4), hitC - 8, hitC - 8)
             context.drawImage(scaleGR, xRB - (hitR - 4), yRB - (hitR - 4), hitC - 8, hitC - 8)
-            //context.arc(x0 + w0+hitR, y0-hitR, hitR, 0, 2 * Math.PI, false);
+                //context.arc(x0 + w0+hitR, y0-hitR, hitR, 0, 2 * Math.PI, false);
         }
         //context.arc(x0-hitR, y0-hitR, hitR, 0, 2 * Math.PI, false);
         context.save()
@@ -944,7 +944,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         context.arc(xRT, yRT, hitR, 0, 2 * Math.PI, false);
         context.restore();
         context.fill()
-        /* context.font = "bold 14px Arial";
+            /* context.font = "bold 14px Arial";
         context.fillStyle = "rgba(255, 255, 255, 0.75)";
         context.textBaseline = 'center';
         var mw = context.measureText('X').width;
@@ -1125,7 +1125,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         var sobj = da[0]
         sobj.x = sa.x + dx;
         sobj.y = sa.y + dy;
-        
+
         obj.dataArr[0] = sobj;
         da = _selectedObj.brect;
         for (var m in da) {
@@ -1139,28 +1139,32 @@ var Whiteboard = function (cont, isStatic, _opts) {
         return obj
 
     }
-    function checkforBoundry(obj,dx,dy,multi){
+
+    function checkforBoundry(obj, dx, dy, multi) {
         var _selectedObj = multi ? multi : selectedObj
         var sa = _selectedObj.dataArr[0];
-        var buf=30
-        if(obj.id=='graph'||obj.id==11||obj.id==12){
-            var xp=sa.x+dx;
-            var yp=sa.y+dy
-            if(xp<buf){
-                dx=-sa.x+buf;               
+        var buf = 30
+        if (obj.id == 'graph' || obj.id == 11 || obj.id == 12) {
+            var xp = sa.x + dx;
+            var yp = sa.y + dy
+            if (xp < buf) {
+                dx = -sa.x + buf;
             }
-            if(yp<buf){
-                dy=-sa.y+buf;
-               
+            if (yp < buf) {
+                dy = -sa.y + buf;
+
             }
-            if(xp>scroll_window.width-buf-300){
-                dx=-sa.x+scroll_window.width-buf-300;   
+            if (xp > scroll_window.width - buf - 300) {
+                dx = -sa.x + scroll_window.width - buf - 300;
             }
-            if(yp>scroll_window.height-buf-300){
-                dy=-sa.y+scroll_window.height-buf-300;   
+            if (yp > scroll_window.height - buf - 300) {
+                dy = -sa.y + scroll_window.height - buf - 300;
             }
         }
-        return {dx:dx,dy:dy}
+        return {
+            dx: dx,
+            dy: dy
+        }
     }
 
     function scaleObj(obj, dx, dy, multi) {
@@ -1417,6 +1421,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
     function findSelectedObjIndex(xp, yp) {
         var l = graphicDataStore.length
+        var figs = []
         for (var i = l - 1; i >= 0; i--) {
             var __obj = graphicDataStore[i];
             if (graphicDataStore[i].type == 'cmd') {
@@ -1429,6 +1434,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
             var isGraph = _objid == 11 || _objid == 12
             if (isObjDeleted(graphicDataStore[i].uid) || isGraph) {
                 continue
+            }
+            if (_objid == 'template') {
+                figs.push({
+                    ind: i,
+                    data: __obj
+                })
+                continue;
             }
             var rect = cloneObject(graphicDataStore[i].brect);
             var rectM = getMoveNode(rect);
@@ -1453,13 +1465,15 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     if (__obj.id == '2') {
                         rect.w = isEdited.brect.w
                         rect.h = isEdited.brect.h
-                        if (isMoved) {
-                            rect.xmin = rect.xmin - (selectedObj.brect.xmin - (isEdited.brect.xmin - isMoved.tx))
-                            rect.ymin = rect.ymin - (selectedObj.brect.ymin - (isEdited.brect.ymin - isMoved.ty))
+                            /*if (isMoved) {
+                            rect.xmin = rect.xmin - (__obj.brect.xmin - (isEdited.brect.xmin - isMoved.tx))
+                            rect.ymin = rect.ymin - (__obj.brect.ymin - (isEdited.brect.ymin - isMoved.ty))
                         } else {
-                            rect.xmin = rect.xmin - (selectedObj.brect.xmin - isEdited.brect.xmin)
-                            rect.ymin = rect.ymin - (selectedObj.brect.ymin - isEdited.brect.ymin)
-                        }
+                            rect.xmin = rect.xmin - (__obj.brect.xmin - isEdited.brect.xmin)
+                            rect.ymin = rect.ymin - (__obj.brect.ymin - isEdited.brect.ymin)
+                        }*/
+                        rect.xmin = rect.xmin + (isEdited.brect.xmin)
+                        rect.ymin = rect.ymin + (isEdited.brect.ymin)
                         rect.xmax = rect.xmin + rect.w
                         rect.ymax = rect.ymin + rect.h
                         rectM = getMoveNode(rect);
@@ -1491,7 +1505,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             transformRect(rectM, scrollPosition.x, scrollPosition.y)
             transformRect(rectD, scrollPosition.x, scrollPosition.y)
             transformRect(rectE, scrollPosition.x, scrollPosition.y)
-            //selectedObj = null
+                //selectedObj = null
             if (!rect) {
                 selectedObj = null
                 return -1
@@ -1544,8 +1558,125 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 return i;
             }
         }
+        if (figs.length) {
+            return findSelectedObjIndex_fig(xp, yp, figs)
+        }
         selectedObj = null
-        //updateBuffer()
+            //updateBuffer()
+        return -1
+    }
+
+    function findSelectedObjIndex_fig(xp, yp, arr) {
+        var l = arr.length
+
+        for (var i = l - 1; i >= 0; i--) {
+            var __obj = arr[i].data;
+            var index = arr[i].ind;
+            if (__obj.type == 'cmd') {
+                continue
+            }
+            var _objid = __obj.id
+            var _uid = __obj.uid
+            var __uid = selectedObj ? selectedObj.uid : -1
+            var inSel = __uid === _uid;
+            var isGraph = _objid == 11 || _objid == 12
+            if (isObjDeleted(__obj.uid) || isGraph) {
+                continue
+            }
+
+            var rect = cloneObject(__obj.brect);
+            var rectM = getMoveNode(rect);
+            var rectR = getRotateNode(rect);
+            var rectD = getDeleteNode(rect);
+            var rectE = getEditNode(rect);
+            var isMoved = isObjTransformed(__obj.uid, 'move');
+            var isScaled = isObjTransformed(__obj.uid, 'scale');
+            var isRotated = isObjTransformed(__obj.uid, 'rotate');
+            var isEdited = isObjTransformed(__obj.uid, 'edit');
+            var isTransformed = isMoved || isScaled || isRotated || isEdited; //isObjTransformed(graphicDataStore[i].uid)
+            if (isTransformed) {
+                if (isMoved) {
+                    rect = cloneObject(isMoved.trect);
+                    rectM = getMoveNode(rect);
+                    rectR = getRotateNode(rect);
+                    rectD = getDeleteNode(rect);
+                    rectE = getEditNode(rect);
+                }
+                if (isEdited) {
+
+
+                }
+                if (isScaled) {
+                    transformRect(rect, isScaled.tx, isScaled.ty, 'scale')
+                    transformRect(rectM, isScaled.tx, isScaled.ty, 'move')
+                    transformRect(rectR, -isScaled.tx, -isScaled.ty, 'move')
+                    transformRect(rectE, isScaled.tx, isScaled.ty, 'move')
+                    transformRect(rectD, isScaled.tx, isScaled.ty, 'move')
+                }
+                if (isRotated) {
+                    transformRect(rect, isRotated.tx, isRotated.ty, 'rotate')
+                    transformRect(rectM, isRotated.tx, isRotated.ty, 'rotate', rect)
+                    transformRect(rectR, isRotated.tx, isRotated.ty, 'rotate', rect)
+                    transformRect(rectD, isRotated.tx, isRotated.ty, 'rotate', rect)
+                    transformRect(rectE, isRotated.tx, isRotated.ty, 'rotate', rect)
+                    console.log(rect);
+                }
+
+
+            }
+            transformRect(rect, scrollPosition.x, scrollPosition.y)
+            transformRect(rectR, scrollPosition.x, scrollPosition.y)
+            transformRect(rectM, scrollPosition.x, scrollPosition.y)
+            transformRect(rectD, scrollPosition.x, scrollPosition.y)
+            transformRect(rectE, scrollPosition.x, scrollPosition.y)
+                //selectedObj = null
+            if (!rect) {
+                selectedObj = null
+                return -1
+            }
+            var sel = contains(rect, xp, yp)
+            var selR = contains(rectR, xp, yp)
+            var selM = contains(rectM, xp, yp)
+            var selD = contains(rectD, xp, yp)
+            console.log(selR)
+            console.log(selM)
+            if (inSel) {
+                if (selD) {
+                    return 'delete'
+                }
+                if (selR || selM) {
+                    i = selectedObjIndex
+                    transMode = selM ? 'scale' : 'rotate'
+                    if (selectedObj && selectedObj.id == 'graph' && selR) {
+                        transMode = 'move'
+                        return 'move';
+                    }
+                    if (selectedObj && selectedObj.id == 'graph' && selM) {
+                        transMode = 'move'
+                        return 'move';
+                    }
+                    return i;
+                }
+
+            }
+
+            var hasShape = false
+            if (sel) {
+                hasShape = getShapeHit(__obj, {
+                    xmin: xp - hitW,
+                    ymin: yp - hitW,
+                    xmax: xp + hitH,
+                    ymax: yp + hitH
+                })
+            }
+            if (sel && hasShape) {
+                selectedObj = __obj;
+                //updateBuffer()
+                return index;
+            }
+        }
+        selectedObj = null
+            //updateBuffer()
         return -1
     }
 
@@ -1582,13 +1713,15 @@ var Whiteboard = function (cont, isStatic, _opts) {
                         rect.w = isEdited.brect.w
                         rect.h = isEdited.brect.h
 
-                        if (isMoved) {
+                        /*if (isMoved) {
                             rect.xmin = rect.xmin - (__obj.brect.xmin - (isEdited.brect.xmin - isMoved.tx))
                             rect.ymin = rect.ymin - (__obj.brect.ymin - (isEdited.brect.ymin - isMoved.ty))
                         } else {
                             rect.xmin = rect.xmin - (__obj.brect.xmin - isEdited.brect.xmin)
                             rect.ymin = rect.ymin - (__obj.brect.ymin - isEdited.brect.ymin)
-                        }
+                        }*/
+                        rect.xmin = rect.xmin + (isEdited.brect.xmin)
+                        rect.ymin = rect.ymin + (isEdited.brect.ymin)
                         rect.xmax = rect.xmin + rect.w
                         rect.ymax = rect.ymin + rect.h
                     }
@@ -1603,7 +1736,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
             }
             transformRect(rect, scrollPosition.x, scrollPosition.y)
-            //selectedObj = null
+                //selectedObj = null
             if (!rect) {
                 return null
             }
@@ -1614,12 +1747,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
             var hasShape = false
             if (sel) {
                 hasShape = getShapeHit(__obj, {
-                    xmin: xp - hitW,
-                    ymin: yp - hitW,
-                    xmax: xp + hitH,
-                    ymax: yp + hitH
-                })
-               // updateBuffer()
+                        xmin: xp - hitW,
+                        ymin: yp - hitW,
+                        xmax: xp + hitH,
+                        ymax: yp + hitH
+                    })
+                    // updateBuffer()
             }
             if (sel && hasShape) {
                 //selectedObj = graphicDataStore[i];
@@ -1663,12 +1796,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
     }
 
     function removeObjSelection() {
-        var obj = $get_Element("#tempSelection")
-        if (obj) {
-            $(obj).hide();
+            var obj = $get_Element("#tempSelection")
+            if (obj) {
+                $(obj).hide();
+            }
         }
-    }
-    //
+        //
+
     function checkForMultiSelect() {
         var l = graphicDataStore.length;
         var _arr = [];
@@ -1691,6 +1825,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
                 var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
                 var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(obj.uid)
+                var isEdited = isObjTransformed(graphicDataStore[i].uid, 'edit');
                 /* if (isTransformed) {
                         rect = cloneObject(isTransformed.trect);
                     }*/
@@ -1698,6 +1833,25 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     if (isMoved) {
                         rect = cloneObject(isMoved.trect);
 
+                    }
+                    if (isEdited) {
+
+                        if (obj.id == '2') {
+                            rect.w = isEdited.brect.w
+                            rect.h = isEdited.brect.h
+
+                            /*if (isMoved) {
+                                rect.xmin = rect.xmin - (obj.brect.xmin - (isEdited.brect.xmin - isMoved.tx))
+                                rect.ymin = rect.ymin - (obj.brect.ymin - (isEdited.brect.ymin - isMoved.ty))
+                            } else {
+                                rect.xmin = rect.xmin - (obj.brect.xmin - isEdited.brect.xmin)
+                                rect.ymin = rect.ymin - (obj.brect.ymin - isEdited.brect.ymin)
+                            }*/
+                            rect.xmin = rect.xmin - (-isEdited.brect.xmin)
+                            rect.ymin = rect.ymin - (-isEdited.brect.ymin)
+                            rect.xmax = rect.xmin + rect.w
+                            rect.ymax = rect.ymin + rect.h
+                        }
                     }
                     if (isScaled) {
                         var dw = isScaled.tx
@@ -1708,7 +1862,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             dh=nr0.h*/
                         }
                         transformRect(rect, dw, dh, 'scale')
-                        //transformRect(rect, isScaled.tx, isScaled.ty,'scale') 
+                            //transformRect(rect, isScaled.tx, isScaled.ty,'scale') 
 
                     }
                     if (isRotated) {
@@ -1717,6 +1871,23 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     }
 
 
+                } else if (isEdited) {
+                    if (obj.id == '2') {
+                        rect.w = isEdited.brect.w
+                        rect.h = isEdited.brect.h
+
+                        /*if (isMoved) {
+                                rect.xmin = rect.xmin - (obj.brect.xmin - (isEdited.brect.xmin - isMoved.tx))
+                                rect.ymin = rect.ymin - (obj.brect.ymin - (isEdited.brect.ymin - isMoved.ty))
+                            } else {
+                                rect.xmin = rect.xmin - (obj.brect.xmin - isEdited.brect.xmin)
+                                rect.ymin = rect.ymin - (obj.brect.ymin - isEdited.brect.ymin)
+                            }*/
+                        rect.xmin = rect.xmin - (-isEdited.brect.xmin)
+                        rect.ymin = rect.ymin - (-isEdited.brect.ymin)
+                        rect.xmax = rect.xmin + rect.w
+                        rect.ymax = rect.ymin + rect.h
+                    }
                 }
                 transformRect(rect, scrollPosition.x, scrollPosition.y)
                 var sel = intersectRect(rect, selectionRect)
@@ -1741,7 +1912,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 }
             }
         }
-       // updateBuffer()
+        // updateBuffer()
         return _arr
     }
 
@@ -1761,17 +1932,38 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     if (isTransformed) {
                         rect = cloneObject(isTransformed.trect);
                     }*/
-                var isMoved = isObjTransformed(graphicDataStore[i].uid, 'move');
-                var isScaled = isObjTransformed(graphicDataStore[i].uid, 'scale');
-                var isRotated = isObjTransformed(graphicDataStore[i].uid, 'rotate');
+                var isMoved = isObjTransformed(obj.uid, 'move');
+                var isScaled = isObjTransformed(obj.uid, 'scale');
+                var isRotated = isObjTransformed(obj.uid, 'rotate');
                 var isTransformed = isMoved || isScaled || isRotated; //isObjTransformed(obj.uid)
+                var isEdited = isObjTransformed(obj.uid, 'edit');
                 /* if (isTransformed) {
                         rect = cloneObject(isTransformed.trect);
                     }*/
+
                 if (isTransformed) {
                     if (isMoved) {
                         rect = cloneObject(isMoved.trect);
 
+                    }
+                    if (isEdited) {
+
+                        if (obj.id == '2') {
+                            rect.w = isEdited.brect.w
+                            rect.h = isEdited.brect.h
+
+                            /*if (isMoved) {
+                                rect.xmin = rect.xmin - (obj.brect.xmin - (isEdited.brect.xmin - isMoved.tx))
+                                rect.ymin = rect.ymin - (obj.brect.ymin - (isEdited.brect.ymin - isMoved.ty))
+                            } else {
+                                rect.xmin = rect.xmin - (obj.brect.xmin - isEdited.brect.xmin)
+                                rect.ymin = rect.ymin - (obj.brect.ymin - isEdited.brect.ymin)
+                            }*/
+                            rect.xmin = rect.xmin - (-isEdited.brect.xmin)
+                            rect.ymin = rect.ymin - (-isEdited.brect.ymin)
+                            rect.xmax = rect.xmin + rect.w
+                            rect.ymax = rect.ymin + rect.h
+                        }
                     }
                     if (isScaled) {
                         var dw = isScaled.tx
@@ -1790,6 +1982,23 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     }
 
 
+                } else if (isEdited) {
+                    if (obj.id == '2') {
+                        rect.w = isEdited.brect.w
+                        rect.h = isEdited.brect.h
+
+                        /*if (isMoved) {
+                                rect.xmin = rect.xmin - (obj.brect.xmin - (isEdited.brect.xmin - isMoved.tx))
+                                rect.ymin = rect.ymin - (obj.brect.ymin - (isEdited.brect.ymin - isMoved.ty))
+                            } else {
+                                rect.xmin = rect.xmin - (obj.brect.xmin - isEdited.brect.xmin)
+                                rect.ymin = rect.ymin - (obj.brect.ymin - isEdited.brect.ymin)
+                            }*/
+                        rect.xmin = rect.xmin - (-isEdited.brect.xmin)
+                        rect.ymin = rect.ymin - (-isEdited.brect.ymin)
+                        rect.xmax = rect.xmin + rect.w
+                        rect.ymax = rect.ymin + rect.h
+                    }
                 }
                 transformRect(rect, scrollPosition.x, scrollPosition.y);
                 if (!mSelRect) {
@@ -1847,13 +2056,15 @@ var Whiteboard = function (cont, isStatic, _opts) {
                             rect.w = isEdited.brect.w
                             rect.h = isEdited.brect.h
 
-                            if (isMoved) {
+                            /*if (isMoved) {
                                 rect.xmin = rect.xmin - (obj.brect.xmin - (isEdited.brect.xmin - isMoved.tx))
                                 rect.ymin = rect.ymin - (obj.brect.ymin - (isEdited.brect.ymin - isMoved.ty))
                             } else {
                                 rect.xmin = rect.xmin - (obj.brect.xmin - isEdited.brect.xmin)
                                 rect.ymin = rect.ymin - (obj.brect.ymin - isEdited.brect.ymin)
-                            }
+                            }*/
+                            rect.xmin = rect.xmin - (-isEdited.brect.xmin)
+                            rect.ymin = rect.ymin - (-isEdited.brect.ymin)
                             rect.xmax = rect.xmin + rect.w
                             rect.ymax = rect.ymin + rect.h
                         }
@@ -1991,7 +2202,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
                 }
                 transformRect(rect, scrollPosition.x, scrollPosition.y)
-                // var isTransformed = isObjTransformed(obj.uid,transMode)
+                    // var isTransformed = isObjTransformed(obj.uid,transMode)
 
                 // transformRect(rect, scrollPosition.x, scrollPosition.y,transMode)
                 // obj.isErased() = intersectRect(rect, r)
@@ -1999,7 +2210,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 var hasShape = false
                 if (sel) {
                     hasShape = getShapeHit(obj, r)
-                    //updateBuffer()
+                        //updateBuffer()
                 }
                 //obj.isErased() = hasShape
                 objsErased[obj.uid] = hasShape;
@@ -2015,28 +2226,28 @@ var Whiteboard = function (cont, isStatic, _opts) {
     //
     mq_holder.onload = function () {
 
-        context.drawImage(this, holder_x, holder_y);
-        // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
-        updateCanvas();
-    }
-    //
+            context.drawImage(this, holder_x, holder_y);
+            // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
+            updateCanvas();
+        }
+        //
 
     function getInternetExplorerVersion()
-    // Returns the version of Internet Explorer or a -1
-    // (indicating the use of another browser).
-    {
-        var rv = -1; // Return value assumes failure.
-        if (navigator.appName == 'Microsoft Internet Explorer') {
-            var ua = navigator.userAgent;
-            var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-            if (re.exec(ua) != null) rv = parseFloat(RegExp.$1);
+        // Returns the version of Internet Explorer or a -1
+        // (indicating the use of another browser).
+        {
+            var rv = -1; // Return value assumes failure.
+            if (navigator.appName == 'Microsoft Internet Explorer') {
+                var ua = navigator.userAgent;
+                var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+                if (re.exec(ua) != null) rv = parseFloat(RegExp.$1);
+            }
+            return rv;
         }
-        return rv;
-    }
-    //
-    /**
-     *internal methods to: disable,enable calculator and show or hide them
-     */
+        //
+        /**
+         *internal methods to: disable,enable calculator and show or hide them
+         */
 
     function showCalc() {
         console_log("SHOW_CALC")
@@ -2083,26 +2294,26 @@ var Whiteboard = function (cont, isStatic, _opts) {
     }
 
     function mouseOverCalc(event) {
-        if (!$('#calc_hold').html()) {
+            if (!$('#calc_hold').html()) {
+                return false;
+            }
+            getCanvasPos();
+            var mx = event.layerX ? event.layerX : event.pageX - offX;
+            var my = event.layerY ? event.layerY : event.pageY - offY;
+            var box = $get_jqElement('#canvas-container').position();
+            var xp, yp, wi, hi
+            xp = screen_width - 325 - box.left
+            yp = 0 - box.top
+            wi = 325
+            hi = $get_jqElement('#calc_hold').height()
+                //console_log(xp + ":" + yp + ":" + wi + ":" + hi + ":" + mx + ":" + my + ":" + event.layerX + ":" + event.pageX)
+            if ((mx >= xp && mx <= xp + wi) && (my >= yp && my <= yp + hi)) {
+                return true;
+            }
             return false;
         }
-        getCanvasPos();
-        var mx = event.layerX ? event.layerX : event.pageX - offX;
-        var my = event.layerY ? event.layerY : event.pageY - offY;
-        var box = $get_jqElement('#canvas-container').position();
-        var xp, yp, wi, hi
-        xp = screen_width - 325 - box.left
-        yp = 0 - box.top
-        wi = 325
-        hi = $get_jqElement('#calc_hold').height()
-        //console_log(xp + ":" + yp + ":" + wi + ":" + hi + ":" + mx + ":" + my + ":" + event.layerX + ":" + event.pageX)
-        if ((mx >= xp && mx <= xp + wi) && (my >= yp && my <= yp + hi)) {
-            return true;
-        }
-        return false;
-    }
-    //end of calc internal methods
-    //
+        //end of calc internal methods
+        //
     var determineFontHeight = function (fontStyle) {
         var body = document.getElementsByTagName("body")[0];
         var dummy = document.createElement("div");
@@ -2178,7 +2389,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
         }
     }
 
-    var _textToolFont="15pt Arial";
+    var _textToolFont = "15pt Arial";
+
     function renderText_html(xt, xp, yp, col, ctx, notEdit) {
         var boo = false;
         var txt = xt ? xt : $get_Element("#content").value;
@@ -2226,9 +2438,16 @@ var Whiteboard = function (cont, isStatic, _opts) {
             //updateCanvas();
             if (boo) {
                 var uid = selectedObj.uid;
+                var isMoved = isObjTransformed(uid, 'move');
+                rect.x = rect.xmin = -(isMoved.tx ? selectedObj.brect.xmin + isMoved.tx - xp : selectedObj.brect.xmin - xp)
+                rect.y = rect.ymin = -(isMoved.ty ? selectedObj.brect.ymin + isMoved.ty - yp : selectedObj.brect.ymin - yp)
+                rect.w = dim.w; //cntxt.measureText(txt).width
+                rect.h = dim.h; //(ht + ht / 3) * str.length
+                rect.xmax = -rect.x + rect.w;
+                rect.ymax = -rect.y + rect.h;
                 var tdata = {
-                    x: xp,
-                    y: yp,
+                    x: -(isMoved.tx ? selectedObj.brect.xmin + isMoved.tx - xp : selectedObj.brect.xmin - xp),
+                    y: -(isMoved.ty ? selectedObj.brect.ymin + isMoved.ty - yp : selectedObj.brect.ymin - yp),
                     text: txt,
                     textBoxWidth: maxWidth,
                     brect: rect
@@ -2265,6 +2484,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
             $get_Element("#content").value = "";
             $get_Element("#inputBox").style.display = 'none';
             textEditMode = !true;
+            selectedObj = null;
             if (boo) {
                 //setObjSelected(selectedObj);
             }
@@ -2292,28 +2512,28 @@ var Whiteboard = function (cont, isStatic, _opts) {
         } else {
             var _mq_holder = new Image();
             _mq_holder.onload = function () {
-                var rect = {}
-                rect.x = rect.xmin = x0
-                rect.y = rect.ymin = y0
-                rect.w = this.width
-                rect.h = this.height
-                rect.xmax = rect.x + rect.w;
-                rect.ymax = rect.y + rect.h;
-                console.log('renderText')
-                console.log(this)
-                var gd = graphicDataStore[graphicDataStore.length - 1];
-                gd.brect = rect
+                    var rect = {}
+                    rect.x = rect.xmin = x0
+                    rect.y = rect.ymin = y0
+                    rect.w = this.width
+                    rect.h = this.height
+                    rect.xmax = rect.x + rect.w;
+                    rect.ymax = rect.y + rect.h;
+                    console.log('renderText')
+                    console.log(this)
+                    var gd = graphicDataStore[graphicDataStore.length - 1];
+                    gd.brect = rect
 
-                context.drawImage(this, holder_x, holder_y);
-                // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
-                // gd.imageData = this;
-                // graphicDataStore[graphicDataStore.length - 1] = gd
-                //console.log(gd)
-                updateCanvas();
-                _mq_holder = null;
-                delete _mq_holder;
-            }
-            // _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
+                    context.drawImage(this, holder_x, holder_y);
+                    // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
+                    // gd.imageData = this;
+                    // graphicDataStore[graphicDataStore.length - 1] = gd
+                    //console.log(gd)
+                    updateCanvas();
+                    _mq_holder = null;
+                    delete _mq_holder;
+                }
+                // _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
             var txtCol = String(colr).substring(1)
             _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chco=" + txtCol + "&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
             lastTxt = txt
@@ -2579,16 +2799,17 @@ var Whiteboard = function (cont, isStatic, _opts) {
     }
 
     function doUpScroll(dy) {
-        var currPos = scrollPosition.y;
-        currPos = currPos ? currPos : 0;
-        currPos = dy;
-        currPos = currPos > 0 ? 0 : currPos
-        currPos = currPos < -(scroll_window.height - screen_height) ? -(scroll_window.height - screen_height) : currPos;
-        var scrub = (scroll_window.height - screen_height) / (screen_height - 30)
-        $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
-        scrollPosition['y'] = currPos;
-    }
-    //--Templates Code begin
+            var currPos = scrollPosition.y;
+            currPos = currPos ? currPos : 0;
+            currPos = dy;
+            currPos = currPos > 0 ? 0 : currPos
+            currPos = currPos < -(scroll_window.height - screen_height) ? -(scroll_window.height - screen_height) : currPos;
+            var scrub = (scroll_window.height - screen_height) / (screen_height - 30)
+            $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
+            scrollPosition['y'] = currPos;
+        }
+        //--Templates Code begin
+
     function showHideTemplates() {
         var cont = $get_jqElement("#temp_cont");
         if (cont.is(":visible")) {
@@ -2802,11 +3023,11 @@ var Whiteboard = function (cont, isStatic, _opts) {
         yp = y ? y : sh - cposY
         xs = x ? x : sw - cposX
         ys = y ? y : sh - cposY
-         var buf=30
-        xp=xs=xp-scrollPosition.x<buf?buf:xp;
-        yp=ys=yp-scrollPosition.y<buf?buf:yp;
-        xp=xs=xp-scrollPosition.x+w>scroll_window.width-buf?scroll_window.width-buf-w+scrollPosition.x:xp;
-        yp=ys=yp-scrollPosition.y+h>scroll_window.height-buf?scroll_window.height-buf-h+scrollPosition.y:yp;
+        var buf = 30
+        xp = xs = xp - scrollPosition.x < buf ? buf : xp;
+        yp = ys = yp - scrollPosition.y < buf ? buf : yp;
+        xp = xs = xp - scrollPosition.x + w > scroll_window.width - buf ? scroll_window.width - buf - w + scrollPosition.x : xp;
+        yp = ys = yp - scrollPosition.y + h > scroll_window.height - buf ? scroll_window.height - buf - h + scrollPosition.y : yp;
         //graphcontext.drawImage(gr, xp, yp);
 
 
@@ -3147,45 +3368,46 @@ var Whiteboard = function (cont, isStatic, _opts) {
     }
 
     function registerNavClick(_event) {
-        navClicked = true;
-        var event = _event ? _event.originalEvent : window.event;
-        var isTouchEnabled = event.type.indexOf('touch') > -1
-        if (_event.preventDefault) {
-            _event.preventDefault();
-        } else {
-            _event.returnValue = false;
+            navClicked = true;
+            var event = _event ? _event.originalEvent : window.event;
+            var isTouchEnabled = event.type.indexOf('touch') > -1
+            if (_event.preventDefault) {
+                _event.preventDefault();
+            } else {
+                _event.returnValue = false;
+            }
+            if (isTouchEnabled) {
+                $get_jqElement("#navigator").off('mousedown', registerNavClick)
+                $get_jqElement("#navigator").off('mouseup', movetoNavClick)
+                $get_jqElement("#navigator").on('touchend', movetoNavClick)
+                $get_jqElement("#navigator").on('touchmove', removeDrag)
+            }
         }
-        if (isTouchEnabled) {
-            $get_jqElement("#navigator").off('mousedown', registerNavClick)
-            $get_jqElement("#navigator").off('mouseup', movetoNavClick)
-            $get_jqElement("#navigator").on('touchend', movetoNavClick)
-            $get_jqElement("#navigator").on('touchmove', removeDrag)
-        }
-    }
-    //--NAVIGATOR CODE END ---
-    //
+        //--NAVIGATOR CODE END ---
+        //
+
     function getoffset() {
-        console_log("getCanvasPos processing!");
-        var box = canvas.getBoundingClientRect();
-        // console_log("canvas bound= top: " + box.top + " left:" + box.left);
-        var body = document.body;
-        var docElem = document.documentElement;
-        var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
-        var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
-        var clientTop = docElem.clientTop || body.clientTop || 0;
-        var clientLeft = docElem.clientLeft || body.clientLeft || 0;
-        //console_log("offset_datas: scrollTop=" + scrollTop + " scrollLeft=" + scrollLeft + " clientTop=" + clientTop + " clientLeft=" + clientLeft);
-        var top = box.top + scrollTop - clientTop;
-        var left = box.left + scrollLeft - clientLeft;
-        var offX = Math.round(left);
-        var offY = Math.round(top);
-        // console_log("OFFSET: top=" + offY + " left=" + offX);
-        return {
-            top: offY,
-            left: offX
+            console_log("getCanvasPos processing!");
+            var box = canvas.getBoundingClientRect();
+            // console_log("canvas bound= top: " + box.top + " left:" + box.left);
+            var body = document.body;
+            var docElem = document.documentElement;
+            var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+            var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+            var clientTop = docElem.clientTop || body.clientTop || 0;
+            var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+            //console_log("offset_datas: scrollTop=" + scrollTop + " scrollLeft=" + scrollLeft + " clientTop=" + clientTop + " clientLeft=" + clientLeft);
+            var top = box.top + scrollTop - clientTop;
+            var left = box.left + scrollLeft - clientLeft;
+            var offX = Math.round(left);
+            var offY = Math.round(top);
+            // console_log("OFFSET: top=" + offY + " left=" + offX);
+            return {
+                top: offY,
+                left: offX
+            }
         }
-    }
-    //
+        //
     wb.initWhiteboard = function (mainDocIn) {
         console_log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
         canvas_drawing_width = 0;
@@ -3362,7 +3584,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     canvas.width = vWidth;
                     canvas.height = vHeight;
                     $(canvas).attr('class', 'canvas')
-                    //
+                        //
                     buffercanvas = document.createElement('canvas');
                     shapeHitcanvas = document.createElement('canvas');
                     //
@@ -3698,7 +3920,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 }
                 var spos = $get_Element('#' + scroll + 'scroll_thumb').style[pos]
                 spos = spos ? spos : 0
-                // var scpos = $get_Element('#canvas-container').style[pos]
+                    // var scpos = $get_Element('#canvas-container').style[pos]
                 var scpos = scrollPosition[coo]
                 scpos = scpos ? scpos : 0
                 scrollObj.sy = parseInt(spos)
@@ -3706,7 +3928,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 scrollObj.my = mouse_pos;
                 scrollObj.dragged = true;
                 scrollObj.scrub = (scroll_window[dim] - sdim) / (sdim - 30)
-                //console_log("INIT_SCROLL_SCRUB:" + scrollObj.sy + ":" + scrollObj.my + ":" + scrollObj.scrub + ":" + event.target);
+                    //console_log("INIT_SCROLL_SCRUB:" + scrollObj.sy + ":" + scrollObj.my + ":" + scrollObj.scrub + ":" + event.target);
                 if (document.addEventListener) {
                     if (isTouchEnabled) {
                         document.addEventListener("touchend", stopThumbDrag, false);
@@ -3782,79 +4004,79 @@ var Whiteboard = function (cont, isStatic, _opts) {
             }
 
             function stopThumbDrag(_event) {
-                // console.log("STOP_SCROLL_SCRUB:");
-                if (!vscrollObj.dragged && !hscrollObj.dragged) {
-                    return
-                }
-                var event = _event ? _event : window.event;
-                event = isTouchEnabled ? event.changedTouches[0] : event;
-                if (event.preventDefault) {
-                    event.preventDefault();
-                } else {
-                    event.returnValue = false;
-                }
-                // getCanvasPos();
-                var dx, dy;
-                if (event.pageX != undefined) {
-                    dx = event.pageX - offX;
-                    dy = event.pageY - offY;
-                } else {
-                    dx = event.clientX - offX;
-                    dy = event.clientY - offY;
-                }
-                var scroll = 'v';
-                var pos = 'top';
-                var scrollObj = vscrollObj;
-                var mouse_pos = dy
-                var dim = 'height';
-                var sdim = screen_height;
-                var neg = -1
-                var coo = 'y'
-                if (hscrollObj.dragged) {
-                    scroll = 'h';
-                    pos = 'left';
-                    scrollObj = hscrollObj;
-                    mouse_pos = dx;
-                    dim = 'width';
-                    sdim = screen_width;
-                    neg = -1
-                    coo = 'x'
-                }
-                var change = mouse_pos - scrollObj.my
-                var newpos = scrollObj.sy + change
-                newpos = newpos < 0 ? 0 : newpos
-                newpos = newpos > sdim - 30 ? sdim - 30 : newpos;
-                if (newpos >= 0 && newpos <= sdim - 30) {
-                    var currPos = scrollObj.screeny - (change * scrollObj.scrub);
-                    currPos = currPos > 0 ? 0 : currPos
-                    currPos = currPos < neg * (scroll_window[dim] - sdim) ? -(scroll_window[dim] - sdim) : currPos;
-                    $get_Element('#' + scroll + 'scroll_thumb').style[pos] = newpos + "px";
-                    // $get_Element('#canvas-container').style[pos] = currPos + "px";
-                    scrollPosition[coo] = currPos;
-                    updateCanvas();
-                }
-                if (document.addEventListener) {
-                    if (isTouchEnabled) {
-                        document.removeEventListener("mousemove", startThumbDrag, false);
-                        document.removeEventListener("touchmove", startThumbDrag, false);
-
-                    } else {
-
-                        document.removeEventListener("mousemove", startThumbDrag, false);
-
+                    // console.log("STOP_SCROLL_SCRUB:");
+                    if (!vscrollObj.dragged && !hscrollObj.dragged) {
+                        return
                     }
-                } else {
-                    document.onmousemove = null;
+                    var event = _event ? _event : window.event;
+                    event = isTouchEnabled ? event.changedTouches[0] : event;
+                    if (event.preventDefault) {
+                        event.preventDefault();
+                    } else {
+                        event.returnValue = false;
+                    }
+                    // getCanvasPos();
+                    var dx, dy;
+                    if (event.pageX != undefined) {
+                        dx = event.pageX - offX;
+                        dy = event.pageY - offY;
+                    } else {
+                        dx = event.clientX - offX;
+                        dy = event.clientY - offY;
+                    }
+                    var scroll = 'v';
+                    var pos = 'top';
+                    var scrollObj = vscrollObj;
+                    var mouse_pos = dy
+                    var dim = 'height';
+                    var sdim = screen_height;
+                    var neg = -1
+                    var coo = 'y'
+                    if (hscrollObj.dragged) {
+                        scroll = 'h';
+                        pos = 'left';
+                        scrollObj = hscrollObj;
+                        mouse_pos = dx;
+                        dim = 'width';
+                        sdim = screen_width;
+                        neg = -1
+                        coo = 'x'
+                    }
+                    var change = mouse_pos - scrollObj.my
+                    var newpos = scrollObj.sy + change
+                    newpos = newpos < 0 ? 0 : newpos
+                    newpos = newpos > sdim - 30 ? sdim - 30 : newpos;
+                    if (newpos >= 0 && newpos <= sdim - 30) {
+                        var currPos = scrollObj.screeny - (change * scrollObj.scrub);
+                        currPos = currPos > 0 ? 0 : currPos
+                        currPos = currPos < neg * (scroll_window[dim] - sdim) ? -(scroll_window[dim] - sdim) : currPos;
+                        $get_Element('#' + scroll + 'scroll_thumb').style[pos] = newpos + "px";
+                        // $get_Element('#canvas-container').style[pos] = currPos + "px";
+                        scrollPosition[coo] = currPos;
+                        updateCanvas();
+                    }
+                    if (document.addEventListener) {
+                        if (isTouchEnabled) {
+                            document.removeEventListener("mousemove", startThumbDrag, false);
+                            document.removeEventListener("touchmove", startThumbDrag, false);
+
+                        } else {
+
+                            document.removeEventListener("mousemove", startThumbDrag, false);
+
+                        }
+                    } else {
+                        document.onmousemove = null;
+                    }
+                    scrollObj.dragged = false;
+                    // console_log("END_SCROLL_SCRUB:" + newpos + ":" + currPos);
                 }
-                scrollObj.dragged = false;
-                // console_log("END_SCROLL_SCRUB:" + newpos + ":" + currPos);
-            }
-            // canvas.width = origcanvas.width = graphcanvas.width = topcanvas.width
-            // = docWidth - leftOff;
-            // canvas.height = origcanvas.height = graphcanvas.height =
-            // topcanvas.height = docHeight - topOff;
-            // console.log("A " + canvas.width + ":" + canvas.height + ":" +
-            // docWidth + ":" + docHeight + ":" + leftOff + ":" + topOff);
+                // canvas.width = origcanvas.width = graphcanvas.width = topcanvas.width
+                // = docWidth - leftOff;
+                // canvas.height = origcanvas.height = graphcanvas.height =
+                // topcanvas.height = docHeight - topOff;
+                // console.log("A " + canvas.width + ":" + canvas.height + ":" +
+                // docWidth + ":" + docHeight + ":" + leftOff + ":" + topOff);
             context = canvas.getContext("2d");
             buffercontext = buffercanvas.getContext("2d");
             shapeHitCtx = shapeHitcanvas.getContext("2d");
@@ -4027,7 +4249,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     $get_Element("#drawsection").style.cursor = 'move';
                     // resetWhiteBoard();
                     wb.setSelectionMode()
-                    //currentTool = 'move'
+                        //currentTool = 'move'
                     if (selectionMode) {
                         buttonHighlite('move');
                     } else {
@@ -4147,10 +4369,10 @@ var Whiteboard = function (cont, isStatic, _opts) {
             }
 
             function __killListeners() {
-                killMouseListeners();
-                killTouchListeners();
-            }
-            //
+                    killMouseListeners();
+                    killTouchListeners();
+                }
+                //
 
             function positionScroller() {
                 var scrubH = (canvas.width - screen_width) / (screen_width - 30);
@@ -4473,7 +4695,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                                 //alert("B")
                                 transMode = selectionOnNode(selectedObj, x, y);
                                 transMode = transMode == null ? 'move' : transMode
-                                // alert(transMode)
+                                    // alert(transMode)
                                 if (transMode == 'edit' || transMode == 'delete') {
                                     return
                                 }
@@ -4523,8 +4745,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
 
                                 if (isEdited) {
                                     drawBoundRect({
-                                        tx: 0,
-                                        ty: 0,
+                                        tx: isTransformed ? isTransformed.tx : 0,
+                                        ty: isTransformed ? isTransformed.ty : 0,
                                         tr: 0,
                                         brect: isEdited.brect
                                     })
@@ -4713,7 +4935,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                             //graphicDataStore.push(cloneObject(selectedObj))
 
                             //transformObj(selectedObj, dx, dy);
-                            
+
                             var pd = cloneObjectDeep(selectedObj);
                             var li = objectActions[selectedObj.uid][transMode].length - 1;
                             var isTransformed = li > 0 ? isObjTransformed(selectedObj.uid, transMode, true) : false;
@@ -4766,7 +4988,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                                     }
                                 }
                             }
-                           /* var dd=checkforBoundry(pd,trans.tx, trans.ty);
+                            /* var dd=checkforBoundry(pd,trans.tx, trans.ty);
                             trans.tx=dd.dx;
                             trans.ty=dd.dy;*/
                             transformObj(pd, trans.tx, trans.ty);
@@ -4989,7 +5211,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                             //drawTempObj(selectedObj, dx, dy)
                             //var pd=graphicDataStore.pop();
                             //pd=pd.dataArr[0]
-                            
+
                             var pd = cloneObjectDeep(selectedObj);
 
                             //transformObj(pd, dx, dy);
@@ -5000,6 +5222,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
                             var isMoved = isObjTransformed(selectedObj.uid, 'move');
                             var isScaled = isObjTransformed(selectedObj.uid, 'scale');
                             var isRotated = isObjTransformed(selectedObj.uid, 'rotate');
+                            var isEdited = selectedObj.id == '2' && isObjTransformed(selectedObj.uid, 'edit');
                             if (transMode == 'rotate') {
                                 var rect = cloneObject(selectedObj.brect)
                                 if (isMoved) {
@@ -5050,6 +5273,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
                                         trect: isTransformed.trect
                                     }
                                 }
+                            }
+                            if (isEdited) {
+
                             }
                             /*var dd=checkforBoundry(pd,trans.tx, trans.ty);
                             trans.tx=dd.dx;
@@ -5515,14 +5741,14 @@ var Whiteboard = function (cont, isStatic, _opts) {
             var maxW = docWidth - clickX - 50
                 /*$($("#" + contDiv + " [name='inputBox'] div")[0]).html("<textarea class='content' name='content' style='white-space:normal;min-width:60px;min-height:40px;width:60px;height:40px;font:20pt Arial;color:" + wb.globalStrokeColor + "' ></textarea>" + '<div name="dummy_resize" style="max-width:' + maxW + 'px;min-height:40px;display: none;font:20pt Arial;word-wrap:normal;white-space:normal;"></div>');*/
 
-            
+
             var ttHtml = "<div class='input_box' name='input_box'>" +
-                         "<textarea class='content' name='content' style='color:" + wb.globalStrokeColor + "'> " +
-                         "</textarea></div>" + "<div name='dummy_resize' style='max-width: " + maxW + "px;'></div>";            
+                "<textarea class='content' name='content' style='color:" + wb.globalStrokeColor + "'> " +
+                "</textarea></div>" + "<div name='dummy_resize' style='max-width: " + maxW + "px;'></div>";
             $($("#" + contDiv + " [name='inputBox'] div")[0]).html(ttHtml);
             $get_jqElement("#input_box").resizeBox(wb);
             $("#" + contDiv + " [name='inputBox']").css('border', '0px')
-            /* $get_jqElement("#inputBox").find("[name='content']").live({
+                /* $get_jqElement("#inputBox").find("[name='content']").live({
                 input: function (e) {
                     var rs = $get_jqElement("#dummy_resize")
                     rs.text($(this).val() + "9.");
@@ -5593,10 +5819,10 @@ var Whiteboard = function (cont, isStatic, _opts) {
         $get_Element("#input_box").style.top = 0 + "px";
         $get_Element("#input_box").style.left = 0 + "px";
         $get_jqElement("#inputBox").find("[name='done_btn']").css({
-            'top': ($get_jqElement("#input_box").outerHeight() + 30) + "px",
-            'left': 0 + "px"
-        })
-        //$get_Element("#inputBox").style.color = wb.globalStrokeColor;
+                'top': ($get_jqElement("#input_box").outerHeight() + 30) + "px",
+                'left': 0 + "px"
+            })
+            //$get_Element("#inputBox").style.color = wb.globalStrokeColor;
         $get_Element("#content").focus();
         //$get_jqElement("#content").trigger('input');
     }
@@ -5829,16 +6055,16 @@ var Whiteboard = function (cont, isStatic, _opts) {
             }
             if (_t.type != 'cmd' && _t.id == 'template') {
                 renderToBuffer(_t, buffercontext);
-            }else{
-            objTemp.push(_t)
+            } else {
+                objTemp.push(_t)
             }
             //renderToBuffer(_t, buffercontext);
         }
-        for ( i = 0; i < objTemp.length; i++) {
+        for (i = 0; i < objTemp.length; i++) {
             var _t = objTemp[i]
             renderToBuffer(_t, buffercontext);
         }
-        for ( i = 0; i < graphsTemp.length; i++) {
+        for (i = 0; i < graphsTemp.length; i++) {
             var _t = graphsTemp[i]
             renderToBuffer(_t, buffercontext);
         }
@@ -6117,34 +6343,34 @@ var Whiteboard = function (cont, isStatic, _opts) {
     }
 
     function getToolFromID(id) {
-        for (var m in tool_id) {
-            if (id == tool_id[m]) {
-                return m
+            for (var m in tool_id) {
+                if (id == tool_id[m]) {
+                    return m
+                }
             }
         }
-    }
-    // function that converts flash object to JSON string
+        // function that converts flash object to JSON string
 
     function convertObjToString(obj) {
-        try {
-            var s = stringify(obj);
-            return s;
-        } catch (ex) {
-            console_log(ex.name + ":" + ex.message + ":" + ex.location + ":" + ex.text);
+            try {
+                var s = stringify(obj);
+                return s;
+            } catch (ex) {
+                console_log(ex.name + ":" + ex.message + ":" + ex.location + ":" + ex.text);
+            }
         }
-    }
-    // function that converts JSON string to flash object
+        // function that converts JSON string to flash object
 
     function convertStringToObj(str) {
-        try {
-            var o = eval("(" + str + ")"); // eval(str);
-            return o;
-        } catch (ex) {
-            console_log(ex.name + ":" + ex.message + ":" + ex.location + ":" + ex.text);
+            try {
+                var o = eval("(" + str + ")"); // eval(str);
+                return o;
+            } catch (ex) {
+                console_log(ex.name + ":" + ex.message + ":" + ex.location + ":" + ex.text);
+            }
         }
-    }
-    //
-    /**
+        //
+        /**
 json stringify method for browsers which doesnt  have support for JSON
 source: https://gist.github.com/754454
 */
@@ -6209,17 +6435,17 @@ source: https://gist.github.com/754454
     }
 
     function isObjTransformed(uid, mode, skipLast) {
-        if (!objectActions[uid] || !objectActions[uid][mode]) {
-            return false
+            if (!objectActions[uid] || !objectActions[uid][mode]) {
+                return false
+            }
+            var l = objectActions[uid][mode].length
+            if (!l) {
+                return false
+            }
+            var _l = skipLast ? l - 2 : l - 1;
+            return objectActions[uid][mode][_l]
         }
-        var l = objectActions[uid][mode].length
-        if (!l) {
-            return false
-        }
-        var _l = skipLast ? l - 2 : l - 1;
-        return objectActions[uid][mode][_l]
-    }
-    // ### RENDER OBJECT TO WHITEBOARD
+        // ### RENDER OBJECT TO WHITEBOARD
 
     function renderObj(obj, boo) {
         try {
@@ -6617,8 +6843,8 @@ source: https://gist.github.com/754454
                 ctx.translate(cx, cy)
                 ctx.rotate(r);
                 ctx.translate(-cx, -cy)
-                //ctx.restore()
-                //ctx.translate(scrollPosition.x,scrollPosition.y)
+                    //ctx.restore()
+                    //ctx.translate(scrollPosition.x,scrollPosition.y)
 
 
                 //ctx.translate(isTransformed.tx, isTransformed.ty)
@@ -6648,7 +6874,7 @@ source: https://gist.github.com/754454
                 ctx.translate(cx, cy)
                 ctx.scale(rw, rh);
                 ctx.translate(-cx, -cy)
-                //ctx.translate(isTransformed.tx, isTransformed.ty)
+                    //ctx.translate(isTransformed.tx, isTransformed.ty)
                 cx = 0
                 cy = 0
             }
@@ -6707,13 +6933,19 @@ source: https://gist.github.com/754454
             if (transMode == 'edit' && selectedObj && (uid == selectedObj.uid)) {} else {
                 var isEdited = isObjTransformed(uid, 'edit');
                 if (isEdited) {
-                    x0 = _obj.dataArr[0].x - (obj.brect.xmin - isEdited.x) - cx;
+                    /* x0 = _obj.dataArr[0].x - (obj.brect.xmin - isEdited.x) - cx;
                     y0 = _obj.dataArr[0].y - (obj.brect.ymin - isEdited.y) - cy;
                     if (isMoved) {
                         x0 = _obj.dataArr[0].x - (obj.brect.xmin - (isEdited.x - isMoved.tx)) - cx;
                         y0 = _obj.dataArr[0].y - (obj.brect.ymin - (isEdited.y - isMoved.ty)) - cy;
-                    }
+                    }*/
                     // context.fillText(graphic_data[i].text, x0, y0);
+                    x0 = obj.brect.xmin + cx + isEdited.x;
+                    y0 = obj.brect.ymin + cy + isEdited.y;
+                    if (isMoved) {
+                        //x0 =- ( - (isEdited.x - isMoved.tx)) - cx;
+                        //y0 =- (- (isEdited.y - isMoved.ty)) - cy;
+                    }
                     xt = isEdited.text;
                     xt = unescape(decodeURI(xt));
                     xt = String(xt).split("\\:").join(" ");
@@ -6820,22 +7052,22 @@ source: https://gist.github.com/754454
     }
 
     function resetInternalStore() {
-        graphicDataStore = [];
-        loadedImgTemps = {};
-        objectActions = {};
-        uidSeed = 0;
-        gidSeed = 0;
-    }
-    /**
-     * Map GWT array type to JS Array.
-     *
-     * TODO: not sure why this is needed, otherwise instanceof Array seems to
-     * fail.
-     *
-     * cmdArray is already an array in JSNI.
-     *
-     * @param cmdArray
-     */
+            graphicDataStore = [];
+            loadedImgTemps = {};
+            objectActions = {};
+            uidSeed = 0;
+            gidSeed = 0;
+        }
+        /**
+         * Map GWT array type to JS Array.
+         *
+         * TODO: not sure why this is needed, otherwise instanceof Array seems to
+         * fail.
+         *
+         * cmdArray is already an array in JSNI.
+         *
+         * @param cmdArray
+         */
 
     function gwt_updatewhiteboard(cmdArray) {
         var realArray = [];
@@ -6849,10 +7081,10 @@ source: https://gist.github.com/754454
     }
 
     wb.updateWhiteboard = function (cmdArray) {
-        gwt_updatewhiteboard(cmdArray);
-        //updateCanvas()
-    }
-    /** will be overriden in GWT/parent */
+            gwt_updatewhiteboard(cmdArray);
+            //updateCanvas()
+        }
+        /** will be overriden in GWT/parent */
     wb.updateWhiteboardData = function (index, newJSON) {
         //
         console.log('updateWhiteboardData');
@@ -6921,20 +7153,20 @@ source: https://gist.github.com/754454
         updateCanvas();
     }
     wb.renderFromStorage = function () {
-        if (supports_localStorage()) {
-            var str = localStorage['jstr'];
-            wb.updateWhiteboard([
-                ["draw", [str]]
-            ])
-        } else {
-            console_log("DATA NOT SAVED - LOCAL STORAGE NOT AVAILABLE!")
+            if (supports_localStorage()) {
+                var str = localStorage['jstr'];
+                wb.updateWhiteboard([
+                    ["draw", [str]]
+                ])
+            } else {
+                console_log("DATA NOT SAVED - LOCAL STORAGE NOT AVAILABLE!")
+            }
         }
-    }
-    //
-    /**
-     * * SETS THE WHITEBOARD MODE AS TEACHER MODE ++ ON TEACHER MODE THE DRAWING
-     * COLOR WILL BE SET AS RED
-     */
+        //
+        /**
+         * * SETS THE WHITEBOARD MODE AS TEACHER MODE ++ ON TEACHER MODE THE DRAWING
+         * COLOR WILL BE SET AS RED
+         */
     wb.setAsTeacherMode = function (boo) {
         var b = boo === undefined ? true : boo
         if (b) {
@@ -6946,10 +7178,10 @@ source: https://gist.github.com/754454
         }
     }
     wb.getWhiteboardMode = function () {
-        return wb.mode;
-    }
-    //
-    // function receives jsonData and renders it to the screen
+            return wb.mode;
+        }
+        //
+        // function receives jsonData and renders it to the screen
     wb.draw = function (json_str) {
         var grobj = convertStringToObj(json_str);
         renderObj(grobj);
@@ -7025,11 +7257,11 @@ source: https://gist.github.com/754454
 
     wb.whiteboardIsReady = function () {
 
-        alert('This is the default whiteboardIsReady, it should be overridden in GWT');
-    }
-    /**
-     * Exposed methods to: disable,enable calculator and show or hide them
-     */
+            alert('This is the default whiteboardIsReady, it should be overridden in GWT');
+        }
+        /**
+         * Exposed methods to: disable,enable calculator and show or hide them
+         */
     wb.disableCalculator = function () {
         enable_calc = false;
         _disableCalc()
@@ -7042,9 +7274,9 @@ source: https://gist.github.com/754454
         hideCalc();
     }
     wb.showCalculator = function () {
-        showCalc();
-    }
-    //
+            showCalc();
+        }
+        //
     wb.setSelectionMode = function () {
         selectionMode = !selectionMode
         if (!selectionMode) {
@@ -7069,27 +7301,27 @@ source: https://gist.github.com/754454
 
     }
     wb.clearMemory = function () {
-        graphicData = null;
-        graphicDataStore = null;
-        selectedObj = null;
+            graphicData = null;
+            graphicDataStore = null;
+            selectedObj = null;
 
-        var _width = 0;
-        buffercanvas.width = canvas.width = _width;
-        buffercanvas.height = canvas.height = _width;
-        if (isIE) {
-            $(canvas).css({
-                'width': '0px',
-                'height': '0px'
-            })
-            $(canvas).empty();
-            $(buffercanvas).css({
-                'width': '0px',
-                'height': '0px'
-            })
-            $(buffercanvas).empty();
+            var _width = 0;
+            buffercanvas.width = canvas.width = _width;
+            buffercanvas.height = canvas.height = _width;
+            if (isIE) {
+                $(canvas).css({
+                    'width': '0px',
+                    'height': '0px'
+                })
+                $(canvas).empty();
+                $(buffercanvas).css({
+                    'width': '0px',
+                    'height': '0px'
+                })
+                $(buffercanvas).empty();
 
-        } else {
-            /*$(canvas).remove();
+            } else {
+                /*$(canvas).remove();
             $(buffercanvas).remove();
             
                 canvas = null;
@@ -7098,24 +7330,24 @@ source: https://gist.github.com/754454
                 context = null;
                 buffercontext = null;
                 */
-        }
-        gr2D = null;
-        nL = null;
-        //scope=null;
-        //wb=null;
+            }
+            gr2D = null;
+            nL = null;
+            //scope=null;
+            //wb=null;
 
-    }
-    //
+        }
+        //
 
     function updateDataToSERVER(index, jsdata) {
-        //wb.whiteboardDelete(index);
-        graphicData = jsdata;
-        //sendData();
+            //wb.whiteboardDelete(index);
+            graphicData = jsdata;
+            //sendData();
 
-        sendDataToSERVER(jsdata)
-        resetArrays()
-    }
-    //
+            sendDataToSERVER(jsdata)
+            resetArrays()
+        }
+        //
     wb.isReadOnly = function (boo) {
         isReadOnly = boo
         if (boo) {
@@ -7427,10 +7659,10 @@ function _debugGetCommandInfoLabel(json) {
         cont.css('height', cont.find("[name='content']").outerHeight() + "px");
         cont.css('width', cont.find("[name='content']").outerWidth() + "px");
         cont.parent().parent().find("[name='done_btn']").css({
-            'position': 'relative',
-            'top': "70px"
-        })
-        /* var handles = ['tl', 'tm', 'tr',
+                'position': 'relative',
+                'top': "70px"
+            })
+            /* var handles = ['tl', 'tm', 'tr',
             'ml', 'mr', 'bl', 'bm', 'br'
         ]*/
         var handles = ['tl', 'tm', 'tr',
