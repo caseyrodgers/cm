@@ -22,7 +22,7 @@ public class GetAssignmentHTMLHelper {
 	private static final Logger LOGGER = Logger.getLogger(GetAssignmentHTMLHelper.class);
 
 	private static final String PROB_STMT_DIV_OPEN_FMT = "<div id='prob-%d' class='prob-stmt' style='margin-bottom:%dem;'>";
-	private static final String DIV_CLOSE = "</div>";
+	private static final String DIV_CLOSE = "</div>\n";
 	private static final int DEFAULT_WORK_LINES = 15;
 
 	private AssignmentDao assignmentDao;
