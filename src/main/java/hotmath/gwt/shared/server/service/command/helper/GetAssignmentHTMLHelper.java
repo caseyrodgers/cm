@@ -51,6 +51,7 @@ public class GetAssignmentHTMLHelper {
 	public String getAssignmentHTML(int assignKey, int numWorkLines, final Connection conn) throws Exception {
 
 		List<ProblemDto> probs = assignmentDao.getProblemsForAssignment(assignKey);
+		LOGGER.info(String.format("getAssignmentHTML(): assignKey: %d, num probs: %d", assignKey, probs.size()));
 
 		StringBuilder htmlSb = new StringBuilder();
 		int idx = 1;
@@ -58,22 +59,20 @@ public class GetAssignmentHTMLHelper {
 
 			StringBuilder sb = new StringBuilder();
 			String divOpen = String.format(PROB_STMT_DIV_OPEN_FMT, idx++, (numWorkLines > 0) ? numWorkLines : DEFAULT_WORK_LINES);
-
 			sb.append(divOpen);
 
 			TutorSolution solution = solutionDao.getTutorSolution(conn, prob.getPid());
 			String html = solution.getProblem().getStatement();
-
 			sb.append(html).append(DIV_CLOSE);
 
 			htmlSb.append(cleanupHtml(sb.toString()));
+			htmlSb.append("\n");
 		}
 		
 		return htmlSb.toString();
 	}
 
 	private String cleanupHtml(String html) throws Exception {
-		//html = html.replaceAll(" class=Msnormal| class=MsoNormal", "");
 
 		htmlParser.setInputHTML(html);
 		htmlParser.visitAllNodesWith(new NodeVisitor() {
