@@ -36,7 +36,7 @@ finally {
 }
 %>
 
-<html style="overflow: hidden;">
+<html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Assignment</title>
@@ -46,7 +46,7 @@ finally {
      -->
         
     <!--[if gt IE 5.5000]>
-        <link rel="stylesheet" href="gwt-resources/css/CatchupMath-resource_container-IE.css">
+        <link rel="stylesheet" href="/gwt-resources/css/CatchupMath-resource_container-IE.css">
     <![endif]-->
 
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css">
