@@ -22,6 +22,7 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Timer;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -153,7 +154,9 @@ public class CustomProblemTreeTable extends SimpleContainer {
                 return "lesson";
             }
         });
+        lessonsCol.setToolTip(SafeHtmlUtils.fromString("Number of lessons correlated"));
         lessonsCol.setHeader("Lessons");
+        lessonsCol.setSortable(false);
 
         List<ColumnConfig<BaseDto, ?>> l = new ArrayList<ColumnConfig<BaseDto, ?>>();
         l.add(problemCol);
@@ -360,7 +363,6 @@ public class CustomProblemTreeTable extends SimpleContainer {
                         CustomProblemModel problem = ((CustomProblemLeafNode) link).getCustomProblem();
 
                         // whatever tooltip you want with optional qtitle
-                        String label = "<b>Problem: </b><br/>" + problem.getProblemNumber() + "</div><br/>";
                         String comments = problem.getComments() == null ? "" : "<b>Comments</b><br/>"
                                 + problem.getComments() + "<br/><br/>";
                         String linkedLessons = "";
@@ -370,7 +372,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
                         linkedLessons = linkedLessons.length() == 0 ? "" : "<b>Linked Lessons</b><ul>" + linkedLessons
                                 + "</ul>";
 
-                        String tip = "<div style='width: 140px;'>" + label + comments + linkedLessons + "</div>";
+                        String tip = "<div style='width: 140px;'>" + comments + linkedLessons + "</div>";
 
                         row.setAttribute("qtip", tip);
                     }
@@ -379,24 +381,6 @@ public class CustomProblemTreeTable extends SimpleContainer {
             }
         };
         return view;
-    }
-
-    protected String getToolTipFor(CustomProblemLeafNode leaf) {
-
-        CustomProblemModel link = leaf.getCustomProblem();
-
-        // whatever tooltip you want with optional qtitle
-        String label = "<b>Problem: </b><br/>" + link.getProblemNumber() + "</div><br/>";
-        String comments = link.getComments() == null ? "" : "<b>Comments</b><br/>" + link.getComments() + "<br/><br/>";
-        String linkedLessons = "";
-        for (LessonModel lessonModel : link.getLinkedLessons()) {
-            linkedLessons += "<li>" + lessonModel.getLessonName() + "</li>";
-        }
-        linkedLessons = linkedLessons.length() == 0 ? "" : "<b>Linked Lessons</b><ul>" + linkedLessons + "</ul>";
-
-        String tip = "<div style='width: 140px;'>" + label + comments + linkedLessons + "</div>";
-
-        return tip;
     }
 
     public void setTreeSelections(final String selectedPid) {

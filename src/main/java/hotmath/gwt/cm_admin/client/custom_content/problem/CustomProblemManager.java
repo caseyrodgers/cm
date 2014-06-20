@@ -445,37 +445,6 @@ public class CustomProblemManager extends GWindow {
         return list;
     }
 
-    private GridView<CustomProblemModel> createGridView() {
-        GridView<CustomProblemModel> view = new GridView<CustomProblemModel>() {
-            @Override
-            protected void processRows(int startRow, boolean skipStripe) {
-                super.processRows(startRow, skipStripe);
-
-                NodeList<Element> rows = getRows();
-                for (int i = 0, len = rows.getLength(); i < len; i++) {
-                    Element row = rows.getItem(i).cast();
-                    CustomProblemModel link = ds.get(i);
-
-                    // whatever tooltip you want with optional qtitle
-                    String label = "<b>Problem: </b><br/>" + link.getProblemNumber() + "</div><br/>";
-                    String comments = link.getComments() == null ? "" : "<b>Comments</b><br/>" + link.getComments()
-                            + "<br/><br/>";
-                    String linkedLessons = "";
-                    for (LessonModel lessonModel : link.getLinkedLessons()) {
-                        linkedLessons += "<li>" + lessonModel.getLessonName() + "</li>";
-                    }
-                    linkedLessons = linkedLessons.length() == 0 ? "" : "<b>Linked Lessons</b><ul>" + linkedLessons
-                            + "</ul>";
-
-                    String tip = "<div style='width: 140px;'>" + label + comments + linkedLessons + "</div>";
-
-                    row.setAttribute("qtip", tip);
-                    // row.setAttribute("qtitle", "ToolTip&nbsp;Title");
-                }
-            }
-        };
-        return view;
-    }
 
     private void applyFilter(List<? extends LessonModel> models, String comments) {
 

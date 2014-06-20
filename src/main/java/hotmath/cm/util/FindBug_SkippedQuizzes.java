@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 import sb.util.SbUtilities;
 
-/** Identify skipped quizzes by looking a meta data
+/** Identify skipped quizzes by looking at meta data
  * 
  * @author casey
  *
@@ -45,10 +45,14 @@ public class FindBug_SkippedQuizzes {
 
             testAdminId(conn, aid);
         }
+        
+        
+        System.out.println("Checks complete!");
+
     }
 
     private void testAdminId(final Connection conn, int adminId) throws Exception {
-        __logger.info("Testing admin_id: " + adminId);
+        __logger.debug("Testing admin_id: " + adminId);
         
         PreparedStatement ps=null;
         try {
@@ -84,65 +88,7 @@ public class FindBug_SkippedQuizzes {
     
     private void performChecks(List<QuizInfo> qs) throws Exception {
         try {
-            for(int qi=0;qi<qs.size()-1;qi++) {
-                QuizInfo q1 = qs.get(qi);
-                
-                /** only check quizzes that have been taken */
-                if(q1.getRunId() > 0) {
-                    
-                    /** skip resets
-                     * 
-                     */
-                    if(q1.getTestSegment() < 2) {
-                        continue;
-                    }
-                    
-                    /** if we find any of the following this record 
-                     *  make sense:
-                     *  
-                     * 0. a unrun test
-                     * 1. a different user, program
-                     * 2. an equal or greater test segment
-                     */
-                    
-                    for(int qi2=qi+1;qi2<qs.size();qi2++) {
-                        QuizInfo q2 = qs.get(qi2);
-                        if(q2.getRunId() == 0) {
-                            /** unrun test ...
-                             * 
-                             */
-                        }
-                        else if(q2.getUserId() != q1.getUserId()) {
-                            /** different user
-                             * 
-                             */
-                            break;
-                        }
-                        else if(q2.getProgId() != q1.getProgId()) {
-                            /** different program
-                             * 
-                             */
-                            break;
-                        }
-                        else {
-                            /** segment must be either equal or one more than q1
-                             * 
-                             */
-                            int distance = (q2.getTestSegment() - q1.getTestSegment());
-                            if(distance > 1) {
-                                __logger.warn("Found Skipped Quiz: " + q1);
-                            }
-                            else {
-                                
-                                if(q2.getTestId() == q1.getTestId()) {
-                                    __logger.warn("Found Duplicated Quiz: " + q1);
-                                }
-                                break;  // no error
-                            }
-                        }
-                    }
-                }
-            }
+            performCheckMoved(qs);
         }
         catch(Exception e) {
             __logger.error("Error performing tests", e);
@@ -150,6 +96,72 @@ public class FindBug_SkippedQuizzes {
         }
     }
     
+
+    private void performCheckMoved(List<QuizInfo> qs) throws Exception {
+        for(int qi=0;qi<qs.size()-1;qi++) {
+            QuizInfo q1 = qs.get(qi);
+            
+            /** only check quizzes that have been taken */
+            if(q1.getRunId() > 0) {
+                
+                /** skip resets
+                 * 
+                 */
+                if(q1.getTestSegment() < 2) {
+                    continue;
+                }
+                
+                /** if we find any of the following this record 
+                 *  make sense:
+                 *  
+                 * 0. a unrun test
+                 * 1. a different user, program
+                 * 2. an equal or greater test segment
+                 */
+                
+                for(int qi2=qi+1;qi2<qs.size();qi2++) {
+                    QuizInfo q2 = qs.get(qi2);
+                    if(q2.getRunId() == 0) {
+                        /** unrun test ...
+                         * 
+                         */
+                    }
+                    else if(q2.getUserId() != q1.getUserId()) {
+                        /** different user
+                         * 
+                         */
+                        break;
+                    }
+                    else if(q2.getProgId() != q1.getProgId()) {
+                        /** different program
+                         * 
+                         */
+                        break;
+                    }
+                    else {
+                        /** segment must be either equal or one more than q1
+                         * 
+                         */
+                        int distance = (q2.getTestSegment() - q1.getTestSegment());
+                        if(distance < 0 && q2.getTestSegment() > 1) {
+                            __logger.warn("Found Moved Back Segment: " + q1);
+                        }
+                        else if(distance > 1) {
+                           // __logger.warn("Found Skipped Quiz: " + q1);
+                        }
+                        else {
+                            
+                            if(q2.getTestId() == q1.getTestId()) {
+                               // __logger.warn("Found Duplicated Quiz: " + q1);
+                            }
+                            break;  // no error
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     class QuizInfo {
         int adminId;
         int userId;

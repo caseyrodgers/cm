@@ -49,12 +49,8 @@ public class CustomProblemModel implements Response {
      */
     public String getLessonList() {
     	String label="";
-    	
-    	for(LessonModel lm: linkedLessons) {
-    		if(label.length() > 0) {
-    			label += "; ";
-    		}
-    		label += lm.getLessonName();
+    	if(linkedLessons.size() > 1) {
+    	    label = linkedLessons.size() + "";
     	}
     	return label;
     }
