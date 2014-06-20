@@ -207,21 +207,19 @@
   </servlet-mapping>
   
   
-    <servlet-mapping>
+  <servlet-mapping>
     <servlet-name>CmService</servlet-name>
     <url-pattern>
       /tutor_viewer/services/cmService
     </url-pattern>
   </servlet-mapping>
   
-    <servlet-mapping>
+  <servlet-mapping>
     <servlet-name>CmService</servlet-name>
     <url-pattern>
       /cm_mobile_assignments/services/cmService
     </url-pattern>
   </servlet-mapping>
-
-
 
 
   <servlet>
@@ -236,20 +234,6 @@
       /cm_admin/genPDF
     </url-pattern>
   </servlet-mapping>
-
-  <servlet>
-    <servlet-name>AssignmentHTMLService</servlet-name>
-    <servlet-class>
-      hotmath.cm.util.service.AssignmentHTMLService
-    </servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AssignmentHTMLService</servlet-name>
-    <url-pattern>
-      /cm_admin/assignment
-    </url-pattern>
-  </servlet-mapping>
-
 
 
 </web-app>
