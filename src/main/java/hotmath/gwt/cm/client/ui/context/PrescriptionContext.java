@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
 import hotmath.gwt.cm.client.ui.context.CmAutoTest.ResourceObject;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -234,7 +235,14 @@ public class PrescriptionContext implements CmContext {
                 if ((cs + 1) < ts) {
                     prescriptionCm.getAsyncDataFromServer(cs + 1);
                 } else {
-                    CmProgramFlowClientManager.moveToNextSegmentInProgram();
+                    CmMessageBox.confirm("Move To Next Segment", "Move to Next Segment?", new ConfirmCallback() {
+                        @Override
+                        public void confirmed(boolean yesNo) {
+                            if(yesNo) {
+                                CmProgramFlowClientManager.moveToNextSegmentInProgram();
+                            }
+                        }
+                    });
                 }
             }
         });
