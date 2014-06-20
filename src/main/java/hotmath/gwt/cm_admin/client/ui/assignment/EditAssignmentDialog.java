@@ -145,7 +145,7 @@ public class EditAssignmentDialog {
         }
         header.add(hCon, new VerticalLayoutData(100.0,  30));
 
-        
+
         header.add(new TextButton("Options >>", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
@@ -177,6 +177,13 @@ public class EditAssignmentDialog {
                         }
                     }
                 });
+            }
+        }));
+
+        header.add(new TextButton("View/Print", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                new ViewPrintAssignmentWindow(_assignment);
             }
         }));
 
