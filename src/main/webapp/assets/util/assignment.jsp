@@ -14,7 +14,7 @@ try {
 	  String key = request.getParameter("key");
 	  String lines = request.getParameter("lines");
 	  int assignKey = 0;
-	  int numWorkLines = 15;
+	  int numWorkLines = 0;
 	  if (key != null && key.trim().length() > 0) {
 		  assignKey = Integer.parseInt(key);
 	  }
@@ -48,7 +48,8 @@ finally {
 
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css">
     <style>
-      #hm_flash_widget {display: none};
+      #hm_flash_widget { display:none; }
+      .prob-stmt { padding-left:10px; padding-right:10px; }
     </style>
     <!--
     <script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="amd_main.nocache" src="/gwt-resources/js/amd_main.nocache.js"></script>
