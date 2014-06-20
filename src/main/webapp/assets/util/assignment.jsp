@@ -1,19 +1,21 @@
 <!DOCTYPE html>
+<%@ page import="hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentHTML" %>
+<%@ page import="hotmath.gwt.shared.server.service.command.helper.GetAssignmentHTMLHelper" %>
 <%@ page import="hotmath.util.HMConnectionPool" %>
 <%@ page import="hotmath.util.sql.SqlUtilities" %>
+<%@ page import="org.apache.log4j.Logger" %>
 <%@ page import="java.sql.Connection" %>
-<%@ page import="hotmath.gwt.shared.server.service.command.helper.GetAssignmentHTMLHelper" %>
-<%@ page import="hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentHTML" %>
 
 <%
+Logger _logger = Logger.getLogger(this.getClass()); 
 Connection conn = null;
 String errMsg = null;
 String assignmentHTML = "";
+int assignKey = 0;
 
 try {
 	  String key = request.getParameter("key");
 	  String lines = request.getParameter("lines");
-	  int assignKey = 0;
 	  int numWorkLines = 0;
 	  if (key != null && key.trim().length() > 0) {
 		  assignKey = Integer.parseInt(key);
@@ -27,6 +29,7 @@ try {
 }
 catch (Exception e) {
  	  errMsg = e.getMessage();
+ 	  _logger.error(String.format("assignKey: %d", assignKey), e);
 }
 finally {
 	  SqlUtilities.releaseResources(null, null, conn);
