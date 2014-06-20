@@ -186,6 +186,7 @@ public class CustomProblemManager extends GWindow {
                     new TeacherManager(new Callback() {
                         @Override
                         public void teacherSet(TeacherIdentity teacher) {
+                            setLocalTitle();
                             showAddNewProblemDialog();
                         }
                     });
