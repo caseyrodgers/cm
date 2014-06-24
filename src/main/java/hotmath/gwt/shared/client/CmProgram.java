@@ -3,6 +3,8 @@ package hotmath.gwt.shared.client;
 /**
  * Defines all currently defined tests and their related meta data.
  * 
+ * defined in HA_TEST_DEF
+ * 
  * @TODO: populate from DB?
  * 
  * @author casey
@@ -47,7 +49,8 @@ public enum CmProgram {
     AUTO_ENROLL_COLLEGE(57,"Auto-Enrollment, College","","Auto-Enroll, College",true, 0), 
     
     /** Represents no current program assigned */
-    NONE(58,"No Program","","none",true,0);
+    NONE(99,"No Program","","none",true,0), 
+    FOUNDATIONS(58,"Foundations", "Foundations", "Prof", true, 2);
 
     private final int     defId;
     private final String  title;

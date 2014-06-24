@@ -275,7 +275,7 @@ public class CmMainResourceWrapper_Old {
                             else {
                                 int h = CmMainResourceWrapper_Old.getCalculatedHeight(CmMainPanel.__lastInstance, resourcePanel);
                                 if (h > 0) {
-                                    Info.display("fireWindowResized", " h==" + h);
+                                    //Info.display("fireWindowResized", " h==" + h);
                                     currentContainer.setHeight(h);
     
                                     getResourceWrapper().forceLayout();

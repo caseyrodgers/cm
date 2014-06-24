@@ -805,28 +805,28 @@ values(?, ?, ?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF wher
 .key=INSERT_STUDENT_PROGRAM_SQL
 
 insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, pass_percent, create_date, test_config_json,custom_program_id)
-values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?, ?, ?)
+values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active != 0), ?, ?, ?, ?)
 
 .key=INSERT_STUDENT_PARALLEL_PROGRAM_DEF_SQL
 
 insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, pass_percent, create_date, test_config_json, custom_program_id, is_parallel_program_def)
-values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?, ?, ?, 1)
+values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active != 0), ?, ?, ?, ?, 1)
 
 
 .key=INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL
 insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date,test_config_json,custom_program_id)
-values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?, ?)
+values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active != 0), ?, ?, ?)
 
 
 .key=INSERT_STUDENT_PARALLEL_PROGRAM_DEF_NULL_PASS_PERCENT_SQL
 insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date,test_config_json,custom_program_id,is_parallel_program_def)
-values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?, ?, 1)
+values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active != 0), ?, ?, ?, 1)
 
 
 .key=INSERT_STUDENT_PROGRAM_CUSTOM_QUIZ
 
 insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, pass_percent, create_date, test_config_json,custom_quiz_id)
-values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?, ?, ?)
+values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active != 0), ?, ?, ?, ?)
 
 
 .key=GET_PROGRAM_GRADE_LEVEL_BY_RUN_ID
@@ -843,7 +843,7 @@ select max(test_def_id) as test_def_id
 from HA_TEST_DEF 
 where prog_id = ? 
 and subj_id = ? 
-and is_active = 1
+and is_active != 0
 
 
 
@@ -972,7 +972,7 @@ where u.admin_id = ?
 select sd.*
 from HA_SUBJ_DEF sd, HA_TEST_DEF td
 where sd.id = td.subj_id 
-and td.is_active = 1 
+and td.is_active in (1, 2) 
 and td.prog_id = ? 
 and sd.for_school = ?
 order by td.load_order

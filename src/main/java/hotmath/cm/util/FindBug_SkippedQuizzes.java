@@ -147,12 +147,12 @@ public class FindBug_SkippedQuizzes {
                             __logger.warn("Found Moved Back Segment: " + q1);
                         }
                         else if(distance > 1) {
-                           // __logger.warn("Found Skipped Quiz: " + q1);
+                           __logger.warn("Found Skipped Quiz: " + q1);
                         }
                         else {
                             
                             if(q2.getTestId() == q1.getTestId()) {
-                               // __logger.warn("Found Duplicated Quiz: " + q1);
+                                __logger.warn("Found Duplicated Quiz: " + q1);
                             }
                             break;  // no error
                         }
