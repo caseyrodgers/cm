@@ -29,20 +29,17 @@ public class GetProgramMetaInfoCommand implements ActionHandler<GetProgramMetaIn
     }
     
     private int lookupSectionCount(CmProgramType progType, String subjId) throws Exception {
+        
         switch(progType) {
             case PROF:
-                if(subjId.equals("ElemAlg")) {
-                    return CmProgram.ELEMALG.getSectionCount();
-                }
-                else if(subjId.equals("BasicMath")) {
-                    return CmProgram.BASICMATH.getSectionCount();
+                CmProgram prog = CmProgram.lookup(subjId);
+                if(prog != null) {
+                    return prog.getSectionCount();
                 }
                 else {
                     // default 
                     return CmProgram.PREALG_PROF.getSectionCount();
                 }
-                
-                
                 
             case GRADPREP:
                 return CmProgram.CAHSEEHM.getSectionCount();

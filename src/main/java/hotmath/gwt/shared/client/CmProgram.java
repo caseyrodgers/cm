@@ -1,5 +1,8 @@
 package hotmath.gwt.shared.client;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.allen_sauer.gwt.log.client.Logger;
+
 /**
  * Defines all currently defined tests and their related meta data.
  * 
@@ -50,7 +53,7 @@ public enum CmProgram {
     
     /** Represents no current program assigned */
     NONE(99,"No Program","","none",true,0), 
-    FOUNDATIONS(58,"Foundations", "Foundations", "Prof", true, 2);
+    FOUNDATIONS(58,"Foundations", "Foundations", "Prof", true, 8);
 
     private final int     defId;
     private final String  title;
@@ -91,5 +94,14 @@ public enum CmProgram {
 	public int getSectionCount() {
 		return sectionCount;
 	}
+
+    public static CmProgram lookup(String subjId) {
+        for(CmProgram cp: values()) {
+            if(cp.name().toLowerCase().equals((subjId.toLowerCase()))) {
+                return cp;
+            }
+        }
+        return null;
+    }
 
 }

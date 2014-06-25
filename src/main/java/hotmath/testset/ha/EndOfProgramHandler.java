@@ -59,7 +59,7 @@ public class EndOfProgramHandler {
     			|| programCurr.getTestDefId() == CmProgram.ESSENTIALS_V1.getDefId()){
     		updateProgram(conn, CmProgram.PREALG_PROF.getSubject(),CmProgram.PREALG_PROF.getProgramType(),null);                
     	}
-    	else if(programCurr.getTestDefId() == CmProgram.ESSENTIALS.getDefId()) {
+    	else if(programCurr.getTestDefId() == CmProgram.FOUNDATIONS.getDefId()) {
     	    updateProgram(conn, CmProgram.ESSENTIALS.getSubject(),CmProgram.ESSENTIALS.getProgramType(),null);
     	}
     	else if(programCurr.getTestDefId() == CmProgram.PREALG_PROF.getDefId() 
