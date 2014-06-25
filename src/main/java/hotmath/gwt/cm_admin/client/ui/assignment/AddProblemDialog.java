@@ -191,10 +191,7 @@ public class AddProblemDialog extends GWindow {
         _tabPanel.add(_treePanelProgram, new TabItemConfig("Program", false));
         _tabPanel.add(_treePanelCCSS, new TabItemConfig("CCSS", false));
         
-        if(CmShared.getQueryParameter("debug") != null) {
-            _tabPanel.add(_treeCustomProblemsPanel, new TabItemConfig("Custom", false));
-        }
-        
+        _tabPanel.add(_treeCustomProblemsPanel, new TabItemConfig("Custom", false));
 
         _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
             @Override
