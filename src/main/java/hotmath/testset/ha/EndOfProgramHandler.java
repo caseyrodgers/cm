@@ -59,6 +59,9 @@ public class EndOfProgramHandler {
     			|| programCurr.getTestDefId() == CmProgram.ESSENTIALS_V1.getDefId()){
     		updateProgram(conn, CmProgram.PREALG_PROF.getSubject(),CmProgram.PREALG_PROF.getProgramType(),null);                
     	}
+    	else if(programCurr.getTestDefId() == CmProgram.ESSENTIALS.getDefId()) {
+    	    updateProgram(conn, CmProgram.ESSENTIALS.getSubject(),CmProgram.ESSENTIALS.getProgramType(),null);
+    	}
     	else if(programCurr.getTestDefId() == CmProgram.PREALG_PROF.getDefId() 
     			|| programCurr.getTestDefId() == CmProgram.PREALG_PROF_V1.getDefId()) {
     		updateProgram(conn, CmProgram.ALG1_PROF.getSubject(),CmProgram.ALG1_PROF.getProgramType(),null);                
