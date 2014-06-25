@@ -5085,3 +5085,10 @@ order by name
 insert into CM_PAYMENT (transaction_id, student_uid, amount, is_success, create_date)
 values(?,?,?,?,now())
   
+  
+  
+  
+  
+.key=GET_TEST_DEF_CONFIG
+
+select test_config_json from HA_TEST_DEF where subj_id = ? and prog_id = ? and is_active in (1,2)

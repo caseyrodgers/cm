@@ -1597,7 +1597,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
         ResultSet rs = null;
         PreparedStatement ps2 = null;
-        String sql = "select test_config_json from HA_TEST_DEF where subj_id = ? and prog_id = ? and is_active = 1";
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_TEST_DEF_CONFIG");
         String json = "";
         try {
             ps2 = conn.prepareStatement(sql);
