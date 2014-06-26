@@ -143,10 +143,12 @@ public class EditAssignmentDialog {
             hData.setMargins(new Margins(0, 20, 0, 20));
             hCon.add(statusLabel, hData);
         }
-        header.add(hCon, new VerticalLayoutData(100.0,  30));
+        header.add(hCon, new VerticalLayoutData(100.0, 30));
 
-
-        header.add(new TextButton("Options >>", new SelectHandler() {
+        HorizontalLayoutContainer hCon2 = new HorizontalLayoutContainer();
+        HorizontalLayoutData hData2 = new HorizontalLayoutData(100.0, 20);
+        hData2.setMargins(new Margins(0, 0, 10, 75));
+        hCon2.add(new TextButton("Options >>", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 new EditAssignmentOptionsDialog(_assignment, new Callback() {
@@ -178,14 +180,15 @@ public class EditAssignmentDialog {
                     }
                 });
             }
-        }));
+        }), hData2);
 
-        header.add(new TextButton("View/Print", new SelectHandler() {
+        hCon2.add(new TextButton("View/Print", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 new ViewPrintAssignmentWindow(_assignment);
             }
-        }));
+        }), hData2);
+        header.add(hCon2, new VerticalLayoutData(100.0, 30));
 
         BorderLayoutData bd = new BorderLayoutData();
         bd.setMargins(new Margins(20));
