@@ -31,6 +31,7 @@ public class ProblemDto extends BaseDto implements Response {
     public ProblemDto(String pid, String fullPath) {
         setPid(pid);
         setLabel(fullPath);
+        setName(fullPath);
     }
 
 
