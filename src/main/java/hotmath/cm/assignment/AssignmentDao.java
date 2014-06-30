@@ -232,10 +232,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                                 __logger.error("Error getting global context name", e);
                             }
                         }
+                        LessonModel lesson = p.getLesson();
                         ps.setString(2, fullPid);
                         ps.setString(3, p.getLabel());
-                        ps.setString(4, p.getLesson().getLessonName());
-                        ps.setString(5, p.getLesson().getLessonFile());
+                        ps.setString(4, lesson!=null?lesson.getLessonName():"");
+                        ps.setString(5, lesson!=null?lesson.getLessonFile():"");
                         ps.setInt(6, ++counter[0]);
                     }
 
