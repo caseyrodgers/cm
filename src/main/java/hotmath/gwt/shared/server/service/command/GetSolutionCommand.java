@@ -15,7 +15,6 @@ import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.SolutionDao;
-import hotmath.testset.ha.WhiteboardDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
