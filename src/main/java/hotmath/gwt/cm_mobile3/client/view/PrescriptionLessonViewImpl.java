@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ListItem;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_mobile_shared.client.util.CmStorage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
@@ -13,7 +14,6 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
-import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -270,7 +270,7 @@ class MyGenericTextTag extends GenericTextTag<String> {
     private String getResourceTitle(InmhItemData itemData) {
         
         String title = null;
-        Storage storage = Storage.getLocalStorage();
+        Storage storage = CmStorage.getLocalStorage();
         if(storage != null) {
             String tag = "mc_" + itemData.getFile();
             String data = storage.getItem(tag);
