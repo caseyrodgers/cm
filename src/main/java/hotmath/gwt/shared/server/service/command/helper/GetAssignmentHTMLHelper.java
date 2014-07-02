@@ -121,10 +121,18 @@ public class GetAssignmentHTMLHelper {
 					if (tag.getAttribute("class") != null) {
 						if (tag.getAttribute("class").equals("prob-stmt")) {
 							root = tag; // mark it for extraction
+							return;
 						}
 					}
-					if (tag.getAttribute("id") != null && tag.getAttribute("id").equalsIgnoreCase("problem_statement")) {
-						tag.setAttribute("id", "problem_statement_" + probNum);
+					if (tag.getAttribute("id") != null) {
+						String attr = tag.getAttribute("id");
+						if (attr.equalsIgnoreCase("problem_statement")) {
+							tag.removeAttribute("id");
+						}
+						else if (attr.toLowerCase().matches("hm_flash_widget|hm_flash_widget_def") == true) {
+							tag.removeAttribute("id");
+							tag.setAttribute("class", attr);
+						}
 					}
 				}
 				else if (tn.equals("p")) {
