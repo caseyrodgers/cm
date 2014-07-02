@@ -101,7 +101,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
 				"/learning_activities/interactivities/flashcard_exp_power_quotient.swf"));
 		englishFlashcardList.add(new FlashcardModel("EN", "Exponents", "Power of a Power Property",
 				"/learning_activities/interactivities/flashcard_exp_power_power.swf"));
-		englishFlashcardList.add(new FlashcardModel("EN", "Exponents", "Power of a Prodfuct Property",
+		englishFlashcardList.add(new FlashcardModel("EN", "Exponents", "Power of a Product Property",
 				"/learning_activities/interactivities/flashcard_exp_power_prod.swf"));
 		englishFlashcardList.add(new FlashcardModel("EN", "Exponents", "Product of Powers Property",
 				"/learning_activities/interactivities/flashcard_exp_prod_power.swf"));
