@@ -102,14 +102,14 @@ public class GetAssignmentHTMLHelper {
 			sb.append(html).append(DIV_CLOSE);
  */
 			sb.append(solutionHtml).append(DIV_CLOSE);
-			htmlSb.append(cleanupHtml(sb.toString()));
+			htmlSb.append(cleanupHtml(sb.toString(), idx));
 			htmlSb.append("\n");
 		}
 		
 		return htmlSb.toString();
 	}
 
-	private String cleanupHtml(String html) throws Exception {
+	private String cleanupHtml(String html, final int probNum) throws Exception {
 
 		htmlParser.setInputHTML(html);
 		htmlParser.visitAllNodesWith(new NodeVisitor() {
@@ -121,6 +121,9 @@ public class GetAssignmentHTMLHelper {
 						if (tag.getAttribute("class").equals("prob-stmt")) {
 							root = tag; // mark it for extraction
 						}
+					}
+					if (tag.getAttribute("id").equalsIgnoreCase("problem_statement")) {
+						tag.setAttribute("id", "problem_statement_" + probNum);
 					}
 				}
 				else if (tn.equals("p")) {
