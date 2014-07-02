@@ -122,7 +122,7 @@ public class GetAssignmentHTMLHelper {
 							root = tag; // mark it for extraction
 						}
 					}
-					if (tag.getAttribute("id").equalsIgnoreCase("problem_statement")) {
+					if (tag.getAttribute("id") != null && tag.getAttribute("id").equalsIgnoreCase("problem_statement")) {
 						tag.setAttribute("id", "problem_statement_" + probNum);
 					}
 				}
