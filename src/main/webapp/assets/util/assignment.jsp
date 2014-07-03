@@ -9,7 +9,7 @@
 <%
 Logger _logger = Logger.getLogger(this.getClass()); 
 Connection conn = null;
-String errMsg = null;
+String errMsg = "";
 String stackTrace = null;
 String assignmentHTML = "";
 int assignKey = 0;
@@ -69,7 +69,9 @@ finally {
       </div>
       <div id="main-content" class='assignment-print'>
           <%= assignmentHTML %>
-          <%= errMsg %>
+          <% if (errMsg.length() > 0) { %>
+          Error: <%= errMsg %>
+          <% } %>
       </div>
 
       <script type="text/javascript" language="javascript" src="http://catchupmath.com/gwt-resources/js/CatchupMath_combined.js"></script>
