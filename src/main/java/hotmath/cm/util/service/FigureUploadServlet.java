@@ -1,8 +1,6 @@
 package hotmath.cm.util.service;
 
-import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmWebResourceManager;
-import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.testset.ha.WhiteboardDao;
 
 import java.io.File;
@@ -16,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
@@ -68,7 +65,11 @@ public class FigureUploadServlet extends HttpServlet {
                 throw new ServletException("Error uploading figure", ex);
             }
         }
-        super.doPost(req, resp);
+    }
+    
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req, resp);
     }
 
     private String getFileExtension(FileItem firstItem) throws Exception {
