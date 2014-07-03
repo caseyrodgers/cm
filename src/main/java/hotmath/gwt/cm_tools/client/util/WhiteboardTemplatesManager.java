@@ -90,12 +90,16 @@ public class WhiteboardTemplatesManager extends GWindow {
                 createFromExistingWhiteboard();
             }
         }));
+        
+        /** 
         createMenu.add(new MenuItem("From Image in Clipboard", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
                 createFromImageInClipboard();
             }
         }));
+        */
+        
         createNewBtn.setMenu(createMenu);
         addTool(createNewBtn);
         
@@ -115,7 +119,13 @@ public class WhiteboardTemplatesManager extends GWindow {
     }
     
     protected void createFromExternalFile() {
-        new WhiteboardTemplateFileUploadDialog();
+        new WhiteboardTemplateFileUploadDialog(new CallbackOnComplete() {
+            
+            @Override
+            public void isComplete() {
+                loadWhiteboardTemplates();
+            }
+        });
     }
 
     protected void createFromImageInClipboard() {

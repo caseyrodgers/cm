@@ -1,5 +1,6 @@
     package hotmath.testset.ha;
 
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.cm.util.CompressHelper;
 import hotmath.crypto.Base64;
@@ -32,6 +33,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 import sb.util.MD5;
+import sb.util.SbFile;
 
 /**
  * Provide DAO functionality for Whiteboards
@@ -232,7 +234,7 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
         byte[] data = Base64.decode(base64Data);
         BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(data));
         
-        File directory = new File(CmWebResourceManager.getInstance().getFileBase() + "/../help/whiteboard_template/" + uid);
+        File directory = new File(CatchupMathProperties.getInstance().getSolutionBase() + "/help/whiteboard_template/" + uid);
         if(!directory.exists()) {
             directory.mkdirs();
         }
@@ -309,5 +311,40 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
             }
         });
         __logger.debug("Deleted: " + cnt);
+    }
+
+    public void addWhiteboardFigure(final int aid, File file) throws Exception{
+        final String templateName = file.getName();
+        
+        
+        File directory = new File(CatchupMathProperties.getInstance().getSolutionBase() + "/help/whiteboard_template/" + aid);
+        if(!directory.exists()) {
+            directory.mkdirs();
+        }
+        File dest = new File(directory, file.getName());
+        SbFile.copyFileNIO(file, dest);
+        
+        final Integer cntMatch = getJdbcTemplate().queryForObject("select count(*) as cnt from CM_WHITEBOARD_TEMPLATE where admin_id = ? and template_name = ?", new Object[] { aid, templateName }, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("cnt");
+            }
+        });
+
+        if(cntMatch == 0) {
+            final String url = "/help/whiteboard_template/" + aid + "/" + templateName;
+            getJdbcTemplate().update(new PreparedStatementCreator() {
+                @Override
+                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                    String sql = "insert into CM_WHITEBOARD_TEMPLATE(admin_id, template_name, template_path, last_modified)values(?,?,?, now())";                
+                    PreparedStatement ps = con.prepareStatement(sql);
+                    ps.setInt(1, aid);
+                    ps.setString(2, templateName);
+                    ps.setString(3,url);
+                    return ps;
+                }
+            });
+        }
+        createThumbnail(dest);
     }
 }

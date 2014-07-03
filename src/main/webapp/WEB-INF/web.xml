@@ -89,6 +89,18 @@
     <url-pattern>/cm_admin/bulkRegister</url-pattern>
   </servlet-mapping>
 
+
+  <servlet>
+    <servlet-name>FigureUploadServlet</servlet-name>
+    <servlet-class>hotmath.cm.util.service.FigureUploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FigureUploadServlet</servlet-name>
+    <url-pattern>cm_admin/figureUpload</url-pattern>
+  </servlet-mapping>  
+  
+  
+
   <servlet>
     <servlet-name>SolutionResourceUploadService</servlet-name>
     <servlet-class>hotmath.cm.util.service.SolutionResourceUploadService</servlet-class>
