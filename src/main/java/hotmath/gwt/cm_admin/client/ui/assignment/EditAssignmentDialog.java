@@ -185,6 +185,15 @@ public class EditAssignmentDialog {
         hCon2.add(new TextButton("View/Print", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
+                if(_assignmentDesigner.getAssignmentPids().size() == 0) {
+                    CmMessageBox.showAlert("You need to add problems to the assignment to View/Print it.");
+                    return;
+            	}
+
+            	if (_assignmentDesigner.getIsModified() == true) {
+                    CmMessageBox.showAlert("You need to Save the assignment to View/Print it.");
+                    return;
+            	}
                 new ViewPrintAssignmentWindow(_assignment);
             }
         }), hData2);
@@ -412,6 +421,7 @@ public class EditAssignmentDialog {
                 int assignKey = results.getDataAsInt("key");
                 _assignment.setAssignKey(assignKey);
 
+                _assignmentDesigner.setIsModified(false);
                 Log.debug("Assignment Saved", "Assignment (" + _assignment.getAssignKey() + ") saved successfully");
                 
                 CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));

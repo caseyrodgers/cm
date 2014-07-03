@@ -63,6 +63,7 @@ public class AssignmentProblemListView extends ContentPanel {
     private TextButton _downButton;
     private TextButton _ccssButton;
     ProblemDtoLocal _selectedRecord;
+    private boolean _isModified = false;
 
     public AssignmentProblemListView(Assignment assignment, final Callback callback) {
 
@@ -387,6 +388,7 @@ public class AssignmentProblemListView extends ContentPanel {
         problemListGrid.getStore().addAll(newList);
 
         problemListGrid.getSelectionModel().select(selected, false);
+        _isModified = true;
     }
 
     private void activateButtons(boolean b) {
@@ -423,7 +425,15 @@ public class AssignmentProblemListView extends ContentPanel {
         forceLayout();
     }
 
-    private TextButton createDelButton() {
+    public boolean getIsModified() {
+		return _isModified;
+	}
+
+	public void setIsModified(boolean _isModified) {
+		this._isModified = _isModified;
+	}
+
+	private TextButton createDelButton() {
 
         TextButton btn = new TextButton("Delete");
         btn.setToolTip("Remove selected problem(s) from Assignment");
@@ -447,6 +457,7 @@ public class AssignmentProblemListView extends ContentPanel {
                         if (pto == pd) {
                             // remove it
                             found = true;
+                            _isModified = true;
 
                             int tot = problemListGrid.getStore().getAll().size();
                             if (j < tot - 1) {
@@ -546,6 +557,7 @@ public class AssignmentProblemListView extends ContentPanel {
         }
         else {
             setWidget(problemListContainer);
+            _isModified = true;
             activateButtons(true);
         }
         forceLayout();

@@ -85,6 +85,7 @@ public class AssignmentDesigner extends BorderLayoutContainer {
     }
     
     AssignmentProblemListView _listView;
+
     private Widget createProblemList() {
         _listView = new AssignmentProblemListView(_assignment, new Callback() {
             @Override
@@ -109,8 +110,15 @@ public class AssignmentDesigner extends BorderLayoutContainer {
         _listView.setLayoutData(data);
         return _listView;
     }
-    
-    
+
+    public boolean getIsModified() {
+    	return _listView.getIsModified();
+    }
+
+    public void setIsModified(boolean isModified) {
+    	_listView.setIsModified(isModified);
+    }
+
     static interface Callback {
         void problemHasBeenSelected(ProblemDto problem);
         boolean isDraftMode();
