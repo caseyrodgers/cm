@@ -76,7 +76,7 @@ public class WhiteboardTemplateFileUploadDialog extends GWindow {
                 CmMessageBox.showAlert("You must select a teacher first");
             }
             else {
-                StringBuffer sb = new StringBuffer("/cm_admin/figureUpload");
+                StringBuffer sb = new StringBuffer("/cm_admin/services/figureUpload");
                 sb.append("?aid=").append(UserInfoBase.getInstance().getUid());
                 form.setAction(sb.toString());
 
