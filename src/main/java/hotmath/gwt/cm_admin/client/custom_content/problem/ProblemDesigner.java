@@ -329,8 +329,6 @@ public class ProblemDesigner extends Composite {
        
        $wnd.gwt_getHintNumber = function(o) {
           var stepNum = $wnd.$(o).closest('.hint-step').attr('hint_step_num');
-          alert('stepNum: ' + stepNum);
-          
           return stepNum;
        }
        
