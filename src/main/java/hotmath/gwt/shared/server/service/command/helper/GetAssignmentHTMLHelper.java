@@ -96,11 +96,6 @@ public class GetAssignmentHTMLHelper {
             String contextGuid = (pidParts.length > 1) ? pidParts[1] : "";
 			String divOpen = String.format(PROB_STMT_DIV_OPEN_FMT, idx, (numWorkLines > 0) ? numWorkLines : DEFAULT_WORK_LINES, contextGuid);
 			sb.append(divOpen);
-/*
-			TutorSolution solution = solnMgrDao.getTutorSolution(conn, prob.getPid());
-			String html = solution.getProblem().getStatement();
-			sb.append(html).append(DIV_CLOSE);
- */
 			sb.append(solutionHtml).append(DIV_CLOSE);
 			htmlSb.append(cleanupHtml(sb.toString(), idx));
 			htmlSb.append("\n");
