@@ -316,6 +316,7 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
     public void addWhiteboardFigure(final int aid, File file) throws Exception{
         final String templateName = file.getName();
         
+        logger.info("adding whiteboard figure: " + aid + ", " + file.getCanonicalPath() );
         
         File directory = new File(CatchupMathProperties.getInstance().getSolutionBase() + "/help/whiteboard_template/" + aid);
         if(!directory.exists()) {
