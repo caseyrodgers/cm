@@ -19,7 +19,10 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
 
 /**
- * BulkRegisterService is exposed as a servlet
+ * FigureUploadServlet is exposed as a servlet
+ * 
+ * Allows uploading 'figures' into admin specific directory
+ * (help/whiteboard_template/AID/UNIQ_FILENAME.[jpg|gif|png])
  * 
  * @author bob
  * 
@@ -66,25 +69,26 @@ public class FigureUploadServlet extends HttpServlet {
             }
         }
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
     }
 
     private String getFileExtension(FileItem firstItem) throws Exception {
-        String name = firstItem.getContentType();
-        if(name.toLowerCase().indexOf("png") > -1) {
+        String fileType = firstItem.getContentType().toLowerCase();
+        
+        if(fileType.contains("png")) {
             return ".png";
         }
-        else if(name.toLowerCase().indexOf("jpg") > -1) {
+        else if(fileType.contains("jpg") || fileType.contains("jpeg")) {
             return ".jpg";
         }
-        if(name.toLowerCase().indexOf("gif") > -1) {
+        if(fileType.contains("gif")) {
             return ".gif";
         }
         else {
-            throw new Exception("Invalid figure upload type: " + name);
+            throw new Exception("Invalid figure upload type: " + fileType);
         }
     }
 

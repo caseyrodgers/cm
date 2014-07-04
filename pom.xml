@@ -569,6 +569,15 @@
 			<scope>compile</scope>
 		</dependency>
 
+
+		<dependency>
+			<groupId>org.imgscalr</groupId>
+			<artifactId>imgscalr-lib</artifactId>
+			<version>4.2</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+
 		<!-- <dependency> <groupId>lucene</groupId> <artifactId>lucene</artifactId> 
 			<version>2.1</version> <scope>compile</scope> </dependency> <dependency> 
 			<groupId>com.codeborne</groupId> <artifactId>selenide</artifactId> <version>2.7</version> 
@@ -712,11 +721,11 @@
 						<param>whiteboard_v2.css</param>
 
 						<param>animate.css</param>
-						
-						
-						
-                                                <param>../jlibs/alertify.js-0.3.11/themes/alertify.core.css</param>
-                                                <param>../jlibs/alertify.js-0.3.11/themes/alertify.default.css</param>
+
+
+
+						<param>../jlibs/alertify.js-0.3.11/themes/alertify.core.css</param>
+						<param>../jlibs/alertify.js-0.3.11/themes/alertify.default.css</param>
 
 					</cssSourceFiles>
 				</configuration>
