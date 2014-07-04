@@ -7,6 +7,8 @@ mvn install:install-file -DgroupId=com.sencha.gxt -DartifactId=gxt -Dversion=3.0
 mvn install:install-file -DgroupId=com.sencha.gxt -DartifactId=gxt-chart -Dversion=3.0.6 -Dpackaging=jar -Dfile=gxt-chart-3.0.6.jar -DgeneratePom=true
 
 
+mvn install:install-file -DgroupId=org.imgscalr -DartifactId=imgscalr-lib -Dversion=4.2 -Dpackaging=jar -Dfile=imgscalr-4.2.jar -DgeneratePom=true
+
 mvn install:install-file -DgroupId=wiriplugin -DartifactId=wiriplugin -Dversion=5.0 -Dpackaging=jar -Dfile=wiriplugin-5.0.jar -DgeneratePom=true
 
 
