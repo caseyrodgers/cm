@@ -41,11 +41,12 @@ finally {
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Assignment</title>
-    
+
+    <!-- $(document).ready(function() { -->
+
     <script type="text/javascript" src="http://catchupmath.com/assets/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
-    
-        
+
     <!--[if gt IE 5.5000]>
         <link rel="stylesheet" href="/gwt-resources/css/CatchupMath-resource_container-IE.css">
     <![endif]-->
@@ -59,6 +60,42 @@ finally {
 
     <script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="amd_main.nocache"
        src="http://catchupmath.com/gwt-resources/js/amd_main.nocache.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+
+    <script type="text/javascript">
+      window.onload = function() {
+          var widgets = $('.hm_flash_widget');
+          if (widgets.length < 1) return;
+          for (w in widgets) {
+              var innerDivs = $( widgets[0] ).children(".hm_flash_widget_def");
+              if (innerDivs == null) continue;
+              var jsonStr = fixJSON(innerDivs[0].innerHTML);
+              var json = $.parseJSON(jsonStr);
+              widgetType = json.type;
+              //alert("widgetType: " + widgetType);
+              w.innerHTML = jsonStr;
+          }
+      };
+
+      function fixJSON(nonStdJSON) {
+      	var stdJSON = "{";
+      	var kvPairs = nonStdJSON.split(',');
+      	for (i in kvPairs) {
+      		var arr = kvPairs[i].split(":");
+      		//alert("key: " + arr[0] + ", value: " + arr[1]);
+      		var key = arr[0].replace("{", "");
+      		var value = arr[1].replace("}", "");
+      		stdJSON += '"' + key + '":"' + value + '"';
+      		if (i < (kvPairs.length-1)) {
+      			stdJSON += ', '; 
+      		}
+      	}
+      	stdJSON += "}";
+      	
+      	return stdJSON;
+      }
+
+    </script>
 
   </head>
 
@@ -76,6 +113,5 @@ finally {
 
       <script type="text/javascript" language="javascript" src="http://catchupmath.com/gwt-resources/js/CatchupMath_combined.js"></script>
       <script type="text/javascript" language="javascript" src="http://catchupmath.com/gwt-resources/js/whiteboard_v3.js"></script>
-
   </body>
 </html>
