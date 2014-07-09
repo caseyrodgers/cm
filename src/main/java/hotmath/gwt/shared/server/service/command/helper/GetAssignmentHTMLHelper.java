@@ -126,7 +126,7 @@ public class GetAssignmentHTMLHelper {
 						}
 						else if (attr.toLowerCase().matches("hm_flash_widget|hm_flash_widget_def") == true) {
 							tag.removeAttribute("id");
-							tag.setAttribute("class", attr);
+							tag.setAttribute("class", "'" + attr + "'");
 						}
 					}
 				}
@@ -140,7 +140,7 @@ public class GetAssignmentHTMLHelper {
 					if (tag.getAttribute("src").startsWith("/") == false) {
 						// update all relative images
 						String path = baseDirectory + "/" + tag.getAttribute("src");
-						tag.setAttribute("src", path);
+						tag.setAttribute("src", "'" + path + "'");
 					}
 				}
 			}
