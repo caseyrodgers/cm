@@ -44,8 +44,8 @@ finally {
 
     <!-- $(document).ready(function() { -->
 
-    <script type="text/javascript" src="http://catchupmath.com/assets/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    </script>
+    <!-- script type="text/javascript" src="http://catchupmath.com/assets/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script -->
 
     <!--[if gt IE 5.5000]>
         <link rel="stylesheet" href="/gwt-resources/css/CatchupMath-resource_container-IE.css">
@@ -58,22 +58,24 @@ finally {
       .prob-stmt { padding-left:10px; padding-right:10px; }
     </style>
 
-    <script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="amd_main.nocache"
-       src="http://catchupmath.com/gwt-resources/js/amd_main.nocache.js"></script>
+    <!-- script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="amd_main.nocache"
+       src="http://catchupmath.com/gwt-resources/js/amd_main.nocache.js"></script -->
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 
     <script type="text/javascript">
       window.onload = function() {
           var widgets = $('.hm_flash_widget');
           if (widgets.length < 1) return;
-          for (var idx in widgets) {
+          for (var idx=0; idx<widgets.length; idx++) {
               var innerDivs = $( widgets[idx] ).children(".hm_flash_widget_def");
               if (innerDivs.length < 1) continue;
-              var jsonStr = fixJSON(innerDivs[0].innerHTML);
-              var json = $.parseJSON(jsonStr);
-              widgetType = json.type;
+              //var jsonStr = fixJSON(innerDivs[0].innerHTML);
+              var json = innerDivs[0].innerHTML;
+              //var json = $.parseJSON(jsonStr);
+              var jso = eval('(' + json + ')');
+              widgetType = jso.type;
               //alert("widgetType: " + widgetType);
-              widgets[idx].innerHTML = jsonStr;
+              widgets[idx].innerHTML = widgetType + "<br/>" + jsonStr;
           }
       };
 
@@ -111,7 +113,7 @@ finally {
           <% } %>
       </div>
 
-      <script type="text/javascript" language="javascript" src="http://catchupmath.com/gwt-resources/js/CatchupMath_combined.js"></script>
-      <script type="text/javascript" language="javascript" src="http://catchupmath.com/gwt-resources/js/whiteboard_v3.js"></script>
+      <!-- script type="text/javascript" language="javascript" src="http://catchupmath.com/gwt-resources/js/CatchupMath_combined.js"></script -->
+      <!-- script type="text/javascript" language="javascript" src="http://catchupmath.com/gwt-resources/js/whiteboard_v3.js"></script -->
   </body>
 </html>
