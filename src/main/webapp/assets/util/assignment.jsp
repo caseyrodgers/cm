@@ -66,24 +66,24 @@ finally {
       window.onload = function() {
           var widgets = $('.hm_flash_widget');
           if (widgets.length < 1) return;
-          for (w in widgets) {
-              var innerDivs = $( widgets[0] ).children(".hm_flash_widget_def");
-              if (innerDivs == null) continue;
+          for (var idx in widgets) {
+              var innerDivs = $( widgets[idx] ).children(".hm_flash_widget_def");
+              if (innerDivs.length < 1) continue;
               var jsonStr = fixJSON(innerDivs[0].innerHTML);
               var json = $.parseJSON(jsonStr);
               widgetType = json.type;
               //alert("widgetType: " + widgetType);
-              w.innerHTML = jsonStr;
+              widgets[idx].innerHTML = jsonStr;
           }
       };
 
       function fixJSON(nonStdJSON) {
       	var stdJSON = "{";
       	var kvPairs = nonStdJSON.split(',');
-      	for (i in kvPairs) {
+      	for (var i in kvPairs) {
       		var arr = kvPairs[i].split(":");
       		//alert("key: " + arr[0] + ", value: " + arr[1]);
-      		var key = arr[0].replace("{", "");
+      		var key = arr[0].replace("{", "").replace(/ /g, "");
       		var value = arr[1].replace("}", "");
       		stdJSON += '"' + key + '":"' + value + '"';
       		if (i < (kvPairs.length-1)) {
