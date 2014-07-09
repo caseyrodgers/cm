@@ -75,7 +75,7 @@ finally {
               var jso = eval('(' + json + ')');
               widgetType = jso.type;
               //alert("widgetType: " + widgetType);
-              widgets[idx].innerHTML = widgetType + "<br/>" + jsonStr;
+              widgets[idx].innerHTML = "<strong>Type: </strong>" + widgetType;
           }
       };
 
