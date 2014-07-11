@@ -76,7 +76,7 @@ finally {
               widgetType = jso.type;
               //alert("widgetType: " + widgetType);
               widgets[idx].innerHTML = "<strong>Type: </strong>" + widgetType + "<br/><br/>"
-              widgets[idx].innerHTML = getHtmlForWidget(widgetType);
+              widgets[idx].innerHTML += getHtmlForWidget(widgetType);
           }
       };
 
