@@ -17,7 +17,7 @@ int assignKey = 0;
 try {
 	  String key = request.getParameter("key");
 	  String lines = request.getParameter("lines");
-	  int numWorkLines = 0;
+	  int numWorkLines = 10;
 	  if (key != null && key.trim().length() > 0) {
 		  assignKey = Integer.parseInt(key);
 	  }
@@ -75,10 +75,22 @@ finally {
               var jso = eval('(' + json + ')');
               widgetType = jso.type;
               //alert("widgetType: " + widgetType);
-              widgets[idx].innerHTML = "<strong>Type: </strong>" + widgetType;
+              widgets[idx].innerHTML = "<strong>Type: </strong>" + widgetType + "<br/><br/>"
+              widgets[idx].innerHTML = getHtmlForWidget(widgetType);
           }
       };
 
+      function getHtmlForWidget(widgetType) {
+    	  switch(widgetType) {
+    	  case "widget_plot":
+    		  return "<img src='/assets/images/x-y-axes.png'>";
+    		  break;
+          default:
+        	  return "<img src='/assets/images/underline.png'>";
+    	  }
+    	  
+      }
+/*
       function fixJSON(nonStdJSON) {
       	var stdJSON = "{";
       	var kvPairs = nonStdJSON.split(',');
@@ -96,7 +108,7 @@ finally {
       	
       	return stdJSON;
       }
-
+ */
     </script>
 
   </head>
