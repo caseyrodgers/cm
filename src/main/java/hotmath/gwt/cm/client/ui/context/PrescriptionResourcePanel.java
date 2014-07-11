@@ -13,6 +13,7 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.ui.resource.CmInmhStandardResources;
 
 import java.util.HashMap;
 import java.util.List;
@@ -91,26 +92,24 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
             }
             
         }
-        
+
         //flowLayoutMain.add(vertPanelResources);
-        
-        
+
         /**
          * Add the standard resources
          * 
          */
 
-        
         add(new HTML("<hr class='resource-separator'/>"));
         add(createFiller());
-        
+
         ResourceMenuButton rbtn = new ResourceMenuButton(review);
         if(isCustomProgram) {
             rbtn.setEnabled(false);
         }
         add(rbtn);
         add(createFiller());
-        
+
         for (PrescriptionSessionDataResource resource : new CmInmhStandardResources()) {
     		ResourceMenuButton btn = new ResourceMenuButton(resource);
     		add(btn);
@@ -118,7 +117,6 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
     		resourceButtons.put(resource.getType().label(), btn);
         }
     }
-
 
     
     private Widget createFiller() {
