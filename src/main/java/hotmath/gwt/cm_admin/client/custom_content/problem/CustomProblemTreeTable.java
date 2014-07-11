@@ -134,6 +134,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
                 return "problem";
             }
         });
+        problemCol.setHeader("Teachers");
         problemCol.setWidth(200);
         problemCol.setSortable(false);
         
@@ -165,6 +166,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
         ColumnModel<BaseDto> cm = new ColumnModel<BaseDto>(l);
 
         _tree = new TreeGrid<BaseDto>(_store, cm, problemCol);
+        
         _tree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         _tree.getSelectionModel().addSelectionHandler(new SelectionHandler<BaseDto>() {
@@ -275,8 +277,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
 
         TreeStore<BaseDto> store = new TreeStore<BaseDto>(new KeyProvider());
         CustomProblemFolderNode root = new CustomProblemFolderNode("Teachers");
-        store.add(root);
-
+        
         // for each distinct teacher
         Map<Integer, List<CustomProblemModel>> teachers = new HashMap<Integer, List<CustomProblemModel>>();
         CustomProblemFolderNode teacherNode = null;
@@ -342,7 +343,12 @@ public class CustomProblemTreeTable extends SimpleContainer {
             }
         }
         
-        processFolder(store,root);
+        for (BaseDto base : root.getChildren()) {
+          store.add(base);
+          if (base instanceof FolderDto) {
+            processFolder(store, (FolderDto) base);
+          }
+        }
         
         return store;
     }
@@ -390,7 +396,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
             @Override
             public void run() {
                 /** Expose the root items */
-                _tree.expandAll();
+                //_tree.expandAll();
                 List<BaseDto> rootItems = _tree.getTreeStore().getRootItems();
                 _tree.setExpanded((BaseDto) rootItems.get(0), true, false);
                 
@@ -398,7 +404,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
                     BaseDto selectedNode1 = (BaseDto) ((FolderDto) rootItems.get(0)).getChildren().get(0);
                     findItemMatching((FolderDto) rootItems.get(0), selectedPid);
                 } else {
-                    _tree.expandAll();
+                    //_tree.expandAll();
                 }
 
                 selectedCallback.redrawUi();

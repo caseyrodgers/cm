@@ -406,7 +406,7 @@ public class ProblemDesigner extends Composite {
 
 
 
-        boolean shouldExpand = true; // !_editMode.getValue();
+        boolean shouldExpand = !_editMode.getValue();
         _tutorWrapper.externallyLoadedTutor(solution, getWidget(), "", "Solution Title", false, shouldExpand, null);
 
         if(!_editMode.getValue()) {
