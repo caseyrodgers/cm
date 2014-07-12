@@ -149,7 +149,7 @@ public class TeacherManager extends GWindow {
         _combo.setEditable(false);
         
         FlowLayoutContainer flow = new FlowLayoutContainer();
-        flow.add(new HTML("<p style='margin-top: 20px;'>Choose your teacher name.  If it does not exists, create a new one"));
+        flow.add(new HTML("<p style='margin-top: 20px;'>Choose a teacher name, or click 'Add New Teacher'"));
         flow.add(new MyFieldLabel(_combo,  "Teacher Name",  90, 200));
         
         FramedPanel fp = new FramedPanel();

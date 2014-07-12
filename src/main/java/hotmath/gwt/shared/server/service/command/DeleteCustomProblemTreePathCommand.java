@@ -18,7 +18,7 @@ public class DeleteCustomProblemTreePathCommand implements ActionHandler<DeleteC
 
 	@Override
 	public RpcData execute(Connection conn,DeleteCustomProblemTreePathAction action) throws Exception {
-		CustomProblemDao.getInstance().deleteTreePath(action.getTeacher(), action.isTeacherNode()?null:action.getPath(), true);
+		CustomProblemDao.getInstance().deleteTreePath(action.getTeacher(), action.isTeacherNode()?null:action.getPath(), action.isTeacherNode());
 		return new RpcData("status=OK");
 	}
 

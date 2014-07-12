@@ -16,7 +16,9 @@ public class GetCustomProblemCommand implements ActionHandler<GetCustomProblemAc
         
     	return new CustomProblemInfo(
     			CustomProblemDao.getInstance().getCustomProblemsFor(action.getTeacher().getAdminId()),
-    			CustomProblemDao.getInstance().getCustomTreePaths(action.getTeacher().getAdminId()));
+    			CustomProblemDao.getInstance().getCustomTreePaths(action.getTeacher().getAdminId()),
+    			CustomProblemDao.getInstance().getAdminTeachers(action.getTeacher().getAdminId())    			
+    	        );
     }
 
 

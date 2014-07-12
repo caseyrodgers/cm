@@ -75,6 +75,7 @@ public class CustomProblemManager extends GWindow {
     private StoreFilter<CustomProblemModel> _filter;
     private String _selectedSolution;
     protected List<CustomProblemModel> _allProblems;
+    protected List<TeacherIdentity> _allTeachers;
     private ToggleButton _filterButton;
 
     private static CustomProblemManager __instance;
@@ -106,7 +107,7 @@ public class CustomProblemManager extends GWindow {
             selectedProblem = _selectedSolution;
         }
 
-        _treeTable = new CustomProblemTreeTable(problems, paths, new TreeTableCallback() {
+        _treeTable = new CustomProblemTreeTable(problems, paths, _allTeachers, new TreeTableCallback() {
 
             @Override
             public void problemSelected(CustomProblemModel problem) {
@@ -537,18 +538,19 @@ public class CustomProblemManager extends GWindow {
                             @Override
                             public void confirmed(boolean yesNo) {
                                 if (yesNo) {
-                                    doDeletePath(node.getName(), false);
+                                    doDeletePath(getTeacherFromNode(node), node.getName(), false);
                                 }
                             }
                         });
-            } else if (isCurrentTeacherFolder(node)) {
-                CmMessageBox.confirm("Delete", "Delete all problems for teacher '" + node.getName() + "?",
+            } else if (isTeacherFolderAndAllowedToDelete(node)) {
+                CmMessageBox.confirm("Delete", "Delete teacher '" + node.getName() + "?",
                         new ConfirmCallback() {
 
                             @Override
                             public void confirmed(boolean yesNo) {
                                 if (yesNo) {
-                                    doDeletePath(node.getName(), true);
+                                    CustomProblemFolderNode folderNode = (CustomProblemFolderNode)node;
+                                    doDeletePath(folderNode.getTeacher(), node.getName(), true);
                                 }
                             }
                         });
@@ -560,15 +562,39 @@ public class CustomProblemManager extends GWindow {
         }
     }
 
+    protected TeacherIdentity getTeacherFromNode(BaseDto node) {
+        if(node instanceof CustomProblemFolderNode) {
+            return ((CustomProblemFolderNode)node).getTeacher();
+        }
+        else if(node instanceof CustomProblemLeafNode) {
+            return ((CustomProblemLeafNode)node).getCustomProblem().getTeacher();
+        }
+        else {
+            return null;
+        }
+    }
+
     private boolean isCurrentTeacherSubfolder(BaseDto node) {
         if (node != null) {
             BaseDto parent = node.getParent();
-            if (parent != null && parent.getName().equals(TeacherManager.getTeacher().getTeacherName())) {
-                return true;
+            if (parent != null) {
+                if(getIsSuperTeacher()) {
+                    return true;
+                }
+                else if(parent.getName().equals(TeacherManager.getTeacher().getTeacherName())) {
+                    return true;
+                }
             }
         }
-
         return false;
+    }
+
+    /** Is the current teacher a super-teacher
+     * 
+     * @return
+     */
+    private boolean getIsSuperTeacher() {
+        return true;
     }
 
     /**
@@ -577,14 +603,13 @@ public class CustomProblemManager extends GWindow {
      * @param node
      * @return
      */
-    private boolean isCurrentTeacherFolder(BaseDto node) {
+    private boolean isTeacherFolderAndAllowedToDelete(BaseDto node) {
         if (node != null) {
             BaseDto parent = node.getParent();
             if (parent == null) {
                 if (node instanceof CustomProblemFolderNode) {
-                    if (((CustomProblemFolderNode) node).getFolderName().equals(
-                            TeacherManager.getTeacher().getTeacherName())) {
-                        return true;
+                    if(getIsSuperTeacher() || ((CustomProblemFolderNode) node).getFolderName().equals(TeacherManager.getTeacher().getTeacherName())) {
+                            return true;
                     }
                 }
             }
@@ -593,13 +618,12 @@ public class CustomProblemManager extends GWindow {
         return false;
     }
 
-    protected void doDeletePath(final String name, final boolean isTeacherNode) {
+    protected void doDeletePath(final TeacherIdentity problemTeacher, final String name, final boolean isTeacherNode) {
 
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
-                DeleteCustomProblemTreePathAction action = new DeleteCustomProblemTreePathAction(
-                        TeacherManager.getTeacher(), name, isTeacherNode);
+                DeleteCustomProblemTreePathAction action = new DeleteCustomProblemTreePathAction(problemTeacher, name, isTeacherNode);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -703,14 +727,12 @@ public class CustomProblemManager extends GWindow {
             }
 
             @Override
-            public void oncapture(CustomProblemInfo result) {
+            public void oncapture(CustomProblemInfo customProblemInfo) {
                 CmBusyManager.setBusy(false);
-                final List<CustomProblemModel> problems = result.getProblems();
-                _lastPaths = result.getPaths();
-
-                _allProblems = problems;
-
-                setGridStore(problems, _lastPaths);
+                _lastPaths = customProblemInfo.getPaths();
+                _allProblems = customProblemInfo.getProblems();
+                _allTeachers = customProblemInfo.getTeachers();
+                setGridStore(_allProblems, _lastPaths);
                 forceLayout();
             }
         }.register();

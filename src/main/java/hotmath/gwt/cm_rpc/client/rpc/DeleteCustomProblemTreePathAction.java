@@ -41,5 +41,11 @@ public class DeleteCustomProblemTreePathAction implements Action<RpcData>{
 	public void setPath(String path) {
 		this.path = path;
 	}
+
+    @Override
+    public String toString() {
+        return "DeleteCustomProblemTreePathAction [teacher=" + teacher + ", path=" + path + ", teacherNode="
+                + teacherNode + "]";
+    }
 }
 

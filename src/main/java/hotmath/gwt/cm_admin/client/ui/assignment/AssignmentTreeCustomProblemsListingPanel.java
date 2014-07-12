@@ -118,7 +118,8 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
 
     static int autoId;
     public void makeTree(final List<CustomProblemModel> custProblems, List<String> paths) {
-        _treeStore = CustomProblemTreeTable.createTeacherProblemMap(custProblems,  paths);
+        
+        _treeStore = CustomProblemTreeTable.createTeacherProblemMap(custProblems,  paths, null);
         _root = (CustomProblemFolderNode)_treeStore.getAll().get(0);
 
         

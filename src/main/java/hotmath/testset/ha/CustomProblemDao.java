@@ -802,9 +802,11 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
      * @param teacher
      * @param path
      */
-    public void deleteTreePath(final TeacherIdentity teacher, final String path, boolean deleteChildren)
+    public void deleteTreePath(final TeacherIdentity teacher, final String path, boolean isTeacherNode)
             throws Exception {
         __logger.debug("Removing tree path: " + teacher + ", " + path);
+        
+
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -821,7 +823,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
          * find all problems under this path
          * 
          */
-        if (deleteChildren) {
+        if (isTeacherNode) {
             __logger.debug("Removing tree path children: " + teacher + ", " + path);
             String sql = "select teacher_id, pid, tree_path from CM_CUSTOM_PROBLEM where teacher_id = ?";
             getJdbcTemplate().query(sql, new Object[] { teacher.getTeacherId() }, new RowMapper<Integer>() {
@@ -856,6 +858,20 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
                     return 0; // unused
                 }
             });
+            
+            
+            /** remove the teacher record
+             * 
+             */
+            getJdbcTemplate().update(new PreparedStatementCreator() {
+                @Override
+                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                    String sql = "delete from CM_CUSTOM_PROBLEM_TEACHER where teacher_id = ?";
+                    PreparedStatement ps = con.prepareStatement(sql);
+                    ps.setInt(1, teacher.getTeacherId());
+                    return ps;
+                }
+            });         
         }
     }
 
