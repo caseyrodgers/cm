@@ -140,7 +140,7 @@ public class GetAssignmentHTMLHelper {
 					}
 					if (firstPtag == true) {
 						String text = tag.getFirstChild().getText();
-						if (text != null && text.length() > 0) {
+						if (text != null && text.trim().length() > 0) {
 							text = String.format("%d. %s", probNum, text);
 							NodeList nodeList = new NodeList(new TextNode(text));
 							tag.setChildren(nodeList);
