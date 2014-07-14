@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.server.service.command.helper;
 
-import hotmath.HotMathLogger;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
 import hotmath.cm.assignment.AssignmentDao;
@@ -18,6 +17,8 @@ import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.Tag;
+import org.htmlparser.nodes.TextNode;
+import org.htmlparser.util.NodeList;
 import org.htmlparser.visitors.NodeVisitor;
 
 import java.sql.Connection;
@@ -138,10 +139,11 @@ public class GetAssignmentHTMLHelper {
 						tag.removeAttribute("class");
 					}
 					if (firstPtag == true) {
-						String text = tag.getText();
+						String text = tag.getFirstChild().getText();
 						if (text != null && text.length() > 0) {
 							text = String.format("%d. %s", probNum, text);
-							tag.setText(text);
+							NodeList nodeList = new NodeList(new TextNode(text));
+							tag.setChildren(nodeList);
 							firstPtag = false;
 						}
 					}
