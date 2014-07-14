@@ -105,9 +105,11 @@ public class GetAssignmentHTMLHelper {
 		return htmlSb.toString();
 	}
 
+	boolean firstPtag;
 	private String cleanupHtml(String html, final int probNum) throws Exception {
 
 		htmlParser.setInputHTML(html);
+		firstPtag = true;
 		htmlParser.visitAllNodesWith(new NodeVisitor() {
 			@Override
 			public void visitTag(Tag tag) {
@@ -135,6 +137,14 @@ public class GetAssignmentHTMLHelper {
 					if (attr != null && attr.toLowerCase().matches("msnormal|msonormal") == true) {
 						tag.removeAttribute("class");
 					}
+					if (firstPtag == true) {
+						String text = tag.getText();
+						if (text != null && text.length() > 0) {
+							text = String.format("%d. %s", probNum, text);
+							tag.setText(text);
+							firstPtag = false;
+						}
+					}
 				}
 				else if (tn.equals("img")) {
 					if (tag.getAttribute("src").startsWith("/") == false) {
@@ -142,6 +152,9 @@ public class GetAssignmentHTMLHelper {
 						String path = baseDirectory + "/" + tag.getAttribute("src");
 						tag.setAttribute("src", "'" + path + "'");
 					}
+				}
+				else if (tn.equals("h1") == true) {
+					tag.setAttribute("style", "'display:none'");
 				}
 			}
 		});
