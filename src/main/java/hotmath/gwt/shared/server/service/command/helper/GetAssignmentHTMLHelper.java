@@ -119,12 +119,12 @@ public class GetAssignmentHTMLHelper {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("<div class='assignment-header'>\n <h1 class='assignment-name'>").append(assignment.getComments()).append("</h1>\n");
-		sb.append("<h2 class='assignment-due-date'>Due date: ");
+		sb.append("<h3 class='assignment-due-date'>Due date: ");
 		Date dueDate = assignment.getDueDate();
 		if (dueDate != null) {
 			sb.append(DATE_FMT.format(dueDate));
 		}
-		sb.append("</h2>\n</div>\n");
+		sb.append("</h3>\n</div>\n");
 		return sb.toString();
 	}
 
@@ -167,6 +167,12 @@ public class GetAssignmentHTMLHelper {
 							if (text.trim().length() > 0) {
 								text = String.format("%d. %s", probNum, text);
 								NodeList nodeList = new NodeList(new TextNode(text));
+								NodeList origList = tag.getChildren();
+								if (origList.size() > 1) {
+									for (int i=1; i<origList.size(); i++) {
+										nodeList.add(origList.elementAt(i));
+									}
+								}
 								tag.setChildren(nodeList);
 								firstPtag = false;
 							}
