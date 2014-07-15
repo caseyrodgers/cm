@@ -12,6 +12,7 @@ Connection conn = null;
 String errMsg = "";
 String stackTrace = null;
 String assignmentHTML = "";
+String assignmentHeader = "";
 int assignKey = 0;
 
 try {
@@ -27,6 +28,7 @@ try {
 	  conn = HMConnectionPool.getConnection();
 	  GetAssignmentHTMLHelper helper = new GetAssignmentHTMLHelper();
 	  assignmentHTML = helper.getAssignmentHTML(assignKey, numWorkLines, conn);
+	  assignmentHeader = helper.getHeader(assignKey);
 }
 catch (Exception e) {
  	  errMsg = e.getMessage();
@@ -83,12 +85,23 @@ finally {
       function getHtmlForWidget(widgetType) {
     	  switch(widgetType) {
     	  case "widget_plot":
+    	  case "xy":
     		  return "<img src='/assets/images/x-y-axes.png'>";
     		  break;
+    	  case "x":
+    		  return "<img src='/assets/images/number-line.png'>"; 
           default:
         	  return "<img src='/assets/images/underline.png'>";
     	  }
     	  
+      }
+
+      function getWidgetType(jso) {
+    	  type = jso.type;
+    	  if (type == null) {
+    	      type = jso.qtype;
+    	  }
+    	  return type;
       }
 /*
       function fixJSON(nonStdJSON) {
@@ -119,6 +132,7 @@ finally {
           <a href="#" onclick="window.print();return false;">print</a>
       </div>
       <div id="main-content" class='assignment-print'>
+          <%= assignmentHeader %>
           <%= assignmentHTML %>
           <% if (errMsg.length() > 0) { %>
           Error: <%= errMsg %>

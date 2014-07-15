@@ -80,13 +80,10 @@ public class GetAssignmentHTMLHelper {
 	public String getAssignmentHTML(int assignKey, int numWorkLines, final Connection conn) throws Exception {
 
 		List<ProblemDto> probs = assignmentDao.getProblemsForAssignment(assignKey);
-		Assignment assignment = assignmentDao.getAssignment(assignKey);
 		
 		LOGGER.info(String.format("getAssignmentHTML(): assignKey: %d, num probs: %d", assignKey, probs.size()));
 
-		String header = buildHeader(assignment);
 		StringBuilder htmlSb = new StringBuilder();
-		htmlSb.append(header);
 
 		int idx = 1;
 		for(ProblemDto prob : probs) {
@@ -116,14 +113,18 @@ public class GetAssignmentHTMLHelper {
 		return htmlSb.toString();
 	}
 
-	private String buildHeader(Assignment assignment) {
+	public String getHeader(int assignKey) throws Exception {
+
+		Assignment assignment = assignmentDao.getAssignment(assignKey);
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("<div class='assignment-header'>\n <h1 class='assignment-name'>").append(assignment.getComments()).append("</h1>\n");
+		sb.append("<h2 class='assignment-due-date'>Due date: ");
 		Date dueDate = assignment.getDueDate();
 		if (dueDate != null) {
-			sb.append("<h2 class='assignment-due-date'>Due date: ").append(DATE_FMT.format(dueDate)).append("</h2>\n");
+			sb.append(DATE_FMT.format(dueDate));
 		}
-		sb.append("</div>\n");
+		sb.append("</h2>\n</div>\n");
 		return sb.toString();
 	}
 
