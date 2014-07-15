@@ -4,6 +4,7 @@ import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.shared.server.service.command.SolutionHTMLCreatorImplFileSystem;
 import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;
@@ -22,6 +23,8 @@ import org.htmlparser.util.NodeList;
 import org.htmlparser.visitors.NodeVisitor;
 
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,6 +37,8 @@ import java.util.List;
 public class GetAssignmentHTMLHelper {
 
 	private static final Logger LOGGER = Logger.getLogger(GetAssignmentHTMLHelper.class);
+
+    private static final SimpleDateFormat DATE_FMT = new SimpleDateFormat("yyyy-MM-dd");
 
 	private static final String PROB_STMT_DIV_OPEN_FMT =
 			"<div id='prob-%d' class='prob-stmt' style='margin-bottom:%dem;' context='%s'>";
@@ -75,9 +80,14 @@ public class GetAssignmentHTMLHelper {
 	public String getAssignmentHTML(int assignKey, int numWorkLines, final Connection conn) throws Exception {
 
 		List<ProblemDto> probs = assignmentDao.getProblemsForAssignment(assignKey);
+		Assignment assignment = assignmentDao.getAssignment(assignKey);
+		
 		LOGGER.info(String.format("getAssignmentHTML(): assignKey: %d, num probs: %d", assignKey, probs.size()));
 
+		String header = buildHeader(assignment);
 		StringBuilder htmlSb = new StringBuilder();
+		htmlSb.append(header);
+
 		int idx = 1;
 		for(ProblemDto prob : probs) {
 
@@ -104,6 +114,17 @@ public class GetAssignmentHTMLHelper {
 		}
 		
 		return htmlSb.toString();
+	}
+
+	private String buildHeader(Assignment assignment) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<div class='assignment-header'>\n <h1 class='assignment-name'>").append(assignment.getComments()).append("</h1>\n");
+		Date dueDate = assignment.getDueDate();
+		if (dueDate != null) {
+			sb.append("<h2 class='assignment-due-date'>Due date: ").append(DATE_FMT.format(dueDate)).append("</h2>\n");
+		}
+		sb.append("</div>\n");
+		return sb.toString();
 	}
 
 	boolean firstPtag;
@@ -141,7 +162,7 @@ public class GetAssignmentHTMLHelper {
 					if (firstPtag == true) {
 						String text = tag.getFirstChild().getText();
 						if (text != null) {
-							text = text.replaceAll("\\n", " ");
+							text = text.replaceAll("\\n|\\t", " ");
 							if (text.trim().length() > 0) {
 								text = String.format("%d. %s", probNum, text);
 								NodeList nodeList = new NodeList(new TextNode(text));
