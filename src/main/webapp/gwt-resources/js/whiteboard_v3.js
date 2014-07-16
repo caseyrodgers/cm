@@ -3910,14 +3910,54 @@ var w = maxWidth;
                         $get_jqElement("#tools").css('height', '0px');
                     }
                 }
+                var egraph = $get_jqElement("#egraph")
+                var egvisib = egraph.is(":visible");
+                var txtBox = $get_jqElement("#inputBox");
+                var txtvisib = txtBox.is(":visible");
+                var scX=scrollPosition.x
+                var scY=scrollPosition.y
                 scrollPosition = {
                     x: 0,
                     y: 0
                 }
+                
                 updateCanvas()
                 gr2D_xp = nL_xp = (screen_width - 300) / 2;
                 gr2D_yp = (screen_height - 300) / 2;
                 nL_yp = (screen_height - 100) / 2;
+                if (selectedObj) {
+                    //drawBoundRect(selectedObj);
+
+                    if (transMode == 'edit') {
+                        if (selectedObj.id == 2) {
+
+                            showTextBox()
+
+
+                        } else {
+                            showHideGraphModuleEditor(true)
+                        }
+                    } else {
+                        drawBoundRect({
+                            tx: 0,
+                            ty: 0,
+                            tr: 0,
+                            brect: selectedObj.brect
+                        }, true);
+                    }
+                } else {
+
+                    if (egvisib) {
+                        showHideGraphModuleEditor(true);
+                    }
+                    if (txtvisib) {
+                        var px = parseFloat($get_Element("#inputBox").style.left) - scX;
+                        var py = parseFloat($get_Element("#inputBox").style.top) - scY;
+                        clickX=px;
+                        clickY=py;                
+                        showTextBox()
+                    }
+                }
                 // },100);
             }
 
