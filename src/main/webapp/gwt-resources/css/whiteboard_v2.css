@@ -272,54 +272,107 @@
 }
 .dragresize {
  position: absolute;
- width: 15px;
- height: 15px;
+ width: 7px;
+ height: 7px;
  font-size: 1px;
  background: #EEE;
  border: 1px solid #333;
 }
 .dragresize-tl {
- top: -18px;
- left: -18px;
- cursor: nw-resize;
+ top: -9px;
+ left: -9px;
+ cursor: move;
 }
 .dragresize-tm {
- top: -18px;
+ top: -9px;
  left: 50%;
- margin-left: -10px;
+ margin-left: -5px;
  cursor: n-resize;
 }
 .dragresize-tr {
- top: -18px;
- right: -18px;
+ top: -9px;
+ right: -9px;
  cursor: ne-resize;
 }
 
 .dragresize-ml {
  top: 50%;
+ margin-top: -5px;
+ left: -9px;
+ cursor: w-resize;
+}
+.dragresize-mr {
+ top: 50%;
+ margin-top: -5px;
+ right: -9px;
+ cursor: e-resize;
+}
+
+.dragresize-bl {
+ bottom: -9px;
+ left: -9px;
+ cursor: sw-resize;
+}
+.dragresize-bm {
+ bottom: -9px;
+ left: 50%;
+ margin-left: -5px;
+ cursor: s-resize;
+}
+.dragresize-br {
+ bottom: -9px;
+ right: -9px;
+ cursor: se-resize;
+}
+.dragresize-hit {
+ position: absolute;
+ width: 15px;
+ height: 15px;
+ font-size: 1px;
+ border: 0px solid #000;
+}
+.dragresize-tl-hit {
+ top: -18px;
+ left: -18px;
+ cursor: move;
+}
+.dragresize-tm-hit {
+ top: -18px;
+ left: 50%;
+ margin-left: -10px;
+ cursor: n-resize;
+}
+.dragresize-tr-hit {
+ top: -18px;
+ right: -18px;
+ cursor: ne-resize;
+}
+
+.dragresize-ml-hit {
+ top: 50%;
  margin-top: -10px;
  left: -18px;
  cursor: w-resize;
 }
-.dragresize-mr {
+.dragresize-mr-hit {
  top: 50%;
  margin-top: -10px;
  right: -18px;
  cursor: e-resize;
 }
 
-.dragresize-bl {
+.dragresize-bl-hit {
  bottom: -18px;
  left: -18px;
  cursor: sw-resize;
 }
-.dragresize-bm {
+.dragresize-bm-hit {
  bottom: -18px;
  left: 50%;
  margin-left: -10px;
  cursor: s-resize;
 }
-.dragresize-br {
+.dragresize-br-hit {
  bottom: -18px;
  right: -18px;
  cursor: se-resize;
@@ -335,20 +388,20 @@
 .canvas-container .input_box [name='dummy_resize'] {
 	min-height:40px;
 	display: none;
-	font-family: Ariel;
-	font-size: 15pt;
+	font-family: Arial;
+	font-size: 12pt;
 	word-wrap:normal;
 	white-space:normal;
 }
 
 .canvas-container .content {
     white-space:normal;
-    min-width:60px;
+    min-width:120px;
     min-height:40px;
-    width:60px;
+    width:120px;
     height:40px;
-    font-family: Ariel;
-    font-size: 15pt;
+    font-family: Arial;
+    font-size: 12pt;
     border:0px;
     padding:0px;
     margin:0px;

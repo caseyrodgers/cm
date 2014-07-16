@@ -447,8 +447,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
         if (egraph) {
             $(egraph).remove();
         }
-        var board_hold = $get_Element("#wb-container");
-        var board = $("<div name='egraph' class='egraph' style='max-width:400px;width:400px;position:absolute;top:35px;display:none;'/>")
+        var board_hold = $get_Element("#canvas-container");
+        var board = $("<div name='egraph' class='egraph' style='max-width:400px;width:400px;position:absolute;top:0px;display:none;'/>")
         board.appendTo($(board_hold));
         if (!wb.graphModules) {
             wb.graphModules = {}
@@ -615,9 +615,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
             }
 
             var pos = bound.brect;
-            var off = {
+            /*var off = {
                 left: 0.5,
                 top: $get_jqElement("#tools").outerHeight() + 0.5
+            };*/
+            var off = {
+                left: 0.5,
+                top: 0.5
             };
             removeBoundRect();
             updateCanvas();
@@ -757,7 +761,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
     function drawBoundRect(obj, boo) {
         var dx = x - clickX
         var dy = y - clickY
-        var hitC = 26;
+        var hitC = 15;
         var hitR = hitC / 2;
         context.save();
         context.lineWidth = 4;
@@ -901,7 +905,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         }
 
         context.beginPath();
-        context.fillStyle = 'red';
+        context.fillStyle = 'blue';
         var xLT = x0 - hitR;
         var yLT = y0 - hitR;
         var xLB = x0 - hitR;
@@ -912,8 +916,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
         var yRB = y0 + h0 + hitR;
         context.save()
         context.lineWidth = 1;
-        context.strokeStyle = "rgba(255, 0, 0, 0.75)";
-        context.strokeRect(x0 - hitR, y0 - hitR, w0 + hitC, h0 + hitC);
+        context.strokeStyle = "rgba(0, 0, 255, 1)";
+       // context.strokeRect(x0 - hitR, y0 - hitR, w0 + hitC, h0 + hitC);
         context.restore();
         if (selectedObj.id == 'graph' || selectedObj.id == 2) {
             /*context.fillRect(x0 + w0 - 40, y0, 40, 40);
@@ -921,7 +925,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
             context.fillStyle = 'white';
             context.fillText("edit", x0 + w0 - 33, y0 + 25);*/
             //showHideGraphToggler(true)
-            context.arc(xLB, yLB, hitR, 0, 2 * Math.PI, false);
+           //context.arc(xLB, yLB, hitR, 0, 2 * Math.PI, false);
+            context.fillRect(xLB - hitR, yLB - hitR, hitC,  hitC);
             //context.drawImage(editGR,x0-10,y0+h0-10,20,20)
             //context.drawImage(editGR,x0,y0+h0,20,20)
         } else {
@@ -930,20 +935,22 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 //context.fill()
                 //context.beginPath();
             }
-            context.arc(xLT, yLT, hitR, 0, 2 * Math.PI, false);
-            context.fill()
+            //context.arc(xLT, yLT, hitR, 0, 2 * Math.PI, false);
+           // context.fill()
+           context.fillRect(xLT - hitR, yLT - hitR, hitC, hitC);
             context.fillRect(xRB - hitR, yRB - hitR, hitC, hitC);
             context.beginPath();
-            context.drawImage(rotateGR, xLT - (hitR - 4), yLT - (hitR - 4), hitC - 8, hitC - 8)
-            context.drawImage(scaleGR, xRB - (hitR - 4), yRB - (hitR - 4), hitC - 8, hitC - 8)
+            context.drawImage(rotateGR, xLT - (hitR), yLT - (hitR), hitC, hitC)
+            context.drawImage(scaleGR, xRB - (hitR), yRB - (hitR), hitC, hitC)
                 //context.arc(x0 + w0+hitR, y0-hitR, hitR, 0, 2 * Math.PI, false);
         }
         //context.arc(x0-hitR, y0-hitR, hitR, 0, 2 * Math.PI, false);
         context.save()
         context.lineWidth = 0;
-        context.arc(xRT, yRT, hitR, 0, 2 * Math.PI, false);
+       // context.arc(xRT, yRT, hitR, 0, 2 * Math.PI, false);
+       context.fillRect(xRT - hitR, yRT - hitR, hitC, hitC);
         context.restore();
-        context.fill()
+       context.fill()
             /* context.font = "bold 14px Arial";
         context.fillStyle = "rgba(255, 255, 255, 0.75)";
         context.textBaseline = 'center';
@@ -957,10 +964,10 @@ var Whiteboard = function (cont, isStatic, _opts) {
         context.lineWidth = 3;
         context.arc(xRT, yRT, hitR - 5, 0, 2 * Math.PI, false);
         context.stroke();*/
-        context.drawImage(deleteGR, xRT - (hitR - 4), yRT - (hitR - 4), hitC - 8, hitC - 8)
+        context.drawImage(deleteGR, xRT - (hitR), yRT - (hitR), hitC, hitC)
         if (selectedObj.id == 'graph' || selectedObj.id == 2) {
 
-            context.drawImage(editGR, x0 - (hitC - 4), y0 + h0 + (4), hitC - 8, hitC - 8)
+            context.drawImage(editGR, x0 - (hitC), y0 + h0 + (0), hitC, hitC)
         }
 
         context.restore()
@@ -2326,11 +2333,12 @@ var Whiteboard = function (cont, isStatic, _opts) {
         return result;
     };
 
-    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    function wrapTextX(context, text, x, y, maxWidth, lineHeight) {
         var words = text.split(' ');
         var line = '';
         var w = maxWidth;
         var h = 0;
+        //var lines=text.split('\r\n').join("\n").split("\n");
         for (var n = 0; n < words.length; n++) {
             var testLine = line + words[n] + ' ';
             var metrics = context.measureText(testLine);
@@ -2352,6 +2360,43 @@ var Whiteboard = function (cont, isStatic, _opts) {
         h += lineHeight + lineHeight / 3;
         w = Math.max(w, context.measureText(line).width);
         //}
+        return {
+            w: w,
+            h: Math.max(40, h)
+        }
+    }
+    function wrapText(context, text, x, y, maxWidth, lineHeight){
+    var lines = text.split("\n");
+var w = maxWidth;
+        var h = 0;
+    for (var i = 0; i < lines.length; i++) {
+
+        var words = lines[i].split(' ');
+        var line = '';
+
+        for (var n = 0; n < words.length; n++) {
+            var testLine = line + words[n] + ' ';
+            var metrics = context.measureText(testLine);
+            var testWidth = metrics.width;
+            if (testWidth > maxWidth && n > 0) {
+                context.fillText(line, x, y);
+                line = words[n] + ' ';
+                y += lineHeight;
+                h += lineHeight
+            }
+            else {
+                line = testLine;
+                w = Math.max(w, context.measureText(line).width);
+            }
+        }
+
+        context.fillText(line, x, y);
+        y += lineHeight;
+        h += lineHeight;
+        w = Math.max(w, context.measureText(line).width);
+        //}
+        
+        }
         return {
             w: w,
             h: Math.max(40, h)
@@ -2389,7 +2434,7 @@ var Whiteboard = function (cont, isStatic, _opts) {
         }
     }
 
-    var _textToolFont = "15pt Arial";
+    var _textToolFont = "12pt Arial";
 
     function renderText_html(xt, xp, yp, col, ctx, notEdit) {
         var boo = false;
@@ -3996,9 +4041,51 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     // console.log("ON_SCROLL_SCRUB:"+scrollObj.sy+":"+change+":"+currPos);
                     $get_Element('#' + scroll + 'scroll_thumb').style[pos] = newpos + "px";
                     //$get_Element('#canvas-container').style[pos] = currPos + "px";
+                    var diffX=coo=='x'?currPos-scrollPosition[coo]:0
+                    var diffY=coo=='y'?currPos-scrollPosition[coo]:0
                     scrollPosition[coo] = currPos;
                     updateNavThumb(scrollPosition['x'], scrollPosition['y'])
+                    var egraph = $get_jqElement("#egraph")
+                    var egvisib = egraph.is(":visible");
+                    var txtBox = $get_jqElement("#inputBox");
+                    var txtvisib = txtBox.is(":visible");
                     updateCanvas();
+                    if (selectedObj) {
+                    //drawBoundRect(selectedObj);
+
+                    if (transMode == 'edit') {
+                        if (selectedObj.id == 2) {
+
+                            showTextBox()
+
+
+                        } else {
+                            showHideGraphModuleEditor(true)
+                        }
+                    } else {
+                        drawBoundRect({
+                            tx: 0,
+                            ty: 0,
+                            tr: 0,
+                            brect: selectedObj.brect
+                        }, true);
+                    }
+                } else {
+
+                    if (egvisib) {
+                        showHideGraphModuleEditor(true);
+                    }
+                    if (txtvisib) {
+
+                        var px = parseFloat($get_Element("#inputBox").style.left) + diffX
+                        var py = parseFloat($get_Element("#inputBox").style.top) + diffY
+                            //$get_Element("#inputBox").style.top = py + "px";
+                            //$get_Element("#inputBox").style.left = px + "px";
+                        clickX = px;
+                        clickY = py;
+                        showTextBox()
+                    }
+                }
                 }
 
             }
@@ -4052,8 +4139,50 @@ var Whiteboard = function (cont, isStatic, _opts) {
                         currPos = currPos < neg * (scroll_window[dim] - sdim) ? -(scroll_window[dim] - sdim) : currPos;
                         $get_Element('#' + scroll + 'scroll_thumb').style[pos] = newpos + "px";
                         // $get_Element('#canvas-container').style[pos] = currPos + "px";
+                        var diffX=coo=='x'?currPos-scrollPosition[coo]:0
+                    var diffY=coo=='y'?currPos-scrollPosition[coo]:0
                         scrollPosition[coo] = currPos;
+                        var egraph = $get_jqElement("#egraph")
+                        var egvisib = egraph.is(":visible");
+                        var txtBox = $get_jqElement("#inputBox");
+                        var txtvisib = txtBox.is(":visible");
                         updateCanvas();
+                        if (selectedObj) {
+                        //drawBoundRect(selectedObj);
+
+                        if (transMode == 'edit') {
+                            if (selectedObj.id == 2) {
+
+                                showTextBox()
+
+
+                            } else {
+                                showHideGraphModuleEditor(true)
+                            }
+                        } else {
+                            drawBoundRect({
+                                tx: 0,
+                                ty: 0,
+                                tr: 0,
+                                brect: selectedObj.brect
+                            }, true);
+                        }
+                    } else {
+
+                        if (egvisib) {
+                            showHideGraphModuleEditor(true);
+                        }
+                        if (txtvisib) {
+
+                            var px = parseFloat($get_Element("#inputBox").style.left) + diffX
+                            var py = parseFloat($get_Element("#inputBox").style.top) + diffY
+                                //$get_Element("#inputBox").style.top = py + "px";
+                                //$get_Element("#inputBox").style.left = px + "px";
+                            clickX = px;
+                            clickY = py;
+                            showTextBox()
+                        }
+                    }
                     }
                     if (document.addEventListener) {
                         if (isTouchEnabled) {
@@ -5633,9 +5762,51 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 var scrub = (scroll_window.height - screen_height) / (screen_height - 30)
                     //$get_Element('#canvas-container').style.top = currPos + "px";
                 $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
+                var diffY = currPos - scrollPosition['y'];
+                var diffX = 0;
                 scrollPosition['y'] = currPos;
                 updateNavThumb(scrollPosition['x'], scrollPosition['y'])
+                var egraph = $get_jqElement("#egraph")
+                var egvisib = egraph.is(":visible");
+                var txtBox = $get_jqElement("#inputBox");
+                var txtvisib = txtBox.is(":visible");
                 updateCanvas();
+                if (selectedObj) {
+                    //drawBoundRect(selectedObj);
+
+                    if (transMode == 'edit') {
+                        if (selectedObj.id == 2) {
+
+                            showTextBox()
+
+
+                        } else {
+                            showHideGraphModuleEditor(true)
+                        }
+                    } else {
+                        drawBoundRect({
+                            tx: 0,
+                            ty: 0,
+                            tr: 0,
+                            brect: selectedObj.brect
+                        }, true);
+                    }
+                } else {
+
+                    if (egvisib) {
+                        showHideGraphModuleEditor(true);
+                    }
+                    if (txtvisib) {
+
+                        var px = parseFloat($get_Element("#inputBox").style.left) + diffX
+                        var py = parseFloat($get_Element("#inputBox").style.top) + diffY
+                            //$get_Element("#inputBox").style.top = py + "px";
+                            //$get_Element("#inputBox").style.left = px + "px";
+                        clickX = px;
+                        clickY = py;
+                        showTextBox()
+                    }
+                }
                 // console.log("AFTER:"+currPos+":"+(currPos/scrub));
                 // moving the position of the object
                 // document.getElementById('scroll').style.top = currPos+"px";
@@ -5747,8 +5918,8 @@ var Whiteboard = function (cont, isStatic, _opts) {
                 "</textarea></div>" + "<div name='dummy_resize' style='max-width: " + maxW + "px;'></div>";
             $($("#" + contDiv + " [name='inputBox'] div")[0]).html(ttHtml);
             $get_jqElement("#input_box").resizeBox(wb);
-            $("#" + contDiv + " [name='inputBox']").css('border', '0px')
-                /* $get_jqElement("#inputBox").find("[name='content']").live({
+            /*$("#" + contDiv + " [name='inputBox']").css('border', '0px')
+                 $get_jqElement("#inputBox").find("[name='content']").live({
                 input: function (e) {
                     var rs = $get_jqElement("#dummy_resize")
                     rs.text($(this).val() + "9.");
@@ -5756,8 +5927,29 @@ var Whiteboard = function (cont, isStatic, _opts) {
                     var duw = rs.width();
                     var duh = rs.height();
                     rs.hide()
-                    $(this).css("width", duw + 'px');
+                    var cont=$get_jqElement("#input_box")
+                    var cc=cont.find("[name='content']")
+                    if(duw>120){
+                     $(this).css("width", duw + 'px');
+                     cont.css("width", duw + 'px');
+                     cc.css("width", duw + 'px');
+                    }
+                    if(duh>40){
                     $(this).css("height", duh + 'px');
+                    cont.css("height", duh + 'px');
+                    cc.css("height", duh + 'px');
+                    }
+                    cont.parent().parent().find("[name='done_btn']").css({
+            
+                    'top': parseFloat(cont.css("top")) + (h + 30) + 'px',
+                    'left': parseFloat(cont.css("left")) + 'px'
+                    })
+                   
+                    
+                    
+                    
+        
+        
                 },
                 mousedown: function (e) {
                     textAreaW = $get_jqElement("#content").outerWidth()
@@ -5774,9 +5966,9 @@ var Whiteboard = function (cont, isStatic, _opts) {
             var rd = $get_jqElement("#dummy_resize");
             var rs = $get_jqElement("#content");
             var ri = $get_jqElement("#input_box")
-            rs.css('width', '60px');
+            rs.css('width', '120px');
             rs.css('height', '40px');
-            ri.css('width', '60px');
+            ri.css('width', '120px');
             ri.css('height', '40px');
             $get_jqElement("#inputBox").find("[name='done_btn']").css({
                 'top': ($get_jqElement("#input_box").outerHeight() + 30) + "px",
@@ -7659,7 +7851,7 @@ function _debugGetCommandInfoLabel(json) {
         cont.css('height', cont.find("[name='content']").outerHeight() + "px");
         cont.css('width', cont.find("[name='content']").outerWidth() + "px");
         cont.parent().parent().find("[name='done_btn']").css({
-                'position': 'relative',
+                'position': 'absolute',
                 'top': "70px"
             })
             /* var handles = ['tl', 'tm', 'tr',
@@ -7678,7 +7870,7 @@ function _debugGetCommandInfoLabel(json) {
             elmY = parseFloat(cont.css("top"));
             elmW = parseFloat(cont.outerWidth());
             elmH = parseFloat(cont.outerHeight());
-            var id = $(this).attr("id").split("_")[1];
+            var id = $(this).attr("id").split("_")[2];
             $(document).on('mousemove', {
                 elm: $(this),
                 id: id
@@ -7695,7 +7887,7 @@ function _debugGetCommandInfoLabel(json) {
                 elmY = parseFloat(cont.css("top"));
                 elmW = parseFloat(cont.outerWidth());
                 elmH = parseFloat(cont.outerHeight());
-                var id = $(this).attr("id").split("_")[1];
+                var id = $(this).attr("id").split("_")[2];
                 $(document).on('touchmove', {
                     elm: $(this),
                     id: id
@@ -7706,12 +7898,16 @@ function _debugGetCommandInfoLabel(json) {
         for (var h = 0; h < handles.length; h++) {
 
             var hDiv = document.createElement('div');
+            var hDiv_h = document.createElement('div');
             hDiv.className = 'dragresize' + ' ' + 'dragresize' + '-' + handles[h];
-            $(hDiv).attr("id", cont.attr('id') + "_" + handles[h]);
+            hDiv_h.className = 'dragresize-hit' + ' ' + 'dragresize' + '-' + handles[h]+"-hit";
+            $(hDiv).attr("id", cont.attr('name') + "_" + handles[h]);
+            $(hDiv_h).attr("id", cont.attr('name') + "_" + handles[h]+"_hit");
             elm['_handle_' + handles[h]] = elm.appendChild(hDiv);
+            elm['_handle_' + handles[h]+"_hit"] = elm.appendChild(hDiv_h);
             if (isTouchEnabled) {
                 //alert(hDiv)
-                $(hDiv).on('touchstart', function (ev) {
+                $(hDiv_h).on('touchstart', function (ev) {
                     // alert('D1')
                     ev.preventDefault();
                     wb.ib_drag = 'start';
@@ -7727,7 +7923,7 @@ function _debugGetCommandInfoLabel(json) {
                     elmY = parseFloat(cont.css("top"));
                     elmW = parseFloat(cont.outerWidth());
                     elmH = parseFloat(cont.outerHeight());
-                    var id = $(this).attr("id").split("_")[1];
+                    var id = $(this).attr("id").split("_")[2];
                     //  alert(id);
                     $(document).on('touchmove', {
                         elm: $(this),
@@ -7736,7 +7932,7 @@ function _debugGetCommandInfoLabel(json) {
                     $(document).on('touchend', onMUHandler)
                 })
             } else {
-                $(hDiv).on('mousedown', function (ev) {
+                $(hDiv_h).on('mousedown', function (ev) {
                     ev.preventDefault();
                     wb.ib_drag = 'start';
                     var click = getCursorPos(ev, cont.parent());
@@ -7746,7 +7942,7 @@ function _debugGetCommandInfoLabel(json) {
                     elmY = parseFloat(cont.css("top"));
                     elmW = parseFloat(cont.outerWidth());
                     elmH = parseFloat(cont.outerHeight());
-                    var id = $(this).attr("id").split("_")[1];
+                    var id = $(this).attr("id").split("_")[2];
                     // alert(id);
                     $(document).on('mousemove', {
                         elm: $(this),
@@ -7797,8 +7993,8 @@ function _debugGetCommandInfoLabel(json) {
         h = elmH;
         if (id == 'mr') {
             w = elmW + dx;
-            if (w < 60) {
-                w = 60
+            if (w < 120) {
+                w = 120
             }
         }
         if (id == 'br') {
@@ -7807,8 +8003,8 @@ function _debugGetCommandInfoLabel(json) {
             if (h < 40) {
                 h = 40
             }
-            if (w < 60) {
-                w = 60
+            if (w < 120) {
+                w = 120
             }
         }
         if (id == 'bm') {
@@ -7826,8 +8022,8 @@ function _debugGetCommandInfoLabel(json) {
                 h = 40
                 y = elmY + (elmH - h)
             }
-            if (w < 60) {
-                w = 60
+            if (w < 120) {
+                w = 120
             }
         }
         if (id == 'tm') {
@@ -7845,30 +8041,30 @@ function _debugGetCommandInfoLabel(json) {
             if (h < 40) {
                 h = 40
             }
-            if (w < 60) {
-                w = 60
+            if (w < 120) {
+                w = 120
                 x = elmX + (elmW - w)
             }
         }
         if (id == 'ml') {
             w = elmW - dx;
             x = elmX + dx;
-            if (w < 60) {
-                w = 60
+            if (w < 120) {
+                w = 120
                 x = elmX + (elmW - w)
             }
         }
         if (id == 'tl') {
-            w = elmW - dx;
-            h = elmH - dy;
+            //w = elmW - dx;
+           // h = elmH - dy;
             x = elmX + dx;
             y = elmY + dy;
             if (h < 40) {
                 h = 40
                 y = elmY + (elmH - h)
             }
-            if (w < 60) {
-                w = 60
+            if (w < 120) {
+                w = 120
                 x = elmX + (elmW - w)
             }
         }
@@ -7885,7 +8081,7 @@ function _debugGetCommandInfoLabel(json) {
             'height': h + 'px'
         })
         cont.parent().parent().find("[name='done_btn']").css({
-            'position': 'relative',
+            'position': 'absolute',
             'top': parseFloat(cont.css("top")) + (h + 30) + 'px',
             'left': parseFloat(cont.css("left")) + 'px'
         })
