@@ -168,10 +168,12 @@ public class ShowWorkPanel2 extends Composite {
     public void resizeWhiteboard() {
         resizeWhiteboard(whiteboardHeight);
     }
-    
+
     public void resizeWhiteboard(int height) {
-        jnsi_resizeWhiteboard(whiteboardId, getParentWidget().getElement(), height);
-        _whiteboardOutCallback.windowResized();
+        if(_whiteboardOutCallback.allowWhiteboardResize()) {
+            jnsi_resizeWhiteboard(whiteboardId, getParentWidget().getElement(), height);
+            _whiteboardOutCallback.windowResized();
+        }            
     }
     
     public void setAsTeacherMode(boolean yesNo) {
@@ -617,6 +619,8 @@ public class ShowWorkPanel2 extends Composite {
          */
         Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data);
 
+        boolean allowWhiteboardResize();
+
         /** Provide a UI to manage the whiteboard templates
          * 
          * @param showWorkPanel2
@@ -676,6 +680,11 @@ public class ShowWorkPanel2 extends Composite {
         @Override
         public void manageTemplates(ShowWorkPanel2 showWorkPanel2) {
             Log.info("No Manage Templates defined");
+        }
+        
+        @Override
+        public boolean allowWhiteboardResize() {
+            return true;
         }
 
     }

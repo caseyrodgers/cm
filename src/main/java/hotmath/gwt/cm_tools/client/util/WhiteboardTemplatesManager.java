@@ -367,6 +367,11 @@ public class WhiteboardTemplatesManager extends GWindow {
                 // TODO Auto-generated method stub
                 return null;
             }
+            
+            @Override
+            public boolean allowWhiteboardResize() {
+                return true;
+            }
         }));
     }
 }
