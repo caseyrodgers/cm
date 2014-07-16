@@ -64,7 +64,7 @@ public class ProblemResourcesButton extends TextButton {
 
     protected void readDataFromServerIfNeeded() {
         
-        if(_problem.getLesson().getLessonFile() == null || _problem.getLesson().getLessonFile().startsWith(CustomProblemModel.CUSTOM_MARKER)) {
+        if(_problem.getLesson().getLessonFile() == null || _problem.getLesson().getLessonFile().length() == 0 ||  _problem.getLesson().getLessonFile().startsWith(CustomProblemModel.CUSTOM_MARKER)) {
             return; // skip
         }
         
