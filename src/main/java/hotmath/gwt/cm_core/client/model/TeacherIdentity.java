@@ -47,6 +47,16 @@ public class TeacherIdentity implements Response {
         this.teacherName = teacherName;
     }
     
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof TeacherIdentity) {
+            return ((TeacherIdentity)obj).getTeacherName().equals(getTeacherName());
+        }
+        else {
+            return super.equals(obj);
+        }
+    }
+    
     public static TeacherIdentity getUnknownTeacher() {
         return new TeacherIdentity(UserInfoBase.getInstance().getUid(),"Unknown Teacher", UNKNOWN);
     }

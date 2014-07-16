@@ -378,7 +378,7 @@ public class ShowWorkPanel2 extends Composite {
         	    theWhiteboard.whiteboardLoadComplete();
         	}
         	catch(e) {
-        	    alert('error calling whiteboardLoadComplete: ' + e);
+        	    console.log('error calling whiteboardLoadComplete: ' + e);
             }
         }
     }-*/;
