@@ -57,7 +57,7 @@ public class GetReviewHtmlCommand implements ActionHandler<GetReviewHtmlAction, 
     }
     
     private String getBaseDirectory(boolean isSpanish) {
-        return "/hotmath_help/" +
+        return "/hotmath_help" +
                (isSpanish?"spanish/":"") +
                "/topics";
     }
