@@ -243,8 +243,6 @@ var TutorManager = {
     },
     loadTutorData : function(solutionData, stepText, solutionVariableContext) {
         try {
-	    alert('loadTutorData: ' + solutionData);
-
             TutorManager.tutorData = eval("(" + solutionData + ")");
             _tutorData = TutorManager.tutorData; // set global
 

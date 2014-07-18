@@ -96,6 +96,32 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
                 });
         return matches.size() > 0 ? matches.get(0) : null;
     }
+    
+    
+    public SolutionContext getSolutionContext_Debug(int runId, final String pid) throws CmException {
+
+        if (runId == 0) {
+            return getGlobalSolutionContext(pid);
+        }
+
+        String sql = "select problem_number, variables from junk where run_id = ? and pid = ? order by id";
+        List<SolutionContext> matches = getJdbcTemplate().query(sql,
+                new Object[] { runId, pid },
+                new RowMapper<SolutionContext>() {
+                    @Override
+                    public SolutionContext mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        String solnCtx;
+                        try {
+                            solnCtx = loadSolutionContextString(rs);
+                        }
+                        catch (Exception e) {
+                            throw new SQLException(e);
+                        }
+                        return new SolutionContext(pid, rs.getInt("problem_number"), solnCtx);
+                    }
+                });
+        return matches.size() > 0 ? matches.get(0) : null;
+    }
 
    
     public String getSolutionContextString(int runId, String pid) {
@@ -146,8 +172,32 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
         else {
             return rs.getString("variables");
         }
-
     }
+    
+   
+    public String convertSolutionContext(byte[] variables) throws Exception {
+        if (variables[0] != "{".getBytes("UTF-8")[0]) {
+            return CompressHelper.decompress(variables);
+        }
+        else {
+            return new String(variables);
+        }
+    }
+    
+    public void removeSolutionContext(final int runId, final String pid) {
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement ps = null;
+                String sql = "delete from HA_SOLUTION_CONTEXT where run_id = ? & and pid = ?";
+                ps = con.prepareStatement(sql);
+                ps.setInt(1, runId);
+                ps.setString(2, pid);
+                return ps;
+            }
+        });
+    }
+    
 
     /**
      * TODO: Should we allow overwriting of existing Solution Context?
