@@ -80,20 +80,6 @@ public class HeaderPanel extends FlowLayoutContainer {
             }
         });
         add(training);
-        
-        // TODO: add button change via CSS when updates page is changed
-        IconButton updates = new IconButton("header-panel-updates-btn");
-        updates.setToolTip("Learn about recent Catchup Math updates");
-        updates.addSelectHandler(new SelectHandler() {
-			
-			@Override
-			public void onSelect(SelectEvent event) {
-                new RecentUpdatesWindow();
-            }
-        });
-        add(updates);
-
-        
 
         EventBus.getInstance().addEventListener(new CmEventListener() {
 			
@@ -103,6 +89,8 @@ public class HeaderPanel extends FlowLayoutContainer {
 		    	case EVENT_TYPE_USER_LOGIN:
 		    		addLogoutButton();
 		    		break;
+				default:
+					break;
 				}
 			}
 		});
