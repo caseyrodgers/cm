@@ -152,7 +152,7 @@ pageTracker._trackPageview();
 
 <h2>Overview</h2>
 <p>
-  The Catchup Math Foundations Proficiency Program reviews  ................
+  The Catchup Math Foundations Proficiency Program reviews elementary-level arithmetic
   and is divided into <%= numberOfSectionsText %> sequential sections.  Pre-tests (quizzes) are given for each section,
   and students are assigned lessons based on incorrect answers. Re-teaching includes text lessons (in both
   English and Spanish), videos, activities, and practice problems with tutorial solutions.  A student takes
