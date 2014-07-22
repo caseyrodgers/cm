@@ -131,12 +131,15 @@ public class FinalExamCreationManager extends GWindow {
     private SimpleComboBox<String> createQuizCombo() {
         SimpleComboBox<String> combo = new SimpleComboBox<String>(new StringLabelProvider<String>());
 
+        combo.add("Foundations");
         combo.add("Essentials");
         combo.add("Pre-Algebra");
         combo.add("Algebra 1");
         combo.add("Geometry");
         combo.add("Algebra 2");
         combo.add("Grad Prep (National)");
+        combo.add("College Basic Math");
+        combo.add("College Elementary Algebra");
 
         combo.setAllowTextSelection(false);
         combo.setEmptyText("Select a program");

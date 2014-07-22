@@ -33,6 +33,9 @@ public class CreateFinalExamCommand implements ActionHandler<CreateFinalExamActi
         else if(type.contains("Algebra 1")) {
             program = CmProgram.ALG1_PROF;
         }
+        else if(type.contains("Foundations")) {
+            program = CmProgram.FOUNDATIONS;
+        }
         else if(type.contains("Essentials")) {
             program = CmProgram.ESSENTIALS;
         }
@@ -42,11 +45,15 @@ public class CreateFinalExamCommand implements ActionHandler<CreateFinalExamActi
         else if(type.contains("Geometry")) {
             program = CmProgram.GEOM_PROF;
         }
-        
         else if(type.contains("Grad Prep")) {
             program = CmProgram.NATIONAL;
         }
-        
+        else if(type.contains("College Basic Math")) {
+            program = CmProgram.BASICMATH;
+        }
+        else if(type.contains("College Elementary Algebra")) {
+            program = CmProgram.ELEMALG;
+        }
         
         QuizSize quizSize = null;
         switch(action.getNumberProblems()) {
