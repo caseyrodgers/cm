@@ -17,6 +17,7 @@ function moveToLocation(el) {
   document.location.href = dest;
 }
 
+var foundHTML   = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=foundations'>Foundations</a></div>";
 var essHTML     = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=ess'>Essentials</a></div>";
 var prealgHTML  = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=pre-alg'>Pre-Algebra</a></div>";
 var alg1HTML    = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=alg 1'>Algebra 1</a></div>";
@@ -26,7 +27,7 @@ var basicHTML   = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=ba
 var elemalgHTML = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=elemalg'>College Elementary Algebra</a></div>";
 
 function programMenu() { 
-	html = essHTML + prealgHTML + alg1HTML + alg2HTML + geomHTML + basicHTML + elemalgHTML;
+	html = foundHTML + essHTML + prealgHTML + alg1HTML + alg2HTML + geomHTML + basicHTML + elemalgHTML;
 	showSampleSessionDialog(html, 'Select a Subject');
 }
 
