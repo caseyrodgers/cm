@@ -1593,6 +1593,12 @@ WHERE  level = 2
 ORDER BY cast(title_number as unsigned)
 
 
+.key=TEST_DEF_IDS_FOR_PROGRAM
+SELECT td.test_def_id
+FROM   HA_TEST_DEF td
+WHERE  td.prog_id = ?
+  AND  td.is_active > 0
+ORDER BY td.load_order
 
 .key=CREATE_NEW_TEST
 
