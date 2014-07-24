@@ -475,7 +475,9 @@ public class HaTestDefDao extends SimpleJdbcDaoSupport {
         PreparedStatement ps = null;
         try {
             List<HaTestDef> testDefs = new ArrayList<HaTestDef>();
-            String sql = "select test_def_id from HA_TEST_DEF td where prog_id = ? and is_active = 1 order by load_order";
+
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_DEF_IDS_FOR_PROGRAM");
+
             ps = conn.prepareStatement(sql);
             ps.setString(1, programType);
             ResultSet rs = ps.executeQuery();
