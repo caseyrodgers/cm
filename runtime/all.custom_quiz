@@ -397,11 +397,11 @@ topics/binomial-theorem.html	alg2ptests3_customquiz_2_1_2_1
 topics/binomial-theorem.html	alg2ptests3_customquiz_2_1_3_2
 topics/binomial-theorem.html	alg2ptests3_customquiz_2_1_4_2
 topics/box-and-whisker-plots.html	alg1ptests_11_1_chapter11practicetest_11_11
-topics/box-and-whisker-plots.html	prealgptests2_coursetest_1_pre-algebrapracticetest_23_1
-topics/box-and-whisker-plots.html	prealgptests2_coursetest_2_pre-algebrapracticetest_23_2
-topics/box-and-whisker-plots.html	prealgptests2_coursetest_3_pre-algebrapracticetest_23_3
-topics/box-and-whisker-plots.html	prealgptests2_coursetest_1_pre-algebrapracticetest_24_1
-topics/box-and-whisker-plots.html	prealgptests2_coursetest_2_pre-algebrapracticetest_24_2
+topics/box-and-whisker-plots.html	prealgptests2_1_1_customquiz_4_1
+topics/box-and-whisker-plots.html	prealgptests2_1_1_customquiz_5_1
+topics/box-and-whisker-plots.html	prealgptests2_1_1_customquiz_6_1
+topics/box-and-whisker-plots.html	prealgptests2_1_1_customquiz_7_1
+topics/box-and-whisker-plots.html	prealgptests2_1_1_customquiz_8_1
 topics/box-and-whisker-plots.html	prealgptests2_coursetest_1_pre-algebrapracticetest_27_1
 topics/box-and-whisker-plots.html	prealgptests2_coursetest_2_pre-algebrapracticetest_27_2
 topics/box-and-whisker-plots.html	prealgptests2_coursetest_3_pre-algebrapracticetest_27_3
@@ -2447,6 +2447,7 @@ topics/quartiles.html	alg1ptests_11_1_chapter11practicetest_12_11
 topics/quartiles.html	alg1ptests3_coursetest_1_algebra1practicetest_58_1
 topics/quartiles.html	alg1ptests3_coursetest_2_algebra1practicetest_58_2
 topics/quartiles.html	alg1ptests3_coursetest_3_algebra1practicetest_58_3
+topics/quartiles.html	prealgptests2_1_1_customquiz_9_1
 topics/quotient-of-powers-property.html	alg1ptests_7_1_chapter7practicetest_14_7
 topics/quotient-of-powers-property.html	alg1ptests3_coursetest_1_algebra1practicetest_41_1
 topics/quotient-of-powers-property.html	alg1ptests3_coursetest_2_algebra1practicetest_41_2
@@ -2477,7 +2478,9 @@ topics/range-of-data.html	essptests2_coursetest_4_essentialspracticetest_34_4
 topics/range-of-data.html	essptests2_coursetest_5_essentialspracticetest_34_5
 topics/range-of-data.html	prealgptests_12_1_chapter12practicetest_20_12
 topics/range-of-data.html	prealgptests_12_1_chapter12practicetest_8_13
-topics/range-of-data.html	prealgptests2_coursetest_3_pre-algebrapracticetest_21_3
+topics/range-of-data.html	prealgptests2_1_1_customquiz_1_1
+topics/range-of-data.html	prealgptests2_1_1_customquiz_2_1
+topics/range-of-data.html	prealgptests2_1_1_customquiz_3_1
 topics/rate-time-distance-problems.html	alg1ptests_11_1_chapter11practicetest_5_11
 topics/rate-time-distance-problems.html	alg1ptests_11_1_chapter11practicetest_6_11
 topics/rate-time-distance-problems.html	alg1ptests_3_1_chapter3practicetest_5_4
