@@ -3,7 +3,6 @@ package hotmath.testset.ha;
 import hotmath.HotMathException;
 import hotmath.HotMathProperties;
 import hotmath.assessment.AssessmentPrescription;
-import hotmath.assessment.AssessmentPrescriptionFactory;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.server.model.CmUserProgramDao;
@@ -217,6 +216,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
 
         final List<String> testIds = (List<String>) (segment == EMPTY_TEST ? new ArrayList<String>() : testDef.getTestIdsForSegment(userProgram, segment,
                 config, segmentSlot));
+        __logger.info("createTest(): testIds.size(); " + testIds.size());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -264,7 +264,9 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
         // extract the auto created pk
         final int testId = keyHolder.getKey().intValue();
 
-        if ((testDef.getTestDefId() != CmProgram.CUSTOM_QUIZ.getDefId()) && (testDef.getTestDefId() != CmProgram.AUTO_ENROLL.getDefId())) {
+        if ((testDef.getTestDefId() != CmProgram.CUSTOM_QUIZ.getDefId()) &&
+        	(testDef.getTestDefId() != CmProgram.AUTO_ENROLL.getDefId()) &&
+        	(testDef.getTestDefId() != CmProgram.AUTO_ENROLL_COLLEGE.getDefId())) {
             randomizePids(testIds);
         }
 
