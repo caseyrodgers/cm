@@ -3953,19 +3953,17 @@ join CM_ASSIGNMENT_PIDS p on p.assign_key=a.assign_key
 left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pid and s.uid=u.uid
 
 left join (
-    select pa.assign_key, pa.pid, pa.user_id, max(pa.id) as max_id
-    from CM_ASSIGNMENT_PID_ANSWERS pa
-    where assign_key = ?
-    group by pa.user_id, pa.assign_key, pa.pid ) l
-    on l.assign_key=a.assign_key and l.pid=p.pid and l.user_id=u.uid
-    
-left join (
     select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer
     from CM_ASSIGNMENT_PID_ANSWERS pa
-    where assign_key = ?) q
-    on q.id=l.max_id
-    
-    
+    where assign_key = ?
+      and pa.id in (select l.max_id
+                    from (select pa.assign_key, pa.pid, pa.user_id, max(pa.id) as max_id
+                          from CM_ASSIGNMENT_PID_ANSWERS pa
+                          where assign_key = ?
+                          group by pa.user_id, pa.assign_key, pa.pid) l
+                   )
+    ) q on q.assign_key=a.assign_key and q.pid=p.pid and q.user_id=u.uid
+
 left join (
     select user_id, pid,count(*),1 as has_show_work
     from CM_ASSIGNMENT_PID_WHITEBOARD 

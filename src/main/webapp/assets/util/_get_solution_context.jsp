@@ -7,7 +7,7 @@
     int runId = SbUtilities.getInt(request.getParameter("run_id"));
     String pid = request.getParameter("pid");
     
-    String variables = SolutionDao.getInstance().getSolutionContext_Debug(runId, pid).getContextJson();
+    String variables = SolutionDao.getInstance().getSolutionContext(runId, pid).getContextJson();
 %>
 </head>
 <body>

@@ -38,13 +38,13 @@ public class SolutionContextChecker implements SbTestImpl {
         try {
             conn = HMConnectionPool.getConnection();
 
-            executeSilent(conn, "drop table junk_context");
-            executeSilent(conn, "create table junk_context(aid integer, uid integer, rid integer, pid varchar(100))");
-            _psLog = conn.prepareStatement("insert into junk_context(aid, uid, rid, pid)values(?,?,?,?)");
+            // executeSilent(conn, "drop table junk_context");
+            executeSilent(conn, "create table junk_context(aid integer, uid integer, rid integer, pid varchar(100), context text, check_time datetime)");
+            _psLog = conn.prepareStatement("insert into junk_context(aid, uid, rid, pid, context, check_time)values(?,?,?,?,?, now())");
             ResultSet rs  = conn.createStatement().executeQuery(sql);
             while(rs.next()) {
                 int runId = rs.getInt("run_id");
-                
+
                 //System.out.println("Checking run_id: " +    runId);
                 checkForCorruptedSolutionContexts(conn, runId);
             }
@@ -64,7 +64,7 @@ public class SolutionContextChecker implements SbTestImpl {
         catch(Exception e) {
             // silent
         }
-                
+
     }
 
     private void checkForCorruptedSolutionContexts(Connection conn, int runId) throws Exception {
@@ -84,13 +84,19 @@ public class SolutionContextChecker implements SbTestImpl {
                     _psLog.setInt(2,  u.getUserKey());
                     _psLog.setInt(3,  runId);
                     _psLog.setString(4,  rs.getString("pid"));
-                    
+                    _psLog.setString(5, uncompressedContext);
+
                     _psLog.executeUpdate();
-                    
-                    System.out.println(tr.getHaTest().getUser().getAid() + ", " + tr.getHaTest().getUser().getUserKey() +  ", " + rs.getInt("run_id") + ", " + rs.getString("pid"));
+
+                    String sqldel = "delete from HA_SOLUTION_CONTEXT where run_id = " + runId + " and pid = '" + rs.getString("pid") + "'";
+                    conn.createStatement().executeUpdate(sqldel);
+
+
+                    System.out.println(new java.util.Date() + ", " + tr.getHaTest().getUser().getAid() + ", " + tr.getHaTest().getUser().getUserKey() +  ", " + rs.getInt("run_id") + ", " + rs.getString("pid"));
+                    System.out.println(uncompressedContext + "\n\n");
                 }
             }
-                    
+
         }
         finally {
             SqlUtilities.releaseResources(null,  ps, null);
@@ -99,9 +105,14 @@ public class SolutionContextChecker implements SbTestImpl {
 
     static final String UNDEFINED="dW5kZWZpbmV";
     private boolean contextIsCorrupted(String uncompressedContext) throws Exception {
-        
+
         JSONObject json = new JSONObject(uncompressedContext);
         JSONArray vars = json.getJSONArray("_variables");
+
+        if(vars.length() < 2) {
+            return false;
+        }
+
         for(int i=0;i<vars.length();i++) {
             JSONObject var = (JSONObject)vars.get(i);
             String val = var.getString("value");
@@ -113,7 +124,7 @@ public class SolutionContextChecker implements SbTestImpl {
                 return false;
             }
         }
-        
+
         /** all vars are undefined/corrupted */
         return true;
     }
@@ -129,7 +140,7 @@ public class SolutionContextChecker implements SbTestImpl {
         try {
             System.out.println("SolutionContextChecker: look for invalid/corrupt solution contexts (writes to db table: junk_context)");
             new SolutionContextChecker().runTests();
-            
+
             System.out.println("Test Complete");
         }
         catch(Exception e) {

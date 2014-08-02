@@ -5,6 +5,7 @@ showUsage() {
     echo "  noupdate - don't update CVS"
     echo "  admin   - GWT compile of CM Admin"
     echo "  student - GWT compile of CM Student"
+    echo "  tools   - GWT compile of CM Tools"
     echo "  qa      - GWT compile of CM QA"
     exit 1;
 }
@@ -24,20 +25,26 @@ while [ $# -ne 0 ]; do
     case "$c" in
     "admin")
        echo building admin...;
-       mvn -o compile;
-       mvn gwt:compile -Dgwt.module=hotmath.gwt.cm_admin.CatchupMathAdmin -o
+       #mvn -o compile;
+       mvn gwt:compile -Dgwt.module=hotmath.gwt.cm_admin.CatchupMathAdmin -o -Dgwt.compiler.force=true
        cp -r src/main/webapp/cm_admin target/cm-1.0-SNAPSHOT
        ;;
     "student")
        echo building student...;
-       mvn -o compile;
-       mvn gwt:compile -Dgwt.module=hotmath.gwt.cm.CatchupMath -o
+       #mvn -o compile;
+       mvn gwt:compile -Dgwt.module=hotmath.gwt.cm.CatchupMath -o -Dgwt.compiler.force=true
        cp -r src/main/webapp/cm_student target/cm-1.0-SNAPSHOT
+       ;;
+    "tools")
+       echo building tools...;
+       #mvn -o compile;
+       mvn gwt:compile -Dgwt.module=hotmath.gwt.cm_tools.CatchupMathTools -o -Dgwt.compiler.force=true
+       cp -r src/main/webapp/cm_tools target/cm-1.0-SNAPSHOT
        ;;
 
     "qa")
        echo building qa;
-       mvn -o compile;
+       #mvn -o compile;
        mvn gwt:compile -Dgwt.module=hotmath.gwt.cm_qa.CmQa -o
        cp -r src/main/webapp/cm_qa target/cm-1.0-SNAPSHOT
        ;;

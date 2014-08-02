@@ -47,12 +47,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 /** Provides a standard tutor viewer that handles the complications
  *  of providing a tutor viewer, such as:
- *  
+ *
  *  MathMl processing
  *  Next/Prev Step
  *  Tutor widget handling, event processing
  *  Button bar management (which buttons are active)
- * 
+ *
  * @author casey
  *
  */
@@ -63,22 +63,22 @@ public class TutorWrapperPanel extends Composite {
 
     @UiField
     TouchButton returnButton;
-    
-    @UiField 
+
+    @UiField
     TouchButton stepNext, stepPrev;
-    
+
     @UiField
     Element buttonBar;
-    
+
     @UiField
     DivElement readonlyMask;
-    
+
     @UiField
     Button debugInfo;
-    
-    @UiField 
+
+    @UiField
     Element problemStatus;
-    
+
     @UiField
     DivElement widgetCorrectInfo;
 
@@ -93,7 +93,7 @@ public class TutorWrapperPanel extends Composite {
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
     static TutorWrapperPanel __lastInstance;
-    
+
     boolean _wasWidgetAnswered;
 
     public TutorWrapperPanel(boolean showButtonBar, boolean showReturnButton, boolean showWhiteboardButton, boolean saveVariableContext, TutorCallback tutorCallback) {
@@ -101,8 +101,8 @@ public class TutorWrapperPanel extends Composite {
         this.tutorCallback = tutorCallback;
         this.saveVariableContext = saveVariableContext;
         initWidget(uiBinder.createAndBindUi(this));
-        
-        
+
+
         /** Turn on debugging CSS */
         if (CmGwtUtils.getQueryParameter("debug") != null) {
             addStyleName("debug-mode");
@@ -133,25 +133,25 @@ public class TutorWrapperPanel extends Composite {
                 }-*/;
             });
         }
-        
+
         stepNext.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                moveTutorNextStep(); 
+                moveTutorNextStep();
             };
         });
 
         stepPrev.addClickHandler(new ClickHandler() {
             @Override
             native public void onClick(ClickEvent event) /*-{
-                $wnd.TutorManager.showPreviousStep(); 
+                $wnd.TutorManager.showPreviousStep();
             }-*/;
         });
-        
+
     }
-    
+
     /** Provide button bar customization
-     * 
+     *
      * @param setup
      */
     public void setupButtonBar(ButtonBarSetup setup) {
@@ -159,14 +159,14 @@ public class TutorWrapperPanel extends Composite {
         showElement(stepPrev.getElement(), setup.showNextPrev);
         showElement(whiteboardButton.getElement(), setup.showWhiteboard);
         showElement(returnButton.getElement(), setup.showReturn);
-        
+
         /** Override the RETURN button label */
         if(setup.returnButtonText != null) {
             String sexyTmp = "<span><span>" + setup.returnButtonText + "</span></span>";
             returnButton.getElement().setInnerHTML(sexyTmp);
         }
     }
-    
+
     private void showElement(Element element, boolean b) {
         if(b) {
             element.removeClassName("display_none");
@@ -179,17 +179,17 @@ public class TutorWrapperPanel extends Composite {
     native public void showTutorMessage(String message) /*-{
         $wnd.TutorManager.showMessage(message);
     }-*/;
-    
-    
+
+
     /** Unlock the solution so user can move through without
      *  having to enter a value.
-     *  
+     *
      */
     public void unlockSolution() {
         _wasWidgetAnswered = true;
         jsni_moveToFirstStep();
     }
-    
+
     private void moveTutorNextStep() {
         if(isWidgetAndNotAnswered()) {
             showTutorMessage("Check your answer first");
@@ -199,8 +199,8 @@ public class TutorWrapperPanel extends Composite {
             jsniMoveTutorNextStep();
         }
     }
-    
-    
+
+
     private boolean isWidgetAndNotAnswered() {
         if(isThereIsATutorWidget()) {
             return  !_wasWidgetAnswered;
@@ -209,15 +209,15 @@ public class TutorWrapperPanel extends Composite {
             return false;
         }
     }
-    
+
     native private void jsniMoveTutorNextStep() /*-{
          $wnd.TutorManager.showNextStep();
     }-*/;
 
-    
-    /** Set the tutor widget's value as defined 
-     *  by each individual tutor widget type.  
-     *  
+
+    /** Set the tutor widget's value as defined
+     *  by each individual tutor widget type.
+     *
      *  {type: 'string',value:'the value'};
      *  {type: 'object',value: {prop: 'test'}};
      * @param value
@@ -226,29 +226,29 @@ public class TutorWrapperPanel extends Composite {
     public void setTutorWidgetValue(String value) {
         _lastWidgetValue = value;
         jsni_setTutorWidgetValue(value);
-        
+
         _wasWidgetAnswered=true;
     }
 
-    public void loadSolution(final String pid, final String title, final boolean hasShowWork, final boolean shouldExpandSolution, final String jsonConfig, 
+    public void loadSolution(final String pid, final String title, final boolean hasShowWork, final boolean shouldExpandSolution, final String jsonConfig,
             final CallbackAfterSolutionLoaded callback) {
         Log.debug("TutorWrapperPanel->loadSolution: " + pid);
-        
+
         GetSolutionAction action = new GetSolutionAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getRunId(), pid);
         CmTutor.getCmService().execute(action, new AsyncCallback<SolutionInfo>() {
             @Override
             public void onSuccess(SolutionInfo result) {
                 try {
-                    
+
                     Log.debug("TutorWrapperPanel->Solution loaded: " + pid);
-                    
+
                     _solutionInfo = result;
-    
+
                     String variableContext = null;
                     if (_solutionInfo.getContext() != null) {
                         variableContext = _solutionInfo.getContext().getContextJson();
                     }
-    
+
                     initializeTutor(TutorWrapperPanel.this, pid, jsonConfig, result.getJs(), result.getHtml(), title,
                             hasShowWork, shouldExpandSolution, variableContext);
                 }
@@ -270,42 +270,42 @@ public class TutorWrapperPanel extends Composite {
 
     /**
      * When the input widget has been updated.
-     * 
+     *
      * If tutor is in readonly mode, then disallow.
-     * 
-     * Inform callback of either case. 
-     * 
+     *
+     * Inform callback of either case.
+     *
      * @param inputValue
      * @param correct
      */
     public void tutorWidgetComplete(String inputValue, boolean correct) {
-        
+
         Log.debug("tutorWidgetComplete (in GWT) called with value: " + inputValue);
-        
+
         if(_readOnly) {
             jsni_setTutorWidgetValue(_lastWidgetValue);
             this.tutorCallback.tutorWidgetCompleteDenied(inputValue, correct);
             return;
         }
         else {
-        	if(!correct  && tutorCallback.moveFirstHintOnWidgetIncorrect()) {
-        	    jsni_moveToFirstStep();
-        	}
-        	
+                if(!correct  && tutorCallback.moveFirstHintOnWidgetIncorrect()) {
+                    jsni_moveToFirstStep();
+                }
+
             if (this.tutorCallback != null) {
-                
+
                 /** Only save first widget value
-                 * 
+                 *
                  */
                 if(!_wasWidgetAnswered) {
                     saveTutorWidgetAsComplete(tutorCallback.getSaveTutorWidgetCompleteAction(inputValue, correct));
                     _wasWidgetAnswered=true;
-                    
+
                     if(correct) {
-                    	CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCorrectEvent(true));
+                        CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCorrectEvent(true));
                     }
                 }
-                
+
                 this.tutorCallback.tutorWidgetComplete(inputValue, correct);
                 if(correct && tutorCallback.showTutorWidgetInfoOnCorrect()) {
                     // widgetCorrectInfo.setClassName("widget_correct_info_show");
@@ -313,12 +313,12 @@ public class TutorWrapperPanel extends Composite {
             } else {
                 Window.alert("tutorWidgetComplete not defined");
             }
-            
+
             CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCompleteEvent(_solutionInfo.getPid(), inputValue, correct));
         }
     }
-    
-    
+
+
     private void saveTutorWidgetAsComplete(Action<UserTutorWidgetStats> action) {
         if(action != null) {
             CmTutor.getCmService().execute(action,new AsyncCallback<UserTutorWidgetStats>() {
@@ -334,16 +334,16 @@ public class TutorWrapperPanel extends Composite {
         }
     }
 
-    
+
     /** Move to the first step, if not not already viewed */
     private native void jsni_moveToFirstStep() /*-{
         if ($wnd.getCurrentStepUnitNumber() < 1) {
             $wnd.gotoStepUnit(0);
         }
     }-*/;
-    
+
     /** Allow solution XML to loaded externally
-     * 
+     *
      * @param info
      * @param instance
      * @param pid
@@ -359,28 +359,28 @@ public class TutorWrapperPanel extends Composite {
         _solutionInfo = info;
         initializeTutor(instance, info.getPid(), jsonConfig, info.getJs(),info.getHtml(), title, hasShowWork, shouldExpandSolution, solutionContext);
     }
-    
-    
-    
+
+
+
     private void initializeTutor(Widget instance, final String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) {
-        
+
         Log.debug("Solution loading: " + pid);
                 _wasWidgetAnswered = false;
         widgetCorrectInfo.setClassName("widget_correct_info_hide");
         setProblemStatusControl("");
-        
+
         String submitButtonText = tutorCallback.getSubmitButtonText();
         WidgetStatusIndication indicateWidgetStatus = tutorCallback.indicateWidgetStatus();
-        
+
         boolean installCustomSteps = tutorCallback.installCustomSteps();
-        
-        
+
+
         if(CmGwtUtils.getQueryParameterValue("debug_problem").equals("true")) {
             tutorCallback.debugLogOut("Problem Debug", "Enabling problem debug");
             enableTutorDebugMode(true);
         }
-        
-        
+
+
         jsni_initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus.name(), installCustomSteps);
 
         debugInfo.setText(pid);
@@ -390,9 +390,9 @@ public class TutorWrapperPanel extends Composite {
                 Window.open("/solution_editor/SolutionEditor.html?pid=" + pid.split("\\$")[0], "SolutionEditor", "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes");
             }
         });
-        
+
         /** If there was an answer entered
-         * 
+         *
          */
         if(_solutionInfo.getWidgetResult() != null && _solutionInfo.getWidgetResult().getValue() != null) {
             Log.debug("TutorWrapperPanel->Setting widget value: " + _solutionInfo.getWidgetResult() );
@@ -400,15 +400,15 @@ public class TutorWrapperPanel extends Composite {
             jsni_moveToFirstStep();
             _wasWidgetAnswered = true;
         }
-        
-        
+
+
         processStaticWhiteboards();
-        
+
         CmRpcCore.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
     }
 
     /** Enable or disable the tutor loading/problem set debug mode
-     * 
+     *
      * @param trueFalse
      */
     private native void enableTutorDebugMode(boolean trueFalse) /*-{
@@ -419,14 +419,14 @@ public class TutorWrapperPanel extends Composite {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        
+
         /** Call the readonly mask only once the widget
          *  is inserted into DOM, otherwise the resize
          *  of the mask does not know the dimensions.
          */
         setupReadonlyMask(_readOnly);
     }
-    
+
     private void setupReadonlyMask(boolean readOnly) {
         _readOnly=readOnly;
         Log.debug("Setting readonly mask: " + readOnly);
@@ -434,7 +434,7 @@ public class TutorWrapperPanel extends Composite {
             int w = getWidget().getElement().getOffsetWidth();
             int h = getWidget().getElement().getOffsetHeight();
             Log.debug("Setting tutor readonly mask to size: " + w + ", " + h);
-            
+
             readonlyMask.getStyle().setOpacity(.1);
             readonlyMask.getStyle().setWidth(w, Unit.PX);
             readonlyMask.getStyle().setHeight(h, Unit.PX);
@@ -444,79 +444,79 @@ public class TutorWrapperPanel extends Composite {
             readonlyMask.getStyle().setDisplay(Display.NONE);
         }
     }
-    
-    
+
+
     private native void jsni_setTutorWidgetValue(String value)/*-{
         $wnd.TutorSolutionWidgetValues.setTutorWidgetValues(value, false);
     }-*/;
-    
-    
+
+
     private void gwt_tutorIsReadonlyMessage() {
         tutorCallback.tutorWidgetCompleteDenied(null, false);
     }
-    
-    
+
+
     /** initialize external tutor JS/HTML and provide glue between external JS
      * methods and GWT.
-     * 
+     *
      */
-    private native void jsni_initializeTutorNative(Widget instance, String pid, String jsonConfig, 
+    private native void jsni_initializeTutorNative(Widget instance, String pid, String jsonConfig,
             String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,
             boolean shouldExpandSolution,String solutionContext, String submitButtonText, String indicateWidgetStatus, boolean installCustomSteps) /*-{
-            
-            
+
+
         // $wnd.debug =  @hotmath.gwt.cm_core.client.CmGwtUtils::gwt_log(Ljava/lang/String;);
-        
+
         var that = this;
-        
+
         $wnd.solutionSetComplete = function(numCorrect, limit) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_solutionSetComplete(II)(numCorrect,limit);
         }
-    
-    
+
+
         if (typeof $wnd.TutorDynamic == 'undefined') {
            alert('TutorDynamic has not been defined');
            return;
         }
-        
+
         if (typeof $wnd.TutorManager == 'undefined') {
            alert('TutorManager has not been defined');
            return;
         }
-        
+
         $wnd.TutorDynamic.setSolutionTitle = function(probNum, total) {
-            $wnd.TutorDynamic.setSolutionTitle = 
-            function() { 
-                that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_setSolutionTitle(II)(probNum,total); 
+            $wnd.TutorDynamic.setSolutionTitle =
+            function() {
+                that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_setSolutionTitle(II)(probNum,total);
             }
         }
-        
+
         $wnd.tutorWidgetCompleteAux = function(yesNo) {
            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::tutorWidgetCompleteAux(Z)(yesNo);
         }
-        
+
         $wnd.tutorWidgetComplete = function(inputValue,yesNo) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::tutorWidgetComplete(Ljava/lang/String;Z)(inputValue, yesNo);
         }
 
-        
+
         $wnd.gwt_scrollToBottomOfScrollPanel = function(top) {
            $wnd.scrollTo(0,top);
         }
-        
+
         $wnd.gwt_tutorNewProblem = function(problemNumber) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_tutorNewProblem(I)(problemNumber);
         }
-        
+
         // called when the solution has been fully viewed, to the last step
         $wnd.gwt_solutionHasBeenViewed = function(value) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_solutionHasBeenViewed(Ljava/lang/String;)(value);
         }
-        
+
         $wnd.gwt_showWhiteboard = function() {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_showWhiteBoard()();
         }
-        
+
         $wnd.gwt_tutorIsReadonlyMessage = function() {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_tutorIsReadonlyMessage()();
         }
@@ -536,7 +536,7 @@ public class TutorWrapperPanel extends Composite {
        catch(e) {
            alert('error saving solution context in JSNI: ' + e);}
        }
-    
+
        $wnd.gwt_getSolutionProblemContext = function(probNum) {
            try {
                return that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_getSolutionProblemContext(I)(probNum);
@@ -545,19 +545,19 @@ public class TutorWrapperPanel extends Composite {
                alert(e)
            };
        }
-       
+
        $wnd.gwt_tutorQuestionGuessChanged = function(id,selection,value) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_tutorQuestionGuessChanged(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id,selection,value);
        }
-       
+
        $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext,submitButtonText, indicateWidgetStatus, installCustomSteps);
-       
+
        $wnd.Flashcard_mngr.problemGenDebugInfo =  function (code, info) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_problemGenDebugInfo(Ljava/lang/String;Ljava/lang/String;)(code, info);
-       }      
-       
-   }-*/;    
-    
+       }
+
+   }-*/;
+
     private void gwt_problemGenDebugInfo(String code, String info) {
         tutorCallback.debugLogOut("Problem Debug", "gwt_problemGenDebugInfo: code: " + code + ", info: " + info);
     }
@@ -565,58 +565,58 @@ public class TutorWrapperPanel extends Composite {
     private void gwt_showWhiteBoard() {
         this.tutorCallback.showWhiteboard();
     }
-    
+
     private void resizeTutor() {
         Log.debug("Resizing tutor");
         if(_readOnly) {
             setupReadonlyMask(_readOnly);
         }
     }
-    
-    
+
+
     private void gwt_tutorQuestionGuessChanged(String id, String selection, String correct) {
         boolean isCorrect = correct != null && correct.equalsIgnoreCase("true")?true:false;
         //tutorWidgetComplete(selection, isCorrect);
         this.tutorCallback.tutorWidgetComplete(selection, isCorrect);
-        
+
         jsni_markMultiChoiceWidgetStatus(isCorrect);
-        
-        
+
+
         CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCompleteEvent(_solutionInfo.getPid(), selection, isCorrect));
     }
-    
+
     native private void jsni_markMultiChoiceWidgetStatus(boolean correct) /*-{
          $wnd.TutorSolutionWidgetValues.getActiveWidget().setWidgetMessage(correct?'true':'false');
-    }-*/; 
-    
+    }-*/;
+
     SolutionInfo _solutionInfo;
     Map<Integer, String> _variableContexts = new HashMap<Integer, String>();
 
     private String gwt_getSolutionProblemContext(int probNum) {
         return _solutionInfo.getContext().getContextJson();
     }
-    
-    
+
+
     native private boolean isThereIsATutorWidget() /*-{
         return $wnd.TutorSolutionWidgetValues.isWidgetOnSolution();
     }-*/;
-    
+
     private void setTutorBarStateEnabled(boolean enableYesNo) {
         if(true) {
             return;
         }
-        
-        
+
+
         if(!enableYesNo) {
             stepNext.setEnabled(false);
             stepPrev.setEnabled(false);
         }
     }
-        
+
     private void gwt_solutionHasBeenInitialized(final String variablesJson, final String pid, final int problemNumber) {
-        
+
         Log.debug("Calling solutionHasBeenInitialized: " + tutorCallback.getClass().getName());
-        
+
         this.tutorCallback.solutionHasBeenInitialized();
 
         Log.debug("solutionHasBeenInitialized complete");
@@ -624,16 +624,16 @@ public class TutorWrapperPanel extends Composite {
         if(isThereIsATutorWidget()) {
             setTutorBarStateEnabled(false);
         }
-        
+
         if(!saveVariableContext) {
             Log.debug("Not saving solution context for: " + pid);
             return;
         }
-        
+
         /**
          * if this is already stored in variables, then no need to save on
          * server
-         * 
+         *
          */
         if (variablesJson == null || variablesJson.length() < 100) {
             return;
@@ -648,15 +648,24 @@ public class TutorWrapperPanel extends Composite {
 
         } else {
             Log.debug("Saving solution context: " + pid);
+
+            // DEBUG ...
+            String dRec = jsni_extractTutorDataRecord();
+            if(dRec != null) {
+                saveTutorDataRecord(dRec, _solutionInfo.getPid(), UserInfo.getInstance().getRunId());
+            }
+
+
+
             Action<RpcData> action = tutorCallback.getSaveSolutionContextAction(variablesJson, _solutionInfo.getPid(), problemNumber);
-            if(action != null) {    
+            if(action != null) {
                 CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
                     @Override
                     public void onSuccess(RpcData result) {
                         _solutionInfo.setContext(new SolutionContext(pid, problemNumber, variablesJson));
                         Log.debug("Context saved");
                     }
-    
+
                     @Override
                     public void onFailure(Throwable caught) {
                         Log.debug("Error saving solution context: " + caught, caught);
@@ -666,7 +675,14 @@ public class TutorWrapperPanel extends Composite {
         }
     }
 
-    
+    private String jsni_extractTutorDataRecord() {
+        return "the TUTOR DATA RECORD";
+    }
+
+    private void saveTutorDataRecord(String dataRec, String pid, int runId) {
+        Window.alert("DATA RECORD: " + dataRec);
+    }
+
     protected void gwt_solutionHasBeenViewed(String value) {
         this.tutorCallback.solutionHasBeenViewed(value);
     }
@@ -690,7 +706,7 @@ public class TutorWrapperPanel extends Composite {
             Window.alert("gwt_tutorNewProblem: no callback defined");
         }
     }
-    
+
     static public interface CallbackAfterSolutionLoaded {
         void solutionLoaded(SolutionInfo solutionInfo);
     }
@@ -700,7 +716,7 @@ public class TutorWrapperPanel extends Composite {
     public void setReadOnly(boolean b) {
         _readOnly = b;
     }
-    
+
     static {
         CmRpcCore.EVENT_BUS.addHandler(WindowHasBeenResizedEvent.TYPE, new WindowHasBeenResizedHandler() {
             @Override
@@ -715,12 +731,12 @@ public class TutorWrapperPanel extends Composite {
                 });
             }
         });
-        
-        
+
+
         CmRpcCore.EVENT_BUS.addHandler(ShowTutorWidgetCompleteInfoEvent.TYPE, new ShowTutorWidgetCompleteInfoHandler() {
             @Override
             public void showTutorWidgetCompleteInfo() {
-                __lastInstance.showTutorWidgetCompleteInfo();   
+                __lastInstance.showTutorWidgetCompleteInfo();
             }
         });
     }
@@ -728,11 +744,11 @@ public class TutorWrapperPanel extends Composite {
 
     protected void showTutorWidgetCompleteInfo() {
         Log.debug("showTutorWidgetCompleteInfo called");
-        widgetCorrectInfo.addClassName(".show");    
+        widgetCorrectInfo.addClassName(".show");
     }
 
     /** Provide granular customization of button bar
-     * 
+     *
      * @author casey
      *
      */
@@ -740,9 +756,9 @@ public class TutorWrapperPanel extends Composite {
         boolean showNextPrev;
         boolean showWhiteboard;
         boolean showReturn;
-        
+
         String returnButtonText;
-        
+
         public ButtonBarSetup(boolean showNextPrev, boolean showWhiteboard, boolean showReturn, String returnButtonText) {
             this.showNextPrev = showNextPrev;
             this.showWhiteboard = showWhiteboard;
@@ -750,9 +766,9 @@ public class TutorWrapperPanel extends Composite {
             this.returnButtonText = returnButtonText;
         }
     }
-    
-    
-    
+
+
+
     public native void jsni_addWhiteboardSubmitButton() /*-{
         var widgetHolder = $doc.getElementById("hm_flash_widget");
         if(widgetHolder) {
@@ -766,7 +782,7 @@ public class TutorWrapperPanel extends Composite {
 
     }-*/;
 
-    
+
     static native public void jsni_showWhiteboardStatus(String status) /*-{
         if(status == 'Submitted' || status == 'Correct' || status == 'Incorrect' || status == 'Half Correct') {
             var widgetHolder = $doc.getElementById("hm_flash_widget");
@@ -774,7 +790,7 @@ public class TutorWrapperPanel extends Composite {
             //$wnd.setWidgetMessage(status);
         }
     }-*/;
-    
+
 
 
     private void gwt_submitWhiteboardAnswer() {
@@ -787,11 +803,11 @@ public class TutorWrapperPanel extends Composite {
         if(widgetHolder) {
             widgetHolder.innerHTML = message;
         }
-    }-*/;    
-    
-    
+    }-*/;
+
+
     /** Remove the entire whiteboard message area
-     * 
+     *
      */
     static native public void jsni_hideWhiteboardStatus() /*-{
     var widgetHolder = $doc.getElementById("hm_flash_widget");
@@ -803,9 +819,9 @@ public class TutorWrapperPanel extends Composite {
     private void setProblemStatusControl(String status) {
         problemStatus.setInnerHTML(status);
     }
-    
+
     public void setProblemStatus(AssignmentProblem problem) {
-            
+
             if (problem.getProblemType() == ProblemType.WHITEBOARD) {
                 String status = problem.getStatus();
                 if ((!problem.isAssignmentClosed() && !problem.isGraded()) && !status.equals(ProblemStatus.SUBMITTED.toString())) {
@@ -814,7 +830,7 @@ public class TutorWrapperPanel extends Composite {
                     TutorWrapperPanel.jsni_hideWhiteboardStatus();
                 }
             }
-            
+
             String msg = "";
             if(problem.isAssignmentClosed() || problem.isGraded()) {
                 msg = problem.getStudentProblem().getStatus();
@@ -825,46 +841,46 @@ public class TutorWrapperPanel extends Composite {
                     msg = "Submitted";
                 }
             }
-            
+
             if(msg.equals("Viewed")) {
                 msg = "Unanswered";
             }
-            
-            
+
+
             setProblemStatusControl(msg);
         }
-    
+
         static native public void processStaticWhiteboards() /*-{
             $wnd.setupStaticWhiteboards();
         }-*/;
-        
-        
-        
-        
-        
-        /** Extract just the widget JSON 
-         * 
+
+
+
+
+
+        /** Extract just the widget JSON
+         *
          * @param html
          * @return
          */
         static public String extractWidgetJson(String html) {
 
            String START_TOKEN="hm_flash_widget_def";
-           
+
            int startPos = html.indexOf(START_TOKEN);
            if(startPos == -1) {
                return null;
            }
-           
+
            startPos = html.indexOf("{", startPos);
            int endPos = html.indexOf("}", startPos);
            String json = html.substring(startPos, endPos+1);
-           
+
            return json;
         }
-        
-        /** Return html without any widget definition 
-         * 
+
+        /** Return html without any widget definition
+         *
          * @param html
          * @return
          */
@@ -879,8 +895,8 @@ public class TutorWrapperPanel extends Composite {
 
             String htmlNew = html.substring(0, startPos);
             htmlNew += html.substring(endPos+6);
-            
-            return htmlNew;    
+
+            return htmlNew;
         }
 
         /** Return the current widget json */
