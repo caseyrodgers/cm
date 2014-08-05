@@ -58,6 +58,8 @@ import sb.mail.SbMailManager;
 public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction,StringHolder>{
 
 	private static Log LOG = LogFactory.getLog(ExportStudentsCommand.class);
+
+	private long MAX_ATTACHMENT_SIZE = 10000000L;
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
@@ -248,27 +250,59 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 
     			fos = new FileOutputStream(filePath);
     			baos.writeTo(fos);
+    			long fileSize = filePath.length();
 
-    			StringBuilder msgBuff = new StringBuilder();
-    			msgBuff.append("The student data export you requested for ");
-    			msgBuff.append(acctInfo.getSchoolName()).append(" (");
-    			msgBuff.append(acctInfo.getAdminUserName()).append(") ");
-    			if (filterDescr != null || levelName != null) {
-    				msgBuff.append("with ").append(sb.toString());
+				StringBuilder msgBuff = new StringBuilder();
+    			if (fileSize <= MAX_ATTACHMENT_SIZE) {
+    				msgBuff.append("The student data export you requested for ");
+    				msgBuff.append(acctInfo.getSchoolName()).append(" (");
+    				msgBuff.append(acctInfo.getAdminUserName()).append(") ");
+    				if (filterDescr != null || levelName != null) {
+    					msgBuff.append("with ").append(sb.toString());
+    				}
+    				msgBuff.append(" is attached.");
+    				msgBuff.append(NEW_LINE).append(NEW_LINE);
+    				msgBuff.append(THREE_SHEET_MSG);
+    				msgBuff.append(NEW_LINE).append(NEW_LINE);
+    				msgBuff.append("The CatchupMath Team");
+
+    				subjBuff.append("CatchupMath Export");
+    				if (filterDescr != null || levelName != null) {
+    					subjBuff.append(sb.toString());
+    				}
+    				if(emailAddr != null) {
+    					SbMailManager.getInstance().sendFile(filePath.getPath(), subjBuff.toString(),
+    							msgBuff.toString(), toEmailAddrs, "registration@catchupmath.com");
+    				}
     			}
-				msgBuff.append(" is attached.");
-				msgBuff.append(NEW_LINE).append(NEW_LINE);
-			    msgBuff.append(THREE_SHEET_MSG);
-			    msgBuff.append(NEW_LINE).append(NEW_LINE);
-			    msgBuff.append("The CatchupMath Team");
+    			else {
+    				// send file too large message
+    				msgBuff.append("The student data export you requested for ");
+    				msgBuff.append(acctInfo.getSchoolName()).append(" (");
+    				msgBuff.append(acctInfo.getAdminUserName()).append(") ");
+    				if (filterDescr != null || levelName != null) {
+    					msgBuff.append("with ").append(sb.toString());
+    				}
+    				msgBuff.append(" is too large to send as an email attachment.  Please try to reduce it ");
+    				long factor = fileSize/MAX_ATTACHMENT_SIZE;
+    				if (factor > 0L) {
+    					msgBuff.append(" to 1/").append(factor);
+    				}
+    				else {
+    					factor = (100*(fileSize - MAX_ATTACHMENT_SIZE)) / MAX_ATTACHMENT_SIZE;
+    					msgBuff.append(" by ").append(factor).append("% of");
+    				}
+    				msgBuff.append(" its current size by selecting a shorter date range or fewer students.");
+    				msgBuff.append(NEW_LINE).append(NEW_LINE);
+    				msgBuff.append("The CatchupMath Team");
 
-			    subjBuff.append("CatchupMath Export");
-			    if (filterDescr != null || levelName != null) {
-			    	subjBuff.append(sb.toString());
-			    }
-    			if(emailAddr != null) {
-	    			SbMailManager.getInstance().sendFile(filePath.getPath(), subjBuff.toString(),
-	    					msgBuff.toString(), toEmailAddrs, "registration@catchupmath.com");
+    				subjBuff.append("CatchupMath Export Too Large");
+    				if (filterDescr != null || levelName != null) {
+    					subjBuff.append(sb.toString());
+    				}
+    				if(emailAddr != null) {
+    					SbMailManager.getInstance().sendMessage(subjBuff.toString(), msgBuff.toString(), toEmailAddrs, "support@catchupmath.com");
+    				}
     			}
     		}
     		catch (Exception e) {
