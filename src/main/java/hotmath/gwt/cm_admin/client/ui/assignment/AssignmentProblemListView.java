@@ -504,6 +504,10 @@ public class AssignmentProblemListView extends ContentPanel {
                     return;
                 }
 
+                Integer probCount = _assignment.getProblemCount();
+                int pCount = (probCount != null) ? probCount : 0;
+                AddProblemDialog.setProblemCount(pCount);
+
                 AddProblemDialog.showDialog(new AddProblemDialog.AddProblemsCallback() {
                     @Override
                     public void problemsAdded(List<ProblemDto> problemsAdded) {
@@ -519,7 +523,7 @@ public class AssignmentProblemListView extends ContentPanel {
 
     private List<ProblemDtoLocal> createActiveList(List<ProblemDto> problemsAdded) {
         List<ProblemDtoLocal> la = new ArrayList<ProblemDtoLocal>();
-        int ordinal = 0;
+        int ordinal = _assignment.getProblemCount();
         for (ProblemDto p : problemsAdded) {
             la.add(new ProblemDtoLocal(_assignment, p, ++ordinal));
         }
