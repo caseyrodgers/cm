@@ -663,6 +663,7 @@ public class AddProblemDialog extends GWindow {
         if (__sharedInstance == null) {
             __sharedInstance = new AddProblemDialog();
         }
+        __sharedInstance._countMsgDisplayed = false;
     	__sharedInstance._problemCount = count;
     }
 
