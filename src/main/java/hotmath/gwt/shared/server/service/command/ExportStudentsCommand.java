@@ -59,7 +59,8 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 
 	private static Log LOG = LogFactory.getLog(ExportStudentsCommand.class);
 
-	private long MAX_ATTACHMENT_SIZE = 10000000L;
+	// 7 Mb + 33% (overhead) => 9.3 Mb
+	private long MAX_ATTACHMENT_SIZE = 7000000L;
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
