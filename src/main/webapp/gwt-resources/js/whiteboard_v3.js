@@ -15,11 +15,12 @@ if (typeof console == "undefined") {
             // empty
         }
     };
-}
+};
 var console_log = function (txt) {
     console.log(txt)
 }
-var transMode = 'move'
+var transMode = 'move';
+var dragBoxPluginInited=false;
 var Whiteboard = function (cont, isStatic, _opts) {
     var wb = this;
     var contDiv = cont;
@@ -5957,6 +5958,10 @@ var w = maxWidth;
                 "<textarea class='content' name='content' style='color:" + wb.globalStrokeColor + "'> " +
                 "</textarea></div>" + "<div name='dummy_resize' style='max-width: " + maxW + "px;'></div>";
             $($("#" + contDiv + " [name='inputBox'] div")[0]).html(ttHtml);
+            if(!dragBoxPluginInited){
+            initDragBoxPlugin();
+            dragBoxPluginInited=true;
+            }
             $get_jqElement("#input_box").resizeBox(wb);
             /*$("#" + contDiv + " [name='inputBox']").css('border', '0px')
                  $get_jqElement("#inputBox").find("[name='content']").live({
@@ -7828,6 +7833,7 @@ function _debugGetCommandInfoLabel(json) {
 
 /** textarea plugin inputBox which adds draggable handlers to resize the box
  */
+function initDragBoxPlugin(){
 (function ($) {
     var elmX, elmY, elmW, elmH, clickX, clickY, dx, dy;
     var cont;
@@ -8127,7 +8133,7 @@ function _debugGetCommandInfoLabel(json) {
         })
     }
 }(jQuery));
-
+}
 //
 /** Math quill has to be setup after the HTML has been rendered
  */
