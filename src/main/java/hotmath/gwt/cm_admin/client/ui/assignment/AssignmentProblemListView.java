@@ -523,7 +523,7 @@ public class AssignmentProblemListView extends ContentPanel {
 
     private List<ProblemDtoLocal> createActiveList(List<ProblemDto> problemsAdded) {
         List<ProblemDtoLocal> la = new ArrayList<ProblemDtoLocal>();
-        int ordinal = _assignment.getProblemCount();
+        int ordinal = 0;
         for (ProblemDto p : problemsAdded) {
             la.add(new ProblemDtoLocal(_assignment, p, ++ordinal));
         }
