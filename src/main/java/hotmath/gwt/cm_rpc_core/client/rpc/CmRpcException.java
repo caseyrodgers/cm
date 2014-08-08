@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_rpc_core.client.rpc;
 
-public class CmRpcException extends Exception implements java.io.Serializable {
+public class CmRpcException extends Exception implements com.google.gwt.user.client.rpc.IsSerializable {
+
+	private static final long serialVersionUID = -5527419287522207562L;
 
 	String message;
 	boolean isUserException;
