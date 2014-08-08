@@ -5,7 +5,9 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 
 public class GetStudentModelAction implements Action<StudentModelI> {
     
-    Integer uid;
+	private static final long serialVersionUID = 5451319642424809359L;
+
+	Integer uid;
     
     public GetStudentModelAction() {}
     
