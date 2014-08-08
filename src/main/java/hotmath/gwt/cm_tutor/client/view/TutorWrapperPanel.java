@@ -680,7 +680,7 @@ public class TutorWrapperPanel extends Composite {
     }
 
     private void saveTutorDataRecord(String dataRec, String pid, int runId) {
-        Window.alert("DATA RECORD: " + dataRec);
+        // Window.alert("DATA RECORD: " + dataRec);
     }
 
     protected void gwt_solutionHasBeenViewed(String value) {
