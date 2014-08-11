@@ -53,7 +53,7 @@ public enum CmProgram {
     
     /** Represents no current program assigned */
     NONE(99,"No Program","","none",true,0), 
-    FOUNDATIONS(58,"Foundations", "Foundations", "Prof", true, 8);
+    FOUNDATIONS(58,"Foundations", "Foundations", "Prof", true, 5);
 
     private final int     defId;
     private final String  title;
