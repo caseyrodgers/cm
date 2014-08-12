@@ -2557,7 +2557,7 @@ WHERE  cp.id=?
 SELECT DISTINCT lesson, file
 FROM  HA_PROGRAM_LESSONS_static
 WHERE pid in ($$PIDLIST$$)
-ORDER BY lesson
+ORDER BY id
 
 
 ########################
