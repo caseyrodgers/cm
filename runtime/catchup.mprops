@@ -2555,9 +2555,10 @@ WHERE  cp.id=?
 .key=GET_PROGRAM_LESSONS
 
 SELECT DISTINCT lesson, file
-FROM  HA_PROGRAM_LESSONS_static
-WHERE pid in ($$PIDLIST$$)
-ORDER BY id
+FROM  HA_PROGRAM_LESSONS_static l
+  LEFT JOIN HA_LESSON_RANK r on r.lesson_file = l.file
+WHERE pid in ($$PIDLIST$$)  
+ORDER BY rank, lesson
 
 
 ########################
