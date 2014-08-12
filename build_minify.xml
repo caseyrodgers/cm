@@ -17,15 +17,26 @@
     <target name="combine-js_CatchupMath" depends="javascript-minify">
         <!-- Combine CM JS into a single download
         -->
+
+                <!-- 
+
+                -->
+
         <delete file="${web.dir}/gwt-resources/js/CatchupMath_combined.js" />
         <concat destfile="${web.dir}/gwt-resources/js/CatchupMath_combined.js" append="true">
             <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
+
                 hm_events-min.js
-	        tutor_tablet-min.js
+	        tutor_tablet.js
+               
+                tutor_wrapper_cm.js
+
                 ../../../../../../hotmath2/web/js/tutor_widget_combined.js
                 dom_utils-min.js
 		cm_core-min.js
 	        quiz-min.js
+
+
 		CatchupMath-min.js
 		swfobject/swfobject.js
 
@@ -50,6 +61,7 @@
             	   hm_events-min.js
             	   browser_info_tools-min.js            	
             	   tutor_tablet-min.js
+            	   tutor_wrapper_cm.js
                	   dom_utils-min.js            	
             	   quiz-min.js
 

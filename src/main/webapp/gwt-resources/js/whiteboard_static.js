@@ -4,7 +4,11 @@ window._cmWhiteboards = [];
 function setupStaticWhiteboards() {
 	try {
 		// find any static whiteboard json defs 
-		var whiteboardDivs = $('.wb_json');
+		
+		
+		var tutorWrapper = TutorManager.getActiveTutorWrapper();
+		
+		var whiteboardDivs = $('.wb_json', tutorWrapper.tutorDomNode);
 		//alert('inline whiteboards:  ' + whiteboardDivs.length);
 	
 		for(var i=0, t=whiteboardDivs.length;i<t;i++) {
@@ -13,7 +17,8 @@ function setupStaticWhiteboards() {
 			var wbJson = wb.innerText;
 			wb.innerHTML = '';
 			
-			var whiteboardId = 'wb_json-' + i;
+			var uniq = new Date().getUTCMilliseconds();
+			var whiteboardId = 'wb_json-' + uniq + "_" + i;
 			
 			wb.setAttribute("id", whiteboardId);
 			window._cmWhiteboards[whiteboardId] = new Whiteboard(whiteboardId, true);

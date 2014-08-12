@@ -8,20 +8,27 @@
     url(font/Symbola.otf) format("opentype")
 }
 
-#hm_widget_form input[type='text']{
+
+[name=tutoroutput] p {
+	font: 12pt "Times New Roman", Times, serif;
+	text-align: left;
+	color: black;
+}
+
+[name=hm_widget_form] input[type='text']{
 font-family: Times New Roman,Times,serif;
 font-size: 17pt;
 font-weight:bold;
 border:1px inset;
 }
 
-#hm_widget_form .input_units{
+[name=hm_widget_form] .input_units{
 font-family: Times New Roman,Times,serif;
 font-size: 17pt;
 font-weight:bold;
 }
 
-#hm_widget_form .divider{
+[name=hm_widget_form] .divider{
 height:2px;
 background: black;
 line-height: 2px;
@@ -35,7 +42,7 @@ border-right:1px inset #000000;
 }
 
 
-#tutoroutput td {
+[name=tutoroutput] td {
    padding: 2px 5px;
 }
 

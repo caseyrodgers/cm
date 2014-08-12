@@ -1,18 +1,18 @@
-#tutor_embedded {
+div[name=tutor_embedded] {
   width: 100%;
 }
 
-#tutoroutput {
+div[tutoroutput] {
         font: 12pt "Times New Roman", Times, serif;
 }
 
-#tutoroutput p {
+div[tutoroutput] p {
 	font: 12pt "Times New Roman", Times, serif;
 	text-align: left;
 	color: black;
 }
 
-#steps_head {
+div[name=steps_head] {
 	display: none;
 }
 
@@ -43,7 +43,7 @@
 
 
 /** tutor styles */
-#show-work-force,#tutoring_button {
+div[name=show-work-force],div[name=tutoring_button] {
    display: none;
 }
 
@@ -87,11 +87,11 @@
     margin: 15px;
 }
 
-#tutoroutput .step {
+div[name=tutoroutput] .step {
    color: black;
 }
 
-#steps_next {
+div[name=steps_next] {
   margin-right: 60px;
   margin-left: 20px;
 }
@@ -104,12 +104,7 @@
 .hm-steps_prev {
 }
 
-#steps_prev {
-}
 
-
-#new_problem {
-}
 
 
 .questionResponseAnswer {
@@ -141,22 +136,20 @@
 }
 
 
-
-
-#steps_tail {
+div[name=steps_tail] {
     background-image: url('/gwt-resources/images/tutor_buttonbar_bg.png');
     background-repeat: repeat-x;
     height: 40px;
 }
 
-#steps_tail {
+div[name=steps_tail] {
     margin-top: 10px;
     margin-bottom: 20px;
     font-size: 20px;
     padding: 5px;
 }
 
-#steps_tail button {
+div[name=steps_tail] button {
    1em;
 }
 

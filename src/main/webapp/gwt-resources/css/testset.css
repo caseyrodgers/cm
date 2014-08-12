@@ -17,10 +17,6 @@
 }
 
 
-#testset_div #hm_flash_widget {
-    display: none;
-}
-
 .resource-viewer-impl-results p {
     margin-right: 10px;  /** add margin on right to show when scrollbar is visible */
 }

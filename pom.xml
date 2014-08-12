@@ -702,9 +702,7 @@
 				<version>1.3.1</version>
 				<configuration>
 					<cssSourceDir>gwt-resources/css</cssSourceDir>
-					<jsSourceDir>gwt-resources/js</jsSourceDir>
 					<cssFinalFile>CatchupMath_combined.css</cssFinalFile>
-					<jsFinalFile>CatchupMath_combined.js</jsFinalFile>
 					<cssSourceFiles>
 
 						<param>../../../../../../hotmath2/web/css/tutor_widget.css</param>
@@ -721,8 +719,6 @@
 						<param>whiteboard_v2.css</param>
 
 						<param>animate.css</param>
-
-
 
 						<param>../jlibs/alertify.js-0.3.11/themes/alertify.core.css</param>
 						<param>../jlibs/alertify.js-0.3.11/themes/alertify.default.css</param>

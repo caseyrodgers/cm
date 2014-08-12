@@ -3,25 +3,30 @@
  *
  *
  *
+ * Problem CM abstraction over HM tutor API
  *
  */
 
 var _productionMode = false;
 
 
-
-
 /**
  * Process MathJAX asynchronously
  *
  */
-HmEvents.eventTutorInitialized.subscribe(function() {
+HmEvents.eventTutorInitialized.subscribe(function(tutorWrapper) {
     try {
         //MathJax.Hub.Queue([ "Typeset", MathJax.Hub ]);
     } catch (e) {
         alert("MathJAX processing failed: " + e);
     }
 });
+
+
+/** get ActiveTutorWrapper */
+function getAtw() {
+   return TutorManager.getActiveTutorWrapper();
+}
 
 
 /**
@@ -40,17 +45,10 @@ HmEvents.eventTutorLastStep.subscribe(function (x) {
  * _shouldExpandSteps is true, the move to last step.
  *
  */
-HmEvents.eventTutorInitialized.subscribe(function (x) {
-    gwt_solutionHasBeenInitialized();
+HmEvents.eventTutorInitialized.subscribe(function (tutorWrapper) {
+    gwt_solutionHasBeenInitialized(tutorWrapper);
 });
 
-
-
-
-
-function $get(name) {
-    return document.getElementById(name);
-}
 
 /** Tutor routines */
 function setStepsInfoHelp() {
@@ -62,41 +60,22 @@ function getNextMoveTo() {
 
 
 var TutorManager = {
-    isVisible: false,
-    currentRealStep : -1,
-    currentStepUnit : -1,
-    stepUnitsMo : [],
-    stepUnits : [],
-    steps : [],
-    pid : '',
-    stepUnit : null,
-    tutorData : null,
-    solutionTitle: null,
-    context: null,
-    solutionVariableContext:null,
-    initializeTutor : function(pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, shouldExpandSolution, solutionVariableContext, submitButtonText, indicateWidgetStatus, installCustomSteps) {
-        TutorManager.pid = pid;
-        TutorManager.jsonConfig = jsonConfig;
-        TutorManager.currentRealStep = -1;
-        TutorManager.currentStepUnit = -1;
-        TutorManager.stepText = stepText;
-        TutorManager.solutionTitle = solutionTitle;
-        TutorManager.solutionData = solutionData;
-        TutorManager.solutionVariableContext = solutionVariableContext;
 
-        TutorManager.loadTutorData(solutionData, stepText, solutionVariableContext);
-        
-        if(installCustomSteps) { 
-        	TutorManager.installCustomSteps();
-        }
+    tutorWrappers : [],
+    activeTutorWrapper : null,
 
-        
-        TutorManager.analyzeLoadedData();
-        
-        
-        if(!$get('tutoroutput')) {
-            TutorManager.isVisible = false;
-        }
+    initializeTutor : function(tutorNode, pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, shouldExpandSolution, solutionVariableContext, submitButtonText, indicateWidgetStatus, installCustomSteps) {
+    
+        // create a new wrapper to manage this instance of the tutor
+        var tutorWrapper = new TutorWrapper(tutorNode, pid, jsonConfig, solutionData, 
+                                            stepText,solutionTitle,showWork, shouldExpandSolution, solutionVariableContext, 
+                                            submitButtonText, indicateWidgetStatus, installCustomSteps);
+                              
+                              
+        TutorManager.activeTutorWrapper = tutorWrapper;              
+        TutorManager.tutorWrappers[TutorManager.tutorWrappers.length] = tutorWrapper;
+         
+        tutorWrapper.loadTutorData();
 
         
         if(submitButtonText) {
@@ -110,9 +89,9 @@ var TutorManager = {
         
         /** hookup any question steps */
         // HmEvents.eventTutorInitialized.fire();
-        TutorManager.context = createNewSolutionMessageContext(pid, jsonConfig);
-        TutorDynamic.initializeTutor(TutorManager.context);
-        
+
+
+        tutorWrapper.initializeTutor(tutorWrapper.context);
         
         if(shouldExpandSolution) {
         	var maxStepUnits = 100;
@@ -128,67 +107,21 @@ var TutorManager = {
         
     },
     
-    
-    
-    installCustomSteps: function() {
-    	try {
-	        /** install new step unit showing answer to multi choice
-	         * 
-	         */
-	        var root = document.getElementById("raw_tutor_steps");
-	        
-	        var root = document.getElementById("raw_tutor_steps");
-	        var ps = document.getElementById("problem_statement");
-	        var options = ps.getElementsByTagName("input");
-	        if(options.length == 0) {
-	        	return;
-	        }
-	        
-	        var answer=-1;
-	        for(var i=0;i<options.length;i++) {
-	        	if(options[i].getAttribute("value") == 'true') {
-	        		answer = i;
-	        		break;
-	        	}
-	        }
-	        if(answer == -1) {
-	        	return;
-	        }
-	        
-	        
-	    	/**
-	         * remove all existing step units
-	         *
-	         */
-	        var maxStepUnits = 100;
-	        for ( var s = 0; s < maxStepUnits; s++) {
-	            var stepUnit = _getStepUnit(s);
-	            if (stepUnit == null)
-	                break; // done
-	            
-	            // remove it
-	            stepUnit.parentNode.removeChild(stepUnit);
-	        }
-	        
-	        var letters = ['A','B','C','D', 'E', 'F'];
-	        var answer = letters[answer];
-	        var html = '<div style="display:none;" realstep="0" steprole="hint" class="hint" steptype="hint" id="stepunit-0"><div class="step_content"><p>Click the Lesson button for review.</p></div></div>';
-	        var el = document.createElement('div');
-	        el.innerHTML = html;
-	        root.appendChild(el);
-	        
-	        var html2 = '<div style="display:none;" realstep="0" steprole="step" class="step" steptype="step" id="stepunit-1"> <div id="step_title-1"></div> <div class="step_content"><p>The correct choice is ' + answer + '.</p> </div></div>'
-	        var el = document.createElement('div');
-	        el.innerHTML = html2;
-	        root.appendChild(el);
-    	}
-    	catch(e) {
-    		console.log('error installing custom steps: ' + e);
-    	}
+    unregisterTutorWrapper: function(twToRemove) {
+        for(var i = 0;i < TutorManager.tutorWrappers.length; i++) {
+            if(TutorManager.tutorWrappers[i] == twToRemove) {
+                TutorManager.tutorWrappers[i] = null;
+            }
+        }
     },
     
+    getActiveTutorWrapper: function() {
+        return TutorManager.activeTutorWrapper;
+    },
     
-    
+    setActiveTutorWrapper: function(tutorWrapper) {
+       TutorManager.activeTutorManager = tutorWrapper;
+    },
     
     showMessage : function(msg) {
         var tm = $get('tutor_message');
@@ -198,129 +131,80 @@ var TutorManager = {
         }, 2000);
     },
     removeStep : function(x) {
-        TutorManager.stepUnits.split(x,1);
+        getAtw().stepUnits.split(x,1);
     },
     showNextStep : function() {
-        if (TutorManager.currentStepUnit + 1 < TutorManager.stepUnits.length) {
-            TutorManager.currentStepUnit++;
-            showStepUnit(TutorManager.currentStepUnit);
+        var tutorWrapper = getAtw();
+        if (tutorWrapper.currentStepUnit + 1 < tutorWrapper.stepUnits.length) {
+            tutorWrapper.currentStepUnit++;
+            tutorWrapper.showStepUnit(tutorWrapper.currentStepUnit);
+            
+            tutorWrapper.scrollToStep(tutorWrapper.currentStepUnit);
+            
         } else {
             TutorManager.showMessage('No more steps');
         }
     },
     showPreviousStep : function() {
-        if (TutorManager.currentStepUnit < 0) {
+        var tutorWrapper = getAtw();
+        if (tutorWrapper.currentStepUnit < 0) {
             TutorManager.showMessage('No previous step');
             return;
         } else {
-            while (TutorManager.currentStepUnit > -1) {
+            while (tutorWrapper.currentStepUnit > -1) {
 
-                var step = TutorManager.stepUnits[TutorManager.currentStepUnit].ele;
-                if (TutorManager.stepUnits[TutorManager.currentStepUnit].realNum != TutorManager.currentRealStep) {
-                    TutorManager.currentRealStep = TutorManager.stepUnits[TutorManager.currentStepUnit].realNum;
+                var step = tutorWrapper.stepUnits[tutorWrapper.currentStepUnit].ele;
+                if (tutorWrapper.stepUnits[tutorWrapper.currentStepUnit].realNum != tutorWrapper.currentRealStep) {
+                    tutorWrapper.currentRealStep = tutorWrapper.stepUnits[tutorWrapper.currentStepUnit].realNum;
                     break;
                 }
                 step.style.display = 'none';
-                TutorManager.currentStepUnit--;
+                tutorWrapper.currentStepUnit--;
             }
-            if (TutorManager.currentStepUnit == 0) {
+            if (tutorWrapper.currentStepUnit == 0) {
                 // move back one to signal not
                 // current in a step, only problem def
-                TutorManager.currentStepUnit = -1;
+                tutorWrapper.currentStepUnit = -1;
                 // reposition at top
                 window.scrollTo(0, 0);
             }
-            if (TutorManager.currentStepUnit > -1) {
-                setAsCurrent(TutorManager.stepUnits[TutorManager.currentStepUnit].ele);
+            if (tutorWrapper.currentStepUnit > -1) {
+                setAsCurrent(tutorWrapper.stepUnits[tutorWrapper.currentStepUnit].ele);
             }
 
-            setButtonState();
+            tutorWrapper.setButtonState();
 
-            scrollToStep(TutorManager.currentStepUnit);
+            tutorWrapper.scrollToStep(tutorWrapper.currentStepUnit);
 
             return false;
         }
     },
-    loadTutorData : function(solutionData, stepText, solutionVariableContext) {
-        try {
-            TutorManager.tutorData = eval("(" + solutionData + ")");
-            _tutorData = TutorManager.tutorData; // set global
-
-            processTutorData(TutorManager.tutorData, stepText, solutionVariableContext);
-
-        } catch (e) {
-            alert(e);
-        }
-    },
     resetTutor : function() {
         // gwt_resetTutor();
+        
+        var tutorWrapper = getAtw();
 
-        var tutor = document.getElementById('tutor_raw_steps_wrapper');
+        var tutor = $get('tutor_raw_steps_wrapper');
         if(tutor) {
-            tutor.innerHTML = TutorManager.stepText;
+            tutor.innerHTML = tutorWrapper.stepText;
         }
 
-        TutorManager.currentRealStep = -1;
-        TutorManager.currentStepUnit = -1;
-        TutorManager.loadTutorData(TutorManager.solutionData,TutorManager.stepText);
-        TutorManager.analyzeLoadedData();
+        tutorWrapper.currentRealStep = -1;
+        tutorWrapper.currentStepUnit = -1;
+        tutorWrapper.loadTutorData();
         
-        if(TutorManager.isVisible) {
-            setButtonState();
+        if(tutorWrapper.isVisible) {
+            tutorWrapper.setButtonState();
         }
         
-        TutorDynamic.resetTutor();
+        tutorWrapper.resetTutor();
     },
 
     getCurrentStepNumber: function() {
-        return TutorManager.currentStepUnit;
+        return getAtw().currentStepUnit;
     },
 
-    /**
-     * read loaded tutor html and create meta data used to drive the solution.
-     *
-     * The stepUnits are individual parts of a step.
-     *
-     * Stepunit contains these attribute: id, steprole, steptype, realstep
-     *
-     * steps are the complete steps consisting of two stepUnits.
-     *
-     * Return count of stepUnits loaded
-     *
-     */
-    analyzeLoadedData : function() {
-        TutorManager.stepUnits = [];
-        TutorManager.steps = [];
-
-        /**
-         * for each step unit div on page
-         *
-         */
-        var maxStepUnits = 100;
-        for ( var s = 0; s < maxStepUnits; s++) {
-            var stepUnit = _getStepUnit(s);
-            if (stepUnit == null)
-                break; // done
-
-            var id = stepUnit.getAttribute("id");
-            var stepUnitNum = TutorManager.stepUnits.length;
-            var role = stepUnit.getAttribute("steprole");
-            var type = stepUnit.getAttribute("steptype");
-            var realNum = parseInt(stepUnit.getAttribute("realstep"));
-
-            var su = new StepUnit(id, stepUnitNum, type, role, realNum,stepUnit);
-            TutorManager.stepUnits[TutorManager.stepUnits.length] = su;
-
-            // is this realStep already created?
-            var myStep = TutorManager.steps[realNum];
-            if (myStep == null) {
-                myStep = new Step(realNum);
-                TutorManager.steps[realNum] = myStep;
-            }
-            myStep.stepUnits[myStep.stepUnits.length] = su;
-        }
-        return TutorManager.stepUnits.length;
-    },
+    
     backToLesson : function() {
         /**
          * Move back to lesson that called tutor
@@ -330,8 +214,10 @@ var TutorManager = {
         gwt_backToLesson();
     },
     newProblem : function() {
-        var cnt = TutorManager.context.probNum;
-        var total = TutorManager.context.jsonConfig?TutorManager.context.jsonConfig.limit:0;
+        var tutorWrapper = getAtw();
+        
+        var cnt = tutorWrapper.context.probNum;
+        var total = tutorWrapper.context.jsonConfig?tutorWrapper.context.jsonConfig.limit:0;
         
         gwt_tutorNewProblem(cnt+1, total);
     },
@@ -346,49 +232,23 @@ var TutorManager = {
     
     
     generateContext: function(pid, solutionData, jsonConfig) {
+        var tutorWrapper = getAtw();
         if(pid != null) {
-            TutorManager.initializeTutor(pid, jsonConfig, solutionData, '','',false, false, null);
+            tutorWrapper.initializeTutor(pid, jsonConfig, solutionData, '','',false, false, null);
         }
         else {
             TutorDynamic.refreshProblem();
         }
         
-        var myContext = getTutorVariableContextJson(TutorManager.tutorData._variables);
-        alert('done');
+        var myContext = getTutorVariableContextJson(tutorWrapper.tutorData._variables);
         return myContext;
     }
     
 }
 
-function setButtonState() {
-    setState('step', TutorManager.currentStepUnit < (TutorManager.stepUnits.length - 1));
-    setState('back', TutorManager.currentStepUnit > -1);
-}
 
-function enabledPrevious(yesNo) {
-    enabledButton('steps_prev', yesNo);
-}
 
-function enabledNext(yesNo) {
-    enabledButton('steps_next', yesNo);
-}
 
-function enabledButton(btn, yesNo) {
-    
-    // gwt_enableTutorButton(btn, yesNo);
-    
-//    var clazz = 'sexybutton sexy_cm_silver ';
-//    if (!yesNo) {
-//        clazz += ' disabled';
-//    }
-//    var b = $get(btn);
-//    if(b) {
-//       b.className = clazz;
-//    }
-//    else {
-//        alert('required button with id [' + btn + '] not found');
-//    }
-}
 
 // StepUnit is a basic unit
 function StepUnit(id, stepUnitNum, type, roleType, realNum, ele) {
@@ -441,115 +301,21 @@ function setAsNotCurrent(ele) {
 /**
  * Return requested element
  *
+ * first look for name='tag', if that fails used id
+ *
  */
 function _getElement(tag, num) {
     var step = tag + "-" + num;
-    return document.getElementById(step);
+	return $get(step);    
 }
 
-// Show the next available step unit
-function showStepUnit(num) {
-    if (num < 0)
-        return;
 
-    try {
-        var stepElement = TutorManager.stepUnits.length == 0?null:TutorManager.stepUnits[num].ele;
-        if (stepElement == null)
-            return false;
-
-        // use animation library to show step
-        // appear added as method during intiialize
-        // of scripty2
-        stepElement.style.display = 'block'; // show it
-        //stepElement.appear();
-
-        if (stepElement.getAttribute("steprole") == 'step')
-            setAsCurrent(stepElement);
-
-        setStepTitle(num, stepElement);
-
-        // determine if figure should be displayed. Only display
-        // if is the first one or different than the previous.
-        var figureUnit = _getFigureUnit(num);
-        if (figureUnit != null) {
-            if (num == 0) {
-                figureUnit.style.display = "block";
-            } else {
-                // only display image if it is not
-                // the same as the previously displayed image.
-                // find the first previous image.
-                var prevFigureUnit = findPreviousFigureUnit(num);
-                if (prevFigureUnit != null
-                        && prevFigureUnit.src == figureUnit.src) {
-                    // skip it
-                    figureUnit.style.display = "none";
-                } else {
-                    // image is different, so show it
-                    figureUnit.style.display = "block";
-                }
-            }
-        }
-
-        // make sure all previous hints are invisible
-        // stepunits of role == 'hint'
-        for (i = num - 1; i > -1; i--) {
-            if (TutorManager.stepUnits[i].roleType == 'hint') {
-                TutorManager.stepUnits[i].ele.style.display = 'none';
-            } else {
-                // set as not-current
-                setAsNotCurrent(TutorManager.stepUnits[i].ele);
-            }
-        }
-
-        // make sure all future step unitsare hidden
-        for ( var i = num + 1; i < TutorManager.stepUnits.length; i++) {
-            if (TutorManager.stepUnits[i].roleType == 'hint') {
-                TutorManager.stepUnits[i].ele.style.display = 'none';
-            } else {
-                // set as not-current
-                setAsNotCurrent(TutorManager.stepUnits[i].ele);
-            }
-
-        }
-
-        TutorManager.currentStepUnit = num;
-        TutorManager.currentRealStep = TutorManager.stepUnits[num].realNum;
-
-        setButtonState();
-
-        scrollToStep(num);
-
-        HmEvents.eventTutorChangeStep.fire(num);
-
-    } catch (e) {
-        alert('Error showing step: ' + e);
-    }
-    return true;
-}
 
 // mark this step unit as current
 function setAsCurrent(ele) {
     ele.style.backgroundColor = '#F1F1F1';
 }
 
-function setStepTitle(num, stepElement) {
-    // put title up.
-    // put up step number if not a hint
-    // otherwise, show 'Hint'
-    stepTitle = document.getElementById('step_title-' + num);
-    if (stepTitle) {
-        var sr = stepElement.getAttribute("steprole");
-        if (sr && sr == 'step') {
-            stepTitle.innerHTML = 'Step '
-                    + (parseInt(stepElement.getAttribute('realstep')) + 1);
-            stepTitle.className = 'step_title_step';
-        } else {
-            // assume hint
-            stepTitle.innerHTML = 'Hint';
-            stepTitle.className = 'step_title_hint';
-        }
-    }
-}
 
 // find the previous figure unit
 // and either return the element
@@ -564,18 +330,6 @@ function findPreviousFigureUnit(s) {
     return null;
 }
 
-// Set the state of the toolbar buttons
-function setState(n, onoff) {
-    if (n == 'step') {
-        enabledNext(onoff);
-
-        if (!onoff) {
-            TutorDynamic.endOfSolutionReached();
-        }
-    } else if (n == 'back') {
-        enabledPrevious(onoff);
-    }
-}
 
 /**
  * Attempt to scroll the document so the tutor bar rests on the bottom line
@@ -589,30 +343,15 @@ function setState(n, onoff) {
  */
 
 function scrollToStep(num) {
-    var stb = document.getElementById('scrollTo-button');
-    if (stb) {
-        var top = _getElementTop(stb);
-        var visibleSize = getViewableSize();
-        var scrollXy = getScrollXY();
-        var visTop = scrollXy[1];
-        var visHeight = visibleSize[1];
-        var visBot = visHeight + visTop;
-
-        if (true || top < visTop || top > visBot) {
-            // alert('Need to scroll, visibleSize: ' + visibleSize + ' scrollXy:
-            // ' + scrollXy + ' visTop: '
-            // + visTop + ' visHeight: ' + visHeight + ' visBot: ' + visBot + '
-            // buttonBar: '
-            // + stb);
-
-            gwt_scrollToBottomOfScrollPanel(top - visHeight);
-        }
-    }
+    getAtw().scrollToStep(num);
 }
 
 function hideAllSteps() {
-    for ( var s = 0; s < TutorManager.stepUnits.length; s++) {
-        var step = TutorManager.stepUnits[s].ele;
+
+    var tutorWrapper = getAtw();
+
+    for ( var s = 0; s < tutorWrapper.stepUnits.length; s++) {
+        var step = tutorWrapper.stepUnits[s].ele;
         if (step == null)
             return; // done
 
@@ -646,7 +385,10 @@ function doQuestionResponseEnd() {
 var _activeQuestion;
 
 function doQuestionResponse(key, yesNo) {
-    var questionResponse = TutorManager.tutorData._strings_moArray[key];
+
+    var tutorWrapper = getAtw();
+    
+    var questionResponse = tutorWrapper.tutorData._strings_moArray[key];
 
     if (_activeQuestion) {
         var node = document.createElement('div');
@@ -661,7 +403,7 @@ function doQuestionResponse(key, yesNo) {
 }
 
 HmEvents.eventTutorInitialized
-        .subscribe(function() {
+        .subscribe(function(tutorWrapper) {
 
             var tutor = document.getElementById('tutor_raw_steps_wrapper');
             if (tutor == null)
@@ -710,19 +452,6 @@ HmEvents.eventTutorInitialized
 
         });
 
-function createNewSolutionMessageContext(pid, jsonConfig) {
-    var loc = new SolutionMessageLocation('solution', pid);
-    var mc = new MessageContext(loc);
-    if (jsonConfig) {
-        try {
-            mc.jsonConfig = eval('(' + jsonConfig + ')');
-        } catch (e) {
-            alert('could not process solution ' + pid + ' config: '
-                    + jsonConfig)
-        }
-    }
-    return mc;
-}
 
 function MessageContext(mLocation, collabPointer, message) {
     this.messageLocation = mLocation;
@@ -746,27 +475,32 @@ function SolutionMessageLocation(type, str1, int1) {
 // current tutor's directory. Load as JSON
 // data and populate Tutor data structures
 function gotoGUID(messageContext, callAfter) {
-    TutorManager.resetTutor();
+    var tutorWrapper = getAtw();
+    tutorWrapper.resetTutor();
 }
 
 
 
 function resetTutor() {
-    TutorManager.resetTutor();
+    var tutorWrapper = getAtw();
+    tutorWrapper.resetTutor();
 }
 
 
 
 function gotoStepUnit(x) {
-    TutorManager.showStepUnit(x);
+    var tutorWrapper = getAtw();
+    tutorWrapper.showStepUnit(x);
 }
 
+
 function getCurrentStepUnitNumber() {
-    return TutorManager.currentStepUnit;
+    return getAtw().currentStepUnit;
 }
 
 function deleteStep(x) {
-         var su = 0;
+
+     var su = 0;
      if(x > 0) {
          su = x*2;
      }
@@ -783,8 +517,8 @@ function deleteStep(x) {
          hintUnit.parentNode.removeChild(hintUnit);
          stepUnit.parentNode.removeChild(stepUnit);
 
-         TutorManager.steps.split(x,1);
-         TutorManager.stepUnits.split(su,2);
+         getAtw().steps.split(x,1);
+         getAtw().stepUnits.split(su,2);
 
          return true;
      }
@@ -810,8 +544,11 @@ function deleteStep(x) {
          hintUnit.parentNode.removeChild(hintUnit);
          stepUnit.parentNode.removeChild(stepUnit);
 
-         TutorManager.steps.splice(x,1);
-         TutorManager.stepUnits.splice(su,2);
+         
+         var tutorWrapper = getAtw();
+
+         tutorWrapper.steps.splice(x,1);
+         tutorWrapper.stepUnits.splice(su,2);
 
          return true;
      }

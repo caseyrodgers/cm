@@ -48,11 +48,11 @@ var HmEvents = {
             var hel = HmEvents.eventTutorWidgetComplete.listeners;
             hel[hel.length] = callBack;
         },
-        fire : function(data) {
+        fire : function(data, args) {
             var hel = HmEvents.eventTutorWidgetComplete.listeners;
             for ( var i = 0; i < hel.length; i++) {
                 //alert("firing eventTutorWidgetComplete: " + hel[i]);
-                hel[i](null, [ data ]);
+                hel[i](args, [ data ]);
             }
         }
     },
@@ -77,10 +77,10 @@ var HmEvents = {
             var hel = HmEvents.eventTutorChangeStep.listeners;
             hel[hel.length] = callBack;
         },
-        fire : function(args) {
+        fire : function(args, tutorWrapper) {
             var hel = HmEvents.eventTutorChangeStep.listeners;
             for ( var i = 0; i < hel.length; i++) {
-                hel[i](null,[args]);
+                hel[i](tutorWrapper,[args]);
             }
         }
     }
