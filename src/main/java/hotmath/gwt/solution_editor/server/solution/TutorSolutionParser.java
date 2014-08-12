@@ -97,6 +97,10 @@ public class TutorSolutionParser {
                     sProblemStatement += convertOldTestQuestionFormatToNew(question);
                 }
                 
+                sProblemStatement = applyTransformations(sProblemStatement);
+                
+                
+                
                 sProblemStatementFigure = eleStat.getAttributeValue("figure");
                 solution.getProblem().setStatement(sProblemStatement);
                 solution.getProblem().setStatementFigure(sProblemStatementFigure);
@@ -128,7 +132,21 @@ public class TutorSolutionParser {
         return solution;
     }
 
-    static public String trimIfNotNull(String s) {
+    /** Do any last minute changes need to prepare XML solution for processing
+     * 
+     * look for id based widget divs and change to name based.
+     * 
+     * @param sProblemStatement
+     * @return
+     */
+    private static String applyTransformations(String sProblemStatement) {
+    	if(sProblemStatement.contains("id='hm_flash_widget'")) {
+    		sProblemStatement = sProblemStatement.replace("id='hm_flash_widget", "name='hm_flash_widget");
+    	}
+    	return sProblemStatement;
+	}
+
+	static public String trimIfNotNull(String s) {
         if (s != null)
             return s.trim();
         return null;

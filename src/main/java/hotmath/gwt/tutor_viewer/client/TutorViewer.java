@@ -71,7 +71,6 @@ import com.google.gwt.user.client.ui.RootPanel;
         Window.addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {
-                Log.debug("Window has been resized");
                 CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
             }
           });

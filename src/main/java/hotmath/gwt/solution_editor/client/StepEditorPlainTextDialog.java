@@ -158,7 +158,7 @@ public class StepEditorPlainTextDialog extends Window {
 
 
 	private String getWidgetDefinitionJson(String html) {
-        String startToken = "<div style='display: none' id='hm_flash_object'>";
+        String startToken = "<div style='display: none' name='hm_flash_object'>";
         String endToken = "</div></div>";
         int startPos = html.indexOf(startToken);
         if(startPos > -1) {

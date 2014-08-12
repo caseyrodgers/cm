@@ -46,6 +46,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.info.Info;
@@ -137,6 +138,20 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
                  else {
                      InfoPopupBox.display(title, message);
                  }
+            }
+             
+             
+             @Override
+            public void scrollToBottomOfScrollPanel() {
+            	 
+            	 // move current tutor view to bottom of its 
+            	 // scrolling panel
+            	 Widget parent = tutorPanel.getParent();
+            	 if(parent instanceof FlowLayoutContainer) {
+            		 FlowLayoutContainer flc = (FlowLayoutContainer)parent;
+            		 flc.getScrollSupport().scrollToBottom();
+            	 }
+            	 
             }
      
         });
@@ -276,8 +291,11 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
         // used to store current tutor context on server providing
         // a way to restore the tutor to its current var defs.
         //
-        $wnd.gwt_solutionHasBeenInitialized = function() {
+        $wnd.gwt_solutionHasBeenInitialized = function(tutorWrapper) {
         try {
+            alert('test');
+            alert('the tutor wrapper is: ' + tutorWrapper);
+            
             var vars = $wnd._tutorData._variables;
             var solutionVariablesJson = $wnd.getTutorVariableContextJson(vars);
             x.@hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2::gwt_solutionHasBeenInitialized(Ljava/lang/String;)(solutionVariablesJson);

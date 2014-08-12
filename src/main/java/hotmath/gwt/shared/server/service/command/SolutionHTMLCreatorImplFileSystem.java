@@ -5,6 +5,7 @@ import hotmath.ProblemID;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.service.SolutionService;
 import hotmath.solution.SolutionParts;
+import hotmath.solution.StaticWriter;
 import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
 
@@ -43,7 +44,7 @@ public class SolutionHTMLCreatorImplFileSystem implements SolutionHTMLCreator {
             ProblemID pid = new ProblemID(guid);
             String path = pid.getSolutionPath_DirOnly("solutions");
 
-            String solutionHtml = new SbFile(new File(base, path + "/" + "/tutor_steps.html")).getFileContents().toString("\n");
+            String solutionHtml = new SbFile(new File(base, path + "/" + "/" + StaticWriter.STEPS_HTML_FILE)).getFileContents().toString("\n");
             String solutionData = new SbFile(new File(base, path + "/" + "/tutor_data.js")).getFileContents().toString("\n");
 
             SolutionParts sp = new SolutionParts();

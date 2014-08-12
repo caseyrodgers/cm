@@ -316,7 +316,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 
         String jsonHtml = "";
         if (data != null) {
-            jsonHtml = "<div id='hm_flash_widget'><div id='hm_flash_widget_def' style='display: none'>";
+            jsonHtml = "<div name='hm_flash_widget'><div name='hm_flash_widget_def' style='display: none'>";
             jsonHtml += data;
             jsonHtml += "</div></div>";
         }
@@ -382,7 +382,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
             @Override
             public boolean matches(Object obj) {
                 if (obj instanceof Element) {
-                    Attribute attr = ((Element) obj).getAttribute("id");
+                    Attribute attr = ((Element) obj).getAttribute("name");
                     if (attr != null) {
                         String name = attr.getValue();
                         if (name != null && name.equals("hm_flash_widget")) {

@@ -8,6 +8,7 @@ import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -68,6 +69,12 @@ public class SolutionContextChecker implements SbTestImpl {
     }
 
     private void checkForCorruptedSolutionContexts(Connection conn, int runId) throws Exception {
+    	
+    	
+    	if(true) {
+    		checkForOldContexts(conn, runId);
+    	}
+    	
         PreparedStatement ps=null;
         try {
             String sql = "select * from HA_SOLUTION_CONTEXT where run_id = ?";
@@ -103,6 +110,55 @@ public class SolutionContextChecker implements SbTestImpl {
         }
     }
 
+    
+    private void checkForOldContexts(Connection conn, int runId) throws Exception {
+        PreparedStatement ps=null;
+        int countHave=0;
+        int countNotHave=0;
+        
+        Date minViewDate=null;
+        try {
+            String sql = "select * from HA_SOLUTION_CONTEXT where run_id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, runId);
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()) {
+
+            	Date viewDate=null;
+                if(rs.getDate("time_viewed") != null) {
+                    viewDate = rs.getDate("time_viewed");
+                }
+                
+                if(viewDate != null) {
+                	if(minViewDate == null || (viewDate.getTime() < minViewDate.getTime())) {
+                		minViewDate = viewDate;
+                	}
+                }
+
+                byte[] variables = rs.getBytes("variables");
+                String uncompressedContext = SolutionDao.getInstance().convertSolutionContext(variables);
+                
+                
+                if(uncompressedContext.contains("tutor_data_record")) {
+                	countHave++;
+                }
+                else {
+                	countNotHave++;
+                }
+            }
+
+        }
+        finally {
+            SqlUtilities.releaseResources(null,  ps, null);
+        }
+        
+        if(countNotHave > 0) {
+        	System.out.println("tutor_data_record attribute: run_id:  " + runId + ", Have: " + countHave + ", Not Have: " + countNotHave + ", min_view: " + minViewDate);
+        }
+        
+    }
+    
     static final String UNDEFINED="dW5kZWZpbmV";
     private boolean contextIsCorrupted(String uncompressedContext) throws Exception {
 

@@ -131,4 +131,10 @@ public interface TutorCallback {
      * @param string2
      */
     void debugLogOut(String string, String string2);
+    
+    
+    /** scroll the current tutor to bottom of scrollable area
+     * 
+     */
+	void scrollToBottomOfScrollPanel();
 }

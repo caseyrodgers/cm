@@ -123,7 +123,7 @@ public class WidgetDefModel extends JSOBaseModel {
 	}
 
 	private String createWidgetHtml(String json) {
-		String widgetDiv = "<div id='hm_flash_widget'><div id='hm_flash_widget_def' style='display: none'>"
+		String widgetDiv = "<div name='hm_flash_widget'><div name='hm_flash_widget_def' style='display: none'>"
 				+ json + "</div></div>";
 		return widgetDiv;
 	}

@@ -88,26 +88,37 @@ public class GetAssignmentHTMLHelper {
 		int idx = 1;
 		for(ProblemDto prob : probs) {
 
-			StringBuilder sb = new StringBuilder();
-
-            ProblemID ppid = new ProblemID(prob.getPid());
-
-            SolutionParts sp = __creator.getSolutionHTML(null,null, prob.getPid());
-            String solutionHtml= sp.getMainHtml();
-
-            String path = ppid.getSolutionPath_DirOnly("solutions");
-            solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
-
-            SolutionContext solutionContext = solutionDao.getGlobalSolutionContext(prob.getPid());
-            String pidFull = (solutionContext != null) ? solutionContext.getPid(): "";
-            String pidParts[] = pidFull.split("\\$");
-            String contextGuid = (pidParts.length > 1) ? pidParts[1] : "";
-			String divOpen = String.format(PROB_STMT_DIV_OPEN_FMT, idx, (numWorkLines > 0) ? numWorkLines : DEFAULT_WORK_LINES, contextGuid);
-			sb.append(divOpen);
-			sb.append(solutionHtml).append(DIV_CLOSE);
-			htmlSb.append(cleanupHtml(sb.toString(), idx));
-			htmlSb.append("\n");
-			idx++;
+			try {
+				StringBuilder sb = new StringBuilder();
+	
+	            ProblemID ppid = new ProblemID(prob.getPid());
+	
+	            SolutionParts sp = __creator.getSolutionHTML(null,null, prob.getPid());
+	            String solutionHtml= sp.getMainHtml();
+	            String solutionData = sp.getData();
+	
+	            String path = ppid.getSolutionPath_DirOnly("solutions");
+	            solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
+	
+	            SolutionContext solutionContext = solutionDao.getGlobalSolutionContext(prob.getPid());
+	            String pidFull = (solutionContext != null) ? solutionContext.getPid(): "";
+	            String pidParts[] = pidFull.split("\\$");
+	            String contextGuid = (pidParts.length > 1) ? pidParts[1] : "";
+				String divOpen = String.format(PROB_STMT_DIV_OPEN_FMT, idx, (numWorkLines > 0) ? numWorkLines : DEFAULT_WORK_LINES, contextGuid);
+				sb.append(divOpen);
+				
+                 				
+                // add the tutorData need to initialize this tutor
+                sb.append("<div class='tutorData'><![CDATA[" + solutionData + "]]></div>");
+				
+				sb.append(solutionHtml).append(DIV_CLOSE);
+				htmlSb.append(sb);   // add entire tutor source cleanupHtml(sb.toString(), idx)
+				htmlSb.append("\n");
+				idx++;
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return htmlSb.toString();
@@ -160,7 +171,7 @@ public class GetAssignmentHTMLHelper {
 					if (attr != null && attr.toLowerCase().matches("msnormal|msonormal") == true) {
 						tag.removeAttribute("class");
 					}
-					if (firstPtag == true) {
+					if (firstPtag == true && tag.getFirstChild() != null) {
 						String text = tag.getFirstChild().getText();
 						if (text != null) {
 							text = text.replaceAll("\\n|\\t", " ");

@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tutor.client.view;
 
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -84,4 +85,9 @@ public class TutorCallbackDefault implements TutorCallback {
     public void debugLogOut(String title, String message) {
         Log.debug(title, message);
     }
+    
+    @Override
+    native public void scrollToBottomOfScrollPanel() /*-{
+        window.scrollTo(0,$doc.body.scrollHeight);
+    }-*/;
 }

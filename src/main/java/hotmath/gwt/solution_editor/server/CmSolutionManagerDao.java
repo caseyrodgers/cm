@@ -19,16 +19,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import org.apache.log4j.Logger;
+
 import sb.util.MD5;
 
 public class CmSolutionManagerDao {
-    
+
+	static Logger __logger = Logger.getLogger(CmSolutionManagerDao.class);
 
     static SolutionHTMLCreatorIimplVelocity __creator;
     static TutorProperties __tutorProps = new TutorProperties();
     public CmSolutionManagerDao() throws Exception {
         if(__creator == null) {
-            HotMathProperties.getInstance().getPropertiesObject().put("velocity.template.dir",  CatchupMathProperties.getInstance().getHotMathHome());
+            // HotMathProperties.getInstance().getPropertiesObject().put("velocity.template.dir",  CatchupMathProperties.getInstance().getHotMathHome());
             __creator = new SolutionHTMLCreatorIimplVelocity(__tutorProps.getTemplate(), __tutorProps.getTutor()); // CatchupMathProperties.getInstance().getHotMathTutorTemplateDir());
         }
     }
@@ -73,6 +76,8 @@ public class CmSolutionManagerDao {
             HotMathDatabaseLoader.processSolutionDefine(conn, pid, tutorDefine);
 
             String outputBase = CatchupMathProperties.getInstance().getSolutionBase() + HotMathProperties.getInstance().getStaticSolutionsDir();
+            
+            __logger.debug("Writing solution: " + pid + ", to: " + outputBase);
 
             StaticWriter.writeSolutionFile(conn,__creator, pid, __tutorProps, outputBase, false, null);
         }

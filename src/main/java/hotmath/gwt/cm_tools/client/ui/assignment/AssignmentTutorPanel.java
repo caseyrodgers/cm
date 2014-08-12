@@ -172,7 +172,7 @@ public class AssignmentTutorPanel extends Composite {
                     _tutorPanel.jsni_addWhiteboardSubmitButton();
                 }
                 else {
-                    TutorWrapperPanel.jsni_showWhiteboardStatus(status);
+                    TutorWrapperPanel.jsni_showWhiteboardStatus(status, _tutorPanel.getTutorDomNode());
                 }
             }
             

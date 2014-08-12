@@ -85,7 +85,7 @@ public class GenerateTutorContextPanel extends Composite {
     
     private native String _nativeGenerateContext(String pid, String js, String jsonConfig) /*-{
     
-        $wnd.gwt_solutionHasBeenInitialized = function() {};
+        $wnd.gwt_solutionHasBeenInitialized = function(tutorWrapper) {};
         
         var that = this;
         return $wnd.TutorManager.generateContext(pid, js, jsonConfig);

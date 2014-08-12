@@ -20,7 +20,7 @@ public class GetSolutionAction extends ActionBase implements Action<SolutionInfo
     public GetSolutionAction() {}
     
     public GetSolutionAction(int uid, int runId, String pid) {
-        this.uid = uid;
+    	this.uid = uid;
         this.runId = runId;
         this.pid = pid;
         

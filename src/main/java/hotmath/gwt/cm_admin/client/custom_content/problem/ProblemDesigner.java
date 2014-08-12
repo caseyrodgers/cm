@@ -38,7 +38,7 @@ import com.google.gwt.user.client.Window;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.button.ToggleButton;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -63,23 +63,20 @@ public class ProblemDesigner extends Composite {
 
     private CustomProblemModel _customProblem;
 
-    private ToggleButton _editMode;
+    private TextButton _editMode;
     CallbackOnComplete callback;
     
     public ProblemDesigner(CallbackOnComplete callbackIn) {
         __lastInstance = this;
         this.callback = callbackIn;
         
-        if(_editMode == null) {
-            _editMode = new ToggleButton("Preview Mode");
-            _editMode.setValue(false);
-            _editMode.addSelectHandler(new SelectHandler() {
-                @Override
-                public void onSelect(SelectEvent event) {
-                    __lastInstance.loadProblem(__lastInstance._customProblem, 0);
-                }
-            });
-        }
+        _editMode = new TextButton("Preview Problem");
+        _editMode.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                new TutorPreviewDialog(_customProblem.getFullPath(), _solutionMeta.getPid());
+            }
+        });
         setupJsniHooks();
         
         _main = new BorderLayoutContainer();
@@ -336,13 +333,15 @@ public class ProblemDesigner extends Composite {
           return $wnd.getActiveWidget().widgetJson;
        }
        
+       var tutorWrapper = $wnd.TutorManager.getActiveTutorWrapper();
+       
        // add hooks on double click to bring up appropriate editor
        //
-       $wnd.$('#problem_statement').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Edit Problem Statement</button></div>");
+       $wnd.$('[name=problem_statement]', tutorWrapper.tutorDomNode).prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"whiteboard\",null)'>Edit Problem Statement</button></div>");
     
        // $wnd.$('#hm_flash_widget').prepend("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Edit Input</button></div>");
        
-       $wnd.$('#hm_flash_widget').html("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Edit Input</button></div><div id='widget_info'></div>");
+       $wnd.$('div[name=hm_flash_widget]', tutorWrapper.tutorDomNode).html("<div class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"widget\",null)'>Edit Input</button></div><div name='widget_info'></div>");
        
        $wnd.$('.widget-not-used').replaceWith('<p>Input Type: whiteboard</p>');
        
@@ -374,7 +373,7 @@ public class ProblemDesigner extends Composite {
 
        
        if(true || showAddStepHintButton) {
-           $wnd.$('#raw_tutor_steps').append("<div style='margin-top: 15px;' class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"add_hint-step\",null)'>Click to Add Hint/Step</button></div>").dblclick(function() {
+           $wnd.$('[name=raw_tutor_steps]', tutorWrapper.tutorDomNode).append("<div style='margin-top: 15px;' class='cp_designer-toolbar'><button onclick='window.gwt_editPart(\"add_hint-step\",null)'>Click to Add Hint/Step</button></div>").dblclick(function() {
               $wnd.gwt_editPart('add_hint', whiteboardId);
            });
        }
@@ -386,7 +385,7 @@ public class ProblemDesigner extends Composite {
     protected void loadProblem(final SolutionInfo solution, SolutionMeta solutionMeta, int scrollPosition) {
         _solutionInfo = solution;
         _solutionMeta = solutionMeta;
-        _tutorWrapper = new TutorWrapperPanel(_editMode.getValue(), false, false, false, new TutorCallbackDefault() {
+        _tutorWrapper = new TutorWrapperPanel(false, false, false, false, new TutorCallbackDefault() {
             @Override
             native public void solutionHasBeenInitialized() /*-{
                                                  
@@ -406,10 +405,10 @@ public class ProblemDesigner extends Composite {
 
 
 
-        boolean shouldExpand = !_editMode.getValue();
+        boolean shouldExpand = true;
         _tutorWrapper.externallyLoadedTutor(solution, getWidget(), "", "Solution Title", false, shouldExpand, null);
 
-        if(!_editMode.getValue()) {
+        if(true) {
             jsni_SetupStepEditHooks(solutionMeta.getSteps().size()==0);
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                 @Override
@@ -427,23 +426,31 @@ public class ProblemDesigner extends Composite {
                     try {
                     	WidgetEditor wid = WidgetEditorFactory.createEditorFor(widgetDef);
                     	
-                    	Element widgetInfo = DOM.getElementById("widget_info");
-                    	if(widgetInfo == null) {
-                    		CmMessageBox.showAlert("Widget Info div not found");
-                    		return;
-                    	}
+//                    	Element widgetInfo = DOM.getElementById("widget_info");
+//                    	if(widgetInfo == null) {
+//                    		CmMessageBox.showAlert("Widget Info div not found");
+//                    		return;
+//                    	}
 
                     	/** Create human reading label identifing input type and value */
                     	String html = "<b>Input Type</b>: " + wid.getWidgetTypeLabel();
                     	
                     	html += wid.getWidgetValueLabel() != null?"<br/><b>Correct Value</b>: " + wid.getWidgetValueLabel():"";
-                    	widgetInfo.setInnerHTML(html);
+                    	
+                    	jsni_setWidgetInfoDiv(html);
+                    	// widgetInfo.setInnerHTML(html);
                     }
                     catch(Exception e) {
                     	e.printStackTrace();
                     }
                 }
-                
+
+				native private void jsni_setWidgetInfoDiv(String html) /*-{
+				    var wi = $wnd.$get('widget_info');
+				    if(wi) {
+				        wi.innerHTML = html;
+				    }
+				}-*/;
                 
 //                native public void execute() /*-{
 //                    if($wnd.TutorSolutionWidgetValues.getActiveWidget().showWidgetCorrectValue) {

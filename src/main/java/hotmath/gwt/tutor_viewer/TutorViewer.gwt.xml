@@ -1,12 +1,16 @@
 <module rename-to="tutor_viewer">
 
 	<inherits name="com.google.gwt.user.User" />
+	
+	<!-- 
 	<inherits name='hotmath.gwt.cm_mobile_shared.CatchupMathMobileShared' />
 	<inherits name="com.google.code.gwt.storage.Html5Storage" />
     <inherits name='com.google.gwt.json.JSON' />
-    
-    <inherits name='hotmath.gwt.cm_tutor.CmTutor' />v
     <inherits name='hotmath.gwt.cm_core.CmCore' />
+     -->
+    
+    <inherits name='hotmath.gwt.cm_tutor.CmTutor' />
+    
 
 	<entry-point class="hotmath.gwt.tutor_viewer.client.TutorViewer" />
 </module>

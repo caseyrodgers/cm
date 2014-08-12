@@ -324,10 +324,6 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
     static private native void expandAllSteps() /*-{
                                           $wnd.expandAllSteps();
                                           }-*/;
-    
-    native private static void setupJsniStatic() /*-{
-        $wnd.gwt_scrollToBottomOfScrollPanel = @hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::scrollToBottom(I);
-    }-*/;
 
     @Override
     public String getBackButtonText() {

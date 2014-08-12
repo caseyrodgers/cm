@@ -1,139 +1,60 @@
-<div class='prob-stmt' style='margin-bottom:15em;'>
-	<div class='hm_question_def'>
-		<div>
-			<p class=MsoNormal>The top, side, and front views of an object built with
-				cubes are shown.</p>
-			<p class=MsoNormal> How many cubes are needed to construct this
-				object?</p>
+<div name="tutoroutput" style="display: block;position: relative;">
+	<div class="GMBUSWMCAJ" onclick="gwt_tutorIsReadonlyMessage()">
+		<div class="GMBUSWMCBJ">Read Only</div>
+	</div>
+	<div class="tutor-prob-status"></div>
+	<div class="problem-title"></div>
+	<div name="tutor_raw_steps_wrapper">
+		<span style="font-type: italic;color: #666">Loading ...</span>
+	</div>
+	<span>
+		<div name="steps_tail">
+			<button type="button" class="sexybutton sexy_cm_silver">
+				<span>
+					<span>Prev</span>
+				</span>
+			</button>
+			<button type="button" class="sexybutton sexy_cm_silver">
+				<span>
+					<span>Next</span>
+				</span>
+			</button>
+			<button type="button" class="sexybutton sexy_cm_silver"
+				aria-hidden="true" style="display: none;">
+				<span>
+					<span>Return</span>
+				</span>
+			</button>
+			<button type="button" class="sexybutton sexy_cm_silver"
+				aria-hidden="true" style="display: none;">
+				<span>
+					<span>Whiteboard</span>
+				</span>
+			</button>
+			<span class="GMBUSWMCCJ" name="tutor_message"></span>
+			<div class="widget_correct_info_hide">
+				<div classname="GMBUSWMCOI">
+					<h1>You answered this question correctly!</h1>
+					<p>
+						You may now
+						<button accesskey="c" class="sexybutton sexy_cm_silver"
+							onclick="TutorManager.newProblem();return false;">
+							<span>
+								<span>Continue</span>
+							</span>
+						</button>
+						with the lesson.
+					</p>
+				</div>
+			</div>
+			<div class="cm-tutor-button-bar-bottom" style="display: none;float: right;">
+				<a class="button debug-off" href="javascript:void(0)" onclick="expandAllSteps();return false;">Expand </a>
+			</div>
 		</div>
-		<ul>
-			<li correct='no'>
-				<div>
-					<p class=MsoNormal>6</p>
-				</div>
-				<div>&nbsp;
-				</div>
-			</li>
-			<li correct='no'>
-				<div>
-					<p class=MsoNormal>8</p>
-				</div>
-				<div>&nbsp;
-				</div>
-			</li>
-			<li correct='yes'>
-				<div>
-					<p class=MsoNormal>10</p>
-				</div>
-				<div>&nbsp;
-				</div>
-			</li>
-			<li correct='no'>
-				<div>
-					<p class=MsoNormal>12</p>
-				</div>
-				<div>&nbsp;
-				</div>
-			</li>
-		</ul>
-	</div>
+	</span>
+	<div name="refresh_problem_button"></div>
+	<img name="scrollTo-button" src="/assets/images/spacer.gif">
 </div>
-<div class='prob-stmt' style='margin-bottom:15em;'>
-	<div class='hm_question_def'>
-		<div>
-			<p class=MsoNormal>Match the three dimensional block with the side, front,
-				and top view shown.
-
-
-			</p>
-		</div>
-		<ul>
-			<li correct='no'>
-				<div>
-					<p class=MsoNormal>
-						<img
-							src='/help/solutions/alg1ptests3/customquiz/23/1/alg1ptests3_customquiz_23_1_1_1/resources/2d3d_1_1_2.gif'
-							class='solution_resource' />
-
-
-					</p>
-				</div>
-				<div>&nbsp;
-				</div>
-			</li>
-			<li correct='no'>
-				<div>
-					<p class=MsoNormal>
-						<img
-							src='/help/solutions/alg1ptests3/customquiz/23/1/alg1ptests3_customquiz_23_1_1_1/resources/2d3d_1_1_3.gif'
-							class='solution_resource' />
-
-					</p>
-				</div>
-				<div>&nbsp;
-				</div>
-			</li>
-			<li correct='no'>
-				<div>
-					<p class=MsoNormal>
-						<img
-							src='/help/solutions/alg1ptests3/customquiz/23/1/alg1ptests3_customquiz_23_1_1_1/resources/2d3d_1_1_3.gif'
-							class='solution_resource' />
-					</p>
-				</div>
-				<div>&nbsp;
-				</div>
-			</li>
-			<li correct='yes'>
-				<div>
-					<p class=MsoNormal>
-						<img
-							src='/help/solutions/alg1ptests3/customquiz/23/1/alg1ptests3_customquiz_23_1_1_1/resources/2d3d_1_1_1.gif'
-							class='solution_resource' />
-					</p>
-				</div>
-				<div>&nbsp;
-				</div>
-			</li>
-		</ul>
-	</div>
-</div>
-<div class='prob-stmt' style='margin-bottom:15em;'>
-	<p class=MsoNormal>
-		In the figures,
-		<sub>
-			<img width=68 height=21
-				src="/help/solutions/genericgeo/9/3/ArcsandChords/genericgeo_9_3_ArcsandChords_15_3/image103.gif"
-				class=text-bottom>
-		</sub>
-		. Find
-		<i>x</i>
-		.
-	</p>
-	<div id='hm_flash_widget'>
-		<div id='hm_flash_widget_def' style='display: none'>{type:'number_rational',value:'9',
-			format:'x%20%3D%20|', width:1, height:1}</div>
-	</div>
-</div>
-<div class='prob-stmt' style='margin-bottom:15em;'>
-	<p class=MsoNormal>
-		In
-		<sub>
-			<img width=32 height=21
-				src="/help/solutions/genericgeo/9/3/ArcsandChords/genericgeo_9_3_ArcsandChords_16_3/image111.gif"
-				class=text-bottom>
-		</sub>
-		<i>AB</i>
-		= 18 and
-		<i>CD</i>
-		= 3
-		<i>x</i>
-		. What is the value of
-		<i>x</i>
-		?
-	</p>
-	<div id='hm_flash_widget'>
-		<div id='hm_flash_widget_def' style='display: none'>{type:'number_rational',value:'6',
-			format:'x%20%3D%20|', width:1, height:1}</div>
-	</div>
-</div>
+<div class="debug-hide">
+	<button type="button" class="gwt-Button">Debug</button>
+</div

@@ -37,12 +37,15 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /** Provides a standard tutor viewer that handles the complications
@@ -102,7 +105,6 @@ public class TutorWrapperPanel extends Composite {
         this.saveVariableContext = saveVariableContext;
         initWidget(uiBinder.createAndBindUi(this));
 
-
         /** Turn on debugging CSS */
         if (CmGwtUtils.getQueryParameter("debug") != null) {
             addStyleName("debug-mode");
@@ -148,7 +150,31 @@ public class TutorWrapperPanel extends Composite {
             }-*/;
         });
 
+        addDomHandler(new MouseDownHandler() {
+            @Override
+            public void onMouseDown(MouseDownEvent event) {
+                jsni_setActiveTutorWrapper();
+            }
+        }, MouseDownEvent.getType());
+        
+        
     }
+    
+    @Override
+    protected void onDetach() {
+    	super.onDetach();
+    	jsni_unregisterTutorWrapper();
+    }
+
+    
+    native void jsni_unregisterTutorWrapper() /*-{
+        $wnd.TutorManager.unregisterTutorWrapper(this.tutorWrapper);
+    }-*/;
+
+	private native void jsni_setActiveTutorWrapper() /*-{
+        // alert('wrapper: ' + this.tutorWrapper);
+        $wnd.TutorManager.setActiveTutorWrapper(this.tutorWrapper);
+    }-*/;
 
     /** Provide button bar customization
      *
@@ -223,6 +249,11 @@ public class TutorWrapperPanel extends Composite {
      * @param value
      */
     String _lastWidgetValue;
+
+    /** the dom node where this tutor is installed
+     * 
+     */
+	private com.google.gwt.user.client.Element tutorDomNode;
     public void setTutorWidgetValue(String value) {
         _lastWidgetValue = value;
         jsni_setTutorWidgetValue(value);
@@ -361,6 +392,9 @@ public class TutorWrapperPanel extends Composite {
     }
 
 
+    public Element getTutorDomNode() {
+    	return this.tutorDomNode;
+    }
 
     private void initializeTutor(Widget instance, final String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) {
 
@@ -380,8 +414,9 @@ public class TutorWrapperPanel extends Composite {
             enableTutorDebugMode(true);
         }
 
+        this.tutorDomNode = instance.getElement();
 
-        jsni_initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus.name(), installCustomSteps);
+        jsni_initializeTutorNative(this.tutorDomNode, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus.name(), installCustomSteps);
 
         debugInfo.setText(pid);
         debugInfo.addClickHandler(new ClickHandler() {
@@ -455,12 +490,19 @@ public class TutorWrapperPanel extends Composite {
         tutorCallback.tutorWidgetCompleteDenied(null, false);
     }
 
+    private void gwt_scrollToBottomOfScrollPanel() {
+    	tutorCallback.scrollToBottomOfScrollPanel();
+    }
 
-    /** initialize external tutor JS/HTML and provide glue between external JS
-     * methods and GWT.
+
+
+    /** initialize external tutor JS/HTML 
+     * and provide glue between external JS methods and GWT.
+     * 
+     * Note: all methods need access to 'this'.
      *
      */
-    private native void jsni_initializeTutorNative(Widget instance, String pid, String jsonConfig,
+    private native void jsni_initializeTutorNative(Element instance, String pid, String jsonConfig,
             String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,
             boolean shouldExpandSolution,String solutionContext, String submitButtonText, String indicateWidgetStatus, boolean installCustomSteps) /*-{
 
@@ -495,13 +537,12 @@ public class TutorWrapperPanel extends Composite {
            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::tutorWidgetCompleteAux(Z)(yesNo);
         }
 
-        $wnd.tutorWidgetComplete = function(inputValue,yesNo) {
+        $wnd.tutorWidgetComplete = function(inputValue,yesNo) { 
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::tutorWidgetComplete(Ljava/lang/String;Z)(inputValue, yesNo);
         }
 
-
         $wnd.gwt_scrollToBottomOfScrollPanel = function(top) {
-           $wnd.scrollTo(0,top);
+            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_scrollToBottomOfScrollPanel()();
         }
 
         $wnd.gwt_tutorNewProblem = function(problemNumber) {
@@ -525,12 +566,15 @@ public class TutorWrapperPanel extends Composite {
        // used to store current tutor context on server providing
        // a way to restore the tutor to its current var defs.
        //
-       $wnd.gwt_solutionHasBeenInitialized = function() {
+       $wnd.gwt_solutionHasBeenInitialized = function(tutorWrapper) {
            try {
                var vars = $wnd._tutorData._variables;
                var pid = $wnd.TutorManager.pid;
                var probNum=0;
                var solutionVariablesJson = $wnd.getTutorVariableContextJson(vars);
+               
+               that.tutorWrapper = tutorWrapper;
+               
                that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_solutionHasBeenInitialized(Ljava/lang/String;Ljava/lang/String;I)(solutionVariablesJson,pid,probNum);
        }
        catch(e) {
@@ -550,7 +594,7 @@ public class TutorWrapperPanel extends Composite {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_tutorQuestionGuessChanged(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id,selection,value);
        }
 
-       $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext,submitButtonText, indicateWidgetStatus, installCustomSteps);
+       $wnd.TutorManager.initializeTutor(instance, pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext,submitButtonText, indicateWidgetStatus, installCustomSteps);
 
        $wnd.Flashcard_mngr.problemGenDebugInfo =  function (code, info) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_problemGenDebugInfo(Ljava/lang/String;Ljava/lang/String;)(code, info);
@@ -567,7 +611,6 @@ public class TutorWrapperPanel extends Composite {
     }
 
     private void resizeTutor() {
-        Log.debug("Resizing tutor");
         if(_readOnly) {
             setupReadonlyMask(_readOnly);
         }
@@ -605,7 +648,6 @@ public class TutorWrapperPanel extends Composite {
         if(true) {
             return;
         }
-
 
         if(!enableYesNo) {
             stepNext.setEnabled(false);
@@ -649,14 +691,6 @@ public class TutorWrapperPanel extends Composite {
         } else {
             Log.debug("Saving solution context: " + pid);
 
-            // DEBUG ...
-            String dRec = jsni_extractTutorDataRecord();
-            if(dRec != null) {
-                saveTutorDataRecord(dRec, _solutionInfo.getPid(), UserInfo.getInstance().getRunId());
-            }
-
-
-
             Action<RpcData> action = tutorCallback.getSaveSolutionContextAction(variablesJson, _solutionInfo.getPid(), problemNumber);
             if(action != null) {
                 CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
@@ -675,13 +709,6 @@ public class TutorWrapperPanel extends Composite {
         }
     }
 
-    private String jsni_extractTutorDataRecord() {
-        return "the TUTOR DATA RECORD";
-    }
-
-    private void saveTutorDataRecord(String dataRec, String pid, int runId) {
-        // Window.alert("DATA RECORD: " + dataRec);
-    }
 
     protected void gwt_solutionHasBeenViewed(String value) {
         this.tutorCallback.solutionHasBeenViewed(value);
@@ -770,7 +797,7 @@ public class TutorWrapperPanel extends Composite {
 
 
     public native void jsni_addWhiteboardSubmitButton() /*-{
-        var widgetHolder = $doc.getElementById("hm_flash_widget");
+        var widgetHolder = $wnd.$get("hm_flash_widget");
         if(widgetHolder) {
             var ih = widgetHolder.innerHTML;
             widgetHolder.innerHTML = ih + "<p><input type='button' onclick='gwt_submitWhiteboardAnswer()' class='sexybutton sexysimple sexylarge sexyred' value='Submit Whiteboard Answer'/></p>";
@@ -783,10 +810,10 @@ public class TutorWrapperPanel extends Composite {
     }-*/;
 
 
-    static native public void jsni_showWhiteboardStatus(String status) /*-{
+    static native public void jsni_showWhiteboardStatus(String status, Element element) /*-{
         if(status == 'Submitted' || status == 'Correct' || status == 'Incorrect' || status == 'Half Correct') {
-            var widgetHolder = $doc.getElementById("hm_flash_widget");
-            widgetHolder.innerHTML = "<div id='hm_flash_widget_head' style='display: block'>" + status + "</div>";
+            var widgetHolder = $wnd.$get('hm_flash_widget', element);
+            widgetHolder.innerHTML = "<div name='hm_flash_widget_head' style='display: block'>" + status + "</div>";
             //$wnd.setWidgetMessage(status);
         }
     }-*/;
@@ -794,12 +821,12 @@ public class TutorWrapperPanel extends Composite {
 
 
     private void gwt_submitWhiteboardAnswer() {
-        TutorWrapperPanel.jsni_showWhiteboardStatus("Submitted");
+        TutorWrapperPanel.jsni_showWhiteboardStatus("Submitted", this.tutorDomNode);
         tutorCallback.showWorkHasBeenSubmitted();
    }
 
     static native public void jsni_showWhiteboardWidgetMessage(String message) /*-{
-        var widgetHolder = $doc.getElementById("hm_flash_widget");
+        var widgetHolder = $wnd.$get("hm_flash_widget");
         if(widgetHolder) {
             widgetHolder.innerHTML = message;
         }
@@ -810,7 +837,7 @@ public class TutorWrapperPanel extends Composite {
      *
      */
     static native public void jsni_hideWhiteboardStatus() /*-{
-    var widgetHolder = $doc.getElementById("hm_flash_widget");
+    var widgetHolder = $wnd.$get("hm_flash_widget");
     if(widgetHolder) {
         widgetHolder.style.display = 'none';
     }
@@ -855,9 +882,6 @@ public class TutorWrapperPanel extends Composite {
         }-*/;
 
 
-
-
-
         /** Extract just the widget JSON
          *
          * @param html
@@ -885,11 +909,18 @@ public class TutorWrapperPanel extends Composite {
          * @return
          */
         static public String stripWidgetFromHtml(String html) {
-            String START_TOKEN="<div id='hm_flash_widget'";
-            int startPos = html.indexOf(START_TOKEN);
+        	String token = "hm_flash_widget";
+
+            String START_TOKEN_SINGLE="<div name='" + token + "'";
+            String START_TOKEN_DOUBLE="<div name=\"" + token + "\"";
+            int startPos = html.indexOf(START_TOKEN_SINGLE);
             if(startPos == -1) {
-                return html;
+            	startPos = html.indexOf(START_TOKEN_DOUBLE);
+            	if(startPos == -1) {
+            		return html;
+            	}
             }
+            
             int endPos = html.indexOf("</div>", startPos);
             endPos = html.indexOf("</div>", endPos+1);
 

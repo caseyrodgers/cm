@@ -45,20 +45,20 @@
 
     <g:HTMLPanel>
         <!-- HOTMATH BODY START -->
-        <div id="tutoroutput" style='display: block;position: relative;'>
+        <div name="tutoroutput" style='display: block;position: relative;'>
             <div ui:field="readonlyMask" class='{style.readonlyMask}' onclick='gwt_tutorIsReadonlyMessage()'>
                <div class='{style.readonlyMaskText}'>Read Only</div>
             </div>
             <div ui:field="problemStatus" class='tutor-prob-status'></div>
             <div class='problem-title' ui:field="title"></div>
-            <div id='tutor_raw_steps_wrapper'>
+            <div name='tutor_raw_steps_wrapper'>
                   <span style='font-type: italic;color: #666'>Loading ...</span>
             </div>
             
             
 
             <span ui:field='buttonBar'>
-            <div id='steps_tail'>
+            <div name='steps_tail'>
                 
                 <cm:TouchButton ui:field='stepPrev' styleName='sexybutton sexy_cm_silver'>
                     <span>
@@ -86,7 +86,7 @@
                     </span>
                 </cm:TouchButton>
                 
-                <span class='{style.tutorMessage}' id='tutor_message'></span>
+                <span class='{style.tutorMessage}' name='tutor_message'></span>
 
                 <div ui:field="widgetCorrectInfo" class="{style.hide}">
                     <div className='{style.correctWrapper}'>
@@ -106,8 +106,8 @@
             </div>
             </span>
             <!-- HOTMATH BODY END -->
-            <div id='refresh_problem_button'></div>
-            <img id='scrollTo-button' src='/assets/images/spacer.gif'/>
+            <div name='refresh_problem_button'></div>
+            <img name='scrollTo-button' src='/assets/images/spacer.gif'/>
         </div>
         <!-- END TUTOR GUTS -->
         <div class='debug-hide' >

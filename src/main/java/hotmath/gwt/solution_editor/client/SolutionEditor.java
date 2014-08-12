@@ -12,12 +12,15 @@ import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAdminAction.Type;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryActionManager;
 import hotmath.gwt.solution_editor.client.SolutionSearcherDialog.Callback;
 import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
@@ -61,8 +65,48 @@ public class SolutionEditor implements EntryPoint {
         __instance = this;
     }
 
+    
+    
+    
+    
     @Override
     public void onModuleLoad() {
+    	
+    	
+        GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+            @Override
+            public void onUncaughtException(Throwable e) {
+
+            	Window.alert("Uncaught Exception: " + e.toString());
+                e.printStackTrace();
+
+                try {
+                    String nameAndTime = getClass().getName() + ": Uncaught exception: " + new Date();
+                    /**
+                    CmShared.getCmService().execute(
+
+                            new LogRetryActionFailedAction("uncaught exception", UserInfo.getInstance().getUid(), nameAndTime, null, CmShared
+                                    .getStackTraceAsString(e)), new AsyncCallback<RpcData>() {
+                                @Override
+                                public void onSuccess(RpcData result) {
+                                    CmLogger.info("Retry operation logged");
+                                }
+
+                                @Override
+                                public void onFailure(Throwable exe) {
+                                    if (CmShared.getQueryParameter("debug") != null)
+                                        Window.alert("Error sending info about uncaught exception: " + exe);
+                                }
+                            });
+                   */                            
+                } catch (Exception x) {
+                    CmLogger.error("Uncaught exception: " + x.getMessage(), x);
+                }
+            }
+        });
+
+    	
+    	
 
         publishNative(this);
 
