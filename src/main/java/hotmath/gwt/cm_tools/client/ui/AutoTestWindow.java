@@ -13,7 +13,6 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
-import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.Slider;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -22,7 +21,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 
-public class AutoTestWindow extends ContentPanel {
+public class AutoTestWindow extends GWindow {
 	
 
 	public interface LogProperties extends PropertyAccess<String> {
@@ -46,8 +45,11 @@ public class AutoTestWindow extends ContentPanel {
     ToggleButton _logEnable;
     private AutoTestWindow() {
         
-    	
+    	super(true);
         CmShared.setQueryParameter("test_rpp_only", "true");
+        setResizable(true);
+        setMaximizable(true);
+        setMinimizable(true);
 
         setPixelSize(500,200);
         setHeadingText("Auto Test Log");
@@ -55,30 +57,28 @@ public class AutoTestWindow extends ContentPanel {
         ListStore<LogModel> store  =new ListStore<LogModel>(props.id());
         _listView = new ListView<LogModel, String>(store, props.message());
         
-        add(_listView);
+        setWidget(_listView);
         
         setupTools();
+        
+        setVisible(true);
     }
     
     public void addLogMessage(String msg) {
-
-        if(!(getParent() == CmMainPanel.__lastInstance)) {
-            CmMainPanel.__lastInstance.setSouthWidget(this);
-            CmMainPanel.__lastInstance.forceLayout();
-        }
-        
-        
+    	
         if(!_logEnable.getValue()) {
             return;
         }
         
+        if(!isVisible()) {
+        	setVisible(true);
+        }
         
         LogModel lm = new LogModel(msg);
         _listView.getStore().add(lm);
         
         int scrollTop = _listView.getElement().getScrollTop();
         int size = _listView.getElement().getClientHeight();
-        
         
         _listView.getElement().scrollTo(ScrollDirection.TOP, scrollTop + size);
         _listView.getSelectionModel().select(_listView.getStore().size(), false);
@@ -87,7 +87,6 @@ public class AutoTestWindow extends ContentPanel {
     
     Slider _waitTimeForSingleResourceSlider = new Slider();
     private void setupTools() {
-
 
         TextButton close = new TextButton("Close");
         close.addSelectHandler(new SelectHandler() {
@@ -169,8 +168,10 @@ public class AutoTestWindow extends ContentPanel {
     public void startAutoTest() {
         UserInfo.getInstance().setAutoTestMode(true);
         CmContext context = ContextController.getInstance().getTheContext();
-        if(context != null)
-            context.runAutoTest();        
+        if(context != null) {
+            context.runAutoTest();
+        }
+            
     }
     
     public int getTimeForSingleResource() {
@@ -183,10 +184,11 @@ public class AutoTestWindow extends ContentPanel {
 
 class LogModel  {
  
+	static int __idSource;
 	int id;
 	String message;
     public LogModel(String msg) {
-    	id++;
+    	id = (__idSource++);
         setMessage(msg);
     }
     
