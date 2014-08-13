@@ -40,6 +40,11 @@ public class TutorPreviewDialog extends GWindow {
             public boolean moveFirstHintOnWidgetIncorrect() {
                 return false;
             }
+            
+            @Override
+            public void scrollToBottomOfScrollPanel() {
+            	tutorFlow.getScrollSupport().scrollToBottom();
+            }
         });
         tutorFlow = new FlowLayoutContainer();
         tutorFlow.setScrollMode(ScrollMode.AUTO);
