@@ -74,6 +74,11 @@ where run_id not in (
                         from   HA_TEST_RUN
                         );                          
 
+delete from  HA_SOLUTION_CONTEXT
+where run_id not in ( select run_id
+                      from   HA_TEST_RUN
+                    );
+
 delete from  HA_USER_EXTENDED
 where user_id not in ( select uid
                    from   HA_USER );                          
