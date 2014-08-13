@@ -293,7 +293,6 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
         //
         $wnd.gwt_solutionHasBeenInitialized = function(tutorWrapper) {
         try {
-            alert('test');
             alert('the tutor wrapper is: ' + tutorWrapper);
             
             var vars = $wnd._tutorData._variables;

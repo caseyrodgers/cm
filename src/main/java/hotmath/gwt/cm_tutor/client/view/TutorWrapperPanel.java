@@ -580,8 +580,8 @@ public class TutorWrapperPanel extends Composite {
                
                var pid = $wnd.TutorManager.pid;
                var probNum=0;
-               
                var solutionVariablesJson = $wnd.getTutorVariableContextJson(vars);
+               
                that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_setTutorWrapperId(I)(tutorWrapper.id);
                that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_solutionHasBeenInitialized(Ljava/lang/String;Ljava/lang/String;I)(solutionVariablesJson,pid,probNum);
        }
