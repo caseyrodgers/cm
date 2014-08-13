@@ -108,7 +108,7 @@ var TutorManager = {
     },
     unregisterTutorWrapper: function(idToRemove) {
         for(var i = 0;i < TutorManager.tutorWrappers.length; i++) {
-            if(TutorManager.tutorWrappers[i].id == tdToRemove) {
+            if(TutorManager.tutorWrappers[i].id == idToRemove) {
                 TutorManager.tutorWrappers[i] = null;
             }
         }
