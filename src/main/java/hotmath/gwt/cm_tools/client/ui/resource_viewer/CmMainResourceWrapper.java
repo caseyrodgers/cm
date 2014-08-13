@@ -90,7 +90,6 @@ public class CmMainResourceWrapper {
                     else {
                         int h = getCalculatedHeight(CmMainPanel.__lastInstance, resourcePanel);
                         if (h > 0) {
-                            CmLogger.debug("fireWindowResized: h==" + h);
                             container.setHeight(h);
                         }
                                                 
