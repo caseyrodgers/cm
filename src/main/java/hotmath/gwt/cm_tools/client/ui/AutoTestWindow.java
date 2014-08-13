@@ -46,6 +46,7 @@ public class AutoTestWindow extends GWindow {
     private AutoTestWindow() {
         
     	super(true);
+    	setModal(false);
         CmShared.setQueryParameter("test_rpp_only", "true");
         setResizable(true);
         setMaximizable(true);
