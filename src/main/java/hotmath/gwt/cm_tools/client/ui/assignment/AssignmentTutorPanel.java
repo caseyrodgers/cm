@@ -43,6 +43,8 @@ public class AssignmentTutorPanel extends Composite {
 
     private boolean _isGraded;
 
+	private FlowLayoutContainer _mainFlow;
+
     interface AssignmentTutorPanelCallback {
         void tutorWidgetValueUpdated(String value, boolean correct);
 
@@ -97,6 +99,11 @@ public class AssignmentTutorPanel extends Composite {
                 _callBack.whiteboardSubmitted();
             }
             
+            @Override
+            public void scrollToBottomOfScrollPanel() {
+            	_mainFlow.getScrollSupport().scrollToBottom();
+            }
+            
         });
         
         _tutorPanel.addStyleName("tutor_solution_wrapper");
@@ -104,11 +111,11 @@ public class AssignmentTutorPanel extends Composite {
         _tutorPanel.addStyleName("is_epp");
         
         
-        FlowLayoutContainer flow = new FlowLayoutContainer();
-        flow.setScrollMode(ScrollMode.AUTO);
-        flow.add(_tutorPanel);
+        _mainFlow = new FlowLayoutContainer();
+        _mainFlow.setScrollMode(ScrollMode.AUTO);
+        _mainFlow.add(_tutorPanel);
 
-        initWidget(flow);
+        initWidget(_mainFlow);
     }
     
     
