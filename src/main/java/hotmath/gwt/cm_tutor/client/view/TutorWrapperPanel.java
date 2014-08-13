@@ -169,11 +169,11 @@ public class TutorWrapperPanel extends Composite {
 
     
     native void jsni_unregisterTutorWrapper(int id) /*-{
-        $wnd.TutorManager.unregisterTutorWrapperById(id);
+        $wnd.TutorManager.unregisterTutorWrapper(id);
     }-*/;
 
 	private native void jsni_setActiveTutorWrapper(int id) /*-{
-        $wnd.TutorManager.setActiveTutorWrapperById(id);
+        $wnd.TutorManager.setActiveTutorWrapper(id);
     }-*/;
 
     /** Provide button bar customization
