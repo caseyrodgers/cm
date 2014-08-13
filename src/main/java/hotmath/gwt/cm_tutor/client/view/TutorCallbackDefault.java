@@ -88,6 +88,6 @@ public class TutorCallbackDefault implements TutorCallback {
     
     @Override
     native public void scrollToBottomOfScrollPanel() /*-{
-        window.scrollTo(0,$doc.body.scrollHeight);
+        $wnd.scrollTo(0,$doc.body.scrollHeight);
     }-*/;
 }

@@ -17,6 +17,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.Problem
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteEvent;
@@ -153,7 +154,7 @@ public class TutorWrapperPanel extends Composite {
         addDomHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
-                jsni_setActiveTutorWrapper();
+                jsni_setActiveTutorWrapper(TutorWrapperPanel.this.tutorWrapperId);
             }
         }, MouseDownEvent.getType());
         
@@ -163,17 +164,16 @@ public class TutorWrapperPanel extends Composite {
     @Override
     protected void onDetach() {
     	super.onDetach();
-    	jsni_unregisterTutorWrapper();
+    	jsni_unregisterTutorWrapper(this.tutorWrapperId);
     }
 
     
-    native void jsni_unregisterTutorWrapper() /*-{
-        $wnd.TutorManager.unregisterTutorWrapper(this.tutorWrapper);
+    native void jsni_unregisterTutorWrapper(int id) /*-{
+        $wnd.TutorManager.unregisterTutorWrapperById(id);
     }-*/;
 
-	private native void jsni_setActiveTutorWrapper() /*-{
-        // alert('wrapper: ' + this.tutorWrapper);
-        $wnd.TutorManager.setActiveTutorWrapper(this.tutorWrapper);
+	private native void jsni_setActiveTutorWrapper(int id) /*-{
+        $wnd.TutorManager.setActiveTutorWrapperById(id);
     }-*/;
 
     /** Provide button bar customization
@@ -254,6 +254,8 @@ public class TutorWrapperPanel extends Composite {
      * 
      */
 	private com.google.gwt.user.client.Element tutorDomNode;
+
+	private int tutorWrapperId;
     public void setTutorWidgetValue(String value) {
         _lastWidgetValue = value;
         jsni_setTutorWidgetValue(value);
@@ -416,7 +418,12 @@ public class TutorWrapperPanel extends Composite {
 
         this.tutorDomNode = instance.getElement();
 
-        jsni_initializeTutorNative(this.tutorDomNode, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus.name(), installCustomSteps);
+        try {
+            jsni_initializeTutorNative(this.tutorDomNode, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus.name(), installCustomSteps);
+        }
+        catch(Exception e) {
+        	Window.alert("Error initializing tutor: " + e.getMessage());
+        }
 
         debugInfo.setText(pid);
         debugInfo.addClickHandler(new ClickHandler() {
@@ -494,6 +501,9 @@ public class TutorWrapperPanel extends Composite {
     	tutorCallback.scrollToBottomOfScrollPanel();
     }
 
+    private void gwt_setTutorWrapperId(int id) {
+    	this.tutorWrapperId = id;
+    }
 
 
     /** initialize external tutor JS/HTML 
@@ -508,13 +518,11 @@ public class TutorWrapperPanel extends Composite {
 
 
         // $wnd.debug =  @hotmath.gwt.cm_core.client.CmGwtUtils::gwt_log(Ljava/lang/String;);
-
-        var that = this;
-
+        
+        var that=this;
         $wnd.solutionSetComplete = function(numCorrect, limit) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_solutionSetComplete(II)(numCorrect,limit);
         }
-
 
         if (typeof $wnd.TutorDynamic == 'undefined') {
            alert('TutorDynamic has not been defined');
@@ -569,12 +577,12 @@ public class TutorWrapperPanel extends Composite {
        $wnd.gwt_solutionHasBeenInitialized = function(tutorWrapper) {
            try {
                var vars = $wnd._tutorData._variables;
+               
                var pid = $wnd.TutorManager.pid;
                var probNum=0;
+               
                var solutionVariablesJson = $wnd.getTutorVariableContextJson(vars);
-               
-               that.tutorWrapper = tutorWrapper;
-               
+               that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_setTutorWrapperId(I)(tutorWrapper.id);
                that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_solutionHasBeenInitialized(Ljava/lang/String;Ljava/lang/String;I)(solutionVariablesJson,pid,probNum);
        }
        catch(e) {

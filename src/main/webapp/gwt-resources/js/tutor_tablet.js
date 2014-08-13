@@ -106,15 +106,25 @@ var TutorManager = {
         }
         
     },
-    
-    unregisterTutorWrapper: function(twToRemove) {
+    unregisterTutorWrapper: function(idToRemove) {
         for(var i = 0;i < TutorManager.tutorWrappers.length; i++) {
-            if(TutorManager.tutorWrappers[i] == twToRemove) {
+            if(TutorManager.tutorWrappers[i].id == tdToRemove) {
                 TutorManager.tutorWrappers[i] = null;
             }
         }
     },
-    
+    setActiveTutorWrapper: function(id) {
+       var tutorWrapper = null;
+       for(var i = 0;i < TutorManager.tutorWrappers.length; i++) {
+            if(TutorManager.tutorWrappers[i].id == tdToRemove) {
+                tutorWrapper = TutorManager.tutorWrappers[i];
+            }
+        }
+        if(!tutorWrapper) {
+           alert('tutorWrapper not found in TutorManager: ' + id);
+        }
+       TutorManager.activeTutorManager = tutorWrapper;
+    },
     getActiveTutorWrapper: function() {
         return TutorManager.activeTutorWrapper;
     },
