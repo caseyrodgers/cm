@@ -3,9 +3,9 @@ package hotmath.cm.util.report;
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 
 import java.awt.Color;

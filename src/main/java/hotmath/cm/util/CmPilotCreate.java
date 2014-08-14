@@ -2,8 +2,8 @@ package hotmath.cm.util;
 
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.subscriber.HotMathSubscriber;

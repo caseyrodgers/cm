@@ -1,10 +1,10 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelsAction;
 
 import java.util.List;

@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.TutorContainerActivatedEvent;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc.client.model.StudentShowWorkModelPojo;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -17,7 +18,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;

@@ -1,8 +1,8 @@
 package hotmath.cm.util.export;
 
 import hotmath.gwt.cm_admin.server.model.activity.StudentActivitySummaryModel;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.CustomProgramComposite.Type;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 
 import java.io.ByteArrayOutputStream;

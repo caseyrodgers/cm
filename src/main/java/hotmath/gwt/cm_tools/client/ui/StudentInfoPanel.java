@@ -2,10 +2,10 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import java.util.Date;
 
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoStatsAction;
 import hotmath.gwt.cm_rpc.client.rpc.UserInfoStats;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 

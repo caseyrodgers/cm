@@ -2,7 +2,7 @@ package hotmath.testset.ha;
 
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.shared.client.CmProgram;
 
 import java.sql.Connection;

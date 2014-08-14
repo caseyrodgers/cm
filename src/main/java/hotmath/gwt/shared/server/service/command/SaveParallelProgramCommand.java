@@ -5,12 +5,12 @@ import hotmath.gwt.cm_admin.server.model.ParallelProgramDao;
 import hotmath.gwt.cm_rpc.client.model.CmParallelProgram;
 import hotmath.gwt.cm_rpc.client.model.CmProgram;
 import hotmath.gwt.cm_rpc.client.model.CmProgramInfo;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc_core.client.CmUserException;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.shared.client.rpc.action.SaveParallelProgramAction;
 

@@ -1,7 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.testset.ha.info.UserProgramInfo;
 import hotmath.testset.ha.info.UserProgramInfoDao;
 

@@ -6,8 +6,8 @@ import hotmath.gwt.cm_rpc.client.model.CmProgram;
 import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
 import hotmath.gwt.cm_rpc.client.model.CmProgramInfo;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramUsageModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 
 import java.util.Date;
 import java.util.List;

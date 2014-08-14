@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_rpc_assignments.client.model.assignment;
 
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 
 import java.util.List;
 

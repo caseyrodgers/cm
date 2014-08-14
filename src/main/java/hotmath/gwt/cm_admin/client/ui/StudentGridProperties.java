@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 
 import com.google.gwt.editor.client.Editor.Path;
 import com.sencha.gxt.core.client.ValueProvider;

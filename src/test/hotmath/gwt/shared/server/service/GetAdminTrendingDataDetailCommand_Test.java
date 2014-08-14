@@ -1,9 +1,9 @@
 package hotmath.gwt.shared.server.service;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataDetailAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;

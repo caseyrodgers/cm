@@ -5,12 +5,12 @@ import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.model.StringHolder;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -1157,7 +1157,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
     class MyLoadHandler implements LoadHandler<PagingLoadConfigBean, CmStudentPagingLoadResult<StudentModelI>> {
         @Override
-        public void onLoad(LoadEvent<PagingLoadConfigBean, CmStudentPagingLoadResult<hotmath.gwt.cm_tools.client.model.StudentModelI>> event) {
+        public void onLoad(LoadEvent<PagingLoadConfigBean, CmStudentPagingLoadResult<hotmath.gwt.cm_rpc.client.model.StudentModelI>> event) {
             Info.display("Student Loaded", "MYLOADHANDLER: STUDENT GRID LOADED: " + event);
         }
     }

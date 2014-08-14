@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.client.model;
 
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 class StudentModelBasic implements StudentModelI, IsSerializable{

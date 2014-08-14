@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.server.service.command.helper;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 
 import java.sql.Connection;
