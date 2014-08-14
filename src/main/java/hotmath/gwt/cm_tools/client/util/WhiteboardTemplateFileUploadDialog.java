@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_tools.client.util;
 
-import hotmath.gwt.cm_admin.client.teacher.TeacherManager;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_tools.client.teacher.TeacherManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 
 import com.google.gwt.event.dom.client.ChangeEvent;

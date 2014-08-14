@@ -5,6 +5,7 @@
        -->
       
       <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
+      <inherits name='hotmath.gwt.cm_tools_2.CatchupMathTools_2'/>
       
       <inherits name='com.google.gwt.http.HTTP'/>
       

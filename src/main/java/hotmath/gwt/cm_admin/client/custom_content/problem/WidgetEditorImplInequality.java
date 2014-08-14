@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
-import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
+import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.ui.SimplePanel;

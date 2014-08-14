@@ -1,0 +1,14 @@
+<module>
+   <!-- Contains GXT 2 related panels and dependencies -->
+  	<inherits name='hotmath.gwt.shared.CmShared' />
+	<inherits name='hotmath.gwt.cm_mobile_shared.CatchupMathMobileShared' />
+	<inherits name='hotmath.gwt.cm_tutor.CmTutor' />
+
+	<inherits name='com.sencha.gxt.ui.GXT' />
+        <inherits name='com.sencha.gxt.chart.Chart'/>
+        <inherits name='com.extjs.gxt.ui.GXT' />
+        <inherits name='com.extjs.gxt.charts.Chart' />
+        <inherits name='com.extjs.gxt.themes.Themes' />
+        <inherits name='pl.rmalinowski.gwt2swf.GWT2SWF' />
+    	<entry-point class='hotmath.gwt.cm_tools_2.client.CatchupMathTools_2' />
+</module>

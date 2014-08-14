@@ -4,7 +4,7 @@ import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
+import hotmath.gwt.cm_tools_2.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;

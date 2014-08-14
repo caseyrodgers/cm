@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_tools.client.util;
+package hotmath.gwt.cm_tools_2.client.util;
 
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;

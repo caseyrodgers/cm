@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import hotmath.gwt.cm_admin.client.model.GroupCopyModel;
+import hotmath.gwt.cm_core.client.model.GroupCopyModel;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 

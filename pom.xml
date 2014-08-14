@@ -703,6 +703,7 @@
 				<configuration>
 					<cssSourceDir>gwt-resources/css</cssSourceDir>
 					<cssFinalFile>CatchupMath_combined.css</cssFinalFile>
+
 					<cssSourceFiles>
 
 						<param>../../../../../../hotmath2/web/css/tutor_widget.css</param>
