@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_admin.client.model.GroupCopyModel;
 import hotmath.gwt.cm_core.client.UserInfoBase;
+import hotmath.gwt.cm_core.client.model.GroupCopyModel;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;

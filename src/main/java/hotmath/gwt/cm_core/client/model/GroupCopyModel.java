@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_admin.client.model;
+package hotmath.gwt.cm_core.client.model;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
