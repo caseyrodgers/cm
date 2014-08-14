@@ -1,10 +1,10 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
-import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 
 import java.sql.Connection;

@@ -2,7 +2,7 @@ package hotmath.cm.login.service.lcom;
 
 import hotmath.cm.util.CmPilotCreate;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
+import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.testset.ha.HaUserFactory;

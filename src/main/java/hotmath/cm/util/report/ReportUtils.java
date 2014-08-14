@@ -2,8 +2,8 @@ package hotmath.cm.util.report;
 
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 

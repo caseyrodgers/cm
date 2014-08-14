@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;

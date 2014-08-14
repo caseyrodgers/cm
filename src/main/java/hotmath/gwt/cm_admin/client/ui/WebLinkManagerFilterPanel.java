@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.WebLinkOptionsDialog.WebLinkTypeLocal;
+import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.SubjectType;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
 import hotmath.gwt.cm_rpc.client.model.WebLinkType;
-import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 
 import java.util.List;
