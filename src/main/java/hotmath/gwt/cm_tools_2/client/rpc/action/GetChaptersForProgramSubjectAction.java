@@ -1,4 +1,4 @@
-package hotmath.gwt.shared.client.rpc.action;
+package hotmath.gwt.cm_tools_2.client.rpc.action;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;

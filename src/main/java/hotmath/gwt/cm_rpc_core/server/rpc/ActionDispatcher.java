@@ -627,6 +627,7 @@ public class ActionDispatcher {
 		 */
 		List<String> places = Arrays.asList(assumedCmdPackage,
 				"hotmath.gwt.shared.server.service.command.",
+				"hotmath.gwt.cm_admin.server.command.",
 				"hotmath.gwt.cm_mobile.server.rpc.",
 				"hotmath.gwt.cm_mobile_shared.server.rpc.",
 				"hotmath.gwt.solution_editor.server.rpc.",
