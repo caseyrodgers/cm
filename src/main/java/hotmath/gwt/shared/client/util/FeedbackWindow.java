@@ -9,8 +9,8 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
-import com.sencha.gxt.widget.core.client.event.DialogHideEvent;
-import com.sencha.gxt.widget.core.client.event.DialogHideEvent.DialogHideHandler;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 public class FeedbackWindow extends PromptMessageBox {
@@ -18,11 +18,9 @@ public class FeedbackWindow extends PromptMessageBox {
     public FeedbackWindow(final String feedbackStateInfo) {
 
         super("Feedback", "Enter Catchup Math feedback.");
-        addDialogHideHandler(new DialogHideHandler() {
-			
-			@Override
-			public void onDialogHide(DialogHideEvent event) {
-                if (event.getHideButton() == PredefinedButton.OK) {
+        addHideHandler(new HideHandler() {
+            public void onHide(HideEvent event) {
+                if (getHideButton() == getButtonById(PredefinedButton.OK.name())) {
 
                     final String value = getValue();
                     if (value == null || value.length() == 0)
