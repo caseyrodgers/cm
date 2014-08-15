@@ -9,72 +9,69 @@ import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+ import java.sql.PreparedStatement;
+ import java.sql.ResultSet;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+ import org.json.JSONArray;
+ import org.json.JSONObject;
 
-import sb.util.SbException;
-import sb.util.SbTestImpl;
+ import sb.util.SbException;
+ import sb.util.SbTestImpl;
 
 
 
-/** checks for existence of mobile videos for
- *  all prescriptions.
- *
- * @author casey
- *
- */
-public class SolutionContextChecker implements SbTestImpl {
+ /** checks for existence of mobile videos for
+  *  all prescriptions.
+  *
+  * @author casey
+  *
+  */
+ public class SolutionContextChecker implements SbTestImpl {
 
-    public SolutionContextChecker() {}
+     public SolutionContextChecker() {}
 
-    PreparedStatement _psLog;
+     PreparedStatement _psLog;
 
-    public void runTests() {
+     public void runTests() {
 
-        String sql = "select * from HA_TEST_RUN order by run_id desc limit 10000";
-        Connection conn=null;
-        try {
-            conn = HMConnectionPool.getConnection();
+         String sql = "select * from HA_TEST_RUN order by run_id desc limit 10000";
+         Connection conn=null;
+         try {
+             conn = HMConnectionPool.getConnection();
 
-            // executeSilent(conn, "drop table junk_context");
-            executeSilent(conn, "create table junk_context(aid integer, uid integer, rid integer, pid varchar(100), context text, check_time datetime)");
-            _psLog = conn.prepareStatement("insert into junk_context(aid, uid, rid, pid, context, check_time)values(?,?,?,?,?, now())");
-            ResultSet rs  = conn.createStatement().executeQuery(sql);
-            while(rs.next()) {
-                int runId = rs.getInt("run_id");
+             // executeSilent(conn, "drop table junk_context");
+             executeSilent(conn, "create table junk_context(aid integer, uid integer, rid integer, pid varchar(100), context text, check_time datetime)");
+             _psLog = conn.prepareStatement("insert into junk_context(aid, uid, rid, pid, context, check_time)values(?,?,?,?,?, now())");
+             ResultSet rs  = conn.createStatement().executeQuery(sql);
+             while(rs.next()) {
+                 int runId = rs.getInt("run_id");
 
-                //System.out.println("Checking run_id: " +    runId);
-                checkForCorruptedSolutionContexts(conn, runId);
-            }
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            SqlUtilities.releaseResources(null, null,conn);
-        }
-    }
+                 //System.out.println("Checking run_id: " +    runId);
+                 checkForCorruptedSolutionContexts(conn, runId);
+             }
+         }
+         catch(Exception e) {
+             e.printStackTrace();
+         }
+         finally {
+             SqlUtilities.releaseResources(null, null,conn);
+         }
+     }
 
-    private void executeSilent(Connection conn, String string) {
-        try {
-            conn.createStatement().executeUpdate(string);
-        }
-        catch(Exception e) {
-            // silent
-        }
+     private void executeSilent(Connection conn, String string) {
+         try {
+             conn.createStatement().executeUpdate(string);
+         }
+         catch(Exception e) {
+             // silent
+         }
 
-    }
+     }
 
-    private void checkForCorruptedSolutionContexts(Connection conn, int runId) throws Exception {
-    	
-    	
-    	if(true) {
-    		checkForOldContexts(conn, runId);
-    	}
-    	
+     private void checkForCorruptedSolutionContexts(Connection conn, int runId) throws Exception {
+
+        //checkForOldContexts(conn, runId);
+
         PreparedStatement ps=null;
         try {
             String sql = "select * from HA_SOLUTION_CONTEXT where run_id = ?";
@@ -110,41 +107,41 @@ public class SolutionContextChecker implements SbTestImpl {
         }
     }
 
-    
+
     private void checkForOldContexts(Connection conn, int runId) throws Exception {
         PreparedStatement ps=null;
         int countHave=0;
         int countNotHave=0;
-        
+
         Date minViewDate=null;
         try {
             String sql = "select * from HA_SOLUTION_CONTEXT where run_id = ?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1, runId);
             ResultSet rs = ps.executeQuery();
-            
+
             while(rs.next()) {
 
-            	Date viewDate=null;
+                Date viewDate=null;
                 if(rs.getDate("time_viewed") != null) {
                     viewDate = rs.getDate("time_viewed");
                 }
-                
+
                 if(viewDate != null) {
-                	if(minViewDate == null || (viewDate.getTime() < minViewDate.getTime())) {
-                		minViewDate = viewDate;
-                	}
+                        if(minViewDate == null || (viewDate.getTime() < minViewDate.getTime())) {
+                                minViewDate = viewDate;
+                        }
                 }
 
                 byte[] variables = rs.getBytes("variables");
                 String uncompressedContext = SolutionDao.getInstance().convertSolutionContext(variables);
-                
-                
+
+
                 if(uncompressedContext.contains("tutor_data_record")) {
-                	countHave++;
+                        countHave++;
                 }
                 else {
-                	countNotHave++;
+                        countNotHave++;
                 }
             }
 
@@ -152,13 +149,13 @@ public class SolutionContextChecker implements SbTestImpl {
         finally {
             SqlUtilities.releaseResources(null,  ps, null);
         }
-        
+
         if(countNotHave > 0) {
-        	System.out.println("tutor_data_record attribute: run_id:  " + runId + ", Have: " + countHave + ", Not Have: " + countNotHave + ", min_view: " + minViewDate);
+                System.out.println("tutor_data_record attribute: run_id:  " + runId + ", Have: " + countHave + ", Not Have: " + countNotHave + ", min_view: " + minViewDate);
         }
-        
+
     }
-    
+
     static final String UNDEFINED="dW5kZWZpbmV";
     private boolean contextIsCorrupted(String uncompressedContext) throws Exception {
 
