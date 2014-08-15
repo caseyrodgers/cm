@@ -15,6 +15,10 @@ public class GWindow extends Window {
 
 	TextButton closeBtn;
 	
+	public GWindow() {
+		this(true);
+	}
+	
     public GWindow(boolean addCloseButton) {
         setPixelSize(500, 300);
         setModal(true);

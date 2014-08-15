@@ -49,6 +49,8 @@ import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent.DialogHideHandler;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -240,9 +242,10 @@ public class HelpWindow extends GWindow {
                 public void onSelect(SelectEvent event) {
                     final ConfirmMessageBox mb = new ConfirmMessageBox("Restart Program",
                             "Are you sure you would like to restart your current program?");
-                    mb.addHideHandler(new HideHandler() {
-                        public void onHide(HideEvent event) {
-                            if (mb.getHideButton() == mb.getButtonById(PredefinedButton.YES.name())) {
+                    mb.addDialogHideHandler(new DialogHideHandler() {
+						@Override
+						public void onDialogHide(DialogHideEvent event) {
+                            if (event.getHideButton() == PredefinedButton.YES) {
                                 CmShared.resetProgram_Gwt(UserInfo.getInstance().getUid());
                             }
                         }

@@ -6,7 +6,6 @@ import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_tools_2.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -155,7 +154,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
 	    
 	    String group = student.getGroup();
 	    if(group == null) {
-	        CmMessageBoxGxt2.showAlert("Group must be specified");
+	        CmMessageBox.showAlert("Group must be specified");
 	        return;
 	    }
 	    

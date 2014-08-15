@@ -47,6 +47,8 @@ import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent.DialogHideHandler;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -95,9 +97,10 @@ public class PrescriptionLessonChooserDialog extends GWindow {
                 }
                 
                 final ConfirmMessageBox mb = new ConfirmMessageBox("Continue?", "Ready to move to next quiz?");
-                mb.addHideHandler(new HideHandler() {
-                    public void onHide(HideEvent event) {
-                        if (mb.getHideButton() == mb.getButtonById(PredefinedButton.YES.name())) {
+                mb.addDialogHideHandler(new DialogHideHandler() {
+					@Override
+					public void onDialogHide(DialogHideEvent event) {
+                        if (event.getHideButton() == PredefinedButton.YES) {
                             doMoveNextAux();
                         }
                     }
@@ -365,9 +368,11 @@ public class PrescriptionLessonChooserDialog extends GWindow {
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
         
         final ConfirmMessageBox mb = new ConfirmMessageBox("Ready for next Quiz?","Are you ready to be quizzed again on this section?");
-        mb.addHideHandler(new HideHandler() {
-            public void onHide(HideEvent event) {
-                if (mb.getHideButton() == mb.getButtonById(PredefinedButton.YES.name())) {
+        mb.addDialogHideHandler(new DialogHideHandler() {
+			
+			@Override
+			public void onDialogHide(DialogHideEvent event) {
+                if (event.getHideButton() == PredefinedButton.YES) {
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLEAR, null));
                     hide();
                     CmProgramFlowClientManager.retakeProgramSegment();

@@ -1,6 +1,6 @@
 package hotmath.gwt.cm.client.ui.context;
 
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 
 /** This dialog is shown the all else has failed and there 
  *  no way for the user to continue.
@@ -9,6 +9,6 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
  * @author casey
  *
  */
-public class CatchupMathProgramCorruptedDialog extends CmWindow {
+public class CatchupMathProgramCorruptedDialog extends GWindow {
 
 }
