@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_tools.client.model.AssignmentModel;
 import hotmath.gwt.cm_tools.client.model.GradeBookModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools_2.client.model.AssignmentModel;
 
 import java.util.ArrayList;
 import java.util.List;

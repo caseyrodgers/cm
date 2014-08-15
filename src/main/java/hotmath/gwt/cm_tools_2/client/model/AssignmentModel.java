@@ -1,4 +1,6 @@
-package hotmath.gwt.cm_tools.client.model;
+package hotmath.gwt.cm_tools_2.client.model;
+
+import hotmath.gwt.cm_tools.client.model.BaseModel;
 
 public class AssignmentModel extends BaseModel {
 

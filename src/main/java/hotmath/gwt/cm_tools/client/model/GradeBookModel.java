@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_tools_2.client.model.AssignmentModel;
 
 public class GradeBookModel extends BaseModel {
 

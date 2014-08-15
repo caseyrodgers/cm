@@ -479,7 +479,6 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         PreparedStatement stmt = null;
         try {
             
-            
             /** catch old problem of setting to -1
              * 
              */
