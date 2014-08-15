@@ -179,10 +179,8 @@ public class GetAssignmentHTMLHelper {
 								text = String.format("%d. %s", probNum, text);
 								NodeList nodeList = new NodeList(new TextNode(text));
 								NodeList origList = tag.getChildren();
-								if (origList.size() > 1) {
-									for (int i=1; i<origList.size(); i++) {
-										nodeList.add(origList.elementAt(i));
-									}
+								for (int i=1; i<origList.size(); i++) {
+									nodeList.add(origList.elementAt(i));
 								}
 								tag.setChildren(nodeList);
 								firstPtag = false;
