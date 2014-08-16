@@ -4,9 +4,8 @@
       
       <inherits name="com.google.gwt.uibinder.UiBinder"/>
 
-    <!--
       <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
-    -->
+
       <inherits name='hotmath.gwt.cm_tutor.CmTutor'/>
 
       <inherits name="com.sencha.gxt.theme.gray.Gray" />
