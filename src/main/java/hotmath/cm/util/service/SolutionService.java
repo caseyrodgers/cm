@@ -3,6 +3,7 @@ package hotmath.cm.util.service;
 import hotmath.ProblemID;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.shared.server.service.command.SolutionHTMLCreatorImplFileSystem;
+import hotmath.solution.StaticWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,7 +61,7 @@ public class SolutionService extends HttpServlet {
             ProblemID pid = new ProblemID(pidStr);
             String path = pid.getSolutionPath_DirOnly("solutions");
     
-            String solutionHtml = new SbFile(new File(base, path + "/" +  "/tutor_steps.html")).getFileContents().toString("\n");
+            String solutionHtml = new SbFile(new File(base, path + "/" + StaticWriter.STEPS_HTML_FILE)).getFileContents().toString("\n");
             String solutionData = new SbFile(new File(base, path + "/" +  "/tutor_data.js")).getFileContents().toString("\n");
             
             resp.getWriter().write(solutionHtml);
