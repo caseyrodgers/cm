@@ -2552,6 +2552,17 @@ WHERE  cp.id=?
 ### CmProgramListingDao 
 #######################
 
+.key=GET_PROGRAMS
+
+SELECT id, title, load_order*10 as new_order
+  FROM HA_PROG_DEF
+ WHERE id in ('Prof','Chap','Grad Prep')
+UNION
+SELECT 'Custom' as id, 'Built-in Custom Programs' as title, 25 as new_order
+  FROM HA_PROG_DEF
+WHERE id = 'prof'
+order by new_order asc
+
 .key=GET_PROGRAM_LESSONS
 
 SELECT DISTINCT lesson, file
