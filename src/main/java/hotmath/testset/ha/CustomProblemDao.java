@@ -1,6 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.ProblemID;
+import hotmath.SolutionManager;
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
@@ -10,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -19,6 +21,7 @@ import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;
 import hotmath.gwt.solution_editor.server.solution.TutorProblem;
 import hotmath.gwt.solution_editor.server.solution.TutorSolution;
 import hotmath.gwt.solution_editor.server.solution.TutorStepUnit;
+import hotmath.solution.Solution;
 import hotmath.spring.SpringManager;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -225,7 +228,42 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         return newPid.getGUID();
     }
 
-    public List<CustomProblemModel> getCustomProblemsFor(final int adminId) throws Exception {
+    
+    public CustomProblemModel getCustomProblem(String pid) throws Exception {
+        String sql = "select cp.*, ct.admin_id, ct.teacher_name, s.solutionxml " + 
+                     " from   CM_CUSTOM_PROBLEM cp " + 
+        		     " JOIN CM_CUSTOM_PROBLEM_TEACHER ct " + 
+                     " on ct.teacher_id = cp.teacher_id " + 
+        		     " JOIN SOLUTIONS s " + 
+                     " on s.problemindex = cp.pid " + 
+        		     " where  (cp.pid = ?) " +  
+                     " order  by teacher_name, teacher_problem_number ";
+
+        List<CustomProblemModel> problems = getJdbcTemplate().query(sql, new Object[] { pid },
+                new RowMapper<CustomProblemModel>() {
+                    @Override
+                    public CustomProblemModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        CustomProblemModel cp = new CustomProblemModel(rs.getString("pid"), rs
+                                .getInt("teacher_problem_number"), new TeacherIdentity(rs.getInt("admin_id"), rs
+                                .getString("teacher_name"), rs.getInt("teacher_id")), rs
+                                .getString("comments"), SolutionDao.determineProblemType(rs.getString("solutionxml")),
+                                rs.getString("tree_path"));
+                        cp.setLinkedLessons(getCustomProblemLinkedLessons(cp.getPid()));
+                        return cp;
+                    }
+                });
+
+        if(problems.size() == 0) {
+        	return null;
+        }
+        else {
+        	updateProblemTypes(problems);
+        }
+        return problems.get(0);
+    }
+    
+
+	public List<CustomProblemModel> getCustomProblemsFor(final int adminId) throws Exception {
         String sql = "select cp.*, ct.admin_id, ct.teacher_name, s.solutionxml " + " from   CM_CUSTOM_PROBLEM cp "
                 + " JOIN CM_CUSTOM_PROBLEM_TEACHER ct " + " on ct.teacher_id = cp.teacher_id " + " JOIN SOLUTIONS s "
                 + " on s.problemindex = cp.pid " + " where  (ct.admin_id = ?) "
@@ -249,18 +287,23 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
         // set problem types.
         //
         // TODO: make generic way of getting problem type
-        List<ProblemDto> probs = new ArrayList<ProblemDto>();
-        for (CustomProblemModel cpm : problems) {
-            probs.add(new ProblemDto(0, 0, null, null, cpm.getPid(), 0));
-        }
-        AssignmentDao.getInstance().updateProblemTypes(probs);
-        for (int i = 0, t = problems.size(); i < t; i++) {
-            problems.get(i).setProblemType(probs.get(i).getProblemType());
-        }
+        updateProblemTypes(problems);
         return problems;
     }
 
-    public void deleteCustomProblem(final String pid) throws Exception {
+    private void updateProblemTypes(List<CustomProblemModel> problems) throws Exception {
+    	ArrayList<ProblemDto> probs = new ArrayList<ProblemDto>();
+        for (CustomProblemModel cpm : problems) {
+            probs.add(new ProblemDto(0, 0, null, null, cpm.getPid(), 0));
+        }
+    	
+        AssignmentDao.getInstance().updateProblemTypes(probs);
+        for (int i = 0, t = problems.size(); i < t; i++) {
+            problems.get(i).setProblemType(probs.get(i).getProblemType());
+        }    	
+	}
+
+	public void deleteCustomProblem(final String pid) throws Exception {
 
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
@@ -934,18 +977,16 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
             ResultSet rs = conn
                     .createStatement()
                     .executeQuery(
-                            "select distinct admin_id from CM_CUSTOM_PROBLEM c JOIN CM_CUSTOM_PROBLEM_TEACHER t on t.teacher_id = c.teacher_id order by pid");
+                    		" select problemindex, solutionxml " +
+                    		" from    SOLUTIONS " +
+                    		" where booktitle = 'custom' " +
+                    		" and     solutionxml not like '%cm_problem_text%'"
+                    		+ "and problemindex = 'custom_82_140815_set1_4_1'");
             while (rs.next()) {
-
-                int adminId = rs.getInt("admin_id");
-                List<CustomProblemModel> probs = CustomProblemDao.getInstance().getCustomProblemsFor(adminId);
-                for (CustomProblemModel m : probs) {
-                    String sql = "update CM_CUSTOM_PROBLEM set problem_name = '" + createCustomProblemNameDefault(m.getProblemNumber()) + "' where pid = '"
-                            + m.getPid() + "'";
-                    conn.createStatement().executeUpdate(sql);
-                }
+                String pid = rs.getString("problemindex");
+                
+                //fixupOldCustomProblemFormatToNew(pid, rs.getString("solutionxml"));
             }
-
             System.out.println("Update complete");
         } catch (Exception e) {
             e.printStackTrace();
