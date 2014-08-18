@@ -72,7 +72,6 @@ public class EditAssignmentDialog {
     
     
     boolean _isDraftMode;
-    boolean _dontShowSizeMsg;
 
     AssignmentDesigner _assignmentDesigner;
 
@@ -86,7 +85,6 @@ public class EditAssignmentDialog {
         
         this._assignment = assignment;
         _isDraftMode = _assignment.getStatus().equals("Draft");
-        _dontShowSizeMsg = false;
         
         final GWindow window = new GWindow(false);
         window.setPixelSize(800, 600);
@@ -383,16 +381,11 @@ public class EditAssignmentDialog {
             CmMessageBox.showAlert("Not Saved", "You must enter a comment before saving.");
             return false;
         }
-
-        if (_assignmentDesigner.getAssignmentPids().size() > 50 && _dontShowSizeMsg == false) {
-        	CmMessageBox.showAlert("Assignment Size",
-        			"We recommend that an assignment with over 50 problems be broken into sections of less than 50 problems each for instructor and student convenience.");
-        	_dontShowSizeMsg = true;
-        }
+        
         _assignment.setAssignmentName(_assignmentName.getValue());
         _assignment.setDueDate(_dueDate.getValue());
         _assignment.setComments(_comments.getValue());
-        
+
         if(asDraft) {
             _assignment.setStatus("Draft");
         }

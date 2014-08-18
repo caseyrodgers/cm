@@ -504,10 +504,6 @@ public class AssignmentProblemListView extends ContentPanel {
                     return;
                 }
 
-                Integer probCount = _assignment.getProblemCount();
-                int pCount = (probCount != null) ? probCount : 0;
-                AddProblemDialog.setProblemCount(pCount);
-
                 AddProblemDialog.showDialog(new AddProblemDialog.AddProblemsCallback() {
                     @Override
                     public void problemsAdded(List<ProblemDto> problemsAdded) {

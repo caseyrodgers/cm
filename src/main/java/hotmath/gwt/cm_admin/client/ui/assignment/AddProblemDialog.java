@@ -94,9 +94,6 @@ public class AddProblemDialog extends GWindow {
     AssignmentTreeCustomProblemsListingPanel _treeCustomProblemsPanel;
     TabPanel _tabPanel;
 
-    int _problemCount;
-    boolean _countMsgDisplayed = false;
-
     public AddProblemDialog() {
         super(false);
 
@@ -577,19 +574,11 @@ public class AddProblemDialog extends GWindow {
         return _tree;
     }
 
-    private static int PROBLEM_COUNT = 50;
-
     private void setWindowTitleCountSelectedProblems() {
         makeSureLessonProblemsReadMaybeAsync(false, false, getActiveTree(), new AddProblemsCallback() {
             @Override
             public void problemsAdded(List<ProblemDto> problemsAdded) {
                 String title = problemsAdded.size() + " problem(s) checked";
-
-                if (_countMsgDisplayed == false && _problemCount + problemsAdded.size() > PROBLEM_COUNT) {
-                	_countMsgDisplayed = true;
-                	CmMessageBox.showAlert("Assignment Size",
-                			"We recommend that an assignment with over " + PROBLEM_COUNT + " problems be broken into sections of less than 50 problems each for instructor and student convenience.");
-                }
 
                 ContentPanel cp = (ContentPanel) _tabPanel.getActiveWidget();
                 cp.setHeadingText(title);
@@ -659,14 +648,6 @@ public class AddProblemDialog extends GWindow {
         }.register();
     }
 
-    public static void setProblemCount(int count) {
-        if (__sharedInstance == null) {
-            __sharedInstance = new AddProblemDialog();
-        }
-        __sharedInstance._countMsgDisplayed = false;
-    	__sharedInstance._problemCount = count;
-    }
-
     public static void showDialog(AddProblemsCallback callbackOnComplete) {
         if (__sharedInstance == null) {
             __sharedInstance = new AddProblemDialog();
@@ -728,7 +709,7 @@ public class AddProblemDialog extends GWindow {
             children.add(subjectDto);
         }
         //children.add(new StandardNode());
-        
+
         _root.setChildren(children);
 
         _treePanelProgram.setWidget(makeTree());
