@@ -49,6 +49,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 import com.sencha.gxt.widget.core.client.tree.Tree.TreeNode;
 import com.sencha.gxt.widget.core.client.treegrid.TreeGrid;
@@ -182,6 +184,15 @@ public class CustomProblemTreeTable extends SimpleContainer {
                 }
             }
         });
+        
+        
+//        Menu treeMenu = new Menu();
+//        treeMenu.add(new MenuItem("Add To Assignment", new SelectionHandler<MenuItem>() {
+//        	public void onSelection(SelectionEvent<MenuItem> event) {
+//        		CmMessageBox.showAlert("ADding to addingment");
+//        	}
+//        }));
+//        _tree.setContextMenu(treeMenu);
 
         final TreeGridDragSource s = new TreeGridDragSource(_tree);
         s.addDropHandler(new DndDropHandler() {
