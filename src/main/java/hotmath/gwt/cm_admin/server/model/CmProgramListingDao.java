@@ -37,12 +37,22 @@ public class CmProgramListingDao {
 
     /** 
      *  
+     * @return
+     * @throws Exception
+     */
+    public ProgramListing getProgramListing() throws Exception {
+        return getProgramListing(false);
+    }
+
+    /** 
+     *  
      * @param includeBuiltInCustomProgs
      * @return
      * @throws Exception
      */
     public ProgramListing getProgramListing(boolean includeBuiltInCustomProgs) throws Exception {
-        String sql = "select * from HA_PROG_DEF where id in ('Prof','Chap','Grad Prep') order by load_order asc";
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_PROGRAMS");
+
         PreparedStatement stmt = null;
         ResultSet rs = null;
         Connection conn=null;
@@ -62,14 +72,14 @@ public class CmProgramListingDao {
             		pr.getProgramTypes().add(createSubjectAndChapterProgramType(conn, id, rs.getString("title")));
             		continue;
             	}
+                // TODO:
+                if (includeBuiltInCustomProgs == true && "Custom".equals(id)) {
+                	
+                }
             	if (id.indexOf("Grad Prep") > -1) {
             		pr.getProgramTypes().add(createGradPrepProgramType(conn, id, rs.getString("title")));
             		continue;
             	}
-            }
-            // TODO:
-            if (includeBuiltInCustomProgs == true) {
-            	
             }
 
             return pr;
