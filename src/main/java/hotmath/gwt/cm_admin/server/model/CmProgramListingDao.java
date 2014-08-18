@@ -51,7 +51,7 @@ public class CmProgramListingDao {
      * @throws Exception
      */
     public ProgramListing getProgramListing(boolean includeBuiltInCustomProgs) throws Exception {
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_PROGRAMS");
+        String sql = "select * from HA_PROG_DEF where id in ('Prof','Chap','Grad Prep') order by load_order asc";
 
         PreparedStatement stmt = null;
         ResultSet rs = null;

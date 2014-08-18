@@ -537,7 +537,11 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
                 }
             }
 
-            if ((psHtml.indexOf("hm_flash_widget") > -1 || psHtml.indexOf("hotmath:flash") > -1) && psHtml.indexOf("not_used") == -1) {
+            
+            if(psHtml.indexOf("hm_flash_widget") > -1  && psHtml.indexOf("whiteboard") > -1) {
+            	return ProblemType.WHITEBOARD;
+            }
+            else if ((psHtml.indexOf("hm_flash_widget") > -1 || psHtml.indexOf("hotmath:flash") > -1) && psHtml.indexOf("not_used") == -1) {
                 return ProblemType.INPUT_WIDGET;
             } else if (psHtml.indexOf("<div widget='") > -1) {
                 return ProblemType.INPUT_WIDGET;
