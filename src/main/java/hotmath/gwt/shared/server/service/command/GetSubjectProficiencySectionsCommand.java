@@ -61,7 +61,7 @@ public class GetSubjectProficiencySectionsCommand implements ActionHandler<GetSu
 
     private void getSectionList(String subjectName, CmList<ProgramSection> sectionList) throws Exception {
 
-    	ProgramListing progListing = dao.getProgramListing(false);
+    	ProgramListing progListing = dao.getProgramListing();
 
     	List<ProgramType> typeList = progListing.getProgramTypes();
 
