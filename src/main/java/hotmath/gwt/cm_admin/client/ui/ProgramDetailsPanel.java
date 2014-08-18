@@ -69,7 +69,7 @@ public class ProgramDetailsPanel extends CmWindow {
     }
 
     private void buildGui() {
-        setHeading("List Lesson Topics Covered in Program Sections");
+        setHeading("Lesson Topics Covered in Programs");
         setSize(WIDTH, 400);
 
         setLayout(new BorderLayout());
@@ -361,6 +361,7 @@ public class ProgramDetailsPanel extends CmWindow {
             @Override
             public void attempt() {
                 GetProgramListingAction action = new GetProgramListingAction(cmAdminMdl.getUid());
+                action.setIncludeBuiltInCustomProgs(true);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

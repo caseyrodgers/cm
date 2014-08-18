@@ -37,10 +37,11 @@ public class CmProgramListingDao {
 
     /** 
      *  
+     * @param includeBuiltInCustomProgs
      * @return
      * @throws Exception
      */
-    public ProgramListing getProgramListing() throws Exception {
+    public ProgramListing getProgramListing(boolean includeBuiltInCustomProgs) throws Exception {
         String sql = "select * from HA_PROG_DEF where id in ('Prof','Chap','Grad Prep') order by load_order asc";
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -65,6 +66,10 @@ public class CmProgramListingDao {
             		pr.getProgramTypes().add(createGradPrepProgramType(conn, id, rs.getString("title")));
             		continue;
             	}
+            }
+            // TODO:
+            if (includeBuiltInCustomProgs == true) {
+            	
             }
 
             return pr;
