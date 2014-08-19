@@ -232,16 +232,23 @@ public class CustomProblemTreeTable extends SimpleContainer {
             public void onDragStart(DndDragStartEvent event) {
                 Element itemDroppedOnElement = (Element) event.getDragStartEvent().getNativeEvent().getEventTarget()
                         .cast();
-                BaseDto source = (BaseDto) _tree.findNode(itemDroppedOnElement).getModel();
-                if (source instanceof CustomProblemFolderNode) {
-                    Log.info("Invalid drag source");
-                    event.setCancelled(true);
-                } else if (!((CustomProblemLeafNode) source).getCustomProblem().getTeacher().getTeacherName()
-                        .equals(TeacherManager.getTeacher().getTeacherName())) {
-                    Log.info("Invalid drag source");
-                    event.setCancelled(true);
-                } else {
-                    _dndSourceModel = (CustomProblemLeafNode) source;
+                TreeNode<BaseDto> nodeDrop = _tree.findNode(itemDroppedOnElement);
+                BaseDto source = nodeDrop != null?(BaseDto)nodeDrop.getModel():null;
+                if(source == null) {
+                	Log.info("Null drag source");
+                	event.setCancelled(true);
+                }
+                else {
+	                if (source instanceof CustomProblemFolderNode) {
+	                    Log.info("Invalid drag source");
+	                    event.setCancelled(true);
+	                } else if (!((CustomProblemLeafNode) source).getCustomProblem().getTeacher().getTeacherName()
+	                        .equals(TeacherManager.getTeacher().getTeacherName())) {
+	                    Log.info("Invalid drag source");
+	                    event.setCancelled(true);
+	                } else {
+	                    _dndSourceModel = (CustomProblemLeafNode) source;
+	                }
                 }
             }
         });

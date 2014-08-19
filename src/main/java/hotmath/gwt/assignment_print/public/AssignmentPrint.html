@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Catchup Math Assignment Print</title>
+    <script src="http://catchupmath.com/assets/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+    <link rel="stylesheet" type="text/css" href="/gwt-resources/css/tutor_layout_tablet.css" />
+    <link rel="stylesheet" type="text/css" href="/gwt-resources/css/animate.css" />
+    <link type="text/css" rel="stylesheet" href="/css/tutor_widget.css">
+    <link type="text/css" rel="stylesheet" href="/gwt-resources/css/whiteboard_v2.css">
+
+    <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css">
+    <link rel="stylesheet" type="text/css" href="/gwt-resources/css/AssignmentPrint.css"/>
+    <link rel="stylesheet" type="text/css" href="/gwt-resources/css/assignment-print.css" media="print" />
+    
+  </head>
+  <body>
+    <script>
+        /** completly disable logging */
+        __console = {
+            log: function (x) {
+                // empty
+            }
+        };
+    </script>
+
+    <div class='header'>
+        <button onclick='doPrint()'>Print</button>
+        <h1>Catchup Math Assignment Report</h1>
+    </div>
+    
+    </div>
+    <div id='gwt_hook'>
+        <div class='loading'>
+             <h2>Report is being created ...</h2>
+        </div>
+    </div>
+
+    <script type="text/javascript" language="javascript" src="assignment_print.nocache.js"></script>
+    <script src="/gwt-resources/js/hm_events.js"></script>
+    <script src="/gwt-resources/js/tutor_tablet.js"></script>
+    <script src="/gwt-resources/js/CatchupMath_combined.js"></script>
+    <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main.nocache"></script>
+    <script src="/gwt-resources/js/whiteboard_v3.js"></script>
+    <script src="/gwt-resources/js/AssignmentPrint.js"></script>
+    <script src="/js/debug.js"></script>
+
+    <!--[if lt IE 9]><script type="text/javascript" src='/gwt-resources/js/excanvas.js'></script><![endif]-->
+    <div id='work_area'></div>
+    
+    
+    <script>
+        function doPrint() {
+        	window.print();
+        }
+    
+    </script>
+  </body>
+</html>

@@ -1,8 +1,7 @@
-body {
-  visibility:hidden;
-}
-
 .assignment-print {
   visibility:visible;
 }
 
+.header {
+	display: none;
+}

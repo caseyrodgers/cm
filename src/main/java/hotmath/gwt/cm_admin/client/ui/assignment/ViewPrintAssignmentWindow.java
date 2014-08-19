@@ -38,7 +38,10 @@ public class ViewPrintAssignmentWindow extends GWindow {
         setResizable(false);
         setHeadingText("Assignment with " + assignment.getProblemCount() + " problems");
 
-         String resource = "/assets/util/assignment.jsp?key=" + assignment.getAssignKey();
+         // String resource = "/assets/util/assignment.jsp?key=" + assignment.getAssignKey();
+        
+        String resource = "/assignment_print/AssignmentPrint.html?aid=" + assignment.getAssignKey();
+        
          Frame frame = new Frame(resource);
          frame.setSize("100%", "450px");
 

@@ -1,0 +1,16 @@
+<module rename-to="assignment_print">
+
+	<inherits name="com.google.gwt.user.User" />
+	
+	<!-- 
+	<inherits name='hotmath.gwt.cm_mobile_shared.CatchupMathMobileShared' />
+	<inherits name="com.google.code.gwt.storage.Html5Storage" />
+    <inherits name='com.google.gwt.json.JSON' />
+    <inherits name='hotmath.gwt.cm_core.CmCore' />
+     -->
+     
+    <inherits name='com.google.gwt.user.theme.standard.Standard'/> 
+    <inherits name='hotmath.gwt.cm_tutor.CmTutor' />
+	<entry-point class="hotmath.gwt.assignment_print.client.AssignmentPrint" />
+</module>
+    

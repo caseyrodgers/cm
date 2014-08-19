@@ -1,0 +1,64 @@
+.assignment_report {
+	padding: 10px;
+}
+
+.tutorData {
+	display: none !important;
+}
+
+.prob-stmt {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.loading {
+	color: red;
+	font-size: 2em;
+}
+
+.header {
+	height: 40px;
+	border: 1px solid black;
+}
+
+.header h1 {
+	font-size: 1.3em;
+	margin: 0 margin-left: 10px;
+	margin-top: 4px;
+	text-align: center;
+}
+
+.header button {
+	position: absolute;
+	top: 8px;
+	right: 10px;
+}
+
+.assign_problem_holder {
+	margin-bottom: 100px;
+	display: inline-table !important;
+	width: 100%;
+}
+
+.widget_print {
+	
+}
+
+.assign_header_info {
+	float: right;
+	
+	margin: 20px 0;
+	font-size: 1.4em;
+	font-weight: bold;
+}
+
+.assign_problem_info {
+	font-weight: bold;
+	font-size: 1.3em;
+}
+
+
+.assign_footer_info {
+	font-weight: italic;
+	font-size: .8em;
+}
