@@ -21,7 +21,10 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.Frame;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class ViewPrintAssignmentWindow extends GWindow {
 
@@ -52,18 +55,23 @@ public class ViewPrintAssignmentWindow extends GWindow {
 //        
 //        getAssignmentPids(assignment);
 //        
-//        TextButton print = new TextButton("Print", new SelectHandler() {
-//			@Override
-//			public void onSelect(SelectEvent event) {
-//				CmGwtPrint.it(_mainFlow);
-//			}
-//		});
-//        addButton(print);
+        TextButton print = new TextButton("Print", new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				jsni_printWindow();
+			}
+		});
+        addButton(print);
 
         setVisible(true);
 	}
 
 	
+	native protected void jsni_printWindow() /*-{
+	    window.print();
+	}-*/;
+
+
 	private void getAssignmentPids(final Assignment ass) {
         new RetryAction<Assignment>() {
             @Override
