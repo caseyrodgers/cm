@@ -347,6 +347,34 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
     }
 
     /**
+     * Return list of built-in custom programs
+     * 
+     * @return
+     * @throws Exception
+     */
+    public CmList<CustomProgramModel> getBuiltInCustomPrograms() throws Exception {
+    	CmList<CustomProgramModel> programs = new CmArrayList<CustomProgramModel>();
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_PROGRAM_BUILTIN_DEFINITIONS");
+    	List<CustomProgramModel> models = this.getJdbcTemplate().query(sql, new RowMapper<CustomProgramModel>() {
+    		public CustomProgramModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+    			CustomProgramModel model = new CustomProgramModel();
+    			try {
+    				model.setProgramName(rs.getString("name"));
+    				model.setIsTemplate(rs.getInt("is_template")>0);
+    				model.setIsArchived(rs.getInt("is_archived")>0);
+
+    				return model;
+    			} catch (Exception e) {
+    				LOGGER.error("Error getting Built-In CPs", e);
+    				throw new SQLException(e.getMessage());
+    			}
+    		}
+    	});
+    	programs.addAll(models);
+    	return programs;
+    }
+
+    /**
      * Get a single Custom Program by progId
      * 
      * @param conn

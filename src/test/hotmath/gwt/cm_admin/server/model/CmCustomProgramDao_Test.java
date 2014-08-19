@@ -3,13 +3,17 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
+import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CmCustomProgramDao_Test extends CmDbTestCase {
-    
+
+	public CmCustomProgramDao_Test() {
+		super("");
+	}
     public CmCustomProgramDao_Test(String name) {
         super(name);
     }
@@ -56,6 +60,11 @@ public class CmCustomProgramDao_Test extends CmDbTestCase {
     
     public void testGetCustomProgramById() throws Exception {
     	assertTrue(CmCustomProgramDao.getInstance().getCustomProgram(7) != null);
+    }
+
+    public void testGetBuiltInCustomPrograms() throws Exception {
+    	CmList<CustomProgramModel> list = CmCustomProgramDao.getInstance().getBuiltInCustomPrograms();
+    	assertTrue(list != null && list.size() > 0);
     }
 
 }

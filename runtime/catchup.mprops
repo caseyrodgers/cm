@@ -2462,6 +2462,14 @@ or (is_template = 1 and admin_id is null)
 order by is_template desc, load_order, name
 
 
+.key=CUSTOM_PROGRAM_BUILTIN_DEFINITIONS
+
+SELECT *
+FROM   HA_CUSTOM_PROGRAM
+WHERE  admin_id = 13 
+  AND  is_template = 1
+  AND  is_archived = 0
+ORDER BY load_order;
 
 .key=CUSTOM_PROGRAM_DEFINITION_BYID
 
