@@ -3,6 +3,7 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.HotMathLogger;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
@@ -18,11 +19,14 @@ import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import org.apache.log4j.Logger;
+
+import sb.util.SbFile;
 
 /**
  * Return the raw HTML that makes up the solution
@@ -57,7 +61,14 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             
             ProblemID ppid = new ProblemID(pid);
             
-            SolutionParts sp = __creator.getSolutionHTML(null,null, pid);
+            SolutionParts sp = null;
+            try {
+            	sp = __creator.getSolutionHTML(null,null, pid);
+            }
+            catch(Exception e) {
+            	logger.debug("Error getting solution (using default)", e);
+            	sp = createDefaultSolutionParts();
+            }
             String solutionHtml= sp.getMainHtml();
             
             String path = ppid.getSolutionPath_DirOnly("solutions");
@@ -103,7 +114,18 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
         }
     }
 
-    @Override
+    private SolutionParts createDefaultSolutionParts() throws Exception {
+    	SolutionParts sp = new SolutionParts();
+    	sp.setMainHtml("Problem was not found");
+    	
+    	File file = new File(CatchupMathProperties.getInstance().getCatchupRuntime(), "empty_tutor.json");
+    	String data = new SbFile(file).getFileContents().toString("\n");
+    	sp.setData(data);
+    	
+    	return sp;
+	}
+
+	@Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetSolutionAction.class;
     }
