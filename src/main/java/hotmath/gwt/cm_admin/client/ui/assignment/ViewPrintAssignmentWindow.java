@@ -29,7 +29,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 public class ViewPrintAssignmentWindow extends GWindow {
 
 	public ViewPrintAssignmentWindow(Assignment assignment) {
-		super(true);
+		super(false);
 		loadAssignment(assignment);
 	}
 
@@ -46,6 +46,7 @@ public class ViewPrintAssignmentWindow extends GWindow {
         String resource = "/assignment_print/AssignmentPrint.html?aid=" + assignment.getAssignKey();
         
          Frame frame = new Frame(resource);
+         frame.getElement().setAttribute("id", "assignment_report");
          frame.setSize("100%", "450px");
 
          setWidget(frame);
@@ -63,12 +64,13 @@ public class ViewPrintAssignmentWindow extends GWindow {
 		});
         addButton(print);
 
+        addCloseButton();
         setVisible(true);
 	}
 
 	
 	native protected void jsni_printWindow() /*-{
-	    window.print();
+	    $doc.getElementById("assignment_report").contentWindow.print();
 	}-*/;
 
 
