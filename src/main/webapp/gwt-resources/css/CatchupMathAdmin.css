@@ -637,3 +637,8 @@ program-details-panel .x-ftree2-node-over {
 	background: #DFE8F6;
 	padding: 5px;
 }
+
+
+.question_div .not_used {
+   display: none !important;
+}
