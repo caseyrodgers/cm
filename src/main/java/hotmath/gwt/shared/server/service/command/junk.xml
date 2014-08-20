@@ -1,60 +1,43 @@
-<div name="tutoroutput" style="display: block;position: relative;">
-	<div class="GMBUSWMCAJ" onclick="gwt_tutorIsReadonlyMessage()">
-		<div class="GMBUSWMCBJ">Read Only</div>
-	</div>
-	<div class="tutor-prob-status"></div>
-	<div class="problem-title"></div>
-	<div name="tutor_raw_steps_wrapper">
-		<span style="font-type: italic;color: #666">Loading ...</span>
-	</div>
-	<span>
-		<div name="steps_tail">
-			<button type="button" class="sexybutton sexy_cm_silver">
-				<span>
-					<span>Prev</span>
-				</span>
-			</button>
-			<button type="button" class="sexybutton sexy_cm_silver">
-				<span>
-					<span>Next</span>
-				</span>
-			</button>
-			<button type="button" class="sexybutton sexy_cm_silver"
-				aria-hidden="true" style="display: none;">
-				<span>
-					<span>Return</span>
-				</span>
-			</button>
-			<button type="button" class="sexybutton sexy_cm_silver"
-				aria-hidden="true" style="display: none;">
-				<span>
-					<span>Whiteboard</span>
-				</span>
-			</button>
-			<span class="GMBUSWMCCJ" name="tutor_message"></span>
-			<div class="widget_correct_info_hide">
-				<div classname="GMBUSWMCOI">
-					<h1>You answered this question correctly!</h1>
-					<p>
-						You may now
-						<button accesskey="c" class="sexybutton sexy_cm_silver"
-							onclick="TutorManager.newProblem();return false;">
-							<span>
-								<span>Continue</span>
-							</span>
-						</button>
-						with the lesson.
-					</p>
-				</div>
-			</div>
-			<div class="cm-tutor-button-bar-bottom" style="display: none;float: right;">
-				<a class="button debug-off" href="javascript:void(0)" onclick="expandAllSteps();return false;">Expand </a>
-			</div>
-		</div>
-	</span>
-	<div name="refresh_problem_button"></div>
-	<img name="scrollTo-button" src="/assets/images/spacer.gif">
+<div>
+	<p>The top, side, and front views of an object built with cubes are
+		shown.</p>
+	<p> How many cubes are needed to construct this object?</p>
 </div>
-<div class="debug-hide">
-	<button type="button" class="gwt-Button">Debug</button>
-</div
+<ul>
+	<li correct="no">
+		<div>
+			<img class="ques_icon" src="/images/tutor5/hint_question-16x16.gif"
+				onclick="_questionExpandResult(this)">
+				<p>6</p>
+		</div>
+		<div style="display: none;">&nbsp;
+		</div>
+	</li>
+	<li correct="no">
+		<div>
+			<img class="ques_icon" src="/images/tutor5/hint_question-16x16.gif"
+				onclick="_questionExpandResult(this)">
+				<p>8</p>
+		</div>
+		<div style="display: none;">&nbsp;
+		</div>
+	</li>
+	<li correct="yes">
+		<div>
+			<img class="ques_icon" src="/images/tutor5/hint_question-16x16.gif"
+				onclick="_questionExpandResult(this)">
+				<p>10</p>
+		</div>
+		<div style="display: none;">&nbsp;
+		</div>
+	</li>
+	<li correct="no">
+		<div>
+			<img class="ques_icon" src="/images/tutor5/hint_question-16x16.gif"
+				onclick="_questionExpandResult(this)">
+				<p>12</p>
+		</div>
+		<div style="display: none;">&nbsp;
+		</div>
+	</li>
+</ul>

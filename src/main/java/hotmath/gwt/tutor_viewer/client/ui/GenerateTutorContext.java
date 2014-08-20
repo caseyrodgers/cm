@@ -3,6 +3,7 @@ package hotmath.gwt.tutor_viewer.client.ui;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tutor.client.CmTutor;
+import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 
 import java.util.ArrayList;
@@ -10,12 +11,17 @@ import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 public class GenerateTutorContext {
     
     TutorWrapperPanel _tutorWrapper;
     String pid;
     private GenerateTutorContextCallback callBack;
+    
+    PopupPanel _popup = new PopupPanel();
+    FlowPanel _flow;
     
     public interface GenerateTutorContextCallback {
         void contextsCreated(List<String> contexts);
@@ -24,11 +30,20 @@ public class GenerateTutorContext {
     public GenerateTutorContext(final String pid, final String jsonConfig, final GenerateTutorContextCallback callBack) {
         this.pid = pid;
         this.callBack = callBack;
+        
+        
+        
+        TutorCallbackDefault callback = new TutorCallbackDefault();
+        _tutorWrapper = new TutorWrapperPanel(false,  false,false,false, callback);
+        _popup.setWidget(_tutorWrapper);
+        _popup.show();
+        
+        
         GetSolutionAction action = new GetSolutionAction(0, 0, pid);
         CmTutor.getCmService().execute(action, new AsyncCallback<SolutionInfo>() {
             @Override
             public void onSuccess(SolutionInfo result) {
-                generateContexts(pid, result.getJs(), jsonConfig);
+                generateContexts(result, pid, result.getJs(), jsonConfig);
             }
             @Override
             public void onFailure(Throwable caught) {
@@ -50,10 +65,12 @@ public class GenerateTutorContext {
      * @param js
      * @param count
      */
-    private void generateContexts(final String pid, String js, String config) {
+    private void generateContexts(SolutionInfo solInfo, final String pid, String js, String config) {
         _contexts.clear();
         
         final int count = extractCountFromConfig(config);
+        
+        // _tutorWrapper.externallyLoadedTutor(solInfo, _popup,null, "", false, false, null);
         
         // Collect contexts into _contexts
         _contexts.add(_nativeGenerateContext(pid, js, config));
@@ -75,11 +92,16 @@ public class GenerateTutorContext {
     }-*/;
     
     private native String _nativeGenerateContext(String pid, String js, String jsonConfig) /*-{
-    
         $wnd.gwt_solutionHasBeenInitialized = function() {};
         
         var that = this;
-        return $wnd.TutorManager.generateContext(pid, js, jsonConfig);
+        try {
+            return $wnd.TutorManager.generateContext(pid, js, jsonConfig);
+        }
+        catch(x) {
+            alert('error generating context: ' + x);
+        }
+        
     }-*/;
 
 }

@@ -1,4 +1,5 @@
 /**
+
  * Main Mobile JS
  *
  *
@@ -6,6 +7,7 @@
  * Problem CM abstraction over HM tutor API
  *
  */
+
 
 var _productionMode = false;
 
@@ -189,27 +191,6 @@ var TutorManager = {
             return false;
         }
     },
-    resetTutor : function() {
-        // gwt_resetTutor();
-        
-        var tutorWrapper = getAtw();
-
-        var tutor = $get('tutor_raw_steps_wrapper');
-        if(tutor) {
-            tutor.innerHTML = tutorWrapper.stepText;
-        }
-
-        tutorWrapper.currentRealStep = -1;
-        tutorWrapper.currentStepUnit = -1;
-        tutorWrapper.loadTutorData();
-        
-        if(tutorWrapper.isVisible) {
-            tutorWrapper.setButtonState();
-        }
-        
-        tutorWrapper.resetTutor();
-    },
-
     getCurrentStepNumber: function() {
         return getAtw().currentStepUnit;
     },
@@ -242,14 +223,26 @@ var TutorManager = {
     
     
     generateContext: function(pid, solutionData, jsonConfig) {
-        var tutorWrapper = getAtw();
+    	
         if(pid != null) {
-            tutorWrapper.initializeTutor(pid, jsonConfig, solutionData, '','',false, false, null);
+       	    var tutorNode = document.createElement('div');
+            var jsonConfig = null;
+            var stepText = '';
+            var solutionTitle = '';
+            var showWork = false;
+            var shouldExpandSolution=false;
+            var solutionVariableContext = null;
+            var submitButtonText = '';
+            var indicateWidgetStatus=false;
+            var installCustomSteps = false;
+            
+            TutorManager.initializeTutor(tutorNode, pid, jsonConfig, solutionData, stepText, solutionTitle, showWork, shouldExpandSolution, solutionVariableContext,submitButtonText,indicateWidgetStatus,installCustomSteps);    	
         }
         else {
             TutorDynamic.refreshProblem();
         }
-        
+
+        var tutorWrapper = getAtw();
         var myContext = getTutorVariableContextJson(tutorWrapper.tutorData._variables);
         return myContext;
     }
@@ -488,8 +481,6 @@ function gotoGUID(messageContext, callAfter) {
     var tutorWrapper = getAtw();
     tutorWrapper.resetTutor();
 }
-
-
 
 function resetTutor() {
     var tutorWrapper = getAtw();

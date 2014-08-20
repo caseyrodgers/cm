@@ -226,6 +226,23 @@ var TutorWrapper = (function () {
             }
         };
         
+        this.resetTutor = function() {
+            var tutor = this.tutorDomNode;
+            
+            if(tutor) {
+                tutor.innerHTML = this.stepText;
+            }
+
+            this.currentRealStep = -1;
+            this.currentStepUnit = -1;
+            this.loadTutorData();
+            
+            if(this.isVisible) {
+                this.setButtonState();
+            }
+        },
+
+        
         
         // Show the next available step unit
         this.showStepUnit = function(num) {
