@@ -703,25 +703,6 @@ div[name=steps_tail]
 	padding: 10px;
 }
 
-.debug-hide {
-	color: white;
-	display: none;
-}
-
-.debug-show {
-	display: block;
-}
-
-.debug-hide {
-	display: none;
-}
-
-.debug-mode .debug-hide {
-	color: red;
-	display: block;
-	text-align: center;
-}
-
 .help-window .version {
 	font-size: .8em;
 }

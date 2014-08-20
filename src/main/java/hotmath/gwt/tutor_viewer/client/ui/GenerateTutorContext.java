@@ -36,7 +36,7 @@ public class GenerateTutorContext {
         TutorCallbackDefault callback = new TutorCallbackDefault();
         _tutorWrapper = new TutorWrapperPanel(false,  false,false,false, callback);
         _popup.setWidget(_tutorWrapper);
-        _popup.show();
+        //_popup.show();
         
         
         GetSolutionAction action = new GetSolutionAction(0, 0, pid);
