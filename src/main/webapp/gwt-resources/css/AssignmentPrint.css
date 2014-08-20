@@ -18,25 +18,24 @@
 
 .header {
 	height: 40px;
-	border: 1px solid black;
 }
 
 .header h1 {
 	font-size: 1.3em;
 	margin: 0 margin-left: 10px;
 	margin-top: 4px;
-	text-align: center;
 }
 
 .header button {
 	position: absolute;
 	top: 8px;
-	right: 10px;
+	left: 10px;
 }
 
 .assign_problem_holder {
 	margin-bottom: 100px;
-	display: inline-table !important;
+	
+	/** display: inline-table !important; */
 	width: 100%;
 }
 
@@ -45,10 +44,9 @@
 }
 
 .assign_header_info {
-	float: right;
-	
-	margin: 20px 0;
-	font-size: 1.4em;
+	margin: 0 0 20px 0;
+	padding: 5px;
+	font-size: 1.2em;
 	font-weight: bold;
 }
 
@@ -61,4 +59,10 @@
 .assign_footer_info {
 	font-weight: italic;
 	font-size: .8em;
+}
+
+.assign_prob_ans {
+	color: red;
+	font-size: 1.3em;
+	font-weight: bold;
 }

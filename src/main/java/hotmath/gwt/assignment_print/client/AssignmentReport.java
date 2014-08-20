@@ -131,18 +131,7 @@ public class AssignmentReport {
 	}
 
 	private Widget createSubReportHeader(SolutionInfo sol, int ordinal) {
-		
-		CmList<ProblemDto> pids = _assignment.getPids();
-		
-		String label="";
-		for(ProblemDto p: pids) {
-			if(p.getPid().equals(sol.getPid())) {
-				label = p.getLabelWithoutNumber();
-				break;
-			}
-		}
-		
-		String html = "Problem: " + ordinal  + " [" + label + "]";
+		String html = ordinal  + ")";
 		return new MyHTML(html, "assign_problem_info");
 	}
 
@@ -152,10 +141,7 @@ public class AssignmentReport {
 
 
 	private Widget createReportHeader() {
-		
-		String html = "Assignment: " + _assignment.getComments() + "<br/>" + 
-		              "Due Date: " + _assignment.getDueDate() + "<br/>";
-				      
+		String html = "<div>" + _assignment.getComments() + "</div>";
 		return new MyHTML(html, "assign_header_info");
 	}
 
