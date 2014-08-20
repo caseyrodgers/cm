@@ -54,6 +54,14 @@ public class ProblemDto extends BaseDto implements Response {
     public String getLabel() {
         return label;
     }
+    
+    /** Return label, but strip off any trailing number portion
+     * 
+     * @return
+     */
+    public String getLabelWithoutNumber() {
+    	return label.split(":")[0];
+    }
 
     public void setLabel(String label) {
         this.label = label;
