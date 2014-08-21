@@ -1,7 +1,9 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_admin.server.model.CmProgramListingDao;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
+import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
 import hotmath.gwt.cm_rpc.client.rpc.GetLessonTreeAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
@@ -26,6 +28,10 @@ public class GetLessonTreeCommand implements ActionHandler<GetLessonTreeAction, 
     public CmList<LessonModel> execute(Connection conn, GetLessonTreeAction action) throws Exception {
         CmList<LessonModel> lessons = new CmArrayList<LessonModel>();
 
+        
+        
+        ProgramListing pl = new CmProgramListingDao().getProgramListing();
+        
         PreparedStatement ps = null;
         try {
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_LESSON_TREE");
