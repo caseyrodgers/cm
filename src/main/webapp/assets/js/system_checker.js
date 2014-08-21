@@ -10,8 +10,8 @@
 var systemIsOk = true;
 
 function setupPageLocal() {
-	var isMobile=isIPadOrIPhone();
-	
+    var isMobile=isIPadOrIPhone();
+    
     if(window.location.search.indexOf('hide') > -1) {
         $get('main-content').parentNode.parentNode.style.background = 'white';
         $get('header').parentNode.style.display = 'none';
@@ -24,18 +24,18 @@ function setupPageLocal() {
     $get('window_check').innerHTML = checkWindowSize();
     
     if(!isMobile) {
-    	$get('flash_check').innerHTML = checkFlash();
+        $get('flash_check').innerHTML = checkFlash();
     }
     else {
-    	$get('flash_check').style.display = 'none';
-    	$get('flash_check_label').style.display = 'none';
+        $get('flash_check').style.display = 'none';
+        $get('flash_check_label').style.display = 'none';
     }
     
     checkNetwork($get('network_check'));
 }
 
 function checkBrowser() {
-	
+    
     var b = 'unknown';
     var v = 'unknown';
     try {
@@ -64,7 +64,7 @@ function checkBrowser() {
             isOk = true;
         }
     } else if (b.indexOf('explorer') > -1) {
-        if (v >= 8) {
+        if (v >= 8 && v < 11) {
             isOk = true;
         }
     } else if (b.indexOf('opera') > -1) {
