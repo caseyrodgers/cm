@@ -1,8 +1,15 @@
+   if (typeof console === "undefined") {
+       console = {
+           log: function (x) {
+              // empty
+           }
+       };
+   }
+
+
 var systemIsOk = true;
 
 function setupPageLocal() {
-    
-	
 	var isMobile=isIPadOrIPhone();
 	
     if(window.location.search.indexOf('hide') > -1) {
@@ -28,31 +35,43 @@ function setupPageLocal() {
 }
 
 function checkBrowser() {
-    var b = BrowserDetect.browser;
-    var v = BrowserDetect.version;
-    var browserString = b + ' version: ' + v;
+	
+    var b = 'unknown';
+    var v = 'unknown';
+    try {
+        b = _userAgent.browser;
+        v = _userAgent.version;   // convert to single number
+        vFull = _userAgent.fullVersion;
+    }
+    catch(e) {
+        console.log('Error checking browser: ' + e);
+    }
+    
+    var browserString = b + ' version: ' + vFull;
+    console.log(browserString);
+    //alert(browserString);
 
     var str = '';
     var isOk = false;
-    if (b == 'Firefox') {
+    
+    b = b.toLowerCase();
+    if (b.indexOf('firefox') > -1) {
         if (v > 3) {
             isOk = true;
         }
-    } else if (b == 'Chrome') {
+    } else if (b.indexOf('chrome') > -1) {
         if (v > 10) {
             isOk = true;
         }
-    } else if (b == 'Explorer') {
-    	
+    } else if (b.indexOf('explorer') > -1) {
         if (v >= 8) {
             isOk = true;
         }
-        
-    } else if (b == 'Opera') {
+    } else if (b.indexOf('opera') > -1) {
         if (v >= 9) {
             isOk = true;
         }
-    } else if (b == 'Safari') {
+    } else if (b.indexOf('safari') > -1) {
         if (v >= 5) {
             isOk = true;
         }

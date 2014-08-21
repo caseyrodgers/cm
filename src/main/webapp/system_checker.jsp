@@ -2,6 +2,17 @@
 <html><!-- InstanceBegin template="/Templates/main.dwt" codeOutsideHTMLIsLocked="false" -->
     <head>
         <!-- InstanceBeginEditable name="doctitle" -->
+
+<%
+    eu.bitwalker.useragentutils.UserAgent userAgent = eu.bitwalker.useragentutils.UserAgent.parseUserAgentString(request.getHeader("User-Agent")); 
+%>
+<script>
+   var _userAgent = {
+       "version":parseFloat("<%= userAgent.getBrowserVersion() %>"),
+       "fullVersion":"<%= userAgent.getBrowserVersion() %>",
+       "browser":"<%= userAgent.getBrowser().getName()%>"
+       };
+</script>     
   <meta name="description" content="Catchup Math success stories, heartfelt quotes from administrators, teachers, and students.">
   <meta name="keywords" content="Catchup Math, success stories, self-esteem, outstanding, results, scores improved, confidence" >
 
@@ -35,9 +46,6 @@ pageTracker._trackPageview();
         <!-- InstanceBeginEditable name="head" -->
 <link rel="stylesheet" type="text/css" href="/assets/css/success.css">
 <style>
-#main-content {
-
-}
 .column {
   padding-right: 25px;
 }
@@ -332,7 +340,6 @@ div div p img {
 <script src='/assets/js/core.js'></script>
         <!-- InstanceBeginEditable name="AfterJavascriptLoad" --><!-- AfterJavascriptLoad -->
         <script src='/assets/js/system_checker.js'></script>
-        <script src='/assets/js/browser_detect.js'></script>
         <script src='/assets/js/swfobject.js'></script>
         <!-- InstanceEndEditable -->
     </body>

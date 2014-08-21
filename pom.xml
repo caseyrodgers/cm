@@ -28,6 +28,17 @@
 
 	<repositories>
 
+        <!-- For User-Agent-Utils -->
+		<repository>
+		  <id>bitwalker.user-agent-utils.mvn.repo</id>
+		  <url>https://raw.githubusercontent.com/HaraldWalker/user-agent-utils/mvn-repo/</url>
+		  <!-- use snapshot version -->
+		  <snapshots>
+		     <enabled>true</enabled>
+		      <updatePolicy>always</updatePolicy>
+		   </snapshots>
+		</repository>
+
 		<repository>
 			<id>sencha-commercial-release</id>
 			<name>Sencha commercial releases</name>
@@ -85,6 +96,13 @@
 	</repositories>
 
 	<dependencies>
+	
+		<dependency>
+		   <groupId>bitwalker</groupId>
+		   <artifactId>UserAgentUtils</artifactId>
+		   <version>1.13</version>
+		</dependency>
+	
 		<dependency>
 			<groupId>com.googlecode.mgwt</groupId>
 			<artifactId>mgwt</artifactId>
