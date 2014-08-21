@@ -158,7 +158,8 @@ public class SolutionResourceListDialog extends Window {
         final String file = _selectedResource.getResource().getFile();
         MessageBox.confirm("Delete Resource?", "Are you sure you want to delete resource '" + file + "'?", new Listener<MessageBoxEvent>() {
             public void handleEvent(MessageBoxEvent be) {
-                if(!be.isCancelled()) {
+            	Button clicked = be.getButtonClicked();
+                if (clicked.getText().equals("Yes")) {
                      removeResource(file);
                 }
             }
