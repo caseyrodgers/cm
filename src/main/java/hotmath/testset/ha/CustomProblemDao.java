@@ -480,8 +480,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 		SAXBuilder parser = new SAXBuilder();
 		try {
 			// get the dom-document
-			Document doc = parser
-					.build(new StringReader(createWrappedXml(html)));
+			Document doc = parser.build(new StringReader(createWrappedXml(html)));
 			Iterator list = doc.getDescendants(filter);
 			Element elemToRemove = null;
 			while (list.hasNext()) {
@@ -951,8 +950,8 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 		TutorSolution ts = dao.getTutorSolution(conn, pid);
 		dao.getSolutionXml(conn, pid);
 
-		String stmt = stripProblemStatmentText(ts.getProblem().getStatement());
-		String html = "<div class='cm_problem_text'>" + data + "</div>";
+		String widgetHtml = stripProblemStatmentText(ts.getProblem().getStatement());
+		String html = "<div class='cm_problem_text'>" + data + "</div>" + widgetHtml;
 
 		ts.getProblem().setStatement(html);
 
