@@ -78,6 +78,7 @@ public class CmProgramListingDao extends SimpleJdbcDaoSupport {
             	}
                 if (includeBuiltInCustomProgs == true && "Custom".equals(id)) {
                 	pr.getProgramTypes().add(createBuiltInCustomProgramType(id, rs.getString("title")));
+                	continue;
                 }
             	if (id.indexOf("Grad Prep") > -1) {
             		pr.getProgramTypes().add(createGradPrepProgramType(conn, id, rs.getString("title")));
