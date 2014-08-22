@@ -76,7 +76,7 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         
         if (student.getSectionNum() == null) student.setSectionNum(0);
         
-        StudentModelI sm = CmStudentDao.getInstance().addStudent(conn, student);
+        StudentModelI sm = CmStudentDao.getInstance().addStudent(conn, student, false);
         
         CmAdminDao.getInstance().markAccountAsAutoRegistrationSetup(conn, sm.getUid());
         if (student.getSelfPay() == true) {

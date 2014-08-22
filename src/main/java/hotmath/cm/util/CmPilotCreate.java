@@ -196,7 +196,7 @@ public class CmPilotCreate {
         dao.createSelfRegistrationGroup(conn, aid, "exitexam", CmProgram.NATIONAL, false, false);
         
         // - added Foundations selfreg group
-        dao.createSelfRegistrationGroup(conn, aid, "foundation", CmProgram.FOUNDATIONS, false, false);
+        dao.createSelfRegistrationGroup(conn, aid, "foundations", CmProgram.FOUNDATIONS, false, false);
         
         if(isCollege) {
 	        // Auto-enrollment: PlaceMe
@@ -477,6 +477,12 @@ public class CmPilotCreate {
     	Connection conn=null;
     	try {
     		conn = HMConnectionPool.getConnection();
+    		
+    		
+    		int aid2 = Integer.parseInt(as[0]);
+    		CmAdminDao.getInstance().createSelfRegistrationGroup(conn, aid2,"foundations" , CmProgram.FOUNDATIONS, false, false);
+    		
+    		
     		String sql = "select aid from HA_ADMIN";
     		ResultSet rs = conn.createStatement().executeQuery(sql);
     		while(rs.next()) {
