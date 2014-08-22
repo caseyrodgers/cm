@@ -108,7 +108,11 @@ public class ProgramDetailsReport {
         for (ProgramType pt : ptList) {
             addRow(pt.getLabel(), pt.getLevel(), tbl, rowNum++);
             document.add(Chunk.NEWLINE);
-            boolean hasChapters = (pt.getLabel().indexOf("Proficiency") < 0 && pt.getLabel().indexOf("Graduation") < 0);
+            boolean isBuiltIn = (pt.getLabel().toLowerCase().indexOf("built-in") > -1);
+            boolean hasChapters =
+            		(pt.getLabel().indexOf("Proficiency") < 0 &&
+            		 pt.getLabel().indexOf("Graduation") < 0 &&
+            		 isBuiltIn == false);
             if (pt.isSelected()) {
             	List<ProgramSubject> psList = pt.getProgramSubjects();
             	for (ProgramSubject ps : psList) {
@@ -126,12 +130,24 @@ public class ProgramDetailsReport {
                     		if (isSelected) {
                     			List<ProgramSection> sectList = pc.getSections();
                     			for (ProgramSection pSect : sectList) {
-                                    addRow(pSect.getLabel(), pSect.getLevel(), tbl, rowNum++);
-                                    document.add(Chunk.NEWLINE);
+                    				if (isBuiltIn == false) {
+                                        addRow(pSect.getLabel(), pSect.getLevel(), tbl, rowNum++);
+                                        document.add(Chunk.NEWLINE);
+                    				}
                                     
-                                    if (pSect.isSelected()) {
-                                    	List<ProgramLesson> list =
-                                        	dao.getLessonsFor(pSect.getTestDefId(), pSect.getNumber(), pSect.getParent().getLabel(), sectList.size());
+                                    if (pSect.isSelected() || isBuiltIn == true) {
+                                    	List<ProgramLesson> list;
+                                    	if (isBuiltIn == false)
+                                    	    list = dao.getLessonsFor(pSect.getTestDefId(), pSect.getNumber(), pSect.getParent().getLabel(), sectList.size());
+                                    	else {
+                                    		String name = ps.getLabel();
+                                    		int programId = 0;
+                                    		try {
+                                    			programId = Integer.parseInt(ps.getName());
+                                    		}
+                                    		catch(Exception e) {}
+                                    		list = dao.getLessonsForBuiltInCustomProg(programId, name);
+                                    	}
                                     	StringBuilder sb = new StringBuilder();
                                     	int i = 0;
                                     	int limit = 120;
