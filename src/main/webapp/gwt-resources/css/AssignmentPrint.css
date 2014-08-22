@@ -67,3 +67,14 @@
 	font-size: 1.3em;
 	font-weight: bold;
 }
+
+
+/** disable widget controls */
+div[widget=graph] div {
+	display: none;
+}
+
+input[name=widget_submit] {
+	display: none;
+}
+}
