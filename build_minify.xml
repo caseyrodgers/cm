@@ -27,21 +27,23 @@
             <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
 
                 hm_events-min.js
-	        tutor_tablet.js
+            tutor_tablet.js
                
                 tutor_wrapper_cm.js
 
                 ../../../../../../hotmath2/web/js/tutor_widget_combined.js
                 dom_utils-min.js
-		cm_core-min.js
-	        quiz-min.js
+        cm_core-min.js
+            quiz-min.js
 
 
-		CatchupMath-min.js
-		swfobject/swfobject.js
+        CatchupMath-min.js
+        swfobject/swfobject.js
 
-        	../../../../../../hotmath2/web/js/hm_mathjax-min.js
+            ../../../../../../hotmath2/web/js/hm_mathjax-min.js
 
+
+                whiteboard_v3.js
                 whiteboard_static.js
 
                 ../jlibs/alertify.js-0.3.11/lib/alertify.js
@@ -58,24 +60,24 @@
         <concat destfile="${web.dir}/gwt-resources/js/CatchupMathMobile3_combined.js" append="true">
             <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
 
-            	   hm_events-min.js
-            	   browser_info_tools-min.js            	
-            	   tutor_tablet-min.js
-            	   tutor_wrapper_cm.js
-               	   dom_utils-min.js            	
-            	   quiz-min.js
+                   hm_events-min.js
+                   browser_info_tools-min.js                
+                   tutor_tablet-min.js
+                   tutor_wrapper_cm.js
+                   dom_utils-min.js                
+                   quiz-min.js
 
                    ../../../../../../hotmath2/web/js/tutor_widget_combined.js
                    
                    viewport-min.js
 
-            	   ../../jlibs/hammer/hammer.min.js
+                   ../../jlibs/hammer/hammer.min.js
 
                    cm_core-min.js
                    mobile_core.js
 
 
-                     ../jlibs/alertify.js-0.3.11/lib/alertify.js
+                   ../jlibs/alertify.js-0.3.11/lib/alertify.js
 
                    CatchupMathMobile3-min.js
 
@@ -83,14 +85,14 @@
               " />
         </concat>
     </target>
-	
+    
     <target name="combine-js_HmMobile" depends="javascript-minify">
         <!-- Combine HM Mobile JS into a single download
         -->
         <delete file="${web.dir}/gwt-resources/js/HmMobile_combined.js" />
         <concat destfile="${web.dir}/gwt-resources/js/HmMobile_combined.js" append="true">
             <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
-            	   CatchupMathMobile3_combined.js
+                   CatchupMathMobile3_combined.js
                    HmMobile.js
               " />
         </concat>
@@ -113,19 +115,19 @@
             <filelist dir="${web.dir}" files="
                 assets/css/reset.css
                 ../../../../hotmath2/web/css/tutor_widget.css
-            	gwt-resources/css/group_touch.css
-            	gwt-resources/css/quiz.css
+                gwt-resources/css/group_touch.css
+                gwt-resources/css/quiz.css
                 assets/css/local_sexybuttons.css
-            	gwt-resources/css/resource_review.css
+                gwt-resources/css/resource_review.css
                 gwt-resources/css/tutor_layout_tablet.css
-            	gwt-resources/css/testset.css
+                gwt-resources/css/testset.css
                 gwt-resources/css/whiteboard_v2.css
-            	gwt-resources/css/jquery.calculator.css
-            	gwt-resources/css/menubar_layout.css
-            	gwt-resources/css/mobile_question_box.css
+                gwt-resources/css/jquery.calculator.css
+                gwt-resources/css/menubar_layout.css
+                gwt-resources/css/mobile_question_box.css
                 gwt-resources/css/page_layout.css
 
-            	gwt-resources/css/mobile_core.css
+                gwt-resources/css/mobile_core.css
 
                 gwt-resources/css/CatchupMathMobile3.css
                 gwt-resources/css/CmMobileAssignments.css
@@ -146,9 +148,9 @@
                 assets/css/reset.css
                 ../../../../hotmath2/web/css/tutor_widget.css
                 gwt-resources/css/CatchupMathSearch.css
-            	gwt-resources/css/group_touch.css
+                gwt-resources/css/group_touch.css
                 assets/css/local_sexybuttons.css
-            	gwt-resources/css/resource_review.css
+                gwt-resources/css/resource_review.css
                 gwt-resources/css/tutor_layout_tablet.css
                 gwt-resources/css/whiteboard.css
                 gwt-resources/css/page_layout.css
@@ -166,7 +168,7 @@
                 ../../../../hotmath2/web/css/tutor_widget.css
                 assets/css/local_sexybuttons.css
                 gwt-resources/css/tutor_layout_tablet.css
-            	gwt-resources/css/mobile_core.css
+                gwt-resources/css/mobile_core.css
                 gwt-resources/css/HmMobile.css
 
                 gwt-resources/jlibs/alertify.js-0.3.11/themes/alertify.default.css
