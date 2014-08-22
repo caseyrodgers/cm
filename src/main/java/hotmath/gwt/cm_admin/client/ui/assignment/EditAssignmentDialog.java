@@ -190,7 +190,7 @@ public class EditAssignmentDialog {
                     return;
             	}
 
-            	if (_assignmentDesigner.getIsModified() == true) {
+            	if (_assignment.getAssignKey() == 0 || _assignmentDesigner.getIsModified() == true) {
                     CmMessageBox.showAlert("You need to Save the assignment to View/Print it.");
                     return;
             	}
