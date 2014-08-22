@@ -20,9 +20,13 @@ public class GetProgramLessonsCommand implements ActionHandler<GetProgramLessons
 
     @Override
     public CmList<ProgramLesson> execute(final Connection conn, GetProgramLessonsAction action) throws Exception {
-        CmList<ProgramLesson> lessons =
-        	new CmProgramListingDao().getLessonsFor(action.getTestDefId(), action.getSegment(), action.getChapter(), action.getSectionCount());
-        return lessons;
+        CmProgramListingDao dao = new CmProgramListingDao();    	
+    	if (action.isBuiltInCustomProg() == false) {
+            return  dao.getLessonsFor(action.getTestDefId(), action.getSegment(), action.getChapter(), action.getSectionCount());
+    	}
+    	else {
+    		return dao.getLessonsForBuiltInCustomProg(action.getTestDefId(), action.getChapter());
+    	}
     }
 
     @Override

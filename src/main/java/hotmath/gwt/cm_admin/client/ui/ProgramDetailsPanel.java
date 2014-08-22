@@ -265,12 +265,12 @@ public class ProgramDetailsPanel extends CmWindow {
             @Override
             protected void load(Object loadConfig, final AsyncCallback<List<ProgListModel>> callback) {
                 ProgListModel m = (ProgListModel) loadConfig;
-                if (m != null && m.getLevel() == ProgramListing.LEVEL_SECT) {
+                if (m != null &&
+                    (m.getLevel() == ProgramListing.LEVEL_SECT || isBuiltInCustomProg(m))) {
                     /**
                      * obtain lesson data asynchronously
                      */
-                    final ProgramSection section = (ProgramSection) m.getData();
-                    getLessonItemsRPC(section, callback);
+                    getLessonItemsRPC(m.getData(), callback);
                 } else {
                     /**
                      *  process local data
@@ -295,14 +295,16 @@ public class ProgramDetailsPanel extends CmWindow {
                     	ProgramType pType = (ProgramType) pSubj.getParent();
                         List<ProgramChapter> chaps = pSubj.getChapters();
                         
-                    	if (pType.getLabel().indexOf("Proficiency") < 0 && pType.getLabel().indexOf("Graduation") < 0) {
-                    		// not Proficiency Program or Grad Prep Program, add Chapters
+                    	if (pType.getLabel().indexOf("Proficiency") < 0 &&
+                    		pType.getLabel().indexOf("Graduation") < 0 &&
+                    		pType.getLabel().toLowerCase().indexOf("built-in") < 0) {
+                    		// not Proficiency, Grad Prep, or Built-in Custom Program, add Chapters
                             for (ProgramChapter pc : chaps) {
                                 models.add(new ProgListModel(pc));
                                 pc.setParent(pSubj);
                             }
                     	}
-                    	else {
+                    	else if (pType.getLabel().toLowerCase().indexOf("built-in") < 0) {
                     		// Proficiency or Grad Prep Program, add sections
                         	ProgramChapter pc = chaps.get(0);
                         	pc.setParent(pSubj);
@@ -311,6 +313,10 @@ public class ProgramDetailsPanel extends CmWindow {
                                 ps.setParent(pc);
                                 models.add(new ProgListModel(ps));
                             }
+                    	}
+                    	else {
+                    		// Built-in Custom Program
+                            models.add(new ProgListModel(pSubj));
                     	}
                         
                     } else if (m.getLevel() == ProgramListing.LEVEL_CHAP) {
@@ -326,19 +332,46 @@ public class ProgramDetailsPanel extends CmWindow {
 
                 // service.getFolderChildren((FileModel) loadConfig, callback);
             }
+
+			private boolean isBuiltInCustomProg(ProgListModel m) {
+				CmTreeNode node = m.getData();
+				if (node instanceof ProgramSubject) {
+					ProgramType pType = (ProgramType) node.getParent();
+					String label = pType.getLabel();
+					return (label.toLowerCase().indexOf("built-in") > -1);
+				}
+				return false;
+			}
         };
 	}
 
-    private void getLessonItemsRPC(final ProgramSection section, final AsyncCallback<List<ProgListModel>> callback) {
+    private void getLessonItemsRPC(final CmTreeNode node, final AsyncCallback<List<ProgListModel>> callback) {
 
         new RetryAction<CmList<ProgramLesson>>() {
             @Override
             public void attempt() {
-            	ProgramChapter chapter = (ProgramChapter) section.getParent();
-            	String chap = chapter.getLabel();
-            	int sectionCount = chapter.getSections().size();
-                GetProgramLessonsAction action = new GetProgramLessonsAction(section.getTestDefId(), section.getNumber(), chap, sectionCount);
-                setAction(action);
+            	GetProgramLessonsAction action;
+            	if (node instanceof ProgramSection) {
+            		ProgramSection section = (ProgramSection) node;
+                	ProgramChapter chapter = (ProgramChapter) section.getParent();
+                	String chap = chapter.getLabel();
+                	int sectionCount = chapter.getSections().size();
+                    action = new GetProgramLessonsAction(section.getTestDefId(), section.getNumber(), chap, sectionCount);
+            	}
+            	else { // has to be Built-in CP
+            		ProgramSubject pSubj = (ProgramSubject) node;
+            		String chap = pSubj.getLabel();
+            		int programId = 0;
+            		try {
+            			programId = Integer.parseInt(pSubj.getName());
+            		}
+            		catch (Exception e) {
+            		}
+                    action = new GetProgramLessonsAction(programId, 1, chap, 0);
+                    action.setBuiltInCustomProg(true);
+            	}
+
+            	setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
 

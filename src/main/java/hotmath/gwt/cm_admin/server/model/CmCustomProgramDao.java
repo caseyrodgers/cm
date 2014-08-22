@@ -541,6 +541,24 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         }
     }
 
+	public CmList<CustomLessonModel> getCustomProgramLessons(int programId, String name) throws Exception {
+    	CmList<CustomLessonModel> lessons = new CmArrayList<CustomLessonModel>();
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_PROGRAM_BUILTIN_LESSONS_BY_NAME");
+    	List<CustomLessonModel> models = this.getJdbcTemplate().query(sql, new Object[]{name}, new RowMapper<CustomLessonModel>() {
+    		public CustomLessonModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+    			try {
+    				CustomLessonModel model = new CustomLessonModel(rs.getString("lesson"), rs.getString("file"), rs.getString("subject"));
+    				return model;
+    			} catch (Exception e) {
+    				LOGGER.error("Error getting Built-In CP Lessons", e);
+    				throw new SQLException(e.getMessage());
+    			}
+    		}
+    	});
+    	lessons.addAll(models);
+    	return lessons;
+	}
+    
     public CmList<CustomLessonModel> getCustomProgramLessonsAllSegments(final Connection conn, Integer programId)
             throws Exception {
         CmList<CustomLessonModel> listAll = new CmArrayList<CustomLessonModel>();
@@ -1011,6 +1029,6 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         
         System.exit(0);
     }
-    
+
     
 }

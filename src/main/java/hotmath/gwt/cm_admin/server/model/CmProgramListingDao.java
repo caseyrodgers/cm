@@ -6,10 +6,13 @@ import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapterAll;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSection;
+import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSectionAll;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSubject;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramType;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
+import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
@@ -27,8 +30,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
-public class CmProgramListingDao {
+public class CmProgramListingDao extends SimpleJdbcDaoSupport {
 
     private static final Logger logger = Logger.getLogger(CmProgramListingDao.class);
 
@@ -72,9 +76,8 @@ public class CmProgramListingDao {
             		pr.getProgramTypes().add(createSubjectAndChapterProgramType(conn, id, rs.getString("title")));
             		continue;
             	}
-                // TODO:
                 if (includeBuiltInCustomProgs == true && "Custom".equals(id)) {
-                	
+                	pr.getProgramTypes().add(createBuiltInCustomProgramType(id, rs.getString("title")));
                 }
             	if (id.indexOf("Grad Prep") > -1) {
             		pr.getProgramTypes().add(createGradPrepProgramType(conn, id, rs.getString("title")));
@@ -89,7 +92,30 @@ public class CmProgramListingDao {
     }
 
     
-    /** Return program type for all proficiency tests
+    private ProgramType createBuiltInCustomProgramType(String type, String title) throws Exception {
+        ProgramType progType = new ProgramType(type, title);
+
+        CmCustomProgramDao cpDao = CmCustomProgramDao.getInstance();
+        CmList<CustomProgramModel> cpList = cpDao.getBuiltInCustomPrograms();
+
+        for (CustomProgramModel mdl : cpList) {
+        	ProgramSubject ps = new ProgramSubject();
+
+        	ps.setName(String.valueOf(mdl.getProgramId()));
+        	ps.setLabel(mdl.getProgramName());
+        	progType.getProgramSubjects().add(ps);
+
+        	ProgramChapter pc = new ProgramChapterAll();
+        	ps.getChapters().add(pc);
+
+        	ProgramSection pSect = new ProgramSectionAll();
+        	pc.getSections().add(pSect);
+        }
+
+    	return progType;
+	}
+
+	/** Return program type for all proficiency tests
      * 
      * @param conn
      * @param type
@@ -217,7 +243,7 @@ public class CmProgramListingDao {
             conn = HMConnectionPool.getConnection();
             
         	if (logger.isDebugEnabled())
-                logger.debug(String.format("+++ getLessonsFor(): testDefId: %d, segment: %d, chapter: %s",
+                logger.debug(String.format("getLessonsFor(): testDefId: %d, segment: %d, chapter: %s",
                 	testDefId, segment, (chapter != null)?chapter:"n/a"));
             
             /** first get list of PIDS that make this quiz segment
@@ -310,5 +336,18 @@ public class CmProgramListingDao {
     	}
     	return list;
     }
+
+	public CmList<ProgramLesson> getLessonsForBuiltInCustomProg(int programId, String name) throws Exception {
+        CmCustomProgramDao cpDao = CmCustomProgramDao.getInstance();
+        CmList<CustomLessonModel> list = cpDao.getCustomProgramLessons(programId, name);
+        CmList<ProgramLesson> lessons = new CmArrayList<ProgramLesson>();
+        for (CustomLessonModel lesson : list) {
+        	ProgramLesson pLesson = new ProgramLesson();
+        	pLesson.setName(lesson.getLesson());
+        	pLesson.setFile(lesson.getFile());
+        	lessons.add(pLesson);
+        }
+		return lessons;
+	}
 
 }
