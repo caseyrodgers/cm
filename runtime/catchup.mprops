@@ -2471,6 +2471,26 @@ WHERE  admin_id = 13
   AND  is_archived = 0
 ORDER BY load_order;
 
+.key=CUSTOM_PROGRAM_BUILTIN_LESSONS_BY_NAME
+
+SELECT l.*
+FROM   HA_CUSTOM_PROGRAM p
+JOIN   HA_CUSTOM_PROGRAM_LESSON l
+  ON   p.id = l.program_id
+WHERE  p.admin_id = 13 
+  AND  p.is_template = 1
+  AND  p.is_archived = 0
+  and  p.name = ?
+ORDER BY l.order_by;
+
+.key=CUSTOM_PROGRAM_BUILTIN_LESSONS_BY_ID
+
+SELECT l.*
+FROM   HA_CUSTOM_PROGRAM_LESSON l
+WHERE  l.program_id = ?
+ORDER BY l.order_by;
+
+
 .key=CUSTOM_PROGRAM_DEFINITION_BYID
 
 select if (archive_date is null,
