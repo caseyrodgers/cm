@@ -481,7 +481,9 @@ public class CustomProblemTreeTable extends SimpleContainer {
                 /** Expose the root items */
                 _tree.expandAll();
                 List<BaseDto> rootItems = _tree.getTreeStore().getRootItems();
-                _tree.setExpanded((BaseDto) rootItems.get(0), true, false);
+                if(rootItems.size() > 0) {
+                	_tree.setExpanded((BaseDto) rootItems.get(0), true, false);
+                }
 
                 if (selectedPid != null) {
                     BaseDto nodeToSelect = findItemMatching(_root, selectedPid);
