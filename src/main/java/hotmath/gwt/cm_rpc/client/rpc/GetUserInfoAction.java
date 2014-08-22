@@ -5,7 +5,9 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
 public class GetUserInfoAction implements Action<UserLoginResponse>{
     
-    int userId;
+	private static final long serialVersionUID = 2628004633178667038L;
+
+	int userId;
     String loginName;
     private boolean isDebug;
 

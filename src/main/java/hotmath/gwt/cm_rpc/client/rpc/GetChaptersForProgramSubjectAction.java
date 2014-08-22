@@ -6,6 +6,8 @@ import hotmath.gwt.cm_tools.client.model.ChapterModel;
 
 public class GetChaptersForProgramSubjectAction implements Action<CmList<ChapterModel>>{
 	
+	private static final long serialVersionUID = 3338241720554819147L;
+
 	String progId;
 	String subjId;
 	

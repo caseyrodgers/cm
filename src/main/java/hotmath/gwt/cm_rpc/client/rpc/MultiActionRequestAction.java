@@ -10,8 +10,11 @@ import java.util.List;
 
 public class MultiActionRequestAction implements Action<CmList<Response>>{
 
-    List<Action<? extends Response>> actions = new ArrayList<Action<? extends Response>>();
-    public MultiActionRequestAction() {}
+	private static final long serialVersionUID = 5695035430645742636L;
+
+	List<Action<? extends Response>> actions = new ArrayList<Action<? extends Response>>();
+
+	public MultiActionRequestAction() {}
 
     public List<Action<? extends Response>> getActions() {
         return actions;

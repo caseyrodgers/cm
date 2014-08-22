@@ -15,7 +15,6 @@ public class GetWhiteboardDataAction implements Action<CmList<WhiteboardCommand>
     String pid;
     Integer runId;
 
-
     public GetWhiteboardDataAction(){}
     
     public GetWhiteboardDataAction(Integer uid, String pid, Integer runId) {
