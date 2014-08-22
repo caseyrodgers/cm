@@ -18,7 +18,7 @@ function getHtmlForWidget(widgetType) {
 	  case "x":
 		  return "<img src='/assets/images/number-line.png'>"; 
     default:
-  	  return "<div class='assign_prob_ans'>%nbsp;</div> "; // "<img src='/assets/images/underline.png'>";
+  	  return "<div class='assign_prob_ans'>&nbsp;</div> "; // "<img src='/assets/images/underline.png'>";
 	  }
 	  
 }
