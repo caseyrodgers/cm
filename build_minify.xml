@@ -3,7 +3,7 @@
 
     <target name="minify" depends="doCombines"/>
     <property name="src.ant-tasks.dir" value="../src/ant" />
-    
+
     <property name='web.dir' value='src/main/webapp'/>
     <property name="yui-compressor" value="tools/yuicompressor-2.3.1/build/yuicompressor-2.3.1.jar" />
 
@@ -11,16 +11,15 @@
         <fileset file="${yui-compressor}"/>
     </path>
 
-        
+
     <target name='doCombines' depends='combine-js_CatchupMath, combine-js_CatchupMathMobile3, combine-js_HmMobile, combine-js_CatchupMathSearch, combine-css_CatchupMathMobile3, combine-css_HmMobile, combine-css_CatchupMathSearch'/>
 
     <target name="combine-js_CatchupMath" depends="javascript-minify">
         <!-- Combine CM JS into a single download
         -->
 
-                <!-- 
-
-                -->
+        <!-- 
+        -->
 
         <delete file="${web.dir}/gwt-resources/js/CatchupMath_combined.js" />
         <concat destfile="${web.dir}/gwt-resources/js/CatchupMath_combined.js" append="true">
@@ -85,7 +84,7 @@
               " />
         </concat>
     </target>
-    
+
     <target name="combine-js_HmMobile" depends="javascript-minify">
         <!-- Combine HM Mobile JS into a single download
         -->
@@ -108,7 +107,7 @@
         </concat>
     </target>
 
-        
+
     <target name="combine-css_CatchupMathMobile3">
         <delete file="${web.dir}/gwt-resources/css/CatchupMathMobile3_combined.css" />
         <concat destfile="${web.dir}/gwt-resources/css/CatchupMathMobile3_combined.css" append="true">
@@ -178,9 +177,9 @@
         </concat>
     </target>
 
-        
-        
-        
+
+
+
     <!-- Minifiy all JS Code -->
     <target name="javascript-minify">
         <taskdef resource="net/sf/antcontrib/antlib.xml" />

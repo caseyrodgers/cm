@@ -195,6 +195,9 @@ public class CmPilotCreate {
         // - exitexam - a self-ref group for nationals program
         dao.createSelfRegistrationGroup(conn, aid, "exitexam", CmProgram.NATIONAL, false, false);
         
+        // - added Foundations selfreg group
+        dao.createSelfRegistrationGroup(conn, aid, "foundation", CmProgram.FOUNDATIONS, false, false);
+        
         if(isCollege) {
 	        // Auto-enrollment: PlaceMe
 	        dao.createSelfRegistrationGroup(conn, aid, "placeme", CmProgram.AUTO_ENROLL_COLLEGE, false, false);
