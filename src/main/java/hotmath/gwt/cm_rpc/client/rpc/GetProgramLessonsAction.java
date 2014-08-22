@@ -10,27 +10,32 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
  *
  */
 public class GetProgramLessonsAction implements Action<CmList<ProgramLesson>>{
-    
-    int testDefId;
+
+	private static final long serialVersionUID = 1521568991963459080L;
+
+	int testDefId;
     int segment;
     String chapter;
     int sectionCount;
-    
+    boolean isBuiltInCustomProg;
+
     public GetProgramLessonsAction() {}
+
     public GetProgramLessonsAction(int testDefId, int segment, String chapter, int sectionCount) {
         this.testDefId = testDefId;
         this.segment = segment;
         this.chapter = chapter;
         this.sectionCount = sectionCount;
     }
+
     public int getTestDefId() {
         return testDefId;
     }
-    
+
     public String getChapter() {
     	return chapter;
     }
-    
+
     public int getSectionCount() {
     	return sectionCount;
     }
@@ -38,10 +43,20 @@ public class GetProgramLessonsAction implements Action<CmList<ProgramLesson>>{
     public void setTestDefId(int testDefId) {
         this.testDefId = testDefId;
     }
+
     public int getSegment() {
         return segment;
     }
+
     public void setSegment(int segment) {
         this.segment = segment;
     }
+
+	public boolean isBuiltInCustomProg() {
+		return isBuiltInCustomProg;
+	}
+
+	public void setBuiltInCustomProg(boolean isBuiltInCustomProg) {
+		this.isBuiltInCustomProg = isBuiltInCustomProg;
+	}
 }
