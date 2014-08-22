@@ -46,13 +46,11 @@
         <div id='main-content'></div>
 
         <script> 
-            if (typeof console === "undefined") {
                 console = {
                     log: function (x) {
                        // empty
                     }
                 };
-            }
         </script>
         <!-- OPTIONAL: include this if you want history support -->
         <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
@@ -62,8 +60,6 @@
         <!--[if lt IE 9]><script type="text/javascript" src='/gwt-resources/js/excanvas.js'></script><![endif]-->
 
         <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main.nocache"></script>
-        
-        <script src='/gwt-resources/js/whiteboard_v3.js'></script>
         
         
         <!-- 

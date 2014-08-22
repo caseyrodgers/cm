@@ -48,13 +48,12 @@
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
   <script> 
-       if (typeof console === "undefined") {
+  
            console = {
                log: function (x) {
                   // empty
                }
            };
-       }
    </script>
     
    <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>
@@ -62,8 +61,6 @@
    <script type="text/javascript" language="javascript" src="/cm_admin/cm_admin.nocache.js"></script>
     
    <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main.nocache"></script>
-   
-   <script src='/gwt-resources/js/whiteboard_v3.js'></script>
    
    <script src='/gwt-resources/jlibs/ckeditor-4.4.1/ckeditor.js'></script>
    <script src="/gwt-resources/jlibs/ckeditor-4.4.1/plugins/ckeditor_wiris/core/WIRISplugins.js?viewer=image"></script>    
