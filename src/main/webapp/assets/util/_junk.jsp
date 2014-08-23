@@ -9,29 +9,12 @@
 <html>
 <head>
 <%
-	Logger logger = Logger.getRootLogger();
-	Connection conn = null;
-	try {
-		logger.error("Staring pilot update");
-	      
-        conn = HMConnectionPool.getConnection();
-
-		String sql = "select h.aid from HA_ADMIN h JOIN SUBSCRIBERS s on h.subscriber_id = s.id where is_college = 1 ";
-		ResultSet rs = conn.createStatement().executeQuery(sql);
-		while(rs.next()) {
-			int aid = rs.getInt("aid");
-			logger.info("AID: " + aid);
-			
-			CmPilotCreate.setupPilotGroups(conn, aid, true);
-		}
-	} catch (Exception e) {
-		logger.error("Error testing!", e);
-	} finally {
-		SqlUtilities.releaseResources(null, null, conn);
-	}
-	logger.info("Done!");
+       
+       Object o = hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher.getInstance().execute(new hotmath.gwt.cm_rpc.client.rpc.GetChaptersForProgramSubjectAction("",""));
+       
+       // Object o = hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher.loadCommandClass(new hotmath.gwt.cm_rpc.client.rpc.GetChaptersForProgramSubjectAction());
 %>
 
 <h1>
-	DONE
-</h1>
+	DONE: <%= o.getClass() %>
+</h1>  

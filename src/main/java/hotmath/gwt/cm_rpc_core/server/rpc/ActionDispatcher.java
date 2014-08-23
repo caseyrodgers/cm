@@ -620,6 +620,8 @@ public class ActionDispatcher {
 			assumedCmdPackage += p[i] + ".";
 		}
 		assumedCmdPackage = assumedCmdPackage.replace("client", "server");
+		
+		logger.debug("AssumedCommandPackage: " + assumedCmdPackage);
 
 		/**
 		 * Create a list of possible places to search NOTE: the addition of the
@@ -638,8 +640,8 @@ public class ActionDispatcher {
 			String commandClass = place + cmdName;
 			try {
 				/** create instance and get object */
-				logger.debug("Auto registering action command: " + cmdName);
 				cmdClass = Class.forName(commandClass);
+				logger.debug("Auto registering action command: " + cmdName);
 				break;
 			} catch (ClassNotFoundException ie) {
 				/** silent */
