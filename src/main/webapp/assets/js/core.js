@@ -239,9 +239,13 @@ function closeTeacherVideo2() {
 }
 
 var unique=0;
+
 function showTeacherVideo2(ele, videoUrl) {
-	
 	var title = ele.innerHTML;
+    showTeacherVideo23(title, videoUrl);
+}
+
+function showTeacherVideo3(title, videoUrl) {
 	var html = '<iframe src="/training-videos/embedded-wrapper.html?video=' + videoUrl + '"  width="630" height="525px" scrolling="no" frameborder="no"></iframe>';
 	
 	var head = '<a href="#" onclick="closeTeacherVideo();return false;" class="close"><span>close</span> X</a>' + title;
@@ -341,6 +345,11 @@ function showTeacherVideo(name) {
        closeFoot;
            title = 'Registering Groups and Classes';
       }
+      else if (name == 'technical-tips') {
+          html = '<iframe src="/training-videos/embedded-technical-tips.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
+      closeFoot;
+          title = 'Technical Tips';
+     }
       else if(name === 'overview-reports') {
     	  
       }
@@ -453,7 +462,7 @@ var Quotes =
          link_type:'research'
      },
      {
-         text:'A new student initially tested into our lowest math course. Not satisfied, she used Catchup Math for three weeks and then retested four course levels higher — a full year and a quarter. This was exactly our purpose for using it.',
+         text:'A new student initially tested into our lowest math course. Not satisfied, she used Catchup Math for three weeks and then retested four course levels higher, a full year and a quarter. This was exactly our purpose for using it.',
          link_text: 'College Instructor, Ohio',
          link_type:'success'
      },
