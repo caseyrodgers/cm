@@ -156,8 +156,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
     				// update Active Info in CM_PROGRAM_ASSIGN before assigning new Program
     				ppDao.updateProgramAssign(userId);
     			}
-                dao.assignProgramToStudent(conn, userId, studentTemplate.getProgram(), studentTemplate.getChapter(),
-                		studentTemplate.getPassPercent(), studentTemplate.getSettings(), isSelfReg, studentTemplate.getSectionNum());
+                dao.assignProgramToStudent(conn, userId, studentTemplate.getProgram(), studentTemplate.getChapter(),studentTemplate.getPassPercent(), studentTemplate.getSettings(), isSelfReg, studentTemplate.getSectionNum());
             }
         }
         finally {

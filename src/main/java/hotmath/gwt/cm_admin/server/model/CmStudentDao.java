@@ -780,6 +780,11 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
     public StudentModelI updateStudent(final Connection conn, StudentModelI sm, Boolean studentChanged, Boolean programChanged, Boolean progIsNew,
             Boolean passcodeChanged, Boolean passPercentChanged, boolean resetMainProgram, boolean continueParallelProgram) throws Exception {
+    	return updateStudent(conn, sm, studentChanged, programChanged, progIsNew, passcodeChanged, passPercentChanged, resetMainProgram, continueParallelProgram, false);
+    }
+    
+    public StudentModelI updateStudent(final Connection conn, StudentModelI sm, Boolean studentChanged, Boolean programChanged, Boolean progIsNew,
+            Boolean passcodeChanged, Boolean passPercentChanged, boolean resetMainProgram, boolean continueParallelProgram, boolean skipDupGroupTest) throws Exception {
         if (passcodeChanged) {
 
             checkForSpecialCases(sm.getUid(), sm.getPasscode());
@@ -790,7 +795,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         }
         if (studentChanged == true) {
             // check for match with a group name
-            if (CmAdminDao.getInstance().checkForDuplicateGroup(conn, sm.getAdminUid(), sm.getName()) == true) {
+            if (!skipDupGroupTest && CmAdminDao.getInstance().checkForDuplicateGroup(conn, sm.getAdminUid(), sm.getName()) == true) {
             	throw new CmUserException(String.format("The name you entered, %s, matches a Group name, please try again.", sm.getName()));
             }
         }
@@ -2609,7 +2614,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         sm.setSectionNum(sectionNum);
 
         setTestConfig(conn, sm);
-        updateStudent(conn, sm, true, false, true, false, false, resetMainProgram, continueParallelProgram);
+        
+        boolean skipDuplicateGroupTest=true;
+        updateStudent(conn, sm, true, false, true, false, false, resetMainProgram, continueParallelProgram, skipDuplicateGroupTest);
 
         // need to set user Prog Id for CM_PROGRAM_ASSIGN
         program.setProgramId(sm.getProgram().getProgramId());
