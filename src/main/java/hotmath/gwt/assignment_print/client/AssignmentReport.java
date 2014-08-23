@@ -131,7 +131,7 @@ public class AssignmentReport {
 	}
 
 	private Widget createSubReportHeader(SolutionInfo sol, int ordinal) {
-		String html = ordinal  + ")";
+		String html = ordinal  + ":";
 		return new MyHTML(html, "assign_problem_info");
 	}
 
