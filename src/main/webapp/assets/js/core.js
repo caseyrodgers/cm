@@ -242,7 +242,7 @@ var unique=0;
 
 function showTeacherVideo2(ele, videoUrl) {
 	var title = ele.innerHTML;
-    showTeacherVideo23(title, videoUrl);
+    showTeacherVideo3(title, videoUrl);
 }
 
 function showTeacherVideo3(title, videoUrl) {
