@@ -120,7 +120,7 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
     public void makeTree(final List<CustomProblemModel> custProblems, List<String> paths) {
         
         _treeStore = CustomProblemTreeTable.createTeacherProblemMap(custProblems,  paths, null);
-        _root = (CustomProblemFolderNode)_treeStore.getAll().get(0);
+        _root = (custProblems.size()>0)?(CustomProblemFolderNode)_treeStore.getAll().get(0):null;
 
         
         TreeLoader<BaseDto> loader = new TreeLoader<BaseDto>(proxy) {
@@ -249,6 +249,10 @@ public class AssignmentTreeCustomProblemsListingPanel extends ContentPanel {
     RpcProxy<BaseDto, List<BaseDto>> proxy = new RpcProxy<BaseDto, List<BaseDto>>() {
         @Override
         public void load(final BaseDto loadConfig, AsyncCallback<List<BaseDto>> callback) {
+        	if(loadConfig == null) {
+        		return;
+        	}
+        	
             if (loadConfig.getChildren() == null || loadConfig.getChildren().size() == 0) {
                  if (loadConfig instanceof LessonDto) {
                      Log.info("Loading lesson problems: " + loadConfig);

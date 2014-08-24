@@ -363,7 +363,7 @@ public class HaUserFactory {
 
                         pstat = conn.prepareStatement(sql);
 
-                        int demoId = CatchupMathProperties.getInstance().getProblemAsInt("demo.user_id",727);
+                        int demoId = CatchupMathProperties.getInstance().getProblemAsInt("demo.user_id",882008);
 
                         __logger.debug("Creating demo user with demo.user_id = " + demoId);
 

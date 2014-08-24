@@ -245,7 +245,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
             stmt = conn.createStatement();
 
-            rs = stmt.executeQuery(sql.replace("$$RUNID_LIST$$", sb.toString()));
+            String sqlStr = sql.replace("$$RUNID_LIST$$", sb.toString());
+            rs = stmt.executeQuery(sqlStr);
 
             runId = -1;
             int totalTime = 0;
