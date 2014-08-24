@@ -3,13 +3,13 @@
     
 	<g:HTMLPanel>
 		<!-- HOTMATH BODY START -->
-		<div id="tutoroutput" style='display: block;position: relative;'>
+		<div name="tutoroutput" style='display: block;position: relative;'>
 		    <div class='problem-title' ui:field="title"></div>
-			<div id='tutor_raw_steps_wrapper'>
+			<div name='tutor_raw_steps_wrapper'>
   				  <span style='font-type: italic;color: #666'>Loading ...</span>
 			</div>
 
-            <div id='steps_tail'>
+            <div name='steps_tail'>
                 
                 <button class='sexybutton sexy_cm_silver disabled' id='steps_prev'
                     onclick="TutorManager.showPreviousStep();" accesskey="n">

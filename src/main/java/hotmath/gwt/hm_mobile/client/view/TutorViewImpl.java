@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.Element;
 
 public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage {
 
@@ -56,7 +57,7 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				initializeTutor(problem.getPid(),null, solution.getSolutionData(),solution.getTutorHtml(), problem.getProblem(), false, false);
+				initializeTutor(TutorViewImpl.this.getElement(), problem.getPid(),null, solution.getSolutionData(),solution.getTutorHtml(), problem.getProblem(), false, false);
 			}
 		});
     }
@@ -77,8 +78,9 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
 		HmMobile.__clientFactory.getEventBus().fireEvent(new BackDiscoveryEvent((IPage)HmMobile.__clientFactory.getTutorView()));
 	}
 	
-    private native void initializeTutor(String pid, String jsonConfig, String solutionDataJs, String solutionText, String title, boolean hasShowWork,boolean shouldExpandSolution) /*-{
-          $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs, solutionText, title,hasShowWork,shouldExpandSolution);
+    private native void initializeTutor(Element instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution) /*-{
+          $wnd.TutorManager.initializeTutor(instance, pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,null,null, null, true);
+         //  $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs, solutionText, title,hasShowWork,shouldExpandSolution);
     }-*/;
 
 

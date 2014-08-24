@@ -559,7 +559,7 @@ question_head_text {
   width: 100%;
 }
 
-#tutoroutput {
+[name=tutoroutput] {
         font: 12pt "Times New Roman", Times, serif;
 }
 
@@ -635,7 +635,7 @@ question_head_text {
     margin: 15px;
 }
 
-#tutoroutput .step {
+[name=tutoroutput] .step {
    color: black;
 }
 

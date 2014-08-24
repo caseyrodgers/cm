@@ -2,7 +2,7 @@
   width: 100%;
 }
 
-#tutoroutput {
+[name=tutoroutput] {
         font: 12pt "Times New Roman", Times, serif;
 }
 
@@ -81,7 +81,7 @@
     margin: 15px;
 }
 
-#tutoroutput .step {
+[name=tutoroutput] .step {
    color: black;
 }
 

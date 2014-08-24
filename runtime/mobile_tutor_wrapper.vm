@@ -6,12 +6,12 @@
 <div id='tutor_embedded' style='display: block'>
   </div>
     <!-- HOTMATH BODY START -->
-    <div id="tutoroutput" style='display: block;position: relative;'>
-        <div id='tutor_raw_steps_wrapper'>
+    <div name="tutoroutput" style='display: block;position: relative;'>
+        <div name='tutor_raw_steps_wrapper'>
             $solution_html
         </div>
         
-        <div id='steps_tail'>
+        <div name='steps_tail'>
 	        <button class='sexybutton disabled' id='steps_prev' href="#" 
 	            onclick="TutorManager.showPreviousStep();return false;" accesskey="p">
 	            <span><span>

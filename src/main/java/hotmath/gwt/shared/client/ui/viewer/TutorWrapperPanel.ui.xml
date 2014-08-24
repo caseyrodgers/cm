@@ -7,11 +7,11 @@
         <div id='tutor_embedded' style='display: block'>
             <!-- HOTMATH BODY START -->
 
-            <div id="tutoroutput" style='display: block; position: relative;'>
+            <div name="tutoroutput" style='display: block; position: relative;'>
 
-                <div id='tutor_raw_steps_wrapper'></div>
+                <div name='tutor_raw_steps_wrapper'></div>
 
-                <div id='steps_tail' style='position: relative'>
+                <div name='steps_tail' style='position: relative'>
                     <a id='show-work-force' href='#'
                         onclick='showWorkDialog_Gwt();return false;'><img
                         src='/gwt-resources/images/show-work-required.png' />

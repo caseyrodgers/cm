@@ -228,7 +228,7 @@ question_head_text {
   width: 100%;
 }
 
-#tutoroutput {
+[name=tutoroutput] {
         font: 12pt "Times New Roman", Times, serif;
         width: 500px;
 }
