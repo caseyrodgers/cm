@@ -790,7 +790,7 @@ div.landscape div.page ul.touch li.group:active {
 }
 
 
-#hm_flash_widget.not_used {
+[name=hm_flash_widget].not_used {
     display: none;
 }
 
@@ -1046,7 +1046,7 @@ html>body .gwt-DecoratedTabBar {
 }
 
 
-#hm_flash_widget {
+[name=hm_flash_widget] {
   margin-top: 5px;
   position: relative;
   width: 275px;
@@ -1104,7 +1104,7 @@ html>body .gwt-DecoratedTabBar {
 }   
 
 
-#hm_flash_widget.not_used p{
+[name=hm_flash_widget].not_used p{
    padding: 10px;
    font-size: .8em;
    color: red;
@@ -1128,7 +1128,7 @@ html>body .gwt-DecoratedTabBar {
     text-align: center; 
 }
 
-#hm_flash_widget .divider {
+[name=hm_flash_widget] .divider {
     height: 3px;
     background: black;
     line-height: 3px;
@@ -1143,7 +1143,7 @@ html>body .gwt-DecoratedTabBar {
 }
 
 
-#hm_flash_widget_indicator img {
+[name=hm_flash_widget]_indicator img {
     
 }
 
