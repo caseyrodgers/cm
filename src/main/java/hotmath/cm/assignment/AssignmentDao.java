@@ -1340,7 +1340,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         });
 
         /**
-         * Get a list of assigments that do not have ANY specified users. These
+         * Get a list of assignments that do not have ANY specified users. These
          * are the assignments that are assigned to ALL users.
          */
         sql = "select a.assign_key " + "from    CM_ASSIGNMENT a " + "   JOIN HA_USER u " + "     on u.group_id = a.group_id "
@@ -1507,7 +1507,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         String[] dates = QueryHelper.getDateTimeRange(fromDate, toDate);
         List<StudentAssignmentInfo> saInfoList = null;
         try {
-            saInfoList = getJdbcTemplate().query(sql, new Object[] { uid, dates[0], dates[1] }, new RowMapper<StudentAssignmentInfo>() {
+            saInfoList = getJdbcTemplate().query(sql, new Object[] { uid, uid, dates[0], dates[1] }, new RowMapper<StudentAssignmentInfo>() {
                 @Override
                 public StudentAssignmentInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
 

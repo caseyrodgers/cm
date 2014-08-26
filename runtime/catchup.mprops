@@ -4133,6 +4133,7 @@ LEFT JOIN (
        SELECT assign_key, uid, count(*) as cnt_submitted
        FROM   CM_ASSIGNMENT_PID_STATUS
        WHERE status NOT IN ('Viewed','Not Viewed')
+         AND uid = ?
        GROUP BY assign_key, uid
     ) ps ON ps.assign_key = a.assign_key AND ps.uid = au.uid
 WHERE au.uid = ?
