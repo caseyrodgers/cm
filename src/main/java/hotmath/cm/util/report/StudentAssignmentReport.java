@@ -181,7 +181,7 @@ public class StudentAssignmentReport {
 					
 					int gradedAssignmentAvg = Math.round((float)gradedAssignmentScore / (float)gradedAssignmentCount);
 					String text = String.format("Average for Graded Assignments: %d%s",  gradedAssignmentAvg, "%");
-					Chunk c = new Chunk(text, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0)));
+					Chunk c = new Chunk(text, FontFactory.getFont(FontFactory.HELVETICA, 8, Font.BOLD|Font.UNDERLINE, new Color(0, 0, 0)));
 					c.setTextRise(3.0f);
 			    	Cell cell = new Cell(c);
 					cell.setHeader(false);
