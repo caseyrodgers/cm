@@ -112,8 +112,8 @@ public class StudentReportCard {
 
         long startTime = System.currentTimeMillis();
         List<StudentModelI> smList = studentDao.getStudentSummaries(adminId, studentUids, true);
-        if (LOGGER.isDebugEnabled()) {
-        	LOGGER.debug(String.format("Student Summaries time: %d msec", System.currentTimeMillis() - startTime));
+        if (LOGGER.isInfoEnabled()) {
+        	LOGGER.info(String.format("Student Summaries time: %d msec", System.currentTimeMillis() - startTime));
         }
 
         StringBuilder sb = new StringBuilder();
@@ -149,24 +149,48 @@ public class StudentReportCard {
 
         	startTime = System.currentTimeMillis();
             StudentReportCardModelI rc = rcDao.getStudentReportCard(sm.getUid(), fromDate, toDate);
-            if (LOGGER.isDebugEnabled()) {
-            	LOGGER.debug(String.format("Report Card Dao uid: %d, time: %d msec", sm.getUid(), System.currentTimeMillis() - startTime));
+            if (LOGGER.isInfoEnabled()) {
+            	LOGGER.info(String.format("Report Card Dao uid: %d, time: %d msec", sm.getUid(), System.currentTimeMillis() - startTime));
             }
 
+        	startTime = System.currentTimeMillis();
         	addStudentInfo(school, sm, rc, document);
-        	
+            if (LOGGER.isInfoEnabled()) {
+            	LOGGER.info(String.format("addStudentInfo uid: %d, time: %d msec", sm.getUid(), System.currentTimeMillis() - startTime));
+            }
+
+        	startTime = System.currentTimeMillis();
         	addProgramInfo(rc, sm, document);
+            if (LOGGER.isInfoEnabled()) {
+            	LOGGER.info(String.format("addProgramInfo uid: %d, time: %d msec", sm.getUid(), System.currentTimeMillis() - startTime));
+            }
 
+        	startTime = System.currentTimeMillis();
         	addQuizInfo(rc, document);
+            if (LOGGER.isInfoEnabled()) {
+            	LOGGER.info(String.format("addQuizInfo uid: %d, time: %d msec", sm.getUid(), System.currentTimeMillis() - startTime));
+            }
 
+        	startTime = System.currentTimeMillis();
         	addAssignmentInfo(sm.getUid(), document, fromDate, toDate);
+            if (LOGGER.isInfoEnabled()) {
+            	LOGGER.info(String.format("addAssignmentInfo uid: %d, time: %d msec", sm.getUid(), System.currentTimeMillis() - startTime));
+            }
 
         	if (rc.getResourceUsage() != null && rc.getResourceUsage().size() > 0) {
-        		addResourceUsage(rc, document);
+            	startTime = System.currentTimeMillis();
+            	addResourceUsage(rc, document);
+                if (LOGGER.isInfoEnabled()) {
+                	LOGGER.info(String.format("addResourceUsage uid: %d, time: %d msec", sm.getUid(), System.currentTimeMillis() - startTime));
+                }
         	}
 
         	if (rc.getPrescribedLessonList() != null && rc.getPrescribedLessonList().size() > 0) {
-        		addLessons(rc, sm.getProgram().getCustom().isCustom(), document);
+            	startTime = System.currentTimeMillis();
+            	addLessons(rc, sm.getProgram().getCustom().isCustom(), document);
+                if (LOGGER.isInfoEnabled()) {
+                	LOGGER.info(String.format("addLessons uid: %d, time: %d msec", sm.getUid(), System.currentTimeMillis() - startTime));
+                }
         	}
 
         	document.add(Chunk.NEWLINE);
