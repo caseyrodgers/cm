@@ -29,6 +29,7 @@ public class CalculatorWindowForMobile extends DialogBox {
         setGlassEnabled(true);
         setAnimationEnabled(true);
         setAutoHideEnabled(true);
+        setModal(true);
 
         DockPanel dock = new DockPanel();
         HorizontalPanel buttonBar = new HorizontalPanel();

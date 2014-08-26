@@ -82,25 +82,23 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 		SolutionInfo solution = null;
 
 		/**
-		 * If teacher_id not set, try to look up before search
+		 * Make sure the correct teacher is set.
 		 * 
 		 */
-		if (problem.getTeacher().getTeacherId() == 0) {
-			String sql = "select teacher_id from CM_CUSTOM_PROBLEM_TEACHER where admin_id = ? and teacher_name = ?";
-			List<Integer> tIds = getJdbcTemplate().query(
-					sql,
-					new Object[] { problem.getTeacher().getAdminId(),
-							problem.getTeacher().getTeacherName() },
-					new RowMapper<Integer>() {
-						@Override
-						public Integer mapRow(ResultSet rs, int rowNum)
-								throws SQLException {
-							return rs.getInt("teacher_id");
-						}
-					});
-			if (tIds.size() > 0) {
-				problem.getTeacher().setTeacherId(tIds.get(0));
-			}
+		String sql = "select teacher_id from CM_CUSTOM_PROBLEM_TEACHER where admin_id = ? and teacher_name = ?";
+		List<Integer> tIds = getJdbcTemplate().query(
+				sql,
+				new Object[] { problem.getTeacher().getAdminId(),
+						problem.getTeacher().getTeacherName() },
+				new RowMapper<Integer>() {
+					@Override
+					public Integer mapRow(ResultSet rs, int rowNum)
+							throws SQLException {
+						return rs.getInt("teacher_id");
+					}
+				});
+		if (tIds.size() > 0) {
+			problem.getTeacher().setTeacherId(tIds.get(0));
 		}
 
 		/**
@@ -109,7 +107,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 		 * 
 		 * record will never be zero ..?
 		 */
-		String sql = "select max_problem_number from CM_CUSTOM_PROBLEM_TEACHER where teacher_id = ?";
+		sql = "select max_problem_number from CM_CUSTOM_PROBLEM_TEACHER where teacher_id = ?";
 		List<Integer> probNum = getJdbcTemplate().query(sql,
 				new Object[] { problem.getTeacher().getTeacherId() },
 				new RowMapper<Integer>() {
@@ -1049,7 +1047,9 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 
 			/**
 			 * remove the teacher record
-			 * 
+			 *
+			 *  TODO: possible problem if teacher has problems exist.
+			 *  
 			 */
 			getJdbcTemplate().update(new PreparedStatementCreator() {
 				@Override

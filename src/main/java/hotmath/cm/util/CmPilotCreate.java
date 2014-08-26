@@ -479,17 +479,18 @@ public class CmPilotCreate {
     		conn = HMConnectionPool.getConnection();
     		
     		
-    		int aid2 = Integer.parseInt(as[0]);
-    		CmAdminDao.getInstance().createSelfRegistrationGroup(conn, aid2,"foundations" , CmProgram.FOUNDATIONS, false, false);
-    		
-    		
+//    		int aid2 = Integer.parseInt(as[0]);
+//    		CmAdminDao.getInstance().createSelfRegistrationGroup(conn, aid2,"foundations" , CmProgram.FOUNDATIONS, false, false);
+//    		if(true) {
+//    			return;
+//    		}
     		String sql = "select aid from HA_ADMIN";
     		ResultSet rs = conn.createStatement().executeQuery(sql);
     		while(rs.next()) {
     			int aid = rs.getInt("aid");
 
     			try {
-    			    CmAdminDao.getInstance().createSelfRegistrationGroup(conn, aid,"essentials" , CmProgram.ESSENTIALS, false, false);
+    			    CmAdminDao.getInstance().createSelfRegistrationGroup(conn, aid,"foundations" , CmProgram.FOUNDATIONS, false, false);
     			}
     			catch(Exception ex) {
     				logger.error("Error creating group", ex);
