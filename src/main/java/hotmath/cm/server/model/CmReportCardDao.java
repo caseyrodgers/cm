@@ -72,16 +72,16 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 
 			 long startTime = System.currentTimeMillis();
 			 List<StudentUserProgramModel> list = upDao.loadProgramInfoAll(conn, studentUid);
-			 if (logger.isInfoEnabled()) {
-			     logger.info(String.format("loadProgramInfo(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
+			 if (logger.isDebugEnabled()) {
+			     logger.debug(String.format("loadProgramInfo(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
 			 }
 
 			 // set first and last activity date based on quiz data (HaTest and HaTestRun)
 			 StudentActivityDao saDao = StudentActivityDao.getInstance();
 			 startTime = System.currentTimeMillis();
 			 List<StudentActivityModel> samList = saDao.getStudentActivity(studentUid, beginDate, endDate);
-			 if (logger.isInfoEnabled()) {
-			     logger.info(String.format("getStudentActivity(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
+			 if (logger.isDebugEnabled()) {
+			     logger.debug(String.format("getStudentActivity(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
 			 }
 			 setFirstLastActivityDate(rval, samList);
 
@@ -144,22 +144,22 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 List<HaTest> testList = loadQuizData(conn, filteredList, beginDate, endDate);
 			 StudentActiveInfo ai = CmStudentDao.getInstance().loadActiveInfo(studentUid);
 			 setFirstLastProgramStatus(conn, rval, testList, pm, ai);
-			 if (logger.isInfoEnabled()) {
-			     logger.info(String.format("HaTest and HaTestRun: studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
+			 if (logger.isDebugEnabled()) {
+			     logger.debug(String.format("HaTest and HaTestRun: studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
 			 }
 
 			 // load quiz data for initial through last programs
 			 startTime = System.currentTimeMillis();
 			 loadQuizResults(conn, filteredList, rval, beginDate, endDate);
-			 if (logger.isInfoEnabled()) {
-			     logger.info(String.format("loadQuizResults(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
+			 if (logger.isDebugEnabled()) {
+			     logger.debug(String.format("loadQuizResults(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
 			 }
 
 			 // load resource usage data for initial through last programs
 			 startTime = System.currentTimeMillis();
 			 loadResourceUsage(filteredList, rval, beginDate, endDate);
-			 if (logger.isInfoEnabled()) {
-			     logger.info(String.format("loadResourceUsage(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
+			 if (logger.isDebugEnabled()) {
+			     logger.debug(String.format("loadResourceUsage(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
 			 }
 
              // set "Login Days": the number of distinct days of activity 
@@ -175,8 +175,8 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 // load prescribed lesson comnpleted data for initial through last programs
 			 startTime = System.currentTimeMillis();
 			 loadCompletedLessons(filteredList, rval, beginDate, endDate, conn);
-			 if (logger.isInfoEnabled()) {
-			     logger.info(String.format("loadCompletedLessons(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
+			 if (logger.isDebugEnabled()) {
+			     logger.debug(String.format("loadCompletedLessons(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
 			 }
 			 
 			 rval.setReportStartDate(beginDate);
@@ -284,8 +284,8 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 int currentSegment = ai.getActiveSegment();
 		 int testId = ai.getActiveTestId();
 		 int runId = ai.getActiveRunId();
-		 if (logger.isInfoEnabled())
-    		 logger.info(String.format("+++ setFirstLastProgramStatus(): testId: %d, runId: %d, currentSegment: %d, totalSegments: %d",
+		 if (logger.isDebugEnabled())
+    		 logger.debug(String.format("+++ setFirstLastProgramStatus(): testId: %d, runId: %d, currentSegment: %d, totalSegments: %d",
 				 testId, runId, currentSegment, totalSegments));
 		 if (currentSegment < totalSegments || runId == 0 || (runId != 0 && ! lessonsCompleted(conn, runId))) {
 		     String status = (pm.isCustom() == false) ?
@@ -405,8 +405,8 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 Long start = System.currentTimeMillis();
 			 rs = ps.executeQuery();
 
-			 if (logger.isInfoEnabled()) {
-				 logger.info(String.format("+++ PROGRAM_QUIZ_COUNT: SQL: %s, exec time: %d msec", ps.toString(), (System.currentTimeMillis()-start)));
+			 if (logger.isDebugEnabled()) {
+				 logger.debug(String.format("+++ PROGRAM_QUIZ_COUNT: SQL: %s, exec time: %d msec", ps.toString(), (System.currentTimeMillis()-start)));
 			 }
 
 			 if (rs.next()) {
@@ -429,8 +429,8 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 start = System.currentTimeMillis();
 			 rs = ps.executeQuery();
 
-			 if (logger.isInfoEnabled()) {
-				 logger.info(String.format("+++ PROGRAM_PASSED_QUIZ_COUNT: SQL: %s, exec time: %d msec", ps.toString(), (System.currentTimeMillis()-start)));
+			 if (logger.isDebugEnabled()) {
+				 logger.debug(String.format("+++ PROGRAM_PASSED_QUIZ_COUNT: SQL: %s, exec time: %d msec", ps.toString(), (System.currentTimeMillis()-start)));
 			 }
 
 			 if (rs.next()) {
@@ -453,8 +453,8 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 start = System.currentTimeMillis();
 			 rs = ps.executeQuery();
 
-			 if (logger.isInfoEnabled()) {
-				 logger.info(String.format("+++ PROGRAM_AGGREGATE_QUIZ_RESULTS: SQL: %s, exec time: %d msec", ps.toString(), (System.currentTimeMillis()-start)));
+			 if (logger.isDebugEnabled()) {
+				 logger.debug(String.format("+++ PROGRAM_AGGREGATE_QUIZ_RESULTS: SQL: %s, exec time: %d msec", ps.toString(), (System.currentTimeMillis()-start)));
 			 }
 
 			 if (rs.next()) {
@@ -614,7 +614,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 				 sb.append(",");
 			 sb.append(m.getId());
 		 }
-		 if (logger.isInfoEnabled()) logger.info("progIdList: " + sb.toString());
+		 if (logger.isDebugEnabled()) logger.debug("progIdList: " + sb.toString());
 		 return sb.toString();
 	 }
 
@@ -628,7 +628,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 				 sb.append(",");
 			 sb.append(m.getRunId());
 		 }
-		 if (logger.isInfoEnabled()) logger.info("runIdList: " + sb.toString());
+		 if (logger.isDebugEnabled()) logger.debug("runIdList: " + sb.toString());
 		 return sb.toString();
 	 }
 
