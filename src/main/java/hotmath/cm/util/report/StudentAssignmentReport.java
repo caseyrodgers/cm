@@ -181,7 +181,7 @@ public class StudentAssignmentReport {
 					
 					int gradedAssignmentAvg = Math.round((float)gradedAssignmentScore / (float)gradedAssignmentCount);
 					String text = String.format("Average for Graded Assignments: %d%s",  gradedAssignmentAvg, "%");
-					Chunk c = new Chunk(text, FontFactory.getFont(FontFactory.HELVETICA, 8, Font.BOLD|Font.UNDERLINE,
+					Chunk c = new Chunk(text, FontFactory.getFont(FontFactory.HELVETICA, 8, Font.BOLDITALIC|Font.UNDERLINE,
 							new Color(0, 0, 200)));
 					c.setTextRise(3.0f);
 			    	Cell cell = new Cell(c);
@@ -286,7 +286,7 @@ public class StudentAssignmentReport {
 	private void addCell(String content, Table tbl, int rowNum, boolean isGraded) throws Exception {
 		if (content == null) content = "";
 		Chunk c = new Chunk(content, FontFactory.getFont(FontFactory.HELVETICA, 8,
-				(isGraded==true)?Font.BOLD|Font.UNDERLINE:Font.NORMAL,
+				(isGraded==true)?Font.BOLDITALIC|Font.UNDERLINE:Font.NORMAL,
 				(isGraded==true)?new Color(0, 0, 200):new Color(0, 0, 0)));
 		c.setTextRise(3.0f);
     	Cell cell = new Cell(c);
