@@ -14,7 +14,11 @@
        
        // Object o = hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher.loadCommandClass(new hotmath.gwt.cm_rpc.client.rpc.GetChaptersForProgramSubjectAction());
 %>
-
+</head>
+<body>
 <h1>
 	DONE: <%= o.getClass() %>
-</h1>  
+</h1>
+</body>
+
+</html>
