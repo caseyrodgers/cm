@@ -1,43 +1,13 @@
-<div>
-	<p>The top, side, and front views of an object built with cubes are
-		shown.</p>
-	<p> How many cubes are needed to construct this object?</p>
+<div class="cm_problem_text">
+	<div class="step_part">
+		<p>What is the answer?</p>
+		<div class="wb_json">[{"dataArr":[{"x":159.5,"y":30,"w":250,"h":250,"name":"template_1409174135713","url":"/gwt-resources/images/whiteboard/figures/rhombus.gif"}],"id":"template","uid":0,"brect":{"x":159.5,"y":30,"w":250,"h":250,"xmin":159.5,"xmax":409.5,"ymin":30,"ymax":280}},{"id":"template","uid":0,"type":"cmd","cmd":{"name":"move","data":{"tx":-173,"ty":-72,"tr":0,"trect":{"x":-13.5,"y":-42,"w":250,"h":250,"xmin":-13.5,"xmax":236.5,"ymin":-42,"ymax":208}}},"dataArr":[]}]
+		</div>
+	</div>
 </div>
-<ul>
-	<li correct="no">
-		<div>
-			<img class="ques_icon" src="/images/tutor5/hint_question-16x16.gif"
-				onclick="_questionExpandResult(this)">
-				<p>6</p>
-		</div>
-		<div style="display: none;">&nbsp;
-		</div>
-	</li>
-	<li correct="no">
-		<div>
-			<img class="ques_icon" src="/images/tutor5/hint_question-16x16.gif"
-				onclick="_questionExpandResult(this)">
-				<p>8</p>
-		</div>
-		<div style="display: none;">&nbsp;
-		</div>
-	</li>
-	<li correct="yes">
-		<div>
-			<img class="ques_icon" src="/images/tutor5/hint_question-16x16.gif"
-				onclick="_questionExpandResult(this)">
-				<p>10</p>
-		</div>
-		<div style="display: none;">&nbsp;
-		</div>
-	</li>
-	<li correct="no">
-		<div>
-			<img class="ques_icon" src="/images/tutor5/hint_question-16x16.gif"
-				onclick="_questionExpandResult(this)">
-				<p>12</p>
-		</div>
-		<div style="display: none;">&nbsp;
-		</div>
-	</li>
-</ul>
+<div />
+<div name='hm_flash_widget'>
+	<div name='hm_flash_widget_def' style='display: none'>{type:'number_decimal',
+		useBase64: false,value:'3', format:'', ans_format: '', allowMixed:
+		false, width:0, height:0}</div>
+</div>

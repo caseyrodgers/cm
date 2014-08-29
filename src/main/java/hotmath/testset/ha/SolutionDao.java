@@ -28,6 +28,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
+import org.jdom.input.SAXBuilder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -538,7 +539,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
             }
 
             
-            if(psHtml.indexOf("hm_flash_widget") > -1  && psHtml.indexOf("whiteboard") > -1) {
+            if(psHtml.indexOf("hm_flash_widget") > -1  && _isWhiteboardWidget(psHtml)) {
             	return ProblemType.WHITEBOARD;
             }
             else if ((psHtml.indexOf("hm_flash_widget") > -1 || psHtml.indexOf("hotmath:flash") > -1) && psHtml.indexOf("not_used") == -1) {
@@ -558,7 +559,20 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
         return ProblemType.UNKNOWN;
     }
 
-    private static Document parseSolutionXml(String xml) {
+	private static boolean _isWhiteboardWidget(String psHtml) {
+		int startIndex = psHtml.indexOf("hm_flash_widget_def");
+		if(startIndex==-1) {
+			return true;
+		}
+		
+		int endIndex = psHtml.indexOf("</div>", startIndex);
+		String widgetDef = psHtml.substring(startIndex, endIndex);
+		
+		return widgetDef.indexOf("whiteboard") > -1;
+		
+	}
+
+	private static Document parseSolutionXml(String xml) {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();

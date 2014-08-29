@@ -85,7 +85,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             
             @Override
             public void showLesson() {
-                LessonModel lesson = problem.getStudentProblem().getProblem().getLesson();
+                LessonModel lesson = problem.getStudentProblem().getProblem().getLessonFirst();
                 presenter.showLesson(lesson);
             }
         });
@@ -163,7 +163,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         problem.getStudentProblem().setHasShowWorkAdmin(false); // turn off blink without server roundtrip.
         _subBar.setupWhiteboardTools(false);
         
-        LessonModel l = problem.getStudentProblem().getProblem().getLesson();
+        LessonModel l = problem.getStudentProblem().getProblem().getLessonFirst();
         if(l == null || l.getLessonFile().length() == 0) {
             _subBar.preventLessonButton(true);  // override
         }

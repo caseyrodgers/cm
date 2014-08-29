@@ -66,7 +66,7 @@ public class CmPilotCreate {
     
     public CmPilotCreate() {
     }
-
+    
     public CmPilotCreate(String subscriberId, Boolean tutoringEnabled, Integer tutoringHours, Boolean showWorkRequired,Integer maxStudentCount, CmPartner partner, boolean isCollege) throws Exception {
 
         HotMathSubscriber sub = HotMathSubscriberManager.findSubscriber(subscriberId);

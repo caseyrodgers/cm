@@ -55,7 +55,7 @@ public class CCSSCoverageForProblemWindow extends GWindow {
 		        forceLayout();
 			}
         });
-        displayLesson(_problem.getLesson().getLessonName());
+        displayLesson(_problem.getLessonFirst().getLessonName());
         _container.setCenterWidget(impl.getWidget(), _centerData);
 /*
         getHeader().addTool(new TextButton("Print Report", new SelectHandler() {

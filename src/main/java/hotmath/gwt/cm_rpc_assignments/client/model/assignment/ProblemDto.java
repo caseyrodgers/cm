@@ -3,6 +3,9 @@ package hotmath.gwt.cm_rpc_assignments.client.model.assignment;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProblemDto extends BaseDto implements Response {
 
     static public enum ProblemType {
@@ -10,7 +13,7 @@ public class ProblemDto extends BaseDto implements Response {
     };
 
     String label, pid;
-    LessonModel lesson;
+    List<LessonModel> lessons = new ArrayList<LessonModel>();
     ProblemType problemType = ProblemType.UNKNOWN;
     int assignKey;
     private int ordinalNumber;
@@ -23,7 +26,7 @@ public class ProblemDto extends BaseDto implements Response {
         super(id, label);
         this.ordinalNumber = ordinalNumber;
         this.label = label;
-        this.lesson = lesson;
+        this.lessons.add(lesson);
         this.pid = pid;
         this.assignKey = assignKey;
     }
@@ -91,11 +94,10 @@ public class ProblemDto extends BaseDto implements Response {
     }
 
     /**
-     * Return the type tag for problem type
      * 
      * TODO: move to ProblemType
      * 
-     * @return
+     * @return the type tag for problem type
      */
     public String getProblemTypeName() {
         String typeTag = "";
@@ -133,17 +135,17 @@ public class ProblemDto extends BaseDto implements Response {
         this.ordinalNumber = ordinalNumber;
     }
 
-    public LessonModel getLesson() {
-        return lesson;
+    public List<LessonModel> getLessons() {
+        return lessons;
     }
 
-    public void setLesson(LessonModel lesson) {
-        this.lesson = lesson;
+    public void addLesson(LessonModel lesson) {
+        this.lessons.add(lesson);
     }
 
     @Override
     public String toString() {
-        return "ProblemDto [label=" + label + ", pid=" + pid + ", lesson=" + lesson + ", problemType=" + problemType + ", assignKey=" + assignKey
+        return "ProblemDto [label=" + label + ", pid=" + pid + ", lessons=" + lessons + ", problemType=" + problemType + ", assignKey=" + assignKey
                 + ", ordinalNumber=" + ordinalNumber + "]";
     }
 
@@ -154,4 +156,16 @@ public class ProblemDto extends BaseDto implements Response {
             return super.equals(obj);
         }
     }
+
+    /**  
+     * @return the first lesson correlated with this problem or null.
+     */
+	public LessonModel getLessonFirst() {
+		if(this.lessons.size() > 0) {
+			return this.lessons.get(0);
+		}
+		else {
+			return null;
+		}
+	}
 }

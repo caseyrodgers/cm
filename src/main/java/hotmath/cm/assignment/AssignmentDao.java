@@ -232,7 +232,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                                 __logger.error("Error getting global context name", e);
                             }
                         }
-                        LessonModel lesson = p.getLesson();
+                        LessonModel lesson = p.getLessonFirst();
                         ps.setString(2, fullPid);
                         ps.setString(3, p.getLabel());
                         ps.setString(4, lesson!=null?lesson.getLessonName():"");
@@ -662,7 +662,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 lessonList = new CmArrayList<StudentLessonDto>();
             }
 
-            if (!lessonName.equals(probDto.getProblem().getLesson())) {
+            if (!lessonName.equals(probDto.getProblem().getLessonFirst())) {
                 if (lessonName.trim().length() > 0) {
                     if (lessonStatus != null) {
                         lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
@@ -672,7 +672,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 pending = 0;
                 count = 0;
                 viewed = 0;
-                lessonName = probDto.getProblem().getLesson().getLessonName();
+                lessonName = probDto.getProblem().getLessonFirst().getLessonName();
                 lessonStatus = new StudentLessonDto(uid, lessonName, null);
                 lessonList.add(lessonStatus);
             }
@@ -991,7 +991,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 stuAssignMap.get(lastAssignKey).getStudentStatuses().setLessonStatuses(lessonList);
             }
 
-            if (!lessonName.equals(probDto.getProblem().getLesson())) {
+            if (!lessonName.equals(probDto.getProblem().getLessonFirst())) {
                 if (lessonName.trim().length() > 0) {
                     if (lessonStatus != null) {
                         lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
@@ -1001,7 +1001,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 pending = 0;
                 count = 0;
                 viewed = 0;
-                lessonName = probDto.getProblem().getLesson().getLessonName();
+                lessonName = probDto.getProblem().getLessonFirst().getLessonName();
                 lessonStatus = new StudentLessonDto(probDto.getUid(), lessonName, null);
                 lessonList.add(lessonStatus);
             }
@@ -2760,15 +2760,16 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         List<StudentProblemDto> problems = getJdbcTemplate().query(sql, new Object[] { uid, assignKey, pid }, new RowMapper<StudentProblemDto>() {
             @Override
             public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                ProblemDto prob = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), new LessonModel(rs.getString("lesson"), rs
-                        .getString("lesson_file")), rs.getString("label"), pid, 0);
+            	
+            	LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
+                ProblemDto prob = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), lesson, rs.getString("label"), pid, 0);
                 boolean isClosed = rs.getString("assignment_status").equals("Closed");
 
                 List<ProblemDto> problems = new ArrayList<ProblemDto>();
                 problems.add(prob);
                 updateProblemTypes(problems);
-                return new StudentProblemDto(uid, prob, rs.getString("problem_status"), false, false, isClosed, rs.getInt("is_graded") != 0 ? true : false, rs
-                        .getInt("is_graded") != 0 ? true : false);
+                boolean isGraded = rs.getInt("is_graded") != 0 ? true : false;
+                return new StudentProblemDto(uid, prob, rs.getString("problem_status"), false, false, isClosed, isGraded, isGraded);
             }
         });
         if (problems.size() > 0) {
@@ -3010,5 +3011,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
         return new AssignmentRealTimeStatsUsers(studentStatus);
     }
+
+	public List<LessonModel> getCorrelatedLessons(String pid) {
+		
+		String sql = "select * from CM_CUSTOM_PROBLEM_LINKED_LESSONS where pid = ?";
+		 List<LessonModel> lessons = getJdbcTemplate().query(sql, new Object[] { pid }, new RowMapper<LessonModel>() {
+	            @Override
+	            public LessonModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+	                return new LessonModel(rs.getString("lesson_name"), rs.getString("lesson_file"));
+	            }
+	        });
+		 
+		 return lessons;
+		
+	}
 
 }

@@ -221,7 +221,7 @@ public class AssignmentProblemListView extends ContentPanel {
                     return;
                 }
                 ProblemDto problem = selected.getProblem();
-                LessonModel lesson = problem.getLesson();
+                LessonModel lesson = problem.getLessonFirst();
                 /**
                  * use Lesson if available, if not use Problem
                  */

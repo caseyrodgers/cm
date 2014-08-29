@@ -2,10 +2,10 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.command.GetChaptersForProgramSubjectCommand;
+import hotmath.gwt.cm_rpc.client.rpc.GetChaptersForProgramSubjectAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
-import hotmath.gwt.cm_tools_2.client.rpc.action.GetChaptersForProgramSubjectAction;
 import hotmath.gwt.shared.client.CmProgram;
 
 public class GetChaptersForProgramSubjectCommand_Test extends CmDbTestCase {
