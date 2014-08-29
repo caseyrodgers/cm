@@ -51,17 +51,17 @@ public class GetReviewHtmlCommand implements ActionHandler<GetReviewHtmlAction, 
     }
     
     private String getFile(String file, boolean isSpanish) {
-        return "/hotmath_help" +
-        (isSpanish?"/spanish/":"/") +
-        file;
+        return getLangPath(isSpanish) + file;
     }
     
     private String getBaseDirectory(boolean isSpanish) {
-        return "/hotmath_help" +
-               (isSpanish?"/spanish/":"/") +
-               "topics";
+        return getLangPath(isSpanish) + "topics";
     }
-    
+
+    private String getLangPath(boolean isSpanish) {
+    	return "/hotmath_help" + (isSpanish ? "/spanish/" : "/");
+    }
+
     /** return true if a spanish version of this file exists
      * 
      * @param file
@@ -75,7 +75,6 @@ public class GetReviewHtmlCommand implements ActionHandler<GetReviewHtmlAction, 
 
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
-        // TODO Auto-generated method stub
         return GetReviewHtmlAction.class;
     }
 }
