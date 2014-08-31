@@ -2,6 +2,8 @@ package hotmath.cm;
 
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmWebResourceManager;
+import hotmath.testset.ha.InmhAssessmentLookupBuilder;
+import hotmath.upload.InmhAssessmentUpload;
 
 import java.io.File;
 import java.io.FileWriter;
