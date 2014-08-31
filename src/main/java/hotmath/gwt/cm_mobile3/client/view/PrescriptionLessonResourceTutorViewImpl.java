@@ -12,6 +12,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewEvent
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar.Callback;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveTutorInputWidgetAnswerAction;
@@ -117,9 +118,10 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
             public void showProblem(boolean b) {
                 _showWork.setBackground(b);
             }
-            
+      
             @Override
-            public void showLesson() {
+            public List<LessonModel> getProblemLessons() {
+            	return null;
             }
             
             @Override

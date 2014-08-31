@@ -51,7 +51,7 @@ public class AssignmentLessonPidSelector {
             List<RppWidget> rpps = itemData.getWidgetPool(conn, "assignment_pid");
             for (RppWidget w : rpps) {
                 for (RppWidget ew : AssessmentPrescription.expandProblemSetPids(w)) {
-                    problemsAll.add(new ProblemDto(0, 0, lesson, "", ew.getFile(), 0));
+                    problemsAll.add(new ProblemDto(0, 0, "", ew.getFile(), 0));
                 }
             }
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public class AssignmentLessonPidSelector {
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 String pid = rs.getString("link_key");
                 pid = pid.split(":")[0]; // strip off any grade range
-                return new ProblemDto(0, 0, lesson, "", pid, 0);
+                return new ProblemDto(0, 0, "", pid, 0);
             }
         });
 
@@ -96,7 +96,7 @@ public class AssignmentLessonPidSelector {
 
         Collection<ProblemDto> quizQuestions = new ArrayList<ProblemDto>();
         for (QuizQuestion qq : cqQuestions) {
-            quizQuestions.add(new ProblemDto(0, 0, lesson, "", qq.getPid(), 0));
+            quizQuestions.add(new ProblemDto(0, 0, "", qq.getPid(), 0));
         }
         if (quizQuestions.size() <= MAX_MULTI_CHOICE) {
             // only if needed
@@ -200,7 +200,7 @@ public class AssignmentLessonPidSelector {
                 ++pCount;
                 String subFolder=p.getTreePath()!=null?"/" + p.getTreePath():"";
                 String custProbName = p.getTeacher().getTeacherName() + subFolder + "/" + p.getComments();
-                ProblemDto prob = new ProblemDto(pCount,pCount,new LessonModel(lessonFile,lessonFile),custProbName,p.getPid(),0);
+                ProblemDto prob = new ProblemDto(pCount,pCount,custProbName,p.getPid(),0);
                 prob.setProblemType(p.getProblemType());
                 problems.add(prob);
             }
@@ -243,7 +243,7 @@ public class AssignmentLessonPidSelector {
             @Override
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-                return new ProblemDto(0, 0, lesson, defaultLabel, rs.getString("pid"), 0);
+                return new ProblemDto(0, 0, defaultLabel, rs.getString("pid"), 0);
             }
         });
         if (problems.size() < numToGet) {

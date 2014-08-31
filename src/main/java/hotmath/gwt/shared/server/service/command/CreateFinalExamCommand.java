@@ -98,13 +98,10 @@ public class CreateFinalExamCommand implements ActionHandler<CreateFinalExamActi
         int ordinal=0;
         for(String pid: finalExam.getPids()) {
             
-            List<LessonModel> lessons = ExamDao.getInstance().getLessonsForProblem(pid);
-            
-            
+            List<LessonModel> lessons = ExamDao.getInstance().getLessonsInHaProgramLessonsForProblem(pid);
             String label = "Problem " +  (++ordinal);
-            
-            LessonModel lesson = lessons.size() > 0?lessons.get(0):new LessonModel("","");
-            ProblemDto pd = new ProblemDto(ordinal, ordinal, lesson, label, pid, 0);
+
+            ProblemDto pd = new ProblemDto(ordinal, ordinal, label, pid, 0);
             pd.setProblemType(ProblemType.MULTI_CHOICE);
             pids.add(pd);
         }

@@ -61,7 +61,7 @@ public class ExamDao extends SimpleJdbcDaoSupport {
         return ids;
     }
     
-    public List<LessonModel> getLessonsForProblem(String pid) {
+    public List<LessonModel> getLessonsInHaProgramLessonsForProblem(String pid) {
         String sql = "select lesson, file from HA_PROGRAM_LESSONS_static where pid = ? order by lesson"; 
     
         List<LessonModel> models = getJdbcTemplate().query(sql, new Object[] { pid }, new RowMapper<LessonModel>() {

@@ -10,6 +10,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
+import hotmath.testset.ha.SolutionDao;
 
 import java.sql.Connection;
 
@@ -52,6 +53,9 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
         AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),assInfo.isGraded(),!assInfo.isEditable(),info, stuProblem, lastUserWidgetValue, problemStatus, assInfo.getDueDate(), assInfo.isPastDueSubmitable(), assInfo.isPreventLessonAccess());
 
         AssignmentDao.getInstance().makeSurePidStatusExists(action.getAssignKey(),action.getUid(),action.getPid());
+        
+        
+        assProb.getLessons().addAll(SolutionDao.getInstance().getLessonsAssociatedForPid(conn, action.getPid()));
         
         return assProb;
     }

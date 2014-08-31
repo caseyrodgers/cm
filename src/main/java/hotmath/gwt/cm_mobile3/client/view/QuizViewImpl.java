@@ -7,6 +7,7 @@ import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar.Callback;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -65,9 +66,10 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
             public void showProblem(boolean b) {
                 _showWork.setBackground(b);
             }
-            
+    
             @Override
-            public void showLesson() {
+            public List<LessonModel> getProblemLessons() {
+            	return null;
             }
             
             @Override

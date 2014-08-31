@@ -1,24 +1,23 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 public class GetCorrelatedTopicsPrescriptionAction implements Action<CmList<PrescriptionSessionResponse>>{
 	
-	private ProblemDto pid;
+	private String pid;
 
 	public GetCorrelatedTopicsPrescriptionAction(){}
 	
-	public GetCorrelatedTopicsPrescriptionAction(ProblemDto problem) {
-		this.pid = problem;
+	public GetCorrelatedTopicsPrescriptionAction(String pid) {
+		this.pid = pid;
 	}
 
-	public ProblemDto getPid() {
+	public String getPid() {
 		return pid;
 	}
 
-	public void setPid(ProblemDto pid) {
+	public void setPid(String pid) {
 		this.pid = pid;
 	}
 

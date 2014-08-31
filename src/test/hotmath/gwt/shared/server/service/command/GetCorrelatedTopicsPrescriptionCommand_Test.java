@@ -23,7 +23,7 @@ public class GetCorrelatedTopicsPrescriptionCommand_Test extends TestCase {
 		Connection conn=null;
 		try {
 			conn = HMConnectionPool.getConnection();
-			GetCorrelatedTopicsPrescriptionAction action = new GetCorrelatedTopicsPrescriptionAction(new ProblemDto(_PID, null));
+			GetCorrelatedTopicsPrescriptionAction action = new GetCorrelatedTopicsPrescriptionAction(_PID);
 			CmList<PrescriptionSessionResponse> values = new GetCorrelatedTopicsPrescriptionCommand().execute(conn, action);
 			assertTrue(values != null);
 		}

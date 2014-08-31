@@ -19,6 +19,8 @@ public class GenericTextTag<E> extends Widget implements HasText {
 	private boolean mWantsEvents = false;
 	private boolean mEventsWiredUp = false;
 	HandlerRegistration mHandlerRegistration;
+	
+	Object userData;
 
 	public GenericTextTag(String tagName) {
 		setElement(Document.get().createElement(tagName));
@@ -58,6 +60,14 @@ public class GenericTextTag<E> extends Widget implements HasText {
 			}
 		}
 		mEventsWiredUp = false;
+	}
+
+	public Object getUserData() {
+		return userData;
+	}
+
+	public void setUserData(Object userData) {
+		this.userData = userData;
 	}
 
 	@Override

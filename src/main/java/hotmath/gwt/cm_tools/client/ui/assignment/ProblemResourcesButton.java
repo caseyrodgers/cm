@@ -50,7 +50,7 @@ public class ProblemResourcesButton extends TextButton {
         new RetryAction<CmList<PrescriptionSessionResponse>>() {
             @Override
             public void attempt() {
-                GetCorrelatedTopicsPrescriptionAction action = new GetCorrelatedTopicsPrescriptionAction(_problem);
+                GetCorrelatedTopicsPrescriptionAction action = new GetCorrelatedTopicsPrescriptionAction(_problem.getPid());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

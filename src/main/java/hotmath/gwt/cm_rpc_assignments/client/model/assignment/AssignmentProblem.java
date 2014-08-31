@@ -1,10 +1,13 @@
 package hotmath.gwt.cm_rpc_assignments.client.model.assignment;
 
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 /** Composite of a solutionInfo and the problem type
@@ -26,6 +29,7 @@ public class AssignmentProblem implements Response{
     private Date assignmentDueDate;
     private boolean allowPastDueSubmits;
     private boolean preventLessonAccess;
+    List<LessonModel> lessons = new ArrayList<LessonModel>();
 
     public AssignmentProblem(){}
     
@@ -176,5 +180,9 @@ public class AssignmentProblem implements Response{
         
         return null;
     }
+
+	public List<LessonModel> getLessons() {
+		return lessons;
+	}
     
 }

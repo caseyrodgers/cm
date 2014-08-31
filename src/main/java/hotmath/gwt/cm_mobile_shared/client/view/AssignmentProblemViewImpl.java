@@ -47,6 +47,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     private TutorWrapperPanel tutor;
     private AssignmentProblem problem;
     ShowWorkSubToolBar _subBar;
+	private List<LessonModel> _lessons;
     
     public AssignmentProblemViewImpl() {
         __lastInstance = this;
@@ -84,9 +85,8 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             }
             
             @Override
-            public void showLesson() {
-                LessonModel lesson = problem.getStudentProblem().getProblem().getLessonFirst();
-                presenter.showLesson(lesson);
+            public List<LessonModel> getProblemLessons() {
+            	return _lessons;
             }
         });
         mainPanel.add(_subBar);
@@ -163,15 +163,12 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         problem.getStudentProblem().setHasShowWorkAdmin(false); // turn off blink without server roundtrip.
         _subBar.setupWhiteboardTools(false);
         
-        LessonModel l = problem.getStudentProblem().getProblem().getLessonFirst();
-        if(l == null || l.getLessonFile().length() == 0) {
-            _subBar.preventLessonButton(true);  // override
-        }
-        else {
-            _subBar.preventLessonButton(problem.isPreventLessonAccess()); // use setting on assignment
-        }
+        _subBar.preventLessonButton(problem.isPreventLessonAccess()); // use setting on assignment
+        
         _contentPanel.clear();
 
+        _lessons = problem.getLessons();
+        
         tutor = new TutorWrapperPanel(true, true, false, false, new TutorCallbackDefault() {
 
             @Override

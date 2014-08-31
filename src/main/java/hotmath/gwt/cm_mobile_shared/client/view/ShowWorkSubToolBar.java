@@ -1,6 +1,11 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
+import java.util.List;
+
+import hotmath.gwt.cm_mobile3.client.ui.CalculatorWindowForMobile;
+import hotmath.gwt.cm_mobile3.client.ui.LessonSelectionDialog;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -21,13 +26,13 @@ public class ShowWorkSubToolBar extends SubToolBar {
     static public interface Callback {
         void showWhiteboard();
 
-        void showLesson();
-
         void showProblem(boolean b);
 
         void whiteboardSubmitted();
 
         void hideWhiteboard();
+
+		List<LessonModel> getProblemLessons();
     }
 
     public ShowWorkSubToolBar(boolean showSubmitButton, boolean showLessonButton, Callback callback) {
@@ -50,10 +55,11 @@ public class ShowWorkSubToolBar extends SubToolBar {
         whiteboardControlView.add(_viewWhiteboardButton);
 
         if(showLessonButton) {
-            lessonButton = new SexyButton("Lesson", new ClickHandler() {
+            lessonButton = new SexyButton("Lessons", new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    callback.showLesson();
+                	new LessonSelectionDialog(callback.getProblemLessons()).center();
+                	// callback.showLesson();
                 }
             });
             whiteboardControlView.add(lessonButton);

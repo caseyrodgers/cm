@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 
@@ -32,7 +33,7 @@ public class CCSSCoverageForProblemWindow extends GWindow {
     int _adminUid;
     boolean _isGroupReport = false;
 
-    public CCSSCoverageForProblemWindow(ProblemDto problem, int adminUid) {
+    public CCSSCoverageForProblemWindow(ProblemDto problem, LessonModel lesson, int adminUid) {
         super(false);
         __instance = this;
         _problem = problem;
@@ -55,7 +56,7 @@ public class CCSSCoverageForProblemWindow extends GWindow {
 		        forceLayout();
 			}
         });
-        displayLesson(_problem.getLessonFirst().getLessonName());
+        displayLesson(lesson.getLessonName());
         _container.setCenterWidget(impl.getWidget(), _centerData);
 /*
         getHeader().addTool(new TextButton("Print Report", new SelectHandler() {

@@ -321,7 +321,7 @@ public class CustomProblemDao extends SimpleJdbcDaoSupport {
 			throws Exception {
 		ArrayList<ProblemDto> probs = new ArrayList<ProblemDto>();
 		for (CustomProblemModel cpm : problems) {
-			probs.add(new ProblemDto(0, 0, null, null, cpm.getPid(), 0));
+			probs.add(new ProblemDto(0, 0, null,  cpm.getPid(), 0));
 		}
 
 		AssignmentDao.getInstance().updateProblemTypes(probs);

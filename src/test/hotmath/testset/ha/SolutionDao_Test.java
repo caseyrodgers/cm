@@ -1,5 +1,6 @@
 package hotmath.testset.ha;
 
+import hotmath.HotMathProperties;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
@@ -33,6 +34,14 @@ public class SolutionDao_Test extends CmDbTestCase {
         dao = (SolutionDao)manager.getBeanFactory().getBean("hotmath.testset.ha.SolutionDao");
     }
 
+    public void testLessonTitleLookup() throws Exception {
+        int runId = 3;
+        String pid = "cmextras_1_4_1_95_4";
+        List<LessonModel> l = dao.getLessonsInInmhAssessmentForPid(HotMathProperties.getInstance().getDataSourceObject().getSbDBConnection().getConnection(), pid);
+        assertTrue(l != null);
+    }
+
+    
     public void testSaveSolutionContext() throws Exception {
         int runId = 3;
         String pid = "test_bob_multi-frac_1_1_1$1";
@@ -64,7 +73,7 @@ public class SolutionDao_Test extends CmDbTestCase {
 
     public void testGetLessonsForPID() throws Exception {
         String pid = "nationalhm2_coursetest_1_practicetest_22_1";
-        List<LessonModel> list = dao.getLessonsForPID(pid);
+        List<LessonModel> list = dao.getLessonsInInmhMapForPID(pid);
         assertTrue(list.size() > 0);
     }
 

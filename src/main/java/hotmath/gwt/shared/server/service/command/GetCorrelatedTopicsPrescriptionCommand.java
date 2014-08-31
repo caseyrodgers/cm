@@ -1,13 +1,10 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.ProblemID;
-import hotmath.cm.assignment.AssignmentDao;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.GetCorrelatedTopicsPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -16,7 +13,6 @@ import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.testset.ha.SolutionDao;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,18 +35,10 @@ public class GetCorrelatedTopicsPrescriptionCommand implements ActionHandler<Get
     @Override
     public CmList<PrescriptionSessionResponse> execute(final Connection conn, GetCorrelatedTopicsPrescriptionAction action) throws Exception {
     	
-    	ProblemDto problem = action.getPid();
+    	String pid = action.getPid();
     	
-    	LessonModel lessonAssigned = problem.getLessonFirst();
-    	if(lessonAssigned != null && lessonAssigned.getLessonFile() != null && lessonAssigned.getLessonFile().length() > 0) {
-    		return processAsSingleAssignedLesson(conn, lessonAssigned);
-    	}
-
-    	String pid = problem.getPid();
     	String basePid = pid.split("\\$")[0]; 
-    	List<LessonModel> associatedLessons = new ArrayList<LessonModel>();
-    	associatedLessons.addAll(SolutionDao.getInstance().getLessonsForPID(new ProblemID(basePid).getGUID()));
-    	associatedLessons.addAll( AssignmentDao.getInstance().getCorrelatedLessons(basePid) );
+    	List<LessonModel> associatedLessons = SolutionDao.getInstance().getLessonsAssociatedForPid(conn, basePid);
     	
     	PrescriptionSessionResponse response = new PrescriptionSessionResponse();
     	response.setPrescriptionData(new PrescriptionData());

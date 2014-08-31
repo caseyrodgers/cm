@@ -3,6 +3,8 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.Callback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
+import hotmath.gwt.cm_rpc.client.rpc.GetCorrelatedTopicsPrescriptionAction;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.PidStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
@@ -14,6 +16,7 @@ import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForLessonWindow;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForProblemWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -221,14 +224,13 @@ public class AssignmentProblemListView extends ContentPanel {
                     return;
                 }
                 ProblemDto problem = selected.getProblem();
-                LessonModel lesson = problem.getLessonFirst();
-                /**
-                 * use Lesson if available, if not use Problem
+                
+                // lesson not available ...
+                /** 
+                 *  TODO: get the base lesson model for this problem
                  */
-                if (lesson.getLessonName() != null && lesson.getLessonName().trim().length() > 0)
-                    new CCSSCoverageForLessonWindow(lesson, _assignment.getAdminId());
-                else
-                    new CCSSCoverageForProblemWindow(problem, _assignment.getAdminId());
+
+                getProblemLessonsFromServerThenShowWindow(problem);
             }
         });
         addTool(_ccssButton);
@@ -239,7 +241,40 @@ public class AssignmentProblemListView extends ContentPanel {
         }
     }
 
-    Tester _tester;
+    protected void getProblemLessonsFromServerThenShowWindow(final ProblemDto problem) {
+    	   new RetryAction<CmList<PrescriptionSessionResponse>>() {
+               @Override
+               public void attempt() {
+                   GetCorrelatedTopicsPrescriptionAction action = new GetCorrelatedTopicsPrescriptionAction(problem.getPid());
+                   setAction(action);
+                   CmShared.getCmService().execute(action, this);
+               }
+
+               public void oncapture(CmList<PrescriptionSessionResponse> prescriptions) {
+            	   
+            	   /** just use first lesson for ... 
+            	    * 
+            	    * TODO: use all lessons assigned to this problem 
+            	    * 
+            	    */
+            	   LessonModel lessonModel = null;
+            	   if(prescriptions.size() > 0) {
+            		   String file = prescriptions.get(0).getPrescriptionData().getCurrSession().getFile();
+            		   String title = prescriptions.get(0).getPrescriptionData().getCurrSession().getName();
+            		   lessonModel = new LessonModel(title, file);
+            	   }
+            	   else {
+            		   lessonModel = new LessonModel();
+            	   }
+            	   new CCSSCoverageForProblemWindow(problem,lessonModel, _assignment.getAdminId());           
+               }
+           }.register();
+           
+           
+    							
+	}
+
+	Tester _tester;
 
     protected void stopTests() {
         if (_tester != null) {

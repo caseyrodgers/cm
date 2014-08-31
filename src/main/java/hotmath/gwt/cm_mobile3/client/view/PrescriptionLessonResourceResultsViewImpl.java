@@ -9,6 +9,7 @@ import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar.Callback;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
@@ -60,9 +61,9 @@ public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel
             }
             
             @Override
-            public void showLesson() {
+            public List<LessonModel> getProblemLessons() {
+            	return null;
             }
-            
             @Override
             public void hideWhiteboard() {
                 PrescriptionLessonResourceResultsViewImpl.this.hideWhiteboard();
