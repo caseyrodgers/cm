@@ -68,6 +68,7 @@ public class CmInitialzation extends HttpServlet {
         catch(Exception e) {
             logger.error("Could not set servlet.context", e);
         }
+
         
         CmWebResourceManager.setFileBase(getServletContext().getRealPath("cm_temp"));
         try {
