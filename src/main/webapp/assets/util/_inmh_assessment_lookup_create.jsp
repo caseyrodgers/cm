@@ -10,6 +10,8 @@
   <h1>inmh_assessment_lookup table created</h1>
   
   <h2>Results</h2>
+  <pre>
   <%=results%>
+  </pre>
 </body>
 </html>

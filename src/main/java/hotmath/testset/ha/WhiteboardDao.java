@@ -72,7 +72,7 @@ public class WhiteboardDao extends SimpleJdbcDaoSupport {
      * @param adminId
      * @param pid
      * @param commandType
-     * @param data
+     * @param _dataMap
      */
     public void saveStaticWhiteboardData(final String pidEdit, final int teacherId, final String pid,
             CommandType commandType, String commandData) throws Exception {

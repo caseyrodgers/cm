@@ -4,6 +4,7 @@ import hotmath.HotMathException;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionCustomMobile;
 import hotmath.assessment.AssessmentPrescriptionSession;
+import hotmath.cm.assignment.AssignmentDao;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetMobileLessonInfoAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.MobileLessonInfo;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
@@ -40,7 +41,7 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
     @Override
     public MobileLessonInfo execute(Connection conn, GetMobileLessonInfoAction action) throws Exception {
 
-        String lessonTitle = getLessonTitle(conn, action.getFile());
+        String lessonTitle = AssignmentDao.getInstance().getLessonTitle(conn, action.getFile());
 
         int userIdOfSharedAcount = 23487;
 
@@ -158,20 +159,6 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
         return lessonInfo;
     }
 
-    private String getLessonTitle(final Connection conn, String file) throws Exception {
-        PreparedStatement ps = null;
-        try {
-            String sql = "select lesson from HA_PROGRAM_LESSONS_static where file = ?";
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, file);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.first())
-                throw new Exception("No title found for lesson '" + file + "'");
-            return rs.getString("lesson");
-        } finally {
-            SqlUtilities.releaseResources(null, ps, null);
-        }
-    }
 
     public List<INeedMoreHelpResourceType> getPrescriptionInmhTypes(final Connection conn, String file, String topic,
             String linkTypeIn) throws HotMathException {

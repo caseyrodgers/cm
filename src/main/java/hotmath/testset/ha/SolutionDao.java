@@ -5,6 +5,7 @@ import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.exam.ExamDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CompressHelper;
+import hotmath.gwt.cm_admin.server.model.CustomQuizQuestionManager;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
@@ -32,6 +33,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.jdom.input.SAXBuilder;
 import org.springframework.dao.DataAccessException;
@@ -630,8 +632,11 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 * 
 	 * This could either be:
 	 * 
-	 * 1. defined via inmh_assessment range pids ... 2.
-	 * HA_PROGRAM_LESSONS_static 3. inmh_map 4. Assignment Correlations
+	 * 1. defined via inmh_assessment range pids ...  (externally in inmh_assignment) 
+	 * 2. HA_PROGRAM_LESSONS_static (used in a program)
+	 * 3. inmh_map 
+	 * 4. Assignment Correlations (manually specified)
+	 * 5. custom quizzes defined externally in custom_quiz.xml
 	 * @param conn 
 	 * 
 	 * 
@@ -640,18 +645,32 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 */
 	public List<LessonModel> getLessonsAssociatedForPid(Connection conn, String pid)
 			throws Exception {
-		ArrayList<LessonModel> lessons = new ArrayList<LessonModel>();
+		MyArrayList<LessonModel> lessons = new MyArrayList<LessonModel>();
 		
 		String basePid =  pid.split("\\$")[0];
-		lessons.addAll(getLessonsInInmhAssessmentForPid(conn, basePid));
-		lessons.addAll(ExamDao.getInstance().getLessonsInHaProgramLessonsForProblem(basePid));
-		lessons.addAll(SolutionDao.getInstance().getLessonsInInmhMapForPID(new ProblemID(basePid).getGUID()));
-		lessons.addAll(AssignmentDao.getInstance().getLessonsCorrelatedToCustomProblem(basePid));
+		
+		lessons.addAllNoDups(getLessonsInInmhAssessmentForPid(conn, basePid));
+		lessons.addAllNoDups(ExamDao.getInstance().getLessonsInHaProgramLessonsForProblem(basePid));
+		lessons.addAllNoDups(SolutionDao.getInstance().getLessonsInInmhMapForPID(new ProblemID(basePid).getGUID()));
+		lessons.addAllNoDups(AssignmentDao.getInstance().getLessonsCorrelatedToCustomProblem(basePid));
+		lessons.addAllNoDups(CustomQuizQuestionManager.getInstance().getLessonsInCustomQuiz(conn, basePid));
+
 
 		return lessons;
 	}
 
+	class MyArrayList<LessonModel> extends ArrayList<LessonModel> {
+		public void addAllNoDups(List<LessonModel> lessons) {
+			for(LessonModel l:lessons) {
+				if(!contains(l)) {
+					add(l);
+				}
+			}
+		}
+	}
 
+	
+	
 	/**
 	 * Return list of LessonModel objects for each match defined in
 	 * inmh_assessment_lookup.

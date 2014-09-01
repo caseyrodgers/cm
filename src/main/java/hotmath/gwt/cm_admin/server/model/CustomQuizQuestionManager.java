@@ -1,9 +1,11 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.ProblemID;
+import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.QuizQuestion;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -50,7 +53,7 @@ public class CustomQuizQuestionManager {
     }
     
     
-    Map<String, CustomQuizLessonInfo> data = new HashMap<String,CustomQuizLessonInfo>();
+    Map<String, CustomQuizLessonInfo> _dataMap = new HashMap<String,CustomQuizLessonInfo>();
     
     protected CustomQuizQuestionManager() throws Exception {
         readInFile();
@@ -68,7 +71,7 @@ public class CustomQuizQuestionManager {
         String contents = file.getFileContents().toString("\n");
         String lines[] = contents.split("\n");
         
-        data.clear();
+        _dataMap.clear();
         for(String line: lines) {
             if(line.startsWith("#")) {
                 continue;
@@ -76,10 +79,10 @@ public class CustomQuizQuestionManager {
             String lesson = SbUtilities.getToken(line, 1, "\t").trim();
             String pid = SbUtilities.getToken(line, 2, "\t").trim();
             
-            CustomQuizLessonInfo ci = data.get(lesson);
+            CustomQuizLessonInfo ci = _dataMap.get(lesson);
             if(ci == null) {
                 ci = new CustomQuizLessonInfo();
-                data.put(lesson,ci);
+                _dataMap.put(lesson,ci);
             }
             ci.pids.add(pid);
         }
@@ -98,7 +101,7 @@ public class CustomQuizQuestionManager {
     public CmList<QuizQuestion> getQuestionsFor(final Connection conn, String lessonFile, int gradeLevel) throws Exception {
         
         CmList<QuizQuestion> retData = new CmArrayList<QuizQuestion>();
-        CustomQuizLessonInfo lessonInfo = data.get(lessonFile);
+        CustomQuizLessonInfo lessonInfo = _dataMap.get(lessonFile);
         if(lessonInfo == null) {
             __logger.warn("Could not find lesson info : " + lessonFile);
         }
@@ -116,6 +119,23 @@ public class CustomQuizQuestionManager {
         }
         return retData;
     }
+    
+    
+    public List<LessonModel> getLessonsInCustomQuiz(final Connection conn, String pid) throws Exception {
+    	List<LessonModel> matches = new ArrayList<LessonModel>(); 
+        Set<String> keySet = _dataMap.keySet();
+        for(String lesson: keySet) {
+        	CustomQuizLessonInfo lessonInfo = _dataMap.get(lesson);
+        	for(String lessonPid: lessonInfo.pids) {
+        		if(lessonPid.equals(pid)) {
+        			matches.add(new LessonModel(AssignmentDao.getInstance().getLessonTitle(conn, lesson), lesson));
+        			break;
+        		}
+        	}
+        }
+        return matches;
+    }
+
     
     
 
@@ -146,7 +166,7 @@ public class CustomQuizQuestionManager {
 
 
     public boolean isDefined(String lesson) {
-        return data.containsKey(lesson);
+        return _dataMap.containsKey(lesson);
     }
 
 }
