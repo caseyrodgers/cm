@@ -260,7 +260,7 @@ public class AssignmentProblemListView extends ContentPanel {
             	   LessonModel lessonModel = null;
             	   if(prescriptions.size() > 0) {
             		   String file = prescriptions.get(0).getPrescriptionData().getCurrSession().getFile();
-            		   String title = prescriptions.get(0).getPrescriptionData().getCurrSession().getName();
+            		   String title = prescriptions.get(0).getPrescriptionData().getCurrSession().getTopic();
             		   lessonModel = new LessonModel(title, file);
             	   }
             	   else {
