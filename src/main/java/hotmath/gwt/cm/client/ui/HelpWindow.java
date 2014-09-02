@@ -264,11 +264,6 @@ public class HelpWindow extends GWindow {
         	studentDetailsBtn.setEnabled(false);
         }
         
-        if(CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance.isResourceQuiz()) {
-            studentDetailsBtn.setEnabled(false);
-        }
-        
-        
         addtionalTb.add(studentDetailsBtn);
         
         TextButton calculator = new TextButton("Calculator", new SelectHandler() {

@@ -90,7 +90,6 @@ public class UserActivityLogDialog extends GWindow {
     
     
     interface GridProperties extends PropertyAccess<String> {
-        @Path("id")
         ModelKeyProvider<ActivityLogRecord> key();
         ValueProvider<ActivityLogRecord, Integer> activeMinutes();
         ValueProvider<ActivityLogRecord, String> activityDay();
