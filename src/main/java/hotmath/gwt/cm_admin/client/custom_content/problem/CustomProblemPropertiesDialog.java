@@ -17,9 +17,13 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Component;
 import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -146,6 +150,7 @@ public class CustomProblemPropertiesDialog extends GWindow {
 
     
     private void drawGui() {
+    	TabPanel tabPanel = new TabPanel();
         BorderLayoutContainer bl = new BorderLayoutContainer();
         FramedPanel fp1 = new FramedPanel();
         BorderLayoutContainer bl2 = new BorderLayoutContainer();
@@ -162,6 +167,19 @@ public class CustomProblemPropertiesDialog extends GWindow {
         _lessonsPanel = new CustomProblemLinkedLessonsPanel();
         bl.setCenterWidget(_lessonsPanel);
         
-        setWidget(bl);
+        tabPanel.add(bl, "Setup Properties");
+        
+        final AssignmentsUsedPanel _assPanel = new AssignmentsUsedPanel();
+        tabPanel.add(_assPanel, "Assignments");
+        tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
+			@Override
+			public void onSelection(SelectionEvent<Widget> event) {
+				if(event.getSelectedItem() == _assPanel) {
+					_assPanel.readDataFromServer(_customProblem.getPid());
+				}
+			}
+		});
+        
+        setWidget(tabPanel);
     }
 }

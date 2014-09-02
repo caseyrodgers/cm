@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools_2.client.model;
 
 import hotmath.gwt.cm_tools.client.model.BaseModel;
 
+@Deprecated
 public class AssignmentModel extends BaseModel {
 
 	public AssignmentModel() {

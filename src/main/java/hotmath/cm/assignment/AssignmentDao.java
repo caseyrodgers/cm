@@ -16,6 +16,7 @@ import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.AssignmentStatus;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
+import hotmath.gwt.cm_rpc.client.model.GroupModel;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentStudentsAction.TYPE;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
@@ -27,6 +28,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentGradeDetailInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentInfo;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentModel;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.LessonDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemAnnotation;
@@ -3502,6 +3504,26 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		} finally {
 			SqlUtilities.releaseResources(null, ps, null);
 		}
+	}
+
+	public List<AssignmentModel> getAssignmentsWithPid(String pid) {
+		String sql = 
+				"select a.assign_key, a.name, a.comments, g.id as group_id, g.name as group_name" +
+				" from  CM_ASSIGNMENT_PIDS p" +
+				"   JOIN CM_ASSIGNMENT a on a.assign_key = p.assign_key" +
+				"   JOIN CM_GROUP g on g.id = a.group_id" +
+				" where p.pid = ?";
+		
+		List<AssignmentModel> assignments = getJdbcTemplate().query(sql,
+				new Object[] { pid }, new RowMapper<AssignmentModel>() {
+					@Override
+					public AssignmentModel mapRow(ResultSet rs, int rowNum)	throws SQLException {
+						GroupModel group = new GroupModel(rs.getInt("group_id"), rs.getString("group_name"), null);
+						return new AssignmentModel(rs.getInt("assign_key"), rs.getString("name"), rs.getString("comments"), group);
+					}
+				});
+
+		return assignments;		
 	}
 
 }

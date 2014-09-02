@@ -2,6 +2,7 @@ package hotmath.cm.assignment;
 
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStatsUsers;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentModel;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentDto;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentRealTimeStatsUsersAction;
@@ -20,6 +21,11 @@ public class AssignmentDao_Test extends TestCase {
         super(name);
     }
     
+    
+    public void testGetPidAsses() throws Exception {
+    	List<AssignmentModel> result = AssignmentDao.getInstance().getAssignmentsWithPid("cmextrasalg2_1_5_1_28_1");
+    	assertTrue(result != null);
+    }
     public void testGetStats1() throws Exception {
         AssignmentRealTimeStats stats = AssignmentDao.getInstance().getAssignmentStats(ASSIGN_KEY);
         assert(stats.getPidStats().size() > 0);
