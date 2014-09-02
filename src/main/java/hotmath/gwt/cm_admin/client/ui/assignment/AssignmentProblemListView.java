@@ -266,7 +266,7 @@ public class AssignmentProblemListView extends ContentPanel {
             	   else {
             		   lessonModel = new LessonModel();
             	   }
-            	   new CCSSCoverageForProblemWindow(problem,lessonModel, _assignment.getAdminId());           
+            	   new CCSSCoverageForLessonWindow(lessonModel, _assignment.getAdminId());           
                }
            }.register();
            
