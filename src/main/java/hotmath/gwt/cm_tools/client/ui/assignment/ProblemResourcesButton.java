@@ -64,7 +64,7 @@ public class ProblemResourcesButton extends TextButton {
     protected void setupResourceMenus(List<PrescriptionSessionResponse> prescriptions) {
         Menu mainMenu = new Menu();
     	if(mainMenu.getWidgetCount() > 0) {
-    		return;
+    		return; // already setup
     	}
         // for each lesson/topic (one per prescription)
         for(PrescriptionSessionResponse prescription: prescriptions) {
@@ -75,12 +75,10 @@ public class ProblemResourcesButton extends TextButton {
         	Menu topicMenu = new Menu();
         	topicsItem.setSubMenu(topicMenu);
         	
-        	PrescriptionData pd = prescription.getPrescriptionData();
-        	
         	MyMenuItem lessonTextItem = new MyMenuItem("Text", _menuItemlistener);
         	topicMenu.add(lessonTextItem);
 
-        	MyMenuItem videoItem = new MyMenuItem("Videos", _menuItemlistener);
+        	MyMenuItem videoItem = new MyMenuItem("Video", _menuItemlistener);
             videoItem.setEnabled(false);
             topicMenu.add(videoItem);
 
@@ -101,6 +99,9 @@ public class ProblemResourcesButton extends TextButton {
                     if(r.getItems().size() > 0) {
                     	videoItem.setEnabled(true);
                     }
+                    if(r.getItems().size() > 1) {
+                    	videoItem.setText("Videos");
+                    }
                 }
                 else if(type == CmResourceType.PRACTICE) {
 //                    Menu subMenu = new Menu();
@@ -113,6 +114,14 @@ public class ProblemResourcesButton extends TextButton {
             }
         }
         setMenu(mainMenu);
+        
+        
+        if(prescriptions.size() == 0) {
+        	setEnabled(false);
+        }
+        else if(prescriptions.size() > 1) {
+        	setText("lessons");
+        }
     }
     
     

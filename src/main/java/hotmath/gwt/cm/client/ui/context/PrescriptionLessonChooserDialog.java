@@ -297,21 +297,21 @@ public class PrescriptionLessonChooserDialog extends GWindow {
             /** DEBUGGING ... save state on each each move to next segment
              * 
              */
-            String comments = "Correct percent: " + correctPercent + ", " + passPercentRequired;
-            comments += ", isCustom: " + UserInfo.getInstance().isCustomProgram();
-            
-            SaveFeedbackAction action = new SaveFeedbackAction(comments, "move_next_quiz_segment", "uid: " + UserInfo.getInstance().getUid() );
-            CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
-                @Override
-                public void onSuccess(RpcData result) {
-                    Log.info("Debug message saved");
-                }
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    Log.error("Error saving debug message", caught);
-                }
-            });
+//            String comments = "Correct percent: " + correctPercent + ", " + passPercentRequired;
+//            comments += ", isCustom: " + UserInfo.getInstance().isCustomProgram();
+//            
+//            SaveFeedbackAction action = new SaveFeedbackAction(comments, "move_next_quiz_segment", "uid: " + UserInfo.getInstance().getUid() );
+//            CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
+//                @Override
+//                public void onSuccess(RpcData result) {
+//                    Log.info("Debug message saved");
+//                }
+//
+//                @Override
+//                public void onFailure(Throwable caught) {
+//                    Log.error("Error saving debug message", caught);
+//                }
+//            });
             ////
             // END DEBUGGING /////
             ////////////////////// 
