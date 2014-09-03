@@ -264,6 +264,14 @@ public class HelpWindow extends GWindow {
         	studentDetailsBtn.setEnabled(false);
         }
         
+        /** There is a conflict between the Quiz panel and Quiz Results .. 
+         * they both cannot be active at the same time. 
+         */
+        if(false && CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance.isResourceQuiz()) {
+            studentDetailsBtn.setEnabled(false);
+        }
+        
+        
         addtionalTb.add(studentDetailsBtn);
         
         TextButton calculator = new TextButton("Calculator", new SelectHandler() {

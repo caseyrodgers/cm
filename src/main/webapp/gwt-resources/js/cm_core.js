@@ -301,9 +301,6 @@ function checkQuiz_Gwt() {
 */
 window.setQuizQuestionResult = function(pid, result) {
 
-       var ql = findQuestionByPid(pid);
-
-
        var el = getQuestionMarkImage(pid);
        var elT = getQuestionMarkText(pid);
        if (result == 'Correct') {
