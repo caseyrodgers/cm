@@ -86,8 +86,7 @@ function findQuestionGuid(o) {
  * @return
  */
 function findQuestionByPid(pid) {
-        var all = document.getElementById('testset_div')
-                        .getElementsByTagName('div');
+        var all = document.getElementById('testset_div').getElementsByTagName('div');
         try {
                 for ( var i = 0; i < all.length; i++) {
                         var o = all[i].getAttribute('guid');
@@ -107,7 +106,7 @@ function findQuestionByPid(pid) {
         } catch (x) {
                 alert('Error while setting selected question response: ' + x);
         }
-        alert('findQuestionByPid: pid not found: ' + pid);
+        console.log('findQuestionByPid: pid not found: ' + pid);
 
         return null;
 }
