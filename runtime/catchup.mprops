@@ -4825,6 +4825,18 @@ WHERE   ins.topic = ?
 ORDER BY ccs.standard_name_new
 
 ####
+.key=GET_CCSS_COVERAGE_FOR_LESSONS
+
+SELECT DISTINCT ccs.standard_name_new, pl.lesson
+ FROM   inmh_standard ins
+ JOIN   HA_PROGRAM_LESSONS_static pl
+   ON   pl.file = ins.topic 
+ JOIN   common_core_standards ccs
+   ON   ccs.standard_name_new = ins.standard_name_new
+WHERE   ins.topic in ($$FILE_LIST$$)
+ORDER BY ccs.standard_name_new
+
+####
 .key=GET_CCSS_COVERAGE_FOR_PID
 
 SELECT DISTINCT im.title as lesson, ccs.standard_name_new

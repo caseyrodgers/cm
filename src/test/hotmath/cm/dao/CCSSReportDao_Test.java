@@ -1,6 +1,7 @@
 package hotmath.cm.dao;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.model.CCSSData;
 import hotmath.gwt.shared.client.model.CCSSDetail;
@@ -97,6 +98,19 @@ public class CCSSReportDao_Test extends CmDbTestCase {
     public void testGetCCSSCoverageForLesson() throws Exception {
         CCSSReportDao dao = CCSSReportDao.getInstance();
         List<CCSSCoverageData> coverage = dao.getCCSSCoverageForLesson("topics/integers.html");
+        assertTrue(coverage != null && coverage.size() > 0);
+    }
+
+    public void testGetCCSSCoverageForLessons() throws Exception {
+        CCSSReportDao dao = CCSSReportDao.getInstance();
+        List<LessonModel> lessons = new ArrayList<LessonModel>();
+        LessonModel lesson = new LessonModel("Integers", "topics/integers.html");
+        lessons.add(lesson);
+        lesson = new LessonModel("Factoring", "topics/factoring.html");
+        lessons.add(lesson);
+        lesson = new LessonModel("Dilation", "topics/dilation.html");
+        lessons.add(lesson);
+        List<CCSSCoverageData> coverage = dao.getCCSSCoverageForLessons(lessons);
         assertTrue(coverage != null && coverage.size() > 0);
     }
 

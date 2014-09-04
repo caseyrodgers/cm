@@ -2,6 +2,7 @@ package hotmath.cm.dao;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.QueryHelper;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSStrandCoverage;
@@ -529,6 +530,33 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	return list;
 	}
 
+	public List<CCSSCoverageData> getCCSSCoverageForLessons(List<LessonModel> lessons) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_COVERAGE_FOR_LESSONS");
+
+    	List<String> files = new ArrayList<String>();
+    	for (LessonModel lesson : lessons) {
+    		files.add(lesson.getLessonFile());
+    	}
+        sql = QueryHelper.createInListSQL(sql, "$$FILE_LIST$$", files);
+
+    	List<CCSSCoverageData> list = null;
+    	try {
+    		list = getJdbcTemplate().query(sql, new RowMapper<CCSSCoverageData>() {
+    			@Override
+    			public CCSSCoverageData mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				CCSSCoverageData data = new CCSSCoverageData(rs.getString("lesson"), rs.getString("standard_name_new"));
+    				return data;
+    			}
+    		});
+    	}
+    	catch (DataAccessException e) {
+    		LOGGER.error(String.format("getCCSSCoverageForLessons(): sql: %s", sql), e);
+    		throw e;
+    	}
+    	if (list == null) list = new ArrayList<CCSSCoverageData>();
+    	return list;
+	}
+
 	public List<CCSSCoverageData> getCCSSCoverageForPID(String pid) throws Exception {
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_COVERAGE_FOR_PID");
     	List<CCSSCoverageData> list = null;
@@ -637,8 +665,6 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	}
     	return (count != null) ? count.get(0) : 0;
     }
-
-	static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	private static final int MAX_BAR_COUNT = 8;
 
@@ -861,7 +887,7 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 		Date minDate = null;
 		Date maxDate = null;
 		for (CCSSCoverageData data : list) {
-			Date date = dateFormat.parse(data.getColumnLabels().get(0));
+			Date date = DATE_FMT.parse(data.getColumnLabels().get(0));
 			if (minDate == null || minDate.after(date)) minDate = date;
 			if (maxDate == null || maxDate.before(date)) maxDate = date;
 		}
@@ -906,7 +932,7 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     		CCSSCoverageBar bar = new CCSSCoverageBar();
     		bar.setBeginDate(date);
     		bar.setNumberOfDays(numberOfDaysPerBar);
-    		bar.setLabel(dateFormat.format(date));
+    		bar.setLabel(DATE_FMT.format(date));
     		cal.add(GregorianCalendar.DAY_OF_YEAR, numberOfDaysPerBar-1);
     		date = cal.getTime();
     		bar.setEndDate(date);
@@ -939,9 +965,9 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 	private void addDataToBarList(CCSSCoverageData data, List<CCSSCoverageBar> list) throws Exception {
         String date = data.getColumnLabels().get(0);
 		GregorianCalendar cal = new GregorianCalendar();
-    	Date ccssDate = dateFormat.parse(date);
+    	Date ccssDate = DATE_FMT.parse(date);
         for (CCSSCoverageBar bar : list) {
-        	Date barDate = dateFormat.parse(bar.getLabel());
+        	Date barDate = DATE_FMT.parse(bar.getLabel());
         	if (datesMatch(ccssDate, barDate, bar.getNumberOfDays(), cal)) {
         		assignData(bar, data);
         		break;
