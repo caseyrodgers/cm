@@ -41,7 +41,7 @@ public class CCSSCoverageForLessonsWindow extends GWindow {
         _name = name;
 
         setHeadingText(TITLE);
-        setWidth(240);
+        setWidth(385);
         setHeight(400);
 
         _container = new BorderLayoutContainer();
