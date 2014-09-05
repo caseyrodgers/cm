@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -10,6 +11,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSCoverageDataAction;
 
 import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
@@ -34,6 +36,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
     int _uid;
     int _adminId;
     String _key;
+    List<LessonModel> _lessons;
 
     interface GridProperties extends PropertyAccess<CCSSCoverageData> {
 
@@ -62,6 +65,14 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
         __instance = this;
         this.base = base;
         this._key = key;
+        this._adminId = adminId;
+        getDataFromServer();
+    }
+
+    public CCSSCoverageImplPanelBase(CCSSCoverageImplBase base, List<LessonModel> lessons, int adminId) {
+        __instance = this;
+        this.base = base;
+        this._lessons = lessons;
         this._adminId = adminId;
         getDataFromServer();
     }
@@ -95,6 +106,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
                 CCSSCoverageDataAction action = new CCSSCoverageDataAction(getReportType(), _uid, fromDate, toDate);
                 action.setAdminId(_adminId);
                 action.setKey(_key);
+                action.setLessons(_lessons);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

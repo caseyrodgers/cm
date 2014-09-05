@@ -12,8 +12,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentRealTimeStatsAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForLessonWindow;
-import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForProblemWindow;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForLessonsWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -258,15 +257,20 @@ public class AssignmentProblemListView extends ContentPanel {
             	    * 
             	    */
             	   LessonModel lessonModel = null;
+        		   List<LessonModel> list = new ArrayList<LessonModel>();
             	   if(prescriptions.size() > 0) {
-            		   String file = prescriptions.get(0).getPrescriptionData().getCurrSession().getFile();
-            		   String title = prescriptions.get(0).getPrescriptionData().getCurrSession().getTopic();
-            		   lessonModel = new LessonModel(title, file);
+            		   for (PrescriptionSessionResponse prescription : prescriptions) {
+                		   String file = prescription.getPrescriptionData().getCurrSession().getFile();
+                		   String title = prescription.getPrescriptionData().getCurrSession().getTopic();
+                		   lessonModel = new LessonModel(title, file);
+                		   list.add(lessonModel);
+            		   }
             	   }
             	   else {
             		   lessonModel = new LessonModel();
+            		   list.add(lessonModel);
             	   }
-            	   new CCSSCoverageForLessonWindow(lessonModel, _assignment.getAdminId());           
+            	   new CCSSCoverageForLessonsWindow(list, _assignment.getAdminId(), problem.getName());           
                }
            }.register();
            

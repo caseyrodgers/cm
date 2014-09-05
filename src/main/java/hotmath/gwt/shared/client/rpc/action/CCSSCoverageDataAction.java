@@ -1,10 +1,12 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.CCSSCoverageData;
 
 import java.util.Date;
+import java.util.List;
 
 public class CCSSCoverageDataAction implements Action<CmList<CCSSCoverageData>> {
     
@@ -16,6 +18,7 @@ public class CCSSCoverageDataAction implements Action<CmList<CCSSCoverageData>> 
     String key;
     Date from;
     Date to;
+    List<LessonModel> lessons;
     
     public CCSSCoverageDataAction() {
     }
@@ -75,6 +78,14 @@ public class CCSSCoverageDataAction implements Action<CmList<CCSSCoverageData>> 
         this.to = to;
     }
 
+	public List<LessonModel> getLessonFiles() {
+		return lessons;
+	}
+
+	public void setLessons(List<LessonModel> lessonFiles) {
+		this.lessons = lessonFiles;
+	}
+
     @Override
     public String toString() {
         return "CCSSCoverageDataAction [type=" + type + ", from=" + from + ", to=" + to +"]";
@@ -83,6 +94,7 @@ public class CCSSCoverageDataAction implements Action<CmList<CCSSCoverageData>> 
     public enum ReportType {
     	STUDENT_ASSIGNED_COMPLETED, STUDENT_QUIZZED_PASSED, STUDENT_REVIEWED, STUDENT_COMBINED, STUDENT_NOT_COVERED,
     	GROUP_ALL_STUDENTS, GROUP_75_TO_99_PERCENT, GROUP_50_TO_99_PERCENT, GROUP_50_TO_74_PERCENT, GROUP_LT_50_PERCENT,
-    	GROUP_25_TO_49_PERCENT, GROUP_LT_25_PERCENT, ASSIGNMENT, LESSON, PID, CUSTOM_PROG, CUSTOM_QUIZ
+    	GROUP_25_TO_49_PERCENT, GROUP_LT_25_PERCENT, ASSIGNMENT, LESSON, LESSONS, PID, CUSTOM_PROG, CUSTOM_QUIZ
     }
+
 }
