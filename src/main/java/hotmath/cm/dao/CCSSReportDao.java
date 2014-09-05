@@ -530,10 +530,14 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	return list;
 	}
 
-	public List<CCSSCoverageData> getCCSSCoverageForLessons(List<String> lessonFiles) throws Exception {
+	public List<CCSSCoverageData> getCCSSCoverageForLessons(List<LessonModel> lessons) throws Exception {
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_COVERAGE_FOR_LESSONS");
 
-        sql = QueryHelper.createInListSQL(sql, "$$FILE_LIST$$", lessonFiles);
+    	List<String> files = new ArrayList<String>();
+    	for (LessonModel lesson : lessons) {
+    		files.add(lesson.getLessonFile());
+    	}
+        sql = QueryHelper.createInListSQL(sql, "$$FILE_LIST$$", files);
 
     	List<CCSSCoverageData> list = null;
     	try {
