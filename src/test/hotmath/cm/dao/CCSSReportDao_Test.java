@@ -103,10 +103,13 @@ public class CCSSReportDao_Test extends CmDbTestCase {
 
     public void testGetCCSSCoverageForLessons() throws Exception {
         CCSSReportDao dao = CCSSReportDao.getInstance();
-        List<String> lessons = new ArrayList<String>();
-        lessons.add("topics/integers.html");
-        lessons.add("topics/factoring.html");
-        lessons.add("topics/dilation.html");
+        List<LessonModel> lessons = new ArrayList<LessonModel>();
+        LessonModel lesson = new LessonModel("Integers", "topics/integers.html");
+        lessons.add(lesson);
+        lesson = new LessonModel("Factoring", "topics/factoring.html");
+        lessons.add(lesson);
+        lesson = new LessonModel("Dilation", "topics/dilation.html");
+        lessons.add(lesson);
         List<CCSSCoverageData> coverage = dao.getCCSSCoverageForLessons(lessons);
         assertTrue(coverage != null && coverage.size() > 0);
     }
