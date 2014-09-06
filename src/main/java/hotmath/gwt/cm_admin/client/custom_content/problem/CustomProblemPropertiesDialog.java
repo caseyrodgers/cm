@@ -60,7 +60,7 @@ public class CustomProblemPropertiesDialog extends GWindow {
     TextArea _comments = new TextArea();
     public CustomProblemPropertiesDialog() {
         super(false);
-        setHeadingText("Setup Custom Problem properties");
+        setHeadingText("Setup Custom Problem Properties");
 
         setPixelSize(450, 400);
 
@@ -170,7 +170,7 @@ public class CustomProblemPropertiesDialog extends GWindow {
         tabPanel.add(bl, "Setup Properties");
         
         final AssignmentsUsedPanel _assPanel = new AssignmentsUsedPanel();
-        tabPanel.add(_assPanel, "Assignments");
+        tabPanel.add(_assPanel, "Assigned");
         tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
 			@Override
 			public void onSelection(SelectionEvent<Widget> event) {

@@ -29,7 +29,7 @@ public class AssignmentsUsedPanel extends ContentPanel {
 
 	public AssignmentsUsedPanel(){
 		
-		setHeadingText("Assignments Problem Is Assigned to");
+		setHeadingText("Assigned To");
 		drawUi();
 	}
 	

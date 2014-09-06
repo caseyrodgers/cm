@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client;
 
+import hotmath.gwt.cm_admin.client.custom_content.problem.AddTeacherDialog;
 import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditor;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditorHintStep;
@@ -96,6 +97,9 @@ public class CatchupMathAdminTests {
         }
         else if(test.equals("tree_table")) {
         	CustomProblemTreeTable.doTest();
+        }
+        else if(test.equals("custom_problem_add_teacher")) {
+        	AddTeacherDialog.doTest();
         }
         else {
         	return false;

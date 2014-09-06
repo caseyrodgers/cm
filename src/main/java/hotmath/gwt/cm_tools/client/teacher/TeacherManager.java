@@ -232,6 +232,10 @@ public class TeacherManager extends GWindow {
         }
     }
 
+    public static void setTeacher(TeacherIdentity teacher) {
+    	__currentTeacherIdentity = teacher;
+    }
+    
     public static TeacherIdentity getTeacher() {
         if(__currentTeacherIdentity == null || __currentTeacherIdentity.isUnknown()) {
             String val = Storage.getLocalStorage().getItem("current_teacher");

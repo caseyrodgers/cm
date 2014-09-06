@@ -472,6 +472,26 @@ public class CustomProblemTreeTable extends SimpleContainer {
         return new BaseDto(BaseDto.__nextId(), "--EMPTY--");
     }
 
+    private void expandSelected(String selectedPid) {
+
+    	String teacherName=null;
+    	if(selectedPid != null) {
+    		CustomProblemLeafNode nodeToSelect = findItemMatching(_root, selectedPid);
+    		if(nodeToSelect != null) {
+    			teacherName = nodeToSelect.getCustomProblem().getTeacher().getTeacherName();
+    		}
+    	}
+    	if(teacherName == null) {
+    		teacherName = TeacherManager.getTeacher().getTeacherName();	
+    	}
+    	
+		for (BaseDto child : _tree.getTreeStore().getRootItems()) {
+			if(child.getName().equals(teacherName)) {
+				_tree.setExpanded(child, true, true);
+			}
+   	    }    	
+    }
+    
     public void setTreeSelections(final String selectedPid) {
 
         new Timer() {
@@ -479,11 +499,14 @@ public class CustomProblemTreeTable extends SimpleContainer {
             @Override
             public void run() {
                 /** Expose the root items */
-                _tree.expandAll();
-                List<BaseDto> rootItems = _tree.getTreeStore().getRootItems();
-                if(rootItems.size() > 0) {
-                	_tree.setExpanded((BaseDto) rootItems.get(0), true, false);
-                }
+                expandSelected(selectedPid);
+                
+                
+                
+//                List<BaseDto> rootItems = _tree.getTreeStore().getRootItems();
+//                if(rootItems.size() > 0) {
+//                	_tree.setExpanded((BaseDto) rootItems.get(0), true, false);
+//                }
 
                 if (selectedPid != null) {
                     BaseDto nodeToSelect = findItemMatching(_root, selectedPid);

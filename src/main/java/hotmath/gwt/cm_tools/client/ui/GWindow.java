@@ -40,7 +40,7 @@ public class GWindow extends Window {
         setFocusWidget(getButtonBar().getWidget(0));
     }
     
-    public void addCloseButton() {
+    public TextButton addCloseButton() {
         closeBtn = new TextButton("Close");
         closeBtn.addSelectHandler(new SelectHandler() {
 
@@ -49,9 +49,10 @@ public class GWindow extends Window {
                 hide();
             }
         });
-        addButton(closeBtn);        
+        addButton(closeBtn);
+        
+        return closeBtn;
     }
-    
     
     
     public interface DateRangeAdvOptCallback {
