@@ -520,7 +520,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
 
                 selectedCallback.redrawUi();
             }
-        }.schedule(1000);
+        }.schedule(250);
         ;
 
     }
