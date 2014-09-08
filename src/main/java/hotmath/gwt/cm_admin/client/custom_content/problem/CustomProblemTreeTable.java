@@ -49,8 +49,6 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
-import com.sencha.gxt.widget.core.client.menu.Menu;
-import com.sencha.gxt.widget.core.client.menu.MenuItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 import com.sencha.gxt.widget.core.client.tree.Tree.TreeNode;
 import com.sencha.gxt.widget.core.client.treegrid.TreeGrid;
@@ -492,16 +490,19 @@ public class CustomProblemTreeTable extends SimpleContainer {
    	    }    	
     }
     
-    public void setTreeSelections(final String selectedPid) {
+    public void setTreeSelections(final boolean expandAll, final String selectedPid) {
 
         new Timer() {
 
             @Override
             public void run() {
                 /** Expose the root items */
-                expandSelected(selectedPid);
-                
-                
+            	if(expandAll) {
+            		_tree.expandAll();
+            	}
+            	else {
+            		expandSelected(selectedPid);
+            	}
                 
 //                List<BaseDto> rootItems = _tree.getTreeStore().getRootItems();
 //                if(rootItems.size() > 0) {
@@ -680,4 +681,8 @@ public class CustomProblemTreeTable extends SimpleContainer {
             return node.getParent() != null ? node.getParent().getName() : null;
         }
     }
+
+	public void expandTree() {
+		_tree.expandAll();
+	}
 }

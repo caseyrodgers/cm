@@ -125,7 +125,7 @@ public class CustomProblemManager extends GWindow {
 	        new QuickTip(_treeTable.getTree());
 	        _gridPanel.setWidget(_treeTable);
 	        
-	        _treeTable.setTreeSelections(selectedProblem);
+	        _treeTable.setTreeSelections(forceCreate, selectedProblem);
         }
         else {
         	// update existing tree
@@ -464,7 +464,7 @@ public class CustomProblemManager extends GWindow {
     private void applyFilter(List<? extends LessonModel> models, String comments) {
 
         if (models == null || (models.size() == 0 && comments == null)) {
-            buildTreeGrid(_allProblems, _lastPaths, false);
+            buildTreeGrid(_allProblems, _lastPaths, true);
             _filterButton.setValue(false);
 
             forceLayout();
@@ -508,8 +508,8 @@ public class CustomProblemManager extends GWindow {
             }
         }
 
-        buildTreeGrid(listFiltered, _lastPaths, false);
-        _treeTable.setTreeSelections(null);
+        buildTreeGrid(listFiltered, _lastPaths, true);
+        _treeTable.setTreeSelections(true, null);
     }
 
 
