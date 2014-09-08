@@ -99,13 +99,13 @@ public class AddTeacherDialog extends GWindow {
 			return false;
 		}
 		
-		int sz = name.length();
-	      for (int i = 0; i < sz; i++) {
-	          if ((Character.isLetterOrDigit(name.charAt(i)) == false) && (name.charAt(i) != '_')) {
-	        	  CmMessageBox.showAlert("Teacher name can only be letters, numbers or the underscore character.");
-	              return false;
-	          }
-	      }
+//		int sz = name.length();
+//	      for (int i = 0; i < sz; i++) {
+//	          if ((Character.isLetterOrDigit(name.charAt(i)) == false) && (name.charAt(i) != '_')) {
+//	        	  CmMessageBox.showAlert("Teacher name can only be letters, numbers or the underscore character.");
+//	              return false;
+//	          }
+//	      }
 		
 		return true;
 	}
