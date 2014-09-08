@@ -87,7 +87,7 @@ public class CustomProblemManager extends GWindow {
         setMaximizable(true);
 
         buildGui();
-        readFromServer(null, true);
+        readFromServer(null, false, false);
         setVisible(true);
     }
 
@@ -95,7 +95,7 @@ public class CustomProblemManager extends GWindow {
         setHeadingText("Custom Problem Manager: " + TeacherManager.getTeacher().getTeacherName());
     }
 
-    private void buildTreeGrid(List<CustomProblemModel> problems, List<String> paths, boolean forceCreate) {
+    private void buildTreeGrid(List<CustomProblemModel> problems, List<String> paths, boolean forceCreate, boolean expandAll) {
         String selectedProblem = null;
         if (_selectedSolution == null && _treeTable != null && _treeTable.getSelectedCustomProblem() != null) {
             selectedProblem = _treeTable.getSelectedCustomProblem().getPid();
@@ -104,7 +104,7 @@ public class CustomProblemManager extends GWindow {
             selectedProblem = _selectedSolution;
         }
 
-        if(forceCreate || _treeTable == null) {
+        if( forceCreate || _treeTable == null) {
 	        _treeTable = new CustomProblemTreeTable(problems, paths, _allTeachers, new TreeTableCallback() {
 	
 	            @Override
@@ -124,19 +124,17 @@ public class CustomProblemManager extends GWindow {
 	        });
 	        new QuickTip(_treeTable.getTree());
 	        _gridPanel.setWidget(_treeTable);
-	        
-	        _treeTable.setTreeSelections(forceCreate, selectedProblem);
         }
         else {
-        	// update existing tree
-        	System.out.println("update existing grid");
+        	// _treeTable.updateTree(problems, paths, _allTeachers);
         }
 
+        _treeTable.setTreeSelections(expandAll, selectedProblem);
 
         forceLayout();
     }
 
-    protected void updateProblemToServer(final CustomProblemModel problem) {
+	protected void updateProblemToServer(final CustomProblemModel problem) {
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
@@ -147,7 +145,7 @@ public class CustomProblemManager extends GWindow {
 
             @Override
             public void oncapture(RpcData value) {
-                readFromServer(null, false);
+                readFromServer(null, false, false);
             }
         }.register();
     }
@@ -283,7 +281,7 @@ public class CustomProblemManager extends GWindow {
             addTool(new TextButton("Refresh", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
-                    readFromServer(null, true);
+                    readFromServer(null, true, false);
                 }
             }));
         }
@@ -310,7 +308,7 @@ public class CustomProblemManager extends GWindow {
                     @Override
                     public void teacherSet(TeacherIdentity teacher) {
                         setLocalTitle();
-                        readFromServer(null,false);
+                        readFromServer(null, false, false);
                     }
                 });
             }
@@ -322,11 +320,11 @@ public class CustomProblemManager extends GWindow {
 			@Override
 			public void teacherSelected(TeacherIdentity teacher) {
                 setLocalTitle();
-                readFromServer(teacher.getTeacherName(), false);
+                readFromServer(teacher.getTeacherName(), false, false);
 			}
 			@Override
 			public void teacherAdded(String teacherName) {
-				readFromServer(teacherName, false);
+				readFromServer(teacherName, true, false);
 			}
 		});
         flow.add(_teacherCombo);
@@ -380,7 +378,7 @@ public class CustomProblemManager extends GWindow {
 
             @Override
             public void oncapture(RpcData value) {
-                readFromServer(teacher.getTeacherName(), true);
+                readFromServer(teacher.getTeacherName(), true, false);
             }
         }.register();
     }
@@ -395,7 +393,7 @@ public class CustomProblemManager extends GWindow {
             @Override
             public void solutionCreated(SolutionInfo solution) {
                 _selectedSolution = solution.getPid();
-                readFromServer(null, true);
+                readFromServer(null, true, false);
             }
         });
     }
@@ -464,7 +462,7 @@ public class CustomProblemManager extends GWindow {
     private void applyFilter(List<? extends LessonModel> models, String comments) {
 
         if (models == null || (models.size() == 0 && comments == null)) {
-            buildTreeGrid(_allProblems, _lastPaths, true);
+            buildTreeGrid(_allProblems, _lastPaths, true, false);
             _filterButton.setValue(false);
 
             forceLayout();
@@ -508,7 +506,7 @@ public class CustomProblemManager extends GWindow {
             }
         }
 
-        buildTreeGrid(listFiltered, _lastPaths, true);
+        buildTreeGrid(listFiltered, _lastPaths, true, true);
         _treeTable.setTreeSelections(true, null);
     }
 
@@ -639,7 +637,7 @@ public class CustomProblemManager extends GWindow {
 
             @Override
             public void oncapture(RpcData value) {
-                readFromServer(null, true);
+                readFromServer(null, true, false);
             }
         }.register();
 
@@ -657,7 +655,7 @@ public class CustomProblemManager extends GWindow {
 
             @Override
             public void oncapture(RpcData data) {
-                readFromServer(null, true);
+                readFromServer(null, true, false);
             }
         }.register();
     }
@@ -693,7 +691,7 @@ public class CustomProblemManager extends GWindow {
             public void oncapture(RpcData data) {
                 CmBusyManager.setBusy(false);
                 _selectedSolution = data.getDataAsString("pid");
-                readFromServer(null, true);
+                readFromServer(null,true,false);
             }
         }.register();
     }
@@ -720,7 +718,7 @@ public class CustomProblemManager extends GWindow {
         }
     }
 
-    private void readFromServer(final String teacherNameToSelect, final boolean forceRecreate) {
+    private void readFromServer(final String teacherNameToSelect, final boolean forceRecreate, final boolean expandAll) {
 
         showProblem(null);
 
@@ -741,7 +739,7 @@ public class CustomProblemManager extends GWindow {
                 _lastPaths = customProblemInfo.getPaths();
                 _allProblems = customProblemInfo.getProblems();
                 _allTeachers = customProblemInfo.getTeachers();
-                buildTreeGrid(_allProblems, _lastPaths, forceRecreate);
+                buildTreeGrid(_allProblems, _lastPaths, forceRecreate, expandAll);
                 
                 _teacherCombo.readDataFromServer(new CallbackOnComplete() {
 					@Override
@@ -783,7 +781,7 @@ public class CustomProblemManager extends GWindow {
             @Override
             public void databaseUpdated(TypeOfUpdate type) {
                 if (type == TypeOfUpdate.SOLUTION || type == TypeOfUpdate.TEACHER) {
-                    __instance.readFromServer(null, true);
+                    __instance.readFromServer(null, true, false);
                 }
             }
         });

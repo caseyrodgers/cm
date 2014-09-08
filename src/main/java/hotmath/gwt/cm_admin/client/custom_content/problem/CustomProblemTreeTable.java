@@ -88,7 +88,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
     }
 
     public CustomProblemTreeTable(List<CustomProblemModel> problems, List<String> paths,
-            List<TeacherIdentity> _allTeachers, TreeTableCallback selectedCallbackIn) {
+            List<TeacherIdentity> allTeachers, TreeTableCallback selectedCallbackIn) {
         this.selectedCallback = selectedCallbackIn;
 
         FramedPanel panel = new FramedPanel();
@@ -102,7 +102,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
 
         DataProperties props = GWT.create(DataProperties.class);
 
-        _store = createTeacherProblemMap(problems, paths, _allTeachers);
+        _store = createTeacherProblemMap(problems, paths, allTeachers);
         //
         //
         // CustomProblemFolderNode firstNode = new
@@ -685,4 +685,12 @@ public class CustomProblemTreeTable extends SimpleContainer {
 	public void expandTree() {
 		_tree.expandAll();
 	}
+
+	public void updateTree(List<CustomProblemModel> problems, List<String> paths, List<TeacherIdentity> allTeachers) {
+		TreeStore<BaseDto> myStore = createTeacherProblemMap(problems, paths, allTeachers);
+
+		_tree.getStore().clear();
+		_tree.getStore().addAll(myStore.getAll());
+	}
+
 }
