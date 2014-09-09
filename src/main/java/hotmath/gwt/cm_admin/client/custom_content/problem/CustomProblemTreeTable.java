@@ -168,7 +168,16 @@ public class CustomProblemTreeTable extends SimpleContainer {
         l.add(lessonsCol);
         ColumnModel<BaseDto> cm = new ColumnModel<BaseDto>(l);
 
-        _tree = new TreeGrid<BaseDto>(_store, cm, problemCol);
+        _tree = new TreeGrid<BaseDto>(_store, cm, problemCol) {
+        	public boolean isLeaf(BaseDto model) {
+        		if(model instanceof CustomProblemFolderNode) {
+        			return false;
+        		}
+        		else {
+        			return super.isLeaf(model);
+        		}
+        	}
+        };
 
         _tree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
@@ -472,6 +481,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
 
     private void expandSelected(String selectedPid) {
 
+    	// get the teacher name
     	String teacherName=null;
     	if(selectedPid != null) {
     		CustomProblemLeafNode nodeToSelect = findItemMatching(_root, selectedPid);
@@ -483,6 +493,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
     		teacherName = TeacherManager.getTeacher().getTeacherName();	
     	}
     	
+    	// look for all nodes owned by teacherName
 		for (BaseDto child : _tree.getTreeStore().getRootItems()) {
 			if(child.getName().equals(teacherName)) {
 				_tree.setExpanded(child, true, true);
@@ -583,7 +594,7 @@ public class CustomProblemTreeTable extends SimpleContainer {
     static private void processFolder(TreeStore<BaseDto> store, FolderDto folder, boolean createEmpty) {
 
         if (folder.getChildren().size() == 0) {
-            folder.addChild(createEmptyNode());
+            // folder.addChild(createEmptyNode());
         }
         for (BaseDto child : folder.getChildren()) {
             store.add(folder, child);

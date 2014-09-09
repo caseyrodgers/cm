@@ -15,6 +15,7 @@ import hotmath.gwt.cm_admin.client.ui.assignment.EditAssignmentDialog;
 import hotmath.gwt.cm_admin.client.ui.assignment.FinalExamCreationManager;
 import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
 import hotmath.gwt.cm_tools.client.search.LessonSearchWindow;
+import hotmath.gwt.cm_tools.client.teacher.AddFolderDialog;
 import hotmath.gwt.cm_tools.client.ui.DateRangePickerDialog;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
@@ -100,6 +101,9 @@ public class CatchupMathAdminTests {
         }
         else if(test.equals("custom_problem_add_teacher")) {
         	AddTeacherDialog.doTest();
+        }
+        else if(test.equals("custom_problem_add_folder")) {
+        	AddFolderDialog.doTest();
         }
         else {
         	return false;

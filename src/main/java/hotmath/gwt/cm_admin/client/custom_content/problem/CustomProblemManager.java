@@ -5,7 +5,6 @@ import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
-import hotmath.gwt.cm_core.client.util.CmAlertify.PromptCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler;
@@ -23,6 +22,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.teacher.AddFolderDialog;
 import hotmath.gwt.cm_tools.client.teacher.TeacherManager;
 import hotmath.gwt.cm_tools.client.teacher.TeacherManager.Callback;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -352,18 +352,12 @@ public class CustomProblemManager extends GWindow {
     }
 
     protected void showAddNewFolder(final TeacherIdentity teacher) {
-
-        CmMessageBox.prompt("Create Folder In " + teacher.getTeacherName(), "Folder Name", "New Folder",
-                new PromptCallback() {
-                    @Override
-                    public void promptValue(String value) {
-                        if (value != null) {
-                            addFolderToTeacherNode(teacher, value);
-                        }
-                    }
-
-                });
-
+    	new AddFolderDialog(new AddFolderDialog.Callback() {
+    		@Override
+    		public void folderAdded(String folderName) {
+				readFromServer(null, true, false);
+			}
+		});
     }
 
     private void addFolderToTeacherNode(final TeacherIdentity teacher, final String value) {
