@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Technical Tips</</title>
+
+    <script type="text/javascript" src="/assets/flowplayer/flowplayer-3.1.4.min.js"></script>
+  </head>
+  <body style='margin: 0;border: none;background: #1a1a1a;'>
+		<!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
+		<a  
+			 href="http://catchupmath.com/assets/teacher_videos/v2/TechTips-Final.mp4"
+			 style="display:block;width:100%;height:100%"  
+			 id="player"> 
+		</a> 
+        
+    	<!-- this will install flowplayer inside previous A- tag. -->
+		<script>
+		    var params = {};
+                    params.clip = {autoPlay: true};
+		    params.key = '$a12fd4b15a588479e9e';
+
+			flowplayer("player", "/assets/flowplayer/flowplayer.commercial-3.1.5.swf",params);
+		</script>
+  </body>
+</html>
