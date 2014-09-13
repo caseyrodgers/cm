@@ -3,6 +3,7 @@ package hotmath.cm.exam;
 import hotmath.cm.exam.FinalExam.QuizSize;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaTestConfig;
@@ -61,10 +62,20 @@ public class ExamDao extends SimpleJdbcDaoSupport {
         return ids;
     }
     
-    public List<LessonModel> getLessonsInHaProgramLessonsForProblem(String pid) {
-        String sql = "select lesson, file from HA_PROGRAM_LESSONS_static where pid = ? order by lesson"; 
-    
-        List<LessonModel> models = getJdbcTemplate().query(sql, new Object[] { pid }, new RowMapper<LessonModel>() {
+    public List<LessonModel> getLessonsInHaProgramLessonsForProblem(String pid) throws Exception{
+    	List<String> pidList = new ArrayList<String>();
+    	pidList.add(pid);
+    	return getLessonsInHaProgramLessonsForProblemList(pidList);
+    }
+
+    private static final String LESSONS_FOR_PID_LIST =
+        "select lesson, file from HA_PROGRAM_LESSONS_static where pid in ($$PID_LIST$$) order by lesson"; 
+
+    public List<LessonModel> getLessonsInHaProgramLessonsForProblemList(List<String> pidList) throws Exception {
+
+    	String sql = QueryHelper.createInListSQL(LESSONS_FOR_PID_LIST, "$$PID_LIST$$", pidList);
+
+        List<LessonModel> models = getJdbcTemplate().query(sql, new RowMapper<LessonModel>() {
             @Override
             public LessonModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new LessonModel(rs.getString("lesson"), rs.getString("file"));

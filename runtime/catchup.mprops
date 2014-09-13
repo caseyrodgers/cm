@@ -4229,6 +4229,14 @@ SELECT DISTINCT im.title as lesson, im.file as lesson_file
  WHERE  im.guid = ?
 ORDER BY im.title 
 
+####
+.key=GET_LESSON_FOR_PID_LIST
+
+SELECT DISTINCT im.title as lesson, im.file as lesson_file
+  FROM  inmh_map im
+ WHERE  im.guid in ($$PID_LIST$$)
+ORDER BY im.title 
+
  
 .key=ASSIGNMENT_WHITEBOARD
  
@@ -4785,6 +4793,13 @@ SELECT DISTINCT im.title as lesson, ccs.standard_name_new
     ON   ccs.standard_name_new = ins.standard_name_new
  WHERE   cap.assign_key = ?
  ORDER BY im.title, ccs.standard_name_new
+
+####
+.key=GET_PIDS_FOR_ASSIGNMENT
+
+SELECT   pid
+  FROM   CM_ASSIGNMENT_PIDS cap
+ WHERE   cap.assign_key = ?
 
 ####
 .key=GET_CCSS_COVERAGE_FOR_CUSTOM_PROG
