@@ -5,6 +5,7 @@ import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.exam.ExamDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CompressHelper;
+import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_admin.server.model.CustomQuizQuestionManager;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
@@ -179,6 +180,32 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		return list;
 	}
 
+	public List<LessonModel> getLessonsInInmhMapForPidList(List<String> pidList) throws Exception {
+		String sqlTemplate = CmMultiLinePropertyReader.getInstance().getProperty(
+				"GET_LESSON_FOR_PID_LIST");
+		String sql = QueryHelper.createInListSQL(sqlTemplate, "$$PID_LIST$$", pidList);
+		List<LessonModel> list = null;
+		try {
+			list = getJdbcTemplate().query(sql,
+					new RowMapper<LessonModel>() {
+						@Override
+						public LessonModel mapRow(ResultSet rs, int rowNum)
+								throws SQLException {
+							LessonModel data = new LessonModel(rs
+									.getString("lesson"), rs
+									.getString("lesson_file"));
+							return data;
+						}
+					});
+		} catch (DataAccessException e) {
+			__logger.error(
+					String.format("getLessonsForPidList(): SQL: %s", sql), e);
+			throw e;
+		}
+		if (list == null)
+			list = new ArrayList<LessonModel>();
+		return list;
+	}
 	private String loadSolutionContextString(ResultSet rs) throws Exception {
 		byte[] compressed = rs.getBytes("variables");
 		if (compressed[0] != "{".getBytes("UTF-8")[0]) {
@@ -659,6 +686,34 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		return lessons;
 	}
 
+	public List<LessonModel> getLessonsAssociatedForPidList(final Connection conn, List<String> pidList)
+			throws Exception {
+		MyArrayList<LessonModel> lessons = new MyArrayList<LessonModel>();
+
+		List<String> bpList = new ArrayList<String>();
+		List<String> guidList = new ArrayList<String>();
+
+		for (String pid : pidList) {
+    		String basePid =  pid.split("\\$")[0];
+    		bpList.add(basePid);
+    		guidList.add(new ProblemID(basePid).getGUID());
+		}
+
+		Connection localConn = null;
+		if (conn == null) {
+			localConn = HMConnectionPool.getConnection();
+		}
+		lessons.addAllNoDups(getLessonsInInmhAssessmentForPidList((conn==null)?localConn:conn, bpList));
+		lessons.addAllNoDups(ExamDao.getInstance().getLessonsInHaProgramLessonsForProblemList(bpList));
+		lessons.addAllNoDups(SolutionDao.getInstance().getLessonsInInmhMapForPidList(guidList));
+		lessons.addAllNoDups(AssignmentDao.getInstance().getLessonsCorrelatedToCustomProblemList(bpList));
+		lessons.addAllNoDups(CustomQuizQuestionManager.getInstance().getLessonsInCustomQuizList((conn==null)?localConn:conn, bpList));
+
+		SqlUtilities.releaseResources(null, null, localConn);
+		
+		return lessons;
+	}
+
 	class MyArrayList<LessonModel> extends ArrayList<LessonModel> {
 		public void addAllNoDups(List<LessonModel> lessons) {
 			for(LessonModel l:lessons) {
@@ -683,20 +738,35 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 * @throws Exception
 	 */
 	public List<LessonModel> getLessonsInInmhAssessmentForPid(Connection conn, String pid) throws Exception {
+		List<String> pidList = new ArrayList<String>();
+		pidList.add(pid);
+		return getLessonsInInmhAssessmentForPidList(conn, pidList);
+	}
+
+	private static final String INMH_ASSESSMENT_SQL =
+			"select l.file,pl.lesson as title " +
+	        " from inmh_assessment_lookup l " +
+	        " JOIN ( " +
+	        "     select distinct file, lesson " +
+	        "     from HA_PROGRAM_LESSONS pl " +
+	        " ) pl   on pl.file = l.file " +
+	        " where l.pid in ($$PID_LIST$$) order by l.file ";
+
+	/**
+	 * 
+	 * @param conn
+	 * @param pidList
+	 * @return
+	 * @throws Exception
+	 */
+	public List<LessonModel> getLessonsInInmhAssessmentForPidList(Connection conn, List<String> pidList) throws Exception {
 		List<LessonModel> list = new ArrayList<LessonModel>();
 
-		String sql = 
-				"select l.file,pl.lesson as title " +
-		        " from inmh_assessment_lookup l " +
-		        " JOIN ( " +
-		        "     select distinct file, lesson " +
-		        "     from HA_PROGRAM_LESSONS pl " +
-		        " ) pl   on pl.file = l.file " +
-		        " where l.pid = ? order by l.file ";
+		String sql = QueryHelper.createInListSQL(INMH_ASSESSMENT_SQL, "$$PID_LIST$$", pidList);
+
 		PreparedStatement ps = null;
 		try {
 			ps = conn.prepareStatement(sql);
-			ps.setString(1, pid);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				String file = rs.getString("file");

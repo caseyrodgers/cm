@@ -119,8 +119,7 @@ public class CustomQuizQuestionManager {
         }
         return retData;
     }
-    
-    
+
     public List<LessonModel> getLessonsInCustomQuiz(final Connection conn, String pid) throws Exception {
     	List<LessonModel> matches = new ArrayList<LessonModel>(); 
         Set<String> keySet = _dataMap.keySet();
@@ -135,10 +134,20 @@ public class CustomQuizQuestionManager {
         }
         return matches;
     }
-
     
-    
-
+    public List<LessonModel> getLessonsInCustomQuizList(final Connection conn, List<String> pidList) throws Exception {
+    	List<LessonModel> matches = new ArrayList<LessonModel>(); 
+        Set<String> keySet = _dataMap.keySet();
+        for(String lesson: keySet) {
+        	CustomQuizLessonInfo lessonInfo = _dataMap.get(lesson);
+        	for(String lessonPid: lessonInfo.pids) {
+        		if(pidList.contains(lessonPid)) {
+        			matches.add(new LessonModel(AssignmentDao.getInstance().getLessonTitle(conn, lesson), lesson));
+        		}
+        	}
+        }
+        return matches;
+    }
 
     private List<String> getActivePids(Connection conn, String pid) throws Exception {
        PreparedStatement ps=null;

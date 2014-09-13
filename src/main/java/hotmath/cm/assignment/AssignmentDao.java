@@ -3473,11 +3473,20 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		return new AssignmentRealTimeStatsUsers(studentStatus);
 	}
 
-	public List<LessonModel> getLessonsCorrelatedToCustomProblem(String pid) {
+	public List<LessonModel> getLessonsCorrelatedToCustomProblem(String pid) throws Exception {
+		List<String> pidList = new ArrayList<String>();
+		pidList.add(pid);
+		return getLessonsCorrelatedToCustomProblemList(pidList);
+	}
 
-		String sql = "select * from CM_CUSTOM_PROBLEM_LINKED_LESSONS where pid = ?";
+	String LINKED_LESSONS_FOR_PID_LIST =
+		"select * from CM_CUSTOM_PROBLEM_LINKED_LESSONS where pid in ($$PID_LIST$$)";
+
+	public List<LessonModel> getLessonsCorrelatedToCustomProblemList(List<String> pidList) throws Exception {
+
+		String sql = QueryHelper.createInListSQL(LINKED_LESSONS_FOR_PID_LIST, "$$PID_LIST$$",  pidList);
 		List<LessonModel> lessons = getJdbcTemplate().query(sql,
-				new Object[] { pid }, new RowMapper<LessonModel>() {
+				new RowMapper<LessonModel>() {
 					@Override
 					public LessonModel mapRow(ResultSet rs, int rowNum)
 							throws SQLException {

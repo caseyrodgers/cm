@@ -15,6 +15,7 @@ import hotmath.gwt.shared.client.model.CCSSGradeLevel;
 import hotmath.gwt.shared.client.model.CCSSLesson;
 import hotmath.gwt.shared.client.model.CCSSStandard;
 import hotmath.spring.SpringManager;
+import hotmath.testset.ha.SolutionDao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -491,16 +492,19 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     }
 
 	public List<CCSSCoverageData> getCCSSCoverageForAssignment(int assignKey) throws Exception {
-    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_COVERAGE_FOR_ASSIGNMENT");
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_PIDS_FOR_ASSIGNMENT");
+    	List<String> pidList = null;
     	List<CCSSCoverageData> list = null;
     	try {
-    		list = getJdbcTemplate().query(sql, new Object[] { assignKey }, new RowMapper<CCSSCoverageData>() {
+    		pidList = getJdbcTemplate().query(sql, new Object[] { assignKey }, new RowMapper<String>() {
     			@Override
-    			public CCSSCoverageData mapRow(ResultSet rs, int rowNum) throws SQLException {
-    				CCSSCoverageData data = new CCSSCoverageData(rs.getString("lesson"), rs.getString("standard_name_new"));
-    				return data;
+				public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				String pid = rs.getString("pid");
+    				return pid;
     			}
     		});
+        	List<LessonModel> lessons = SolutionDao.getInstance().getLessonsAssociatedForPidList(null, pidList);
+        	list = getCCSSCoverageForLessons(lessons);
     	}
     	catch (DataAccessException e) {
     		LOGGER.error(String.format("getCCSSCoverageForAssignment(): assignKey: %d", assignKey), e);
