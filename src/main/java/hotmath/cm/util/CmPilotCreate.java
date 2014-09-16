@@ -136,6 +136,25 @@ public class CmPilotCreate {
                     messages.add("New HA_ADMIN record not created, using existing.");
                 }
             }
+            else {
+            	/** does exist, make sure college is set correct */
+            	
+            	String sql = "update SUBSCRIBERS set is_college = ? where id = ?";
+            	PreparedStatement ps=null;
+            	try {
+            		ps = conn.prepareStatement(sql);
+            		ps.setInt(1, isCollege?1:0);
+            		ps.setString(2, subscriberId);
+            		int updated = ps.executeUpdate();
+            		if(updated != 1) {
+            			logger.warn("no record updated for '" + subscriberId + "'");
+            		}
+            	}
+            	finally {
+            		SqlUtilities.releaseResources(null,  ps, null);
+            	}
+            	
+            }
 
             /**
              * setup default groups for user
