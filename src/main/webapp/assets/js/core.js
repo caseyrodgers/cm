@@ -270,6 +270,39 @@ function showTeacherVideo3(title, videoUrl) {
     });
 }
 
+function showVideo(ele, key) {
+	var title = ele.innerHTML;
+	var videoURI = '';
+	var type = 0;
+	if (key == 'technical-tips') {
+		videoURI = 'assets/teacher_videos/v2/TechTips-Final.mp4';
+		type = 2;
+	}
+	else if (key == 'ccss-reports') {
+		videoURI = 'assets/teacher_videos/v2/CCSSReports-FINAL2.mp4';
+		type = 2;
+	}
+	else if (key == 'student-registration-groups') {
+		videoURI = 'assets/teacher_videos/StudentRegistrationQuick/student_registration-groups.mp4';
+		type = 2;
+	}
+	else if (key == 'student-registration-quick') {
+		videoURI = 'assets/teacher_videos/StudentRegistrationQuick/student_registration-quick.mp4';
+		type = 2;
+	}
+	else if (key == 'web-links-quick') {
+		videoURI = 'assets/webinar_weblinks/WebLinksQuick.mp4';
+		type = 2;
+	}
+	
+	if (type == 2)
+    	window.open('/training-videos/show-video2.html?video='+videoURI+'&title='+title, '_blank',
+			'height=560, width=640, menubar=no, titlebar=yes, status=no, top=200, left=100');
+	else if (type == 1)
+    	window.open('/training-videos/show-video.html?video='+video+'&title='+title, '_blank',
+		'height=560, width=640, menubar=no, titlebar=yes, status=no, top=200, left=100');
+}
+
 function showTeacherVideo(name) {
         if (_videoOverlay != null) {
                 showDialog('Sorry, only one video may be viewed at a time', 'Training Video Message', 4);

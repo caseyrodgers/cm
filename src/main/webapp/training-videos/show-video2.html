@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <script src="/assets/js/core.js"></script>
+    <script type="text/javascript" src="/assets/flowplayer/flowplayer-3.1.4.min.js"></script>
+  </head>
+  <body style='margin: 0;border: none;background: #1a1a1a;'>
+		<!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
+		<a id="player" style="display:block;width:100%;height:100%"></a> 
+        
+    	<!-- this will install flowplayer inside previous A- tag. -->
+		<script>
+		
+
+			// get video param set in anchor
+			var videoURI = getQueryStringParameter('video', document.location.href);
+			var title = getQueryStringParameter('title', document.location.href);
+			//alert("video: " + videoURI + ", title: " + title);
+			if (title) {
+				document.title = title;
+			} else {
+				document.title = 'Catchup Math Video';
+			}
+
+			if (!videoURI) {
+				alert('video parameter must be specified');
+			} else {
+				var videoURL = 'http://catchupmath.com/' + videoURI;
+				var ele = document.getElementById('player');
+				ele.setAttribute("href", videoURL);
+
+				var params = {};
+				params.clip = {
+					autoPlay : true
+				};
+				params.key = '$a12fd4b15a588479e9e';
+				flowplayer("player",
+						"/assets/flowplayer/flowplayer.commercial-3.1.5.swf",
+						params);
+			}
+		</script>
+  </body>
+</html>
