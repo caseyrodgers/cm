@@ -274,6 +274,7 @@ function showVideo(ele, key) {
 	var title = ele.innerHTML;
 	var videoURI = '';
 	var type = 0;
+	var firstFrame = '';
 	if (key == 'technical-tips') {
 		videoURI = 'assets/teacher_videos/v2/TechTips-Final.mp4';
 		type = 2;
@@ -283,7 +284,7 @@ function showVideo(ele, key) {
 		type = 2;
 	}
 	else if (key == 'student-registration-groups') {
-		videoURI = 'assets/teacher_videos/StudentRegistrationQuick/student_registration-groups.mp4';
+		videoURI = 'assets/teacher_videos/StudentRegistrationGroups/student_registration-groups.mp4';
 		type = 2;
 	}
 	else if (key == 'student-registration-quick') {
@@ -295,12 +296,20 @@ function showVideo(ele, key) {
 		type = 2;
 	}
 	
+	else if (key == 'available-content') {
+		videoURI = 'assets/teacher_videos/Available%20Content/Available%20Content_controller.swf';
+		firstFrame = 'assets/teacher_videos/Available%20Content/FirstFrame.png;'
+		type = 1;
+		//alert("key: " + key + ", videoURI: " + videoURI + ", firstFrame: " + firstFrame);
+	}
+
 	if (type == 2)
     	window.open('/training-videos/show-video2.html?video='+videoURI+'&title='+title, '_blank',
 			'height=560, width=640, menubar=no, titlebar=yes, status=no, top=200, left=100');
-	else if (type == 1)
-    	window.open('/training-videos/show-video.html?video='+video+'&title='+title, '_blank',
+	else if (type == 1) {
+    	window.open('/training-videos/show-video.html?video='+videoURI+'&title='+title+'&frame='+firstFrame, '_blank',
 		'height=560, width=640, menubar=no, titlebar=yes, status=no, top=200, left=100');
+    }
 }
 
 function showTeacherVideo(name) {
