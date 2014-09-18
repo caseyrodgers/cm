@@ -295,12 +295,26 @@ function showVideo(ele, key) {
 		videoURI = 'assets/webinar_weblinks/WebLinksQuick.mp4';
 		type = 2;
 	}
-	
+
 	else if (key == 'available-content') {
-		videoURI = 'assets/teacher_videos/Available%20Content/Available%20Content_controller.swf';
-		firstFrame = 'assets/teacher_videos/Available%20Content/FirstFrame.png;'
+		videoURI = 'assets/teacher_videos/Available Content/Available Content_controller.swf';
+		firstFrame = 'assets/teacher_videos/Available Content/FirstFrame.png';
 		type = 1;
-		//alert("key: " + key + ", videoURI: " + videoURI + ", firstFrame: " + firstFrame);
+	}
+	else if (key == 'custom-programs') {
+		videoURI = 'assets/teacher_videos/Custom Programs and quizzes TM/Custom Programs and quizzes TM_controller.swf';
+		firstFrame = 'assets/teacher_videos/Custom Programs and quizzes TM/FirstFrame.png';
+		type = 1;
+	}
+	else if (key == 'parallel-programs') {
+		videoURI = 'assets/teacher_videos/Using Parallel Programs/Using Parallel Programs_controller.swf';
+		firstFrame = 'assets/teacher_videos/Using Parallel Programs/FirstFrame.png';
+		type = 1;
+	}
+	else if (key == 'student-how-to') {
+		videoURI = 'assets/teacher_videos/Student video last time/Student video last time_controller.swf';
+		firstFrame = 'assets/teacher_videos/Student video last time/FirstFrame.png';
+		type = 1;
 	}
 
 	if (type == 2)
@@ -310,6 +324,10 @@ function showVideo(ele, key) {
     	window.open('/training-videos/show-video.html?video='+videoURI+'&title='+title+'&frame='+firstFrame, '_blank',
 		'height=560, width=640, menubar=no, titlebar=yes, status=no, top=200, left=100');
     }
+	else {
+		alert(key + " video NOT FOUND!");
+	}
+	
 }
 
 function showTeacherVideo(name) {
