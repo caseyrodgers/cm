@@ -64,7 +64,10 @@ function setupPage() {
     var el = document.createElement("a");
     el.href='/how-it-works';
     el.innerHTML = '<img src="/assets/images/blank-25x25.png"/>';
-    document.getElementById("header").appendChild(el);
+    var he = document.getElementById('header');
+    if(he) {
+    	he.appendChild(el);
+    }
  }
 
 function setupForMobile() {
@@ -231,8 +234,9 @@ function closeTeacherVideo() {
     _videoOverlay = null;
 }
 
+
+
 function closeTeacherVideo2() {
-	alert('test');
     _videoOverlay2.set("bodyContent", "");  // make sure video stops
     _videoOverlay2.hide();
     _videoOverlay2 = null;
