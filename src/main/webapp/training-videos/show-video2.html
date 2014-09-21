@@ -10,12 +10,10 @@
         
     	<!-- this will install flowplayer inside previous A- tag. -->
 		<script>
-		
 
 			// get video param set in anchor
 			var videoURI = getQueryStringParameter('video', document.location.href);
 			var title = getQueryStringParameter('title', document.location.href);
-			//alert("video: " + videoURI + ", title: " + title);
 			if (title) {
 				document.title = title;
 			} else {
