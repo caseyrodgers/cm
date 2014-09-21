@@ -533,7 +533,7 @@ var Videos =
 	 {
 		 key:        'managing-students',
 		 title:      'Managing Students',
-		 firstFrame: 'assets/teacher_videos/assets/teacher_videos/Managing Students/FirstFrame.png',
+		 firstFrame: 'assets/teacher_videos/Managing Students/FirstFrame.png',
 		 videoURI:   'assets/teacher_videos/Managing Students/Managing Students_controller.swf', 
 	     type:       'flv'
  	 },
