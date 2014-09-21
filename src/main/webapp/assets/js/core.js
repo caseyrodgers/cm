@@ -491,8 +491,8 @@ var Videos =
 	 {
 		 key:        'available-content',
 		 title:      'Available Content',
-		 firstFrame: 'assets/teacher_videos/Available%20Content/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Available%20Content/Available%20Content_controller.swf', 
+		 firstFrame: 'assets/teacher_videos/Available Content/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Available Content/Available Content_controller.swf', 
 	     type:       'flv'
  	 },
 	 {
@@ -505,8 +505,8 @@ var Videos =
 	 {
 		 key:        'custom-programs',
 		 title:      'Custom Programs and Quizzes',
-		 firstFrame: 'assets/teacher_videos/Custom%20Programs%20and%20quizzes%20TM/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Custom%20Programs%20and%20quizzes%20TM/Custom%20Programs%20and%20quizzes%20TM_controller.swf', 
+		 firstFrame: 'assets/teacher_videos/Custom Programs and quizzes TM/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Custom Programs and quizzes TM/Custom Programs and quizzes TM_controller.swf', 
 	     type:       'flv'
  	 },
 	 {
@@ -526,36 +526,36 @@ var Videos =
 	 {
 		 key:        'managing-groups',
 		 title:      'Managing Groups',
-		 firstFrame: 'assets/teacher_videos/Managing%20Groups/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Managing%20Groups/Managing%20Groups_controller.swf', 
+		 firstFrame: 'assets/teacher_videos/Managing Groups/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Managing Groups/Managing Groups_controller.swf', 
 	     type:       'flv'
  	 },
 	 {
 		 key:        'managing-students',
 		 title:      'Managing Students',
-		 firstFrame: 'assets/teacher_videos/assets/teacher_videos/Managing%20Students/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Managing%20Students/Managing%20Students_controller.swf', 
+		 firstFrame: 'assets/teacher_videos/assets/teacher_videos/Managing Students/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Managing Students/Managing Students_controller.swf', 
 	     type:       'flv'
  	 },
 	 {
 		 key:        'overview',
 		 title:      'Overview of Teacher Resources',
-		 firstFrame: 'assets/teacher_videos/Overview%20of%20Teacher%20Resources/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Overview%20of%20Teacher%20Resources/Overview%20of%20Teacher%20Resources_controller.swf', 
+		 firstFrame: 'assets/teacher_videos/Overview of Teacher Resources/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Overview of Teacher Resources/Overview of Teacher Resources_controller.swf', 
 	     type:       'flv'
  	 },
 	 {
 		 key:        'parallel-programs',
 		 title:      'Parallel Programs',
-		 firstFrame: 'assets/teacher_videos/Using%20Parallel%20Programs/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Using%20Parallel%20Programs/Using%20Parallel%20Programs_controller.swf', 
+		 firstFrame: 'assets/teacher_videos/Using Parallel Programs/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Using Parallel Programs/Using Parallel Programs_controller.swf', 
 	     type:       'flv'
  	 },
 	 {
 		 key:        'registering-students',
 		 title:      'Registering Students',
-		 firstFrame: 'assets/teacher_videos/Registering%20Students/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Registering%20Students/Registering%20Students_controller.swf', 
+		 firstFrame: 'assets/teacher_videos/Registering Students/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Registering Students/Registering Students_controller.swf', 
 	     type:       'flv'
  	 },
 	 {
@@ -568,15 +568,15 @@ var Videos =
  	 {
 		 key:        'sample-session',
 		 title:      'Sample Student Session',
-		 firstFrame: 'assets/teacher_videos/Sample%20Student%20Session/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Sample%20Student%20Session/Sample%20Student%20Session_controller.swf', 
+		 firstFrame: 'assets/teacher_videos/Sample Student Session/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Sample Student Session/Sample Student Session_controller.swf', 
 	     type:       'flv'
  	 },
  	 {
 		 key:        'special-needs',
 		 title:      'At Risk and Special Needs',
-		 firstFrame: 'assets/teacher_videos/Special%20Needs%20ideas/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Special%20Needs%20ideas/Special%20Needs%20ideas_controller.swf', 
+		 firstFrame: 'assets/teacher_videos/Special Needs ideas/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Special Needs ideas/Special Needs ideas_controller.swf', 
 	     type:       'flv'
  	 },
 	 {
@@ -589,8 +589,8 @@ var Videos =
 	 {
 		 key:        'student-how-to',
 		 title:      'Student How To',
-		 firstFrame: 'assets/teacher_videos/Student%20video%20last%20time/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Student%20video%20last%20time/Student%20video%20last%20time_controller.swf',
+		 firstFrame: 'assets/teacher_videos/Student video last time/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Student video last time/Student video last time_controller.swf',
 	     type:       'flv'
 	 },
 	 {
