@@ -234,8 +234,6 @@ function closeTeacherVideo() {
     _videoOverlay = null;
 }
 
-
-
 function closeTeacherVideo2() {
     _videoOverlay2.set("bodyContent", "");  // make sure video stops
     _videoOverlay2.hide();
@@ -274,149 +272,93 @@ function showTeacherVideo3(title, videoUrl) {
     });
 }
 
-function showVideo(ele, key) {
-	var title = ele.innerHTML;
+function getVideo(key) {
+	for (var i=0; i<Videos.length; i++) {
+		if (key == Videos[i].key) {
+			return Videos[i];
+	    }
+	}
+	return null;
+}
+
+function showVideo(obj, key) {
+	var title = obj.innerHTML;
+	if (title == null) title = obj;
+	
 	var videoURI = '';
-	var type = 0;
+	var type = '';
 	var firstFrame = '';
-	if (key == 'technical-tips') {
-		videoURI = 'assets/teacher_videos/v2/TechTips-Final.mp4';
-		type = 2;
+
+	var theVideo = getVideo(key);
+
+	if (theVideo != null) {
+	    videoURI = theVideo.videoURI;
+	    type = theVideo.type;
+	    if (title == null || title == '')
+	    	title = theVideo.title;
+	    firstFrame = theVideo.firstFrame;
 	}
-	else if (key == 'ccss-reports') {
-		videoURI = 'assets/teacher_videos/v2/CCSSReports-FINAL2.mp4';
-		type = 2;
-	}
-	else if (key == 'student-registration-groups') {
-		videoURI = 'assets/teacher_videos/StudentRegistrationGroups/student_registration-groups.mp4';
-		type = 2;
-	}
-	else if (key == 'student-registration-quick') {
-		videoURI = 'assets/teacher_videos/StudentRegistrationQuick/student_registration-quick.mp4';
-		type = 2;
-	}
-	else if (key == 'web-links-quick') {
-		videoURI = 'assets/webinar_weblinks/WebLinksQuick.mp4';
-		type = 2;
+	else {
+		alert("Sorry, the [" + key + "] video was not found!");
+		return;
 	}
 
-	else if (key == 'available-content') {
-		videoURI = 'assets/teacher_videos/Available Content/Available Content_controller.swf';
-		firstFrame = 'assets/teacher_videos/Available Content/FirstFrame.png';
-		type = 1;
-	}
-	else if (key == 'custom-programs') {
-		videoURI = 'assets/teacher_videos/Custom Programs and quizzes TM/Custom Programs and quizzes TM_controller.swf';
-		firstFrame = 'assets/teacher_videos/Custom Programs and quizzes TM/FirstFrame.png';
-		type = 1;
-	}
-	else if (key == 'parallel-programs') {
-		videoURI = 'assets/teacher_videos/Using Parallel Programs/Using Parallel Programs_controller.swf';
-		firstFrame = 'assets/teacher_videos/Using Parallel Programs/FirstFrame.png';
-		type = 1;
-	}
-	else if (key == 'student-how-to') {
-		videoURI = 'assets/teacher_videos/Student video last time/Student video last time_controller.swf';
-		firstFrame = 'assets/teacher_videos/Student video last time/FirstFrame.png';
-		type = 1;
-	}
-
-	if (type == 2)
+	if (type == 'mp4')
     	window.open('/training-videos/show-video2.html?video='+videoURI+'&title='+title, '_blank',
 			'height=560, width=640, menubar=no, titlebar=yes, status=no, top=200, left=100');
-	else if (type == 1) {
+	else if (type == 'flv') {
     	window.open('/training-videos/show-video.html?video='+videoURI+'&title='+title+'&frame='+firstFrame, '_blank',
 		'height=560, width=640, menubar=no, titlebar=yes, status=no, top=200, left=100');
     }
 	else {
-		alert(key + " video NOT FOUND!");
-	}
-	
+		alert('Sorry, video type [' + type + '] not recognized!');
+	}	
 }
 
-function showTeacherVideo(name) {
-        if (_videoOverlay != null) {
-                showDialog('Sorry, only one video may be viewed at a time', 'Training Video Message', 4);
-                return;
-        }
+function showTeacherVideo(obj, key) {
+	if (_videoOverlay != null) {
+		showDialog('Sorry, only one video may be viewed at a time', 'Training Video Message', 4);
+		return;
+	}
 
-        var html = '';
-        var closeFoot = '';
-        var title = 'Catchup Math Training Video';
+	var title = obj.innerHTML;
+	if (title == null) {
+		title = obj;
+	}
 
-        if (name =='overview') {
-             html = '<iframe src="/training-videos/embedded-overview.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-         closeFoot;
-             title = 'Overview of Teacher Resources';
-        }
-        else if (name == 'sample-session') {
-             html = '<iframe src="/training-videos/embedded-sample-session.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-         closeFoot;
-             title = 'Sample Student Session';
-        }
-        else if (name == 'available-content') {
-             html = '<iframe src="/training-videos/embedded-available-content.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-         closeFoot;
-             title = 'Available Content';
-        }
-        else if (name == 'registering-students') {
-             html = '<iframe src="/training-videos/embedded-registering-students.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-         closeFoot;
-             title = 'Registering Students';
-        }
-        else if (name == 'managing-students') {
-             html = '<iframe src="/training-videos/embedded-managing-students.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-         closeFoot;
-             title = 'Managing Students';
-        }
-        else if (name == 'managing-groups') {
-             html = '<iframe src="/training-videos/embedded-managing-groups.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-         closeFoot;
-             title = 'Managing Groups';
-        }
-        else if (name == 'custom-programs') {
-            html = '<iframe src="/training-videos/embedded-custom-programs.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-        closeFoot;
-            title = 'Custom Programs and Quizzes';
-       }
-        else if (name == 'parallel-programs') {
-            html = '<iframe src="/training-videos/embedded-parallel-programs.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-        closeFoot;
-            title = 'Parallel Programs';
-       }
-       else if (name == 'special-needs') {
-            html = '<iframe src="/training-videos/embedded-special-needs.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-        closeFoot;
-            title = 'At Risk and Special Needs';
-       }
-       else if (name == 'student-how-to') {
-            html = '<iframe src="/training-videos/embedded-student-how-to.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-        closeFoot;
-            title = 'Student How To';
-       }
-       else if (name == 'weblinks-quick') {
-            html = '<iframe src="/training-videos/embedded-weblinks.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-        closeFoot;
-            title = 'Web Links Quick Overview';
-       }
-       else if (name == 'student_registration-quick') {
-           html = '<iframe src="/training-videos/embedded-student_registration-quick.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-       closeFoot;
-           title = 'Student Registration - Quick Start';
-      }
-      else if (name == 'student_registration') {
-           html = '<iframe src="/training-videos/embedded-student_registration-groups.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-       closeFoot;
-           title = 'Registering Groups and Classes';
-      }
-      else if (name == 'technical-tips') {
-          html = '<iframe src="/training-videos/embedded-technical-tips.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-      closeFoot;
-          title = 'Technical Tips';
-     }
-      else if(name === 'overview-reports') {
-    	  
-      }
+	var videoURI = '';
+	var type = '';
+	var firstFrame = '';
+
+	var theVideo = getVideo(key);
+
+	if (theVideo != null) {
+		videoURI = theVideo.videoURI;
+		type = theVideo.type;
+		if (title == null || title == '')
+			title = theVideo.title;
+		firstFrame = theVideo.firstFrame;
+	}
+	else {
+		alert("Sorry, the [" + key + "] video was not found!");
+		return;
+	}
+
+	var html = '';
+	var closeFoot = '';
+	//alert("videoURI: " + videoURI + ", title: " + title + ", type: " + type + ", frame: " + firstFrame);
+
+	if (type == 'flv') {
+		html = '<iframe src="/training-videos/embedded-wrapper-flv.html?video=' + encodeURI(videoURI) +
+		'&frame=' + encodeURI(firstFrame) + '" ' +
+		' width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
+		closeFoot;
+	}
+	else if (type == 'mp4') {
+		html = '<iframe src="/training-videos/embedded-wrapper-mp4.html?video=' + encodeURI(videoURI) + '" ' +
+		' width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
+		closeFoot;
+	}
         	
     var head = '<a href="#" onclick="closeTeacherVideo();return false;" class="close"><span>close</span> X</a>' + title;
 
@@ -479,9 +421,6 @@ function formatQuote(quote) {
            '</p>';
 }
 
-
-
-
 var _overlay = null;
 
 function showDialog(msg, title, indexVal) {
@@ -512,6 +451,177 @@ function showDialog(msg, title, indexVal) {
     });
 }
 
+var Videos =
+  [
+     {
+	     key:        'assessment-reporting',
+	     title:      'Assessment Reporting Tool',
+	     firstFrame: '',
+	     videoURI:   'assets/teacher_videos/v2/AssessmentReportingTool-Final2.mp4',
+         type:       'mp4'
+     },
+     {
+	     key:        'assignments-course-tests',
+	     title:      'Course Tests',
+	     firstFrame: '',
+	     videoURI:   'assets/teacher_videos/v2/Assignments-CourseTests-FInal.mp4',
+         type:       'mp4'
+     },
+     {
+	     key:        'assignments-creating',
+	     title:      'How to Create an Assignment',
+	     firstFrame: '',
+	     videoURI:   'assets/teacher_videos/v2/Assignments-Creating-090814.mp4',
+         type:       'mp4'
+     },
+     {
+	     key:        'assignments-custom',
+	     title:      'Teacher-created Problems',
+	     firstFrame: '',
+	     videoURI:   'assets/teacher_videos/v2/Assignments-CPs-9-8-14.mp4',
+         type:       'mp4'
+     },
+     {
+	     key:        'assignments-overview',
+	     title:      'Assignments Overview',
+	     firstFrame: '',
+	     videoURI:   'assets/teacher_videos/v2/Assignments-Overview-090714-FINAL.mp4',
+         type:       'mp4'
+     },
+	 {
+		 key:        'available-content',
+		 title:      'Available Content',
+		 firstFrame: 'assets/teacher_videos/Available%20Content/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Available%20Content/Available%20Content_controller.swf', 
+	     type:       'flv'
+ 	 },
+	 {
+		 key:        'ccss-reports',
+		 title:      'Common Core Reports',
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/v2/CCSSReports-FINAL2.mp4', 
+	     type:       'mp4'
+ 	 },
+	 {
+		 key:        'custom-programs',
+		 title:      'Custom Programs and Quizzes',
+		 firstFrame: 'assets/teacher_videos/Custom%20Programs%20and%20quizzes%20TM/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Custom%20Programs%20and%20quizzes%20TM/Custom%20Programs%20and%20quizzes%20TM_controller.swf', 
+	     type:       'flv'
+ 	 },
+	 {
+		 key:        'export-reports',
+		 title:      'Export Reports',
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/v2/ExportReport-Final2.mp4', 
+	     type:       'mp4'
+	 },
+     {
+	     key:        'highlights',
+	     title:      'Highlights',
+	     firstFrame: '',
+	     videoURI:   'assets/teacher_videos/v2/HighlightsReports-Final2.mp4',
+         type:       'mp4'
+     },
+	 {
+		 key:        'managing-groups',
+		 title:      'Managing Groups',
+		 firstFrame: 'assets/teacher_videos/Managing%20Groups/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Managing%20Groups/Managing%20Groups_controller.swf', 
+	     type:       'flv'
+ 	 },
+	 {
+		 key:        'managing-students',
+		 title:      'Managing Students',
+		 firstFrame: 'assets/teacher_videos/assets/teacher_videos/Managing%20Students/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Managing%20Students/Managing%20Students_controller.swf', 
+	     type:       'flv'
+ 	 },
+	 {
+		 key:        'overview',
+		 title:      'Overview of Teacher Resources',
+		 firstFrame: 'assets/teacher_videos/Overview%20of%20Teacher%20Resources/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Overview%20of%20Teacher%20Resources/Overview%20of%20Teacher%20Resources_controller.swf', 
+	     type:       'flv'
+ 	 },
+	 {
+		 key:        'parallel-programs',
+		 title:      'Parallel Programs',
+		 firstFrame: 'assets/teacher_videos/Using%20Parallel%20Programs/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Using%20Parallel%20Programs/Using%20Parallel%20Programs_controller.swf', 
+	     type:       'flv'
+ 	 },
+	 {
+		 key:        'registering-students',
+		 title:      'Registering Students',
+		 firstFrame: 'assets/teacher_videos/Registering%20Students/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Registering%20Students/Registering%20Students_controller.swf', 
+	     type:       'flv'
+ 	 },
+	 {
+		 key:        'reports-overview',
+		 title:      'Overview of Reports',
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/v2/ReportsOverview-Final2.mp4',
+	     type:       'mp4'
+ 	 },
+ 	 {
+		 key:        'sample-session',
+		 title:      'Sample Student Session',
+		 firstFrame: 'assets/teacher_videos/Sample%20Student%20Session/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Sample%20Student%20Session/Sample%20Student%20Session_controller.swf', 
+	     type:       'flv'
+ 	 },
+ 	 {
+		 key:        'special-needs',
+		 title:      'At Risk and Special Needs',
+		 firstFrame: 'assets/teacher_videos/Special%20Needs%20ideas/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Special%20Needs%20ideas/Special%20Needs%20ideas_controller.swf', 
+	     type:       'flv'
+ 	 },
+	 {
+		 key:        'student-detail-history',
+		 title:      'Student Detail History',
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/v2/StudentDetailHistoryFinal2.mp4',
+	     type:       'mp4'
+	 },
+	 {
+		 key:        'student-how-to',
+		 title:      'Student How To',
+		 firstFrame: 'assets/teacher_videos/Student%20video%20last%20time/FirstFrame.png',
+		 videoURI:   'assets/teacher_videos/Student%20video%20last%20time/Student%20video%20last%20time_controller.swf',
+	     type:       'flv'
+	 },
+	 {
+		 key:        'student-registration-groups',
+		 title:      'Registering Groups and Classes',
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/student_registration-groups.mp4',
+	     type:       'mp4'
+ 	 },
+	 {
+		 key:        'student-registration-quick',
+		 title:      'Registering Students - Quick Start',
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/StudentRegistrationQuick/student_registration-quick.mp4',
+	     type:       'mp4'
+ 	 },
+	 {
+		 key:        'technical-tips',
+		 title:      'Technical Tips',
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/v2/TechTips-Final.mp4',
+	     type:       'mp4'
+ 	 },
+	 {
+		 key:        'web-links-quick',
+		 title:      'Web Links Quick Overview',
+		 firstFrame: '',
+		 videoURI:   'assets/webinar_weblinks/WebLinksQuick.mp4',
+	     type:       'mp4'
+	 }
+  ];
 
 var Quotes =
     [

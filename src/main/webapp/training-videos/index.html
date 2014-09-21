@@ -163,39 +163,39 @@ pageTracker._trackPageview();
                         
                         <h2>Registering Students</h2>
                         <ul>
-                            <li><h3><a href="#" onclick="showTeacherVideo('student_registration-quick')">Registering Students - Quick Start</a> 2 mins</h3></li>
-                            <li><h3><a href="#" onclick="showTeacherVideo('student_registration')">Registering Groups and Classes</a> 4 mins</h3></li>
+                            <li><h3><a href="#" onclick="showTeacherVideo(this, 'student-registration-quick')">Registering Students - Quick Start</a> 2 mins</h3></li>
+                            <li><h3><a href="#" onclick="showTeacherVideo(this, 'student-registration-groups')">Registering Groups and Classes</a> 4 mins</h3></li>
                         </ul>
                         
                         <h2>Generating & Interpreting Reports</h2>
                         <ul>
                             
-                            <li><h3><a href="#" onclick="showTeacherVideo2(this, 'ReportsOverview-Final2.mp4')">Overview of Reports</a> 4 mins</h3></li>
-                            <li><h3><a href="#" onclick="showTeacherVideo2(this, 'StudentDetailHistoryFinal2.mp4')">Student Detail History</a> 9 mins</h3></li>
-                            <li><h3><a href="#" onclick="showTeacherVideo2(this, 'AssessmentReportingTool-Final2.mp4')">Assessment Reporting Tool</a> 9 mins</h3></li>
-                            <li><h3><a href="#" onclick="showTeacherVideo2(this, 'HighlightsReports-Final2.mp4')">Highlights</a> 9 mins</h3></li>
-                            <li><h3><a href="#" onclick="showTeacherVideo2(this, 'ExportReport-Final2.mp4')">Export Reports</a> 4 mins</h3></li>
-                            <li><h3><a href="#" onclick="showTeacherVideo2(this, 'CCSSReports-FINAL2.mp4')">Common Core Reports</a> 4 mins</h3></li>
+                            <li><h3><a href="#" onclick="showTeacherVideo(this, 'reports-overview')">Overview of Reports</a> 4 mins</h3></li>
+                            <li><h3><a href="#" onclick="showTeacherVideo(this, 'student-detail-history')">Student Detail History</a> 9 mins</h3></li>
+                            <li><h3><a href="#" onclick="showTeacherVideo(this, 'assessment-reporting')">Assessment Reporting Tool</a> 9 mins</h3></li>
+                            <li><h3><a href="#" onclick="showTeacherVideo(this, 'highlights')">Highlights</a> 9 mins</h3></li>
+                            <li><h3><a href="#" onclick="showTeacherVideo(this, 'export-reports')">Export Reports</a> 4 mins</h3></li>
+                            <li><h3><a href="#" onclick="showTeacherVideo(this, 'ccss-reports')">Common Core Reports</a> 4 mins</h3></li>
                         </ul>
                                       
                         <h2>Technical Support</h2>
                         <ul>
-                            <li><h3><a href="#" onclick="showTeacherVideo2(this, 'TechTips-Final.mp4');return false">Technical Tips</a> 4 mins</h3></li>
+                            <li><h3><a href="#" onclick="showTeacherVideo(this, 'technical-tips');return false">Technical Tips</a> 4 mins</h3></li>
                         </ul>
                         
                         
                         <h2>Assignments</h2>
                         <ul>
-                            <li><h3><a href="#" onclick="showTeacherVideo2(this, 'Assignments-Overview-090714-FINAL.mp4');return false">Overview</a> 1 mins</h3></li>
-                            <li><h3><a href="#" onclick="showTeacherVideo2(this, 'Assignments-Creating-090814.mp4');return false">How to Create an Assignment</a> 7 mins</h3></li>
-                            <li><h3><a href="#" onclick="showTeacherVideo2(this, 'Assignments-CPs-9-8-14.mp4');return false">Teacher-created Problems</a> 7 mins</h3></li>
-                            <li><h3><a href="#" onclick="showTeacherVideo2(this, 'Assignments-CourseTests-FInal.mp4');return false">Course Tests</a> 4 mins</h3></li>
+                            <li><h3><a href="#" onclick="showTeacherVideo(this, 'assignments-overview');return false">Overview</a> 1 mins</h3></li>
+                            <li><h3><a href="#" onclick="showTeacherVideo(this, 'assignments-creating');return false">How to Create an Assignment</a> 7 mins</h3></li>
+                            <li><h3><a href="#" onclick="showTeacherVideo(this, 'assignments-custom');return false">Teacher-created Problems</a> 7 mins</h3></li>
+                            <li><h3><a href="#" onclick="showTeacherVideo(this, 'assignments-course-tests');return false">Course Tests</a> 4 mins</h3></li>
                         </ul>
                         
                         
                         <h2>Miscellaneous</h2>
                         <ul>
-                             <li><h3><a href="#" onclick="showTeacherVideo('overview');return false">Overview of Teacher Resources</a> 15 mins</h3></li>
+                             <li><h3><a href="#" onclick="showVideoIframe(this, 'overview');return false">Overview of Teacher Resources</a> 15 mins</h3></li>
                              <li><h3><a href="#" onclick="showTeacherVideo('available-content');return false">Available Content</a> 15 mins</h3></li>
                              <li><h3><a href="#" onclick="showTeacherVideo('registering-students');return false">Registering Students</a> 25 mins</h3></li>
                              <li><h3><a href="#" onclick="showTeacherVideo('managing-students');return false">Managing Students</a> 25 mins</h3></li>
@@ -418,7 +418,7 @@ pageTracker._trackPageview();
 		if(getQueryStringParameter('view')) {
 			var view = getQueryStringParameter('view');
 			if (view != 'technical-tips')
-    		    showTeacherVideo(getQueryStringParameter('view'));
+    		    showTeacherVideo('', getQueryStringParameter('view'));
 			else
 				showTeacherVideo3('Technical Tips', 'TechTips-Final.mp4');
 		 }
