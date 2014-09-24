@@ -15,9 +15,8 @@
   <meta name="keywords" content="Catchup Math, login, school, school account, personal, personal account, account, student, math" >
 <title>Catchup Math Login Error Page</title>
 <!-- InstanceEndEditable -->
-        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.2.0/build/cssreset/reset-min.css">
-        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.2.0/build/cssgrids/grids-min.css">
-        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Cantarell">
+        <link rel="stylesheet" type="text/css" href="/assets/css/yahooapis/reset-3.2.0-min.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/yahooapis/grids-3.2.0-min.css">
         <link rel="stylesheet" type="text/css" href="/assets/css/SexyButtons/sexybuttons.css">
         <link rel="stylesheet" type="text/css" href="/assets/css/core.css">
 <!--[if IE]>
@@ -26,6 +25,10 @@
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script>
+var _protocol = document.location.protocol;
+document.write(unescape("%3Cscript src='" + _protocol + "//fonts.googleapis.com/css?family=Cantarell' type='text/javascript'%3E%3C/script%3E"));
 </script>
 <script type="text/javascript">
 try {
@@ -247,7 +250,7 @@ pageTracker._trackPageview();
                         <ul>
                             <li id='student_video_link'>
                                 <img src='/assets/images/arrow_right_small.png'/>
-                                <a href='#' onclick='showMonaMotivationalVideo();return false;'>Student Video
+                                <a href='#' onclick='showStudentVideo();return false;'>Student Video
                                 </a>
                             </li>
                             <li>
@@ -298,6 +301,11 @@ pageTracker._trackPageview();
                         <ul class='sitemap-links'>
                             <li>
                                 <img src='/assets/images/arrow_right_small_red.png'/>
+                                <a href='/math-for-all.html'>Community Access
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small_red.png'/>
                                 <a href='/support.html'>Support
                                 </a>
                             </li>
@@ -335,12 +343,13 @@ pageTracker._trackPageview();
         <!-- Footer -->
       <div class='yui3-g' id='footer'>
             <div class='yui3-u-1'>
-                <div class='copyright'>Copyright &copy; 2012 Hotmath, Inc.</div>
+                <div class='copyright'>Copyright &copy; 2014 Hotmath, Inc.</div>
             </div>
         </div>          
         
-<script src="http://yui.yahooapis.com/3.5.1/build/yui/yui-min.js" type="text/javascript"></script>
+<script src="/assets/js/yahooapis/yui-3.5.1-min.js" type="text/javascript"></script>
 <script src='/assets/js/core.js'></script>
+<script src='/assets/js/video-utils.js'></script>
         <!-- InstanceBeginEditable name="AfterJavascriptLoad" -->
 <script>CmPage.menuItem = 6;</script>
                 <script>

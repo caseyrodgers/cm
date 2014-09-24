@@ -282,7 +282,7 @@ pageTracker._trackPageview();
                         <ul>
                             <li id='student_video_link'>
                                 <img src='/assets/images/arrow_right_small.png'/>
-                                <a href='#' onclick='showMonaMotivationalVideo();return false;'>Student Video
+                                <a href='#' onclick='showStudentVideo();return false;'>Student Video
                                 </a>
                             </li>
                             <li>
@@ -381,6 +381,7 @@ pageTracker._trackPageview();
         
 <script src="/assets/js/yahooapis/yui-3.5.1-min.js" type="text/javascript"></script>
 <script src='/assets/js/core.js'></script>
+<script src='/assets/js/video-utils.js'></script>
         <!-- InstanceBeginEditable name="AfterJavascriptLoad" --><!-- AfterJavascriptLoad -->
 		<script>
 		CmPage.sticky = [0,6];
