@@ -73,6 +73,10 @@ function showVideo(obj, key) {
 	}	
 }
 
+function showStudentVideo() {
+    showTeacherVideo('', 'student-how-to');
+}
+
 function showTeacherVideo(obj, key) {
 
 	var title = obj.innerHTML;
@@ -137,6 +141,39 @@ function showTeacherVideo(obj, key) {
 
                        _videoOverlay.render();
     });
+}
+
+var _monaOverlay;
+
+function showMonaMotivationalVideo() {
+    var closeFoot = '';
+
+    var html = '<iframe src="/motivational_video/" width="320" height="265px" scrolling="no" frameborder="no"></iframe>' +
+              closeFoot;
+
+    var head = '<a href="#" onclick="closeMonaVideo();return false" class="close"><span>close</span> X</a>' + "Catchup Math Motivational Video";
+
+    YUI().use('anim','overlay',
+                    function(Y) {
+                        _monaOverlay = new Y.Overlay(
+                                {
+                                    id:"mona-video",
+                                    width : "328px",
+                                    centered : true,
+                                    headerContent : head,
+                                    bodyContent : html,
+                                    zIndex : 2,
+                                    visible:true
+                                });
+
+                       _monaOverlay.render();
+    });
+}
+
+/** Closed from close button */
+function closeMonaVideo() {
+    _monaOverlay.set("bodyContent", "");  // make sure video stops
+    _monaOverlay.hide();
 }
 
 function getVideo(key) {

@@ -124,40 +124,6 @@ YUI().use('node',function(Y) {
 
 var _overlay=null;
 
-function showMonaMotivationalVideo() {
-    var closeFoot = '';
-
-
-    var html = '<iframe src="/motivational_video/" width="320" height="265px" scrolling="no" frameborder="no"></iframe>' +
-              closeFoot;
-
-    var head = '<a href="#" onclick="closeMonaVideo();return false" class="close"><span>close</span> X</a>' + "Catchup Math Motivational Video";
-
-
-
-    YUI().use('anim','overlay',
-                    function(Y) {
-                        _overlay = new Y.Overlay(
-                                {
-                                    id:"mona-video",
-                                    width : "328px",
-                                    centered : true,
-                                    headerContent : head,
-                                    bodyContent : html,
-                                    zIndex : 2,
-                                    visible:true
-                                });
-
-                       _overlay.render();
-    });
-}
-
-/** Closed from close button */
-function closeMonaVideo() {
-    _overlay.set("bodyContent", "");  // make sure video stops
-    _overlay.hide();
-}
-
 /** Closed from close button */
 function closeGeneralDialog() {
     _overlay.hide();
