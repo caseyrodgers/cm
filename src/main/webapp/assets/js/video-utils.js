@@ -84,7 +84,7 @@ function showStudentVideo() {
 
 function showTeacherVideo(obj, key) {
 
-	if (isIPadOrIPhone()) {
+	if (true || isIPadOrIPhone()) {
 		alert('Sorry, this content is not available on mobile devices.  You will need to access it from a desktop computer.');
 		return;
 	}
