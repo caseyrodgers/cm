@@ -40,6 +40,11 @@ function closeTeacherVideo() {
 }
 
 function showVideo(obj, key) {
+	if (isIPadOrIPhone()) {
+		alert('Sorry, this content is not available on mobile devices.  You will need to access it from a desktop computer.');
+		return;
+	}
+
 	var title = obj.innerHTML;
 	if (title == null) title = obj;
 	
@@ -78,6 +83,11 @@ function showStudentVideo() {
 }
 
 function showTeacherVideo(obj, key) {
+
+	if (isIPadOrIPhone()) {
+		alert('Sorry, this content is not available on mobile devices.  You will need to access it from a desktop computer.');
+		return;
+	}
 
 	var title = obj.innerHTML;
 	if (title == null) {
@@ -215,6 +225,7 @@ function showWebinar() {
                        _webinarOverlay.render();
     });
 }
+
 
 var Videos =
   [
