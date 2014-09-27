@@ -14,11 +14,11 @@ public class InmhItemData_Test extends CmDbTestCase {
     }
     
     public void testCreateMixedNumbers() throws Exception {
-        String file = "topics/mixed-numbers.html";
+        String file = "topics/mean-median-mode.html";
         INeedMoreHelpItem item = new INeedMoreHelpItem(CmResourceType.PRACTICE.label(), file, "Test");  
         InmhItemData itemData = new InmhItemData(item);
         List<RppWidget> rpps = itemData.getWidgetPool(conn,"testing");
-        assertTrue(rpps.size() == 1);
+        assertTrue(rpps.size() > 0);
         assertTrue(rpps.get(0).getWidgetJsonArgs() != null);
     }
     

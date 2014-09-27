@@ -60,11 +60,10 @@ public class AssessmentPrescription {
     }
 
     /**
-     * Create an assessment prescription based on comma separated list of
-     * problem ids.
+     * Create an assessment prescription based on 
+     * comma separated list of PIDS.
      * 
-     * A prescription contains one or more: AssessmentPrescriptionSession
-     * objects
+     * A prescription contains one or more: AssessmentPrescriptionSession objects
      * 
      * Each one is a single session with a two tier report:
      * 

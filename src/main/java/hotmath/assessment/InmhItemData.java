@@ -71,7 +71,6 @@ public class InmhItemData {
         this.pidsReferenced = pids;
     }
 
-    @SuppressWarnings("unchecked")
     /** Return pool of RppWidgets that will make up the prescription
      *  for this INMH item.
      * 
@@ -89,6 +88,7 @@ public class InmhItemData {
 
      * 
      */
+    @SuppressWarnings("unchecked")
     public List<RppWidget> getWidgetPool(final Connection conn, String logTag) throws Exception {
         /** check if in cache and return.  Side effect is if browserType changes no new pool will be created
          *  I'm not sure that is problem ... but, I think it is.
