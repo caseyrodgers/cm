@@ -84,7 +84,7 @@ function showStudentVideo() {
 
 function showTeacherVideo(obj, key) {
 
-	if (true || isIPadOrIPhone()) {
+	if (key != 'student-how-to' && isIPadOrIPhone()) {
 		alert('Sorry, this content is not available on mobile devices.  You will need to access it from a desktop computer.');
 		return;
 	}
@@ -116,7 +116,12 @@ function showTeacherVideo(obj, key) {
 	var closeFoot = '';
 	//alert("videoURI: " + videoURI + ", title: " + title + ", type: " + type + ", frame: " + firstFrame);
 
-	if (type == 'flv') {
+    if (key == 'student-how-to') {
+        html = '<iframe src="/training-videos/embedded-wrapper-mp4-html5.html?video=' + encodeURI(videoURI) + '" ' +
+        ' width="630" height="500px" scrolling="no" frameborder="no"></iframe>' +
+        closeFoot;
+    }
+    else if (type == 'flv') { 
 		html = '<iframe src="/training-videos/embedded-wrapper-flv.html?video=' + encodeURI(videoURI) +
 		'&frame=' + encodeURI(firstFrame) + '" ' +
 		' width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
@@ -365,9 +370,9 @@ var Videos =
 	 {
 		 key:        'student-how-to',
 		 title:      'Student How To',
-		 firstFrame: 'assets/teacher_videos/Student video last time/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Student video last time/Student video last time_controller.swf',
-	     type:       'flv'
+		 firstFrame: 'assets/teacher_videos/student-how-to/student-how-to.png',
+		 videoURI:   'assets/teacher_videos/student-how-to/student-how-to-360.mp4',
+	     type:       'mp4'
 	 },
 	 {
 		 key:        'student-registration-groups',
