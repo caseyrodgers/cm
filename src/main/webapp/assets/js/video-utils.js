@@ -116,7 +116,7 @@ function showTeacherVideo(obj, key) {
 	var closeFoot = '';
 	//alert("videoURI: " + videoURI + ", title: " + title + ", type: " + type + ", frame: " + firstFrame);
 
-    if (key == 'student-how-to') {
+    if (key == 'student-how-to' || key == 'assignments-webinar' || key == 'available-content') {
         html = '<iframe src="/training-videos/embedded-wrapper-mp4-html5.html?video=' + encodeURI(videoURI) + '" ' +
         ' width="630" height="500px" scrolling="no" frameborder="no"></iframe>' +
         closeFoot;
@@ -269,12 +269,19 @@ var Videos =
 	     videoURI:   'assets/teacher_videos/v2/Assignments-Overview-090714-FINAL.mp4',
          type:       'mp4'
      },
+     {
+	     key:        'assignments-webinar',
+	     title:      'Assignments Overview',
+	     firstFrame: '',
+	     videoURI:   'assets/teacher_videos/mp4/assignments-webinar-480.mp4',
+         type:       'mp4'
+     },
 	 {
 		 key:        'available-content',
 		 title:      'Available Content',
-		 firstFrame: 'assets/teacher_videos/Available Content/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Available Content/Available Content_controller.swf', 
-	     type:       'flv'
+		 firstFrame: ' ',
+		 videoURI:   'assets/teacher_videos/mp4/available-content.mp4', 
+	     type:       'mp4'
  	 },
 	 {
 		 key:        'ccss-reports',
