@@ -280,7 +280,7 @@ var Videos =
 		 key:        'available-content',
 		 title:      'Available Content',
 		 firstFrame: ' ',
-		 videoURI:   'assets/teacher_videos/mp4/available-content.mp4', 
+		 videoURI:   'assets/teacher_videos/mp4/available-content-480.mp4', 
 	     type:       'mp4'
  	 },
 	 {
