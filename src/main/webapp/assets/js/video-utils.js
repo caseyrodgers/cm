@@ -84,7 +84,9 @@ function showStudentVideo() {
 
 function showTeacherVideo(obj, key) {
 
-	if (key != 'student-how-to' && key != 'assignments-webinar' && key != 'available-content' && isIPadOrIPhone()) {
+	var theVideo = getVideo(key);
+
+	if (theVideo.type != 'mp4' && isIPadOrIPhone()) {
 		alert('Sorry, this content is not available on mobile devices.  You will need to access it from a desktop computer.');
 		return;
 	}
@@ -97,8 +99,6 @@ function showTeacherVideo(obj, key) {
 	var videoURI = '';
 	var type = '';
 	var firstFrame = '';
-
-	var theVideo = getVideo(key);
 
 	if (theVideo != null) {
 		videoURI = theVideo.videoURI;
