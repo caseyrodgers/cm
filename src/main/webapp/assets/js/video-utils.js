@@ -123,9 +123,9 @@ function showTeacherVideo(obj, key) {
 		closeFoot;
 	}
 	else if (type == 'mp4') {
-        html = '<iframe src="/training-videos/embedded-wrapper-mp4-html5.html?video=' + encodeURI(videoURI) + '" ' +
-        ' width="630" height="500px" scrolling="no" frameborder="no"></iframe>' +
-        closeFoot;
+		html = '<iframe src="/training-videos/embedded-wrapper-mp4.html?video=' + encodeURI(videoURI) + '" ' +
+		' width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
+		closeFoot;
 	}
         	
     var head = '<a href="#" onclick="closeTeacherVideo();return false;" class="close"><span>close</span> X</a>' + title;
