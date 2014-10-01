@@ -116,21 +116,16 @@ function showTeacherVideo(obj, key) {
 	var closeFoot = '';
 	//alert("videoURI: " + videoURI + ", title: " + title + ", type: " + type + ", frame: " + firstFrame);
 
-    if (key == 'student-how-to' || key == 'assignments-webinar' || key == 'available-content') {
-        html = '<iframe src="/training-videos/embedded-wrapper-mp4-html5.html?video=' + encodeURI(videoURI) + '" ' +
-        ' width="630" height="500px" scrolling="no" frameborder="no"></iframe>' +
-        closeFoot;
-    }
-    else if (type == 'flv') { 
+    if (type == 'flv') { 
 		html = '<iframe src="/training-videos/embedded-wrapper-flv.html?video=' + encodeURI(videoURI) +
 		'&frame=' + encodeURI(firstFrame) + '" ' +
 		' width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
 		closeFoot;
 	}
 	else if (type == 'mp4') {
-		html = '<iframe src="/training-videos/embedded-wrapper-mp4.html?video=' + encodeURI(videoURI) + '" ' +
-		' width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
-		closeFoot;
+        html = '<iframe src="/training-videos/embedded-wrapper-mp4-html5.html?video=' + encodeURI(videoURI) + '" ' +
+        ' width="630" height="500px" scrolling="no" frameborder="no"></iframe>' +
+        closeFoot;
 	}
         	
     var head = '<a href="#" onclick="closeTeacherVideo();return false;" class="close"><span>close</span> X</a>' + title;
