@@ -123,7 +123,7 @@ function showTeacherVideo(obj, key) {
 		closeFoot;
 	}
 	else if (type == 'mp4') {
-		html = '<iframe src="/training-videos/embedded-wrapper-mp4.html?video=' + encodeURI(videoURI) + '" ' +
+		html = '<iframe src="/training-videos/embedded-wrapper-mp4-html5.html?video=' + encodeURI(videoURI) + '" ' +
 		' width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
 		closeFoot;
 	}
