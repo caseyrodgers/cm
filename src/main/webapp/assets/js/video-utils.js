@@ -84,6 +84,11 @@ function showStudentVideo() {
 
 function showTeacherVideo(obj, key) {
 
+	if (_videoOverlay != null) {
+		alert("Sorry, only one video can be viewed at a time.")
+		return;
+	}
+
 	var theVideo = getVideo(key);
 
 	if (theVideo.type != 'mp4' && isIPadOrIPhone()) {
@@ -124,7 +129,7 @@ function showTeacherVideo(obj, key) {
 	}
 	else if (type == 'mp4') {
 		html = '<iframe src="/training-videos/embedded-wrapper-mp4-html5.html?video=' + encodeURI(videoURI) + '" ' +
-		' width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
+		' width="640" height="460px" scrolling="yes" frameborder="no"></iframe>' +
 		closeFoot;
 	}
         	
@@ -139,8 +144,8 @@ function showTeacherVideo(obj, key) {
                         _videoOverlay = new Y.Overlay(
                                 {
                                     id:"training-video-" + _unique,
-                                    width : "642px",
-                                    height: "562px",
+                                    width : "653px",
+                                    height: "515px",
                                     centered : true,
                                     fixedcenter : true,
                                     headerContent : head,
@@ -316,16 +321,16 @@ var Videos =
 	 {
 		 key:        'managing-students',
 		 title:      'Managing Students',
-		 firstFrame: 'assets/teacher_videos/Managing Students/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Managing Students/Managing Students_controller.swf', 
-	     type:       'flv'
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/mp4/managing-students-480.mp4', 
+	     type:       'mp4'
  	 },
 	 {
 		 key:        'overview',
 		 title:      'Overview of Teacher Resources',
-		 firstFrame: 'assets/teacher_videos/Overview of Teacher Resources/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Overview of Teacher Resources/Overview of Teacher Resources_controller.swf', 
-	     type:       'flv'
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/mp4/teacher-resources-overview-480.mp4', 
+	     type:       'mp4'
  	 },
 	 {
 		 key:        'parallel-programs',
@@ -337,9 +342,9 @@ var Videos =
 	 {
 		 key:        'registering-students',
 		 title:      'Registering Students',
-		 firstFrame: 'assets/teacher_videos/Registering Students/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Registering Students/Registering Students_controller.swf', 
-	     type:       'flv'
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/mp4/registering-students-480.mp4', 
+	     type:       'mp4'
  	 },
 	 {
 		 key:        'reports-overview',
