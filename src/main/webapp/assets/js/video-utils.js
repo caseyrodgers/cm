@@ -396,6 +396,13 @@ var Videos =
 	     type:       'mp4'
  	 },
 	 {
+		 key:        'student_registration-quick',
+		 title:      'Registering Students - Quick Start',
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/StudentRegistrationQuick/student_registration-quick.mp4',
+	     type:       'mp4'
+ 	 },
+	 {
 		 key:        'technical-tips',
 		 title:      'Technical Tips',
 		 firstFrame: '',
