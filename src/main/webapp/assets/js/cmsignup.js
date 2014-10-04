@@ -211,7 +211,45 @@ function checkSelfPayForm() {
             isValid = false;
     }
 
-    fld = $get('first_name');
+    if (checkCreditCardData() == false)
+    	isValid = false;
+
+    if (isValid == true)
+    	doSelfPaySignup();
+
+    return false;   // always return false;
+}
+
+function checkOneTeacherPayForm() {
+	_totalCost=249;
+    clearErrorMessages();
+    var isValid = true;
+    
+    fld = $get('pilot_login');
+    if(fld.value == '') {
+        if(showError(fld, "What is your login code?"))
+            isValid = false;
+        else
+        	isValid = checkLoginCode(fld.value);
+    }
+
+    if (checkCreditCardData() == false)
+    	isValid = false;
+
+    if (isValid == true)
+    	doOneTeacherSignup();
+
+    return false;   // always return false;
+}
+
+function checkLoginCode(loginCode) {
+	//TODO:
+}
+
+function checkCreditCardData() {
+	var isValid = true;
+
+	fld = $get('first_name');
     if(fld.value == '') {
         if(showError(fld, "What is cardholder's first name?"))
             isValid = false;
@@ -253,15 +291,8 @@ function checkSelfPayForm() {
 
     if (checkCreditCard() == false)
         isValid = false;
-
-    if (isValid == true)
-    	doSelfPaySignup();
-
-    return false;   // always return false;
-}
-
-function checkOneTeacherPayForm() {
-	alert("not implemented");
+    
+    return isValid;
 }
 
 function checkCreditCard() {
@@ -326,8 +357,6 @@ function checkCreditCard() {
         return false;
     }
 
-
-
     fld = $get('sel_card_expire_month');
     if(fld.selectedIndex < 1) {
         if(showError(fld, "Expiration month?"))
@@ -344,6 +373,7 @@ function checkCreditCard() {
     return true;
 }
 
+var _firstErrorFld = null;
 
 function showError(fld, msg) {
     _validationErrorCount++;
@@ -360,16 +390,18 @@ function showError(fld, msg) {
     myTd = fld.parentNode;
     myTd.style.border = "1px solid red";
 
-    fld.focus();
+    if (_firstErrorFld == null) {
+    	_firstErrorFld = fld;
+    	fld.focus();
+    }
     return true;
 }
-
-
 
 // remove any messages
 function clearErrorMessages() {
  // turn off all error message
  _validationErrorCount=0;
+ _firstErrorFld = null;
  fields = document.getElementsByTagName("div");
  for(f = 0, t = fields.length; f < t;f++) {
      fields[f].style.border = "none";
@@ -491,10 +523,12 @@ function doSignup() {
 
    var cObj = YAHOO.util.Connect.asyncRequest('POST', '/signup_cm', requestCallback);
    
-
    showProcessingMessage();
 }
 
+function doOneTeacherSignup() {
+	alert("Data OK, payment not implemented.")
+}
 
 function showProcessingMessage() {
 	/** Show signup progress */
