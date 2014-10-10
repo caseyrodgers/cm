@@ -248,7 +248,7 @@ function checkOneTeacherPayForm() {
         	    var cnfrm = false;
 
         	    if (result == "true") {
-        	    	cnfrm = confirm("Click OK if you email address matches:\n\n" + email);
+        	    	cnfrm = confirm("Click OK if your email address matches:\n\n" + email);
         	    	
         	        if (cnfrm == true && checkCreditCardData() == true) {
         	        	doOneTeacherSignup();
