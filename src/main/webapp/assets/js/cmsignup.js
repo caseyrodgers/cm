@@ -784,8 +784,8 @@ function oneTeacherComplete(data) {
 		var userId = obj.uid;
 		var loginName = obj.loginName;
 		var password = obj.password;
+		var email = obj.email;
 
-		var email = $get('student_email').value;
 		html = "<h1>Catchup Math Signup Success</h1><p>Congratulations!  You have successfully signed up for Catchup Math.</p>"
 				+ "<p>Your personal login information is: "
 				+ "<div class='login-info'>"

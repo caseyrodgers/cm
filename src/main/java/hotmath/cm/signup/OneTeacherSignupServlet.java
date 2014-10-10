@@ -79,14 +79,10 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
             /** Return JSON containing key values
              * 
              */
-            String returnJson = "{sid:'" + subscriber.getId() + ", " +
-                                  "userName:'" + subscriber.getId() + "', " +
-                                  "password:'" + subscriber.getPassword() + "'}";
-            
-            String json = String.format("{sid:'%s', userName:'%s', password:'%s'}",
-            		subscriber.getId(), subscriber.getId(), subscriber.getPassword());
+            String json = String.format("{sid:'%s', userName:'%s', password:'%s', email:'%s'}",
+            		subscriber.getId(), subscriber.getId(), subscriber.getPassword(), subscriber.getEmail());
 
-            resp.getWriter().write(returnJson);
+            resp.getWriter().write(json);
 
         } catch (Exception e) {
             _logger.error("*** Error converting pilot to one-teacher account", e);
