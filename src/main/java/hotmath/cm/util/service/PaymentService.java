@@ -30,7 +30,7 @@ public class PaymentService {
     static public void doPurchase(String ipAddress, double amount, String ccNum, String ccType, String ccv2,
             String expMonth, String expYear, String ccZip, String ccState, String ccAddress1, String ccAddress2,
             String ccCity, String ccFirstName, String ccLastName, int userId, String email,
-            String loginName, String password, String groupName) throws HotMathException {
+            String loginName, String password, String groupName, String serviceType) throws HotMathException {
         try {
 
             // for testing
@@ -51,7 +51,7 @@ public class PaymentService {
 
             addPurchaseResult(result, userId, amount);
 
-            purchaseComplete(result, email, loginName, password, groupName, amount); 
+            purchaseComplete(result, email, loginName, password, groupName, amount, serviceType); 
 
         } catch (Throwable t) {
         	__logger.error("Error during purchase", t);
@@ -83,7 +83,7 @@ public class PaymentService {
 	}
 
 	static private void purchaseComplete(final PaymentResult result, final String email, final String loginName,
-			final String password, final String groupName, final double amount) throws Exception {
+			final String password, final String groupName, final double amount, final String serviceType) throws Exception {
         try {
 
             // send email in separate thread
@@ -93,29 +93,58 @@ public class PaymentService {
 
                     StringBuilder sb = new StringBuilder();
                     try {
-                    	sb.append("Thank You for your Catchup Math purchase for ").append(groupName).append("\n\n");
-                    	sb.append("To log in (as directed by your instructor), go to Catchupmath.com and enter:\n");
-                    	sb.append(" Login Name: ").append(loginName).append("\n");
-                    	sb.append(" Password: ").append(password).append("\n\n");
-                    	sb.append("Please retain this email in case you forget your password.\n\n");
+                    	String msg = "";
+                    	if ("TYPE_SERVICE_CATCHUP_SELF_PAY".equals(serviceType)) {
+                    		msg = getSelfPayMessage(groupName, loginName, password, result.getOrderNumber(), amount);
+                    	}
+                    	else if ("TYPE_SERVICE_CATCHUP_ONE_TEACHER".equals(serviceType)) {
+                    		msg = getOneTeacherMessage(loginName, password, result.getOrderNumber(), amount);
+                    	}
                     	
-                    	sb.append("Order Number: ").append(result.getOrderNumber()).append("\n");
-                    	sb.append(String.format(" Amount Charged: $ %.2f\n\n", amount));
-                    	
-                    	sb.append("We wish you every success with Catchup Math!\n\n");
-                    	sb.append("CM Support");
-                    	
-                        SbMailManager.getInstance().sendMessage("Catchup Math Purchase", sb.toString(), email,
+                        SbMailManager.getInstance().sendMessage("Catchup Math Purchase", msg, email,
                                 "support@catchupmath.com", "text/plain", null);
                     } catch (SbException e) {
                         __logger.error("error sending email to: " + email, e);
                     }
                 }
+
             }).start();
 
         } catch (Exception e) {
             throw new HotMathException(e, "Error sending email confirmation.");
         }
+	}
+
+	private static String getSelfPayMessage(String groupName, String loginName, String password, String orderNumber, double amount) {
+		StringBuilder sb = new StringBuilder();
+    	sb.append("Thank You for your Catchup Math purchase for ").append(groupName).append(".\n\n");
+    	sb.append("To log in (as directed by your instructor), go to Catchupmath.com and enter:\n");
+    	sb.append(" Login Name: ").append(loginName).append("\n");
+    	sb.append(" Password: ").append(password).append("\n\n");
+    	sb.append("Please retain this email in case you forget your password.\n\n");
+    	
+    	sb.append("Order Number: ").append(orderNumber).append("\n");
+    	sb.append(String.format(" Amount Charged: $ %.2f\n\n", amount));
+    	
+    	sb.append("We wish you every success with Catchup Math!\n\n");
+    	sb.append("CM Support");
+    	return sb.toString();
+	}
+
+	private static String getOneTeacherMessage(String loginName, String password, String orderNumber, double amount) {
+		StringBuilder sb = new StringBuilder();
+    	sb.append("Thank You for your Catchup Math purchase.\n\n");
+    	sb.append("To log in, go to Catchupmath.com and enter:\n");
+    	sb.append(" Login Name: ").append(loginName).append("\n");
+    	sb.append(" Password: ").append(password).append("\n\n");
+    	sb.append("Please retain this email in case you forget your password.\n\n");
+    	
+    	sb.append("Order Number: ").append(orderNumber).append("\n");
+    	sb.append(String.format(" Amount Charged: $ %.2f\n\n", amount));
+    	
+    	sb.append("We wish you every success with Catchup Math!\n\n");
+    	sb.append("CM Support");
+    	return sb.toString();
 	}
 
 }

@@ -122,7 +122,6 @@
       /signup_cm
     </url-pattern>
   </servlet-mapping>
-
   <servlet-mapping>
     <servlet-name>CmSignupService</servlet-name>
     <url-pattern>
@@ -140,6 +139,31 @@
     <servlet-name>SelfPayService</servlet-name>
     <url-pattern>
       /selfpay
+    </url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>OneTeacherService</servlet-name>
+    <servlet-class>
+      hotmath.cm.signup.OneTeacherSignupServlet
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OneTeacherService</servlet-name>
+    <url-pattern>
+      /oneteacher
+    </url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>LoginCodeService</servlet-name>
+    <servlet-class>
+      hotmath.cm.signup.LoginCodeCheckServlet
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LoginCodeService</servlet-name>
+    <url-pattern>
+      /logincode
     </url-pattern>
   </servlet-mapping>
 
