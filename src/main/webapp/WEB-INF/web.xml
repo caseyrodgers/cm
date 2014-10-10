@@ -96,7 +96,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>FigureUploadServlet</servlet-name>
-    <url-pattern>cm_admin/figureUpload</url-pattern>
+    <url-pattern>/cm_admin/figureUpload</url-pattern>
   </servlet-mapping>  
   
   
