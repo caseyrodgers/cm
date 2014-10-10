@@ -222,28 +222,55 @@ function checkSelfPayForm() {
 
 function checkOneTeacherPayForm() {
 	_totalCost=249;
+
     clearErrorMessages();
     var isValid = true;
     
     fld = $get('pilot_login');
+
     if(fld.value == '') {
         if(showError(fld, "What is your login code?"))
             isValid = false;
         else
         	isValid = checkLoginCode(fld.value);
     }
+    else {
+        var formObject = document.getElementById('sub_form'); 
+        YAHOO.util.Connect.setForm(formObject); 
 
-    if (checkCreditCardData() == false)
-    	isValid = false;
+        var requestCallback = {
+        	success: function(o) {
+                //YAHOO.cm.signup_progress.destroy();
+        	    var obj = eval('(' + o.responseText + ')');
 
-    if (isValid == true)
-    	doOneTeacherSignup();
+        	    var result = obj.isPilot;
+        	    var email  = obj.email;
+        	    var cnfrm = false;
+
+        	    if (result == "true") {
+        	    	cnfrm = confirm("Click OK if you email address matches:\n\n" + email);
+        	    	
+        	        if (cnfrm == true && checkCreditCardData() == true) {
+        	        	doOneTeacherSignup();
+        	        }
+        	    }
+        	    if (result == false || cnfrm == false) {
+        	    	alert("cnfrm: " + cnfrm);
+        	        if (showError(fld, "Invalid login code"))
+        	            isValid = false;
+        	        checkCreditCardData();
+        	    }
+        	},
+        	failure: function(o) {
+        	    //YAHOO.cm.signup_progress.destroy();
+        	    alert('Error checking login code: ' + o.status);
+            },
+            argument: null
+        };
+        var cObj = YAHOO.util.Connect.asyncRequest('POST', '/logincode', requestCallback);
+    }
 
     return false;   // always return false;
-}
-
-function checkLoginCode(loginCode) {
-	//TODO:
 }
 
 function checkCreditCardData() {
@@ -527,7 +554,27 @@ function doSignup() {
 }
 
 function doOneTeacherSignup() {
-	alert("Data OK, payment not implemented.")
+	document.getElementById('selected_services').value = 'TYPE_CATCHUP_MATH_ONE_TEACHER';
+
+	   var formObject = document.getElementById('sub_form'); 
+	   YAHOO.util.Connect.setForm(formObject); 
+
+	        var requestCallback = {
+	        success: function(o) {
+	           YAHOO.cm.signup_progress.destroy();
+	           signupComplete(o.responseText);
+	        },
+	        failure: function(o) {
+	            YAHOO.cm.signup_progress.destroy();
+	            alert('Error performing signup: ' + o.status);
+	        },
+	        argument: null
+	    };
+
+	   var cObj = YAHOO.util.Connect.asyncRequest('POST', '/oneteacher', requestCallback);
+	   
+	   showProcessingMessage();
+
 }
 
 function showProcessingMessage() {
@@ -718,6 +765,59 @@ function selfpayComplete(data) {
    result.setAttribute('style', 'display:block');
    window.scrollTo(0,0); 
 }
+
+function oneTeacherComplete(data) {
+
+	if (data.indexOf("error") == 0) {
+		showAlert('Signup Problem', 'Error while purchasing Catchup Math: '
+				+ data.substring(6));
+		return;
+	}
+    //alert("oneTeacherComplete(): data: " + data);
+	var obj = eval('(' + data + ')');
+
+	var html;
+	var errorMsg = obj.error;
+	if (errorMsg == null) {
+
+		var cmKey = obj.key; // login security key
+		var userId = obj.uid;
+		var loginName = obj.loginName;
+		var password = obj.password;
+
+		var email = $get('student_email').value;
+		html = "<h1>Catchup Math Signup Success</h1><p>Congratulations!  You have successfully signed up for Catchup Math.</p>"
+				+ "<p>Your personal login information is: "
+				+ "<div class='login-info'>"
+				+ "<div class='col'>Login Name: </div><div class='val'>"
+				+ loginName
+				+ "</div>"
+				+ "<div class='col'>Password: </div><div class='val'>"
+				+ password
+				+ "</div>"
+				+ "</div>"
+				+ "</p>"
+				+ "<p>Visit <a href='http://catchupmath.com/login.html'>http://catchupmath.com/login.html</a>"
+				+ " and enter the login information shown above.</p>"
+				+ "<p class='info-sent'>A confirmation has also been emailed to: "
+				+ email
+				+ "</p>"
+				+ "<p class='info-sent'>If you do not receive your account email within a few minutes, please check your spam folder. "
+				+ "If not there, please email <a href='mailto:support@catchupmath.com'>support@catchupmath.com</a></p><br/>"
+				+ "<p>Thank you!</p>";
+	} else {
+		html = "<h1>Catchup Math Signup Error</h1><p><b>Unfortunately, there was a problem processing your request.</b><br/></p>"
+				+ "<p>Error message: <br/>" + errorMsg + "</p>";
+	}
+
+	var e1 = document.getElementById('signup_page');
+	e1.setAttribute('style', 'display:none');
+	var result = document.getElementById('signup_success');
+	result.innerHTML = html;
+	result.setAttribute('style', 'display:block');
+	window.scrollTo(0, 0);
+}
+
 function setTotalCost(cost) {
    _totalCost = cost;
    $get('service-total').innerHTML = 'Total: $' + _totalCost + '.00';
