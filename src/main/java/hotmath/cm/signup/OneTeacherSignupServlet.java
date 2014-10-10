@@ -8,13 +8,8 @@ import hotmath.subscriber.HotMathSubscriberSignupInfo;
 import hotmath.subscriber.PurchasePlan;
 import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
 import hotmath.testset.ha.HaAdmin;
-import hotmath.util.HMConnectionPool;
-import hotmath.util.sql.SqlUtilities;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -95,25 +90,5 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
             resp.getWriter().write("{error:'" + e.getMessage() +"'}");
         }
     }
-
-	private int getAdminId(String subscriberId) throws Exception {
-		ResultSet rs = null;
-        PreparedStatement s1 = null;
-        Connection conn = null;
-        int adminId = 0;
-        try {
-            conn = HMConnectionPool.getConnection();
-            s1 = conn.prepareStatement("select aid from HA_ADMIN where subscriber_id = ?");
-            s1.setString(1, subscriberId);
-            rs = s1.executeQuery();
-            if(rs.first()) {
-            	adminId = rs.getInt("aid");
-            }
-        }
-        finally {
-            SqlUtilities.releaseResources(rs, s1, conn);
-        }
-		return adminId;
-	}
 
 }

@@ -255,7 +255,6 @@ function checkOneTeacherPayForm() {
         	        }
         	    }
         	    if (result == false || cnfrm == false) {
-        	    	alert("cnfrm: " + cnfrm);
         	        if (showError(fld, "Invalid login code"))
         	            isValid = false;
         	        checkCreditCardData();
@@ -773,7 +772,7 @@ function oneTeacherComplete(data) {
 				+ data.substring(6));
 		return;
 	}
-    //alert("oneTeacherComplete(): data: " + data);
+
 	var obj = eval('(' + data + ')');
 
 	var html;
