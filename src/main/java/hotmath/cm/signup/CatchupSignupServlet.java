@@ -74,7 +74,7 @@ public class CatchupSignupServlet extends HttpServlet {
             /** Extract the data from the request 
              * 
              */
-            HotMathSubscriberSignupInfo sifo = getSignupInfo(req);
+            HotMathSubscriberSignupInfo sifo = getSignupInfo(req, true);
 
             
             /** Setup the purchase by either creating or reusing existing SUBSCRIBER record based
@@ -192,7 +192,7 @@ public class CatchupSignupServlet extends HttpServlet {
         }
     }
 
-    private String getFData(Object o) {
+    protected String getFData(Object o) {
         if (o instanceof String[]) {
             return ((String[]) o)[0];
         } else {
@@ -204,20 +204,22 @@ public class CatchupSignupServlet extends HttpServlet {
     /** Extract data from request and build SignupInfo to encapsulate request
      * 
      * @param req
+     * @param isEmailRequired TODO
      * @return
      * @throws Exception
      */
-    private HotMathSubscriberSignupInfo getSignupInfo(HttpServletRequest req) throws Exception {
+    protected HotMathSubscriberSignupInfo getSignupInfo(HttpServletRequest req, boolean isEmailRequired) throws Exception {
         
         @SuppressWarnings("unchecked")
         Map<String, String[]> formData = req.getParameterMap();
         
         String email = getFData(formData.get("confirm_email"));
-        if (email == null || email.length() == 0)
+        if (isEmailRequired == true && (email == null || email.length() == 0))
             throw new Exception("'email' cannot be null");
 
         String firstName = getFData(formData.get("first_name"));
         String lastName = getFData(formData.get("last_name"));
+        String subscriberId = getFData(formData.get("pilot_login"));
         String cardholder_address1 = getFData(formData.get("address1"));
         String cardholder_address2 = getFData(formData.get("address2"));
         String cardholder_city = getFData(formData.get("city"));
@@ -255,6 +257,7 @@ public class CatchupSignupServlet extends HttpServlet {
         signupInfo.setBillingZip(cardholder_zip);
         signupInfo.setFirstName(firstName);
         signupInfo.setLastName(lastName);
+        signupInfo.setSubscriberId(subscriberId);
 
         // set the secure data as variables only
         signupInfo.setCardEmail(email);
