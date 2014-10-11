@@ -220,53 +220,62 @@ function checkSelfPayForm() {
     return false;   // always return false;
 }
 
+var isValidLoginCode = false;
+var loginCode;
+
 function checkOneTeacherPayForm() {
-	_totalCost=249;
+	_totalCost = 249;
 
     clearErrorMessages();
-    var isValid = true;
     
     fld = $get('pilot_login');
 
     if(fld.value == '') {
-        if(showError(fld, "What is your login code?"))
-            isValid = false;
-        else
-        	isValid = checkLoginCode(fld.value);
+        showError(fld, "What is your login code?");
+        isValidLoginCode = false;
+        loginCode = fld.value;
+        checkCreditCardData();
     }
     else {
-        var formObject = document.getElementById('sub_form'); 
-        YAHOO.util.Connect.setForm(formObject); 
+    	if (loginCode != fld.value || isValidLoginCode == false) {
+            var formObject = document.getElementById('sub_form'); 
+            YAHOO.util.Connect.setForm(formObject);
+            loginCode = fld.value;
 
-        var requestCallback = {
-        	success: function(o) {
-                //YAHOO.cm.signup_progress.destroy();
-        	    var obj = eval('(' + o.responseText + ')');
+            var requestCallback = {
+        	    success: function(o) {
+                    //YAHOO.cm.signup_progress.destroy();
+        	        var obj = eval('(' + o.responseText + ')');
 
-        	    var result = obj.isPilot;
-        	    var email  = obj.email;
-        	    var cnfrm = false;
+         	        var result = obj.isPilot;
+           	        var email  = obj.email;
+        	        var cnfrm = false;
 
-        	    if (result == "true") {
-        	    	cnfrm = confirm("Click OK if your email address matches:\n\n" + email);
+        	        if (result == "true") {
+        	    	    cnfrm = confirm("Click OK if your email address matches:\n\n" + email);
+        	    	    isValidLoginCode = cnfrm;
         	    	
-        	        if (cnfrm == true && checkCreditCardData() == true) {
-        	        	doOneTeacherSignup();
+        	            if (cnfrm == true && checkCreditCardData() == true) {
+        	        	    doOneTeacherSignup();
+        	            }
         	        }
-        	    }
-        	    if (result == false || cnfrm == false) {
-        	        if (showError(fld, "Invalid login code"))
-        	            isValid = false;
-        	        checkCreditCardData();
-        	    }
-        	},
-        	failure: function(o) {
-        	    //YAHOO.cm.signup_progress.destroy();
-        	    alert('Error checking login code: ' + o.status);
-            },
-            argument: null
-        };
-        var cObj = YAHOO.util.Connect.asyncRequest('POST', '/logincode', requestCallback);
+        	        if (result == false || cnfrm == false) {
+        	            showError(fld, "Invalid login code");
+        	            isValidLoginCode = false;
+        	            checkCreditCardData();
+        	        }
+        	    },
+        	    failure: function(o) {
+        	        //YAHOO.cm.signup_progress.destroy();
+        	        alert('Error checking login code: ' + o.status);
+                },
+                argument: null
+            };
+            var cObj = YAHOO.util.Connect.asyncRequest('POST', '/logincode', requestCallback);
+    	}
+    	else if (checkCreditCardData() == true) {
+    		doOneTeacherSignup();
+    	}
     }
 
     return false;   // always return false;
