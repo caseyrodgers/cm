@@ -48,6 +48,7 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
             String subscriberId = sifo.getSubscriberId();
 
             subscriber = HotMathSubscriberManager.findSubscriber(sifo.getSubscriberId());
+            subscriber.setPassword("ADMIN123");
 
         	HaAdmin admin = null;
             int adminId = 0;
