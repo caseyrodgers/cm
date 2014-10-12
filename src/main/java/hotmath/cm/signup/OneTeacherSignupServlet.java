@@ -74,8 +74,8 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
             /** Return JSON containing key values
              * 
              */
-            String json = String.format("{sid:'%s', userName:'%s', password:'%s', email:'%s'}",
-            		subscriber.getId(), subscriber.getId(), subscriber.getPassword(), subscriber.getEmail());
+            String json = String.format("{userName:'%s', password:'%s', email:'%s'}",
+            		subscriber.getId(), "ADMIN123", subscriber.getEmail());
 
             resp.getWriter().write(json);
 

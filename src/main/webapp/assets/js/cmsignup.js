@@ -570,7 +570,7 @@ function doOneTeacherSignup() {
 	        var requestCallback = {
 	        success: function(o) {
 	           YAHOO.cm.signup_progress.destroy();
-	           signupComplete(o.responseText);
+	           oneTeacherComplete(o.responseText);
 	        },
 	        failure: function(o) {
 	            YAHOO.cm.signup_progress.destroy();
@@ -788,9 +788,7 @@ function oneTeacherComplete(data) {
 	var errorMsg = obj.error;
 	if (errorMsg == null) {
 
-		var cmKey = obj.key; // login security key
-		var userId = obj.uid;
-		var loginName = obj.loginName;
+		var userName = obj.userName;
 		var password = obj.password;
 		var email = obj.email;
 
@@ -798,7 +796,7 @@ function oneTeacherComplete(data) {
 				+ "<p>Your personal login information is: "
 				+ "<div class='login-info'>"
 				+ "<div class='col'>Login Name: </div><div class='val'>"
-				+ loginName
+				+ userName
 				+ "</div>"
 				+ "<div class='col'>Password: </div><div class='val'>"
 				+ password
