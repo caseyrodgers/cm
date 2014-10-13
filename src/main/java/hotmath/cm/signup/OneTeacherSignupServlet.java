@@ -85,7 +85,7 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
              * 
              */
             String json = String.format("{userName:'%s', password:'%s', email:'%s', school:'%s', expires:'%s'}",
-            		subscriber.getId(), subscriber.getPassword(), subscriber.getEmail(), subscriber.getSchoolType(), "2015-07-31");
+            		subscriber.getId(), "admin123", subscriber.getEmail(), subscriber.getSchoolType(), "2015-07-31");
 
             resp.getWriter().write(json);
 
