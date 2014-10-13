@@ -54,7 +54,6 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
             String subscriberId = sifo.getSubscriberId();
 
             subscriber = HotMathSubscriberManager.findSubscriber(sifo.getSubscriberId());
-            subscriber.setPassword("admin123");
 
         	HaAdmin admin = null;
             int adminId = 0;
@@ -74,7 +73,7 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
             		sifo.getBillingZip(), sifo.getBillingState(), sifo.getBillingAddress(),
             		sifo.getBillingCity(), sifo.getFirstName(), sifo.getLastName(),
             		sifo.getSubscriberId(), adminId, subscriber.getEmail(), subscriber.getId(),
-            		subscriber.getPassword(), "One Teacher", "TYPE_SERVICE_CATCHUP_ONE_TEACHER");
+            		"admin123", "One Teacher", "TYPE_SERVICE_CATCHUP_ONE_TEACHER");
             
             PurchasePlan purchasePlan = new PurchasePlan("TYPE_SERVICE_CATCHUP_ONE_TEACHER");
             subscriber.addService(HotMathSubscriberServiceFactory.create("catchup"), purchasePlan);
