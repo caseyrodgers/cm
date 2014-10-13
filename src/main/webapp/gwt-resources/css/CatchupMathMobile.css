@@ -421,7 +421,7 @@ div.landscape div.page ul.touch li.group:active {
 }
 
 
-#hm_flash_widget.not_used {
+div[name=hm_flash_widget].not_used {
 	display: none;
 }
 

@@ -862,7 +862,7 @@ span.group-item-dot {
 
 
 
-#wb-container #hm_flash_widget,
+#wb-container div[name=hm_flash_widget],
 #wb-container .question_head {
 	display: none;
 }
@@ -883,14 +883,6 @@ span.group-item-dot {
 }            
             
 
- 
-/** Changed in code AssignmentShowWorkActivty to allow embedding
-    as whiteboard background
-*/               
-#_hm_flash_widget {
-	  display: none;
-}	  
-
 
 .ass-button-indicator {
 	position: absolute;
@@ -898,12 +890,10 @@ span.group-item-dot {
 	left: 50px;
 }
 
-
-
-
 .gwt-StackLayoutPanel {
   border-bottom: 1px solid #bbbbbb;
 }
+
 .gwt-StackLayoutPanel .gwt-StackLayoutPanelHeader {
   cursor: pointer;
   cursor: hand;

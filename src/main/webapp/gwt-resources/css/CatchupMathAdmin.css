@@ -512,7 +512,7 @@ program-details-panel .x-ftree2-node-over {
 }
 
 
-.custom-program-add-quiz-dialog #hm_flash_widget {
+.custom-program-add-quiz-dialog div[name=hm_flash_widget] {
 	display: none;
 }
 

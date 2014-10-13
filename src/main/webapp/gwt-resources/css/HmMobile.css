@@ -1041,12 +1041,9 @@ html>body .gwt-DecoratedTabBar {
 
 /** Tutor Widget Styles */
 
-#hm_flash_object {
-    
-}
 
 
-[name=hm_flash_widget] {
+div[name=hm_flash_widget] {
   margin-top: 5px;
   position: relative;
   width: 275px;
@@ -1060,7 +1057,7 @@ html>body .gwt-DecoratedTabBar {
   border-left: 10px solid #F94600;
 }
 
-#hm_flash_widget_head {
+div[name=hm_flash_widget_head] {
     margin: 0 2px;
     border-bottom: 1px solid black;
     margin-top: 5px;
@@ -1071,7 +1068,7 @@ html>body .gwt-DecoratedTabBar {
     text-align: center;
 }
 
-#hm_widget_form {
+div[name=hm_widget_form] {
    font-size: 1.3em;
    margin: 15px 10px;
    padding: 10px 0 0 0;
@@ -1080,7 +1077,7 @@ html>body .gwt-DecoratedTabBar {
    height:80px;
 }
 
-#widget_bar {
+div[name=widget_bar] {
   width: 40px;
   height: 2px;
   background: black;
@@ -1089,17 +1086,16 @@ html>body .gwt-DecoratedTabBar {
   margin: 2px 0px 0 0;
 }
 
-#widget_input_field_1,#widget_input_field_2 {
+div[name=widget_input_field_1], div[name=widget_input_field_2] {
     font-weight: bold;
     width: 95px;
 }
 
-#widget_submit {
+div[name=widget_submit] {
     /* position: absolute;
     top: 35px;
     right: 3px;
     */
-    
     margin: 15px 10px 10px 0px;
 }   
 
