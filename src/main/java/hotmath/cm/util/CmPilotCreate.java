@@ -1,5 +1,6 @@
 package hotmath.cm.util;
 
+import hotmath.cm.dao.SubscriberDao;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
@@ -85,9 +86,8 @@ public class CmPilotCreate {
             if (subscriber.getService("catchup") == null)
                 subscriber.addService(HotMathSubscriberServiceFactory.create("catchup"), new PurchasePlan("TYPE_SERVICE_CATCHUP_MONTH"));
 
-            setMaxStudents(conn, subscriber, maxStudentCount);
+            SubscriberDao.getInstance().setMaxStudents(conn, subscriber, maxStudentCount);
 
-            
             /** if admin already exists, then use its admin id
              * otherwise create new admin record.
              */
@@ -291,38 +291,6 @@ public class CmPilotCreate {
                 return s;
         }
         return null;
-    }
-
-    /**
-     * Set the max students for this subscriber
-     * 
-     * @param sub
-     * @throws Exception
-     */
-    private void setMaxStudents(final Connection conn, HotMathSubscriber sub, int maxStudents) throws Exception {
-        ResultSet rs = conn.createStatement().executeQuery(
-                "select * from SUBSCRIBERS_SERVICES where service_name = 'catchup' and subscriber_id = '" + sub.getId()
-                        + "'");
-        if (!rs.first())
-            throw new Exception("No 'catchup' service found");
-
-        int ssid = rs.getInt("ssid");
-        conn.createStatement().executeUpdate(
-                "delete from SUBSCRIBERS_SERVICES_CONFIG_CATCHUP where subscriber_id = '" + sub.getId() + "'");
-
-        String sql = "insert into SUBSCRIBERS_SERVICES_CONFIG_CATCHUP(subscriber_id, max_students, subscriber_svc_id)values(?,?,?)";
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, sub.getId());
-            ps.setInt(2, maxStudents);
-            ps.setInt(3, ssid);
-            int cnt = ps.executeUpdate();
-            if (cnt != 1)
-                throw new Exception("Could not set max_students for the catchup math service");
-        } finally {
-            SqlUtilities.releaseResources(null, ps, null);
-        }
     }
 
     static DateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");

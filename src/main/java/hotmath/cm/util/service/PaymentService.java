@@ -91,17 +91,16 @@ public class PaymentService {
             new Thread(new Runnable() {
                 public void run() {
 
-                    StringBuilder sb = new StringBuilder();
+                    boolean sendEmail = false;
                     try {
                     	String msg = "";
                     	if ("TYPE_SERVICE_CATCHUP_SELF_PAY".equals(serviceType)) {
                     		msg = getSelfPayMessage(groupName, loginName, password, result.getOrderNumber(), amount);
-                    	}
-                    	else if ("TYPE_SERVICE_CATCHUP_ONE_TEACHER".equals(serviceType)) {
-                    		msg = getOneTeacherMessage(loginName, password, result.getOrderNumber(), amount);
+                    		sendEmail = true;
                     	}
                     	
-                        SbMailManager.getInstance().sendMessage("Catchup Math Purchase", msg, email,
+                        if (sendEmail == true)
+                        	SbMailManager.getInstance().sendMessage("Catchup Math Purchase", msg, email,
                                 "support@catchupmath.com", "text/plain", null);
                     } catch (SbException e) {
                         __logger.error("error sending email to: " + email, e);

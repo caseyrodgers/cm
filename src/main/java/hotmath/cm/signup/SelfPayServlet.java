@@ -39,6 +39,7 @@ public class SelfPayServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     	doPost(req, resp);
     }
+
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int newUserId = 0;
         try {
@@ -99,7 +100,7 @@ public class SelfPayServlet extends HttpServlet {
 
         PaymentService.doPurchase(remoteIP, 29.00, ccNum, ccType, ccv2, expMon, expYr,
         		ccZip, ccState, ccAddr1, ccAddr2, ccCity, ccFname, ccLname,
-        		newUserId, email, loginName, password, groupName);
+        		newUserId, email, loginName, password, groupName, "TYPE_SERVICE_CATCHUP_SELF_PAY");
 	}
 
 	private RpcData createUser(Map<String, String[]> formData) throws Exception {

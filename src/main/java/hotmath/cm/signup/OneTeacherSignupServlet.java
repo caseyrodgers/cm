@@ -1,11 +1,13 @@
 package hotmath.cm.signup;
 
+import hotmath.cm.dao.SubscriberDao;
 import hotmath.cm.util.service.PaymentService;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.HotMathSubscriberSignupInfo;
 import hotmath.subscriber.PurchasePlan;
+import hotmath.subscriber.SalesZone.Representative;
 import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
 import hotmath.testset.ha.HaAdmin;
 
@@ -17,11 +19,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import sb.mail.SbMailManager;
+
 public class OneTeacherSignupServlet extends CatchupSignupServlet {
     
 	private static final long serialVersionUID = 632874215893149960L;
 
 	static Logger _logger = Logger.getLogger(OneTeacherSignupServlet.class.getName());
+
+	private static int ONE_TEACHER_MAX_STUDENTS = 49;
 
     public OneTeacherSignupServlet() {
     	/* empty */
@@ -48,7 +54,7 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
             String subscriberId = sifo.getSubscriberId();
 
             subscriber = HotMathSubscriberManager.findSubscriber(sifo.getSubscriberId());
-            subscriber.setPassword("ADMIN123");
+            subscriber.setPassword("admin123");
 
         	HaAdmin admin = null;
             int adminId = 0;
@@ -62,8 +68,6 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
             	return;
         	}
 
-            subscriber.addService(HotMathSubscriberServiceFactory.create("catchup"), new PurchasePlan("TYPE_SERVICE_CATCHUP_ONE_TEACHER"));
-
             // perform purchase option
             PaymentService.doPurchase(ipOfCaller, 249.0, sifo.getCardNumber(), sifo.getCardType(),
             		sifo.getCardCcv(), sifo.getCardExpMonth(), sifo.getCardExpYear(),
@@ -72,11 +76,17 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
             		sifo.getSubscriberId(), adminId, subscriber.getEmail(), subscriber.getId(),
             		subscriber.getPassword(), "One Teacher", "TYPE_SERVICE_CATCHUP_ONE_TEACHER");
             
+            PurchasePlan purchasePlan = new PurchasePlan("TYPE_SERVICE_CATCHUP_ONE_TEACHER");
+            subscriber.addService(HotMathSubscriberServiceFactory.create("catchup"), purchasePlan);
+            SubscriberDao.getInstance().setMaxStudents(null, subscriber, ONE_TEACHER_MAX_STUDENTS);
+
+            sendEmail(subscriber);
+
             /** Return JSON containing key values
              * 
              */
-            String json = String.format("{userName:'%s', password:'%s', email:'%s'}",
-            		subscriber.getId(), "ADMIN123", subscriber.getEmail());
+            String json = String.format("{userName:'%s', password:'%s', email:'%s', school:'%s', expires:'%s'}",
+            		subscriber.getId(), subscriber.getPassword(), subscriber.getEmail(), subscriber.getSchoolType(), "2015-07-31");
 
             resp.getWriter().write(json);
 
@@ -91,5 +101,51 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
             resp.getWriter().write("{error:'" + e.getMessage() +"'}");
         }
     }
+
+    private void sendEmail(final HotMathSubscriber sub) throws Exception{
+
+    	try {
+    		// send email in separate thread
+    		// to ensure user thread does not lock
+    		new Thread(new Runnable() {
+    			public void run() {
+
+    				/** send a tracking email to subscriber and sales rep
+    				 * 
+    				 */
+    				try {
+    					String emailTemplate = "CM-One-Teacher License";
+    					sub.sendEmailConfirmation(emailTemplate, null);
+    				}
+    				catch(Exception e) {
+    					_logger.error(String.format("*** problem sennding tracking email for one-teacher purchase for ID: %s", sub.getId()), e);
+    				}
+
+    				String txt = "A Catchup Math One-Teacher purchase was made by:"
+    						+ "\nSubscriber ID: " + sub.getId()
+    						+ "\nName: " + sub.getResponsibleEmail() 
+    						+ "\nEmail: " + sub.getEmail() 
+    						+ "\nSalesZone: " + sub.getSalesZone();
+    				try { 
+    					Representative rep = SubscriberDao.getInstance().getSalesRepresentativeByName(sub.getSalesZone());
+
+    					String sendTo[];
+    					sendTo = new String[2];
+    					sendTo[0] = rep.getEmail();
+    					sendTo[1] = "cgrant.hotmath@gmail.com";
+    					SbMailManager.getInstance().
+    					sendMessage("Catchup Math One-Teacher Purchase", txt, sendTo, "registration@catchupmath.com", "text/plain");
+    				} catch (Exception e) {
+    					_logger.error(String.format("*** problem sending one-teacher purchase email: %s", txt), e);
+    				}
+    			}
+
+    		}).start();
+
+    	} catch (Exception e) {
+    		throw new Exception("Error sending email confirmation.", e);
+    	}
+
+    }    
 
 }

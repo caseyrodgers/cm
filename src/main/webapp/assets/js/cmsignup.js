@@ -790,27 +790,28 @@ function oneTeacherComplete(data) {
 
 		var userName = obj.userName;
 		var password = obj.password;
-		var email = obj.email;
+		//var email    = obj.email;
+		var school   = obj.school;
+		var expires  = obj.expires;
 
-		html = "<h1>Catchup Math Signup Success</h1><p>Congratulations!  You have successfully signed up for Catchup Math.</p>"
-				+ "<p>Your personal login information is: "
-				+ "<div class='login-info'>"
+		html = "<h1>Catchup Math Signup Success</h1>" 
+			    +"<p>Thank you for your order of a One-Teacher Catchup Math License for up to 49 students at " + school + "!</p>"
+				+ "<p><div class='login-info'>"
 				+ "<div class='col'>Login Name: </div><div class='val'>"
 				+ userName
 				+ "</div>"
 				+ "<div class='col'>Password: </div><div class='val'>"
 				+ password
 				+ "</div>"
+				+ "<div class='col'>Expires: </div><div class='val'>"
+				+ expires
 				+ "</div>"
-				+ "</p>"
-				+ "<p>Visit <a href='http://catchupmath.com/login.html'>http://catchupmath.com/login.html</a>"
-				+ " and enter the login information shown above.</p>"
-				+ "<p class='info-sent'>A confirmation has also been emailed to: "
-				+ email
-				+ "</p>"
-				+ "<p class='info-sent'>If you do not receive your account email within a few minutes, please check your spam folder. "
-				+ "If not there, please email <a href='mailto:support@catchupmath.com'>support@catchupmath.com</a></p><br/>"
-				+ "<p>Thank you!</p>";
+				+ "</div>"
+				+ "</p><br/>"
+				+ "<p>We are more than happy to provide support by telephone and email.</p>"
+				+ "<p>We wish you and your students the very best success with our service!</p>"
+				+ "<p>Thank you!<br/>The team from Catchupmath.com</p>"
+				+ "<p>Making Math Education Easier!</p>"
 	} else {
 		html = "<h1>Catchup Math Signup Error</h1><p><b>Unfortunately, there was a problem processing your request.</b><br/></p>"
 				+ "<p>Error message: <br/>" + errorMsg + "</p>";
