@@ -242,8 +242,10 @@ function checkOneTeacherPayForm() {
 
     fld = $get('pilot_email');
     var emailField = fld;
-    if(fld.value == '') {
-        showError(fld, "Account email address is required.");
+    var msg = validateEmail(fld.value);
+    if (fld.value == '') msg = "Account email address is required.";
+    if(msg != null) {
+        showError(fld, msg);
         isValidLoginCodeAndEmail = false;
         accountEmail = fld.value;
         isValid = false;
