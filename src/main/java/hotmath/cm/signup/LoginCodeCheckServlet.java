@@ -1,5 +1,7 @@
 package hotmath.cm.signup;
 
+import hotmath.HotMathException;
+import hotmath.HotMathExceptionUserUnknown;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
@@ -7,6 +9,7 @@ import hotmath.subscriber.HotMathSubscriberSignupInfo;
 import hotmath.testset.ha.HaAdmin;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,10 +45,15 @@ public class LoginCodeCheckServlet extends CatchupSignupServlet {
             HotMathSubscriberSignupInfo sifo = getSignupInfo(req, isEmailRequired);
             String subscriberId = sifo.getSubscriberId();
 
-            subscriber = HotMathSubscriberManager.findSubscriber(sifo.getSubscriberId());
             boolean isPilot = true;
-            if (subscriber.getService("catchup") == null) {
-            	// not a CM subscriber
+            try {
+                subscriber = HotMathSubscriberManager.findSubscriber(sifo.getSubscriberId());
+                if (subscriber.getService("catchup") == null) {
+                	// not a CM subscriber
+                	isPilot = false;
+                }
+            }
+            catch (HotMathExceptionUserUnknown e) {
             	isPilot = false;
             }
 
@@ -60,12 +68,18 @@ public class LoginCodeCheckServlet extends CatchupSignupServlet {
             	if (admin == null) isPilot = false;
             }
 
-            String maskedEmail = maskEmail(subscriber.getEmail());
-            String msg = String.format("{isPilot:'%s', email:'%s'}",  isPilot, maskedEmail);
+            boolean isPilotEmail = false;
+            if (isPilot == true) {
+                Map<String, String[]> formData = req.getParameterMap();
+                String email = getFData(formData.get("pilot_email"));
+                isPilotEmail = subscriber.getEmail().equalsIgnoreCase(email);
+            }
+
+            String msg = String.format("{isPilot:'%s', isPilotEmail:'%s'}",  isPilot, isPilotEmail);
             resp.getWriter().write(msg);
 
         } catch (Exception e) {
-            _logger.error("*** Error checking login code", e);
+            _logger.error("*** Error checking login code and email", e);
             try {
                 if (subscriber != null) subscriber.addComment(e.getMessage());
             } catch (Exception ee) {
@@ -75,7 +89,7 @@ public class LoginCodeCheckServlet extends CatchupSignupServlet {
             resp.getWriter().write("{error:'" + e.getMessage() +"'}");
         }
     }
-
+/*
 	private String maskEmail(String email) {
 
 		if (email == null || email.trim().length() < 10) return email;
@@ -92,5 +106,5 @@ public class LoginCodeCheckServlet extends CatchupSignupServlet {
 		}
 		return new String(maskedEmail);
 	}
-
+*/
 }

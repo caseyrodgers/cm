@@ -220,8 +220,9 @@ function checkSelfPayForm() {
     return false;   // always return false;
 }
 
-var isValidLoginCode = false;
-var loginCode;
+var isValidLoginCodeAndEmail = false;
+var loginCode = "";
+var accountEmail = "";
 
 function checkOneTeacherPayForm() {
 	_totalCost = 249;
@@ -229,44 +230,64 @@ function checkOneTeacherPayForm() {
     clearErrorMessages();
     
     fld = $get('pilot_login');
+    var loginField = fld;
+    var isValid = true;
 
     if(fld.value == '') {
         showError(fld, "What is your login code?");
-        isValidLoginCode = false;
+        isValidLoginCodeAndEmail = false;
         loginCode = fld.value;
+        isValid = false;
+    }
+
+    fld = $get('pilot_email');
+    var emailField = fld;
+    if(fld.value == '') {
+        showError(fld, "Account email address is required.");
+        isValidLoginCodeAndEmail = false;
+        accountEmail = fld.value;
+        isValid = false;
+    }
+
+    if (isValid == false) {
         checkCreditCardData();
     }
+
     else {
-    	if (loginCode != fld.value || isValidLoginCode == false) {
+
+    	if (loginCode != loginField.value ||
+    		accountEmail != emailField.value ||
+    		isValidLoginCodeAndEmail == false) {
             var formObject = document.getElementById('sub_form'); 
             YAHOO.util.Connect.setForm(formObject);
-            loginCode = fld.value;
+            loginCode = loginField.value;
+            accountEmail = emailField.value;
 
             var requestCallback = {
         	    success: function(o) {
-                    //YAHOO.cm.signup_progress.destroy();
         	        var obj = eval('(' + o.responseText + ')');
 
-         	        var result = obj.isPilot;
-           	        var email  = obj.email;
-        	        var cnfrm = false;
+         	        var isPilot       = obj.isPilot;
+           	        var isPilotEmail  = obj.isPilotEmail;
 
-        	        if (result == "true") {
-        	    	    cnfrm = confirm("Click OK if your email address matches:\n\n" + email);
-        	    	    isValidLoginCode = cnfrm;
-        	    	
-        	            if (cnfrm == true && checkCreditCardData() == true) {
+        	        if (isPilot == "true" && isPilotEmail == "true") {
+        	        	isValidLoginCodeAndEmail = true;
+        	            if (checkCreditCardData() == true) {
         	        	    doOneTeacherSignup();
+        	        	    return;
         	            }
         	        }
-        	        if (result == false || cnfrm == false) {
-        	            showError(fld, "Invalid login code");
-        	            isValidLoginCode = false;
-        	            checkCreditCardData();
+        	        if (isPilot == "false") {
+        	            showError(loginField, "Invalid login code");
+        	            isValidLoginCodeAndEmail = false;
         	        }
+        	        if (isPilotEmail == "false") {
+        	            showError(fld, "Invalid email address");
+        	            isValidLoginCodeAndEmail = false;
+        	        }
+    	            checkCreditCardData();
         	    },
         	    failure: function(o) {
-        	        //YAHOO.cm.signup_progress.destroy();
         	        alert('Error checking login code: ' + o.status);
                 },
                 argument: null
@@ -286,20 +307,20 @@ function checkCreditCardData() {
 
 	fld = $get('first_name');
     if(fld.value == '') {
-        if(showError(fld, "What is cardholder's first name?"))
-            isValid = false;
+        showError(fld, "What is cardholder's first name?");
+        isValid = false;
     }
 
     fld = $get('last_name');
     if(fld.value == '') {
-        if(showError(fld, "What is cardholder's last name?"))
-            isValid = false;
+        showError(fld, "What is cardholder's last name?");
+        isValid = false;
     }
 
     fld = $get('address1');
     if(fld.value == '') {
-        if(showError(fld, "Cardholder's address is?"))
-            isValid = false;
+        showError(fld, "Cardholder's address is?");
+        isValid = false;
     }
 
     fld = $get('city');
