@@ -284,7 +284,7 @@ function checkOneTeacherPayForm() {
         	            isValidLoginCodeAndEmail = false;
         	        }
         	        if (isPilotEmail == "false") {
-        	            showError(fld, "Invalid email address");
+        	            showError(fld, "Email address does not match account, please reenter.");
         	            isValidLoginCodeAndEmail = false;
         	        }
     	            checkCreditCardData();
