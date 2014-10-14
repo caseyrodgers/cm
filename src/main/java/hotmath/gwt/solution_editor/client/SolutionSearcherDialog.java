@@ -131,7 +131,20 @@ public class SolutionSearcherDialog {
         tabItem.add(_matches, new BorderLayoutData(LayoutRegion.SOUTH, 5));
 
         
-        
+
+        _window.addButton(new Button("View", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+            	String pid=null;
+                if (_tabPanel.getSelectedItem().getText().equals("Recent")) {
+                    pid = _tabRecent._listResults.getSelectionModel().getSelectedItem().getPid();
+                } else {
+                    pid = _listResults.getSelectionModel().getSelectedItem().getPid();
+                }
+                doView(pid);
+            }
+        }));
+
         _window.addButton(new Button("Select", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -181,6 +194,10 @@ public class SolutionSearcherDialog {
         this.callBack.solutionSelected(pid);
         this._window.hide();
     }
+    
+    private void doView(String pid) {
+    	new SolutionViewerFrame(pid);
+    }
 
     private void doSearch() {
         String text = _searchField.getValue();
@@ -188,7 +205,7 @@ public class SolutionSearcherDialog {
         boolean includeInActive=_includeInActive.getValue();
 
         SolutionEditor.__status.setText("Searching for: " + text + ", text: " + textFull);
-        if (text != null && text.length() > 0) {
+        if ((text != null && text.length() > 0) || textFull != null && textFull.length() > 0) {
 
             SearchForSolutionsAction action = new SearchForSolutionsAction(text, textFull, includeInActive);
             SolutionEditor.getCmService().execute(action, new AsyncCallback<CmList<SolutionSearchModel>>() {
