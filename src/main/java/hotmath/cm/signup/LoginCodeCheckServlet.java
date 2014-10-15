@@ -75,7 +75,8 @@ public class LoginCodeCheckServlet extends CatchupSignupServlet {
 
             Map<String, String[]> formData = req.getParameterMap();
             String email = getFData(formData.get("pilot_email"));
-            isPilotEmail = subscriber.getEmail().equalsIgnoreCase(email);
+            isPilotEmail = (subscriber != null) ?
+            		subscriber.getEmail().equalsIgnoreCase(email) : false;
 
             String msg = String.format("{isPilot:'%s', isPilotEmail:'%s'}",  isPilot, isPilotEmail);
             resp.getWriter().write(msg);
