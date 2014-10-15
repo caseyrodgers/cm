@@ -280,11 +280,11 @@ function checkOneTeacherPayForm() {
         	            }
         	        }
         	        if (isPilot == "false") {
-        	            showError(loginField, "Invalid login code");
+        	            showError(loginField, "Invalid login code.");
         	            isValidLoginCodeAndEmail = false;
         	        }
         	        if (isPilotEmail == "false") {
-        	            showError(fld, "Email address does not match account, please reenter.");
+        	            showError(fld, "Invalid email address.");
         	            isValidLoginCodeAndEmail = false;
         	        }
     	            checkCreditCardData();
