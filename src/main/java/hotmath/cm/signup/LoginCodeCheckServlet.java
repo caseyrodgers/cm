@@ -73,11 +73,9 @@ public class LoginCodeCheckServlet extends CatchupSignupServlet {
         	if (isPilot == true)
                 isPilot = SubscriberDao.getInstance().isCmPilot(subscriber.getId());
 
-            if (isPilot == true) {
-                Map<String, String[]> formData = req.getParameterMap();
-                String email = getFData(formData.get("pilot_email"));
-                isPilotEmail = subscriber.getEmail().equalsIgnoreCase(email);
-            }
+            Map<String, String[]> formData = req.getParameterMap();
+            String email = getFData(formData.get("pilot_email"));
+            isPilotEmail = subscriber.getEmail().equalsIgnoreCase(email);
 
             String msg = String.format("{isPilot:'%s', isPilotEmail:'%s'}",  isPilot, isPilotEmail);
             resp.getWriter().write(msg);
