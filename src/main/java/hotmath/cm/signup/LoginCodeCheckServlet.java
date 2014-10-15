@@ -2,6 +2,7 @@ package hotmath.cm.signup;
 
 import hotmath.HotMathException;
 import hotmath.HotMathExceptionUserUnknown;
+import hotmath.cm.dao.SubscriberDao;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
@@ -37,6 +38,8 @@ public class LoginCodeCheckServlet extends CatchupSignupServlet {
         _logger.info("Attempting to check a login code for: " + req.getRemoteAddr());
         
         HotMathSubscriber subscriber = null;
+        boolean isPilot = false;
+        boolean isPilotEmail = false;
         try {
             /** Extract the data from the request 
              * 
@@ -45,7 +48,7 @@ public class LoginCodeCheckServlet extends CatchupSignupServlet {
             HotMathSubscriberSignupInfo sifo = getSignupInfo(req, isEmailRequired);
             String subscriberId = sifo.getSubscriberId();
 
-            boolean isPilot = true;
+            isPilot = true;
             try {
                 subscriber = HotMathSubscriberManager.findSubscriber(sifo.getSubscriberId());
                 if (subscriber.getService("catchup") == null) {
@@ -67,8 +70,9 @@ public class LoginCodeCheckServlet extends CatchupSignupServlet {
 
             	if (admin == null) isPilot = false;
             }
+        	if (isPilot == true)
+                isPilot = SubscriberDao.getInstance().isCmPilot(subscriber.getId());
 
-            boolean isPilotEmail = false;
             if (isPilot == true) {
                 Map<String, String[]> formData = req.getParameterMap();
                 String email = getFData(formData.get("pilot_email"));
@@ -86,7 +90,8 @@ public class LoginCodeCheckServlet extends CatchupSignupServlet {
                 _logger.error("*** Error adding comment", ee);
             }
             
-            resp.getWriter().write("{error:'" + e.getMessage() +"'}");
+            String msg = String.format("{isPilot:'%s', isPilotEmail:'%s'}",  false, false);
+            resp.getWriter().write(msg);
         }
     }
 /*

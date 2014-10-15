@@ -103,6 +103,34 @@ public class SubscriberDao extends SimpleJdbcDaoSupport {
     	
     }
 
+    public boolean isCmPilot(String subscriberId) throws Exception {
+    	String sql = "select comments from SUBSCRIBERS where id = ?";
+
+    	Connection conn = null;
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	boolean ret = false;
+
+    	try {
+    		conn = HMConnectionPool.getConnection();
+
+    		ps = conn.prepareStatement(sql);
+    		ps.setString(1, subscriberId);
+    		rs = ps.executeQuery();
+    		if (rs.next()) {
+    			String comments = rs.getString("comments");
+    			int cmPilotOffset = comments.indexOf("TYPE_SERVICE_CATCHUP_PILOT");
+    			int nextCmOffset = (cmPilotOffset > 0) ?
+    					comments.indexOf("TYPE_SERVICE_CATCHUP", cmPilotOffset+1) : -1;
+    			ret = (cmPilotOffset > 0 && nextCmOffset < 0);
+    		}
+    	}
+    	finally {
+    		SqlUtilities.releaseResources(null, ps, conn);
+    	}
+    	return ret;
+    }
+
     public Representative getSalesRepresentativeByName(String name) {
     	Connection conn = null;
     	try {
