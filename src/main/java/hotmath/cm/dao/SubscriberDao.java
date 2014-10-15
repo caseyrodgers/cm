@@ -10,6 +10,8 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
@@ -25,6 +27,8 @@ public class SubscriberDao extends SimpleJdbcDaoSupport {
     private static final Logger __logger = Logger.getLogger(SubscriberDao.class);
 
     static private SubscriberDao __instance;
+
+    static SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     static public SubscriberDao getInstance() throws Exception {
         if (__instance == null) {
@@ -76,6 +80,27 @@ public class SubscriberDao extends SimpleJdbcDaoSupport {
     	} finally {
     		SqlUtilities.releaseResources(rs, ps, localConnection);
     	}
+    }
+
+    public void setExpireDate(String subscriberId, Date expirationDate) throws Exception {
+    	String sql = "update SUBSCRIBERS_SERVICES set date_expire = ? where subscriber_id = ? and service_name = 'catchup'";
+
+    	Connection conn = null;
+    	PreparedStatement ps = null;
+
+    	try {
+    		conn = HMConnectionPool.getConnection();
+
+    		ps = conn.prepareStatement(sql);
+    		ps.setString(1, _dateFormat.format(expirationDate));
+    		ps.setString(2, subscriberId);
+    		int cnt = ps.executeUpdate();
+    		if (cnt != 1)
+    			throw new Exception("Could not set date_expire for the catchup math service");
+    	} finally {
+    		SqlUtilities.releaseResources(null, ps, conn);
+    	}
+    	
     }
 
     public Representative getSalesRepresentativeByName(String name) {

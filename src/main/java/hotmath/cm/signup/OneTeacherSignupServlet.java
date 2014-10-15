@@ -12,6 +12,7 @@ import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
 import hotmath.testset.ha.HaAdmin;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,8 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
 	static Logger _logger = Logger.getLogger(OneTeacherSignupServlet.class.getName());
 
 	private static int ONE_TEACHER_MAX_STUDENTS = 49;
+
+	private static final SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public OneTeacherSignupServlet() {
     	/* empty */
@@ -77,15 +80,19 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
             
             PurchasePlan purchasePlan = new PurchasePlan("TYPE_SERVICE_CATCHUP_ONE_TEACHER");
             subscriber.addService(HotMathSubscriberServiceFactory.create("catchup"), purchasePlan);
+
+            // set max students and expiration date 
             SubscriberDao.getInstance().setMaxStudents(null, subscriber, ONE_TEACHER_MAX_STUDENTS);
+            SubscriberDao.getInstance().setExpireDate(subscriberId, purchasePlan.getExpiration());
 
             sendEmail(subscriber);
 
             /** Return JSON containing key values
              * 
              */
+            String expireDate = _dateFormat.format(purchasePlan.getExpiration());
             String json = String.format("{userName:'%s', password:'%s', email:'%s', school:'%s', expires:'%s'}",
-            		subscriber.getId(), "admin123", subscriber.getEmail(), subscriber.getSchoolType(), "2015-07-31");
+            		subscriber.getId(), "admin123", subscriber.getEmail(), subscriber.getSchoolType(), expireDate);
 
             resp.getWriter().write(json);
 
