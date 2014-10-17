@@ -104,18 +104,31 @@ public class AssignmentReport {
 		int count=0;
 		for(SolutionInfo sol: sols) {
 			count++;
-			String widgetType = jsni_extractWidgetType(sol.getHtml());
-			String context=sol.getContext() != null?sol.getContext().getContextJson():null;
 			
-			FlowPanel tutorHolder = new FlowPanel();
-			TutorWrapperPanel tp = new TutorWrapperPanel(false, false, false, false, tutorCallback);
-			tutorHolder.setStyleName("assign_problem_holder");
-			tutorHolder.add(createSubReportHeader(sol, count));
-			tutorHolder.add(tp);
-			_theReport.add(tutorHolder);
-			tp.externallyLoadedTutor(sol, tp, null, "Solution: " + sol.getPid(), false, false, context);
-			
-			jsni_fixupReportForPrint(tp.getTutorDomNode(), widgetType);
+			try {
+				String context=sol.getContext() != null?sol.getContext().getContextJson():null;
+				
+				FlowPanel tutorHolder = new FlowPanel();
+				TutorWrapperPanel tp = new TutorWrapperPanel(false, false, false, false, tutorCallback);
+				tutorHolder.setStyleName("assign_problem_holder");
+				tutorHolder.add(createSubReportHeader(sol, count));
+				tutorHolder.add(tp);
+				_theReport.add(tutorHolder);
+
+				tp.externallyLoadedTutor(sol, tp, null, "Solution: " + sol.getPid(), false, false, context);
+				
+				String widgetType = null;
+				try {
+					widgetType = jsni_extractWidgetType(sol.getHtml());
+				}
+				catch(Exception e1) {
+					e1.printStackTrace();
+				}
+				jsni_fixupReportForPrint(tp.getTutorDomNode(), widgetType);
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 		
