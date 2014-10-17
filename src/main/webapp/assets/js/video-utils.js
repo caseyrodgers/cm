@@ -263,10 +263,38 @@ var Videos =
          type:       'mp4'
      },
      {
+	     key:        'assignments-manual-scoring',
+	     title:      'Manual Scoring of Whiteboard Problems',
+	     firstFrame: '',
+	     videoURI:   'assets/teacher_videos/mp4/assignments-manual-scoring.mp4',
+         type:       'mp4'
+     },
+     {
 	     key:        'assignments-overview',
 	     title:      'Assignments Overview',
 	     firstFrame: '',
 	     videoURI:   'assets/teacher_videos/v2/Assignments-Overview-090714-FINAL.mp4',
+         type:       'mp4'
+     },
+     {
+	     key:        'assignments-reporting-options',
+	     title:      'Reporting Options',
+	     firstFrame: '',
+	     videoURI:   'assets/teacher_videos/mp4/assignments-reporting-options.mp4',
+         type:       'mp4'
+     },
+     {
+	     key:        'assignments-specific-students',
+	     title:      'Assignments for Specific Students',
+	     firstFrame: '',
+	     videoURI:   'assets/teacher_videos/mp4/assignments-specific-students.mp4',
+         type:       'mp4'
+     },
+     {
+	     key:        'assignments-student-interface',
+	     title:      'Student Interface',
+	     firstFrame: '',
+	     videoURI:   'assets/teacher_videos/mp4/assignments-student-interface.mp4',
          type:       'mp4'
      },
      {
