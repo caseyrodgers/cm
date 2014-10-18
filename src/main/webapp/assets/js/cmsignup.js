@@ -283,7 +283,7 @@ function checkOneTeacherPayForm() {
 					}
 					if (isPilotEmail == "false") {
 						var txt = (emailMsg != null) ?
-								emailMsg : 'Email, login code mismatch.';
+								emailMsg : 'Primary Email, login must match.';
 						showError(emailField, txt);
 						isValidLoginCodeAndEmail = false;
 					}
