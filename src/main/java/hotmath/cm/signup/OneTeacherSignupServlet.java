@@ -76,9 +76,9 @@ public class OneTeacherSignupServlet extends CatchupSignupServlet {
             		sifo.getBillingZip(), sifo.getBillingState(), sifo.getBillingAddress(),
             		sifo.getBillingCity(), sifo.getFirstName(), sifo.getLastName(),
             		sifo.getSubscriberId(), adminId, subscriber.getEmail(), subscriber.getId(),
-            		"admin123", "One Teacher", "TYPE_SERVICE_CATCHUP_ONE_TEACHER");
+            		"admin123", "One Teacher", "TYPE_SERVICE_CATCHUP_ONE_TEACHER_ORDER");
             
-            PurchasePlan purchasePlan = new PurchasePlan("TYPE_SERVICE_CATCHUP_ONE_TEACHER");
+            PurchasePlan purchasePlan = new PurchasePlan("TYPE_SERVICE_CATCHUP_ONE_TEACHER_ORDER");
             subscriber.addService(HotMathSubscriberServiceFactory.create("catchup"), purchasePlan);
 
             // set max students and expiration date 
