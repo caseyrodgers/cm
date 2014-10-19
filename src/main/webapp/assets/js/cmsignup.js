@@ -277,7 +277,7 @@ function checkOneTeacherPayForm() {
 					}
 					if (isPilot == "false") {
 						var txt = (loginCodeMsg != null) ?
-								loginCodeMsg : 'Not a pilot login code.';
+								loginCodeMsg : 'Login code not recognized.';
 						showError(loginField, txt);
 						isValidLoginCodeAndEmail = false;
 					}
