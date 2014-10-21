@@ -384,9 +384,9 @@ var Videos =
  	 {
 		 key:        'sample-session',
 		 title:      'Sample Student Session',
-		 firstFrame: 'assets/teacher_videos/Sample Student Session/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Sample Student Session/Sample Student Session_controller.swf', 
-	     type:       'flv'
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/mp4/sample-student-session-480.mp4', 
+	     type:       'mp4'
  	 },
  	 {
 		 key:        'special-needs',
