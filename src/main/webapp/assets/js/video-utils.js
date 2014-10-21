@@ -321,9 +321,9 @@ var Videos =
 	 {
 		 key:        'custom-programs',
 		 title:      'Custom Programs and Quizzes',
-		 firstFrame: 'assets/teacher_videos/Custom Programs and quizzes TM/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Custom Programs and quizzes TM/Custom Programs and quizzes TM_controller.swf', 
-	     type:       'flv'
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/mp4/custom-programs-quizzes.mp4', 
+	     type:       'mp4'
  	 },
 	 {
 		 key:        'export-reports',
@@ -342,9 +342,9 @@ var Videos =
 	 {
 		 key:        'managing-groups',
 		 title:      'Managing Groups',
-		 firstFrame: 'assets/teacher_videos/Managing Groups/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Managing Groups/Managing Groups_controller.swf', 
-	     type:       'flv'
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/mp4/managing-groups-480.mp4', 
+	     type:       'mp4'
  	 },
 	 {
 		 key:        'managing-students',
@@ -363,9 +363,9 @@ var Videos =
 	 {
 		 key:        'parallel-programs',
 		 title:      'Parallel Programs',
-		 firstFrame: 'assets/teacher_videos/Using Parallel Programs/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Using Parallel Programs/Using Parallel Programs_controller.swf', 
-	     type:       'flv'
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/mp4/parallel-programs-480.mp4', 
+	     type:       'mp4'
  	 },
 	 {
 		 key:        'registering-students',
