@@ -298,10 +298,17 @@ var Videos =
          type:       'mp4'
      },
      {
-	     key:        'assignments-webinar',
-	     title:      'Assignments Overview',
+	     key:        'assignments-update-webinar',
+	     title:      'Updates to Assignments',
 	     firstFrame: '',
-	     videoURI:   'assets/teacher_videos/mp4/assignments-webinar-480.mp4',
+	     videoURI:   'assets/webinar/mp4/assignments-update-webinar.mp4',
+         type:       'mp4'
+     },
+     {
+	     key:        'assignments-webinar',
+	     title:      'Assign Homework or Classswork with Automatic Grading',
+	     firstFrame: '',
+	     videoURI:   'assets/webinar/mp4/assignments-webinar-480.mp4',
          type:       'mp4'
      },
 	 {
@@ -323,6 +330,13 @@ var Videos =
 		 title:      'Custom Programs and Quizzes',
 		 firstFrame: '',
 		 videoURI:   'assets/teacher_videos/mp4/custom-programs-quizzes.mp4', 
+	     type:       'mp4'
+ 	 },
+	 {
+		 key:        'diverse-student-groups-webinar',
+		 title:      'Using Catchup Math with Diverse Student Groups',
+		 firstFrame: '',
+		 videoURI:   'assets/webinar/mp4/diverse-student-groups-webinar.mp4', 
 	     type:       'mp4'
  	 },
 	 {
@@ -351,6 +365,13 @@ var Videos =
 		 title:      'Managing Students',
 		 firstFrame: '',
 		 videoURI:   'assets/teacher_videos/mp4/managing-students-480.mp4', 
+	     type:       'mp4'
+ 	 },
+	 {
+		 key:        'mobile-webinar',
+		 title:      'Student Interface on the iPad',
+		 firstFrame: '',
+		 videoURI:   'assets/webinar/mp4/mobile-webinar.mp4', 
 	     type:       'mp4'
  	 },
 	 {
@@ -391,9 +412,9 @@ var Videos =
  	 {
 		 key:        'special-needs',
 		 title:      'At Risk and Special Needs',
-		 firstFrame: 'assets/teacher_videos/Special Needs ideas/FirstFrame.png',
-		 videoURI:   'assets/teacher_videos/Special Needs ideas/Special Needs ideas_controller.swf', 
-	     type:       'flv'
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/mp4/special-needs.mp4', 
+	     type:       'mp4'
  	 },
 	 {
 		 key:        'student-detail-history',
