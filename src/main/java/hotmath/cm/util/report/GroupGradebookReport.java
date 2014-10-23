@@ -205,7 +205,7 @@ public class GroupGradebookReport {
 					addCell("   ", 1, tbl, isGray);
 				}
 				StudentAssignment sa = asgnMap.get(a.getAssignKey());
-				if (sa == null || sa.getHomeworkStatus().equalsIgnoreCase("not started")) {
+				if (sa == null || (sa.getHomeworkStatus() != null && sa.getHomeworkStatus().equalsIgnoreCase("not started"))) {
 					addCell("N/A", 1, tbl, isGray);
 				}
 				else { 

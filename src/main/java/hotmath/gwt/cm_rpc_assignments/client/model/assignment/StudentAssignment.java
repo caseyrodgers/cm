@@ -92,7 +92,7 @@ public class StudentAssignment implements Response {
 	}
 
     public String getHomeworkStatus() {
-		return homeworkStatus;
+		return homeworkStatus == null?"Unknown":homeworkStatus;
 	}
 
 	public void setHomeworkStatus(String homeworkStatus) {
