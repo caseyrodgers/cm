@@ -205,16 +205,16 @@ public class GroupGradebookReport {
 					addCell("   ", 1, tbl, isGray);
 				}
 				StudentAssignment sa = asgnMap.get(a.getAssignKey());
-				if (sa == null || (sa.getHomeworkStatus() != null && sa.getHomeworkStatus().equalsIgnoreCase("not started"))) {
+				if (sa == null || "not started".equalsIgnoreCase(sa.getHomeworkStatus())) {
 					addCell("N/A", 1, tbl, isGray);
 				}
 				else { 
 					String homeworkGrade = sa.getHomeworkGrade();
-					if (sa.getHomeworkStatus().equalsIgnoreCase("in progress")) {
+					if ("in progress".equalsIgnoreCase(sa.getHomeworkStatus())) {
 	    				homeworkGrade = ("-".equals(homeworkGrade.trim())) ? "0%" : homeworkGrade;
 		    			addCell(homeworkGrade, 1, tbl, isGray, RED);
     				}
-			    	else if (sa.getHomeworkStatus().equalsIgnoreCase("ready to grade")) {
+			    	else if ("ready to grade".equalsIgnoreCase(sa.getHomeworkStatus())) {
 					    addCell(homeworkGrade, 1, tbl, isGray, BLUE);						
 				    }
 				    else {
