@@ -41,7 +41,7 @@ function closeTeacherVideo() {
 
 function showVideo(obj, key) {
 	if (isIPadOrIPhone()) {
-		alert('Sorry, this content is not available on mobile devices.  You will need to access it from a desktop computer.');
+		showAlert('Sorry, this content is not available on mobile devices.  You will need to access it from a desktop computer.');
 		return;
 	}
 
@@ -62,7 +62,7 @@ function showVideo(obj, key) {
 	    firstFrame = theVideo.firstFrame;
 	}
 	else {
-		alert("Sorry, the [" + key + "] video was not found!");
+		showAlert("Sorry, the [" + key + "] video was not found!");
 		return;
 	}
 
@@ -74,7 +74,7 @@ function showVideo(obj, key) {
 		'height=560, width=640, menubar=no, titlebar=yes, status=no, top=200, left=100');
     }
 	else {
-		alert('Sorry, video type [' + type + '] not recognized!');
+		showAlert('Sorry, video type [' + type + '] not recognized!');
 	}	
 }
 
@@ -85,14 +85,18 @@ function showStudentVideo() {
 function showTeacherVideo(obj, key) {
 
 	if (_videoOverlay != null) {
-		alert("Sorry, only one video can be viewed at a time.")
+		showAlert("Sorry, only one video can be viewed at a time.");
 		return;
 	}
 
 	var theVideo = getVideo(key);
 
+	if (theVideo == null) {
+		showAlert("Sorry, the [" + key + "] video was not found!");
+		return;
+	}
 	if (theVideo.type != 'mp4' && isIPadOrIPhone()) {
-		alert('Sorry, this content is not available on mobile devices.  You will need to access it from a desktop computer.');
+		showAlert('Sorry, this content is not available on mobile devices.  You will need to access it from a desktop computer.');
 		return;
 	}
 
@@ -105,21 +109,14 @@ function showTeacherVideo(obj, key) {
 	var type = '';
 	var firstFrame = '';
 
-	if (theVideo != null) {
-		videoURI = theVideo.videoURI;
-		type = theVideo.type;
-		if (title == null || title == '')
-			title = theVideo.title;
-		firstFrame = theVideo.firstFrame;
-	}
-	else {
-		alert("Sorry, the [" + key + "] video was not found!");
-		return;
-	}
+	videoURI = theVideo.videoURI;
+	type = theVideo.type;
+	if (title == null || title == '')
+		title = theVideo.title;
+	firstFrame = theVideo.firstFrame;
 
 	var html = '';
 	var closeFoot = '';
-	//alert("videoURI: " + videoURI + ", title: " + title + ", type: " + type + ", frame: " + firstFrame);
 
     if (type == 'flv') { 
 		html = '<iframe src="/training-videos/embedded-wrapper-flv.html?video=' + encodeURI(videoURI) +
@@ -231,6 +228,14 @@ function showWebinar() {
     });
 }
 
+function showAlert(message) {
+	if (typeof alertify == 'undefined')
+    	alert(message);
+	else {
+		alert(message);
+		//alertify.alert(message);
+    }
+}
 
 var Videos =
   [
@@ -299,14 +304,14 @@ var Videos =
      },
      {
 	     key:        'assignments-update-webinar',
-	     title:      'Updates to Assignments',
+	     title:      'Updates to Assignments (replaced)',
 	     firstFrame: '',
 	     videoURI:   'assets/webinar/mp4/assignments-update-webinar.mp4',
          type:       'mp4'
      },
      {
 	     key:        'assignments-webinar',
-	     title:      'Assign Homework or Classswork with Automatic Grading',
+	     title:      'Assign Homework or Classswork with Automatic Grading (replaced)',
 	     firstFrame: '',
 	     videoURI:   'assets/webinar/mp4/assignments-webinar-480.mp4',
          type:       'mp4'
