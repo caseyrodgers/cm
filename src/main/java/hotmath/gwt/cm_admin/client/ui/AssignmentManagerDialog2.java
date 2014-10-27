@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel.Callback;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel.GradebookButtonCallback;
@@ -19,6 +22,7 @@ import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyMenuItem;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.VideoPlayerWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -228,22 +232,21 @@ public class AssignmentManagerDialog2  {
     }
 
     private TextButton createWebinarButton() {
-    	TextButton btn = new TextButton("Assignments Webinars");
-        btn.setToolTip("View Assignments webinars");
+    	TextButton btn = new TextButton("Assignments Videos");
+        btn.setToolTip("View Assignments videos");
 
         Menu menu = new Menu();
-        menu.add(new MyMenuItem("Assignments Basics", "View the Assignments Basics webinar", new SelectionHandler<MenuItem>() {
-            @Override
-            public void onSelection(SelectionEvent<MenuItem> event) {
-                showAssignmentsWebinarPage();
-            }
-        }));
-        menu.add(new MyMenuItem("Assignments Update", "View the Assignments Update webinar", new SelectionHandler<MenuItem>() {
-            @Override
-            public void onSelection(SelectionEvent<MenuItem> event) {
-                showAssignmentsUpdateWebinarPage();
-            }
-        }));
+
+        for (final TrainingVideo video : videoList) {
+        	
+            menu.add(new MyMenuItem(video.title, "View the " + video.title + " video", new SelectionHandler<MenuItem>() {
+                @Override
+                public void onSelection(SelectionEvent<MenuItem> event) {
+                	new VideoPlayerWindow(video.title, video.uri);
+                }
+            }));
+
+        }
 
         btn.setMenu(menu);
         return btn;
@@ -278,6 +281,46 @@ public class AssignmentManagerDialog2  {
 
     public static void startTest() {
         new AssignmentManagerDialog2(151718, 2);
+    }
+
+    static List<TrainingVideo> videoList = new ArrayList<TrainingVideo>();
+    
+    static {
+    	videoList.add(0, new TrainingVideo("assignments-overview", "Overview",
+                                           "assets/teacher_videos/mp4/assignments-manual-scoring.mp4"));
+
+    	videoList.add(1, new TrainingVideo("assignments-creating", "How to Create an Assignment",
+                                           "assets/teacher_videos/v2/Assignments-Creating-090814.mp4"));
+
+    	videoList.add(2, new TrainingVideo("assignments-custom", "Teacher-created Problems",
+                                           "assets/teacher_videos/v2/Assignments-CPs-9-8-14.mp4"));
+
+    	videoList.add(3, new TrainingVideo("assignments-course-tests", "Course Tests",
+                                           "assets/teacher_videos/v2/Assignments-CourseTests-FInal.mp4"));
+
+    	videoList.add(4, new TrainingVideo("assignments-specific-students", "Assignments for Specific Students",
+                                           "assets/teacher_videos/mp4/assignments-specific-students.mp4"));
+
+    	videoList.add(5, new TrainingVideo("assignments-reporting-options", "Reporting Options",
+                                           "assets/teacher_videos/mp4/assignments-reporting-options.mp4"));
+
+    	videoList.add(6, new TrainingVideo("assignments-manual-scoring", "Manual Scoring of Whiteboard Problems",
+                                           "assets/teacher_videos/mp4/assignments-manual-scoring.mp4"));
+
+    	videoList.add(7, new TrainingVideo("assignments-student-interface", "Student Interface",
+                                           "assets/teacher_videos/mp4/assignments-student-interface.mp4"));
+    }
+
+    static class TrainingVideo {
+    	String key;
+    	String title;
+    	String uri;
+    	
+    	TrainingVideo(String key, String title, String uri) {
+    		this.key = key;
+    		this.title = title;
+    		this.uri = uri;
+    	}
     }
     
 }
