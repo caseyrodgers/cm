@@ -287,7 +287,7 @@ public class AssignmentManagerDialog2  {
     
     static {
     	videoList.add(0, new TrainingVideo("assignments-overview", "Overview",
-                                           "assets/teacher_videos/mp4/assignments-manual-scoring.mp4"));
+                                           "assets/teacher_videos/v2/Assignments-Overview-090714-FINAL.mp4"));
 
     	videoList.add(1, new TrainingVideo("assignments-creating", "How to Create an Assignment",
                                            "assets/teacher_videos/v2/Assignments-Creating-090814.mp4"));
