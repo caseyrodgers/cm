@@ -1,18 +1,21 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class StudentShowWorkPanel extends ContentPanel {
     
     public StudentShowWorkPanel() {
-        setLayout(new BorderLayout());
-        add(createWestPanel(), new BorderLayoutData(LayoutRegion.WEST,200));
-        add(createCenterPanel(), new BorderLayoutData(LayoutRegion.CENTER));
+
+    	BorderLayoutContainer blContainer = new BorderLayoutContainer();
+
+    	BorderLayoutData blData = new BorderLayoutData(200);
+    	blContainer.setWestWidget(createWestPanel(), blData);
+    	blContainer.setCenterWidget(createCenterPanel(), blData);
     }
     
     private Widget createWestPanel() {
