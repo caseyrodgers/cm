@@ -1,14 +1,21 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.client.ui.list.ListCustomLesson;
+import hotmath.gwt.cm_admin.client.ui.list.ListCustomLesson.CallbackOnDoubleClick;
+import hotmath.gwt.cm_admin.client.ui.list.QuizQuestionFlow;
+import hotmath.gwt.cm_core.client.model.QuizQuestionModel;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.rpc.GetAllCustomQuizLessonsAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.cm_tools_2.client.util.CmMessageBoxGxt2;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.CustomQuizId;
@@ -23,63 +30,51 @@ import hotmath.gwt.shared.client.rpc.action.SaveCustomQuizAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.StoreEvent;
-import com.extjs.gxt.ui.client.store.StoreListener;
-import com.extjs.gxt.ui.client.store.StoreSorter;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.JsArrayInteger;
-import com.google.gwt.user.client.Random;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.Component;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.ListView;
+import com.sencha.gxt.widget.core.client.TabItemConfig;
+import com.sencha.gxt.widget.core.client.TabPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.FieldLabel;
+import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
-public class CustomProgramAddQuizDialog extends Window {
+public class CustomProgramAddQuizDialog extends GWindow {
+	
+    ListView<CustomLessonModel, String> _listLessons = null;
+    QuizQuestionFlow _listQuestions = new QuizQuestionFlow(null);
+    QuizQuestionFlow _listCustomQuiz = new QuizQuestionFlow(null);
 
-    ListView<CustomLessonModel> _listLessons = new ListView<CustomLessonModel>();
-    ListView<QuizQuestionModel> _listQuestions = new ListView<QuizQuestionModel>();
-    ListView<QuizQuestionModel> _listCustomQuiz = new ListView<QuizQuestionModel>();
-
-    LayoutContainer _mainPanel = new LayoutContainer();
+    SimpleContainer _mainPanel = new SimpleContainer();
     TabPanel _tabPanel;
-    TabItem _tabLessons;
-    TabItem _tabQuestions;
+    TabItemConfig _tabLessons;
+    TabItemConfig _tabQuestions;
     CustomLessonModel _selectedLesson;
     ContentPanel _panelQuestions;
     Callback callback;
-    TextField<String> _textQuizName;
+    TextField _textQuizName;
     //CheckBox _chkAnswersChkBox;
     //CheckBoxGroup _chkAnswersChkBoxGrp;
-    Button _saveButton;
+    TextButton _saveButton;
     CustomQuizDef _customQuiz;
     MyButtonWithTip _addButton;
     Label _readOnlyLabel;
@@ -87,120 +82,170 @@ public class CustomProgramAddQuizDialog extends Window {
         
     int adminId;
 
-    public CustomProgramAddQuizDialog(Callback callback, CustomQuizDef quiz, boolean asCopy) {
+    public CustomProgramAddQuizDialog(int adminId, Callback callback, CustomQuizDef quiz, boolean asCopy) {
+    	
+    	super(false);
+
+    	this.adminId = adminId;
         this.callback = callback;
         this._customQuiz = quiz;
 
-        adminId = StudentGridPanel.instance._cmAdminMdl.getUid();
 
         setId("custom_quiz_design");
-
-        setHeading("Define Custom Quiz");
-        setSize(805, 480);
+        
+        setHeadingText("Define Custom Quiz");
+        setPixelSize(805, 480);
         setMaximizable(true);
         setModal(true);
 
         addStyleName("custom-program-add-quiz-dialog");
 
-        _saveButton = new Button("Save", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+        _saveButton = new TextButton("Save", new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
                 saveCustomQuiz();
             }
         });
         addButton(_saveButton);
 
-        addButton(new Button("Cancel", new SelectionListener<ButtonEvent>() {
+        addButton(new TextButton("Cancel", new SelectHandler() {
+            
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 hide();
             }
         }));
+        
+        
+        _listLessons = new ListCustomLesson(new CallbackOnDoubleClick() {
+            @Override
+            public void doubleClicked(CustomLessonModel lessonModel) {
+                _tabPanel.setActiveWidget(_panelQuestions);
+            }
+        });
 
         _mainPanel = createBodyPanel();
 
-        _listCustomQuiz.setStore(new ListStore<QuizQuestionModel>());
-        _listCustomQuiz.getStore().addStoreListener(new StoreListener<QuizQuestionModel>() {
+        _listCustomQuiz.setCallback(new QuizQuestionFlow.Callback() {
             @Override
-            public void handleEvent(StoreEvent<QuizQuestionModel> e) {
-                _totalCount.setText("Count: " + _listCustomQuiz.getStore().getCount());
+            public void questionCountChanged(int count) {
+                _totalCount.setText("Count: " + count);
             }
         });
-        _listCustomQuiz
-                .setTemplate("<tpl for=\".\"><div style='padding: 15px;white-space: normal' class='x-view-item'>{question}</div></tpl>");
+        
+//        final DragSource s = new DragSource(_listQuestions);
+//        s.addDropHandler(new DndDropHandler() {
+//            
+//            @Override
+//            public void onDrop(DndDropEvent event) {
+//                Info.display("Info", "drag drop: " + event);
+//            }
+//        });
+//        
+//        s.addDragStartHandler(new DndDragStartHandler() {
+//            @Override
+//            public void onDragStart(DndDragStartEvent event) {
+//                Info.display("Info", "drag start: " + event);
+//            }
+//        });
+//        DropTarget target = new DropTarget(_listCustomQuiz) {
+//            @SuppressWarnings("unchecked")
+//            protected void showFeedback(com.sencha.gxt.dnd.core.client.DndDragMoveEvent event) {
+//                super.showFeedback(event);
+//            }
+//        };
+//        target.setFeedback(Feedback.BOTH);
+//        target.setAllowSelfAsSource(true);        
+        
+        
+        
+//        ListStore<CustomLessonModel> storeAll = new ListStore<CustomLessonModel>();
+//        storeAll.setStoreSorter(new StoreSorter<CustomLessonModel>() {
+//            @Override
+//            public int compare(Store<CustomLessonModel> store, CustomLessonModel m1, CustomLessonModel m2,
+//                    String property) {
+//                if (property != null) {
+//                    String v1 = m1.getLesson();
+//                    String v2 = m2.getLesson();
+//                    return comparator.compare(v1, v2);
+//                }
+//                return super.compare(store, m1, m2, property);
+//            }
+//        });
+//
+//        _listLessons.setStore(storeAll);
+//        String template = "<tpl for=\".\"><div class='x-view-item'><span style='font-size:.5em;width: 5px;' class='{subjectStyleClass}'>&nbsp;</span>&nbsp;{" + "customProgramItem" + "}</div></tpl>";
+//        _listLessons.setTemplate(template);
+                
 
-        ListStore<CustomLessonModel> storeAll = new ListStore<CustomLessonModel>();
-        storeAll.setStoreSorter(new StoreSorter<CustomLessonModel>() {
-            @Override
-            public int compare(Store<CustomLessonModel> store, CustomLessonModel m1, CustomLessonModel m2,
-                    String property) {
-                if (property != null) {
-                    String v1 = m1.getLesson();
-                    String v2 = m2.getLesson();
-                    return comparator.compare(v1, v2);
-                }
-                return super.compare(store, m1, m2, property);
-            }
-        });
+        BorderLayoutContainer blc = new BorderLayoutContainer();
+        blc.setCenterWidget(_listLessons);
+        blc.setSouthWidget(CustomProgramDesignerDialog.getLegend(), new BorderLayoutData(30));
 
-        _listLessons.setStore(storeAll);
-        String template = "<tpl for=\".\"><div class='x-view-item'><span style='font-size:.5em;width: 5px;' class='{subjectStyleClass}'>&nbsp;</span>&nbsp;{"
-                + "customProgramItem" + "}</div></tpl>";
-        _listLessons.setTemplate(template);
-        _tabLessons.add(_listLessons);
-        _tabLessons.setLayout(new FitLayout());
+        _tabPanel.add(blc, _tabLessons);
+        
+//        _listLessons.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
+//            @Override
+//            public void handleEvent(BaseEvent be) {
+//                // loadQuestionsFor(_listLessons.getSelectionModel().getSelectedItem());
+//                _tabPanel.setSelection(_tabQuestions);
+//            }
+//        });
 
-        _listLessons.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent be) {
-                // loadQuestionsFor(_listLessons.getSelectionModel().getSelectedItem());
-                _tabPanel.setSelection(_tabQuestions);
-            }
-        });
-
-        _listQuestions.setStore(new ListStore<QuizQuestionModel>());
-        _listQuestions
-                .setTemplate("<tpl for=\".\"><div style='padding: 15px;white-space: normal' class='x-view-item'>{question}</div></tpl>");
+        
+        
+//        _listQuestions.setStore(new ListStore<QuizQuestionModel>());
+//        _listQuestions.setTemplate("<tpl for=\".\"><div style='padding: 15px;white-space: normal' class='x-view-item'>{question}</div></tpl>");
+        
+        
+        
         _panelQuestions = createQuestionListPanel(_listQuestions);
-        _tabQuestions.add(_panelQuestions);
         _tabQuestions.setEnabled(false);
-        _tabQuestions.setLayout(new FitLayout());
 
-        _listQuestions.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
+        _listQuestions.addDomHandler(new DoubleClickHandler() {
             @Override
-            public void handleEvent(BaseEvent be) {
-                addSelectedQuestionToCustomQuiz();
-            }
-        });
+            public void onDoubleClick(DoubleClickEvent event) {
+            	addSelectedQuestionToCustomQuiz();            }
+        }, DoubleClickEvent.getType());
+        
+        _tabPanel.add(_panelQuestions, _tabQuestions);
 
-        _tabPanel.addListener(Events.Select, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent be) {
-                if (_tabPanel.getSelectedItem().getText().equalsIgnoreCase("questions")) {
+
+        _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
+			@Override
+			public void onSelection(SelectionEvent<Widget> event) {
+                if (_tabPanel.getActiveWidget() == _panelQuestions) {
                     loadQuestionsFor(_listLessons.getSelectionModel().getSelectedItem());
                 }
             }
         });
 
-        _listLessons.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<CustomLessonModel>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<CustomLessonModel> se) {
-                _tabQuestions.setEnabled(true);
-            }
-        });
+        _listLessons.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<CustomLessonModel>() {
+        	@Override
+        	public void onSelectionChanged(
+        			SelectionChangedEvent<CustomLessonModel> event) {
+        		_tabQuestions.setEnabled(true);
+        		_tabPanel.forceLayout();
+        	}
+		});
+		
 
-        setLayout(new BorderLayout());
-        add(createTopPanel(), new BorderLayoutData(LayoutRegion.NORTH, 50));
-        add(_mainPanel, new BorderLayoutData(LayoutRegion.CENTER));
+        BorderLayoutContainer borderLayout = new BorderLayoutContainer();
+        
+        borderLayout.setNorthWidget(createTopPanel(), new BorderLayoutData(50));
+        borderLayout.setCenterWidget(_mainPanel);
+        // borderLayout.setSouthWidget(CustomProgramDesignerDialog.getLegend(), new BorderLayoutData(40));
+        
+        
+        setWidget(borderLayout);
 
-        CustomProgramDesignerDialog.createButtonBarLedgend(getButtonBar());
 
-        _listCustomQuiz.getStore().addStoreListener(new StoreListener<QuizQuestionModel>() {
-            @Override
-            public void handleEvent(StoreEvent<QuizQuestionModel> e) {
-                showQuestionsInCustomQuiz(_listCustomQuiz.getStore().getModels(), _listCustomQuiz.getId());
-            }
-        });
+//        _listCustomQuiz.getStore().addStoreListener(new StoreListener<QuizQuestionModel>() {
+//            @Override
+//            public void handleEvent(StoreEvent<QuizQuestionModel> e) {
+//                showQuestionsInCustomQuiz(_listCustomQuiz.getStore().getModels(), _listCustomQuiz.getId());
+//            }
+//        });
 
         getAllLessonData();
 
@@ -243,11 +288,13 @@ public class CustomProgramAddQuizDialog extends Window {
                 else {
                     _customQuiz.setInUse(count.getValue() > 0);
                     setIsArchived(_customQuiz.isArchived());
+                    
+                    _readOnlyLabel.addStyleName("custom-quiz-no-modify-text");
                     if (_customQuiz.isArchived()) {
-                    	_readOnlyLabel.setText("<span class='custom-quiz-no-modify-text'>Custom Quiz has been archived and may not be modified.  You can make a copy to customize.</span>");
+                    	_readOnlyLabel.setText("Custom Quiz has been archived and may not be modified.  You can make a copy to customize.");
                     }
                     else {
-                    	_readOnlyLabel.setText("<span class='custom-quiz-no-modify-text'>Custom Quiz has been used and questions may not be modified.  You can archive it or make a copy to customize.</span>");
+                    	_readOnlyLabel.setText("Custom Quiz has been used and questions may not be modified.  You can archive it or make a copy to customize.");
                     }
                 }
             };
@@ -256,7 +303,9 @@ public class CustomProgramAddQuizDialog extends Window {
         setVisible(true);
     }
 
-    /*
+    
+
+	/*
      * if isArchived is false, then name and check-answers can be changed and CQ can be saved, otherwise not.
      */
     private void setIsArchived(boolean isArchived) {
@@ -281,35 +330,41 @@ public class CustomProgramAddQuizDialog extends Window {
         _addButton.setEnabled(isModifiable);
         _readOnlyLabel.setVisible(!isModifiable);
         
-        List<Component> tools = _questionToolbar.getHeader().getTools();
-        for (Component tool : tools) {
-        	if (isModifiable == true) tool.enable();
-        	else tool.disable();
+        List<Widget> tools = _questionToolbar.getHeader().getTools();
+        for (Widget tool : tools) {
+        	if(tool instanceof Component) {
+        		Component c = (Component)tool;
+        		if (isModifiable == true) {
+        			c.enable();
+        		}
+        		else  {
+        			c.disable();
+        		}
+        	}
         }
         //_panelQuestions.getHeader().setVisible(isModifiable);
     }
     
     private void addSelectedQuestionToCustomQuiz() {
-        QuizQuestionModel question = _listQuestions.getSelectionModel().getSelectedItem();
+        QuizQuestionModel question = _listQuestions.getSelectedQuestion();
         if (question != null) {
             
-            for(int i=0,t=_listCustomQuiz.getStore().getCount();i<t;i++) {
-                if(_listCustomQuiz.getStore().getAt(i).equals(question)) {
-                    CmMessageBoxGxt2.showAlert("This question is already in the custom quiz.");
-                    markSelectedItem(_listCustomQuiz, _listCustomQuiz.getStore().getAt(i));
+            for(int i=0,t=_listCustomQuiz.getQuestions().size();i<t;i++) {
+                if(_listCustomQuiz.getQuestions().get(i).equals(question)) {
+                    CmMessageBox.showAlert("This question is already in the custom quiz.");
+                    markSelectedItem(_listCustomQuiz, _listCustomQuiz.getQuestions().get(i));
                     return;
                 }
             }
-            
-            _listCustomQuiz.getStore().add(new QuizQuestionModel(question));
+            _listCustomQuiz.addQuestion(question);
             markSelectedItem(_listCustomQuiz, question);
         }
     }
 
     private void removeSelectedQuestionFromCustomQuiz() {
-        QuizQuestionModel question = _listCustomQuiz.getSelectionModel().getSelectedItem();
+        QuizQuestionModel question = _listCustomQuiz.getSelectedQuestion();
         if (question != null) {
-            _listCustomQuiz.getStore().remove(question);
+            _listCustomQuiz.removeQuestion(question);
         }
         else {
             showMustSelectQuestionMessage();
@@ -317,15 +372,16 @@ public class CustomProgramAddQuizDialog extends Window {
     }
 
     private void removeAllSelectedQuestionFromCustomQuiz() {
-        if(_listCustomQuiz.getStore().getCount() == 0) {
-            CmMessageBoxGxt2.showAlert("No questions in custom quiz to delete.");
+        if(_listCustomQuiz.getQuestions().size() == 0) {
+            CmMessageBox.showAlert("No questions in custom quiz to delete.");
         }
         else {
-            MessageBox.confirm("Remove Questions", "Remove all questions from custom quiz?",
-                    new Listener<MessageBoxEvent>() {
-                        public void handleEvent(MessageBoxEvent be) {
-                            if (!be.isCancelled() && be.getButtonClicked().getText().equalsIgnoreCase("Yes")) {
-                                _listCustomQuiz.getStore().removeAll();
+        	CmMessageBox.confirm("Remove Questions", "Remove all questions from custom quiz?",
+        			new ConfirmCallback() {
+						@Override
+						public void confirmed(boolean yesNo) {
+							if(yesNo) {
+                                _listCustomQuiz.removeAllQuestions();
                             }
                         }
                     });
@@ -347,13 +403,13 @@ public class CustomProgramAddQuizDialog extends Window {
             public void oncapture(CmList<QuizQuestion> questions) {
                 CmBusyManager.setBusy(false);
 
-                _listCustomQuiz.getStore().removeAll();
+                _listCustomQuiz.removeAllQuestions();
                 List<QuizQuestionModel> models = new ArrayList<QuizQuestionModel>();
                 for (int i = 0, t = questions.size(); i < t; i++) {
                     QuizQuestion q = questions.get(i);
                     models.add(new QuizQuestionModel(q));
                 }
-                _listCustomQuiz.getStore().add(models);
+                _listCustomQuiz.setQuestions(models);
             }
         }.register();
     }
@@ -362,14 +418,14 @@ public class CustomProgramAddQuizDialog extends Window {
         try {
             final List<CustomQuizId> ids = getCustomQuizIds();
             if (ids.size() == 0) {
-                CmMessageBoxGxt2.showAlert("There are no questions assigned to this custom quiz.");
+                CmMessageBox.showAlert("There are no questions assigned to this custom quiz.");
                 return;
             }
             
             saveCustomQuizAux();
         } catch (Exception e) {
             e.printStackTrace();
-            CmMessageBoxGxt2.showAlert("Could Not Save", e.getMessage());
+            CmMessageBox.showAlert("Could Not Save", e.getMessage());
         }
     }
 
@@ -408,7 +464,7 @@ public class CustomProgramAddQuizDialog extends Window {
     }
 
     private List<CustomQuizId> getCustomQuizIds() {
-        List<QuizQuestionModel> models = _listCustomQuiz.getStore().getModels();
+        List<QuizQuestionModel> models = _listCustomQuiz.getQuestions();
 
         List<CustomQuizId> quizIds = new ArrayList<CustomQuizId>();
         for (int i = 0, t = models.size(); i < t; i++) {
@@ -420,12 +476,12 @@ public class CustomProgramAddQuizDialog extends Window {
     }
 
     private void showQuestionHtml(QuizQuestionModel quizModel) {
-        CmWindow questionWindow = new CmWindow();
-        questionWindow.setHeading("Question: " + quizModel.getQuestionId());
+        GWindow questionWindow = new GWindow(false);
+        questionWindow.setHeadingText("Question: " + quizModel.getQuestionId());
         questionWindow.setModal(true);
-        questionWindow.setSize(525, 300);
+        questionWindow.setPixelSize(525, 300);
 
-        Html html = new Html(quizModel.getQuestion());
+        HTML html = new HTML(quizModel.getQuestion());
         questionWindow.add(html);
 
         questionWindow.addCloseButton();
@@ -437,8 +493,8 @@ public class CustomProgramAddQuizDialog extends Window {
 
     private void getAllLessonData() {
         if (__allLessons != null) {
-            _listLessons.getStore().removeAll();
-            _listLessons.getStore().add(__allLessons);
+            _listLessons.getStore().clear();
+            _listLessons.getStore().addAll(__allLessons);
             return;
         }
 
@@ -455,8 +511,8 @@ public class CustomProgramAddQuizDialog extends Window {
             public void oncapture(CmList<CustomLessonModel> allLessons) {
                 CmBusyManager.setBusy(false);
                 __allLessons = allLessons;
-                _listLessons.getStore().removeAll();
-                _listLessons.getStore().add(__allLessons);
+                _listLessons.getStore().clear();
+                _listLessons.getStore().addAll(__allLessons);
             }
         }.register();
     }
@@ -471,8 +527,8 @@ public class CustomProgramAddQuizDialog extends Window {
 
         CmLogger.info("Loading questions for: " + lesson);
 
-        _listQuestions.getStore().removeAll();
-        _panelQuestions.setHeading("Questions For: " + lesson.getLesson());
+        _listQuestions.clear();
+        _panelQuestions.setHeadingText("Questions For: " + lesson.getLesson());
         new RetryAction<CmList<QuizQuestion>>() {
             @Override
             public void attempt() {
@@ -498,7 +554,7 @@ public class CustomProgramAddQuizDialog extends Window {
      * @param questions
      */
     private void showQuestionsAll(CmList<QuizQuestion> questions) {
-        _listQuestions.getStore().removeAll();
+        _listQuestions.clear();
         List<QuizQuestionModel> models = new ArrayList<QuizQuestionModel>();
         JsArrayInteger answers = createArray();
         for (int i = 0, t = questions.size(); i < t; i++) {
@@ -507,7 +563,7 @@ public class CustomProgramAddQuizDialog extends Window {
 
             answers.push(question.getCorrectAnswer());
         }
-        _listQuestions.getStore().add(models);
+        _listQuestions.setQuestions(models);
 
         String id = _listQuestions.getId();
         jsni_hideAnswerResults(id, answers);
@@ -540,94 +596,106 @@ public class CustomProgramAddQuizDialog extends Window {
    }-*/;
 
     Label _totalCount = new Label("Count: 0");
-    private LayoutContainer createBodyPanel() {
-        LayoutContainer lc = new LayoutContainer();
-        lc.addStyleName("custom-program-questions-container");
+    private SimpleContainer createBodyPanel() {
+    	
+    	BorderLayoutContainer blc = new BorderLayoutContainer();
+    	
+        blc.addStyleName("custom-program-questions-container");
 
-        lc.setLayout(new BorderLayout());
 
         ContentPanel cpLeft = new ContentPanel();
         // cpLeft.setHeading("Available Questions");
         cpLeft.getHeader().setVisible(false);
-        cpLeft.setLayout(new FitLayout());
 
         _tabPanel = new TabPanel();
+        
+        _tabLessons = new TabItemConfig("All Lessons", false);
+        // _tabPanel.add(_tabLessons);
 
-        _tabLessons = new TabItem("All Lessons");
-        _tabLessons.setLayout(new FitLayout());
-        _tabPanel.add(_tabLessons);
-
-        _tabQuestions = new TabItem("Questions");
-        _tabQuestions.setLayout(new FitLayout());
-        _tabPanel.add(_tabQuestions);
+        _tabQuestions = new TabItemConfig("Questions", false);
+        // _tabQuestions.setLayout(new FitLayout());
+        // _tabPanel.add(_tabQuestions);
+        
         cpLeft.add(_tabPanel);
-        BorderLayoutData ld = new BorderLayoutData(LayoutRegion.WEST, 380);
+        
+        BorderLayoutData ld = new BorderLayoutData(380);
         ld.setSplit(true);
-        lc.add(cpLeft, ld);
+        blc.setWestWidget(cpLeft, ld);
 
         _questionToolbar = new ContentPanel();
-        _questionToolbar.setHeading("Questions in Custom Quiz");
-        _questionToolbar.setLayout(new BorderLayout());
-        _questionToolbar.add(_listCustomQuiz, new BorderLayoutData(LayoutRegion.CENTER));
+        _questionToolbar.setHeadingText("Questions in Custom Quiz");
         
-        _totalCount.setStyleAttribute("margin-right", "5px");
-        LayoutContainer foot = new LayoutContainer();
-        foot.setStyleAttribute("text-align", "right");
+        BorderLayoutContainer blc2 = new BorderLayoutContainer();
+        _questionToolbar.setWidget(blc);
+        
+        blc2.setCenterWidget(_listCustomQuiz);
+        
+        _totalCount.getElement().setAttribute("style", "margin-right;5px");
+        
+        FlowLayoutContainer foot = new FlowLayoutContainer();
+        foot.getElement().setAttribute("style",  "text-align;right");
         foot.add(_totalCount);
-        _questionToolbar.add(foot, new BorderLayoutData(LayoutRegion.SOUTH, 15));
+        blc2.setSouthWidget(foot, new BorderLayoutData(15));
         
-        lc.add(_questionToolbar, new BorderLayoutData(LayoutRegion.CENTER));
+        blc.setCenterWidget(blc2);;
         
 
-        Button removeBtn = new Button("Remove");
+        TextButton removeBtn = new TextButton("Remove");
         Menu removeMenu = new Menu();
         removeMenu.add(new MyMenuItemWithTip("Remove", "Remove the selected question from the custom quiz.",
-                new SelectionListener<MenuEvent>() {
-                    public void componentSelected(MenuEvent ce) {
+                new SelectionHandler<MenuItem>() {
+					
+					@Override
+					public void onSelection(SelectionEvent<MenuItem> event) {
                         removeSelectedQuestionFromCustomQuiz();
                     }
                 }));
+        
+        
         removeMenu.add(new MyMenuItemWithTip("Remove All", "Remove all questions from the custom quiz",
-                new SelectionListener<MenuEvent>() {
-                    public void componentSelected(MenuEvent ce) {
+                new SelectionHandler<MenuItem>() {
+        			public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<MenuItem> event) {
                         removeAllSelectedQuestionFromCustomQuiz();
                     }
                 }));
+        
         removeBtn.setMenu(removeMenu);
         _questionToolbar.getHeader().addTool(removeBtn);
 
         _questionToolbar.getHeader().addTool(
                 new MyButtonWithTip("Move Down", "Move the selected question down in the custom quiz.",
-                        new SelectionListener<ButtonEvent>() {
-                            public void componentSelected(ButtonEvent ce) {
+                        new SelectHandler() {
+							@Override
+							public void onSelect(SelectEvent event) {
                                 moveSelectedQuestionInProgramDown();
                             }
                         }));
 
         _questionToolbar.getHeader().addTool(
                 new MyButtonWithTip("Move Up", "Move the selected question up in the custom quiz.",
-                        new SelectionListener<ButtonEvent>() {
-                            public void componentSelected(ButtonEvent ce) {
+                        new SelectHandler() {
+							@Override
+							public void onSelect(SelectEvent event) {
                                 moveSelectedQuestionInProgramUp();
                             }
                         }));
         
-        return lc;
+        return _questionToolbar;
     }
 
     private void moveSelectedQuestionInProgramDown() {
-        ListStore<QuizQuestionModel> str = _listCustomQuiz.getStore();
-        QuizQuestionModel question = _listCustomQuiz.getSelectionModel().getSelectedItem();
+        QuizQuestionModel question = _listCustomQuiz.getSelectedQuestion();
         if (question != null) {
-            int num = getQuestionNum(str.getModels(), question);
-            if (num + 1 < str.getCount()) {
-                _listCustomQuiz.getStore().remove(question);
-                 _listCustomQuiz.getStore().insert(question, num + 1);
-
+            int num = getQuestionNum(_listCustomQuiz.getQuestions(), question);
+            if (num + 1 < _listCustomQuiz.getQuestions().size()) {
+                _listCustomQuiz.getQuestions().remove(question);
+                 _listCustomQuiz.getQuestions().add(num + 1,question);
+                 _listCustomQuiz.refreshList();
+                 
                  markSelectedItem(_listCustomQuiz, question);
             }
             else {
-                CmMessageBoxGxt2.showAlert("This is already the last question in the custom quiz.");
+                CmMessageBox.showAlert("This is already the last question in the custom quiz.");
             }
         }
         else {
@@ -636,21 +704,22 @@ public class CustomProgramAddQuizDialog extends Window {
     }
 
     private void showMustSelectQuestionMessage() {
-        CmMessageBoxGxt2.showAlert("Select a question first.");
+        CmMessageBox.showAlert("Select a question first.");
     }
     
     private void moveSelectedQuestionInProgramUp() {
-        ListStore<QuizQuestionModel> str = _listCustomQuiz.getStore();
-        QuizQuestionModel question = _listCustomQuiz.getSelectionModel().getSelectedItem();
+        QuizQuestionModel question = _listCustomQuiz.getSelectedQuestion();
         if (question != null) {
-            int num = getQuestionNum(str.getModels(), question);
+            int num = getQuestionNum(_listCustomQuiz.getQuestions(), question);
             if (num > 0) {
-                _listCustomQuiz.getStore().remove(question);
-                _listCustomQuiz.getStore().insert(question, num - 1);
+                _listCustomQuiz.getQuestions().remove(question);
+                _listCustomQuiz.getQuestions().add(num - 1,question);
+                _listCustomQuiz.refreshList();
+                
                 markSelectedItem(_listCustomQuiz, question);
             }
             else {
-                CmMessageBoxGxt2.showAlert("This is already the first question in the custom quiz.");
+                CmMessageBox.showAlert("This is already the first question in the custom quiz.");
             }
         }
         else {
@@ -674,26 +743,21 @@ public class CustomProgramAddQuizDialog extends Window {
      * @param list
      * @param question
      */
-    private void markSelectedItem(ListView<QuizQuestionModel> list, QuizQuestionModel question) {
-        List<QuizQuestionModel> selection = new ArrayList<QuizQuestionModel>();
-        selection.add(question);
-        list.getSelectionModel().setSelection(selection);
-        
-        int num = getQuestionNum(list.getStore().getModels(),question);
-        list.getElement(num).scrollIntoView();
+    private void markSelectedItem(QuizQuestionFlow list, QuizQuestionModel question) {
+        list.setSelectedQuestion(question);
+        //int num = getQuestionNum(list.getQuestions(),question);
+        // list.getElement(num).scrollIntoView();
     }
 
     private ContentPanel createQuestionListPanel(Widget widget) {
         ContentPanel cp = new ContentPanel();
-        cp.setLayout(new BorderLayout());
-        cp.setHeading("Questions");
-        cp.setLayout(new FitLayout());
-        cp.add(widget);
-
+        cp.setHeadingText("Questions");
+        cp.setWidget(widget);
         _addButton =
         	new MyButtonWithTip("Add", "Add the selected question to custom quiz.",
-                new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent ce) {
+                new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
                         addSelectedQuestionToCustomQuiz();
                     }
                 });
@@ -703,141 +767,66 @@ public class CustomProgramAddQuizDialog extends Window {
     }
 
     private Widget createTopPanel() {
-
-        LayoutContainer lc = new LayoutContainer();
-        HBoxLayout layout = new HBoxLayout();
-        layout.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
-        lc.setLayout(layout);
-
-        FormPanel form = new FormPanel();
-        form.setFrame(false);
-        form.setBodyBorder(false);
-        form.setHeaderVisible(false);
-        form.setLabelWidth(70);
         
-        _textQuizName = new TextField<String>();
+        // form.setLabelWidth(70);
+        
+        _textQuizName = new TextField();
         _textQuizName.setAllowBlank(false);
-        _textQuizName.setFieldLabel("Quiz Name");
-        form.add(_textQuizName);
-        
-        FormPanel fp = new FormPanel();
-        fp.setFrame(false);
-        fp.setBodyBorder(false);
-        fp.setHeaderVisible(false);
-        fp.setLabelWidth(1);
-/*
-        _chkAnswersChkBox = new CheckBox();
-        _chkAnswersChkBox.setId("check-answers");
-        _chkAnswersChkBox.setToolTip("Allow students to check their answers using Help/Student Details.");
-        _chkAnswersChkBox.setStyleName("custom-quiz-check-box");
-        _chkAnswersChkBox.setBoxLabel("Allow students to check answers");
-        _chkAnswersChkBox.setLabelSeparator("");
-        _chkAnswersChkBoxGrp = new CheckBoxGroup();
-        _chkAnswersChkBoxGrp.setId("check-answers");
-        _chkAnswersChkBoxGrp.add(_chkAnswersChkBox);
-        _chkAnswersChkBoxGrp.setLabelSeparator("");
-        _chkAnswersChkBoxGrp.setStyleName("custom-quiz-check-box-grp");
-        fp.add(_chkAnswersChkBoxGrp);
-*/
-        _readOnlyLabel = new Label("");
+        // _textQuizName.setFieldLabel("Quiz Name");
+
+        BorderLayoutContainer blc = new BorderLayoutContainer();
+        _readOnlyLabel = new HTML();
         _readOnlyLabel.setStyleName("custom-quiz-no-modify-label");
 
-        lc.add(form);
-        lc.add(fp);
-        lc.add(_readOnlyLabel);
-
-        return lc;
+        
+        blc.setWestWidget(new FieldLabel(_textQuizName, "Quiz Name"), new BorderLayoutData(.45));
+        _readOnlyLabel.setVisible(true);
+        blc.setEastWidget(_readOnlyLabel, new BorderLayoutData(.50));
+        
+        FramedPanel frame = new FramedPanel();
+        frame.setBodyBorder(false);
+        frame.setHeaderVisible(false);
+        frame.setWidget(blc);
+        //_readOnlyLabel.setText("TEST TEST");
+        return frame;
     }
 
     static public interface Callback {
         void quizCreated();
     }
+
+    public static void startTest() {
+        new GwtTester(new TestWidget() {
+            
+            @Override
+            public void runTest() {
+                CustomQuizDef quiz;
+                CustomProgramAddQuizDialog.Callback callback = new CustomProgramAddQuizDialog.Callback() {
+                    
+                    @Override
+                    public void quizCreated() {
+                        // TODO Auto-generated method stub
+                        
+                    }
+                };
+                quiz = new CustomQuizDef();
+                quiz.setQuizName("TEST QUIZ");
+                new CustomProgramAddQuizDialog(2, callback, quiz, false);                
+            }
+        });
+    }
 }
 
-class QuizQuestionModel extends BaseModelData {
-    public QuizQuestionModel(QuizQuestion question) {
-        setValues(question);
-    }
-
-    private void setValues(QuizQuestion question) {
-        set("lesson", question.getLesson());
-        set("programName", question.getProgramName());
-        set("question", question.getQuizHtml());
-        set("questionId", question.getQuestionId());
-        set("pid", question.getPid());
-        set("correctAnswer", question.getCorrectAnswer());
-    }
-
-    
-    /** Create a deep copy of an existing model
-     * 
-     * @param model
-     */
-    public QuizQuestionModel(QuizQuestionModel model) {
-        setValues(new QuizQuestion((String) model.get("questionId"), (String) model.get("lesson"),
-                (String) model.get("programName"), (String) model.get("pid"), (String) createUniqRadioButtonName(model
-                        .get("question").toString()), (Integer) model.get("correctAnswer")));
-    }
-
-    
-    /** Update the name='XXX' attribute in the radio buttons that make 
-     *  up this question HTML.  That way we can set the value dynamically
-     *  via JS without altering any copy.
-     *  
-     * @param html
-     * @return
-     */
-    private String createUniqRadioButtonName(String html) {
-        // html = "before name=\"question_256\" after";
-        String newNameTag = "quiz_question_" + Random.nextInt(1000);
-        String ret = html.replaceAll("name=\"question_[0-9]*\"", "\"" + newNameTag + "\"");
-        return ret;
-    }
-
-    public String getQuestion() {
-        return get("question");
-    }
-
-    public String getLesson() {
-        return get("lesson");
-    }
-
-    public String getProgram() {
-        return get("programName");
-    }
-
-    public String getQuestionId() {
-        return get("questionId");
-    }
-
-    public String getPid() {
-        return get("pid");
-    }
-
-    public Integer getCorrectAnswer() {
-        return get("correctAnswer");
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if(obj instanceof QuizQuestionModel) {
-            return ((QuizQuestionModel)obj).getPid().equals(getPid());
-        }
-        else {
-            return super.equals(obj);
-        }
-    }
-}
 
 class MyMenuItemWithTip extends MenuItem {
-    MyMenuItemWithTip(String name, String tip, SelectionListener<MenuEvent> me) {
+    MyMenuItemWithTip(String name, String tip, SelectionHandler<MenuItem> me) {
         super(name, me);
         setToolTip(tip);
     }
 }
 
-class MyButtonWithTip extends Button {
-    MyButtonWithTip(String name, String tip, SelectionListener<ButtonEvent> be) {
+class MyButtonWithTip extends TextButton {
+    MyButtonWithTip(String name, String tip, SelectHandler be) {
         super(name, be);
         setToolTip(tip);
     }
