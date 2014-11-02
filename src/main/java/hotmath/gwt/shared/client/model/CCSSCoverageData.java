@@ -29,6 +29,10 @@ public class CCSSCoverageData implements Response {
         this.count = count;
     }
 
+    public String getUniqueKey() {
+        return getLessonName() + "_" + getName();
+    }
+    
     public CmList<String> getColumnLabels() {
         return columnLabels;
     }

@@ -1,17 +1,17 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
+import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.CustomQuizInfoModel;
 
 public class CustomQuizInfoAction implements Action<CustomQuizInfoModel>{
-    CustomLessonModel quiz;
+    CustomQuizDef quiz;
     Integer adminId;
     
     public CustomQuizInfoAction(){
     }
 
-    public CustomQuizInfoAction(Integer adminId, CustomLessonModel quiz) {
+    public CustomQuizInfoAction(Integer adminId, CustomQuizDef quiz) {
         this.adminId = adminId;
         this.quiz = quiz;
     }
@@ -24,11 +24,11 @@ public class CustomQuizInfoAction implements Action<CustomQuizInfoModel>{
         this.adminId = adminId;
     }
 
-    public CustomLessonModel getQuiz() {
+    public CustomQuizDef getQuiz() {
         return quiz;
     }
 
-    public void setQuiz(CustomLessonModel quiz) {
+    public void setQuiz(CustomQuizDef quiz) {
         this.quiz = quiz;
     }
 

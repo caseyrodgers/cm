@@ -247,6 +247,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
                     String subject = getSubject(lessonFile, all);
                     segment.getLessons().add(new CustomLessonModel(rs.getString("lesson"),lessonFile, subject));
                 }
+                
             }
             
             

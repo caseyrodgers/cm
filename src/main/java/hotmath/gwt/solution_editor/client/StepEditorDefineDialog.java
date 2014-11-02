@@ -2,30 +2,35 @@ package hotmath.gwt.solution_editor.client;
 
 import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.EventBus;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
-public class StepEditorDefineDialog extends Window {
+public class StepEditorDefineDialog extends GWindow {
 
     HtmlEditorApplet _textArea;
 
     public StepEditorDefineDialog(final String tutorDefine) {
-        setLayout(new FitLayout());
 
-        _textArea = new HtmlEditorApplet();
-        add(_textArea);
 
-        setSize(700, 550);
-        setScrollMode(Scroll.AUTO);
+    	super(true);
+    	
+        setPixelSize(700, 550);
         setResizable(true);
         setMaximizable(true);
         setAnimCollapse(true);
         setDraggable(false);
         setModal(true);
+
+        FlowLayoutContainer flow = new FlowLayoutContainer();
+        flow.setScrollMode(ScrollMode.AUTO);
+
+        _textArea = new HtmlEditorApplet();
+        flow.add(_textArea);
+        setWidget(flow);
         
         
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -47,9 +52,6 @@ public class StepEditorDefineDialog extends Window {
         });
 
         setVisible(true);
-
         focus();
-
-        layout();
     }
 }

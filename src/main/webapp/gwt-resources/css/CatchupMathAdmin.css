@@ -384,28 +384,28 @@ trending-data-student-list-item {
 
 /** Custom Program Lessons */
 /** .custom-prescription-dialog  */
+
+.pre-alg, .alg1, .alg2, .geom, .ess {
+    padding: 4px;
+}
+
 .pre-alg {
-	padding: 4px;
 	background-color: #8dc63f;
 }
 
 .alg1 {
-	padding: 4px;
 	background-color: #f7941d;
 }
 
 .alg2 {
-	padding: 4px;
 	background-color: #ed1c24;
 }
 
 .geom {
-	padding: 4px;
 	background-color: #00aeef
 }
 
 .ess {
-    padding: 4px;
     background-color: yellow;
 }
 
@@ -419,8 +419,6 @@ trending-data-student-list-item {
 	
 
 
-
-.customProgram
 
 .program-read-only {
 	color: red;
@@ -641,4 +639,18 @@ program-details-panel .x-ftree2-node-over {
 
 .question_div .not_used {
    display: none !important;
+}
+
+.my-button-bar {
+	text-align: right;
+}
+
+.my-button-bar button {
+	float: left;
+}
+
+
+
+.quiz-question-flow {
+	background: white;
 }

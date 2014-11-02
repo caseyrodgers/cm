@@ -6,4 +6,9 @@ public class MyCheckBoxGroup extends SimpleContainer {
     
     public MyCheckBoxGroup() {}
 
+	public void setLabelSeparator(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

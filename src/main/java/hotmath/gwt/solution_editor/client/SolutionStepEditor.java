@@ -8,10 +8,12 @@ import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.solution_editor.client.StepEditorPlainTextDialog.EditCallback;
 import hotmath.gwt.solution_editor.client.WidgetListDialog.Callback;
@@ -21,23 +23,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 
 public class SolutionStepEditor extends ContentPanel {
@@ -46,17 +46,17 @@ public class SolutionStepEditor extends ContentPanel {
     StepContainer _selectedContainer;
     SolutionMetaStep _cutStep;
     
-    LayoutContainer _mainContainer = new LayoutContainer();
     String _statement;
     CheckBox isActiveCheckBox = new CheckBox();
 
     public SolutionStepEditor() {
         __instance = this;
-        setStyleName("solution-step-editor");
-        setScrollMode(Scroll.AUTOY);
-        add(new Label("No solution loaded."));
-
-
+        
+        FlowLayoutContainer flow = new FlowLayoutContainer();
+        flow.setScrollMode(ScrollMode.AUTOY);
+        flow.setStyleName("solution-step-editor");
+        
+        flow.add(new Label("No solution loaded."));
         
         isActiveCheckBox.addClickHandler(new ClickHandler() {
             @Override
@@ -67,7 +67,7 @@ public class SolutionStepEditor extends ContentPanel {
         });
         
         
-        HorizontalPanel pp = new HorizontalPanel();
+        HorizontalLayoutContainer pp = new HorizontalLayoutContainer();
         Label l = new Label("Active");
         l.getElement().setAttribute("style", "font-size: .7em;margin: 3px 3px 0 20px;");
         pp.add(l);
@@ -76,45 +76,51 @@ public class SolutionStepEditor extends ContentPanel {
         getHeader().addTool(pp);
         getHeader().addTool(new Spacer());        
                 
-        getHeader().addTool(new Button("Define", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+        getHeader().addTool(new TextButton("Define", new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
                 showDefineEditor();
             }
         }));
 
-        getHeader().addTool(new Button("Widget", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+        getHeader().addTool(new TextButton("Widget", new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
                 showWidgetEditor();
             }
         }));
         
-        getHeader().addTool(new Button("Cut Step", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+        getHeader().addTool(new TextButton("Cut Step", new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
                 cutSelectedStep();
             }
         }));
         
-        getHeader().addTool(new Button("Paste Step", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+        getHeader().addTool(new TextButton("Paste Step", new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
                 pasteCutStep();
             }
         }));
 
         
-        getHeader().addTool(new Button("Add Step", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+        getHeader().addTool(new TextButton("Add Step", new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
                 addNewStep();
             }
         }));
         
-        getHeader().addTool(new Button("Info", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+        getHeader().addTool(new TextButton("Info", new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
                 showInfo();
             }
         }));
@@ -216,19 +222,17 @@ public class SolutionStepEditor extends ContentPanel {
         Log.debug("Loading SolutionMeta: steps: " + meta.getNumSteps() + ", define len: " + (meta.getTutorDefine() != null?meta.getTutorDefine().length():-1));
         
         this._meta = meta;
-        removeAll();
+        clear();
 
         
         isActiveCheckBox.setValue(meta.isActive());
         
-        setHeading("Solution Step Editor");
+        setHeadingText("Solution Step Editor");
         add(new StatementContainer("Problem Statement", new ProblemStatement(meta)));
         
         for(int s=0,t=meta.getSteps().size();s<t;s++) {
             add(new StepContainer(meta.getPid(),(s+1), meta,meta.getSteps().get(s),meta.getSteps().get(s).getFigure()));
         }
-        layout();
-        
         EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
     }
     
@@ -237,15 +241,16 @@ public class SolutionStepEditor extends ContentPanel {
     }-*/;
     
     private void setStepContainerSelected(StepContainer container) {
+    	
         _selectedContainer = container;
-        List<Component> items = getItems();
-        for(int i=0,t=items.size();i<t;i++) {
-            Component comp = items.get(i);
+        
+        for(int i=0,t=getWidgetCount();i<t;i++) {
+            Widget comp = getWidget(i);
             if(comp instanceof StepContainer) {
-                comp.el().removeStyleName("selected");
+                comp.removeStyleName("selected");
             }
         }
-        container.el().addStyleName("selected");
+        container.addStyleName("selected");
     }
     
     private void flushChanges() {
@@ -254,9 +259,8 @@ public class SolutionStepEditor extends ContentPanel {
             return;
         
         List<SolutionMetaStep> steps = new ArrayList<SolutionMetaStep>();
-        List<Component> items = getItems();
-        for(int i=0,t=items.size();i<t;i++) {
-            Component comp = items.get(i);
+        for(int i=0,t=getWidgetCount();i<t;i++) {
+            Widget comp = getWidget(i);
             if(comp instanceof StepUnitWrapper) {
                 String text = ((StepUnitWrapper)comp).getItem().getEditorText();
                 _meta.setProblemStatement(text);
@@ -274,9 +278,8 @@ public class SolutionStepEditor extends ContentPanel {
         List<StepUnitPair> stepPairs = new ArrayList<StepUnitPair>();
 
         String statement="";
-        List<Component> items = getItems();
-        for(int i=0,t=items.size();i<t;i++) {
-            Component comp = items.get(i);
+        for(int i=0,t=getWidgetCount();i<t;i++) {
+            Widget comp = getWidget(i);
             if(comp instanceof StatementContainer) {
                 String text = ((StatementContainer)comp).getStepUnitWrapper().getItem().getEditorText();
                 statement = text;            
@@ -314,12 +317,10 @@ public class SolutionStepEditor extends ContentPanel {
                 arg0.printStackTrace();
                 
                 if(arg0.getLocalizedMessage().contains("has been modified")) {
-                    
-                    MessageBox.confirm("Force Solution Change", "Solution has been changed since last read.  Do you want to overwrite?",new Listener<MessageBoxEvent>() {
-                        
-                        @Override
-                        public void handleEvent(MessageBoxEvent be) {
-                            if(be.getButtonClicked().getText().equals("Yes")) {
+                    CmMessageBox.confirm("Force Solution Change", "Solution has been changed since last read.  Do you want to overwrite?",new ConfirmCallback() {
+						@Override
+						public void confirmed(boolean yesNo) {
+							if(yesNo) {
                                 action.setForceWrite(true);
                                 saveSolution(action, asPid);
                             }
@@ -377,12 +378,19 @@ public class SolutionStepEditor extends ContentPanel {
     static private native void mathJaxProcess() /*-{
          $wnd.processMathJax();
     }-*/;
+    
+    
+    /** Create spacer for toolbar
+     * 
+     * @author casey
+     *
+     */
+    class Spacer extends HTML {
+        public Spacer() {
+            super("<div style='width: 400px;'>&nbsp;</div>");
+        }
+    }
  
 }
 
 
-class Spacer extends Label {
-    public Spacer() {
-        setWidth(400);
-    }
-}

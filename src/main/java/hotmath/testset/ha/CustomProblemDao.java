@@ -13,7 +13,6 @@ import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.gwt.solution_editor.client.StepUnitPair;
 import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;

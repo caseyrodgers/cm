@@ -3,25 +3,42 @@ package hotmath.gwt.cm_tools.client.model;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 
-/** An EXT model for representing a single item
- * in a custom program.
+/** An  model for representing a single item in a custom program.
  *
  * Represents a single lesson in a custom program.
- *
  *
  * @author casey
  *
  */
-public class CustomLessonModel extends BaseModel implements Response {
+public class CustomLessonModel implements Response {
 
     static public enum Type{LESSON,QUIZ};
 
     Type customProgramType;
 
+    String subjectStyleClass;
 
-    public CustomLessonModel(){
-        /** empty */
-    }
+	private String customProgramItemClass;
+
+	private Integer quidId;
+
+	private String customProgramItem;
+
+	private String subject;
+
+	private String file;
+
+	private Boolean isAnswersViewable;
+
+	private Boolean isInUse;
+
+	private Boolean isArchived;
+
+	private String archiveDate;
+
+	private String styleName;
+
+    public CustomLessonModel(){/** empty */}
 
     public CustomLessonModel(String lesson, String file, String subject) {
         this.customProgramType = Type.LESSON;
@@ -48,16 +65,42 @@ public class CustomLessonModel extends BaseModel implements Response {
         if(isArchived)
         	setStyleName("custom-archived");
 
-        set("subjectStyleClass", "is_quiz_subject");
-        set("customProgramItemClass", "is_quiz");
+        this.subjectStyleClass = "is_quiz_subject";
+        this.customProgramItemClass = "is_quiz";
     }
+    
+    public String getSubjectStyleClass() {
+		return subjectStyleClass;
+	}
 
+	public String getCustomProgramItemClass() {
+		return customProgramItemClass;
+	}
+
+	public String getLabel() {
+    	if(customProgramType == Type.LESSON) {
+    		return getLesson();
+    	}
+    	else {
+    		return getQuiz();
+    	}
+    	
+    }
+    public String getId() {
+    	if(customProgramType == Type.LESSON) {
+    		return "LESSON-" + getLesson();
+    	}
+    	else {
+    		return "QUIZ-" + getQuizId();
+    	}
+    }
+    
     public void setQuizId(Integer quizId) {
-        set("quizId", quizId);
+    	this.quidId = quizId;
     }
 
     public Integer getQuizId() {
-        return get("quizId");
+        return this.quidId;
     }
 
     public void setQuiz(String name) {
@@ -65,11 +108,11 @@ public class CustomLessonModel extends BaseModel implements Response {
     }
 
     public String getCustomProgramItem() {
-        return get("customProgramItem");
+        return this.customProgramItem;
     }
 
     public void setCustomProgramItem(String item) {
-        set("customProgramItem", item);
+        this.customProgramItem = item;
     }
 
     public String getQuiz() {
@@ -85,20 +128,20 @@ public class CustomLessonModel extends BaseModel implements Response {
     }
 
     public void setSubject(String subject) {
-        set("subject", subject);
-
+        this.subject = subject;
+        
         /** used to set a style for this lesson when
          *  displayed via the CustomPrescriptionDialog list
          */
-        set("subjectStyleClass", subject.toLowerCase().replace(" " ,""));
+        this.subjectStyleClass = subject.toLowerCase().replace(" " ,"");
     }
 
     public void setFile(String file) {
-        set("file", file);
+        this.file = file;
     }
 
     public String getFile() {
-        return get("file");
+        return this.file;
     }
 
     public Type getCustomProgramType() {
@@ -111,47 +154,47 @@ public class CustomLessonModel extends BaseModel implements Response {
 
 
     public String getSubject() {
-        return get("subject");
+        return this.subject;
     }
 
     public Boolean getIsAnswersViewable() {
-    	return get("isAnswersViewable");
+    	return this.isAnswersViewable;
     }
 
     public void setIsAnswersViewable(Boolean isAnswersViewable) {
-    	set("isAnswersViewable", isAnswersViewable);
+    	this.isAnswersViewable = isAnswersViewable;
     }
 
     public Boolean getIsInUse() {
-    	return get("isInUse");
+    	return this.isInUse;
     }
 
     public void setIsInUse(Boolean isInUse) {
-    	set("isInUse", isInUse);
+    	this.isInUse = isInUse;
     }
 
     public Boolean getIsArchived() {
-    	return get("isArchived");
+    	return this.isArchived;
     }
 
     public void setIsArchived(Boolean isArchived) {
-    	set("isArchived", isArchived);
+    	this.isArchived = isArchived;
     }
 
     public String getArchiveDate() {
-    	return get("archiveDate");
+    	return this.archiveDate;
     }
 
     public void setArchiveDate(String archiveDate) {
-    	set("archiveDate", archiveDate);
+    	this.archiveDate = archiveDate;
     }
 
     public String getStyleName() {
-        return get("styleName");
+        return this.styleName;
     }
     
     public void setStyleName(String style) {
-        set("styleName", style);
+        this.styleName = style;
     }
 
     @Override

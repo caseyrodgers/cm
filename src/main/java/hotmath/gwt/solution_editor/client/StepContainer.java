@@ -5,12 +5,11 @@ import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.google.gwt.user.client.Event;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
 /**
  * Provides wrapper around a step (step-unit and hint-unit)
@@ -18,7 +17,7 @@ import com.google.gwt.user.client.Event;
  * @author casey
  * 
  */
-public class StepContainer extends LayoutContainer {
+public class StepContainer extends FocusPanel {
 
     String figure;
     StepUnitWrapper hintWrapper;
@@ -30,28 +29,33 @@ public class StepContainer extends LayoutContainer {
         this.pid = pid;
         this.step = step;
         setStyleName("step-container");
+        
+        
+        FlowLayoutContainer _main = new FlowLayoutContainer();
+        
         hintWrapper = new StepUnitWrapper("Hint",meta, new StepUnitHint(step));
         textWrapper = new StepUnitWrapper("Step Text",meta, new StepUnitText(step));
         this.figure = figure;
-        add(new Html("<h2>Step Number: " + stepNumber));
+        _main.add(new HTML("<h2>Step Number: " + stepNumber));
 
-        add(new FigureBox(pid,figure,new FigureBox.Callback() {
+        _main.add(new FigureBox(pid,figure,new FigureBox.Callback() {
             @Override
             public void figureChanged(String figure) {
                 StepContainer.this.figure = figure;
             }
         }));
         
-        add(hintWrapper);
-        add(textWrapper);
-        addListener(Events.OnClick, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent be) {
-                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.STEP_CONTAINER_SELECTED, StepContainer.this));
-            }
-        });
-
-        sinkEvents(Event.ONCLICK);
+        _main.add(hintWrapper);
+        _main.add(textWrapper);
+        
+        addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				EventBus.getInstance().fireEvent(new CmEvent(EventTypes.STEP_CONTAINER_SELECTED, StepContainer.this));				
+			}
+		});
+        
+        setWidget(_main);
     }
 
     public StepUnitWrapper getHintWrapper() {

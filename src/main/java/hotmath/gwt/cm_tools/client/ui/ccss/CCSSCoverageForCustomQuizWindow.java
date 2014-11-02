@@ -1,10 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
-import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindowWithNav;
+import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 
@@ -32,12 +31,12 @@ public class CCSSCoverageForCustomQuizWindow extends GWindow {
 
     BorderLayoutData _centerData = new BorderLayoutData();
     CCSSCoverageListPanel _CCSSCoverageListPanel;
-    CustomLessonModel _clModel;
+    CustomQuizDef _clModel;
     int _cqId;
     int _adminId;
     CallbackOnComplete _callback;
 
-    public CCSSCoverageForCustomQuizWindow(CustomLessonModel clModel, CallbackOnComplete callback) {
+    public CCSSCoverageForCustomQuizWindow(CustomQuizDef clModel, CallbackOnComplete callback) {
         super(false);
         __instance = this;
         _clModel = clModel;
@@ -60,7 +59,7 @@ public class CCSSCoverageForCustomQuizWindow extends GWindow {
 		        forceLayout();
 			}
         });
-        displaySummary(clModel.getCustomProgramItem());
+        displaySummary(clModel.getQuizName());
         _container.setCenterWidget(impl.getWidget(), _centerData);
 /*
         getHeader().addTool(new TextButton("Print Report", new SelectHandler() {
@@ -94,7 +93,7 @@ public class CCSSCoverageForCustomQuizWindow extends GWindow {
 	}
 
     private void printCustomQuizCCSSCoverageReport() {
-    	new PdfWindowWithNav(_adminId, "Catchup Math CCSS Report for: " + _clModel.getCustomProgramItem(),
+    	new PdfWindowWithNav(_adminId, "Catchup Math CCSS Report for: " + _clModel.getQuizName(),
     			new GeneratePdfAction(PdfType.CUSTOM_QUIZ_CCSS,
     			_adminId, Arrays.asList(_cqId), null, null));
     }

@@ -4,37 +4,38 @@ import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.solution_editor.client.list.ListSolutionSearch;
 import hotmath.gwt.solution_editor.client.rpc.SearchForSolutionsAction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.KeyListener;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.code.gwt.storage.client.Storage;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.ListView;
+import com.sencha.gxt.widget.core.client.TabItemConfig;
+import com.sencha.gxt.widget.core.client.TabPanel;
+import com.sencha.gxt.widget.core.client.Window;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.CheckBox;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 
 public class SolutionSearcherDialog {
@@ -44,8 +45,8 @@ public class SolutionSearcherDialog {
 
     TabPanel _tabPanel = new TabPanel();
     RecentTab _tabRecent;
-    TextField<String> _searchField = new TextField<String>();
-    TextField<String> _searchFieldFull = new TextField<String>();
+    TextField _searchField = new TextField();
+    TextField _searchFieldFull = new TextField();
     CheckBox _includeInActive = new CheckBox();
 
 
@@ -64,79 +65,86 @@ public class SolutionSearcherDialog {
     Window _window;
     private void buildWindow() {
         _window = new Window();
-        _window.setSize(500, 400);
+        _window.setPixelSize(500, 400);
         _window.addStyleName("solution-searcher-dialog");
-        _window.setHeading("Solution Searcher Dialog");
+        _window.setHeadingText("Solution Searcher Dialog");
 
-        TabItem tabItem = new TabItem("Search");
-        tabItem.setLayout(new BorderLayout());
+        TabItemConfig tabItem = new TabItemConfig("Search");
+        //tabItem.setLayout(new BorderLayout());
         
-        FormPanel fPanel = new FormPanel();
-        fPanel.setFieldWidth(300);
-        fPanel.setLabelWidth(100);
+        FramedPanel fPanel = new FramedPanel();
+        
+        //fPanel.setFieldWidth(300);
+        //fPanel.setLabelWidth(100);
 
         
-        HorizontalPanel hp = new HorizontalPanel();
+        HorizontalLayoutContainer hp = new HorizontalLayoutContainer();
         hp.add(new Label("Include Inactive: "));
         hp.add(_includeInActive);
         _window.getButtonBar().add(hp);        
         fPanel.getButtonBar().add(hp);
         
-        fPanel.addButton(new Button("Search", new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+        fPanel.addButton(new TextButton("Search", new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
                 doSearch();
             }
         }));
 
-        _searchField.setFieldLabel("Search PIDs");
-        _searchField.addKeyListener(new KeyListener() {
-            @Override
-            public void componentKeyUp(ComponentEvent event) {
-                int kc = event.getKeyCode();
+        //_searchField.setFieldLabel("Search PIDs");
+        _searchField.addKeyPressHandler(new KeyPressHandler() {
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+                int kc = event.getNativeEvent().getKeyCode();
                 if (kc == 13)
                     doSearch();
             }
         });
         fPanel.add(_searchField);
         
-        _searchFieldFull.setFieldLabel("Text Search");
-        _searchFieldFull.addKeyListener(new KeyListener() {
-            @Override
-            public void componentKeyUp(ComponentEvent event) {
-                int kc = event.getKeyCode();
+        //_searchFieldFull.setFieldLabel("Text Search");
+        _searchFieldFull.addKeyPressHandler(new KeyPressHandler() {
+			
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+                int kc = event.getNativeEvent().getKeyCode();
                 if (kc == 13)
                     doSearch();
             }
         });        
         fPanel.add(_searchFieldFull);
         
-         
-        tabItem.add(fPanel, new BorderLayoutData(LayoutRegion.NORTH, 95));
-        
-        fPanel.setFrame(false);
+        // fPanel.setFrame(false);
         fPanel.setBodyBorder(false);
         fPanel.setHeaderVisible(false);
+        
+        BorderLayoutContainer searchTab = new BorderLayoutContainer();
+        searchTab.setNorthWidget(fPanel, new BorderLayoutData(95));
 
-        ListStore<SolutionSearchModel> store = new ListStore<SolutionSearchModel>();
-        _listResults.setStore(store);
-        _listResults.setTemplate(getTemplate());
-        tabItem.add(_listResults, new BorderLayoutData(LayoutRegion.CENTER));
 
-        _listResults.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
+        _listResults = new ListSolutionSearch();
+        
+        searchTab.setCenterWidget(_listResults);
+
+        FocusPanel focusPanel = new FocusPanel();
+        focusPanel.setWidget(_listResults);
+        
+        focusPanel.addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
                 doSelect(_listResults.getSelectionModel().getSelectedItem().getPid());
             }
         });
 
-        tabItem.add(_matches, new BorderLayoutData(LayoutRegion.SOUTH, 5));
-
+        searchTab.setSouthWidget(_matches, new BorderLayoutData(5));
         
 
-        _window.addButton(new Button("View", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+        _window.addButton(new TextButton("View", new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
             	String pid=null;
-                if (_tabPanel.getSelectedItem().getText().equals("Recent")) {
+                if (_tabPanel.getActiveWidget() ==_tabRecent) {
                     pid = _tabRecent._listResults.getSelectionModel().getSelectedItem().getPid();
                 } else {
                     pid = _listResults.getSelectionModel().getSelectedItem().getPid();
@@ -145,10 +153,11 @@ public class SolutionSearcherDialog {
             }
         }));
 
-        _window.addButton(new Button("Select", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                if (_tabPanel.getSelectedItem().getText().equals("Recent")) {
+        _window.addButton(new TextButton("Select", new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
+                if (_tabPanel.getActiveWidget() == _tabRecent) {
                     doSelect(_tabRecent._listResults.getSelectionModel().getSelectedItem().getPid());
                 } else {
                     doSelect(_listResults.getSelectionModel().getSelectedItem().getPid());
@@ -156,30 +165,29 @@ public class SolutionSearcherDialog {
             }
         }));
 
-        _window.addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+        _window.addButton(new TextButton("Close", new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
                 _window.hide();
             }
         }));
         
 
-        _window.setLayout(new FitLayout());
-        _tabPanel.add(tabItem);
+        // _window.setLayout(new FitLayout());
+        _tabPanel.add(searchTab, tabItem);
 
-        tabItem = new TabItem("Recent");
+        tabItem = new TabItemConfig("Recent");
         _tabRecent = new RecentTab();
-        tabItem.setLayout(new FitLayout());
-        tabItem.add(_tabRecent);
 
-        _tabPanel.add(tabItem);
+        _tabPanel.add(_tabRecent, tabItem);
 
-        _window.add(_tabPanel);
+        _window.setWidget(_tabPanel);
 
-        _tabPanel.addListener(Events.Select, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent be) {
-                if (_tabPanel.getSelectedItem().getText().equals("Recent")) {
+        _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
+			@Override
+			public void onSelection(SelectionEvent<Widget> event) {
+                if (_tabPanel.getActiveWidget() == _tabRecent) {
                     _tabRecent.refresh();
                 }
             }
@@ -189,7 +197,7 @@ public class SolutionSearcherDialog {
         this.callBack = callBack;
     }
 
-    ListView<SolutionSearchModel> _listResults = new ListView<SolutionSearchModel>();
+    ListView<SolutionSearchModel, String> _listResults;
     public void doSelect(String pid) {
         this.callBack.solutionSelected(pid);
         this._window.hide();
@@ -226,19 +234,10 @@ public class SolutionSearcherDialog {
     }
 
     private void showResults(List<SolutionSearchModel> models) {
-        _listResults.getStore().removeAll();
-        _listResults.getStore().add(models);
-
-        _window.layout();
+        _listResults.getStore().clear();
+        _listResults.getStore().addAll(models);
     }
 
-    static public native String getTemplate() /*-{ 
-                                              return [ 
-                                              '<tpl for="."><div class="x-view-item">', 
-                                              '<h3><span>{pid}</span></h3>', 
-                                              '</div></tpl>' 
-                                              ].join(""); 
-                                              }-*/;
 
     public interface Callback {
         void solutionSelected(String pid);
@@ -275,32 +274,27 @@ public class SolutionSearcherDialog {
     
 }
 
-class RecentTab extends LayoutContainer {
-    ListView<SolutionSearchModel> _listResults = new ListView<SolutionSearchModel>();
+class RecentTab extends SimplePanel {
+    ListView<SolutionSearchModel, String> _listResults = new ListSolutionSearch();
 
     public RecentTab() {
-
-        setLayout(new FitLayout());
-        ListStore<SolutionSearchModel> store = new ListStore<SolutionSearchModel>();
-        _listResults.setStore(store);
-        _listResults.setTemplate(SolutionSearcherDialog.getTemplate());
-
-        _listResults.addListener(Events.DoubleClick, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                SolutionSearcherDialog.__searcherDialog.doSelect(_listResults.getSelectionModel().getSelectedItem()
-                        .getPid());
+        _listResults.addDomHandler(new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                SolutionSearchModel item = _listResults.getSelectionModel().getSelectedItem();
+                if (item != null) {
+                	SolutionSearcherDialog.__searcherDialog.doSelect(item.getPid());
+                }
             }
-        });
+        }, DoubleClickEvent.getType());
         add(_listResults);
     }
 
     public void refresh() {
         String recent = Storage.getLocalStorage().getItem("recent");
         List<SolutionSearchModel> models = getModels(recent);
-        _listResults.getStore().removeAll();
-        _listResults.getStore().add(models);
-
-        layout();
+        _listResults.getStore().clear();
+        _listResults.getStore().addAll(models);
     }
 
     private List<SolutionSearchModel> getModels(String recent) {

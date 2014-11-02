@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -40,7 +41,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
 
     interface GridProperties extends PropertyAccess<CCSSCoverageData> {
 
-        ModelKeyProvider<CCSSCoverageData> id();
+        ModelKeyProvider<CCSSCoverageData> uniqueKey();
 
         ValueProvider<CCSSCoverageData, String> lessonName();
 
@@ -134,7 +135,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
     private void drawTable(CmList<CCSSCoverageData> data) {
         ccssCoverageData = data;
 
-        ListStore<CCSSCoverageData> store = new ListStore<CCSSCoverageData>(_gridProps.id());
+        ListStore<CCSSCoverageData> store = new ListStore<CCSSCoverageData>(_gridProps.uniqueKey());
         _grid = defineGrid(store, getColumns());
         if(data == null || data.size() == 0) {
         	base.setCount(0);

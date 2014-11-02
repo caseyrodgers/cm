@@ -4,6 +4,7 @@
 	<ui:style>
         .cp-help-win {
            color: #333333;
+           background: white;
            padding: 15px;
            font-family: Tahoma,'Cantarell',sans-serif;
            font-size: 1.2em;

@@ -11,6 +11,7 @@ public class CustomQuizDef implements Response {
     boolean isArchived;
     boolean isInUse;
     String archiveDate;
+    String styleName;
     
     public CustomQuizDef() {
     }
@@ -24,7 +25,13 @@ public class CustomQuizDef implements Response {
         this.isArchived = isArchived;
         this.archiveDate = archiveDate;
     }
-    public String getQuizName() {
+    public String getStyleName() {
+		return styleName;
+	}
+	public void setStyleName(String styleName) {
+		this.styleName = styleName;
+	}
+	public String getQuizName() {
         return quizName;
     }
     public void setQuizName(String quizName) {

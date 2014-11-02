@@ -2,13 +2,19 @@ package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
-public class CustomProgramModel extends BaseModel implements Response {
-    public CustomProgramModel(){
-        /** empty */
-    }
+public class CustomProgramModel  implements Response {
+	
+    private String programName;
+	private Integer programId;
+	private int assignedCount;
+	private int inUseCount;
+	private Boolean isTemplate;
+	private String styleName;
+	private Boolean isArchived;
+
+	public CustomProgramModel(){/** empty */  }
     
-    public CustomProgramModel(String programName, Integer programId, Integer assignedCount, Integer inUseCount, Boolean isTemplate,
-    		Boolean isArchived) {
+    public CustomProgramModel(String programName, Integer programId, Integer assignedCount, Integer inUseCount, Boolean isTemplate,Boolean isArchived) {
         setProgramName(programName);
         setProgramId(programId);
         setAssignedCount(assignedCount);
@@ -25,59 +31,59 @@ public class CustomProgramModel extends BaseModel implements Response {
     }
 
     public void setProgramName(String programName) {
-        set("programName", programName);
+    	this.programName = programName;
     }
     
     public String getProgramName() {
-        return get("programName");
+        return this.programName;
     }
     
     public void setProgramId(Integer programId) {
-        set("programId", programId);
+        this.programId = programId;
     }
     
     public Integer getProgramId() {
-        return get("programId");
+        return this.programId;
     }
     
     public void setAssignedCount(int ac) {
-        set("assignedCount", ac);
+        this.assignedCount = ac;
     }
     
     public Integer getAssignedCount() {
-        return get("assignedCount");
+        return this.assignedCount;
     }
     
     
     public void setInUseCount(int ic) {
-        set("inUseCount", ic);
+        this.inUseCount = ic;
     }
     
     public Integer getInUseCount() {
-        return get("inUseCount");
+        return this.inUseCount;
     }
     
     public void setIsTemplate(Boolean isTemplate) {
-        set("isTemplate",isTemplate);
+        this.isTemplate = isTemplate;
     }
     
     public Boolean getIsTemplate() {
-        return get("isTemplate");
+        return this.isTemplate;
     }
     
     public void setIsArchived(Boolean isArchived) {
-        set("isArchived", isArchived);
+        this.isArchived = isArchived;
     }
     
     public Boolean getIsArchived() {
-        return get("isArchived");
+        return this.isArchived;
     }
     
     public String getStyleName() {
-        return get("styleName");
+        return this.styleName;
     }
     
     public void setStyleName(String style) {
-        set("styleName", style);
+    	this.styleName = style;
     }
 }

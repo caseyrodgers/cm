@@ -16,7 +16,7 @@ public class CustomProgramAction implements Action<CmList<CustomLessonModel>>{
     String programName;
     int destAdminId;
 
-    List<CustomLessonModel> lessons;
+    CmList<CustomLessonModel> lessons;
     
     public CustomProgramAction() {
     }
@@ -63,7 +63,7 @@ public class CustomProgramAction implements Action<CmList<CustomLessonModel>>{
         return lessons;
     }
 
-    public void setLessons(List<CustomLessonModel> lessons) {
+    public void setLessons(CmList<CustomLessonModel> lessons) {
         this.lessons = lessons;
     }
 

@@ -2,7 +2,7 @@ package hotmath.gwt.solution_editor.client;
 
 import hotmath.gwt.solution_editor.client.FigureBox.Callback;
 
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
 
 /**
@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
  * @author casey
  * 
  */
-public class StatementContainer extends LayoutContainer {
+public class StatementContainer extends FlowLayoutContainer {
     
     StepUnitWrapper stepUnitWrapper;
     

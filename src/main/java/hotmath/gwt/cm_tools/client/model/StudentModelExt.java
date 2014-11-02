@@ -13,15 +13,12 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     private boolean selfPay = false;
     private boolean isCollege = false;
 
-
     public StudentModelExt() {
     }
 
     public StudentModelExt(StudentModelI student) {
         setStudent(student);
     }
-
-
 
     public void setStudent(StudentModelI student) {
         set(GROUP_KEY, student.getGroup());

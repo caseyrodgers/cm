@@ -2,18 +2,21 @@ package hotmath.gwt.cm_admin.client;
 
 import hotmath.gwt.cm_admin.client.custom_content.problem.AddTeacherDialog;
 import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
+import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemTreeTable;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditor;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditorHintStep;
 import hotmath.gwt.cm_admin.client.custom_content.problem.ProblemDesignerEditorWidget;
-import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemTreeTable;
 import hotmath.gwt.cm_admin.client.ui.AssignmentManagerDialog2;
 import hotmath.gwt.cm_admin.client.ui.AssignmentStatusDialog;
+import hotmath.gwt.cm_admin.client.ui.CustomProgramAddQuizDialog;
+import hotmath.gwt.cm_admin.client.ui.CustomProgramDialog;
 import hotmath.gwt.cm_admin.client.ui.WebLinkEditorDialog;
 import hotmath.gwt.cm_admin.client.ui.WebLinksManager;
 import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog;
 import hotmath.gwt.cm_admin.client.ui.assignment.EditAssignmentDialog;
 import hotmath.gwt.cm_admin.client.ui.assignment.FinalExamCreationManager;
 import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
+import hotmath.gwt.cm_admin.client.ui.list.ListCustomLesson;
 import hotmath.gwt.cm_tools.client.search.LessonSearchWindow;
 import hotmath.gwt.cm_tools.client.teacher.AddFolderDialog;
 import hotmath.gwt.cm_tools.client.ui.DateRangePickerDialog;
@@ -39,7 +42,21 @@ public class CatchupMathAdminTests {
 	 */
     public static boolean runTest() {
         String test = CmShared.getQueryParameterValue("test");
-        if(test.equals("final")) {
+        
+        if(test.equals("CustomProgramDialog")) {
+        	CustomProgramDialog.startTest();
+        }
+        else if(test.equals("CustomProgramAddQuizDialog")) {
+            CustomProgramAddQuizDialog.startTest();
+        }
+        else if(test.equals("ListCustomLesson")) {
+            ListCustomLesson.startTest();
+        }
+        
+        else if(test.equals("CollectEmailFromUserDialog")) {
+        	CollectEmailFromUserDialog.startTest();
+        }
+        else if(test.equals("final")) {
             FinalExamCreationManager.startTest();
         }
         else if(test.equals("assignments")) {

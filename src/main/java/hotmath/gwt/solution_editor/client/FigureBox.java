@@ -2,18 +2,17 @@ package hotmath.gwt.solution_editor.client;
 
 import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.EventBus;
+import hotmath.gwt.cm_core.client.util.CmAlertify.PromptCallback;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Image;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
 
-class FigureBox extends LayoutContainer {
+class FigureBox extends FlowLayoutContainer {
     String figure;
     String pid;
     Callback callback;
@@ -30,17 +29,14 @@ class FigureBox extends LayoutContainer {
         add(new Button("Figure",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-               MessageBox.prompt("Current Figure (cancel for no change)", "Enter Figure (" + FigureBox.this.figure + ")" ).addCallback(new Listener<MessageBoxEvent>() {
-                   public void handleEvent(MessageBoxEvent be) {
-                       int keyCode = be.getKeyCode();
-                       String button = be.getButtonClicked().getText();
-                       String val = be.getValue();
-                       if(button.equals("OK") ) {
-                           setFigure(FigureBox.this.pid,be.getValue());
-                           FigureBox.this.callback.figureChanged(be.getValue());
+               CmMessageBox.prompt("Current Figure (cancel for no change)", "Enter Figure (" + FigureBox.this.figure + ")", "", new PromptCallback() {
+				
+				@Override
+				public void promptValue(String value) {
+                       setFigure(FigureBox.this.pid,value);
+                       FigureBox.this.callback.figureChanged(value);
 
-                           EventBus.getInstance().fireEvent(new CmEvent(EventTypes.SOLUTION_EDITOR_CHANGED));
-                       }
+                       EventBus.getInstance().fireEvent(new CmEvent(EventTypes.SOLUTION_EDITOR_CHANGED));
                    }
                });
             }
