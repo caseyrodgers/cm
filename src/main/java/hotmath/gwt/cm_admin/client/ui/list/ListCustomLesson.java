@@ -6,7 +6,8 @@ import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.model.CustomProgramInfoModel;
 
-import com.extjs.gxt.ui.client.widget.Info;
+
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
@@ -19,6 +20,7 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ListView;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 public class ListCustomLesson extends ListView<CustomLessonModel, String> {
 

@@ -1,11 +1,10 @@
 package hotmath.gwt.solution_editor.client;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.SimplePanel;
 
-public class HtmlEditorApplet extends LayoutContainer {
+public class HtmlEditorApplet extends SimplePanel {
     
     static HtmlEditorApplet __lastInstance;
     static String _lastText;
@@ -26,11 +25,10 @@ public class HtmlEditorApplet extends LayoutContainer {
                     "<param value='false' name='codebase_lookup'> " + 
                  "</applet>";
         
-        Html html = new Html(appletHtml);
+        HTML html = new HTML(appletHtml);
         
-        setLayout(new FitLayout());
         setVisible(true);
-        add(html);
+        setWidget(html);
     }
     
     public void setCallback(HtmlEditorApplet.Callback callback) {

@@ -2,65 +2,60 @@ package hotmath.gwt.solution_editor.client;
 
 import hotmath.gwt.cm_core.client.JSOModel;
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.solution_editor.client.list.ComboWidgetWidgetModel;
+import hotmath.gwt.solution_editor.client.list.ListSolutionResource;
+import hotmath.gwt.solution_editor.client.list.ListWidgetModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.WindowEvent;
-import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.FormButtonBinding;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.Validator;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
+
+import com.google.gwt.editor.client.Editor;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.TabItemConfig;
+import com.sencha.gxt.widget.core.client.TabPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.FieldLabel;
+import com.sencha.gxt.widget.core.client.form.IntegerField;
+import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.widget.core.client.form.Validator;
+import com.sencha.gxt.widget.core.client.form.error.DefaultEditorError;
 
 
-public class WidgetListDialog extends Window {
-    ListView<SolutionResourceModel> listView;
+public class WidgetListDialog extends GWindow {
+    ListSolutionResource  listView = new ListSolutionResource();
     Callback _callback;
     
     TabPanel _tabPanel = new TabPanel();
-    TabItem _tabLocal, _tabGlobal;
-    ListView<WidgetModel> _listView = new ListView<WidgetModel>();
-    Button createButton;
+    TabItemConfig _tabLocal, _tabGlobal;
+    ListWidgetModel _listView = new ListWidgetModel();
+    TextButton createButton;
     public WidgetListDialog() {
-        setSize(400,280);
+        super(false);
+        
+        setPixelSize(400,280);
         setModal(true);
         setResizable(false);
         
-        ListStore<WidgetModel> store = new ListStore<WidgetModel>();
-        _listView.setStore(store);
-        
-        setHeading("Create Solution Widget");
-        setScrollMode(Scroll.AUTO);
-        
-        addWindowListener(new WindowListener() {
+        setHeadingText("Create Solution Widget");
+
+        addHideHandler(new HideHandler() {
             @Override
-            public void windowHide(WindowEvent we) {
+            public void onHide(HideEvent event) {
                 _callback.resourceSelected(null);
             }
         });
         
-        createButton = new Button("Create", new SelectionListener<ButtonEvent>() {
+        createButton = new TextButton("Create", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
-                
+            public void onSelect(SelectEvent event) {
                 WidgetDefModel widget = getWidgetDef();
                 _callback.resourceSelected(widget);
                 
@@ -68,9 +63,9 @@ public class WidgetListDialog extends Window {
             }
         });
         addButton(createButton);
-        addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
+        addButton(new TextButton("Close", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 hide();
             }
         }));
@@ -111,70 +106,56 @@ public class WidgetListDialog extends Window {
      * @return
      */
 
-    FormData formData;
-    
     private Widget createForm() {
         
-        formData = new FormData("-20");  
-        VerticalPanel vp = new VerticalPanel();  
-        vp.setSpacing(10);  
+//        formData = new FormData("-20");  
+//        VerticalPanel vp = new VerticalPanel();  
+//        vp.setSpacing(10);  
         
-        FormPanel simple = new FormPanel();
-        simple.setHeaderVisible(false);
-        simple.setFrame(false);
-        simple.setBodyBorder(false);
-        simple.setWidth(350);  
-        simple.setLabelWidth(100);
-        simple.setLabelAlign(LabelAlign.RIGHT);
+        
+        FramedPanel frameMain = new FramedPanel();
+        frameMain.setHeaderVisible(false);
+        
+        FlowLayoutContainer flow = new FlowLayoutContainer();
 
         List<WidgetModel> widgets = createListOfWidgets();
-        ListStore<WidgetModel> store = new ListStore<WidgetModel>();  
-        store.add(widgets);  
+        _listView.getStore().addAll(widgets);  
         
-        _typeCombo.setFieldLabel("Widget Type");  
-        _typeCombo.setDisplayField("type");  
-        _typeCombo.setTriggerAction(TriggerAction.ALL);  
-        _typeCombo.setStore(store);  
         _typeCombo.setEditable(false);
-        simple.add(_typeCombo, formData);
+        flow.add(new FieldLabel(_typeCombo, "Widget Type"));
         
-          
-        _inputValue.setFieldLabel("Correct Value");
+        // _inputValue.setFieldLabel("Correct Value");
         _inputValue.setAllowBlank(false);  
-        _inputValue.getFocusSupport().setPreviousId(simple.getButtonBar().getId());  
-        simple.add(_inputValue, formData);
+        _inputValue.getFocusSupport().setPreviousId(frameMain.getButtonBar().getId());  
+        flow.add(new FieldLabel(_inputValue, "Correct Value"));
         
 
-        _format.setFieldLabel("Format");
+       // _format.setFieldLabel("Format");
         _format.setAllowBlank(true);
-        _format.getFocusSupport().setPreviousId(simple.getButtonBar().getId());
+        _format.getFocusSupport().setPreviousId(frameMain.getButtonBar().getId());
         
         List<WidgetModel> formats = createListOfFormats();
-        ListStore<WidgetModel> formatStore = new ListStore<WidgetModel>();  
-        formatStore.add(formats);
-        simple.add(_format, formData);
+        flow.add(new FieldLabel(_format, "Format"));
         
-        
-        _width.setFieldLabel("Width");
+        //_width.setFieldLabel("Width");
         _width.setAllowBlank(true);
-        _width.setValidator(new VTypeValidator(VType.NUMERIC));
-        _width.getFocusSupport().setPreviousId(simple.getButtonBar().getId());  
-        simple.add(_width, formData);
+        // _width.addValidator(new VTypeValidator(VType.NUMERIC));
+        _width.getFocusSupport().setPreviousId(frameMain.getButtonBar().getId());  
+        flow.add(new FieldLabel(_width, "Width"));
         
-        
-        _height.setFieldLabel("Height");
+        //_height.setFieldLabel("Height");
         _height.setAllowBlank(true);  
-        _height.setValidator(new VTypeValidator(VType.NUMERIC));
-        _height.getFocusSupport().setPreviousId(simple.getButtonBar().getId());  
-        simple.add(_height, formData);
+        //_height.setValidator(new VTypeValidator(VType.NUMERIC));
+        _height.getFocusSupport().setPreviousId(frameMain.getButtonBar().getId());  
+        flow.add(new FieldLabel(_height, "Height"));
         
         
-        FormButtonBinding binding = new FormButtonBinding(simple);  
-        binding.addButton(createButton);         
+        // FormButtonBinding binding = new FormButtonBinding(simple);  
+        // binding.addButton(createButton);         
         
-        vp.add(simple);
+        // vp.add(simple);
         
-        return vp;
+        return frameMain;
     }
     
     public Integer getInt(String o) {
@@ -190,7 +171,7 @@ public class WidgetListDialog extends Window {
     
     
     private void loadForm(WidgetDefModel widgetDef) {
-        _typeCombo.setValue(_typeCombo.getStore().findModel("type",widgetDef.getType()));
+        _typeCombo.setValue(_typeCombo.findModelByType(widgetDef.getType()));
         _inputValue.setValue(widgetDef.getValue());
         
         _format.setValue(widgetDef.getFormat());
@@ -209,7 +190,7 @@ public class WidgetListDialog extends Window {
             JSOModel model = JSOModel.fromJson(widgetJson);
             WidgetDefModel widgetDef = new WidgetDefModel(model);
             loadForm(widgetDef);
-            layout();
+            forceLayout();
         }
 
     }
@@ -246,11 +227,11 @@ public class WidgetListDialog extends Window {
     }
     
     
-    ComboBox<WidgetModel> _typeCombo = new ComboBox<WidgetModel>();
-    NumberField _width = new NumberField();
-    TextField<String> _inputValue = new TextField<String>();
-    TextField<String> _format = new TextField<String>();     
-    NumberField _height = new NumberField();
+    ComboWidgetWidgetModel _typeCombo = new ComboWidgetWidgetModel();
+    IntegerField _width = new IntegerField();
+    TextField _inputValue = new TextField();
+    TextField _format = new TextField();     
+    IntegerField _height = new IntegerField();
     
     
     
@@ -287,20 +268,23 @@ public class WidgetListDialog extends Window {
     }
   }
 
-class VTypeValidator implements Validator {
+class VTypeValidator implements Validator<String> {
 
     private VType type;
     
     public VTypeValidator(VType type){
       this.type = type;
     }
+
     @Override
-    public String validate(Field<?> field, String value) {
-      String res = null;
-      if(!value.matches(type.regex)){
-        res = value + " isn't a valid " + type.name;
-      }
-      return res;
+    public List validate(Editor editor, String value) {
+        String res = null;
+        ArrayList<DefaultEditorError> errors = new ArrayList<DefaultEditorError>();
+        errors.add(new DefaultEditorError(editor, value + " isn't a valid " + type.name, value));
+        if(!value.matches(type.regex)){
+          res = value + " isn't a valid " + type.name;
+        }
+        return errors;        
     }
 
 }

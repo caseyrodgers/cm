@@ -3,7 +3,6 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
@@ -11,10 +10,6 @@ import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 
@@ -24,23 +19,15 @@ import com.google.gwt.user.client.ui.Frame;
  * @author bob
  *
  */
-public class StudentSummaryReportWindow extends CmWindow {
+public class StudentSummaryReportWindow extends GWindow {
     
     public StudentSummaryReportWindow(AccountInfoModel accountInfo, Integer adminUid, List<Integer> studentUids) {
-
+        super(true);
+        
     	createReportRpc(accountInfo, adminUid, studentUids);
 
-        setSize(800, 600);
-        setHeading("Catchup Math Summary Report for: " + accountInfo.getSchoolName());
-
-        Button btn = new Button("Close");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                close();
-            }
-        });
-
-        addButton(btn);
+        setPixelSize(800, 600);
+        setHeadingText("Catchup Math Summary Report for: " + accountInfo.getSchoolName());
     }
 
 	private void createReportRpc(final AccountInfoModel account, Integer adminUid, List<Integer> studentUids) {
@@ -56,9 +43,8 @@ public class StudentSummaryReportWindow extends CmWindow {
                 frame.setHeight("480px");
                 frame.setUrl(webResource.getUrl());
 
-                removeAll();
-                setLayout(new FitLayout());
-                add(frame);
+                clear();
+                setWidget(frame);
 
                 setVisible(true);
 

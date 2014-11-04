@@ -5,27 +5,23 @@ import hotmath.gwt.cm_rpc.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
-import hotmath.gwt.cm_tools.client.ui.ValidType;
-import hotmath.gwt.cm_tools.client.ui.ValidTypeValidator;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.ExportGradebookAction;
 
 import java.util.Date;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.FieldSet;
+import com.sencha.gxt.widget.core.client.form.FormPanel;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
  * Export Grade Book UI
@@ -36,9 +32,9 @@ import com.google.gwt.user.client.Cookies;
  * @author bob
  *
  */
-public class ExportGradebooksDialog extends LayoutContainer {
+public class ExportGradebooksDialog extends SimplePanel {
 	
-	private CmWindow exportWindow;
+	private GWindow exportWindow;
 
 	private FieldSet exportFlds;
 	private Integer adminUid;
@@ -47,7 +43,7 @@ public class ExportGradebooksDialog extends LayoutContainer {
 	private int formHeight = 190;
 	private int formWidth  = 340;
 
-	private TextField<String> emailAddr;
+	private TextField emailAddr;
 	
 	public ExportGradebooksDialog(Integer adminUid, Integer groupId, String groupName) {
 
@@ -55,50 +51,47 @@ public class ExportGradebooksDialog extends LayoutContainer {
 		this.groupId = groupId;
 		this.groupName = groupName;
 
-		exportWindow = new CmWindow();
-		exportWindow.add(exportForm());
+		exportWindow = new GWindow(false);
+		exportWindow.setWidget(exportForm());
 
 		setForm();
 
 	}
 	
 	private FormPanel exportForm() {
+	    
+	    FramedPanel frame = new FramedPanel();
+	    
 		FormPanel fp = new FormPanel();
-		fp.setLabelWidth(80);
-		fp.setHeight(formHeight);
-		fp.setFooter(true);
-		fp.setFrame(false);
-		fp.setHeaderVisible(false);
-		fp.setBodyBorder(false);
-		fp.setIconStyle("icon-form");
-		fp.setButtonAlign(HorizontalAlignment.CENTER);
-		fp.setLayout(new FormLayout());
+		
+		// fp.setLabelWidth(80);
+		// fp.setHeight(formHeight);
+		// fp.gsetFooter(true);
+		// fp.setFrame(false);
+		frame.setHeaderVisible(false);
+		// fp.setBodyBorder(false);
+		// fp.setIconStyle("icon-form");
+		// fp.setButtonAlign(HorizontalAlignment.CENTER);
+		// fp.setLayout(new FormLayout());
 
         exportFlds = new FieldSet();
         
-		FormLayout fl = new FormLayout();
-		fl.setLabelWidth(fp.getLabelWidth());
-		fl.setDefaultWidth(200);
-		
-		exportFlds.setLayout(fl);
-
-        emailAddr = new TextField<String>();  
-        emailAddr.setFieldLabel("Email");
+        emailAddr = new TextField();  
+        //emailAddr.setFieldLabel("Email");
         emailAddr.setAllowBlank(false);
         emailAddr.setId("email");
         emailAddr.setEmptyText("-- email address --");
 		if (haveEmailAddrCookie()) {
 		    emailAddr.setValue(readEmailAddrCookie());
 		}
-		emailAddr.setValidator(new ValidTypeValidator(ValidType.EMAIL));
+		// emailAddr.setValidator(new ValidTypeValidator(ValidType.EMAIL));
 		emailAddr.setToolTip("spreadsheet will be emailed to this address");
-		emailAddr.setMaxLength(300);
+		// emailAddr.setMaxLength(300);
 		exportFlds.add(emailAddr);
 
-		exportWindow.setHeading("Export Grade Book");
+		exportWindow.setHeadingText("Export Grade Book");
 		exportWindow.setWidth(formWidth+10);
 		exportWindow.setHeight(formHeight+20);
-		exportWindow.setLayout(new FitLayout());
 		exportWindow.setResizable(false);
 		exportWindow.setDraggable(true);
 		exportWindow.setModal(true);
@@ -107,15 +100,15 @@ public class ExportGradebooksDialog extends LayoutContainer {
 		
 		fp.add(getDescription());
 
-		Button cancelBtn = cancelButton();
+		TextButton cancelBtn = cancelButton();
         cancelBtn.addStyleName("cancel-button");
         
-		Button saveBtn = exportButton(exportFlds, fp);
+		TextButton saveBtn = exportButton(exportFlds, fp);
 		saveBtn.addStyleName("save-button");
 		
-		fp.setButtonAlign(HorizontalAlignment.RIGHT);
-        fp.addButton(saveBtn);
-        fp.addButton(cancelBtn);
+		// fp.setButtonAlign(HorizontalAlignment.RIGHT);
+        frame.addButton(saveBtn);
+        frame.addButton(cancelBtn);
 
         return fp;
 	}
@@ -124,19 +117,21 @@ public class ExportGradebooksDialog extends LayoutContainer {
 		exportWindow.show();
 	}
 
-	private Button cancelButton() {
-		Button cancelBtn = new Button("Cancel", new SelectionListener<ButtonEvent>() {  
-	    	public void componentSelected(ButtonEvent ce) {
+	private TextButton cancelButton() {
+		TextButton cancelBtn = new TextButton("Cancel", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
                 exportWindow.close();
 	        }  
 	    });
 		return cancelBtn;
 	}
 
-	private Button exportButton(final FieldSet fs, final FormPanel fp) {
-		Button exportBtn = new Button("Export", new SelectionListener<ButtonEvent>() {  
-	    	public void componentSelected(ButtonEvent ce) {
-
+	private TextButton exportButton(final FieldSet fs, final FormPanel fp) {
+		TextButton exportBtn = new TextButton("Export", new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
 	    		String emailAddress = emailAddr.getValue();
 	    		
 	    		if (emailAddr.isValid() == false) {
@@ -152,10 +147,10 @@ public class ExportGradebooksDialog extends LayoutContainer {
 		return exportBtn;
 	}
 	
-	private LayoutContainer getDescription() {
-		LayoutContainer lc = new LayoutContainer();
+	private SimplePanel getDescription() {
+	    SimplePanel lc = new SimplePanel();
 		groupName = (groupName == null) ? "selected" : groupName;
-        lc.add(new Html("An Excel spreadsheet containing grade book data for your " + groupName + " group will be generated and sent from 'registration@catchupmath.com' to the email address you provide."));
+        lc.setWidget(new HTML("An Excel spreadsheet containing grade book data for your " + groupName + " group will be generated and sent from 'registration@catchupmath.com' to the email address you provide."));
         return lc;
 	}
 

@@ -2,14 +2,9 @@ package hotmath.gwt.cm_tools.client.ui.CmWindow;
 
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ResizeEvent;
-import com.extjs.gxt.ui.client.event.ResizeListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 
 /** GXT m3  removed close from Window .. ?
  * 
@@ -18,35 +13,17 @@ import com.extjs.gxt.ui.client.widget.button.Button;
  * @author casey
  *
  */
-public class CmWindow extends Window {
+public class CmWindow extends GWindow {
     
     public CmWindow() {
-        getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
-        
-        
-        getResizable().addResizeListener(new ResizeListener() {
+        super(false);
+
+        addResizeHandler(new ResizeHandler() {
             @Override
-            public void handleEvent(ResizeEvent e) {
+            public void onResize(com.google.gwt.event.logical.shared.ResizeEvent event) {
                 CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
             }
         });
-    }
-
-    /** Add removed close method
-     * 
-     */
-    public void close() {
-        hide();
-    }
-    
-    public void addCloseButton() {
-        addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
-            
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                close();
-            }
-        }));
     }
 
 }

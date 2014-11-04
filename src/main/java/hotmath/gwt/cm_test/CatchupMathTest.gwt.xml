@@ -1,6 +1,5 @@
 <module rename-to='cm_student_test'>
 	<inherits name="com.google.gwt.user.User" />
-    <inherits name="com.extjs.gxt.ui.GXT"/>
     <inherits name="hotmath.gwt.cm_rpc.CmRpc"/>
     <inherits name="hotmath.gwt.cm_tutor.CmTutor"/>
     

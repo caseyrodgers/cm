@@ -2,17 +2,17 @@ package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.cm_rpc.client.model.program_listing.CmTreeNode;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-
-public class ProgListModel extends BaseModelData {
+public class ProgListModel {
 
     ProgListModelData data = new ProgListModelData();
+    private String label;
+    private String path;
 
 	protected ProgListModel() {
     }
 
     public ProgListModel(CmTreeNode data) {
-        set("label", data.getLabel());
+        this.label =  data.getLabel();
         this.data.data = data;
     }
 
@@ -21,19 +21,19 @@ public class ProgListModel extends BaseModelData {
     }
 
     public void setLabel(String label) {
-        set("label", label);
+        this.label = label;
     }
 
     public void setPath(String path) {
-        set("path", path);
+        this.path = path;
     }
 
     public String getPath() {
-        return get("path");
+        return this.path;
     }
 
     public String getLabel() {
-        return get("label");
+        return this.label;
     }
 
     public int getLevel() {
@@ -43,6 +43,7 @@ public class ProgListModel extends BaseModelData {
     public void setParent(ProgListModel model) {
     	
     }
+    
     @Override
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof ProgListModel) {

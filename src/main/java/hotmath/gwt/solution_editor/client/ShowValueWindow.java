@@ -1,13 +1,13 @@
 package hotmath.gwt.solution_editor.client;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+
+import hotmath.gwt.cm_tools.client.ui.GWindow;
+
 import com.google.gwt.user.client.Timer;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.TextArea;
 
 
 /** Display value in window fully selecting as an
@@ -16,18 +16,17 @@ import com.google.gwt.user.client.Timer;
  * @author casey
  *
  */
-public class ShowValueWindow extends Window {
+public class ShowValueWindow extends GWindow {
     public ShowValueWindow(String title, String text) {
         this(title,text,true);
     }
     
     public ShowValueWindow(String title, String text, boolean selectAll) {
+        super(false);
         
-        setLayout(new FitLayout());
-        setSize(600,400);
-        setScrollMode(Scroll.AUTO);
+        setPixelSize(600,400);
         setModal(true);
-        setHeading(title);
+        setHeadingText(title);
         setMaximizable(true);
         
         final TextArea ta = new TextArea();
@@ -35,9 +34,9 @@ public class ShowValueWindow extends Window {
         ta.setReadOnly(true);
         add(ta);
         
-        addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
+        addButton(new TextButton("Close", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 hide();
             }
         }));

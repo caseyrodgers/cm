@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.user.client.ui.SimplePanel;
 
-public class ShowResultsPanel extends LayoutContainer{
+public class ShowResultsPanel extends SimplePanel{
 //    
 //    ShowResultsPanel () {
 //        drawGui();

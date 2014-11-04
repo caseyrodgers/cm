@@ -11,7 +11,7 @@ import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
 import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
-import com.extjs.gxt.ui.client.widget.Html;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
@@ -32,7 +32,7 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
 
         if (panel == null) {
             if (!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
-                Html html = new Html(CmShared.FLASH_ALT_CONTENT);
+                HTML html = new HTML(CmShared.FLASH_ALT_CONTENT);
                 addResource(html, getResourceItem().getTitle());
             } else {
                 SWFSettings s = new SWFSettings();

@@ -2,9 +2,11 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.user.client.ui.SimplePanel;
 
-abstract public class CmPanel extends LayoutContainer  implements CmContext {
+
+
+abstract public class CmPanel extends SimplePanel  implements CmContext {
 	
 	public CmPanel() {
 	}

@@ -4,61 +4,60 @@ import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_tools_2.client.util.CmMessageBoxGxt2;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FormEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.form.FileUploadField;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.user.client.ui.Hidden;
+import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.event.SubmitEvent;
+import com.sencha.gxt.widget.core.client.event.SubmitEvent.SubmitHandler;
+import com.sencha.gxt.widget.core.client.form.FileUploadField;
+import com.sencha.gxt.widget.core.client.form.FormPanel;
 
-public class SolutionResourceUploadDialog extends Window {
+public class SolutionResourceUploadDialog extends GWindow {
 
     String pid;
     Callback callback;
     private CmList<SolutionResource> resources;
 
     public SolutionResourceUploadDialog(String pid, Callback callback, CmList<SolutionResource> resources) {
+        super(false);
+        
         this.pid = pid;
         this.callback = callback;
         this.resources = resources;
-        setSize(500, 150);
-        setHeading("Upload Solution Resource");
-        add(createUploadForm());
+        setPixelSize(500, 150);
+        setHeadingText("Upload Solution Resource");
+        setWidget(createUploadForm());
         setVisible(true);
     }
 
-    private LayoutContainer createUploadForm() {
+    private Widget createUploadForm() {
         final FileUploadField fileUpload = new FileUploadField();
         final FormPanel form = new FormPanel();
         form.setEncoding(FormPanel.Encoding.MULTIPART);
         form.setMethod(FormPanel.Method.POST);
-        final LayoutContainer lc = new LayoutContainer();
-        form.addListener(Events.Submit, new Listener<FormEvent>() {
-            public void handleEvent(FormEvent be) {
+        
+        form.addSubmitHandler(new SubmitHandler() {
+            @Override
+            public void onSubmit(SubmitEvent event) {
                 EventBus.getInstance().fireEvent(new CmEvent(EventTypes.STATUS_MESSAGE, ""));
-                if (be.getResultHtml().equals("OK")) {
+                if (!event.isCanceled()) {
                     callback.resourceAdded();
                     hide();
                 } else {
-                    com.google.gwt.user.client.Window.alert("There was a problem saving resource: "
-                            + be.getResultHtml());
+                    CmMessageBox.showAlert("There was a problem saving resource: " + event);
                 }
             }
         });
         form.setAction("/solution_editor/resourceUpload");
+        // fileUpload.setFieldLabel("File");
         fileUpload.setAllowBlank(false);
-        fileUpload.setFieldLabel("File");
-        fileUpload.setAllowBlank(false);
-        fileUpload.setFieldLabel("File");
-        fileUpload.setAllowBlank(false);
-        fileUpload.setBorders(false);
         fileUpload.setName("resourceUpload.field");
 
         Hidden hidden = new Hidden();
@@ -66,12 +65,14 @@ public class SolutionResourceUploadDialog extends Window {
         hidden.setValue(pid);
         form.add(hidden);
 
-        form.add(fileUpload);
-        lc.add(form);
-        form.addButton(new com.extjs.gxt.ui.client.widget.button.Button("Upload Resource",
-                new SelectionListener<ButtonEvent>() {
+        form.setWidget(fileUpload);
+        
+        FramedPanel frame = new FramedPanel();
+        frame.setWidget(form);
+        frame.addButton(new TextButton("Upload Resource",
+                new SelectHandler() {
                     @Override
-                    public void componentSelected(ButtonEvent ce) {
+                    public void onSelect(SelectEvent event) {
                         String fileName = fileUpload.getValue();
                         String p[] = fileName.split("\\\\");  // try ms first
                         if(p.length == 1) {
@@ -99,8 +100,7 @@ public class SolutionResourceUploadDialog extends Window {
                     }
                 }));
 
-        return lc;
-
+        return frame;
     }
     
     private void doSubmit(FormPanel form) {

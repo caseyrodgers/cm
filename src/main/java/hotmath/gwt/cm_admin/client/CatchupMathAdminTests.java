@@ -10,6 +10,7 @@ import hotmath.gwt.cm_admin.client.ui.AssignmentManagerDialog2;
 import hotmath.gwt.cm_admin.client.ui.AssignmentStatusDialog;
 import hotmath.gwt.cm_admin.client.ui.CustomProgramAddQuizDialog;
 import hotmath.gwt.cm_admin.client.ui.CustomProgramDialog;
+import hotmath.gwt.cm_admin.client.ui.ProgramDetailsPanel;
 import hotmath.gwt.cm_admin.client.ui.WebLinkEditorDialog;
 import hotmath.gwt.cm_admin.client.ui.WebLinksManager;
 import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog;
@@ -45,6 +46,9 @@ public class CatchupMathAdminTests {
         
         if(test.equals("CustomProgramDialog")) {
         	CustomProgramDialog.startTest();
+        }
+        else if(test.equals("ProgramDetailsPanel")) {
+            ProgramDetailsPanel.startTest();
         }
         else if(test.equals("CustomProgramAddQuizDialog")) {
             CustomProgramAddQuizDialog.startTest();

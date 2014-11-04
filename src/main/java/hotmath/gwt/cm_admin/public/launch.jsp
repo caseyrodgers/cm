@@ -25,10 +25,6 @@
   <title>Catchup Math Admin</title>
 
   <link rel="stylesheet" type="text/css" href="/gwt-resources/css/gxt-reset.css" />
-
- 
-  <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-all.css" />
-
   <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css" />
   <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMathAdmin.css" />
 
@@ -48,7 +44,6 @@
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
   <script> 
-  
            console = {
                log: function (x) {
                   // empty

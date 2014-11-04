@@ -3,8 +3,12 @@ package hotmath.gwt.solution_editor.client;
 import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.solution_editor.client.list.ListSolutionResource;
 import hotmath.gwt.solution_editor.client.rpc.AddMathMlResourceAction;
 import hotmath.gwt.solution_editor.client.rpc.GetMathMlResourceAction;
 import hotmath.gwt.solution_editor.client.rpc.GetSolutionResourcesAdminAction;
@@ -15,30 +19,35 @@ import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
 import java.util.ArrayList;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.WindowEvent;
-import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.TabItemConfig;
+import com.sencha.gxt.widget.core.client.TabPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.Container;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 
-public class SolutionResourceListDialog extends Window {
-    ListView<SolutionResourceModel> listView;
+public class SolutionResourceListDialog extends GWindow {
+
+    ListSolutionResource _listSolutionResource = new ListSolutionResource();
+    
     String pid;
     Callback _callback;
     
@@ -47,46 +56,52 @@ public class SolutionResourceListDialog extends Window {
     }
 
     TabPanel _tabPanel = new TabPanel();
-    TabItem _tabLocal, _tabGlobal;
+    TabItemConfig _tabLocal, _tabGlobal;
     
+    FlowLayoutContainer _localPanel;
+
+    private FlowLayoutContainer _globalPanel;
     public SolutionResourceListDialog(Callback callback, String pid) {
+        super(false);
         this._callback = callback;
         this.pid = pid;
-        setSize(800,600);
+        setPixelSize(800,600);
         
-        addWindowListener(new WindowListener() {
+        addHideHandler(new HideHandler() {
             @Override
-            public void windowHide(WindowEvent we) {
+            public void onHide(HideEvent event) {
                 if(_callback != null) {
                     _callback.resourceSelected(null);
                 }
             }
         });
         
-        setScrollMode(Scroll.AUTO);
+        FlowLayoutContainer flow = new FlowLayoutContainer();
+        flow.setScrollMode(ScrollMode.AUTO);
         
-        _tabLocal = new TabItem("Local Resources");
-        _tabLocal.add(new Html("Loading ..."));
+        _localPanel.add(new HTML("Loading ..."));
+        _tabLocal = new TabItemConfig("Local Resources");
+        _tabPanel.add(_localPanel, _tabLocal);
         
-        _tabPanel.add(_tabLocal);
+        _tabGlobal = new TabItemConfig("Global Resources");
         
-        _tabGlobal = new TabItem("Global Resources");
-        _tabGlobal.add(new Label("Global"));
+        _globalPanel = new FlowLayoutContainer();
+        _globalPanel.add(new Label("Global"));
         
-        _tabPanel.add(_tabGlobal);
+        _tabPanel.add(_globalPanel, _tabGlobal);
         
         add(_tabPanel);
         
-        _tabPanel.addListener(Events.Select, new Listener<BaseEvent>() {
+        _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
             @Override
-            public void handleEvent(BaseEvent be) {
+            public void onSelection(SelectionEvent<Widget> event) {
                 getDataFromServer();
             }
         });
         
-        getHeader().addTool(new Button("Add MathML Resource", new SelectionListener<ButtonEvent>() {
+        getHeader().addTool(new TextButton("Add MathML Resource", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 new MathMlEditorDialog(new hotmath.gwt.solution_editor.client.MathMlEditorDialog.Callback() {
                     @Override
                     public void resourceUpdated(MathMlResource resource) {
@@ -96,9 +111,10 @@ public class SolutionResourceListDialog extends Window {
             }
         }));
 
-        getHeader().addTool(new Button("Upload Resource", new SelectionListener<ButtonEvent>() {
+        getHeader().addTool(new TextButton("Upload Resource", new SelectHandler() {
+            
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 String pid = determineResourceType()==ResourceType.LOCAL?SolutionResourceListDialog.this.pid:null;
                 new SolutionResourceUploadDialog(pid, new SolutionResourceUploadDialog.Callback() {
                     public void resourceAdded() {
@@ -108,16 +124,17 @@ public class SolutionResourceListDialog extends Window {
             }
         }));
         
-        getHeader().addTool(new Button("Update", new SelectionListener<ButtonEvent>() {
+        getHeader().addTool(new TextButton("Update", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 updateSelectedResource();
             }
         }));  
         
-        getHeader().addTool(new Button("Del", new SelectionListener<ButtonEvent>() {
+        getHeader().addTool(new TextButton("Del", new SelectHandler() {
+            
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 removeSelectedResource();
             }
         }));
@@ -138,9 +155,9 @@ public class SolutionResourceListDialog extends Window {
 //        }
         
         
-        addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
+        addButton(new TextButton("Close", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 hide();
             }
         }));
@@ -156,10 +173,10 @@ public class SolutionResourceListDialog extends Window {
     
     private void removeSelectedResource() {
         final String file = _selectedResource.getResource().getFile();
-        MessageBox.confirm("Delete Resource?", "Are you sure you want to delete resource '" + file + "'?", new Listener<MessageBoxEvent>() {
-            public void handleEvent(MessageBoxEvent be) {
-            	Button clicked = be.getButtonClicked();
-                if (clicked.getText().equals("Yes")) {
+        CmMessageBox.confirm("Delete Resource?", "Are you sure you want to delete resource '" + file + "'?", new ConfirmCallback() {
+            @Override
+            public void confirmed(boolean yesNo) {
+                if (yesNo) {
                      removeResource(file);
                 }
             }
@@ -240,36 +257,40 @@ public class SolutionResourceListDialog extends Window {
     protected CmList<SolutionResource> __resources;
     private void showResources(CmList<SolutionResource> resources) {
         
-        TabItem tabItem = _tabPanel.getSelectedItem();
-        tabItem.removeAll();
+        Container container = (Container) _tabPanel.getActiveWidget();
+        container.clear();
         
         for(SolutionResource sr: resources) {
             ResourceType resourceType = determineResourceType();
             String rPid = (determineResourceType() == ResourceType.GLOBAL)?null:pid;
             final SolutionResourcePanel thisResource = new SolutionResourcePanel(sr,rPid);
-            thisResource.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
+            
+            FocusPanel focusPanel = new FocusPanel(thisResource);
+            focusPanel.addDoubleClickHandler(new DoubleClickHandler() {
                 @Override
-                public void handleEvent(BaseEvent be) {
+                public void onDoubleClick(DoubleClickEvent event) {
                     updateSelectedResource();
                 }
             });
-            thisResource.addListener(Events.OnClick, new Listener<BaseEvent>() {
-                public void handleEvent(BaseEvent be) {
+            focusPanel.addClickHandler(new ClickHandler() {
+                
+                @Override
+                public void onClick(ClickEvent event) {
                     ArrayList<String> links = new ArrayList<String>();
                     putElementLinkIDsInList(thisResource.getParent().getElement(), links);
                     for(int v=0,t=links.size();v<t;v++) {
                         Element el = DOM.getElementById(links.get(v));
                         el.removeClassName("selected");
                     }
-                    thisResource.el().addStyleName("selected");
+                    thisResource.addStyleName("selected");
                     
                     _selectedResource = thisResource;
                 }
             });
-            tabItem.add(thisResource);
+            container.add(thisResource);
         }
         
-        layout();
+        forceLayout();
     }
     
     private native void putElementLinkIDsInList(Element elt, ArrayList list) /*-{
@@ -283,9 +304,9 @@ public class SolutionResourceListDialog extends Window {
 
 
     private ResourceType determineResourceType() {
-        if(_tabPanel.getSelectedItem() == _tabLocal)
+        if(_tabPanel.getActiveWidget() == _localPanel)
             return ResourceType.LOCAL;
-        else if(_tabPanel.getSelectedItem() == _tabGlobal)
+        else if(_tabPanel.getActiveWidget() == _globalPanel)
             return ResourceType.GLOBAL;
         
         return null;

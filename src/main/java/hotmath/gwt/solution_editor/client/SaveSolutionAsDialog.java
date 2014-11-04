@@ -1,16 +1,17 @@
 package hotmath.gwt.solution_editor.client;
 
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FormButtonBinding;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.FieldLabel;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
-public class SaveSolutionAsDialog extends CmWindow {
+
+public class SaveSolutionAsDialog extends GWindow {
     Callback callback;
     
     static private SaveSolutionAsDialog __instance;
@@ -21,52 +22,59 @@ public class SaveSolutionAsDialog extends CmWindow {
         return __instance;
     }
     private SaveSolutionAsDialog() {
-        setHeading("Save Solution As");
-        setSize(350,300);
+        super(false);
+        
+        setHeadingText("Save Solution As");
+        setPixelSize(350,300);
         setResizable(false);
         
         setModal(true);
         
-        FormPanel form = new FormPanel();
-        form.setBodyBorder(false);
-        form.setBorders(false);
-        form.setHeaderVisible(false);
-        form.setLabelWidth(100);
-        form.setFieldWidth(200);
+        FramedPanel frame = new FramedPanel();
+        frame.setBodyBorder(false);
+        // form.setBorders(false);
+        frame.setHeaderVisible(false);
+        // form.setLabelWidth(100);
+        // form.setFieldWidth(200);
         
-        book.setFieldLabel("Book");
+        // book.setFieldLabel("Book");
         book.setAllowBlank(false);
-        chap.setFieldLabel("Chapter");
+        // chap.setFieldLabel("Chapter");
         chap.setAllowBlank(false);
-        sect.setFieldLabel("Section");
+        // sect.setFieldLabel("Section");
         sect.setAllowBlank(false);
-        probSet.setFieldLabel("Problem Set");
+        // probSet.setFieldLabel("Problem Set");
         probSet.setAllowBlank(false);
-        probNum.setFieldLabel("Problem Number");
+        // probNum.setFieldLabel("Problem Number");
         probNum.setAllowBlank(false);
-        pageNum.setFieldLabel("Page Number");        
+        // pageNum.setFieldLabel("Page Number");        
         pageNum.setAllowBlank(false);
         
-        form.add(book);
-        form.add(chap);
-        form.add(sect);
-        form.add(probSet);
-        form.add(probNum);
-        form.add(pageNum);
+        FlowLayoutContainer flow = new FlowLayoutContainer();
+        flow.add(new FieldLabel(book, "Book"));
+        flow.add(new FieldLabel(chap, "Chapter"));
+        flow.add(new FieldLabel(sect, "Section"));
+        flow.add(new FieldLabel(probSet, "Problem Set"));
+        flow.add(new FieldLabel(probNum, "Problem Number"));
+        flow.add(new FieldLabel(pageNum, "Page Number"));
         
-        Button save = new Button("Save", new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+        frame.setWidget(flow);
+        
+        TextButton save = new TextButton("Save", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
                 String newPid = buildNewPid();
                 callback.saveSolutionAs(newPid);
                 hide();
             }
         });
-        FormButtonBinding binding = new FormButtonBinding(form);
-        binding.addButton(save);
+        
+        // FormButtonBinding binding = new FormButtonBinding(form);
+        // binding.addButton(save);
         
         addButton(save);
-        add(new Html("<h1 style='margin: 10px 10px;'>Save Solution to New Location</h1>"));
-        add(form);
+        
+        setWidget(frame);
         addCloseButton();
     }
 
@@ -79,7 +87,7 @@ public class SaveSolutionAsDialog extends CmWindow {
         probNum.setValue(p[4]);
         pageNum.setValue(p[5]);
         
-        layout();
+        forceLayout();
     }
     
     private String buildNewPid() {
@@ -99,12 +107,12 @@ public class SaveSolutionAsDialog extends CmWindow {
         setVisible(true);
     }
     
-    TextField<String> book = new TextField<String>();
-    TextField<String> chap = new TextField<String>();
-    TextField<String> sect = new TextField<String>();
-    TextField<String> probSet = new TextField<String>();
-    TextField<String> probNum = new TextField<String>();
-    TextField<String> pageNum = new TextField<String>();
+    TextField book = new TextField();
+    TextField chap = new TextField();
+    TextField sect = new TextField();
+    TextField probSet = new TextField();
+    TextField probNum = new TextField();
+    TextField pageNum = new TextField();
     
     public interface Callback {
         /** called when new pid name */

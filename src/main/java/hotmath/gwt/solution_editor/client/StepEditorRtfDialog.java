@@ -4,28 +4,26 @@ import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
 import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.solution_editor.client.SolutionResourceListDialog.Callback;
 import hotmath.gwt.solution_editor.client.rpc.FormatXmlAdminAction;
 import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
-public class StepEditorRtfDialog extends Window {
+public class StepEditorRtfDialog extends GWindow {
     
     TinyMCE _tinyMce;
 
     public StepEditorRtfDialog(final StepUnitItem item) {
-        _tinyMce = new TinyMCE(700,27);
-        setLayout(new FitLayout());
+        super(false);
         
-        setSize(700,550);
-        setScrollMode(Scroll.AUTO);
+        _tinyMce = new TinyMCE(700,27);
+        
+        setPixelSize(700,550);
         setResizable(true);
         setMaximizable(true);
         setAnimCollapse(true);
@@ -39,16 +37,16 @@ public class StepEditorRtfDialog extends Window {
         
         add(_tinyMce);
 
-        getHeader().addTool(new Button("Resources",new SelectionListener<ButtonEvent>() {
+        getHeader().addTool(new TextButton("Resources",new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 new SolutionResourceListDialog(new Callback() {
                     @Override
                     public void resourceSelected(SolutionResource resource) {
                         String toInsert = "<img class='sol_resource' src='" + resource.getUrlPath() + "'/>";
                         _tinyMce.insertText(toInsert);
 
-                        layout();
+                        forceLayout();
                         
                         EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED));       
                     }
@@ -80,17 +78,17 @@ public class StepEditorRtfDialog extends Window {
 //        }));        
    
 
-        getHeader().addTool(new Button("Format", new SelectionListener<ButtonEvent>() {
+        getHeader().addTool(new TextButton("Format", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 formatXml();
             }
         }));    
 
 
-        addButton(new Button("Save",new SelectionListener<ButtonEvent>() {
+        addButton(new TextButton("Save",new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 String value = "";
                 value = _tinyMce.getText();
                 item.setEditorText(value);
@@ -101,9 +99,9 @@ public class StepEditorRtfDialog extends Window {
             }
         }));
 
-        addButton(new Button("Close",new SelectionListener<ButtonEvent>() {
+        addButton(new TextButton("Close",new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 hide();
             }
         }));
@@ -113,7 +111,7 @@ public class StepEditorRtfDialog extends Window {
         //setFocusWidget(_tinyMce);
         focus();
         
-        layout();
+        forceLayout();
     }
     
     private native void testEditor() /*-{

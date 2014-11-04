@@ -1,11 +1,12 @@
 package hotmath.gwt.solution_editor.client;
 
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 
 public class TinyMCE extends Composite {
@@ -20,8 +21,8 @@ public class TinyMCE extends Composite {
     public TinyMCE(int width, int height) {
         super();
 
-        LayoutContainer panel = new LayoutContainer();
-        panel.setWidth("100%");
+        SimplePanel panel = new SimplePanel();
+        
 
         id = HTMLPanel.createUniqueId();
         ta = new TextArea();
@@ -29,7 +30,7 @@ public class TinyMCE extends Composite {
         ta.setVisibleLines(height);
         DOM.setElementAttribute(ta.getElement(), "id", id);
         DOM.setStyleAttribute(ta.getElement(), "width", "100%");
-        panel.add(ta);
+        panel.setWidget(ta);
 
         initWidget(panel);
     }

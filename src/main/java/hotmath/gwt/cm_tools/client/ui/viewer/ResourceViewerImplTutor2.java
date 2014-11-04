@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
@@ -37,9 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.Window;
@@ -71,9 +69,10 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
                 @Override
                 public void onDoubleClick(DoubleClickEvent event) {
                     final String pid = getResourceItem().getFile();
-                    MessageBox.confirm("Edit Solution", "Edit solution " +  pid + " with Solution Editor?", new Listener<MessageBoxEvent>() {
-                        public void handleEvent(MessageBoxEvent be) {
-                            if(be.getButtonClicked().getText().equals("Yes")) {
+                    CmMessageBox.confirm("Edit Solution", "Edit solution " +  pid + " with Solution Editor?", new ConfirmCallback() {
+                        @Override
+                        public void confirmed(boolean yesNo) {
+                            if(yesNo) {
                                 String url = CmShared.CM_HOME_URL + "/solution_editor/SolutionEditor.html?pid=" + pid;
                                 com.google.gwt.user.client.Window.open(url, "_blank", "height=480,width=640,status=yes,scrollbars=1");
                             }

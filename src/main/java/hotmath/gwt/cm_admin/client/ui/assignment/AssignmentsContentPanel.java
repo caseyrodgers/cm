@@ -380,8 +380,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             return;
         }
         
-        new ExportGradebooksDialog(_adminId, _currentGroup.getGroupId(),
-        		grpName);
+        new ExportGradebooksDialog(_adminId, _currentGroup.getGroupId(),grpName);
     }
     
 

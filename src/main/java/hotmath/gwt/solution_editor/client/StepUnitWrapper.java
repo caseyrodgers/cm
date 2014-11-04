@@ -5,15 +5,14 @@ import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.solution_editor.client.StepEditorPlainTextDialog.EditCallback;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.BoxComponentEvent;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.user.client.Event;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /** Provides wrapper around editable row that can be 
  * clicked and edited.
@@ -21,16 +20,16 @@ import com.google.gwt.user.client.Event;
  * @author casey
  *
  */
-class StepUnitWrapper extends LayoutContainer {
+class StepUnitWrapper extends FlowLayoutContainer {
     StepUnitItem item;
     public StepUnitWrapper(String title, final SolutionMeta meta, StepUnitItem w) {
         this.item = w;
 
-        setStyleAttribute("position", "relative");
-        Button edit = new Button("!");
-        edit.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        getElement().getStyle().setPosition(Position.RELATIVE);
+        TextButton edit = new TextButton("!");
+        edit.addSelectHandler(new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 new StepEditorPlainTextDialog(new EditCallback() {
 					
 					@Override
@@ -48,19 +47,18 @@ class StepUnitWrapper extends LayoutContainer {
 				});
             }
         });
-        edit.setStyleAttribute("position", "absolute");
-        edit.setStyleAttribute("left", "3px");
-        edit.setStyleAttribute("top", "-5px");
+        edit.getElement().setAttribute("style",  "position: absolute;left: 3px;top: -5px");
         edit.setToolTip("Edit");
         add(edit);
 
-        add(w.getWidget());
-        addListener(Events.OnDoubleClick, new Listener<BaseEvent>(){
+        FocusPanel focusPanel = new FocusPanel();
+        focusPanel.add(w.getWidget());
+        add(focusPanel);
+        focusPanel.addDoubleClickHandler(new DoubleClickHandler() {
             
             @Override
-            public void handleEvent(BaseEvent be) {
-                if (be.getType().equals(Events.OnDoubleClick)) {
-                    if( ((BoxComponentEvent)be).isControlKey()) {
+            public void onDoubleClick(DoubleClickEvent event) {
+                    if( event.isControlKeyDown()) {
                         new StepEditorRtfDialog(item);
                     }
                     else {
@@ -84,9 +82,7 @@ class StepUnitWrapper extends LayoutContainer {
                     }
 
                 }
-            } 
          });
-        sinkEvents(Event.ONDBLCLICK);        
     }
     
     public StepUnitItem getItem() {

@@ -1,15 +1,15 @@
 package hotmath.gwt.solution_editor.client;
 
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.solution_editor.client.rpc.MathMlResource;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Frame;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
-public class MathMlEditorDialog extends Window  {
+public class MathMlEditorDialog extends GWindow  {
     
     private static MathMlEditorDialog __instance;
     
@@ -21,12 +21,14 @@ public class MathMlEditorDialog extends Window  {
     }
     
     public MathMlEditorDialog(Callback callback, MathMlResource resource, boolean allowCreate) {
+        super(false);
+        
         __instance = this;
         this.callback = callback;
         this.resource = resource != null?resource:new MathMlResource();
         
-        setSize(850,550);
-        setHeading("Math ML Editor");
+        setPixelSize(850,550);
+        setHeadingText("Math ML Editor");
         setClosable(false);
 
         Frame frame = new Frame("/gwt-resources/fmath_wrapper.html");
@@ -41,8 +43,9 @@ public class MathMlEditorDialog extends Window  {
         
         if(allowCreate) {
             String label = resource!=null?"Update":"Create";
-            addButton(new Button(label, new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent be) {
+            addButton(new TextButton(label, new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
                     MathMlEditorDialog.this.resource.setMathMl(getMathMlFromFlash());
                     MathMlEditorDialog.this.callback.resourceUpdated(MathMlEditorDialog.this.resource);
                     
@@ -52,8 +55,9 @@ public class MathMlEditorDialog extends Window  {
         }
 
 
-        addButton(new Button("Cancel", new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent be) {
+        addButton(new TextButton("Cancel", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
                 hide();
                 MathMlEditorDialog.this.callback.resourceUpdated(null);
             }

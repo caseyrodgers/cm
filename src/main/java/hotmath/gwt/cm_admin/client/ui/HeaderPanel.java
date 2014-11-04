@@ -3,7 +3,7 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_tools.client.ui.MyIconButton;
 import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
-import hotmath.gwt.cm_tools_2.client.util.CmMessageBoxGxt2;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
@@ -116,7 +116,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 						Window.Location.assign(partner.onCloseLink);
 					}
 					catch(Exception e) {
-					    CmMessageBoxGxt2.showAlert("Error returning to our partner page: " + e.getMessage());
+					    CmMessageBox.showAlert("Error returning to our partner page: " + e.getMessage());
 					}
 				}
 				else {

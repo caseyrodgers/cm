@@ -6,18 +6,15 @@ import hotmath.gwt.solution_editor.client.rpc.GetMathMlResourceAction;
 import hotmath.gwt.solution_editor.client.rpc.MathMlResource;
 import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
-public class SolutionResourcePanel extends LayoutContainer {
+public class SolutionResourcePanel extends BorderLayoutContainer {
     
     SolutionResource resource;
     String pid;
@@ -25,7 +22,6 @@ public class SolutionResourcePanel extends LayoutContainer {
         resource = sr;
         this.pid = pid;
         
-        setLayout(new BorderLayout());
         addStyleName("solution-resource-panel");
         
         String html = "<h2>" + sr.getFile() + "</h2>";
@@ -36,24 +32,24 @@ public class SolutionResourcePanel extends LayoutContainer {
             html += sr.getDisplay();
         }
         
-        add(new Html(html), new BorderLayoutData(LayoutRegion.CENTER));
+        setCenterWidget(new HTML(html));
 
         ToolBar tb = new ToolBar();
-        tb.add(new Button("URL", new SelectionListener<ButtonEvent>() {
+        tb.add(new TextButton("URL", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 String url = "<img src='" + sr.getUrlPath() + "' class='solution_resource'/>";
                 new ShowValueWindow("URL", url);
             }
         }));
-        tb.add(new Button("MathML", new SelectionListener<ButtonEvent>() {
+        tb.add(new TextButton("MathML", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 showMathMl();
             }
         }));
         
-        add(tb, new BorderLayoutData(LayoutRegion.SOUTH,25));
+        setSouthWidget(tb, new BorderLayoutData(25));
     }
     
     

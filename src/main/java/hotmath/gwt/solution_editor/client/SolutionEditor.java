@@ -4,6 +4,7 @@ import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteSolutionAction;
@@ -14,11 +15,8 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryActionManager;
 import hotmath.gwt.solution_editor.client.SolutionSearcherDialog.Callback;
-import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -26,30 +24,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.data.BaseModel;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Status;
-import com.extjs.gxt.ui.client.widget.Viewport;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -57,6 +38,20 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.util.Margins;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.Status;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
+import com.sencha.gxt.widget.core.client.container.Viewport;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.TextArea;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
 
 public class SolutionEditor implements EntryPoint {
@@ -64,15 +59,10 @@ public class SolutionEditor implements EntryPoint {
     public SolutionEditor() {
         __instance = this;
     }
-
-    
-    
-    
     
     @Override
     public void onModuleLoad() {
-    	
-    	
+
         GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
             @Override
             public void onUncaughtException(Throwable e) {
@@ -115,16 +105,20 @@ public class SolutionEditor implements EntryPoint {
         UserInfo.setInstance(userInfo);
         RetryActionManager.getInstance();
 
-        mainPort.setScrollMode(Scroll.AUTOY);
-        LayoutContainer toolbarPanel = new HorizontalPanel();
+        // mainPort.setScrollMode(Scroll.AUTOY);
+        
+        
+        HorizontalLayoutContainer toolbarPanel = new HorizontalLayoutContainer();
         toolbarPanel.add(createToolbar());
-        _mainPanel.setLayout(new BorderLayout());
+        
+        BorderLayoutContainer borderMain = new BorderLayoutContainer();
 
-        _mainPanel.add(createToolbar(), new BorderLayoutData(LayoutRegion.NORTH,30));
-        _mainPanel.add(__status,new BorderLayoutData(LayoutRegion.SOUTH,25));
-        _mainPanel.add(_stepEditorViewer, new BorderLayoutData(LayoutRegion.CENTER));
-        mainPort.setLayout(new FitLayout());
-        mainPort.add(_mainPanel);
+        borderMain.setNorthWidget(createToolbar(), new BorderLayoutData(30));
+        
+        borderMain.setSouthWidget(__status,new BorderLayoutData(25));
+        borderMain.setCenterWidget(_stepEditorViewer);
+        
+        _mainPanel.setWidget(borderMain);
 
         __pidToLoad = SolutionEditor.getQueryParameter("pid");
         if(__pidToLoad == null)
@@ -135,7 +129,7 @@ public class SolutionEditor implements EntryPoint {
             @Override
             public void handleEvent(CmEvent event) {
                 if(event.getEventType().equals(EventTypes.SOLUTION_LOAD_COMPLETE)) {
-                    _mainPanel.setHeading("Loaded: " + event.getEventData());
+                    _mainPanel.setHeadingText("Loaded: " + event.getEventData());
                 }
             }
         });
@@ -147,57 +141,62 @@ public class SolutionEditor implements EntryPoint {
             _stepEditorViewer.loadSolution(__pidToLoad.split("$")[0]);  // strip off any context reference
         }
         
+        mainPort.setWidget(_mainPanel);
+        
         Login.getInstance().makeSureLoggedIn();
     }
 
     private Widget createToolbar() {
 
-        HorizontalPanel tb = new HorizontalPanel();
-        TableData td = new TableData();
-        td.setMargin(5);
+        HorizontalLayoutContainer tb = new HorizontalLayoutContainer();
+        HorizontalLayoutData td = new HorizontalLayoutData();
+        td.setMargins(new Margins(5));
 
 
-        tb.add(new Button("Create",new SelectionListener<ButtonEvent>() {
+        tb.add(new TextButton("Create",new SelectHandler() {
+            
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 addSolutionIntoEditor();
             }
         }),td);
 
 
-        tb.add(new Button("Load",new SelectionListener<ButtonEvent>() {
+        tb.add(new TextButton("Load",new SelectHandler() {
+            
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 loadSolutionIntoEditor();
             }
         }),td);
 
-        tb.add(new Button("Delete",new SelectionListener<ButtonEvent>() {
+        tb.add(new TextButton("Delete",new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 deleteThisSolution();
             }
         }),td);
 
-        tb.add(new Button("Refresh",new SelectionListener<ButtonEvent>() {
+        tb.add(new TextButton("Refresh",new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 _stepEditorViewer.loadSolution(__pidToLoad);
             }
         }),td);
 
-        _saveButton = new Button("Save",new SelectionListener<ButtonEvent>() {
+        _saveButton = new TextButton("Save",new SelectHandler() {
+            
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 saveSolutionLoaded();
             }
         });
         _saveButton.addStyleName("solution-editor-save-button");
         tb.add(_saveButton,td);
 
-        tb.add(new Button("Save As",new SelectionListener<ButtonEvent>() {
+        tb.add(new TextButton("Save As",new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 SaveSolutionAsDialog.getSharedInstance().setCallback(new hotmath.gwt.solution_editor.client.SaveSolutionAsDialog.Callback() {
                     @Override
                     public void saveSolutionAs(String pid) {
@@ -207,43 +206,42 @@ public class SolutionEditor implements EntryPoint {
             }
         }),td);
 
-
-
         tb.add(createGenerateContextButton());
 
         Menu viewMenu = new Menu();
-        MenuItem mi = new MenuItem("Tutor",new SelectionListener<MenuEvent>() {
-            public void componentSelected(MenuEvent ce) {
+        MenuItem mi = new MenuItem("Tutor",new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
                 showTutorView();
             }
         });
+
+        
         viewMenu.add(mi);
-        mi = new MenuItem("XML (on server)",new SelectionListener<MenuEvent>() {
-            public void componentSelected(MenuEvent ce) {
+        mi = new MenuItem("XML (on server)",new SelectionHandler<MenuItem>() {
+            public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<MenuItem> event) {
                 showSolutionXml(__pidToLoad);
             }
         });
         viewMenu.add(mi);
 
-        Button viewBtn = new Button("View");
+        TextButton viewBtn = new TextButton("View");
         viewBtn.setMenu(viewMenu);
         tb.add(viewBtn,td);
 
-
-        tb.add(new Button("Resources",new SelectionListener<ButtonEvent>() {
+        tb.add(new TextButton("Resources",new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 showAllResources();
             }
         }),td);
 
-        tb.add(new Button("Help",new SelectionListener<ButtonEvent>() {
+        tb.add(new TextButton("Help", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 new ShowHelpWindow();
             }
         }));
-
 
         isActiveCheckBox.addClickHandler(new ClickHandler() {
             @Override
@@ -253,14 +251,13 @@ public class SolutionEditor implements EntryPoint {
         });
 
 
-        tb.add(new Button("Login", new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
+        tb.add(new TextButton("Login", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
 				Login.getInstance().login();
 			}
 		}));
         
-
         return tb;
     }
 
@@ -295,9 +292,9 @@ public class SolutionEditor implements EntryPoint {
     }
 
     private Widget createGenerateContextButton() {
-        Button Button = new Button("Variable Contexts", new SelectionListener<ButtonEvent>() {
+        TextButton Button = new TextButton("Variable Contexts", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 generateContexts();
             }
         });
@@ -349,7 +346,7 @@ public class SolutionEditor implements EntryPoint {
             public void onSuccess(SolutionAdminResponse solutionResponse) {
                 _stepEditorViewer.loadSolution(solutionResponse.getPid());
                 __status.clearStatus("");
-                _mainPanel.setHeading("Loaded Solution: " + solutionResponse.getPid());
+                _mainPanel.setHeadingText("Loaded Solution: " + solutionResponse.getPid());
             }
             @Override
             public void onFailure(Throwable arg0) {
@@ -435,7 +432,7 @@ public class SolutionEditor implements EntryPoint {
     SolutionStepEditor _stepEditorViewer = new SolutionStepEditor();
     CheckBox isActiveCheckBox = new CheckBox();
 
-    Button _saveButton;
+    TextButton _saveButton;
 
     static public Status __status = new Status();
     static SolutionEditor __instance;
@@ -482,13 +479,3 @@ public class SolutionEditor implements EntryPoint {
         new SolutionContextCreatorDialog(__pidToLoad);
     }
 }
-
-
-class SolutionResourceModel extends BaseModel {
-    public SolutionResourceModel(SolutionResource resource) {
-        set("file", resource.getFile());
-        set("url", resource.getUrlPath());
-    }
-
-}
-

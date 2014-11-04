@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
@@ -18,6 +19,7 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -33,17 +35,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.Window;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
@@ -72,9 +70,11 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                 @Override
                 public void onDoubleClick(DoubleClickEvent event) {
                     final String pid = getResourceItem().getFile();
-                    MessageBox.confirm("Edit Solution", "Edit solution " +  pid + " with Solution Editor?", new Listener<MessageBoxEvent>() {
-                        public void handleEvent(MessageBoxEvent be) {
-                            if(be.getButtonClicked().getText().equals("Yes")) {
+                    CmMessageBox.confirm("Edit Solution", "Edit solution " +  pid + " with Solution Editor?", new ConfirmCallback() {
+                        
+                        @Override
+                        public void confirmed(boolean yesNo) {
+                            if(yesNo) {
                                 String url = CmShared.CM_HOME_URL + "/solution_editor/SolutionEditor.html?pid=" + pid;
                                 com.google.gwt.user.client.Window.open(url, "_blank", "height=480,width=640,status=yes,scrollbars=1");
                             }
@@ -566,8 +566,8 @@ class ShowWorkExampleWindow extends Window {
 
     public ShowWorkExampleWindow() {
         setStyleName("show-work-example-window");
-        setSize(440, 480);
-        setHeading("Show Work Examples");
+        setPixelSize(440, 480);
+        setHeadingText("Show Work Examples");
         Frame frame = new Frame("/gwt-resources/show_work_examples.html");
         DOM.setElementPropertyInt(frame.getElement(), "frameBorder", 0); // disable
                                                                          // border
@@ -575,8 +575,7 @@ class ShowWorkExampleWindow extends Window {
                                                                          // border
 
         frame.setSize("630px", "475px");
-        setLayout(new FitLayout());
-        add(frame);
+        setWidget(frame);
         setVisible(true);
     }
 }

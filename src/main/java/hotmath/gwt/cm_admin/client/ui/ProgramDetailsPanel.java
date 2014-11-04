@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.program_listing.CmTreeNode;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapter;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
@@ -12,9 +14,9 @@ import hotmath.gwt.cm_rpc.client.rpc.GetProgramListingAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.ProgListModel;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.cm_tools_2.client.util.CmMessageBoxGxt2;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfProgramDetailsReportAction;
@@ -22,258 +24,259 @@ import hotmath.gwt.shared.client.rpc.action.GeneratePdfProgramDetailsReportActio
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
+import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.data.client.loader.RpcProxy;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.data.shared.TreeStore;
+import com.sencha.gxt.data.shared.loader.ChildTreeStoreBinding;
+import com.sencha.gxt.data.shared.loader.TreeLoader;
+import com.sencha.gxt.widget.core.client.Component;
+import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.button.IconButton;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.tree.Tree;
 
-public class ProgramDetailsPanel extends CmWindow {
+public class ProgramDetailsPanel extends GWindow {
 
     TreeStore<ProgListModel> store;
     TreeLoader<ProgListModel> loader;
 
     CmAdminModel cmAdminMdl;
-    
+
     static ProgramDetailsPanel instance;
 
     static int WIDTH = 435;
-    
-    TreePanel<ProgListModel> tree;
+
+    Tree<ProgListModel, String> _tree;
+
+    // TreePanel<ProgListModel> tree;
     ProgramListing _programListing;
-    LayoutContainer _mainPanel = new LayoutContainer();
 
     private ProgramDetailsPanel(CmAdminModel cmAdminMdl) {
-        this.cmAdminMdl = cmAdminMdl;
-        getProgramListingRPC();
+        super(false);
+        setModal(true);
+        setResizable(true);
 
+        this.cmAdminMdl = cmAdminMdl;
         buildGui();
+        getProgramListingRPC();
+        addCloseButton();
     }
 
     public static void showPanel(CmAdminModel cmAdminMdl) {
-    	if (instance == null) {
-    		instance = new ProgramDetailsPanel(cmAdminMdl);
-    	}
-        instance.setVisible(true);    	
+        if (instance == null) {
+            instance = new ProgramDetailsPanel(cmAdminMdl);
+        }
+        instance.setVisible(true);
     }
 
     private void buildGui() {
-        setHeading("Lesson Topics Covered in Programs");
-        setSize(WIDTH, 400);
+        setHeadingText("Lesson Topics Covered in Programs");
+        setPixelSize(WIDTH, 400);
 
-        setLayout(new BorderLayout());
-        
-        Button cBtn = new Button("Collapse All", new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                tree.collapseAll();
+        TextButton cBtn = new TextButton("Collapse All", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                _tree.collapseAll();
             }
         });
-        //cBtn.setStyleName("program-details-collapse-btn");
+        // cBtn.setStyleName("program-details-collapse-btn");
         getHeader().addTool(cBtn);
         getHeader().setStyleName("program-details-header");
-        
-        Button pBtn = buildPrintButton();
+
+        Component pBtn = buildPrintButton();
         getHeader().addTool(pBtn);
 
-        _mainPanel = new LayoutContainer();
-        _mainPanel.setLayout(new CenterLayout());
-        _mainPanel.add(new Label("Loading Program Information.."));
-
-        BorderLayoutData bld = new BorderLayoutData(LayoutRegion.CENTER);
-        _mainPanel.setStyleName("program-details-tree-panel");
-        _mainPanel.setId("program-details-panel");
-        add(_mainPanel, bld);
-
-        addCloseButton();
-
-        setModal(true);
-        setResizable(true);
+        CenterLayoutContainer c = new CenterLayoutContainer();
+        c.setWidget(new Label("Loading Program Information.."));
+        setWidget(c);
     }
 
-	private Button buildPrintButton() {
-		Button btn = new Button();
-
-        btn.setIconStyle("printer-icon");
+    private Component buildPrintButton() {
+        IconButton btn = new IconButton("printer-icon");
+        // btn.setIconStyle("printer-icon");
         btn.setToolTip("Display a printable report");
         btn.addStyleName("student-details-panel-pr-btn");
 
-		btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-		    public void componentSelected(ButtonEvent ce) {
-
-		    	resetSelected();
-		    	
-			    TreeStore<ProgListModel> ts = tree.getStore();
-			    List<ProgListModel> list = ts.getAllItems();
-			    
-			    int count=0;
-			    for (ProgListModel m : list) {
-				    if (tree.isExpanded(m)) {
-				    	setSelected(m);
-				    	count++;
-				    }
-			    }
-			    if (count == 0) {
-			    	CmMessageBoxGxt2.showAlert("Please expand a node before selecting Print.");
-			    }
-			    else {
-			    	// display printable report
-	                new PdfWindow(cmAdminMdl.getUid(), "Catchup Math Program Details",
-	                        new GeneratePdfProgramDetailsReportAction(cmAdminMdl.getUid(), _programListing));
-			    	
-			    }
-		    }
-		});
-		return btn;
-	}
-
-	protected void resetSelected() {
-		List<ProgramType> ptList = _programListing.getProgramTypes();
-		for (ProgramType pt : ptList) {
-			pt.setSelected(false);
-			List<ProgramSubject> psList = pt.getProgramSubjects();
-			for (ProgramSubject ps : psList) {
-				ps.setSelected(false);
-				List<ProgramChapter> pcList = ps.getChapters();
-				for (ProgramChapter pc : pcList) {
-					pc.setSelected(false);
-					List<ProgramSection> sectList = pc.getSections();
-					for (ProgramSection sect : sectList) {
-						sect.setSelected(false);
-					}
-				}
-			}
-		}
-	}
-
-	ProgramType    progType = null;
-	ProgramSubject progSubj = null;
-	ProgramChapter progChap = null;
-	ProgramSection progSect = null;
-	
-	private void setSelected(ProgListModel m) {
-		if (m.getLevel() == ProgramListing.LEVEL_TYPE) {
-			progType = findProgramType(m.getLabel());
-			progType.setSelected(true);
-		}
-		else if (m.getLevel() == ProgramListing.LEVEL_SUBJ) {
-			progType = findProgramType(m.getData().getParent().getLabel());
-			progSubj = findProgramSubject(m.getLabel());
-			progSubj.setSelected(true);
-		}
-		else if (m.getLevel() == ProgramListing.LEVEL_CHAP) {
-			progType = findProgramType(m.getData().getParent().getParent().getLabel());
-            progSubj = findProgramSubject(m.getData().getParent().getLabel());
-            progChap = findProgramChapter(m.getLabel());
-			progChap.setSelected(true);
-		}
-		else if (m.getLevel() == ProgramListing.LEVEL_SECT) {
-			CmTreeNode node = m.getData().getParent().getParent().getParent();
-			if (node != null) {
-    			progType = findProgramType(m.getData().getParent().getParent().getParent().getLabel());
-                progSubj = findProgramSubject(m.getData().getParent().getParent().getLabel());
-                progChap = findProgramChapter(m.getData().getParent().getLabel());
-			}
-			else {
-    			progType = findProgramType(m.getData().getParent().getParent().getLabel());
-                progSubj = findProgramSubject(m.getData().getParent().getLabel());
-                progChap = progSubj.getChapters().get(0);
-			}
-            
-            List<ProgramSection> list = progChap.getSections();
-
-		    for (ProgramSection ps : list) {
-		    	if (ps.getLabel().equals(m.getLabel())) {
-		    		ps.setSelected(true);
-		    		break;
-		    	}
-		    }
-		}
-		
-	}
-
-    private ProgramChapter findProgramChapter(String label) {
-		List<ProgramChapter> list = progSubj.getChapters(); 
-		for (ProgramChapter pc : list) {
-			if (pc.getLabel().equals(label)) {
-                return pc;
-			}
-		}
-		return null;
-	}
-
-	private ProgramSubject findProgramSubject(String label) {
-    	List<ProgramSubject> list = progType.getProgramSubjects();
-		for (ProgramSubject ps : list) {
-			if (ps.getLabel().equals(label)) {
-				return ps;
- 			}
-		}
-		return null;
-	}
-
-	private ProgramType findProgramType(String label) {
-		List<ProgramType> list = _programListing.getProgramTypes();
-		for (ProgramType pt : list) {
-			if (pt.getLabel().equals(label)) {
-				return pt;
-			}
-		}
-		return null;
-	}
-
-	private void buildTree() {
-
-        store = new TreeStore<ProgListModel>();
-        tree = new TreePanel<ProgListModel>(store);
-        tree.setWidth(290);
-        tree.setDisplayProperty("label");
-        tree.setAutoHeight(true);
-
-        RpcProxy<List<ProgListModel>> proxy = dataProxy();
-
-        loader = new BaseTreeLoader<ProgListModel>(proxy) {
+        btn.addSelectHandler(new SelectHandler() {
             @Override
-            public boolean hasChildren(ProgListModel parent) {
-                return parent.getLevel() != ProgramListing.LEVEL_LESS;
+            public void onSelect(SelectEvent event) {
+                resetSelected();
+
+                TreeStore<ProgListModel> ts = _tree.getStore();
+                List<ProgListModel> list = ts.getAll();
+
+                int count = 0;
+                for (ProgListModel m : list) {
+                    if (_tree.isExpanded(m)) {
+                        setSelected(m);
+                        count++;
+                    }
+                }
+                if (count == 0) {
+                    CmMessageBox.showAlert("Please expand a node before selecting Print.");
+                } else {
+                    // display printable report
+                    new PdfWindow(cmAdminMdl.getUid(), "Catchup Math Program Details",
+                            new GeneratePdfProgramDetailsReportAction(cmAdminMdl.getUid(), _programListing));
+
+                }
             }
-        };
-
-        // trees store
-        TreeStore<ProgListModel> store = new TreeStore<ProgListModel>(loader);
-        tree = new TreePanel<ProgListModel>(store);
-        tree.setDisplayProperty("label");
-
-        _mainPanel.removeAll();
-        _mainPanel.setLayout(new FitLayout());
-        _mainPanel.add(tree);
-        layout();
+        });
+        return btn;
     }
 
-	private RpcProxy<List<ProgListModel>> dataProxy() {
-		return new RpcProxy<List<ProgListModel>>() {
+    protected void resetSelected() {
+        List<ProgramType> ptList = _programListing.getProgramTypes();
+        for (ProgramType pt : ptList) {
+            pt.setSelected(false);
+            List<ProgramSubject> psList = pt.getProgramSubjects();
+            for (ProgramSubject ps : psList) {
+                ps.setSelected(false);
+                List<ProgramChapter> pcList = ps.getChapters();
+                for (ProgramChapter pc : pcList) {
+                    pc.setSelected(false);
+                    List<ProgramSection> sectList = pc.getSections();
+                    for (ProgramSection sect : sectList) {
+                        sect.setSelected(false);
+                    }
+                }
+            }
+        }
+    }
+
+    ProgramType progType = null;
+    ProgramSubject progSubj = null;
+    ProgramChapter progChap = null;
+    ProgramSection progSect = null;
+
+    private void setSelected(ProgListModel m) {
+        if (m.getLevel() == ProgramListing.LEVEL_TYPE) {
+            progType = findProgramType(m.getLabel());
+            progType.setSelected(true);
+        } else if (m.getLevel() == ProgramListing.LEVEL_SUBJ) {
+            progType = findProgramType(m.getData().getParent().getLabel());
+            progSubj = findProgramSubject(m.getLabel());
+            progSubj.setSelected(true);
+        } else if (m.getLevel() == ProgramListing.LEVEL_CHAP) {
+            progType = findProgramType(m.getData().getParent().getParent().getLabel());
+            progSubj = findProgramSubject(m.getData().getParent().getLabel());
+            progChap = findProgramChapter(m.getLabel());
+            progChap.setSelected(true);
+        } else if (m.getLevel() == ProgramListing.LEVEL_SECT) {
+            CmTreeNode node = m.getData().getParent().getParent().getParent();
+            if (node != null) {
+                progType = findProgramType(m.getData().getParent().getParent().getParent().getLabel());
+                progSubj = findProgramSubject(m.getData().getParent().getParent().getLabel());
+                progChap = findProgramChapter(m.getData().getParent().getLabel());
+            } else {
+                progType = findProgramType(m.getData().getParent().getParent().getLabel());
+                progSubj = findProgramSubject(m.getData().getParent().getLabel());
+                progChap = progSubj.getChapters().get(0);
+            }
+
+            List<ProgramSection> list = progChap.getSections();
+
+            for (ProgramSection ps : list) {
+                if (ps.getLabel().equals(m.getLabel())) {
+                    ps.setSelected(true);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    private ProgramChapter findProgramChapter(String label) {
+        List<ProgramChapter> list = progSubj.getChapters();
+        for (ProgramChapter pc : list) {
+            if (pc.getLabel().equals(label)) {
+                return pc;
+            }
+        }
+        return null;
+    }
+
+    private ProgramSubject findProgramSubject(String label) {
+        List<ProgramSubject> list = progType.getProgramSubjects();
+        for (ProgramSubject ps : list) {
+            if (ps.getLabel().equals(label)) {
+                return ps;
+            }
+        }
+        return null;
+    }
+
+    private ProgramType findProgramType(String label) {
+        List<ProgramType> list = _programListing.getProgramTypes();
+        for (ProgramType pt : list) {
+            if (pt.getLabel().equals(label)) {
+                return pt;
+            }
+        }
+        return null;
+    }
+
+    interface Props extends PropertyAccess<String> {
+        @Path("label")
+        ModelKeyProvider<ProgListModel> key();
+
+        ValueProvider<ProgListModel, String> label();
+    }
+
+    static Props props = GWT.create(Props.class);
+
+    private void buildTree() {
+
+        store = new TreeStore<ProgListModel>(props.key());
+        _tree = new Tree<ProgListModel, String>(store, props.label());
+        // tree.setWidth(290);
+        // tree.setDisplayProperty("label");
+        // _tree.getView().setAutoHeight(true);
+
+        RpcProxy<ProgListModel, List<ProgListModel>> proxy = dataProxy();
+
+        
+        final TreeLoader<ProgListModel> loader = new TreeLoader<ProgListModel>(proxy) {
             @Override
-            protected void load(Object loadConfig, final AsyncCallback<List<ProgListModel>> callback) {
+            public boolean hasChildren(ProgListModel parent) {
+              return parent.getLevel() != ProgramListing.LEVEL_LESS;
+            }
+          };
+
+         loader.addLoadHandler(new ChildTreeStoreBinding<ProgListModel>(store));
+         _tree.setLoader(loader);
+
+         FramedPanel fp = new FramedPanel();
+         fp.setHeaderVisible(false);
+         fp.setWidget(_tree);
+        setWidget(fp);
+        forceLayout();
+    }
+
+    private RpcProxy<ProgListModel, List<ProgListModel>> dataProxy() {
+
+        RpcProxy<ProgListModel, List<ProgListModel>> proxy = new RpcProxy<ProgListModel, List<ProgListModel>>() {
+
+            @Override
+            public void load(ProgListModel loadConfig, AsyncCallback<List<ProgListModel>> callback) {
                 ProgListModel m = (ProgListModel) loadConfig;
-                if (m != null &&
-                    (m.getLevel() == ProgramListing.LEVEL_SECT || isBuiltInCustomProg(m))) {
+                if (m != null && (m.getLevel() == ProgramListing.LEVEL_SECT || isBuiltInCustomProg(m))) {
                     /**
                      * obtain lesson data asynchronously
                      */
                     getLessonItemsRPC(m.getData(), callback);
                 } else {
                     /**
-                     *  process local data
+                     * process local data
                      */
                     List<ProgListModel> models = new ArrayList<ProgListModel>();
                     if (m == null) {
@@ -283,44 +286,42 @@ public class ProgramDetailsPanel extends CmWindow {
                             models.add(new ProgListModel(pType));
                         }
                     } else if (m.getLevel() == ProgramListing.LEVEL_TYPE) {
-                    	ProgramType pType = (ProgramType) m.getData();
+                        ProgramType pType = (ProgramType) m.getData();
                         List<ProgramSubject> subjects = pType.getProgramSubjects();
                         for (ProgramSubject ps : subjects) {
                             models.add(new ProgListModel(ps));
                             ps.setParent(pType);
                         }
                     } else if (m.getLevel() == ProgramListing.LEVEL_SUBJ) {
-                    	
-                    	ProgramSubject pSubj = (ProgramSubject) m.getData();
-                    	ProgramType pType = (ProgramType) pSubj.getParent();
+
+                        ProgramSubject pSubj = (ProgramSubject) m.getData();
+                        ProgramType pType = (ProgramType) pSubj.getParent();
                         List<ProgramChapter> chaps = pSubj.getChapters();
-                        
-                    	if (pType.getLabel().indexOf("Proficiency") < 0 &&
-                    		pType.getLabel().indexOf("Graduation") < 0 &&
-                    		pType.getLabel().toLowerCase().indexOf("built-in") < 0) {
-                    		// not Proficiency, Grad Prep, or Built-in Custom Program, add Chapters
+
+                        if (pType.getLabel().indexOf("Proficiency") < 0 && pType.getLabel().indexOf("Graduation") < 0
+                                && pType.getLabel().toLowerCase().indexOf("built-in") < 0) {
+                            // not Proficiency, Grad Prep, or Built-in Custom
+                            // Program, add Chapters
                             for (ProgramChapter pc : chaps) {
                                 models.add(new ProgListModel(pc));
                                 pc.setParent(pSubj);
                             }
-                    	}
-                    	else if (pType.getLabel().toLowerCase().indexOf("built-in") < 0) {
-                    		// Proficiency or Grad Prep Program, add sections
-                        	ProgramChapter pc = chaps.get(0);
-                        	pc.setParent(pSubj);
+                        } else if (pType.getLabel().toLowerCase().indexOf("built-in") < 0) {
+                            // Proficiency or Grad Prep Program, add sections
+                            ProgramChapter pc = chaps.get(0);
+                            pc.setParent(pSubj);
                             List<ProgramSection> l = pc.getSections();
                             for (ProgramSection ps : l) {
                                 ps.setParent(pc);
                                 models.add(new ProgListModel(ps));
                             }
-                    	}
-                    	else {
-                    		// Built-in Custom Program
+                        } else {
+                            // Built-in Custom Program
                             models.add(new ProgListModel(pSubj));
-                    	}
-                        
+                        }
+
                     } else if (m.getLevel() == ProgramListing.LEVEL_CHAP) {
-                    	ProgramChapter pc = (ProgramChapter) m.getData();
+                        ProgramChapter pc = (ProgramChapter) m.getData();
                         List<ProgramSection> l = pc.getSections();
                         for (ProgramSection ps : l) {
                             ps.setParent(pc);
@@ -333,45 +334,47 @@ public class ProgramDetailsPanel extends CmWindow {
                 // service.getFolderChildren((FileModel) loadConfig, callback);
             }
 
-			private boolean isBuiltInCustomProg(ProgListModel m) {
-				CmTreeNode node = m.getData();
-				if (node instanceof ProgramSubject) {
-					ProgramType pType = (ProgramType) node.getParent();
-					String label = pType.getLabel();
-					return (label.toLowerCase().indexOf("built-in") > -1);
-				}
-				return false;
-			}
+            private boolean isBuiltInCustomProg(ProgListModel m) {
+                CmTreeNode node = m.getData();
+                if (node instanceof ProgramSubject) {
+                    ProgramType pType = (ProgramType) node.getParent();
+                    String label = pType.getLabel();
+                    return (label.toLowerCase().indexOf("built-in") > -1);
+                }
+                return false;
+            }
+
         };
-	}
+        
+        return proxy;
+    }
 
     private void getLessonItemsRPC(final CmTreeNode node, final AsyncCallback<List<ProgListModel>> callback) {
 
         new RetryAction<CmList<ProgramLesson>>() {
             @Override
             public void attempt() {
-            	GetProgramLessonsAction action;
-            	if (node instanceof ProgramSection) {
-            		ProgramSection section = (ProgramSection) node;
-                	ProgramChapter chapter = (ProgramChapter) section.getParent();
-                	String chap = chapter.getLabel();
-                	int sectionCount = chapter.getSections().size();
-                    action = new GetProgramLessonsAction(section.getTestDefId(), section.getNumber(), chap, sectionCount);
-            	}
-            	else { // has to be Built-in CP
-            		ProgramSubject pSubj = (ProgramSubject) node;
-            		String chap = pSubj.getLabel();
-            		int programId = 0;
-            		try {
-            			programId = Integer.parseInt(pSubj.getName());
-            		}
-            		catch (Exception e) {
-            		}
+                GetProgramLessonsAction action;
+                if (node instanceof ProgramSection) {
+                    ProgramSection section = (ProgramSection) node;
+                    ProgramChapter chapter = (ProgramChapter) section.getParent();
+                    String chap = chapter.getLabel();
+                    int sectionCount = chapter.getSections().size();
+                    action = new GetProgramLessonsAction(section.getTestDefId(), section.getNumber(), chap,
+                            sectionCount);
+                } else { // has to be Built-in CP
+                    ProgramSubject pSubj = (ProgramSubject) node;
+                    String chap = pSubj.getLabel();
+                    int programId = 0;
+                    try {
+                        programId = Integer.parseInt(pSubj.getName());
+                    } catch (Exception e) {
+                    }
                     action = new GetProgramLessonsAction(programId, 1, chap, 0);
                     action.setBuiltInCustomProg(true);
-            	}
+                }
 
-            	setAction(action);
+                setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
 
@@ -404,5 +407,17 @@ public class ProgramDetailsPanel extends CmWindow {
                 buildTree();
             }
         }.register();
+    }
+    
+    
+    static public void startTest() {
+        new GwtTester(new TestWidget() {
+            @Override
+            public void runTest() {
+                CmAdminModel cmAdmin = new CmAdminModel();
+                cmAdmin.setUid(2);
+                new ProgramDetailsPanel(cmAdmin).setVisible(true);
+            }
+        });
     }
 }

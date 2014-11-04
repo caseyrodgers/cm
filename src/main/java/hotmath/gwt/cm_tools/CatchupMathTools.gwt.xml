@@ -7,11 +7,6 @@
 	<inherits name='com.sencha.gxt.ui.GXT' />
     <inherits name='com.sencha.gxt.chart.Chart'/>
 	
-      
-    <inherits name='com.extjs.gxt.ui.GXT' />
-    <inherits name='com.extjs.gxt.charts.Chart' />
-    <inherits name='com.extjs.gxt.themes.Themes' />
-	
     <inherits name='pl.rmalinowski.gwt2swf.GWT2SWF' />
     
       <property-provider name="user.agent.os"><![CDATA[

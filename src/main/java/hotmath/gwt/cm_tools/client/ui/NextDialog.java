@@ -2,8 +2,12 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 
-import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+
 
 class NextDialog extends Dialog {
 
@@ -13,22 +17,24 @@ class NextDialog extends Dialog {
 		
 		_lastDialog = this;
 		
-		
-		
 		setStyleName("next-dialog");
 		setModal(true);
-		setSize(350,170);
-		setHeading("What To Do Next");
+		setPixelSize(350,170);
+		setHeadingText("What To Do Next");
 		setHideOnButtonClick(true);
 		setAnimCollapse(true);
 		setData("context", context);
 			
-		setButtons(Dialog.CANCEL);
+		addButton(new TextButton("Cancel", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                hide();
+            }
+        }));
 			
-		LayoutContainer lc = new LayoutContainer();
-		lc.setStyleName("next-dialog-panel");
-		add(lc);		
-			
+		SimplePanel sp = new SimplePanel();
+		sp.setStyleName("next-dialog-panel");
+		setWidget(sp);		
 	}
 	
 	/** Remove the currently (if any) displayed Next Dialog

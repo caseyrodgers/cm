@@ -1,9 +1,16 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.Validator;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ValidTypeValidator implements Validator {
+import com.google.gwt.editor.client.Editor;
+import com.google.gwt.editor.client.EditorError;
+import com.sencha.gxt.widget.core.client.form.Validator;
+import com.sencha.gxt.widget.core.client.form.error.DefaultEditorError;
+
+
+
+public class ValidTypeValidator implements Validator<String> {
 
 	private ValidType type;
 
@@ -11,15 +18,13 @@ public class ValidTypeValidator implements Validator {
 		this.type = type;
 	}
 
-	@Override
-	public String validate(Field<?> field, String value) {
-
-		String result = null;
-
+    @Override
+    public List<EditorError> validate(Editor<String> editor, String value) {
+        List<EditorError> errors = new ArrayList<EditorError>();
 		if ( ! value.matches(type.getRegex())){
-			result = value + " isn't a valid " + type.getName();
+			errors.add(new DefaultEditorError(editor, value + " isn't a valid " + type.getName(), value));
 		}
-		return result;
+		return errors;
 	}
 
 }

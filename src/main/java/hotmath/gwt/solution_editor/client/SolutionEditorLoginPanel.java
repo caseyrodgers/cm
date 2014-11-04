@@ -1,46 +1,47 @@
 package hotmath.gwt.solution_editor.client;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 
-public class SolutionEditorLoginPanel extends Window {
+import com.sencha.gxt.widget.core.client.Component;
+import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.FieldLabel;
+import com.sencha.gxt.widget.core.client.form.PasswordField;
+import com.sencha.gxt.widget.core.client.form.TextField;
+
+
+
+public class SolutionEditorLoginPanel extends GWindow {
 
 	public interface SolutionEditorCallback {
 		void loggedIn(SolutionEditorUser user);
 	}
 
-	TextField<String> _userName = new TextField<String>();
-	TextField<String> _passWord = new TextField<String>();
+	TextField _userName = new TextField();
+	PasswordField _passWord = new PasswordField();
 
 	private SolutionEditorCallback callback;
 
-	public SolutionEditorLoginPanel(String userName, 
-			SolutionEditorCallback solutionEditorCallback) {
+	public SolutionEditorLoginPanel(String userName, SolutionEditorCallback solutionEditorCallback) {
+	    super(false);
 		this.callback = solutionEditorCallback;
+		
 		setModal(true);
 		setClosable(false);
 		setResizable(false);;
-		setSize(340, 140);
-		setHeading("Solution Editor Login");
-		add(createFormPanel());
+		setPixelSize(340, 140);
+		setHeadingText("Solution Editor Login");
+		setWidget(createFormPanel());
 		
 		_userName.setValue(userName);
 
-		addButton(new Button("Login", new SelectionListener<ButtonEvent>() {
-
-			@Override
-			public void componentSelected(ButtonEvent ce) {
+		addButton(new TextButton("Login", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
 				doLogin();
 			}
 		}));
@@ -49,11 +50,7 @@ public class SolutionEditorLoginPanel extends Window {
 	
 
 	private void messageBox(String msg) {
-		MessageBox.alert("Error", msg, new Listener<MessageBoxEvent>() {
-			@Override
-			public void handleEvent(MessageBoxEvent be) {
-			}
-		});
+		CmMessageBox.showAlert("Error", msg);
 	}
 	
 	private void doLogin() {
@@ -75,28 +72,22 @@ public class SolutionEditorLoginPanel extends Window {
 	}
 
 	private Component createFormPanel() {
-		FormData formData = new FormData("-20");
-		VerticalPanel vp = new VerticalPanel();
-		vp.setSpacing(10);
 
-		FormPanel simple = new FormPanel();
-		simple.setHeaderVisible(false);
-		simple.setFrame(false);
-		simple.setBodyBorder(false);
-		simple.setWidth(300);
-		simple.setLabelWidth(100);
-		simple.setLabelAlign(LabelAlign.RIGHT);
-
-		_userName.setFieldLabel("User Name");
+	    FramedPanel frame = new FramedPanel();
+		
+	    frame.setHeaderVisible(false);
+	    
+	    FlowLayoutContainer flow = new FlowLayoutContainer();
+		//_userName.setFieldLabel("User Name");
 		_userName.setAllowBlank(false);
-		simple.add(_userName, formData);
+		flow.add(new FieldLabel(_userName, "User Name"));
 		
-		_passWord.setPassword(true);
-		_passWord.setFieldLabel("Password");
+		//_passWord.setFieldLabel("Password");
 		_passWord.setAllowBlank(false);
-		simple.add(_passWord, formData);
+		flow.add(new FieldLabel(_passWord, "Password"));
+		frame.setWidget(flow);
 		
-		return simple;
+		return frame;
 	}
 
 }

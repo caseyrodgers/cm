@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.user.client.ui.SimplePanel;
 
-public class ProblemStatementPanel extends LayoutContainer {
+public class ProblemStatementPanel extends SimplePanel {
     
     String pid;
     public ProblemStatementPanel(String pid) {

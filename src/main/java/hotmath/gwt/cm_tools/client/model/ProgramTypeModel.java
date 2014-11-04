@@ -2,32 +2,33 @@ package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
+public class ProgramTypeModel  {
 
-public class ProgramTypeModel extends BaseModelData {
+	private String label;
+    private CmProgramType type;
 
-	protected ProgramTypeModel() {
+    protected ProgramTypeModel() {
     }
 
     public ProgramTypeModel(String label, CmProgramType type) {
-        set("label", label);
-        set("type", type);
+        this.label = label;
+        this.type = type;
     }
 
     public void setLabel(String label) {
-        set("label", label);
+        this.label = label;
     }
 
     public String getLabel() {
-        return get("label");
+        return this.label;
     }
 
     public void setType(CmProgramType type) {
-        set("type", type);
+        this.type = type;
     }
 
     public CmProgramType getType() {
-        return get("type");
+        return this.type;
     }
 
     @Override

@@ -3,33 +3,34 @@ package hotmath.gwt.solution_editor.client;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.model.BaseModel;
 
+public class SolutionSearchModel implements Response {
 
-    public class SolutionSearchModel extends BaseModel implements Response {
+    private String pid;
+    private boolean isActive;
 
+    public SolutionSearchModel() {
+        /** empty */
+    }
 
-        public SolutionSearchModel(){
-            /** empty */
-        }
+    public SolutionSearchModel(String pid, boolean isActive) {
+        this.pid = pid;
+        this.isActive = isActive;
+    }
 
-        public SolutionSearchModel(String pid, boolean isActive) {
-            setPid(pid);
-            setIsActive(isActive);
-        }
+    public String getPid() {
+        return pid;
+    }
 
-        public void setPid(String pid) {
-            set("pid", pid);
-        }
+    public void setPid(String pid) {
+        this.pid = pid;
+    }
 
-        public String getPid() {
-            return get("pid");
-        }
+    public boolean isActive() {
+        return isActive;
+    }
 
-        public void setIsActive(Boolean isActive) {
-            set("active", isActive);
-        }
-
-        public Boolean isActive() {
-            return get("active");
-        }
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
 
 }

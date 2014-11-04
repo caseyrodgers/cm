@@ -8,7 +8,7 @@ import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
 import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
-import com.extjs.gxt.ui.client.widget.Html;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
@@ -39,7 +39,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
 	public Widget getResourcePanel() {
 		clear();
 		if (!SWFObjectUtil.isVersionIsValid(new PlayerVersion(9))) {
-			Html html = new Html(CmShared.FLASH_ALT_CONTENT);
+			HTML html = new HTML(CmShared.FLASH_ALT_CONTENT);
 			addResource(html, getResourceItem().getTitle());
 		} else {
 

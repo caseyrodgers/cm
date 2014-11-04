@@ -1,38 +1,46 @@
 package hotmath.gwt.solution_editor.client;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public class WidgetModel extends BaseModelData  {
+public class WidgetModel  {
+
+    String config;
+    String type;
+    String name;
+    String value;
 
     public WidgetModel(String type) {
-        set("type", type);
+        this.type = type;
     }
 
     public String getConfig() {
-        return get("config");
+        return this.config;
     }
 
     public void setConfig(String config) {
-        set("config", config);
+        this.config = config;
     }
 
     public String getType() {
-        return get("type");
+        return type;
     }
 
     public String getName() {
-        return get("name");
+        return name;
     }
 
     public void setName(String name) {
-        set("name", name);
+        this.name = name;
     }
 
     public String getValue() {
-        return get("value");
+        return value;
     }
 
     public void setValue(String value) {
-        set("value",value);
+        this.value = value;
+    }
+    
+    public String getKey() {
+        return type + name + value;
     }
 }

@@ -1,6 +1,7 @@
 package hotmath.gwt.solution_editor.client;
 
-import com.extjs.gxt.ui.client.widget.Html;
+
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
@@ -8,7 +9,7 @@ abstract public class EditableStepUnit extends FlowLayoutContainer implements St
     
     String editorText;
     
-    Html htmlDiv = new Html();
+    HTML htmlDiv = new HTML();
     public EditableStepUnit() {
         addStyleName("editable-step-unit");
         clear();
@@ -17,7 +18,7 @@ abstract public class EditableStepUnit extends FlowLayoutContainer implements St
     
     public void setEditorText(String text) {
         editorText = text;
-        htmlDiv.setHtml(text);
+        htmlDiv.setHTML(text);
     }
     
     public String getEditorText() {

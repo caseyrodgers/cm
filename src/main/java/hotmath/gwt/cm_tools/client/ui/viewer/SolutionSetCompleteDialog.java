@@ -1,35 +1,36 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 
-import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.widget.Html;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
-public class SolutionSetCompleteDialog extends CmWindow {
-    
+public class SolutionSetCompleteDialog extends GWindow {
+
     public SolutionSetCompleteDialog(int numCorrect, int limit) {
-        
-        setHeading("Problem Set Results");
-        
+        super(false);
+
+        setHeadingText("Problem Set Results");
+
         setModal(true);
-        setSize(350, 150);
+        setPixelSize(350, 150);
         addStyleName("SolutionSetCompleteDialog");
-        String html = 
-            "You correctly answered <b style='font-size: 1.5em'> " + numCorrect + "</b> questions out of <b style='font-size: 1.5em'>" + limit + "</b>.";
-        
-       html = "<p style='text-align: center;margin-top: 10px;' class='solution_set_results'>" + html + "</p>";
-       
-       add(new Html(html));
-       
-       addWindowListener(new WindowListener() {
-           public void windowHide(com.extjs.gxt.ui.client.event.WindowEvent we) {
-               
-           }
-       });
-              
-       
-       addCloseButton();
-       setVisible(true);
+        String html = "You correctly answered <b style='font-size: 1.5em'> " + numCorrect
+                + "</b> questions out of <b style='font-size: 1.5em'>" + limit + "</b>.";
+
+        html = "<p style='text-align: center;margin-top: 10px;' class='solution_set_results'>" + html + "</p>";
+
+        setWidget(new HTML(html));
+
+        addHideHandler(new HideHandler() {
+            @Override
+            public void onHide(HideEvent event) {
+            }
+        });
+
+        addCloseButton();
+        setVisible(true);
     }
 
 }

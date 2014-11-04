@@ -2,20 +2,18 @@ package hotmath.gwt.solution_editor.client;
 
 
 import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.solution_editor.client.rpc.FormatXmlAdminAction;
 import hotmath.gwt.solution_editor.client.rpc.MathMlResource;
 import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TextArea;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * Encapsulates the Java Plugin editor used to allowing plain editing.
@@ -34,26 +32,26 @@ import com.google.gwt.user.client.ui.TextArea;
  * @author casey
  * 
  */
-public class StepEditorPlainTextDialog extends Window {
+public class StepEditorPlainTextDialog extends GWindow {
 
     TextArea _textArea;
 	private EditCallback callback;
 
     public interface EditCallback {
+        
     	String getTextToEdit();
     	void saveTextToEdit(String editedText);
     }
     
     public StepEditorPlainTextDialog(EditCallback callbackIn) {
+        super(false);
+        
     	this.callback = callbackIn;
-        setLayout(new FitLayout());
 
         _textArea = new TextArea(); // new HtmlEditorApplet();
         _textArea.getElement().setId("solution-editor-area");
-        add(_textArea);
-
-        setSize(700, 390);
-        setScrollMode(Scroll.AUTO);
+        setWidget(_textArea);
+        setPixelSize(700, 390);
         setResizable(false);
         setMaximizable(false);
         setAnimCollapse(true);
@@ -61,36 +59,36 @@ public class StepEditorPlainTextDialog extends Window {
         setModal(true);
         _textArea.setValue(callback.getTextToEdit());
         
-        setHeading("Text Editor (F11 for full screen toggle)");
+        setHeadingText("Text Editor (F11 for full screen toggle)");
         
-        getHeader().addTool(new Button("Format", new SelectionListener<ButtonEvent>() {
-			
-			@Override
-			public void componentSelected(ButtonEvent ce) {
+        getHeader().addTool(new TextButton("Format", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
 				formatXml();
 			}
 		}));
         
-        addButton(new Button("Save", new SelectionListener<ButtonEvent>() {
-        	@Override
-        	public void componentSelected(ButtonEvent ce) {
+        addButton(new TextButton("Save", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
         		String text = getTextEditorValue();
         		callback.saveTextToEdit(text);
         		hide();
         	}
 		}));
         
-        addButton(new Button("Cancel", new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
+        addButton(new TextButton("Cancel", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
 				hide();
 			}
 		}));
 
 
-        getHeader().addTool(new Button("MathML Editor", new SelectionListener<ButtonEvent>() {
+        getHeader().addTool(new TextButton("MathML Editor", new SelectHandler() {
+            
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 setVisible(false);
                 new MathMlEditorDialog(new MathMlEditorDialog.Callback() {
                     @Override
@@ -100,9 +98,10 @@ public class StepEditorPlainTextDialog extends Window {
                 }, null, false);            }
         }));
 
-        getHeader().addTool(new Button("Resources", new SelectionListener<ButtonEvent>() {
+        getHeader().addTool(new TextButton("Resources", new SelectHandler() {
+            
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 setVisible(false);
                 new SolutionResourceListDialog(new SolutionResourceListDialog.Callback() {
                     @Override
@@ -126,7 +125,7 @@ public class StepEditorPlainTextDialog extends Window {
 
         focus();
 
-        layout();
+        forceLayout();
     }
     
     public String getTextEditorValue() {
