@@ -14,6 +14,7 @@ public class ProgramSubject implements CmTreeNode,IsSerializable{
     CmTreeNode parent;
     
     int testDefId;
+    int id;
 
     List<String> gradeLevels;
     Map<String,String> labelMap = new HashMap<String,String>();
@@ -102,4 +103,14 @@ public class ProgramSubject implements CmTreeNode,IsSerializable{
     public int getLevel() {
         return ProgramListing.LEVEL_SUBJ;
     }
+
+	@Override
+	public int getId() {
+		// TODO Auto-generated method stub
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 }

@@ -4,4 +4,5 @@ public interface CmTreeNode {
     int getLevel();
     String getLabel();
     CmTreeNode getParent();
+    int getId();
 }

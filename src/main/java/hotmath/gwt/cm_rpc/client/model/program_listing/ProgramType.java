@@ -15,9 +15,11 @@ public class ProgramType implements CmTreeNode, IsSerializable {
 
     List<ProgramSubject> subjects = new ArrayList<ProgramSubject>();
 
-    String label;
-    String type;
+    String  label;
+    String  type;
     boolean isSelected;
+    int     itemCount;
+    int     id;
 
     public ProgramType() {
     }
@@ -62,9 +64,22 @@ public class ProgramType implements CmTreeNode, IsSerializable {
         return ProgramListing.LEVEL_TYPE;
     }
 
+    public void setItemCount(int itemCount) {
+    	this.itemCount = itemCount;
+    }
+
+    public int getItemCount() {
+    	return itemCount;
+    }
+
 	@Override
 	public CmTreeNode getParent() {
 		return null;
+	}
+
+	@Override
+	public int getId() {
+		return id;
 	}
 
 }

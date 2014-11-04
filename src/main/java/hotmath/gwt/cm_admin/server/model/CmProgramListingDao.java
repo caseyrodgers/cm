@@ -65,23 +65,31 @@ public class CmProgramListingDao extends SimpleJdbcDaoSupport {
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
             ProgramListing pr = new ProgramListing();
-            
+            int index = 0;
             while(rs.next()) {
             	String id = rs.getString("id");
             	if ("Prof".equals(id)) {
-                    pr.getProgramTypes().add(createProficiencyProgramType(conn, id, rs.getString("title")));
+            		ProgramType pt = createProficiencyProgramType(conn, id, rs.getString("title"), index);
+            		index += pt.getItemCount();
+                    pr.getProgramTypes().add(pt);
                     continue;
             	}
             	if ("Chap".equals(id)) {
-            		pr.getProgramTypes().add(createSubjectAndChapterProgramType(conn, id, rs.getString("title")));
+            		ProgramType pt = createSubjectAndChapterProgramType(conn, id, rs.getString("title"), index);
+            		pr.getProgramTypes().add(pt);
+            		index += pt.getItemCount();
             		continue;
             	}
                 if (includeBuiltInCustomProgs == true && "Custom".equals(id)) {
-                	pr.getProgramTypes().add(createBuiltInCustomProgramType(id, rs.getString("title")));
+                	ProgramType pt = createBuiltInCustomProgramType(id, rs.getString("title"), index);
+                	pr.getProgramTypes().add(pt);
+                	index += pt.getItemCount();
                 	continue;
                 }
             	if (id.indexOf("Grad Prep") > -1) {
-            		pr.getProgramTypes().add(createGradPrepProgramType(conn, id, rs.getString("title")));
+            		ProgramType pt = createGradPrepProgramType(conn, id, rs.getString("title"), index);
+            		pr.getProgramTypes().add(pt);
+                	index += pt.getItemCount();
             		continue;
             	}
             }
@@ -93,26 +101,31 @@ public class CmProgramListingDao extends SimpleJdbcDaoSupport {
     }
 
     
-    private ProgramType createBuiltInCustomProgramType(String type, String title) throws Exception {
+    private ProgramType createBuiltInCustomProgramType(String type, String title, int id) throws Exception {
         ProgramType progType = new ProgramType(type, title);
 
         CmCustomProgramDao cpDao = CmCustomProgramDao.getInstance();
         CmList<CustomProgramModel> cpList = cpDao.getBuiltInCustomPrograms();
 
+        int beginId = id;
         for (CustomProgramModel mdl : cpList) {
         	ProgramSubject ps = new ProgramSubject();
 
         	ps.setName(String.valueOf(mdl.getProgramId()));
         	ps.setLabel(mdl.getProgramName());
+        	ps.setId(id++);
         	progType.getProgramSubjects().add(ps);
 
         	ProgramChapter pc = new ProgramChapterAll();
+        	ps.setId(id++);
         	ps.getChapters().add(pc);
 
         	ProgramSection pSect = new ProgramSectionAll();
+        	pSect.setId(id++);
         	pc.getSections().add(pSect);
         }
 
+        progType.setItemCount(id - beginId);
     	return progType;
 	}
 
@@ -123,27 +136,32 @@ public class CmProgramListingDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    private ProgramType createProficiencyProgramType(final Connection conn, String type, String title) throws Exception {
+    private ProgramType createProficiencyProgramType(final Connection conn, String type, String title, int id) throws Exception {
     	
     	HaTestDefDao dao = HaTestDefDao.getInstance();
     	
     	List<HaTestDef> testDefs = dao.getTestDefsForProgramType(conn, type);;
     	
         ProgramType pt = new ProgramType(type,title);
+        int beginId = id;
 
         for (HaTestDef testDef : testDefs) {
             ProgramSubject ps = new ProgramSubject();
             ps.setTestDefId(testDef.getTestDefId());
             ps.setName(testDef.getSubjectId());
             ps.setLabel(testDef.getSubjectName());
+            ps.setId(id++);
             pt.getProgramSubjects().add(ps);
 
             ProgramChapter chapter = new ProgramChapterAll();
+            chapter.setId(id++);;
             ps.getChapters().add(chapter);
             
-            List<ProgramSection> list = buildSectionListForTestDef(testDef);
+            List<ProgramSection> list = buildSectionListForTestDef(testDef, id);
+            id += (list != null) ? list.size() : 0;
             chapter.setSections(list);
         }
+        pt.setItemCount(id - beginId);
         return pt;
     }
     
@@ -155,7 +173,7 @@ public class CmProgramListingDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    private ProgramType createSubjectAndChapterProgramType(final Connection conn, String type, String label) throws Exception {
+    private ProgramType createSubjectAndChapterProgramType(final Connection conn, String type, String label, int id) throws Exception {
     	
     	HaTestDefDao dao = HaTestDefDao.getInstance();
     	
@@ -163,11 +181,13 @@ public class CmProgramListingDao extends SimpleJdbcDaoSupport {
     	
         ProgramType pt = new ProgramType(type,label);
 
+        int beginId = id;
         for (HaTestDef testDef : testDefs) {
             ProgramSubject ps = new ProgramSubject();
             ps.setTestDefId(testDef.getTestDefId());
             ps.setName(testDef.getSubjectId());
             ps.setLabel(testDef.getSubjectName());
+            ps.setId(id++);;
             pt.getProgramSubjects().add(ps);
 
             List<String> chapNames = dao.getProgramChapters(conn, testDef);
@@ -176,14 +196,17 @@ public class CmProgramListingDao extends SimpleJdbcDaoSupport {
             	ProgramChapter chapter = new ProgramChapter();
             	chapter.setName(name);
             	chapter.setNumber(i);
+            	chapter.setId(id++);
                 ps.getChapters().add(chapter);
 
-                List<ProgramSection> list = buildSectionListForTestDef(testDef);
+                List<ProgramSection> list = buildSectionListForTestDef(testDef, id);
+                id += (list != null) ? list.size() : 0;
                 chapter.setSections(list);
                 i++;
             }
             
         }
+        pt.setItemCount(id - beginId);
         return pt;
     }
 
@@ -194,37 +217,41 @@ public class CmProgramListingDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    private ProgramType createGradPrepProgramType(final Connection conn, String type, String title) throws Exception {
+    private ProgramType createGradPrepProgramType(final Connection conn, String type, String title, int id) throws Exception {
     	
     	// collect all Grad Prep programs
     	String sql = "select * from HA_TEST_DEF where prog_id like 'Grad Prep%' and is_active = 1 order by load_order asc";
 
         ProgramType pt = new ProgramType(type, "Graduation Preparation");
+        int beginId = id;
 
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
-            
+
             while(rs.next()) {
             	ProgramSubject ps = new ProgramSubject();
             	ps.setName(rs.getString("test_name"));
             	ps.setTestDefId(rs.getInt("test_def_id"));
+            	ps.setId(id++);
                 pt.getProgramSubjects().add(ps);
 
                 ProgramChapter chapter = new ProgramChapterAll();
+                chapter.setId(id++);
                 ps.getChapters().add(chapter);
 
                 HaTestConfig tc = new HaTestConfig(rs.getString("test_config_json"));
 
-                List<ProgramSection> list = buildSectionListForTestConfig(ps.getTestDefId(), tc);
+                List<ProgramSection> list = buildSectionListForTestConfig(ps.getTestDefId(), tc, id);
+                id += (list != null) ? list.size() : 0;
                 chapter.setSections(list);
             }
         } finally {
             SqlUtilities.releaseResources(rs, stmt, null);
         }
-
+        pt.setItemCount(id - beginId);
         return pt;
     }
     
@@ -319,11 +346,11 @@ public class CmProgramListingDao extends SimpleJdbcDaoSupport {
         }
     }
 
-    private List<ProgramSection> buildSectionListForTestDef(HaTestDef testDef) {
-    	return buildSectionListForTestConfig(testDef.getTestDefId(), testDef.getTestConfig());
+    private List<ProgramSection> buildSectionListForTestDef(HaTestDef testDef, int beginId) {
+    	return buildSectionListForTestConfig(testDef.getTestDefId(), testDef.getTestConfig(), beginId);
     }
     
-    private List<ProgramSection> buildSectionListForTestConfig(int testDefId, HaTestConfig testConfig) {
+    private List<ProgramSection> buildSectionListForTestConfig(int testDefId, HaTestConfig testConfig, int id) {
     	List<ProgramSection> list = new ArrayList<ProgramSection>();
     	
     	int segmentCount = testConfig.getSegmentCount();
@@ -333,6 +360,7 @@ public class CmProgramListingDao extends SimpleJdbcDaoSupport {
     		s.setTestDefId(testDefId);
     		s.setName(String.format("Section %d", i));
     		s.setNumber(i);
+    		s.setId(id++);
     		list.add(s);
     	}
     	return list;

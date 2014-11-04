@@ -1,23 +1,27 @@
 package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.cm_rpc.client.model.program_listing.CmTreeNode;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
-public class ProgListModel {
+public class ProgListModel implements Response {
 
-    ProgListModelData data = new ProgListModelData();
-    private String label;
-    private String path;
+	private static final long serialVersionUID = -2063044970288967076L;
+
+	ProgListModelData plmData = new ProgListModelData();
+    String label;
+    String path;
+    int    id;
 
 	protected ProgListModel() {
     }
 
     public ProgListModel(CmTreeNode data) {
-        this.label =  data.getLabel();
-        this.data.data = data;
+        label = data.getLabel();
+        plmData.data = data;
     }
 
     public CmTreeNode getData() {
-        return data.data;
+        return plmData.data;
     }
 
     public void setLabel(String label) {
@@ -29,28 +33,35 @@ public class ProgListModel {
     }
 
     public String getPath() {
-        return this.path;
+        return path;
     }
 
     public String getLabel() {
-        return this.label;
+        return label;
     }
 
     public int getLevel() {
-        return data.data.getLevel();
+        return plmData.data.getLevel();
     }
 
     public void setParent(ProgListModel model) {
     	
     }
-    
+
+    public void setId(int id) {
+    	this.id = id;
+    }
+
+    public int getId() {
+    	return id;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof ProgListModel) {
-            ProgListModel mobj = (ProgListModel) obj;
-            boolean b = mobj.getData() == data.data;
-            return b;
+            ProgListModel plMdl = (ProgListModel) obj;
+            return (plMdl.getData() == plmData.data);
         }
-        return super.equals(obj);
+        return false;
     }
 }

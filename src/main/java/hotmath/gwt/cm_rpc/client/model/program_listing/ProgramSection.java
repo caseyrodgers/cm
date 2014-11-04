@@ -11,6 +11,7 @@ public class ProgramSection implements CmTreeNode, IsSerializable{
     int number;
     CmTreeNode parent;
     boolean isSelected;
+    int id;
     
     List<ProgramLesson> lessons = new ArrayList<ProgramLesson>();
     
@@ -81,5 +82,13 @@ public class ProgramSection implements CmTreeNode, IsSerializable{
 	public CmTreeNode getParent() {
 		return parent;
 	}
-    
+
+	@Override
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 }

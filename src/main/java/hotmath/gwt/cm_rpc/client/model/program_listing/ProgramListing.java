@@ -44,4 +44,9 @@ public class ProgramListing implements CmTreeNode, Response {
 	public CmTreeNode getParent() {
 		return null;
 	}
+
+	@Override
+	public int getId() {
+		return 0;
+	}
 }

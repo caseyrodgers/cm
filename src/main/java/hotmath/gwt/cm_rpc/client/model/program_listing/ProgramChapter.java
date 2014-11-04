@@ -10,6 +10,8 @@ public class ProgramChapter implements CmTreeNode, IsSerializable{
     int number;
     CmTreeNode parent;
     String label;
+
+    int id;
     boolean isSelected;
     
     List<ProgramSection> sections = new ArrayList<ProgramSection>();
@@ -83,5 +85,14 @@ public class ProgramChapter implements CmTreeNode, IsSerializable{
 		else {
 			return (name != null)?name:"";
 		}
+	}
+
+	@Override
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

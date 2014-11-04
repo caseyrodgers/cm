@@ -6,6 +6,7 @@ public class ProgramLesson implements CmTreeNode, IsSerializable {
     String name;
     String file;
     CmTreeNode parent;
+    int id;
 
     public ProgramLesson() {
         
@@ -40,14 +41,23 @@ public class ProgramLesson implements CmTreeNode, IsSerializable {
     public void setFile(String file) {
         this.file = file;
     }
+
     @Override
 	public CmTreeNode getParent() {
 		return parent;
 	}
     
+	@Override
+	public int getId() {
+		return id;
+	}    
+
+	public void setId(int id) {
+		this.id = id;
+	}
     
     @Override
     public String toString() {
         return "ProgramLesson [name=" + name + ", file=" + file + ", parent=" + parent + "]";
-    }    
+    }
 }
