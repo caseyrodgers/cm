@@ -12,14 +12,16 @@
         <div id="media">
 		<!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
 		<a  
-			 href="/how-it-works/catchupmath_how_it_works.mp4"  
 			 style="display:block;width:960px;height:500px"  
 			 id="player"> 
 		</a> 
         
     	<!-- this will install flowplayer inside previous A- tag. -->
 		<script>
+		    var ele = document.getElementById("player");
+		    ele.setAttribute("href", "/how-it-works/catchupmath_how_it_works.mp4");
 		    var params = {};
+	            params.clip = {'autoPlay': true};
 		    params.key = '$a12fd4b15a588479e9e';
 			flowplayer("player", "/assets/flowplayer/flowplayer.commercial-3.1.5.swf",params);
 		</script>

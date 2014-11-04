@@ -28,6 +28,7 @@ function isMobileSmallScreen() {
 }
 
 function isIPadOrIPhone() {
+   return false;
 	var check = MobileCheck.any();
 	return check != null && MobileCheck.any();
 }
