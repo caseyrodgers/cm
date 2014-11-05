@@ -3,7 +3,7 @@
 	 xmlns:schemdaLocation="http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	 version="2.4">
 
-  <display-name>Catchup Math Redux</display-name>
+  <display-name>Catchup Math 2</display-name>
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
@@ -18,6 +18,22 @@
   </filter>
   <filter-mapping>
     <filter-name>ClientInfoFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+  
+  <!--
+      for testing/development
+  -->  
+   <filter>
+    <filter-name>DevelopmentFilter</filter-name>
+    <filter-class>
+      hotmath.cm.server.DevelopmentFilter
+    </filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>DevelopmentFilter</filter-name>
     <url-pattern>/*</url-pattern>
     <dispatcher>REQUEST</dispatcher>
     <dispatcher>ERROR</dispatcher>
