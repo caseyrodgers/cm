@@ -34,6 +34,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -49,19 +50,17 @@ public class SolutionResourceListDialog extends GWindow {
 
     ListSolutionResource _listSolutionResource = new ListSolutionResource();
     
-    String pid;
-    Callback _callback;
+    private String pid;
+    private Callback _callback;
     
     public SolutionResourceListDialog(String pid) {
         this(null, pid);
     }
 
-    TabPanel _tabPanel = new TabPanel();
-    TabItemConfig _tabLocal, _tabGlobal;
-    
-    FlowLayoutContainer _localPanel = new FlowLayoutContainer();
-
-    private FlowLayoutContainer _globalPanel;
+    private TabPanel _tabPanel = new TabPanel();
+    private TabItemConfig _tabLocal, _tabGlobal;
+    private FlowLayoutContainer _tabLocalPanel = new FlowLayoutContainer();
+    private FlowLayoutContainer _tabGlobalPanel = new FlowLayoutContainer();
     public SolutionResourceListDialog(Callback callback, String pid) {
         super(false);
         this._callback = callback;
@@ -77,16 +76,18 @@ public class SolutionResourceListDialog extends GWindow {
             }
         });
         
-        _localPanel.add(new HTML("Loading ..."));
+        
+        _tabLocalPanel.setScrollMode(ScrollMode.AUTO);
+        _tabGlobalPanel.setScrollMode(ScrollMode.AUTO);
+        
+        _tabLocalPanel.add(new HTML("Loading ..."));
         _tabLocal = new TabItemConfig("Local Resources");
-        _tabPanel.add(_localPanel, _tabLocal);
+        _tabPanel.add(_tabLocalPanel, _tabLocal);
         
         _tabGlobal = new TabItemConfig("Global Resources");
         
-        _globalPanel = new FlowLayoutContainer();
-        _globalPanel.add(new Label("Global"));
-        
-        _tabPanel.add(_globalPanel, _tabGlobal);
+        _tabGlobalPanel.add(new Label("Global"));
+        _tabPanel.add(_tabGlobalPanel, _tabGlobal);
         
         setWidget(_tabPanel);
         
@@ -311,9 +312,9 @@ public class SolutionResourceListDialog extends GWindow {
 
 
     private ResourceType determineResourceType() {
-        if(_tabPanel.getActiveWidget() == _localPanel)
+        if(_tabPanel.getActiveWidget() == _tabLocalPanel)
             return ResourceType.LOCAL;
-        else if(_tabPanel.getActiveWidget() == _globalPanel)
+        else if(_tabPanel.getActiveWidget() == _tabGlobalPanel)
             return ResourceType.GLOBAL;
         
         return null;
