@@ -25,7 +25,6 @@
   
   <!--
       for testing/development
-  -->  
    <filter>
     <filter-name>DevelopmentFilter</filter-name>
     <filter-class>
@@ -38,6 +37,7 @@
     <dispatcher>REQUEST</dispatcher>
     <dispatcher>ERROR</dispatcher>
   </filter-mapping>
+  -->  
 
   <listener>
     <listener-class>hotmath.gwt.cm_rpc_core.server.rpc.ContextListener</listener-class>
