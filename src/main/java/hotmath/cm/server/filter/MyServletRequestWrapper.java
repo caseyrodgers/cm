@@ -1,4 +1,4 @@
-package hotmath.cm.server;
+package hotmath.cm.server.filter;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,7 +1,5 @@
 package hotmath.cm.server.filter;
 
-import hotmath.cm.server.MyServletRequestWrapper;
-
 import java.io.IOException;
 import java.util.logging.Logger;
 
