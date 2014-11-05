@@ -83,7 +83,7 @@ public class QuizQuestionFlow extends FlowLayoutContainer   {
         
         protected void markQuestionAsSelected() {
             unselector.unselect();
-            getElement().setAttribute("style",  "border: 1px solid black;background: #E6E6E6");
+            getElement().setAttribute("style",  "background: #E6E6E6");
         }
 
         public QuizQuestionModel getQuestionModel() {

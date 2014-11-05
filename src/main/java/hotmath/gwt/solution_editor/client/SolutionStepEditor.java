@@ -1,8 +1,6 @@
 
 package hotmath.gwt.solution_editor.client;
 
-
-
 import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
@@ -13,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.solution_editor.client.StepEditorPlainTextDialog.EditCallback;
@@ -35,10 +34,8 @@ import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-
 
 public class SolutionStepEditor extends ContentPanel {
     SolutionMeta _meta;
@@ -48,15 +45,17 @@ public class SolutionStepEditor extends ContentPanel {
     
     String _statement;
     CheckBox isActiveCheckBox = new CheckBox();
+    private FlowLayoutContainer _mainFlow;
 
     public SolutionStepEditor() {
         __instance = this;
         
-        FlowLayoutContainer flow = new FlowLayoutContainer();
-        flow.setScrollMode(ScrollMode.AUTOY);
-        flow.setStyleName("solution-step-editor");
+        _mainFlow = new FlowLayoutContainer();
+        _mainFlow.setScrollMode(ScrollMode.AUTOY);
+        _mainFlow.setStyleName("solution-step-editor");
         
-        flow.add(new Label("No solution loaded."));
+        _mainFlow.add(new Label("No solution loaded."));
+        setWidget(_mainFlow);
         
         isActiveCheckBox.addClickHandler(new ClickHandler() {
             @Override
@@ -66,18 +65,10 @@ public class SolutionStepEditor extends ContentPanel {
             }
         });
         
-        
-        HorizontalLayoutContainer pp = new HorizontalLayoutContainer();
-        Label l = new Label("Active");
-        l.getElement().setAttribute("style", "font-size: .7em;margin: 3px 3px 0 20px;");
-        pp.add(l);
-        pp.add(isActiveCheckBox);
-
-        getHeader().addTool(pp);
+        getHeader().addTool(new MyFieldLabel(isActiveCheckBox, "Active", 30, 10));
         getHeader().addTool(new Spacer());        
                 
         getHeader().addTool(new TextButton("Define", new SelectHandler() {
-			
 			@Override
 			public void onSelect(SelectEvent event) {
                 showDefineEditor();
@@ -222,16 +213,16 @@ public class SolutionStepEditor extends ContentPanel {
         Log.debug("Loading SolutionMeta: steps: " + meta.getNumSteps() + ", define len: " + (meta.getTutorDefine() != null?meta.getTutorDefine().length():-1));
         
         this._meta = meta;
-        clear();
+        _mainFlow.clear();
 
         
         isActiveCheckBox.setValue(meta.isActive());
         
         setHeadingText("Solution Step Editor");
-        add(new StatementContainer("Problem Statement", new ProblemStatement(meta)));
+        _mainFlow.add(new StatementContainer("Problem Statement", new ProblemStatement(meta)));
         
         for(int s=0,t=meta.getSteps().size();s<t;s++) {
-            add(new StepContainer(meta.getPid(),(s+1), meta,meta.getSteps().get(s),meta.getSteps().get(s).getFigure()));
+            _mainFlow.add(new StepContainer(meta.getPid(),(s+1), meta,meta.getSteps().get(s),meta.getSteps().get(s).getFigure()));
         }
         EventBus.getInstance().fireEvent(new CmEvent(EventTypes.POST_SOLUTION_LOAD));
     }
@@ -278,8 +269,8 @@ public class SolutionStepEditor extends ContentPanel {
         List<StepUnitPair> stepPairs = new ArrayList<StepUnitPair>();
 
         String statement="";
-        for(int i=0,t=getWidgetCount();i<t;i++) {
-            Widget comp = getWidget(i);
+        for(int i=0,t=_mainFlow.getWidgetCount();i<t;i++) {
+            Widget comp = _mainFlow.getWidget(i);
             if(comp instanceof StatementContainer) {
                 String text = ((StatementContainer)comp).getStepUnitWrapper().getItem().getEditorText();
                 statement = text;            
@@ -387,7 +378,7 @@ public class SolutionStepEditor extends ContentPanel {
      */
     class Spacer extends HTML {
         public Spacer() {
-            super("<div style='width: 400px;'>&nbsp;</div>");
+            super("<div style='width: 40px;'>&nbsp;</div>");
         }
     }
  

@@ -56,7 +56,6 @@ public class CatchupMathAdminTests {
         else if(test.equals("ListCustomLesson")) {
             ListCustomLesson.startTest();
         }
-        
         else if(test.equals("CollectEmailFromUserDialog")) {
         	CollectEmailFromUserDialog.startTest();
         }

@@ -35,7 +35,7 @@
   <body>
     <div id="loading" style="display:none">
         <div class="loading-indicator">
-        <img src="/gwt-resources/gxt-2.2.3/images/default/shared/large-loading.gif" width="32" height="32"/>Catchup Math Admin<br />
+        <img src="/gwt-resources/images/large-loading.gif" width="32" height="32"/>Catchup Math Admin<br />
         <span id="loading-msg">working...</span>
         </div>
     </div>  

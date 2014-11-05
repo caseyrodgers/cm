@@ -3,7 +3,10 @@ package hotmath.gwt.solution_editor.client;
 import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.solution_editor.client.list.ListSolutionSearch;
 import hotmath.gwt.solution_editor.client.rpc.SearchForSolutionsAction;
 
@@ -23,6 +26,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
@@ -31,10 +35,11 @@ import com.sencha.gxt.widget.core.client.Window;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
+import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 
@@ -69,21 +74,11 @@ public class SolutionSearcherDialog {
         _window.addStyleName("solution-searcher-dialog");
         _window.setHeadingText("Solution Searcher Dialog");
 
-        TabItemConfig tabItem = new TabItemConfig("Search");
-        //tabItem.setLayout(new BorderLayout());
+        TabItemConfig searchTabItem = new TabItemConfig("Search");
         
         FramedPanel fPanel = new FramedPanel();
         
-        //fPanel.setFieldWidth(300);
-        //fPanel.setLabelWidth(100);
-
-        
-        HorizontalLayoutContainer hp = new HorizontalLayoutContainer();
-        hp.add(new Label("Include Inactive: "));
-        hp.add(_includeInActive);
-        _window.getButtonBar().add(hp);        
-        fPanel.getButtonBar().add(hp);
-        
+        fPanel.addButton(new MyFieldLabel(_includeInActive, "Include Inactive", 94, 10));
         fPanel.addButton(new TextButton("Search", new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
@@ -100,7 +95,9 @@ public class SolutionSearcherDialog {
                     doSearch();
             }
         });
-        fPanel.add(_searchField);
+        
+        FlowLayoutContainer flow = new FlowLayoutContainer();
+        flow.add(new MyFieldLabel(_searchField, "Search PIDs", 80, 300));
         
         //_searchFieldFull.setFieldLabel("Text Search");
         _searchFieldFull.addKeyPressHandler(new KeyPressHandler() {
@@ -112,22 +109,24 @@ public class SolutionSearcherDialog {
                     doSearch();
             }
         });        
-        fPanel.add(_searchFieldFull);
+        flow.add(new MyFieldLabel(_searchFieldFull, "Text Search", 80, 300));
         
-        // fPanel.setFrame(false);
         fPanel.setBodyBorder(false);
         fPanel.setHeaderVisible(false);
+        
+        fPanel.setWidget(flow);
+
         
         BorderLayoutContainer searchTab = new BorderLayoutContainer();
         searchTab.setNorthWidget(fPanel, new BorderLayoutData(95));
 
-
         _listResults = new ListSolutionSearch();
         
-        searchTab.setCenterWidget(_listResults);
-
+        FlowLayoutContainer flowScroll = new FlowLayoutContainer();
+        flowScroll.setScrollMode(ScrollMode.AUTO);
         FocusPanel focusPanel = new FocusPanel();
         focusPanel.setWidget(_listResults);
+        flowScroll.add(focusPanel);
         
         focusPanel.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
@@ -135,8 +134,10 @@ public class SolutionSearcherDialog {
                 doSelect(_listResults.getSelectionModel().getSelectedItem().getPid());
             }
         });
+        
+        searchTab.setCenterWidget(flowScroll);
 
-        searchTab.setSouthWidget(_matches, new BorderLayoutData(5));
+        searchTab.setSouthWidget(_matches, new BorderLayoutData(20));
         
 
         _window.addButton(new TextButton("View", new SelectHandler() {
@@ -175,12 +176,12 @@ public class SolutionSearcherDialog {
         
 
         // _window.setLayout(new FitLayout());
-        _tabPanel.add(searchTab, tabItem);
+        _tabPanel.add(searchTab, searchTabItem);
 
-        tabItem = new TabItemConfig("Recent");
+        TabItemConfig recentTabItem = new TabItemConfig("Recent");
         _tabRecent = new RecentTab();
 
-        _tabPanel.add(_tabRecent, tabItem);
+        _tabPanel.add(_tabRecent, recentTabItem);
 
         _window.setWidget(_tabPanel);
 
@@ -270,6 +271,18 @@ public class SolutionSearcherDialog {
                 }
             }
         });
+    }
+
+
+
+
+    public static void startTest() {
+        new GwtTester(new TestWidget() {
+            @Override
+            public void runTest() {
+                new SolutionSearcherDialog().showWindow();
+            }
+        });
     }    
     
 }
@@ -287,7 +300,7 @@ class RecentTab extends SimplePanel {
                 }
             }
         }, DoubleClickEvent.getType());
-        add(_listResults);
+        setWidget(_listResults);
     }
 
     public void refresh() {

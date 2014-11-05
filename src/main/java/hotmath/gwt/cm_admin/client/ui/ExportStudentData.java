@@ -21,6 +21,7 @@ import java.util.Date;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -133,7 +134,9 @@ public class ExportStudentData extends SimpleContainer {
 		vMain.add(exportFlds);
 		vMain.add(levelField);
 		
-		vMain.add(getDescription());
+		Widget h = getDescription();
+		h.getElement().setAttribute("style", "padding: 4px; margin: 10px;");
+		vMain.add(h);
 
 		TextButton cancelBtn = cancelButton();
         cancelBtn.addStyleName("cancel-button");

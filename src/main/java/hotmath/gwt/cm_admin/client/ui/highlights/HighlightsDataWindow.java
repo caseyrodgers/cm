@@ -92,6 +92,8 @@ public class HighlightsDataWindow extends GWindow {
         });
         getHeader().addTool(printButton);
 
+        // _dateRange.getElement().setAttribute("style",  "float: left;left: 0 !important;");
+        _dateRange.setWidth("220px");
         getButtonBar().add(_dateRange);
         super.addCloseButton();
 

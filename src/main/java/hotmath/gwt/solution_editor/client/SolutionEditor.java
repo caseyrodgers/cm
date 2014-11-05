@@ -5,6 +5,8 @@ import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteSolutionAction;
@@ -13,6 +15,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAdminAction.Type;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.rpc.RetryActionManager;
@@ -52,6 +55,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.menu.MenuItem;
+import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 
 public class SolutionEditor implements EntryPoint {
@@ -143,14 +147,21 @@ public class SolutionEditor implements EntryPoint {
         
         mainPort.setWidget(_mainPanel);
         
+        CmBusyManager.showLoading(false);
+        
         Login.getInstance().makeSureLoggedIn();
+
+        
+        SolutionSearcherDialog.startTest();
     }
 
     private Widget createToolbar() {
 
-        HorizontalLayoutContainer tb = new HorizontalLayoutContainer();
-        HorizontalLayoutData td = new HorizontalLayoutData();
-        td.setMargins(new Margins(5));
+        ToolBar tb = new ToolBar();
+        tb.setBorders(true);
+//        HorizontalLayoutContainer tb = new HorizontalLayoutContainer();
+//        HorizontalLayoutData td = new HorizontalLayoutData();
+//        td.setMargins(new Margins(2));
 
 
         tb.add(new TextButton("Create",new SelectHandler() {
@@ -159,7 +170,7 @@ public class SolutionEditor implements EntryPoint {
             public void onSelect(SelectEvent event) {
                 addSolutionIntoEditor();
             }
-        }),td);
+        }));
 
 
         tb.add(new TextButton("Load",new SelectHandler() {
@@ -168,21 +179,21 @@ public class SolutionEditor implements EntryPoint {
             public void onSelect(SelectEvent event) {
                 loadSolutionIntoEditor();
             }
-        }),td);
+        }));
 
         tb.add(new TextButton("Delete",new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 deleteThisSolution();
             }
-        }),td);
+        }));
 
         tb.add(new TextButton("Refresh",new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 _stepEditorViewer.loadSolution(__pidToLoad);
             }
-        }),td);
+        }));
 
         _saveButton = new TextButton("Save",new SelectHandler() {
             
@@ -192,7 +203,7 @@ public class SolutionEditor implements EntryPoint {
             }
         });
         _saveButton.addStyleName("solution-editor-save-button");
-        tb.add(_saveButton,td);
+        tb.add(_saveButton);
 
         tb.add(new TextButton("Save As",new SelectHandler() {
             @Override
@@ -204,7 +215,7 @@ public class SolutionEditor implements EntryPoint {
                     }
                 },__pidToLoad);
             }
-        }),td);
+        }));
 
         tb.add(createGenerateContextButton());
 
@@ -227,14 +238,14 @@ public class SolutionEditor implements EntryPoint {
 
         TextButton viewBtn = new TextButton("View");
         viewBtn.setMenu(viewMenu);
-        tb.add(viewBtn,td);
+        tb.add(viewBtn);
 
         tb.add(new TextButton("Resources",new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 showAllResources();
             }
-        }),td);
+        }));
 
         tb.add(new TextButton("Help", new SelectHandler() {
             @Override

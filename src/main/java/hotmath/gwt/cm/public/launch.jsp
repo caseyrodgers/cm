@@ -33,7 +33,7 @@
     <body>
         <div id="loading">
             <div class="loading-indicator">
-                <img src="/gwt-resources/gxt-2.2.3/images/default/shared/large-loading.gif" width="32" height="32"/>Catchup Math<br />
+                <img src="/gwt-resources/images/large-loading.gif" width="32" height="32"/>Catchup Math<br />
                 <span id="loading-msg">loading...</span>
             </div>
         </div>  
