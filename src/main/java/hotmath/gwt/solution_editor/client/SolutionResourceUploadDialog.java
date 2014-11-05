@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.event.SubmitEvent;
@@ -31,7 +32,7 @@ public class SolutionResourceUploadDialog extends GWindow {
         this.pid = pid;
         this.callback = callback;
         this.resources = resources;
-        setPixelSize(500, 150);
+        setPixelSize(300, 150);
         setHeadingText("Upload Solution Resource");
         setWidget(createUploadForm());
         setVisible(true);
@@ -60,12 +61,13 @@ public class SolutionResourceUploadDialog extends GWindow {
         fileUpload.setAllowBlank(false);
         fileUpload.setName("resourceUpload.field");
 
+        FlowLayoutContainer flow = new FlowLayoutContainer();
         Hidden hidden = new Hidden();
         hidden.setName("resourceUpload.pid");
         hidden.setValue(pid);
-        form.add(hidden);
-
-        form.setWidget(fileUpload);
+        flow.add(hidden);
+        flow.add(fileUpload);
+        form.setWidget(flow);
         
         FramedPanel frame = new FramedPanel();
         frame.setWidget(form);

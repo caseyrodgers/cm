@@ -14,7 +14,7 @@ public class ListWidgetModel extends ListView<WidgetModel, String>  {
 
     interface Props extends PropertyAccess<String> {
         ValueProvider<WidgetModel, String> name();
-        @Path("name")
+        @Path("type")
         ModelKeyProvider<WidgetModel> key();
     }
     final static Props props = GWT.create(Props.class);

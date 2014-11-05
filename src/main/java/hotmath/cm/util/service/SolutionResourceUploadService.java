@@ -70,9 +70,6 @@ public class SolutionResourceUploadService extends HttpServlet {
             fos.close();
             uploadItem.delete();
         }
-        
-        
-        
         resp.getWriter().write("OK");
     }
 

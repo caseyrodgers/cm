@@ -13,6 +13,7 @@ import com.sencha.gxt.widget.core.client.form.ComboBox;
 public class ComboWidgetWidgetModel extends ComboBox<WidgetModel> {
     
     interface Props extends PropertyAccess<WidgetModel> {
+        @Path("type")
         ModelKeyProvider<WidgetModel> key();
         LabelProvider<WidgetModel> type();
     }

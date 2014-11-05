@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
@@ -54,7 +55,9 @@ public class SolutionStepEditor extends ContentPanel {
         _mainFlow.setScrollMode(ScrollMode.AUTOY);
         _mainFlow.setStyleName("solution-step-editor");
         
-        _mainFlow.add(new Label("No solution loaded."));
+        CenterLayoutContainer clc = new CenterLayoutContainer();
+        clc.setWidget(new Label("No solution loaded."));
+        _mainFlow.add(clc);
         setWidget(_mainFlow);
         
         isActiveCheckBox.addClickHandler(new ClickHandler() {

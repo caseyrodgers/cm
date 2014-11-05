@@ -2,14 +2,16 @@ package hotmath.gwt.solution_editor.client;
 
 import hotmath.gwt.cm_core.client.JSOModel;
 import hotmath.gwt.cm_core.client.model.WidgetDefModel;
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.solution_editor.client.list.ComboWidgetWidgetModel;
 import hotmath.gwt.solution_editor.client.list.ListSolutionResource;
 import hotmath.gwt.solution_editor.client.list.ListWidgetModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.user.client.ui.Widget;
@@ -22,7 +24,6 @@ import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.IntegerField;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.form.Validator;
@@ -40,7 +41,7 @@ public class WidgetListDialog extends GWindow {
     public WidgetListDialog() {
         super(false);
         
-        setPixelSize(400,280);
+        setPixelSize(400,250);
         setModal(true);
         setResizable(false);
         
@@ -70,9 +71,7 @@ public class WidgetListDialog extends GWindow {
             }
         }));
         
-        add(createForm());
-        
-        setModal(true);
+        setWidget(createForm());
         setVisible(true);
     }
     
@@ -107,47 +106,38 @@ public class WidgetListDialog extends GWindow {
      */
 
     private Widget createForm() {
-        
-//        formData = new FormData("-20");  
-//        VerticalPanel vp = new VerticalPanel();  
-//        vp.setSpacing(10);  
-        
-        
         FramedPanel frameMain = new FramedPanel();
         frameMain.setHeaderVisible(false);
         
         FlowLayoutContainer flow = new FlowLayoutContainer();
+        frameMain.setWidget(flow);
 
         List<WidgetModel> widgets = createListOfWidgets();
         _listView.getStore().addAll(widgets);  
         
         _typeCombo.setEditable(false);
-        flow.add(new FieldLabel(_typeCombo, "Widget Type"));
+        flow.add(new MyFieldLabel(_typeCombo, "Widget Type", 100, 240));
+        _typeCombo.getStore().addAll(widgets);
         
-        // _inputValue.setFieldLabel("Correct Value");
         _inputValue.setAllowBlank(false);  
         _inputValue.getFocusSupport().setPreviousId(frameMain.getButtonBar().getId());  
-        flow.add(new FieldLabel(_inputValue, "Correct Value"));
+        flow.add(new MyFieldLabel(_inputValue, "Correct Value", 100, 240));
         
 
-       // _format.setFieldLabel("Format");
         _format.setAllowBlank(true);
         _format.getFocusSupport().setPreviousId(frameMain.getButtonBar().getId());
         
         List<WidgetModel> formats = createListOfFormats();
-        flow.add(new FieldLabel(_format, "Format"));
+        flow.add(new MyFieldLabel(_format, "Format", 100, 240));
         
         //_width.setFieldLabel("Width");
         _width.setAllowBlank(true);
         // _width.addValidator(new VTypeValidator(VType.NUMERIC));
         _width.getFocusSupport().setPreviousId(frameMain.getButtonBar().getId());  
-        flow.add(new FieldLabel(_width, "Width"));
-        
-        //_height.setFieldLabel("Height");
+        flow.add(new MyFieldLabel(_width, "Width", 100, 50));
         _height.setAllowBlank(true);  
-        //_height.setValidator(new VTypeValidator(VType.NUMERIC));
         _height.getFocusSupport().setPreviousId(frameMain.getButtonBar().getId());  
-        flow.add(new FieldLabel(_height, "Height"));
+        flow.add(new MyFieldLabel(_height, "Height", 100, 50));
         
         
         // FormButtonBinding binding = new FormButtonBinding(simple);  
@@ -251,6 +241,15 @@ public class WidgetListDialog extends GWindow {
     }
     static void showWidgetListDialog(Callback callback) {
         showWidgetListDialog(callback,null);
+    }
+
+    public static void startTest() {
+        new GwtTester(new TestWidget() {
+            @Override
+            public void runTest() {
+                new WidgetListDialog();
+            }
+        });
     }
 }
 

@@ -4,6 +4,8 @@ import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -32,7 +34,6 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -58,7 +59,7 @@ public class SolutionResourceListDialog extends GWindow {
     TabPanel _tabPanel = new TabPanel();
     TabItemConfig _tabLocal, _tabGlobal;
     
-    FlowLayoutContainer _localPanel;
+    FlowLayoutContainer _localPanel = new FlowLayoutContainer();
 
     private FlowLayoutContainer _globalPanel;
     public SolutionResourceListDialog(Callback callback, String pid) {
@@ -76,9 +77,6 @@ public class SolutionResourceListDialog extends GWindow {
             }
         });
         
-        FlowLayoutContainer flow = new FlowLayoutContainer();
-        flow.setScrollMode(ScrollMode.AUTO);
-        
         _localPanel.add(new HTML("Loading ..."));
         _tabLocal = new TabItemConfig("Local Resources");
         _tabPanel.add(_localPanel, _tabLocal);
@@ -90,7 +88,7 @@ public class SolutionResourceListDialog extends GWindow {
         
         _tabPanel.add(_globalPanel, _tabGlobal);
         
-        add(_tabPanel);
+        setWidget(_tabPanel);
         
         _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
             @Override
@@ -164,7 +162,7 @@ public class SolutionResourceListDialog extends GWindow {
         setModal(true);
         setVisible(true);
         
-       // getDataFromServer();
+        getDataFromServer();
     }
     
     private SolutionResource getSelectedResource() {
@@ -172,7 +170,10 @@ public class SolutionResourceListDialog extends GWindow {
     }
     
     private void removeSelectedResource() {
-        final String file = _selectedResource.getResource().getFile();
+        final String file = _selectedResource!=null?_selectedResource.getResource().getFile():"";
+        if(file ==  null) {
+            return;
+        }
         CmMessageBox.confirm("Delete Resource?", "Are you sure you want to delete resource '" + file + "'?", new ConfirmCallback() {
             @Override
             public void confirmed(boolean yesNo) {
@@ -184,7 +185,7 @@ public class SolutionResourceListDialog extends GWindow {
     }
 
     private void updateSelectedResource() {
-        final String file = _selectedResource.getResource().getFile();
+        final String file = _selectedResource != null?_selectedResource.getResource().getFile():null;
         if(file == null)
             return;
         
@@ -257,37 +258,43 @@ public class SolutionResourceListDialog extends GWindow {
     protected CmList<SolutionResource> __resources;
     private void showResources(CmList<SolutionResource> resources) {
         
-        Container container = (Container) _tabPanel.getActiveWidget();
+        final Container container = (Container) _tabPanel.getActiveWidget();
         container.clear();
         
-        for(SolutionResource sr: resources) {
-            ResourceType resourceType = determineResourceType();
-            String rPid = (determineResourceType() == ResourceType.GLOBAL)?null:pid;
-            final SolutionResourcePanel thisResource = new SolutionResourcePanel(sr,rPid);
-            
-            FocusPanel focusPanel = new FocusPanel(thisResource);
-            focusPanel.addDoubleClickHandler(new DoubleClickHandler() {
-                @Override
-                public void onDoubleClick(DoubleClickEvent event) {
-                    updateSelectedResource();
-                }
-            });
-            focusPanel.addClickHandler(new ClickHandler() {
+        if(resources.size() == 0) {
+            container.add(new Label("No Resources"));
+        }
+        else {
+            for(SolutionResource sr: resources) {
+                ResourceType resourceType = determineResourceType();
+                String rPid = (determineResourceType() == ResourceType.GLOBAL)?null:pid;
+                final SolutionResourcePanel thisResource = new SolutionResourcePanel(sr,rPid);
                 
-                @Override
-                public void onClick(ClickEvent event) {
-                    ArrayList<String> links = new ArrayList<String>();
-                    putElementLinkIDsInList(thisResource.getParent().getElement(), links);
-                    for(int v=0,t=links.size();v<t;v++) {
-                        Element el = DOM.getElementById(links.get(v));
-                        el.removeClassName("selected");
+                final FocusPanel focusPanel = new FocusPanel(thisResource);
+                focusPanel.addDoubleClickHandler(new DoubleClickHandler() {
+                    @Override
+                    public void onDoubleClick(DoubleClickEvent event) {
+                        updateSelectedResource();
                     }
-                    thisResource.addStyleName("selected");
+                });
+                focusPanel.addClickHandler(new ClickHandler() {
                     
-                    _selectedResource = thisResource;
-                }
-            });
-            container.add(thisResource);
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        for(int i=0;i<container.getWidgetCount();i++) {
+                            Widget w = container.getWidget(i);
+                            if(w instanceof FocusPanel) {
+                                ((FocusPanel)w).getWidget().removeStyleName("selected");
+                            }
+                        }
+                        thisResource.addStyleName("selected");
+                        
+                        _selectedResource = thisResource;
+                    }
+                });
+                focusPanel.setWidget(thisResource);
+                container.add(focusPanel);
+            }
         }
         
         forceLayout();
@@ -359,6 +366,15 @@ public class SolutionResourceListDialog extends GWindow {
 
     static public interface Callback {
         void resourceSelected(SolutionResource resource);
+    }
+    
+    static public void startTest() {
+        new GwtTester(new TestWidget() {
+            @Override
+            public void runTest() {
+                new SolutionResourceListDialog("test_casey_1_1_1_1");
+            }
+        });
     }
     
 }

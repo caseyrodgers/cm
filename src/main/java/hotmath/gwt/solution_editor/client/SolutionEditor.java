@@ -150,9 +150,6 @@ public class SolutionEditor implements EntryPoint {
         CmBusyManager.showLoading(false);
         
         Login.getInstance().makeSureLoggedIn();
-
-        
-        SolutionSearcherDialog.startTest();
     }
 
     private Widget createToolbar() {
