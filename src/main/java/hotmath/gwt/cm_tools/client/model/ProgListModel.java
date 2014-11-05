@@ -18,6 +18,7 @@ public class ProgListModel implements Response {
     public ProgListModel(CmTreeNode data) {
         label = data.getLabel();
         plmData.data = data;
+        id = data.getId();
     }
 
     public CmTreeNode getData() {

@@ -71,25 +71,29 @@ public class CmProgramListingDao extends SimpleJdbcDaoSupport {
             	if ("Prof".equals(id)) {
             		ProgramType pt = createProficiencyProgramType(conn, id, rs.getString("title"), index);
             		index += pt.getItemCount();
+            		pt.setId(index++);
                     pr.getProgramTypes().add(pt);
                     continue;
             	}
             	if ("Chap".equals(id)) {
             		ProgramType pt = createSubjectAndChapterProgramType(conn, id, rs.getString("title"), index);
-            		pr.getProgramTypes().add(pt);
             		index += pt.getItemCount();
+            		pt.setId(index++);
+            		pr.getProgramTypes().add(pt);
             		continue;
             	}
                 if (includeBuiltInCustomProgs == true && "Custom".equals(id)) {
                 	ProgramType pt = createBuiltInCustomProgramType(id, rs.getString("title"), index);
-                	pr.getProgramTypes().add(pt);
                 	index += pt.getItemCount();
+            		pt.setId(index++);
+                	pr.getProgramTypes().add(pt);
                 	continue;
                 }
             	if (id.indexOf("Grad Prep") > -1) {
             		ProgramType pt = createGradPrepProgramType(conn, id, rs.getString("title"), index);
-            		pr.getProgramTypes().add(pt);
                 	index += pt.getItemCount();
+            		pt.setId(index++);
+            		pr.getProgramTypes().add(pt);
             		continue;
             	}
             }

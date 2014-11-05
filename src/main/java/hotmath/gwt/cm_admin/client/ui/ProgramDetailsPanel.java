@@ -26,6 +26,7 @@ import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -46,29 +47,24 @@ import com.sencha.gxt.widget.core.client.tree.Tree;
 
 public class ProgramDetailsPanel extends GWindow {
 
-    TreeStore<ProgListModel> store;
-    TreeLoader<ProgListModel> loader;
-
-    CmAdminModel cmAdminMdl;
-
     static ProgramDetailsPanel instance;
-
     static int WIDTH = 435;
 
+    TreeStore<ProgListModel> store;
+    TreeLoader<ProgListModel> loader;
     Tree<ProgListModel, String> _tree;
 
-    // TreePanel<ProgListModel> tree;
+    CmAdminModel cmAdminMdl;
     ProgramListing _programListing;
 
     private ProgramDetailsPanel(CmAdminModel cmAdminMdl) {
-        super(false);
+        super(true);
         setModal(true);
         setResizable(true);
 
         this.cmAdminMdl = cmAdminMdl;
         buildGui();
         getProgramListingRPC();
-        addCloseButton();
     }
 
     public static void showPanel(CmAdminModel cmAdminMdl) {
@@ -225,9 +221,8 @@ public class ProgramDetailsPanel extends GWindow {
         return null;
     }
 
-    interface Props extends PropertyAccess<String> {
-        @Path("label")
-        ModelKeyProvider<ProgListModel> key();
+    interface Props extends PropertyAccess<ProgListModel> {
+        ModelKeyProvider<ProgListModel> id();
 
         ValueProvider<ProgListModel, String> label();
     }
@@ -236,30 +231,35 @@ public class ProgramDetailsPanel extends GWindow {
 
     private void buildTree() {
 
-        store = new TreeStore<ProgListModel>(props.key());
-        _tree = new Tree<ProgListModel, String>(store, props.label());
-        // tree.setWidth(290);
-        // tree.setDisplayProperty("label");
-        // _tree.getView().setAutoHeight(true);
+    	store = new TreeStore<ProgListModel>(props.id());
+    	_tree = new Tree<ProgListModel, String>(store, props.label());
+    	// tree.setWidth(290);
+    	// tree.setDisplayProperty("label");
+    	// _tree.getView().setAutoHeight(true);
 
-        RpcProxy<ProgListModel, List<ProgListModel>> proxy = dataProxy();
+    	List<ProgramType> progList = this._programListing.getProgramTypes();
+    	for (ProgramType pt : progList) {
+    	    globalId += pt.getItemCount();
+    	}
+    	globalId += 50;
 
-        
-        final TreeLoader<ProgListModel> loader = new TreeLoader<ProgListModel>(proxy) {
-            @Override
-            public boolean hasChildren(ProgListModel parent) {
-              return parent.getLevel() != ProgramListing.LEVEL_LESS;
-            }
-          };
+    	RpcProxy<ProgListModel, List<ProgListModel>> proxy = dataProxy();
 
-         loader.addLoadHandler(new ChildTreeStoreBinding<ProgListModel>(store));
-         _tree.setLoader(loader);
+    	final TreeLoader<ProgListModel> loader = new TreeLoader<ProgListModel>(proxy) {
+    		@Override
+    		public boolean hasChildren(ProgListModel parent) {
+    			return parent.getLevel() != ProgramListing.LEVEL_LESS;
+    		}
+    	};
 
-         FramedPanel fp = new FramedPanel();
-         fp.setHeaderVisible(false);
-         fp.setWidget(_tree);
-        setWidget(fp);
-        forceLayout();
+    	loader.addLoadHandler(new ChildTreeStoreBinding<ProgListModel>(store));
+    	_tree.setLoader(loader);
+
+    	FramedPanel fp = new FramedPanel();
+    	fp.setHeaderVisible(false);
+    	fp.setWidget(_tree);
+    	setWidget(fp);
+    	forceLayout();
     }
 
     private RpcProxy<ProgListModel, List<ProgListModel>> dataProxy() {
@@ -349,6 +349,8 @@ public class ProgramDetailsPanel extends GWindow {
         return proxy;
     }
 
+    int globalId = 0;
+
     private void getLessonItemsRPC(final CmTreeNode node, final AsyncCallback<List<ProgListModel>> callback) {
 
         new RetryAction<CmList<ProgramLesson>>() {
@@ -368,7 +370,8 @@ public class ProgramDetailsPanel extends GWindow {
                     int programId = 0;
                     try {
                         programId = Integer.parseInt(pSubj.getName());
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                     }
                     action = new GetProgramLessonsAction(programId, 1, chap, 0);
                     action.setBuiltInCustomProg(true);
@@ -382,8 +385,9 @@ public class ProgramDetailsPanel extends GWindow {
             public void oncapture(CmList<ProgramLesson> lessons) {
                 List<ProgListModel> models = new ArrayList<ProgListModel>();
                 for (int i = 0, t = lessons.size(); i < t; i++) {
-                    ProgramLesson pt = lessons.get(i);
-                    models.add(new ProgListModel(pt));
+                    ProgramLesson pl = lessons.get(i);
+                    pl.setId(globalId++);
+                    models.add(new ProgListModel(pl));
                 }
                 callback.onSuccess(models);
             }
@@ -392,6 +396,8 @@ public class ProgramDetailsPanel extends GWindow {
     }
 
     private void getProgramListingRPC() {
+
+    	globalId = 0;
 
         new RetryAction<ProgramListing>() {
             @Override
