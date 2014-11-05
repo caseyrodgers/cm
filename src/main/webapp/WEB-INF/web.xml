@@ -29,7 +29,7 @@
    <filter>
     <filter-name>DevelopmentFilter</filter-name>
     <filter-class>
-      hotmath.cm.server.DevelopmentFilter
+      hotmath.cm.server.filter.DevelopmentFilter
     </filter-class>
   </filter>
   <filter-mapping>
