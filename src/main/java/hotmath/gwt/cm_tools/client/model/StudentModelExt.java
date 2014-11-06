@@ -1,17 +1,44 @@
 package hotmath.gwt.cm_tools.client.model;
 
-
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 
-import java.io.Serializable;
+public class StudentModelExt implements StudentModelI {
 
-public class StudentModelExt extends BaseModel implements Serializable, StudentModelI {
-
-	private static final long serialVersionUID = -6423021563090351219L;
-
-	private boolean hasExtendedData = false;
+    private boolean hasExtendedData = false;
     private boolean selfPay = false;
     private boolean isCollege = false;
+    private String group;
+    private Integer groupId;
+    private Integer sectionCount;
+    private Integer sectionNum;
+    private Integer userProgram;
+    private String chapter;
+    private String lastQuiz;
+    private String lastLogin;
+    private String status;
+    private Integer tutoringUse;
+    private Integer passingCount;
+    private Integer notPassingCount;
+    private String showWorkState;
+    private String tutoringState;
+    private String json;
+    private Integer uid;
+    private String email;
+    private Integer adminUid;
+    private String passPercent;
+    private int totalUsage;
+    private StudentProgramModel program;
+    private String name;
+    private String passcode;
+    private String backgroundStyle;
+    private Boolean demoUser;
+    private String programDescription;
+    private StudentSettingsModel settings;
+    private boolean programChanged;
+    private boolean hasTutoringUse;
+    private boolean hasPassingCount;
+    private boolean hasLastQuiz;
+    private boolean hasLastLogin;
 
     public StudentModelExt() {
     }
@@ -21,40 +48,41 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     }
 
     public void setStudent(StudentModelI student) {
-        set(GROUP_KEY, student.getGroup());
-        set(GROUP_ID_KEY, student.getGroupId());
-        set(SECTION_COUNT_KEY, student.getSectionCount());
-        set(SECTION_NUM_KEY, student.getSectionNum());
-        set(USER_PROGRAM_KEY, student.getProgram().getProgramId());
-        set(CHAPTER_KEY, student.getChapter());
+        this.group = student.getGroup();
+        this.groupId = student.getGroupId();
+        this.sectionCount = student.getSectionCount();
+        this.sectionNum = student.getSectionNum();
+        this.userProgram = student.getProgram().getProgramId();
+        this.chapter = student.getChapter();
 
-        setLastQuiz(student.getLastQuiz());
-        setLastLogin(student.getLastLogin());
-        setStatus(student.getStatus());
-        setTutoringUse(student.getTutoringUse());
-        setPassingCount(student.getPassingCount());
-        setNotPassingCount(student.getNotPassingCount());
-        setShowWorkState((student.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL");
-        setTutoringState((student.getSettings().getTutoringAvailable()) ? "ON" : "OFF");
+        this.lastQuiz = student.getLastQuiz();
 
-        set(JSON_KEY, student.getJson());
+        this.lastLogin = student.getLastLogin();
+        this.status = student.getStatus();
+        this.tutoringUse = student.getTutoringUse();
+        this.passingCount = student.getPassingCount();
+        this.notPassingCount = student.getNotPassingCount();
+        this.showWorkState = (student.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
+        this.tutoringState = (student.getSettings().getTutoringAvailable()) ? "ON" : "OFF";
 
-        set(UID_KEY, student.getUid());
-        set(EMAIL_KEY, student.getEmail());
-        set(ADMIN_UID_KEY, student.getAdminUid());
+        this.json = student.getJson();
+        this.uid = student.getUid();
 
-        set(PASS_PERCENT_KEY, student.getPassPercent());
+        this.email = student.getEmail();
+        this.adminUid = student.getAdminUid();
 
-        set(TOTAL_USAGE_KEY, (student.getTotalUsage() != null)?student.getTotalUsage():0);
+        this.passPercent = student.getPassPercent();
 
-        set(NAME_KEY, student.getName());
-        set(PASSCODE_KEY, student.getPasscode());
-        set(BACKGROUND_STYLE, student.getBackgroundStyle());
-        set(DEMO_USER_KEY, student.getIsDemoUser());
-        set(PROGRAM_DESCR_KEY, student.getProgram().getProgramDescription());
+        this.totalUsage = (student.getTotalUsage() != null) ? student.getTotalUsage() : 0;
 
-        set(PROGRAM_KEY, student.getProgram());
-        set(SETTINGS_KEY, student.getSettings());
+        this.name = student.getName();
+        this.passcode = student.getPasscode();
+        this.backgroundStyle = student.getBackgroundStyle();
+        this.demoUser = student.getIsDemoUser();
+        this.programDescription = student.getProgram().getProgramDescription();
+
+        this.program = student.getProgram();
+        this.settings = student.getSettings();
     }
 
     public void assignExtendedData(StudentModelI sm) {
@@ -66,162 +94,32 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         setNotPassingCount(sm.getNotPassingCount());
     }
 
+    
+    
+    
+    @Override
     public Integer getTutoringUse() {
-        return get(TUTORING_USE_KEY);
+        return this.tutoringUse;
     }
 
     @Override
     public void setTutoringUse(Integer x) {
-        set(TUTORING_USE_KEY, (x != null) ? x : 0);
-    }
-
-    @Override
-    public String getName() {
-        return get(NAME_KEY);
-    }
-
-    @Override
-    public void setName(String name) {
-        set(NAME_KEY, name);
-    }
-
-    @Override
-    public String getPasscode() {
-        return get(PASSCODE_KEY);
-    }
-
-    @Override
-    public void setPasscode(String passcode) {
-        set(PASSCODE_KEY, passcode);
-    }
-
-    @Override
-    public String getGroup() {
-        return get(GROUP_KEY);
-    }
-
-    public void setGroup(String group) {
-        set(GROUP_KEY, group);
-    }
-
-    public Integer getGroupId() {
-        return get(GROUP_ID_KEY);
-    }
-
-    @Override
-    public void setGroupId(Integer groupId) {
-        set(GROUP_ID_KEY, groupId);
-    }
-
-    @Override
-    public void setSectionCount(Integer sectionCount) {
-        set(SECTION_NUM_KEY, sectionCount);
-    }
-
-    @Override
-    public Integer getSectionCount() {
-        return get(SECTION_COUNT_KEY);
-    }
-
-    @Override
-    public void setSectionNum(Integer sectionNum) {
-        set(SECTION_NUM_KEY, sectionNum);
-    }
-
-    @Override
-    public Integer getSectionNum() {
-        return get(SECTION_NUM_KEY);
-    }
-
-    @Override
-    public String getLastLogin() {
-        return get(LAST_LOGIN_KEY);
+        this.tutoringUse = (x != null) ? x : 0;
     }
 
     @Override
     public void setLastLogin(String lastLogin) {
-        set(LAST_LOGIN_KEY, (lastLogin != null) ? lastLogin : " ");
+        this.lastLogin = (lastLogin != null) ? lastLogin : " ";
     }
 
     @Override
     public void setStatus(String status) {
-        set(STATUS_KEY, (status != null) ? status : " ");
-    }
-
-    @Override
-    public String getStatus() {
-        return get(STATUS_KEY);
-    }
-
-    @Override
-    public void setTotalUsage(Integer totalUsage) {
-        set(TOTAL_USAGE_KEY, totalUsage);
-    }
-
-    @Override
-    public Integer getTotalUsage() {
-        return get(TOTAL_USAGE_KEY);
-    }
-
-    @Override
-    public String getPassPercent() {
-        return get(PASS_PERCENT_KEY);
-    }
-
-    @Override
-    public void setPassPercent(String passPercent) {
-        set(PASS_PERCENT_KEY, passPercent);
-    }
-
-    public void setTutoringState(String tutoringState) {
-        set(TUTORING_STATE_KEY, tutoringState);
-    }
-
-    public String getTutoringState() {
-        return get(TUTORING_STATE_KEY);
-    }
-
-    public void setShowWorkState(String swState) {
-        set(SHOW_WORK_STATE_KEY, swState);
-    }
-
-    public String getShowWorkState() {
-        return get(SHOW_WORK_STATE_KEY);
-    }
-
-    @Override
-    public void setUid(Integer uid) {
-        set(UID_KEY, uid);
-    }
-
-    @Override
-    public Integer getUid() {
-        return get(UID_KEY);
-    }
-
-    @Override
-    public void setEmail(String emailAddr) {
-        set(EMAIL_KEY, emailAddr);
-    }
-
-    @Override
-    public String getEmail() {
-        return get(EMAIL_KEY);
-    }
-
-    @Override
-    public void setAdminUid(Integer adminUid) {
-        set(ADMIN_UID_KEY, adminUid);
-    }
-
-    @Override
-    public Integer getAdminUid() {
-        return get(ADMIN_UID_KEY);
+        this.status = (status != null) ? status : " ";
     }
 
     @Override
     public void setProgramChanged(Boolean changed) {
-        set("programChanged", changed);
+        this.programChanged = changed;
     }
 
     /**
@@ -234,161 +132,275 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
      */
     @Override
     public Boolean getProgramChanged() {
-        Boolean pc = get("programChanged");
-        if (pc != null) {
-            return get("programChanged");
-        } else {
-            return false;
-        }
-    }
-    @Override
-    public String getChapter() {
-        return get(CHAPTER_KEY);
-    }
-
-    @Override
-    public void setChapter(String chapter) {
-        set(CHAPTER_KEY, chapter);
-    }
-
-    @Override
-    public String getLastQuiz() {
-        return get(LAST_QUIZ_KEY);
+        return this.programChanged;
     }
 
     @Override
     public void setLastQuiz(String lastQuiz) {
-        set(LAST_QUIZ_KEY, (lastQuiz != null) ? lastQuiz : " ");
+        this.lastQuiz = (lastQuiz != null) ? lastQuiz : " ";
+    }
+
+    @Override
+    public void setNotPassingCount(Integer count) {
+        this.notPassingCount = (count != null) ? count : 0;
+    }
+
+    @Override
+    public void setPassingCount(Integer count) {
+        this.passingCount = (count != null) ? count : 0;
+    }
+
+    @Override
+    public StudentSettingsModel getSettings() {
+        if (this.settings == null) {
+            setSettings(new StudentSettingsModel());
+        }
+        return this.settings;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getPasscode() {
+        return this.passcode;
+    }
+
+    @Override
+    public void setPasscode(String passcode) {
+        this.passcode = passcode;
+    }
+
+    @Override
+    public String getGroup() {
+        return this.group;
+    }
+
+    @Override
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    @Override
+    public Integer getGroupId() {
+        return this.groupId; 
+    }
+
+    @Override
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
+    }
+
+    @Override
+    public void setSectionCount(Integer sectionCount) {
+        this.sectionCount = sectionCount;
+    }
+
+    @Override
+    public Integer getSectionCount() {
+        return this.sectionCount;
+    }
+
+    @Override
+    public void setSectionNum(Integer sectionNum) {
+        this.sectionNum = sectionNum;
+    }
+
+    @Override
+    public Integer getSectionNum() {
+        return this.sectionNum;
+    }
+
+    @Override
+    public String getLastLogin() {
+        return this.lastLogin; 
+    }
+
+    @Override
+    public String getStatus() {
+        return this.status;
+    }
+
+    @Override
+    public void setTotalUsage(Integer totalUsage) {
+        this.totalUsage = totalUsage;
+    }
+
+    @Override
+    public Integer getTotalUsage() {
+        return this.totalUsage;
+    }
+
+    @Override
+    public Integer getPassingCount() {
+        return this.passingCount;
+    }
+
+    @Override
+    public Integer getNotPassingCount() {
+        return this.notPassingCount;
+    }
+
+    @Override
+    public String getPassPercent() {
+        return this.passPercent;
+    }
+
+    @Override
+    public void setPassPercent(String passPercent) {
+        this.passPercent = passPercent;
+    }
+
+    @Override
+    public void setUid(Integer uid) {
+        this.uid = uid;
+    }
+
+    @Override
+    public Integer getUid() {
+        return this.uid;
+    }
+
+    @Override
+    public void setEmail(String emailAddr) {
+        this.email = emailAddr;
+    }
+
+    @Override
+    public String getEmail() {
+        return this.email;
+    }
+
+    @Override
+    public void setAdminUid(Integer adminUid) {
+        this.adminUid = adminUid;
+    }
+
+    @Override
+    public Integer getAdminUid() {
+        return this.adminUid;
+    }
+
+    @Override
+    public String getChapter() {
+        return this.chapter;
+    }
+
+    @Override
+    public void setChapter(String chapter) {
+        this.chapter = chapter;
+    }
+
+    @Override
+    public String getLastQuiz() {
+        return this.lastQuiz;
     }
 
     @Override
     public String getJson() {
-        return get(JSON_KEY);
+        return this.json;
     }
 
     @Override
     public void setJson(String json) {
-        set(JSON_KEY, json);
+        this.json = json;
     }
 
     @Override
     public String getBackgroundStyle() {
-        return get(BACKGROUND_STYLE);
+        return this.backgroundStyle;
     }
 
     @Override
     public void setBackgroundStyle(String style) {
-        set(BACKGROUND_STYLE, style);
-    }
-
-    @Override
-    public void setIsDemoUser(Boolean isDemo) {
-        set(DEMO_USER_KEY, isDemo);
+        this.backgroundStyle = style;
     }
 
     @Override
     public Boolean getIsDemoUser() {
-        return get(DEMO_USER_KEY);
+        return demoUser;
     }
 
-        @Override
-        public Integer getNotPassingCount() {
-                return get(NOT_PASSING_COUNT_KEY);
-        }
+    @Override
+    public void setIsDemoUser(Boolean isDemo) {
+        this.demoUser = isDemo;
+    }
 
-        @Override
-        public void setNotPassingCount(Integer count) {
-        set(NOT_PASSING_COUNT_KEY, (count != null) ? count : 0);
-        }
+    @Override
+    public StudentProgramModel getProgram() {
+        return this.program;
+    }
 
-        @Override
-        public Integer getPassingCount() {
-                return get(PASSING_COUNT_KEY);
-        }
+    @Override
+    public void setProgram(StudentProgramModel studyProgram) {
+        this.program = studyProgram;
+    }
 
-        @Override
-        public void setPassingCount(Integer count) {
-        set(PASSING_COUNT_KEY, (count != null) ? count : 0);
-        }
+    @Override
+    public void setSettings(StudentSettingsModel optionSettings) {
+        this.settings = optionSettings;
+    }
 
-        public Boolean getHasLastQuiz() {
-                return get(HAS_LAST_QUIZ_KEY);
-        }
+    @Override
+    public void setSelfPay(boolean selfPay) {
+        this.selfPay = selfPay;
+    }
 
-        public void setHasLastQuiz(Boolean val) {
-                set(HAS_LAST_QUIZ_KEY, val);
-        }
+    @Override
+    public boolean getSelfPay() {
+        return selfPay;
+    }
 
-        public Boolean getHasLastLogin() {
-                return get(HAS_LAST_LOGIN_KEY);
-        }
+    @Override
+    public void setIsCollege(boolean isCollege) {
+        this.isCollege = isCollege;
+    }
 
-        public void setHasLastLogin(Boolean val) {
-                set(HAS_LAST_LOGIN_KEY, val);
-        }
+    @Override
+    public boolean getIsCollege() {
+        return isCollege;
+    }
 
-        public Boolean getHasTutoringUse() {
-                return get(HAS_TUTORING_USE_KEY);
-        }
+    @Override
+    public boolean getHasExtendedData() {
+        return this.hasExtendedData;
+    }
 
-        public void setHasTutoringUse(Boolean val) {
-                set(HAS_TUTORING_USE_KEY, val);
-        }
+    @Override
+    public void setHasExtendedData(boolean extended) {
+        this.hasExtendedData = extended;
+    }
 
-        public Boolean getHasPassingCount() {
-                return get(HAS_PASSING_COUNT_KEY);
-        }
+    @Override
+    public void setShowWorkState(String swState) {
+        this.showWorkState = swState;
+    }
 
-        public void setHasPassingCount(Boolean val) {
-                set(HAS_PASSING_COUNT_KEY, val);
-        }
+    @Override
+    public String getShowWorkState() {
+        return this.showWorkState;
+    }
 
-        public boolean getHasExtendedData() {
-                return hasExtendedData;
-        }
+    public void setHasTutoringUse(boolean b) {
+        this.hasTutoringUse = b;
+    }
 
-        public void setHasExtendedData(boolean val) {
-                this.hasExtendedData = val;
-        }
+    public void setHasPassingCount(boolean b) {
+        this.hasPassingCount = b;
+    }
 
-        public StudentProgramModel getProgram() {
-            return get(PROGRAM_KEY);
-        }
+    public void setHasLastQuiz(boolean b) {
+        this.hasLastQuiz = b;
+    }
 
-        public void setProgram(StudentProgramModel studyProgram) {
-        	set(PROGRAM_KEY, studyProgram);
-        }
-
-        @Override
-        public StudentSettingsModel getSettings() {
-        	StudentSettingsModel settings = get(SETTINGS_KEY);
-        	if(settings == null) {
-        		setSettings(new StudentSettingsModel());
-        	}
-        	return get(SETTINGS_KEY);
-        }
-
-
-        @Override
-        public void setSettings(StudentSettingsModel optionSettings) {
-        	set(SETTINGS_KEY, optionSettings);
-        }
-
-        public boolean getSelfPay() {
-        	return selfPay;
-        }
-
-        public void setSelfPay(boolean selfPay) {
-        	this.selfPay = selfPay;
-        }
-
-		@Override
-		public void setIsCollege(boolean isCollege) {
-			this.isCollege = isCollege;
-		}
-
-		@Override
-		public boolean getIsCollege() {
-			return isCollege;
-		}
+    public void setHasLastLogin(boolean b) {
+        this.hasLastLogin = b;
+    }
 }

@@ -31,6 +31,8 @@ import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent.DialogHideHandler;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -84,10 +86,10 @@ public class AssignmentCopyDialog extends GWindow{
             @Override
             public void onSelect(SelectEvent event) {
                 final ConfirmMessageBox cm = new ConfirmMessageBox("Import Assignment", "Are you sure you want to import this assignment?");
-                cm.addHideHandler(new HideHandler() {
+                cm.addDialogHideHandler(new DialogHideHandler() {
                     @Override
-                    public void onHide(HideEvent event) {
-                        if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
+                    public void onDialogHide(DialogHideEvent event) {
+                        if(event.getHideButton() == PredefinedButton.YES) {
                             importSelectedAssignment();
                         }
                     }

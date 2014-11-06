@@ -4,7 +4,6 @@ import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
@@ -12,8 +11,6 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
-import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -26,7 +23,6 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -35,7 +31,6 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -47,6 +42,8 @@ import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent.DialogHideHandler;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -95,9 +92,10 @@ public class PrescriptionLessonChooserDialog extends GWindow {
                 }
                 
                 final ConfirmMessageBox mb = new ConfirmMessageBox("Continue?", "Ready to move to next quiz?");
-                mb.addHideHandler(new HideHandler() {
-                    public void onHide(HideEvent event) {
-                        if (mb.getHideButton() == mb.getButtonById(PredefinedButton.YES.name())) {
+                mb.addDialogHideHandler(new DialogHideHandler() {
+                    @Override
+                    public void onDialogHide(DialogHideEvent event) {
+                        if (event.getHideButton() == PredefinedButton.YES) {
                             doMoveNextAux();
                         }
                     }
@@ -365,9 +363,11 @@ public class PrescriptionLessonChooserDialog extends GWindow {
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
         
         final ConfirmMessageBox mb = new ConfirmMessageBox("Ready for next Quiz?","Are you ready to be quizzed again on this section?");
-        mb.addHideHandler(new HideHandler() {
-            public void onHide(HideEvent event) {
-                if (mb.getHideButton() == mb.getButtonById(PredefinedButton.YES.name())) {
+        mb.addDialogHideHandler(new DialogHideHandler() {
+            
+            @Override
+            public void onDialogHide(DialogHideEvent event) {
+                if (event.getHideButton() == PredefinedButton.YES) {
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLEAR, null));
                     hide();
                     CmProgramFlowClientManager.retakeProgramSegment();

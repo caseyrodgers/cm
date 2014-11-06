@@ -19,8 +19,7 @@ public class GetStudentActivityCommand implements ActionHandler<GetStudentActivi
     public CmList<StudentActivityModel>  execute(Connection conn, GetStudentActivityAction action) throws Exception {
        StudentActivityDao dao = StudentActivityDao.getInstance();
        
-       List<StudentActivityModel> activity = dao.getStudentActivity(action.getStudent().getUid(), action.getFromDate(),
-    		   action.getToDate());
+       List<StudentActivityModel> activity = dao.getStudentActivity(action.getStudent().getUid(), action.getFromDate(),action.getToDate());
 
        CmList<StudentActivityModel> list = new CmArrayList<StudentActivityModel>();
        list.addAll(activity);

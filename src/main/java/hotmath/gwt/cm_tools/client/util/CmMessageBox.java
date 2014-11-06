@@ -9,6 +9,8 @@ import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent.DialogHideHandler;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
@@ -79,16 +81,15 @@ public class CmMessageBox {
     	
 
         final ConfirmMessageBox confirm = new ConfirmMessageBox(title, msg);
-        HideHandler hideHandler = new HideHandler() {
+        confirm.addDialogHideHandler(new DialogHideHandler() {
             @Override
-            public void onHide(HideEvent event) {
+            public void onDialogHide(DialogHideEvent event) {
                 if (onComplete != null) {
-                    boolean isConfirmed = confirm.getHideButton() == confirm.getButtonById(PredefinedButton.YES.name());
+                    boolean isConfirmed = event.getHideButton() == PredefinedButton.YES;
                     onComplete.confirmed(isConfirmed);
                 }
             }
-        };
-        confirm.addHideHandler(hideHandler);
+        });
         confirm.setVisible(true);
         
         confirm.toFront();

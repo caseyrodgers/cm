@@ -31,14 +31,14 @@ import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.event.HideEvent;
-import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent.DialogHideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
 public class TeacherManager extends GWindow {
-    
+
     public interface Callback {
         void teacherSet(TeacherIdentity teacher);
     }
@@ -46,78 +46,78 @@ public class TeacherManager extends GWindow {
     private Callback callback;
 
     static private TeacherIdentity __currentTeacherIdentity;
-    
+
     public TeacherManager(Callback callbackIn) {
         super(false);
-        
+
         this.callback = callbackIn;
         setHeadingText("Teacher Manager");
         setModal(true);
         setPixelSize(400, 200);
         setResizable(false);
         setMaximizable(false);
-        
+
         buildUi();
-        
+
         _selected = Cookies.getCookie("teacher_name");
-        
+
         addButton(new TextButton("OK", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                if(!_combo.isValid()) {
+                if (!_combo.isValid()) {
                     CmMessageBox.showAlert("Please select a teacher name");
                     return;
                 }
                 __currentTeacherIdentity = getSelectedTeacher();
-                
-                String val = __currentTeacherIdentity.getAdminId() + "|" + __currentTeacherIdentity.getTeacherId() + "|" + __currentTeacherIdentity.getTeacherName();
-                Storage.getLocalStorage().setItem("current_teacher",val);
-                
+
+                String val = __currentTeacherIdentity.getAdminId() + "|" + __currentTeacherIdentity.getTeacherId()
+                        + "|" + __currentTeacherIdentity.getTeacherName();
+                Storage.getLocalStorage().setItem("current_teacher", val);
+
                 callback.teacherSet(__currentTeacherIdentity);
                 hide();
             }
         }));
-        
+
         addButton(new TextButton("Cancel", new SelectHandler() {
-            
+
             @Override
             public void onSelect(SelectEvent event) {
                 hide();
             }
         }));
-        
+
         readDataFromServer();
-        
-        
+
         setVisible(true);
     }
-    
+
     private void readDataFromServer() {
         new RetryAction<CmList<TeacherIdentity>>() {
             @Override
             public void attempt() {
                 GetAdminTeachersAction action = new GetAdminTeachersAction(UserInfoBase.getInstance().getUid());
                 setAction(action);
-                CmShared.getCmService().execute(action,  this);
+                CmShared.getCmService().execute(action, this);
             }
 
             @Override
             public void oncapture(CmList<TeacherIdentity> teachers) {
                 _combo.getStore().clear();
                 _combo.getStore().addAll(teachers);
-                
-                if(_selected != null) {
+
+                if (_selected != null) {
                     setComboSelected(_selected);
                 }
-                
+
             }
         }.register();
     }
-    
+
     private void setComboSelected(String sel) {
-        for(int i=0;i<_combo.getStore().getAll().size();i++) {
+        for (int i = 0; i < _combo.getStore().getAll().size(); i++) {
             TeacherIdentity ti = _combo.getStore().getAll().get(i);
-            if(ti.getTeacherName().equals(sel)) {
+            if (ti.getTeacherName().equals(sel)) {
                 _combo.setValue(ti);
                 break;
             }
@@ -131,12 +131,13 @@ public class TeacherManager extends GWindow {
     interface ComboProps extends PropertyAccess<String> {
         @Path("teacherId")
         ModelKeyProvider<TeacherIdentity> key();
+
         LabelProvider<TeacherIdentity> teacherName();
     }
-    
-    
+
     ComboProps props = GWT.create(ComboProps.class);
     ComboBox<TeacherIdentity> _combo;
+
     private void buildUi() {
         ListStore<TeacherIdentity> store = new ListStore<TeacherIdentity>(props.key());
         _combo = new ComboBox<TeacherIdentity>(store, props.teacherName());
@@ -144,11 +145,11 @@ public class TeacherManager extends GWindow {
         _combo.setAllowBlank(false);
         _combo.setTriggerAction(TriggerAction.ALL);
         _combo.setEditable(false);
-        
+
         FlowLayoutContainer flow = new FlowLayoutContainer();
         flow.add(new HTML("<p style='margin-top: 20px;'>Choose a teacher name, or click 'Add New Teacher'"));
-        flow.add(new MyFieldLabel(_combo,  "Teacher Name",  90, 200));
-        
+        flow.add(new MyFieldLabel(_combo, "Teacher Name", 90, 200));
+
         FramedPanel fp = new FramedPanel();
         addTool(new TextButton("Add New Teacher", new SelectHandler() {
             @Override
@@ -163,38 +164,42 @@ public class TeacherManager extends GWindow {
 
     protected void addNewTeacher() {
         final PromptMessageBox mb = new PromptMessageBox("Add Teacher", "Teacher Name");
-        mb.addHideHandler(new HideHandler() {
-          public void onHide(HideEvent event) {
-            if (mb.getHideButton() == mb.getButtonById(PredefinedButton.OK.name())) {
-                addNewTeacher(mb.getValue(), new CallbackOnComplete() {
-                    @Override
-                    public void isComplete() {
-                        mb.hide();
-                    }
-                });
-            } else if (mb.getHideButton() == mb.getButtonById(PredefinedButton.CANCEL.name())) {
-                mb.hide();
+        mb.addDialogHideHandler(new DialogHideHandler() {
+
+            @Override
+            public void onDialogHide(DialogHideEvent event) {
+                if (event.getHideButton() == PredefinedButton.OK) {
+                    addNewTeacher(mb.getValue(), new CallbackOnComplete() {
+                        @Override
+                        public void isComplete() {
+                            mb.hide();
+                        }
+                    });
+                } else if (event.getHideButton() == PredefinedButton.CANCEL) {
+                    mb.hide();
+                }
             }
-          }
         });
         mb.setWidth(300);
         mb.show();
     }
 
     String _selected;
+
     protected void addNewTeacher(final String teacherName, final CallbackOnComplete callback) {
-        if(!validateName(teacherName)) {
+        if (!validateName(teacherName)) {
             CmMessageBox.showAlert("Invalid teacher name");
             return;
         }
-        
+
         _selected = teacherName;
         CmBusyManager.setBusy(true);
-        
+
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
-                AddAdminTeacherAction action = new AddAdminTeacherAction(UserInfoBase.getInstance().getUid(), teacherName);
+                AddAdminTeacherAction action = new AddAdminTeacherAction(UserInfoBase.getInstance().getUid(),
+                        teacherName);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -205,46 +210,42 @@ public class TeacherManager extends GWindow {
                 readDataFromServer();
                 callback.isComplete();
             }
-            
+
             public void onFailure(Throwable error) {
                 Log.error("Error adding teacher", error);
                 CmBusyManager.setBusy(false);
                 RetryActionManager.getInstance().requestComplete(this);
-                if(error.getMessage().toLowerCase().contains("duplicate")) {
-                    //CmMessageBox.showAlert("Duplicate teacher name.");
+                if (error.getMessage().toLowerCase().contains("duplicate")) {
+                    // CmMessageBox.showAlert("Duplicate teacher name.");
                     setComboSelected(teacherName);
-                }
-                else {
+                } else {
                     CmMessageBox.showAlert(error.getMessage());
                 }
             }
         }.register();
-        
-        
+
     }
 
     private boolean validateName(String name) {
-        if(name == null || name.length() == 0) {
+        if (name == null || name.length() == 0) {
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
 
     public static void setTeacher(TeacherIdentity teacher) {
-    	__currentTeacherIdentity = teacher;
+        __currentTeacherIdentity = teacher;
     }
-    
+
     public static TeacherIdentity getTeacher() {
-        if(__currentTeacherIdentity == null || __currentTeacherIdentity.isUnknown()) {
+        if (__currentTeacherIdentity == null || __currentTeacherIdentity.isUnknown()) {
             String val = Storage.getLocalStorage().getItem("current_teacher");
             TeacherIdentity currTeacher = new TeacherIdentity(val);
             /** only if current logged into the correct admin account */
-            if(currTeacher.getAdminId() == UserInfoBase.getInstance().getUid()) { 
+            if (currTeacher.getAdminId() == UserInfoBase.getInstance().getUid()) {
                 __currentTeacherIdentity = currTeacher;
-            }
-            else {
+            } else {
                 __currentTeacherIdentity = TeacherIdentity.getUnknownTeacher();
             }
         }

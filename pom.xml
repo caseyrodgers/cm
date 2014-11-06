@@ -8,10 +8,10 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>Catchup Math</name>
 	<properties>
-		<gwtVersion>2.5.1</gwtVersion>
-		<gwtHome>${basedir}/libs/2.5.1</gwtHome>
+		<gwtVersion>2.6.1</gwtVersion>
+		<gwtHome>${basedir}/libs/2.6.1</gwtHome>
 		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>
-		<gxt.version>3.0.6</gxt.version>
+		<gxt.version>3.1.2</gxt.version>
 	</properties>
 
 	<pluginRepositories>
@@ -752,7 +752,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.5.1</version>
+				<version>2.6.1</version>
 
 				<configuration>
 					<extraJvmArgs>-Xss1m -Xms1024m -Xmx1024m -Dgwt.logLevel=DEBUG</extraJvmArgs>

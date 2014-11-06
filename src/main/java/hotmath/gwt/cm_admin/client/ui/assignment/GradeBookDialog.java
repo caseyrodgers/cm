@@ -33,14 +33,15 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
-import com.sencha.gxt.widget.core.client.event.HideEvent;
-import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent.DialogHideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.DateField;
@@ -75,7 +76,7 @@ public class GradeBookDialog {
 
         _mainBorderPanel = new BorderLayoutContainer();
         _mainBorderPanel.setBorders(true);
-        
+
         VerticalLayoutContainer header = new VerticalLayoutContainer();
 
         BorderLayoutData headerData = new BorderLayoutData();
@@ -110,17 +111,16 @@ public class GradeBookDialog {
         bd.setMargins(new Margins(20));
         _mainBorderPanel.setNorthWidget(header, bd);
 
-        
         UpdateGradeCallback updateGradeCallback = new UpdateGradeCallback() {
             @Override
             public void updateGrade(int percent) {
                 String value = percent + "%";
                 updateGrade(value);
             }
-            
+
             @Override
             public void updateGrade(String percent) {
-                _grade.setValue(percent);                
+                _grade.setValue(percent);
             }
         };
 
@@ -130,22 +130,21 @@ public class GradeBookDialog {
                 _questionViewer.viewQuestion(_stuAssignment, selection);
             }
         }, updateGradeCallback);
-        
+
         BorderLayoutContainer blContainer = new BorderLayoutContainer();
         BorderLayoutData data = new BorderLayoutData();
         data.setSize(400.0);
         data.setSplit(true);
         data.setCollapsible(true);
-         agPanel.setBorders(true);
-         agPanel.setLayoutData(data);
-         blContainer.setWestWidget(agPanel);
-        
-         blContainer.setCenterWidget(_questionViewer);
-         blContainer.forceLayout();
-        
-         _mainBorderPanel.setCenterWidget(blContainer);
-         _mainBorderPanel.forceLayout();
-        
+        agPanel.setBorders(true);
+        agPanel.setLayoutData(data);
+        blContainer.setWestWidget(agPanel);
+
+        blContainer.setCenterWidget(_questionViewer);
+        blContainer.forceLayout();
+
+        _mainBorderPanel.setCenterWidget(blContainer);
+        _mainBorderPanel.forceLayout();
 
         TextButton saveBtn = new TextButton("Save");
 
@@ -184,12 +183,13 @@ public class GradeBookDialog {
             @Override
             public void onSelect(SelectEvent event) {
                 if (agPanel.isChanges()) {
-                    ConfirmMessageBox box = new ConfirmMessageBox("Pending changes", "There are pending changes.  Would you like to save them?");
-                    box.addHideHandler(new HideHandler() {
+                    ConfirmMessageBox box = new ConfirmMessageBox("Pending changes",
+                            "There are pending changes.  Would you like to save them?");
+                    box.addDialogHideHandler(new DialogHideHandler() {
                         @Override
-                        public void onHide(HideEvent event) {
+                        public void onDialogHide(DialogHideEvent event) {
                             Dialog btn = (Dialog) event.getSource();
-                            if (btn.getHideButton().getText().equalsIgnoreCase("Yes")) {
+                            if (event.getHideButton() == PredefinedButton.YES) {
                                 saveStudentGradeBook(false);
                             }
                             _window.hide();
@@ -226,7 +226,6 @@ public class GradeBookDialog {
 
         LabelProvider<AssignmentStatusDto> statusLabel();
     }
-
 
     private boolean saveStudentGradeBook(final boolean releaseGrades) {
 
@@ -286,7 +285,8 @@ public class GradeBookDialog {
 
                 _stuAssignment.getStudentStatuses().setAssigmentStatuses(spList);
 
-                UpdateStudentAssignmentStatusAction action = new UpdateStudentAssignmentStatusAction(_stuAssignment, releaseGrades);
+                UpdateStudentAssignmentStatusAction action = new UpdateStudentAssignmentStatusAction(_stuAssignment,
+                        releaseGrades);
 
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
@@ -300,7 +300,8 @@ public class GradeBookDialog {
 
                 CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
 
-                Log.debug("Student assignment status (" + _stuAssignment.getAssignment().getAssignKey() + ") saved successfully");
+                Log.debug("Student assignment status (" + _stuAssignment.getAssignment().getAssignKey()
+                        + ") saved successfully");
             }
 
             public void onFailure(Throwable error) {

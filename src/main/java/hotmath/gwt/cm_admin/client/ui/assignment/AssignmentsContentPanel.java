@@ -46,8 +46,8 @@ import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
-import com.sencha.gxt.widget.core.client.event.HideEvent;
-import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent;
+import com.sencha.gxt.widget.core.client.event.DialogHideEvent.DialogHideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -233,10 +233,10 @@ public class AssignmentsContentPanel extends ContentPanel {
         
         msg = wbMsg + msg;
         final ConfirmMessageBox cm = new ConfirmMessageBox("Report Grades", msg);
-        cm.addHideHandler(new HideHandler() {
+        cm.addDialogHideHandler(new DialogHideHandler() {
             @Override
-            public void onHide(HideEvent event) {
-                if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
+            public void onDialogHide(DialogHideEvent event) {
+                if (event.getHideButton() == PredefinedButton.YES) {
                     releaseGradesForAssignment(assignment);
                 }
             }
@@ -273,10 +273,11 @@ public class AssignmentsContentPanel extends ContentPanel {
         }
         
         final ConfirmMessageBox cm = new ConfirmMessageBox("Activate Assignment", "Once activated an assignment's problems and assigned students cannot be changed.  Are you sure you want to activate this assignment?");
-        cm.addHideHandler(new HideHandler() {
+        cm.addDialogHideHandler(new DialogHideHandler() {
+            
             @Override
-            public void onHide(HideEvent event) {
-                if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
+            public void onDialogHide(DialogHideEvent event) {
+                if (event.getHideButton() == PredefinedButton.YES) {
                     activateAssignmentRPC(assignment);
                 }
             }
@@ -410,14 +411,15 @@ public class AssignmentsContentPanel extends ContentPanel {
         if(ass != null) {
             final ConfirmMessageBox cm = new ConfirmMessageBox("Delete Assignment", "Deleting an assignment will prevent students from working on the assignment or reviewing it.");
             cm.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-            cm.addHideHandler(new HideHandler() {
+            cm.addDialogHideHandler(new DialogHideHandler() {
                 @Override
-                public void onHide(HideEvent event) {
-                    if (cm.getHideButton() != cm.getButtonById(PredefinedButton.CANCEL.name())) {
+                public void onDialogHide(DialogHideEvent event) {
+                    if (event.getHideButton() != PredefinedButton.CANCEL) {                
                         deleteAssignment(ass);
                     }
                 }
             });
+
             cm.setWidth(300);
             cm.show();
         }
@@ -492,10 +494,10 @@ public class AssignmentsContentPanel extends ContentPanel {
         final Assignment data = getSelectedAssigmment();
         if(data != null) {
             final ConfirmMessageBox cm = new ConfirmMessageBox("Copy Assignment", "Are you sure you want to copy this assignment?");
-            cm.addHideHandler(new HideHandler() {
+            cm.addDialogHideHandler(new DialogHideHandler() {
                 @Override
-                public void onHide(HideEvent event) {
-                    if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
+                public void onDialogHide(DialogHideEvent event) {
+                    if (event.getHideButton() == PredefinedButton.YES) {
                         copyAssignemnt(data);
                     }
                 }
@@ -548,10 +550,11 @@ public class AssignmentsContentPanel extends ContentPanel {
         }
             
         final ConfirmMessageBox cm = new ConfirmMessageBox("Close Assignment", "Are you sure you want to close this assignment?");
-        cm.addHideHandler(new HideHandler() {
+        cm.addDialogHideHandler(new DialogHideHandler() {
+            
             @Override
-            public void onHide(HideEvent event) {
-                if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
+            public void onDialogHide(DialogHideEvent event) {
+                if (event.getHideButton() == PredefinedButton.YES) {
                     closeAssignment(data);
                 }
             }

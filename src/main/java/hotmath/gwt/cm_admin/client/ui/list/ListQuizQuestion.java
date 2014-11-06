@@ -19,8 +19,8 @@ import com.sencha.gxt.core.client.util.Format;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.theme.base.client.listview.ListViewCustomAppearance;
 import com.sencha.gxt.widget.core.client.ListView;
-import com.sencha.gxt.widget.core.client.ListViewCustomAppearance;
 
 public class ListQuizQuestion extends ListView<QuizQuestionModel, QuizQuestionModel>  {
     

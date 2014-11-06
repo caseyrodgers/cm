@@ -1,11 +1,8 @@
 mvn install:install-file -DgroupId=hotmath -DartifactId=hotmath -Dversion=2.0 -Dpackaging=jar -Dfile=hotmath2.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=hotmath -DartifactId=cm_lib -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=cm_lib-1.0-SNAPSHOT.jar
 
-#mvn install:install-file -DgroupId=com.extjs.gxt -DartifactId=gxt -Dversion=2.2.3 -Dpackaging=jar -Dfile=gxt-2.2.3-gwt.22.jar -DgeneratePom=true
-
-mvn install:install-file -DgroupId=com.sencha.gxt -DartifactId=gxt -Dversion=3.0.6 -Dpackaging=jar -Dfile=gxt-3.0.6.jar -DgeneratePom=true
-mvn install:install-file -DgroupId=com.sencha.gxt -DartifactId=gxt-chart -Dversion=3.0.6 -Dpackaging=jar -Dfile=gxt-chart-3.0.6.jar -DgeneratePom=true
-
+mvn install:install-file -DgroupId=com.sencha.gxt -DartifactId=gxt -Dversion=3.1.2 -Dpackaging=jar -Dfile=gxt-3.1.2.jar -DgeneratePom=true
+mvn install:install-file -DgroupId=com.sencha.gxt -DartifactId=gxt-chart -Dversion=3.1.2 -Dpackaging=jar -Dfile=gxt-chart-3.1.2.jar -DgeneratePom=true
 
 mvn install:install-file -DgroupId=org.imgscalr -DartifactId=imgscalr-lib -Dversion=4.2 -Dpackaging=jar -Dfile=imgscalr-4.2.jar -DgeneratePom=true
 

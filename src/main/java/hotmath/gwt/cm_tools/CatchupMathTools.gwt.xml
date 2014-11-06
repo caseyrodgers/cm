@@ -8,7 +8,8 @@
     <inherits name='com.sencha.gxt.chart.Chart'/>
 	
     <inherits name='pl.rmalinowski.gwt2swf.GWT2SWF' />
-    
+
+<!--     
       <property-provider name="user.agent.os"><![CDATA[
     var ua = $wnd.navigator.userAgent.toLowerCase();
     if (ua.indexOf("macintosh") != -1 || ua.indexOf("mac os x") != -1) {
@@ -22,6 +23,7 @@
     }
     return "linux";
   ]]></property-provider>
+ -->  
     
 	<entry-point class='hotmath.gwt.cm_tools.client.CatchupMathTools' />
 </module>
