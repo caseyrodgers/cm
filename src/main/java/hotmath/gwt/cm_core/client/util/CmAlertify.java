@@ -47,7 +47,7 @@ public class CmAlertify {
 	
 	native private void jsni_alert(String message) /*-{
 	    var that=this;
-	    
+
 	    if(typeof $wnd.alertify == 'undefined') {
 	        alert('Alertify not defined');
 	        return;
