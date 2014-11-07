@@ -72,6 +72,28 @@ public class FinalExam {
     }
 
 
+    class TestBalancer60 extends BaseBalancer {
+
+        public TestBalancer60(List<List<String>> testIds) {
+            super(testIds);
+        }
+
+        @Override
+        public List<Integer> getBalancedKeys() {
+            List<Integer> l=new ArrayList<Integer>();
+            for(int i=0;i<60;i++) {
+                l.add(i);
+            }
+            return l;
+        }
+
+        @Override
+        public int[][] getRanges() {
+            return null;
+        }
+
+    }
+
     class TestBalancer45 extends BaseBalancer {
 
         public TestBalancer45(List<List<String>> testIds) {
@@ -96,31 +118,6 @@ public class FinalExam {
         }
     }
 
-
-
-
-    class TestBalancer60 extends BaseBalancer {
-
-        public TestBalancer60(List<List<String>> testIds) {
-            super(testIds);
-        }
-
-        @Override
-        public List<Integer> getBalancedKeys() {
-            List<Integer> l=new ArrayList<Integer>();
-            for(int i=0;i<60;i++) {
-                l.add(i);
-            }
-            return l;
-        }
-
-        @Override
-        public int[][] getRanges() {
-            return null;
-        }
-
-    }
-
     class TestBalancer15 extends BaseBalancer {
         public TestBalancer15(List<List<String>> testIds) {
             super(testIds);
@@ -128,10 +125,9 @@ public class FinalExam {
 
         @Override
         public int[][] getRanges() {
-            return new int[][] { {1,12},{13,24},{25,36},{37,45},{45,60} };
+            return new int[][] { {1,12},{13,24},{25,36},{37,48},{49,60} };
         }
     }
-
 
     interface Balancer {
         List<Integer> getBalancedKeys();
