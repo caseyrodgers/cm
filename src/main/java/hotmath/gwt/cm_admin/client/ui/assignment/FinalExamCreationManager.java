@@ -124,14 +124,12 @@ public class FinalExamCreationManager extends GWindow {
             }
         }.register();
         
-        
-        
     }
 
     private SimpleComboBox<String> createQuizCombo() {
         SimpleComboBox<String> combo = new SimpleComboBox<String>(new StringLabelProvider<String>());
 
-        //combo.add("Foundations");   // wont' work as is...
+        combo.add("Foundations");   // wont' work as is...
         // TODO: make tests generic on problem size.
         //
         combo.add("Essentials");

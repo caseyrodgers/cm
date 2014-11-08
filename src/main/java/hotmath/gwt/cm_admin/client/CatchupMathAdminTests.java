@@ -80,7 +80,7 @@ public class CatchupMathAdminTests {
         else if(test.equals("register")) {
             RegisterStudent.startTest();
         }
-        else if(test.equals("activity")) {
+        else if(test.equals("UserActivityLogDialog")) {
             UserActivityLogDialog.startTest();
         }
         else if(test.equals("weblinks")) {

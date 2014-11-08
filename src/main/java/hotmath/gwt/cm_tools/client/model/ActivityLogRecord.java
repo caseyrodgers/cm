@@ -6,21 +6,21 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import java.util.Date;
 
 public class ActivityLogRecord implements Response {
-    
-	private static final long serialVersionUID = -2489817524241184260L;
 
 	private int uid;
     private int key;
     private Date activityDate;
     private int activeMinutes;
+    private String activityDayLabel;
 
     public ActivityLogRecord() {}
 
-    public ActivityLogRecord(int key, int uid, Date activityDate, int activeMinutes) {
+    public ActivityLogRecord(int key, int uid, Date activityDate, int activeMinutes, String activityDayLabel) {
         this.key = key;
         this.uid = uid;
         this.activityDate = activityDate;
         this.activeMinutes = activeMinutes;
+        this.activityDayLabel = activityDayLabel;
     }
 
     public int getUid() {
@@ -59,8 +59,17 @@ public class ActivityLogRecord implements Response {
         return DateUtils4Gwt.getYearMonthDayString(activityDate);
     }
 
+    public String getActivityDayLabel() {
+        return activityDayLabel;
+    }
+
+    public void setActivityDayLabel(String activityDayLabel) {
+        this.activityDayLabel = activityDayLabel;
+    }
+
     @Override
     public String toString() {
-        return "ActivityLogRecord [uid=" + uid + ", key=" + key + ", activityDate=" + activityDate + ", activeMinutes=" + activeMinutes + "]";
+        return "ActivityLogRecord [uid=" + uid + ", key=" + key + ", activityDate=" + activityDate + ", activeMinutes="
+                + activeMinutes + ", activityDayLabel=" + activityDayLabel + "]";
     }
 }

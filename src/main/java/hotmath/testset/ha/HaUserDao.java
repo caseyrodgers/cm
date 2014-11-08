@@ -6,6 +6,7 @@ import hotmath.cm.program.CmProgramFlow;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.DateUtils;
 import hotmath.cm.util.PropertyLoadFileException;
 import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -456,7 +457,9 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
                 new RowMapper<ActivityLogRecord>() {
                     @Override
                     public ActivityLogRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new ActivityLogRecord(key[0]++, uid, rs.getDate("activity_date"),  rs.getInt("active_minutes"));
+                        Date activityDate = rs.getDate("activity_date");
+                        String dateLabel = DateUtils.getPrettyDateString(activityDate, true);
+                        return new ActivityLogRecord(key[0]++, uid, activityDate,  rs.getInt("active_minutes"),dateLabel);
                     }
                 });       
         return list;
