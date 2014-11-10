@@ -165,28 +165,37 @@ public class FinalExam {
             int numPerRange = getNumPerRange();
             for(int r=0;r<ranges.length;r++) {
                 int range[] = ranges[r];
+                int start=range[0];
+                int end=range[1];
+                int amount = end-start;
 
+				if (numPerRange <= amount) {
+					for (int i = 0; i < numPerRange; i++) {
+						// attempt to get unique, fail
+						// after MAX_ATTEMPTS.
+						int attempts = 0;
+						while (true) {
+							int rand = SbUtilities.getRandomNumber(amount);
+							int keyToUse = start + rand;
 
-                for(int i=0;i<numPerRange;i++) {
-                    // attempt to get unique, fail
-                    // after MAX_ATTEMPTS.
-                    int attempts=0;
-                    while(true) {
-                        int start=range[0];
-                        int end=range[1];
-                        int amount = end-start;
-                        int rand = SbUtilities.getRandomNumber(amount);
-                        int keyToUse = start+rand;
+							if (!keys.contains(keyToUse)) {
+								keys.add(keyToUse);
+								break;
+							}
 
-                        if(!keys.contains(keyToUse)) {
-                            keys.add(keyToUse);
-                            break;
-                        }
-
-                        if(attempts++ > MAX_ATTEMPTS) {
-                            __logger.error("Too many attempts: " + start + ", " + end);
-                        }
-                    }
+							if (attempts++ > MAX_ATTEMPTS) {
+								__logger.error(String
+										.format("Too many attempts: start: %d, end: %d, numPerRange: %d",
+												start, end, numPerRange));
+							}
+						}
+					}
+				}                
+				else {
+                	//just copy range(-1) to keys
+                	for (int i=start-1; i<end; i++) {
+                		keys.add(i);
+                	}
                 }
             }
             return keys;
