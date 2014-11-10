@@ -14,6 +14,8 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -35,6 +37,8 @@ public class FinalExamCreationManager extends GWindow {
     HTMLPanel mainPanel;
     private SimpleComboBox<String> _quizTypeCombo;
     private SimpleComboBox<QuizProblem> _quizSize;
+
+    boolean _hasQuizProb60 = true;
     
     interface MyUiBinder extends UiBinder<Widget, FinalExamCreationManager> {
     }
@@ -64,7 +68,7 @@ public class FinalExamCreationManager extends GWindow {
         FlowLayoutContainer flow = new FlowLayoutContainer();
         
         _quizTypeCombo = createQuizCombo();
-        _quizSize = createQuizSizeCombo();
+        _quizSize = createQuizSizeCombo(true);
         
         flow.add(new MyFieldLabel(_quizTypeCombo, "Course", 60, 200));
         flow.add(new MyFieldLabel(_quizSize, "Problems", 60, 120));
@@ -129,9 +133,7 @@ public class FinalExamCreationManager extends GWindow {
     private SimpleComboBox<String> createQuizCombo() {
         SimpleComboBox<String> combo = new SimpleComboBox<String>(new StringLabelProvider<String>());
 
-        combo.add("Foundations");   // wont' work as is...
-        // TODO: make tests generic on problem size.
-        //
+        combo.add("Foundations");
         combo.add("Essentials");
         combo.add("Pre-Algebra");
         combo.add("Algebra 1");
@@ -145,19 +147,42 @@ public class FinalExamCreationManager extends GWindow {
         combo.setEmptyText("Select a program");
         combo.setForceSelection(true);
         combo.setTriggerAction(TriggerAction.ALL);
+
+        combo.addSelectionHandler(new SelectionHandler<String>() {
+
+			@Override
+			public void onSelection(SelectionEvent<String> event) {
+				if (event.getSelectedItem().equalsIgnoreCase("Foundations")) {
+					if (_hasQuizProb60 == true)
+    					_quizSize.remove(quizProb60);
+					_hasQuizProb60 = false;
+				}
+				else {
+					if (_hasQuizProb60 == false)
+						_quizSize.add(quizProb60);
+				    _hasQuizProb60 = true;
+				}
+			}
+        	
+        });
         
         combo.setToolTip("Select the type of course test you would like to create.");
+
         return combo;
     }
-    
 
-    private SimpleComboBox<QuizProblem> createQuizSizeCombo() {
+    QuizProblem quizProb15 = new QuizProblem("15 problems", 15);
+    QuizProblem quizProb30 = new QuizProblem("30 problems", 30);
+    QuizProblem quizProb45 = new QuizProblem("45 problems", 45);
+    QuizProblem quizProb60 = new QuizProblem("60 problems", 60);
+
+    private SimpleComboBox<QuizProblem> createQuizSizeCombo(boolean include60) {
         SimpleComboBox<QuizProblem> combo = new SimpleComboBox<QuizProblem>(new StringLabelProvider<QuizProblem>());
 
-        combo.add(new QuizProblem("15 problems", 15));
-        combo.add(new QuizProblem("30 problems", 30));
-        combo.add(new QuizProblem("45 problems", 45));
-        combo.add(new QuizProblem("60 problems", 60));
+        combo.add(quizProb15);
+        combo.add(quizProb30);
+        combo.add(quizProb45);
+        combo.add(quizProb60);
 
         combo.setValue(combo.getStore().get(0));
         combo.setAllowTextSelection(false);
