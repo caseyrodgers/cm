@@ -44,7 +44,6 @@
   </listener>
 
   <!-- WIRIS (math) editor servlet defs -->
-  <!-- 
   <servlet>
      <servlet-name>pluginwiris</servlet-name>
      <servlet-class>com.wiris.plugin.Main</servlet-class>
@@ -57,8 +56,8 @@
      <servlet-name>pluginwiris</servlet-name>
      <url-pattern>/pluginwiris_engine/app/*</url-pattern>
   </servlet-mapping>
-   -->
   <!--  END WIRIS editor configuration -->  
+
   <servlet>
     <servlet-name>cm-init</servlet-name>
     <servlet-class>hotmath.cm.CmInitialzation</servlet-class>
