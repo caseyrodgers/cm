@@ -13,7 +13,13 @@ import sb.util.SbUtilities;
 
 public class FinalExam {
 
-    static Logger __logger = Logger.getLogger(FinalExam.class);
+    private static final int[][] intRange60 =
+        new int[][]{ {1,4},{5,8},{9,12},{13,16},{17,20},{21,24},{25,28},{29,32},{33,36},{37,40},{41,44},{45,48},{49,52},{53,56},{57,60} };
+
+    private static final int[][] intRange50 =
+        new int[][]{ {1,4},{5,7},{8,10},{11,14},{15,17},{18,20},{21,24},{25,27},{28,30},{31,34},{35,37},{38,40},{41,44},{45,47},{48,50} };
+    
+	static Logger __logger = Logger.getLogger(FinalExam.class);
 
     private QuizSize quizSize;
     private HaTestDef testDef;
@@ -55,8 +61,8 @@ public class FinalExam {
                 balancer = new TestBalancer15(testIds);
                 break;
 
-                default:
-                    throw new Exception("Unknown size: " + quizSize2);
+            default:
+                throw new Exception("Unknown size: " + quizSize2);
         }
 
          List<Integer> balancedKeys = balancer.getBalancedKeys();
@@ -71,6 +77,7 @@ public class FinalExam {
          return pids;
     }
 
+    static final int ALL = -1;
 
     class TestBalancer60 extends BaseBalancer {
 
@@ -89,8 +96,13 @@ public class FinalExam {
 
         @Override
         public int[][] getRanges() {
-            return null;
+            return intRange60;
         }
+
+		@Override
+		public int getNumPerRange() {
+			return ALL;
+		}
 
     }
 
@@ -100,10 +112,10 @@ public class FinalExam {
             super(testIds);
         }
 
-        @Override
-        public int[][] getRanges() {
-            return new int[][] { {1,4},{5,8},{9,12},{13,16},{17,20},{21,24},{25,28},{29,32},{33,36},{37,40},{41,44},{45,48},{49,52},{53,56},{57,60} };
-        }
+		@Override
+		public int getNumPerRange() {
+			return 3;
+		}
 
     }
 
@@ -112,10 +124,10 @@ public class FinalExam {
             super(testIds);
         }
 
-        @Override
-        public int[][] getRanges() {
-            return new int[][] { {1,6},{7,12},{13,18},{19,24},{25,30},{31,36},{37,42},{43,48},{49,54},{55,60} };
-        }
+		@Override
+		public int getNumPerRange() {
+			return 2;
+		}
     }
 
     class TestBalancer15 extends BaseBalancer {
@@ -123,20 +135,23 @@ public class FinalExam {
             super(testIds);
         }
 
-        @Override
-        public int[][] getRanges() {
-            return new int[][] { {1,12},{13,24},{25,36},{37,48},{49,60} };
-        }
+		@Override
+		public int getNumPerRange() {
+			return 1;
+		}
     }
 
     interface Balancer {
         List<Integer> getBalancedKeys();
         int[][] getRanges();
+        int getNumPerRange();
     }
 
+    static final int MAX_ATTEMPTS = 10;
+    
     abstract class BaseBalancer implements Balancer {
         int NUM_FROM_EACH_RANGE=3;
-        private List<List<String>> testIds;
+        protected List<List<String>> testIds;
 
         public BaseBalancer(List<List<String>> testIds) {
             this.testIds = testIds;
@@ -147,13 +162,14 @@ public class FinalExam {
 
             int[][] ranges = getRanges();
             List<Integer> keys = new ArrayList<Integer>();
+            int numPerRange = getNumPerRange();
             for(int r=0;r<ranges.length;r++) {
                 int range[] = ranges[r];
 
 
-                for(int i=0;i<NUM_FROM_EACH_RANGE;i++) {
+                for(int i=0;i<numPerRange;i++) {
                     // attempt to get unique, fail
-                    // after N attempts.
+                    // after MAX_ATTEMPTS.
                     int attempts=0;
                     while(true) {
                         int start=range[0];
@@ -167,7 +183,7 @@ public class FinalExam {
                             break;
                         }
 
-                        if(attempts++ > 10) {
+                        if(attempts++ > MAX_ATTEMPTS) {
                             __logger.error("Too many attempts: " + start + ", " + end);
                         }
                     }
@@ -175,6 +191,20 @@ public class FinalExam {
             }
             return keys;
         }
+
+        @Override
+        public int[][] getRanges() {
+        	int size = (testIds != null) ? testIds.get(0).size() : 0;
+        	switch(size) {
+        	case 60:
+        		return intRange60;
+        	case 50:
+        		return intRange50;
+        	default:
+        		return null;
+        	}
+        }
+
     }
 
 

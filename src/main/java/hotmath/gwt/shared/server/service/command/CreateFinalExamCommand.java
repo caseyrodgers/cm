@@ -1,9 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.cm.exam.ExamDao;
 import hotmath.cm.exam.FinalExam;
 import hotmath.cm.exam.FinalExam.QuizSize;
-import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.CreateFinalExamAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
@@ -17,7 +15,6 @@ import hotmath.gwt.shared.client.CmProgram;
 
 import java.sql.Connection;
 import java.util.Date;
-import java.util.List;
 
 public class CreateFinalExamCommand implements ActionHandler<CreateFinalExamAction, Assignment> {
 
@@ -98,7 +95,7 @@ public class CreateFinalExamCommand implements ActionHandler<CreateFinalExamActi
         int ordinal=0;
         for(String pid: finalExam.getPids()) {
             
-            List<LessonModel> lessons = ExamDao.getInstance().getLessonsInHaProgramLessonsForProblem(pid);
+            //List<LessonModel> lessons = ExamDao.getInstance().getLessonsInHaProgramLessonsForProblem(pid);
             String label = "Problem " +  (++ordinal);
 
             ProblemDto pd = new ProblemDto(ordinal, ordinal, label, pid, 0);
