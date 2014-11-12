@@ -38,6 +38,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -59,6 +60,8 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
 	private static final Logger logger = Logger.getLogger(CmAdminDao.class);
 
 	private static CmAdminDao __instance;
+
+	private static final SimpleDateFormat DATE_FMT = new SimpleDateFormat("yyyy-MM-dd"); 
 
 	public static CmAdminDao getInstance() throws Exception {
 		if (__instance == null) {
@@ -538,6 +541,8 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
 										: "2011-12-31";
 								/** @TODO: remove hard-coded value */
 								ai.setExpirationDate(cmDate);
+								String currDate = DATE_FMT.format(new Date());
+								ai.setCurrentDate(currDate);
 								dt = rs.getDate("tutoring_expire_date");
 								if (dt != null
 										&& dt.after(new java.sql.Date(System

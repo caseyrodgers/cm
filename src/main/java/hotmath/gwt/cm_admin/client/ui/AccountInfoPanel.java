@@ -1,5 +1,9 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import java.util.Date;
+
+import com.google.gwt.i18n.client.DateTimeFormat;
+
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
@@ -33,25 +37,22 @@ public class AccountInfoPanel extends FlowLayoutContainer implements CmAdminData
 	
 	SimpleContainer header = new SimpleContainer();
 	public AccountInfoPanel(CmAdminModel cmAdminMdl) {
-	
-		
+
 		cmAdminModel = cmAdminMdl;
-		
+
 		setStyleName("account-info");
 		header.setStyleName("account-info-panel");
-		
-		
+
 //		InfoLoaderTemplate loaderTemplate = GWT.create(InfoLoaderTemplate.class);
 //		HTML html = new HTML(loaderTemplate.renderAdminInfo(new AccountInfoModelImplPojo()));
 //		html.setVisible(false);
 //		hp.add(html);
-		
+
 		CmAdminDataReader.getInstance().addReader(this);
 
 		add(header);
 	}
-	
-	
+
 	public AccountInfoModel getModel() {
 	    return this.model;
 	}
@@ -95,8 +96,8 @@ public class AccountInfoPanel extends FlowLayoutContainer implements CmAdminData
         sb.append("Manage ").append(ai.getSchoolName()).append(" Students");
         // _gridContainer.setHeading(sb.toString());
 
-        if((ai.getTotalStudents() - ai.getCountCommunityStudents() )> ai.getMaxStudents()) {
-            if(!haveDisplayedOverLimitMsg) {
+        if ((ai.getTotalStudents() - ai.getCountCommunityStudents()) > ai.getMaxStudents()) {
+            if (!haveDisplayedOverLimitMsg) {
                 String msg = "Your student registration now exceeds the licensed total. " +
                              "We will contact you soon about upgrading your license, or you " +
                              "may wish to unregister students no longer active.  Thank you " +
@@ -109,14 +110,43 @@ public class AccountInfoPanel extends FlowLayoutContainer implements CmAdminData
         else {
             ai.setStudentCountStyle("fld");
         }
+
+        setExpirationDateStyle(ai);
+
         setAccountInfoModel(ai);
 
         DateRangePanel.getInstance().setDefaultFromDate(ai.getAccountCreateDate());
 
         CmLogger.info("AccountInfoPanel: student info read succesfully");
     }
-    
-    //@Override
+
+	DateTimeFormat dateFmt = DateTimeFormat.getFormat("yyyy-MM-dd");
+	long MSEC_IN_A_DAY = 1000L * 60L * 60L * 24L;
+
+    private void setExpirationDateStyle(AccountInfoModel ai) {
+    	String expDateStr = ai.getExpirationDate();
+    	String curDateStr = ai.getCurrentDate();
+    	Date expDate = null;
+    	Date curDate = null;
+    	try {
+        	expDate = dateFmt.parse(expDateStr);
+        	curDate = dateFmt.parse(curDateStr);
+        	long diff = expDate.getTime() - curDate.getTime();
+        	long numDays = diff / MSEC_IN_A_DAY;
+        	if (numDays < 16) {
+        		ai.setExpirationDateStyle("fld-warn");
+        	}
+        	else {
+        		ai.setExpirationDateStyle("fld");
+        	}
+    	}
+    	catch (Exception e) {
+    		if (expDate == null) CmLogger.error("date parse failed: expDate: " + expDateStr);
+    		else CmLogger.error("date parse failed: curDate: " + curDateStr);
+    	}
+	}
+
+	@Override
     public void refreshData() {
         getAccountInfoRPC(cmAdminModel.getUid());
     }	

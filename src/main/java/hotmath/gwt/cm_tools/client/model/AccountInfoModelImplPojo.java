@@ -14,6 +14,7 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
     String passcode;
     String lastLogin;
     private String expirationDate;
+    private String currentDate = "";
     private Integer maxStudents;
     private Integer totalStudents;
     private Integer countFreeStudents;
@@ -23,6 +24,7 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
     private String subscriberId;
     private String subscriberPassword;
     private String studentCountStyle;
+    private String expirationDateStyle;
     private Date accountCreateDate;
     private String accountRepEmail;
     
@@ -92,7 +94,17 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
 	public void setExpirationDate(String expirationDate) {
 		this.expirationDate = expirationDate;
 	}
-	
+
+	@Override
+	public String getCurrentDate() {
+		return currentDate;
+	}
+
+	@Override
+	public void setCurrentDate(String currentDate) {
+		this.currentDate = currentDate;
+	}
+
 	public Integer getMaxStudents() {
 		return maxStudents;
 	}
@@ -168,6 +180,16 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
 	public String getStudentCountStyle() {
 	    return studentCountStyle;
 	}
+
+	@Override
+	public void setExpirationDateStyle(String style) {
+	    this.expirationDateStyle = style;
+	}
+
+	@Override
+	public String getExpirationDateStyle() {
+	    return expirationDateStyle;
+	}
 	
 	public Date getAccountCreateDate() {
 	    return accountCreateDate;
@@ -196,6 +218,7 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
     public String toString() {
         return "AccountInfoModelImplPojo [schoolName=" + schoolName + ", isFreeAccount=" + isFreeAccount + ", schoolUserName=" + schoolUserName
                 + ", adminUserName=" + adminUserName + ", passcode=" + passcode + ", lastLogin=" + lastLogin + ", expirationDate=" + expirationDate
+                + ", currentDate=" + currentDate
                 + ", maxStudents=" + maxStudents + ", totalStudents=" + totalStudents + ", countFreeStudents=" + countFreeStudents + ", hasTutoring="
                 + hasTutoring + ", tutoringMinutes=" + tutoringMinutes + ", subscriberId=" + subscriberId + ", studentCountStyle=" + studentCountStyle
                 + ", accountCreateDate=" + accountCreateDate + ", accountRepEmail=" + accountRepEmail + "]";

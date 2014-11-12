@@ -34,6 +34,10 @@ public interface AccountInfoModel extends Response {
 
     public void setExpirationDate(String expirationDate);
 
+    public String getCurrentDate();
+
+    public void setCurrentDate(String currentDate);
+
     public Integer getMaxStudents();
 
     public void setMaxStudents(Integer maxStudents);
@@ -71,6 +75,10 @@ public interface AccountInfoModel extends Response {
     public void setStudentCountStyle(String style);
 
     public String getStudentCountStyle();
+
+	public void setExpirationDateStyle(String string);
+
+	public String getExpirationDateStyle();
 
     public Date getAccountCreateDate();
 
