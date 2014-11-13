@@ -7,6 +7,8 @@ import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentTreeCustomProblemsLis
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
@@ -756,15 +758,20 @@ public class AddProblemDialog extends GWindow {
 //        w.setWidget(bCont);
 //        w.setVisible(true);
         
-        
-        
-        showDialog(new AddProblemsCallback() {
+        new GwtTester(new TestWidget() {
             @Override
-            public void problemsAdded(List<ProblemDto> problemsAdded) {
-                // TODO Auto-generated method stub
-                
+            public void runTest() {
+                __sharedInstance = null;
+                showDialog(new AddProblemsCallback() {
+                    @Override
+                    public void problemsAdded(List<ProblemDto> problemsAdded) {
+                        CmMessageBox.showAlert("problems: " + problemsAdded.size());
+                    }
+                });
+
             }
         });
+        
     }
 }
 

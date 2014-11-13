@@ -165,6 +165,7 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
 
             @Override
             public void setValue(BaseDto object, String value) {
+                System.out.println("Value: " + value);
             }
 
             @Override
@@ -201,6 +202,7 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         _tree.addCheckChangedHandler(new CheckChangedHandler<BaseDto>() {
             @Override
             public void onCheckChanged(CheckChangedEvent<BaseDto> event) {
+                List<BaseDto> items = event.getItems();
                 _callBack.nodeWasChecked();
             }
         });

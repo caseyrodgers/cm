@@ -39,8 +39,11 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         try {
             Hit[] results = HMIndexSearcher.getInstance().searchFor("inmh", action.getSearch());
             for (Hit hit : results) {
-                
-                topics.add(new Topic(hit.getTitle(), hit.getUrl()));
+                String url =  hit.getUrl();
+                if(url == null) {
+                    url = hit.getName();
+                }
+                topics.add(new Topic(hit.getTitle(),url));
             }
         } catch (Throwable e) {
             e.printStackTrace();

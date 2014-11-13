@@ -43,19 +43,24 @@
     <listener-class>hotmath.gwt.cm_rpc_core.server.rpc.ContextListener</listener-class>
   </listener>
 
-  <!-- WIRIS (math) editor servlet defs -->
+  <!-- WIRIS (math) editor servlet defs 
   <servlet>
      <servlet-name>pluginwiris</servlet-name>
      <servlet-class>com.wiris.plugin.Main</servlet-class>
      <init-param>
          <param-name>com.wiris.editor.configurationPath</param-name>
-        <param-value>/dev2/cm/src/main/webapp/WEB-INF/pluginwiris/configuration.ini</param-value>
+        <param-value>/home/hotmath/work/cm/target/cm-1.0-SNAPSHOT/WEB-INF/pluginwiris/configuration.ini</param-value>
    </init-param>
   </servlet>
   <servlet-mapping>
      <servlet-name>pluginwiris</servlet-name>
+     <url-pattern>/app/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+     <servlet-name>pluginwiris</servlet-name>
      <url-pattern>/pluginwiris_engine/app/*</url-pattern>
   </servlet-mapping>
+  -->
   <!--  END WIRIS editor configuration -->  
 
   <servlet>

@@ -598,10 +598,23 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- <dependency> <groupId>lucene</groupId> <artifactId>lucene</artifactId> 
-			<version>2.1</version> <scope>compile</scope> </dependency> <dependency> 
+		<dependency> 
+                    <groupId>lucene</groupId> 
+                    <artifactId>lucene</artifactId> 
+		    <version>2.1</version> 
+                    <scope>compile</scope> 
+                </dependency> 
+		<dependency> 
+                    <groupId>lucene</groupId> 
+                    <artifactId>lucene-snowball</artifactId> 
+		    <version>2.1</version> 
+                    <scope>compile</scope> 
+                </dependency> 
+                 
+                <!-- <dependency> 
 			<groupId>com.codeborne</groupId> <artifactId>selenide</artifactId> <version>2.7</version> 
-			</dependency> -->
+		</dependency>
+                -->
 
 	</dependencies>
 

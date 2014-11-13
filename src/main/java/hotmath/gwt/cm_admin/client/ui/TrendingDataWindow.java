@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -14,6 +16,7 @@ import hotmath.gwt.shared.client.model.ProgramData;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAssessmentReportAction;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
+import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.ArrayList;
@@ -137,7 +140,7 @@ public class TrendingDataWindow extends GWindow {
 
     private void loadTrendDataAsync() {
 
-        if(StudentGridPanel.instance.getCurrentStudentCount() == 0) {
+        if(StudentGridPanel.instance != null && StudentGridPanel.instance.getCurrentStudentCount() == 0) {
             showNoStudents();
             return;
         }
@@ -146,7 +149,15 @@ public class TrendingDataWindow extends GWindow {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                GetAdminTrendingDataAction action = new GetAdminTrendingDataAction(onlyActiveOrFullHistory(), adminId, StudentGridPanel.instance._pageAction);
+                GetStudentGridPageAction pageAction=null;
+                if(StudentGridPanel.instance != null) {
+                    pageAction = StudentGridPanel.instance._pageAction;
+                }
+                else {
+                    pageAction = new  GetStudentGridPageAction();
+                    pageAction.setAdminId(2);
+                }
+                GetAdminTrendingDataAction action = new GetAdminTrendingDataAction(onlyActiveOrFullHistory(), adminId, pageAction);
                 setAction(action);
                 CmShared.getCmService().execute(action,this);
             }
@@ -159,6 +170,9 @@ public class TrendingDataWindow extends GWindow {
                 //addAreaChart();
                 addLessonsChart(trendingData);
                 addProgramCharts(trendingData.getProgramData());
+                
+                
+                forceLayout();
                 setVisible(true);
             }
         }.register();
@@ -234,5 +248,14 @@ public class TrendingDataWindow extends GWindow {
                 }
             }
         }});
+    }
+    
+    public static void startTest() {
+        new GwtTester(new TestWidget() {
+            @Override
+            public void runTest() {
+                new TrendingDataWindow(2).setVisible(true);
+            }
+        });
     }
 }

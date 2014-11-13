@@ -8,8 +8,8 @@
 
   <inherits name='com.google.gwt.activity.Activity' />
   <inherits name='com.google.gwt.place.Place' />
-   <inherits name='hotmath.gwt.cm_core.CmCore' />
- <inherits name='hotmath.gwt.cm_tutor.CmTutor' />
+  <inherits name='hotmath.gwt.cm_core.CmCore' />
+  <inherits name='hotmath.gwt.cm_tutor.CmTutor' />
       
     <!-- 
        <inherits name="com.bramosystems.oss.player.core.Core" />
