@@ -3911,7 +3911,7 @@ from CM_GROUP g
   ) ac on ac.group_id = g.id
 where id in ($$UID_LIST$$)
 and   g.admin_id > 0
-and   (is_self_reg is null or is_self_reg = 0)
+### and   (is_self_reg is null or is_self_reg = 0)
 group by group_id
 order by g.name
 
