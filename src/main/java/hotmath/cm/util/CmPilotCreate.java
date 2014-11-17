@@ -185,47 +185,47 @@ public class CmPilotCreate {
     	CmAdminDao dao = CmAdminDao.getInstance();
 
         // - quizme - a self-reg group for auto-enroll program
-        dao.createSelfRegistrationGroup(conn, aid, "quizme", CmProgram.AUTO_ENROLL, false, false);
+        dao.createSelfRegistrationGroup(conn, aid, "quizme", CmProgram.AUTO_ENROLL, false, false, true);
 
         // - prealgebra - a self-reg group for prealgebra prof prog
-        dao.createSelfRegistrationGroup(conn, aid, "prealgebra", CmProgram.PREALG_PROF, false, false);
+        dao.createSelfRegistrationGroup(conn, aid, "prealgebra", CmProgram.PREALG_PROF, false, false, true);
 
         // - algebra1 - a self-reg group for algebra1 prof program
-        dao.createSelfRegistrationGroup(conn, aid, "algebra1", CmProgram.ALG1_PROF, false, false);
+        dao.createSelfRegistrationGroup(conn, aid, "algebra1", CmProgram.ALG1_PROF, false, false, true);
 
         // - geometry - a self-reg group for geometry prof program
-        dao.createSelfRegistrationGroup(conn, aid, "geometry", CmProgram.GEOM_PROF, false, false);
+        dao.createSelfRegistrationGroup(conn, aid, "geometry", CmProgram.GEOM_PROF, false, false, true);
 
         // - algebra2 - a self-reg group for algebra2 prof program
-        dao.createSelfRegistrationGroup(conn, aid, "algebra2", CmProgram.ALG2_PROF, false, false);
+        dao.createSelfRegistrationGroup(conn, aid, "algebra2", CmProgram.ALG2_PROF, false, false, true);
 
         // - gradprep - a self-reg group for CAHSEE (CA grad prep) program
-        dao.createSelfRegistrationGroup(conn, aid, "gradprep", CmProgram.CAHSEEHM, false, false);
+        dao.createSelfRegistrationGroup(conn, aid, "gradprep", CmProgram.CAHSEEHM, false, false, true);
 
         // - cahsee - a self-reg group for CAHSEE (CA grad prep) program
-        dao.createSelfRegistrationGroup(conn, aid, "cahsee", CmProgram.CAHSEEHM, false, false);        
+        dao.createSelfRegistrationGroup(conn, aid, "cahsee", CmProgram.CAHSEEHM, false, false, true);        
 
         // - gradprepTX - a self-reg group for TAKS (Texas grad prep) program
-        dao.createSelfRegistrationGroup(conn, aid, "gradprepTX", CmProgram.TAKS, false, false);
+        dao.createSelfRegistrationGroup(conn, aid, "gradprepTX", CmProgram.TAKS, false, false, true);
         
         // - essentials - a self-reg group for essentials prof program
-        dao.createSelfRegistrationGroup(conn, aid, "essentials", CmProgram.ESSENTIALS, false, false);
+        dao.createSelfRegistrationGroup(conn, aid, "essentials", CmProgram.ESSENTIALS, false, false, true);
 
         // - exitexam - a self-ref group for nationals program
-        dao.createSelfRegistrationGroup(conn, aid, "exitexam", CmProgram.NATIONAL, false, false);
+        dao.createSelfRegistrationGroup(conn, aid, "exitexam", CmProgram.NATIONAL, false, false, true);
         
         // - added Foundations selfreg group
-        dao.createSelfRegistrationGroup(conn, aid, "foundations", CmProgram.FOUNDATIONS, false, false);
+        dao.createSelfRegistrationGroup(conn, aid, "foundations", CmProgram.FOUNDATIONS, false, false, true);
         
         if(isCollege) {
 	        // Auto-enrollment: PlaceMe
-	        dao.createSelfRegistrationGroup(conn, aid, "placeme", CmProgram.AUTO_ENROLL_COLLEGE, false, false);
+	        dao.createSelfRegistrationGroup(conn, aid, "placeme", CmProgram.AUTO_ENROLL_COLLEGE, false, false, true);
 	        
 	        // College Elementary Algebra: ElemAlg
-	        dao.createSelfRegistrationGroup(conn, aid, "elemalg", CmProgram.ELEMALG, false, false);
+	        dao.createSelfRegistrationGroup(conn, aid, "elemalg", CmProgram.ELEMALG, false, false, true);
 	                
 	        // College Basic Math: BasicMath
-	        dao.createSelfRegistrationGroup(conn, aid, "basicmath", CmProgram.BASICMATH, false, false);
+	        dao.createSelfRegistrationGroup(conn, aid, "basicmath", CmProgram.BASICMATH, false, false, true);
         }
         
     }
@@ -477,7 +477,7 @@ public class CmPilotCreate {
     			int aid = rs.getInt("aid");
 
     			try {
-    			    CmAdminDao.getInstance().createSelfRegistrationGroup(conn, aid,"foundations" , CmProgram.FOUNDATIONS, false, false);
+    			    CmAdminDao.getInstance().createSelfRegistrationGroup(conn, aid,"foundations" , CmProgram.FOUNDATIONS, false, false, false);
     			}
     			catch(Exception ex) {
     				logger.error("Error creating group", ex);

@@ -67,7 +67,11 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         if(groupModel == null) {
             groupModel = new GroupInfoModel();
             groupModel.setGroupName(student.getGroup());
-            groupModel = CmAdminDao.getInstance().addGroup(conn, action.getAdminId(),groupModel);
+            if (student.getGroup() != null)
+            	groupModel.setDescription(student.getGroup().trim() + " - Self Registration Group");
+            groupModel.setSelfReg(true);
+            groupModel.setSystemSelfReg(action.isSystemSelfReg());
+            groupModel = CmAdminDao.getInstance().addGroup(conn, action.getAdminId(), groupModel);
         }
         
         student.setGroupId(groupModel.getId());

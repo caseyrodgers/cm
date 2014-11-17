@@ -164,7 +164,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
 	    }
 	    
 	    CmServiceAsync s = CmShared.getCmService();
-        s.execute(new SaveAutoRegistrationAction(student.getAdminUid(), student), new AsyncCallback<RpcData>() {
+        s.execute(new SaveAutoRegistrationAction(student.getAdminUid(), student, false), new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {
                     _window.hide();

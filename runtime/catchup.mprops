@@ -945,8 +945,8 @@ where uid = ?
 .key=ADD_GROUP_SQL
 
 insert into CM_GROUP 
-  (name, description, is_active, admin_id)
-  values( ?, ?, ?, ?)
+  (name, description, is_active, is_self_reg, is_system_self_reg, admin_id)
+  values( ?, ?, ?, ?, ?, ?)
 
 
 .key=SUBJECT_CHAPTERS_SQL
@@ -981,7 +981,7 @@ order by td.load_order
 .key=SELECT_GROUPS_SQL
 # select Admin specific and default (admin_id=0) Groups
 
-SELECT     id, name, description, g.is_active, ifnull(is_auto_create_template, 0) as is_auto_create_template
+SELECT     id, name, description, g.is_active, g.is_system_self_reg, ifnull(is_auto_create_template, 0) as is_auto_create_template
 FROM       CM_GROUP g
 LEFT JOIN  HA_USER u
        ON  u.group_id = g.id
@@ -990,7 +990,7 @@ LEFT JOIN  HA_USER u
 WHERE      g.admin_id = ?
   AND      g.is_active = ?
 UNION
-SELECT     g.id, g.name, g.description, g.is_active,0 as is_auto_create_template
+SELECT     g.id, g.name, g.description, g.is_active, g.is_system_self_reg, 0 as is_auto_create_template
 FROM       CM_GROUP g
 WHERE      g.admin_id = 0
   AND      g.is_active = ?
@@ -999,7 +999,7 @@ ORDER BY   name asc
 
 .key=SELECT_GROUP_BY_ID
 
-SELECT     g.id, g.name, g.description, g.is_active, ifnull(is_auto_create_template, 0) as is_auto_create_template
+SELECT     g.id, g.name, g.description, g.is_active, g.is_system_self_reg, ifnull(is_auto_create_template, 0) as is_auto_create_template
 FROM       CM_GROUP g
 LEFT JOIN  HA_USER u
        ON  u.group_id = g.id
@@ -5160,11 +5160,8 @@ order by name
 
 insert into CM_PAYMENT (transaction_id, student_uid, amount, is_success, create_date)
 values(?,?,?,?,now())
-  
-  
-  
-  
-  
+
+
 .key=GET_TEST_DEF_CONFIG
 
 select test_config_json from HA_TEST_DEF where subj_id = ? and prog_id = ? and is_active in (1,2)

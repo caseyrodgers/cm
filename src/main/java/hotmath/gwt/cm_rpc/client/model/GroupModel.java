@@ -4,9 +4,13 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 public class GroupModel implements Response {
     
-    private int id;
+	private static final long serialVersionUID = 4498303143844234471L;
+
+	private int id;
     private String name;
     private String description;
+    private boolean selfPay;
+    private boolean selfReg;
 
     public GroupModel() {}
     
@@ -39,4 +43,20 @@ public class GroupModel implements Response {
     public void setDescription(String description) {
         this.description = description;
     }
+
+	public boolean getSelfPay() {
+		return selfPay;
+	}
+
+	public void setSelfPay(boolean selfPay) {
+		this.selfPay = selfPay;
+	}
+
+	public boolean getSelfReg() {
+		return selfReg;
+	}
+
+	public void setSelfReg(boolean selfReg) {
+		this.selfReg = selfReg;
+	}
 }

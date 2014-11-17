@@ -4,11 +4,16 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 public class GroupInfoModel implements Response {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4302636594712381906L;
 	int adminId;
 	String groupName; 
 	int id;
 	boolean isSelfReg;
 	boolean isActive;
+	boolean isSystemSelfReg;
 	int studentCount;
 	String description;
 	
@@ -69,7 +74,15 @@ public class GroupInfoModel implements Response {
         this.isActive = isActive;
     }
 
-    public int getStudentCount() {
+    public boolean isSystemSelfReg() {
+		return isSystemSelfReg;
+	}
+
+	public void setSystemSelfReg(boolean isSystemSelfReg) {
+		this.isSystemSelfReg = isSystemSelfReg;
+	}
+
+	public int getStudentCount() {
         return studentCount;
     }
 

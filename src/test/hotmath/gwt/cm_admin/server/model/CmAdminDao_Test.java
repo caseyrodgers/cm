@@ -73,7 +73,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
         conn.createStatement().executeUpdate("delete from HA_USER where admin_id = " + _user.getAid() + " and user_name = '" + testGroup + "'");
 
         
-        CmAdminDao.getInstance().createSelfRegistrationGroup(conn, _user.getAid(), testGroup, CmProgram.ALG1_PROF, false, true);
+        CmAdminDao.getInstance().createSelfRegistrationGroup(conn, _user.getAid(), testGroup, CmProgram.ALG1_PROF, false, true, false);
         
         groups = CmAdminDao.getInstance().getActiveGroups(_user.getAid());
         

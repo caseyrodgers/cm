@@ -137,6 +137,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
 						m.setDescription(rs.getString("description"));
 						m.setActive(rs.getInt("is_active") != 0);
 						m.setSelfReg(rs.getInt("is_auto_create_template") != 0);
+						m.setSystemSelfReg(rs.getInt("is_system_self_reg") != 0);
 						return m;
 					}
 				}).get(0);
@@ -157,6 +158,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
 						m.setGroupName(rs.getString("name"));
 						m.setActive(rs.getInt("is_active") != 0);
 						m.setSelfReg(rs.getInt("is_auto_create_template") != 0);
+					    m.setSystemSelfReg(rs.getInt("is_system_self_reg") != 0);
 						return m;
 					}
 				});
@@ -960,7 +962,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
 
 	public void createSelfRegistrationGroup(final Connection conn, Integer aid,
 			String groupName, CmProgram program, Boolean tutoringEnabled,
-			Boolean showWorkRequired) {
+			Boolean showWorkRequired, boolean isSystemSelfReg) {
 		try {
 			StudentModelI sm = new StudentModelBase();
 			sm.setName(groupName);
@@ -979,7 +981,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
 			sm.getSettings().setTutoringAvailable(tutoringEnabled);
 			sm.getSettings().setShowWorkRequired(showWorkRequired);
 			new SaveAutoRegistrationCommand().execute(conn,
-					new SaveAutoRegistrationAction(aid, sm));
+					new SaveAutoRegistrationAction(aid, sm, isSystemSelfReg));
 		} catch (Exception e) {
 			logger.warn("The self-registration group could not be created", e);
 		}
