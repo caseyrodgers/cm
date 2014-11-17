@@ -2168,6 +2168,7 @@ order by create_date
 select    g.admin_id,
           g.id,
           g.name,
+          g.is_system_self_reg,
           1 as is_self_reg, 
           count(u.uid) as student_count
 from      CM_GROUP g
@@ -2186,6 +2187,7 @@ select    g.admin_id,
           g.id,
           g.name,
           0 as is_self_reg,
+          g.is_system_self_reg,
           Count(u.uid) as student_count
 from      CM_GROUP g
 left join HA_USER u
@@ -2203,6 +2205,7 @@ select    g.admin_id,
           g.id,
           g.name,
           1 as is_self_reg,
+          1 as is_system_self_reg,
           Count(u.uid) as student_count
 from      CM_GROUP g
 left join HA_USER u
@@ -2220,6 +2223,7 @@ select    g.admin_id,
           g.id,
           g.name,
           0 as is_self_reg,
+          0 as is_system_self_reg,
           Count(u.uid) as student_count
 from      CM_GROUP g
 left join HA_USER u
@@ -2237,6 +2241,7 @@ select    0          as admin_id,
           -1         as id,
           'All Students'      as name,
           0          as is_self_reg,
+          0          as is_system_self_reg,
           Count(uid) as student_count
 from      HA_USER u
 where     u.admin_id = ?
