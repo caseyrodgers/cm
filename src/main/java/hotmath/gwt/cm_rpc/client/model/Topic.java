@@ -5,12 +5,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class Topic implements IsSerializable {
     String name;
     String file;
+    String excerpt;
 
     public Topic() {}
     
-    public Topic(String topic, String file) {
+    public Topic(String topic, String file, String excerpt) {
         this.name = topic;
         this.file = file;
+        this.excerpt = excerpt;
     }
     
     public String getName() {
@@ -29,8 +31,16 @@ public class Topic implements IsSerializable {
         this.file = file;
     }
 
+    public String getExcerpt() {
+        return excerpt;
+    }
+
+    public void setExcerpt(String excerpt) {
+        this.excerpt = excerpt;
+    }
+
     @Override
     public String toString() {
-        return "Topic [name=" + name + ", file=" + file + "]";
+        return "Topic [name=" + name + ", file=" + file + ", excerpt=" + excerpt + "]";
     }
 }

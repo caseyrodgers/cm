@@ -26,7 +26,7 @@ public class GetMobileTopicListCommand implements ActionHandler<GetMobileTopicLi
             ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                topics.add(new Topic(rs.getString("lesson"), rs.getString("file")));        
+                topics.add(new Topic(rs.getString("lesson"), rs.getString("file"), ""));        
             }
         }
         finally {

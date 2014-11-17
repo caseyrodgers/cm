@@ -138,9 +138,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         sessionData.setSessionRpa(isActivity);
         presData.setSessionTopics(HaTestRunDao.getInstance().getLessonStatuses(prescription.getTestRun().getRunId()));
         presData.setCurrSession(sessionData);
-        
-     
-        
+
         problemsResource.setLabel(title);
         int cnt = 1;
         for (AssessmentPrescription.SessionData sdata : practiceProblems) {

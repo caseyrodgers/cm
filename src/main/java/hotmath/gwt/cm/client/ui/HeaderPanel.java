@@ -4,6 +4,7 @@ import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.award.CmAwardPanel;
 import hotmath.gwt.cm_core.client.award.CmAwardPanel.AwardCallback;
+import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
@@ -16,6 +17,7 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.MyIconButton;
+import hotmath.gwt.cm_tools.client.ui.SearchPanel;
 import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.ui.ShowUserProgramStatusDialog;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
@@ -39,10 +41,12 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.widget.core.client.button.IconButton;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 public class HeaderPanel extends FlowLayoutContainer {
 
@@ -94,6 +98,18 @@ public class HeaderPanel extends FlowLayoutContainer {
 		add(awardTip);
 		add(_helloInfo);
 
+		SexyButton searchButton = new SexyButton("Search");
+		searchButton.addStyleName("header-panel-search-btn");
+		//searchButton.setToolTip("Search for and explore topics");
+		searchButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                new SearchPanel().showWindow();
+            }
+        });
+		new QuickTip(searchButton).setToolTip("Search for topics");
+		add(searchButton);
+		
 		helpButton = new MyIconButton("header-panel-help-btn");
 		helpButton.addSelectHandler(new SelectHandler() {
 			@Override
@@ -135,9 +151,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 								 * note we set a default heading, no matter what
 								 * the test type
 								 */
-								CmMainPanel.__lastInstance._westPanelWrapper
-										.setHeadingText(context
-												.getContextSubTitle());
+								CmMainPanel.__lastInstance.setContextSubTitle(context.getContextSubTitle());
 							}
 							break;
 						case EVENT_TYPE_TOPIC_CHANGED:

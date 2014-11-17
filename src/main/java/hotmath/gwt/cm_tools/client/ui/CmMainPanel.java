@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm.client.ui.context.QuizContext;
+
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -98,15 +98,16 @@ public class CmMainPanel extends BorderLayoutContainer {
 		_westPanelWrapper.setWidget(_westPanel);
 		setWestWidget(_westPanelWrapper, westData);
 
-		addTools();
-
+	    List<Widget> tools = this.cmGuiDef.getContext().getTools();
+	    if(tools != null && tools.size() > 0) {
+	        addTools(tools);   // will add north section to and push west's center down down
+	    }
 		setMainPanelContainer();
 
         //_mainContent.getElement().setAttribute("style", "background: red");
 		if(cmGuiDef.getCenterWidget() != null) {
 		    _mainContentWrapper.getResourceWrapper().add(cmGuiDef.getCenterWidget());
 		}
-
 	}
 	
 	
@@ -141,9 +142,7 @@ public class CmMainPanel extends BorderLayoutContainer {
 	 * 
 	 * 
 	 */
-	private void addTools() {
-		List<Widget> comps = this.cmGuiDef.getContext().getTools();
-
+	private void addTools(List<Widget> comps) {
 		// Add the special prev/next buttons to horizontal panel
 		FlowLayoutContainer lc = new FlowLayoutContainer();
 		lc.setStyleName("cm-main-panel-button-panel");
@@ -199,14 +198,14 @@ public class CmMainPanel extends BorderLayoutContainer {
                 /** Remove any resource due to tutor using
                  *  hardcoded ids. 
                  */
-                if(__lastInstance != null) {
-                    if(ContextController.getInstance().getTheContext() instanceof QuizContext) {
-                        // skip it, leave it up
-                    }
-                    else {
-                        __lastInstance.removeResource();
-                    }
-                }
+//                if(__lastInstance != null) {
+//                    if(ContextController.getInstance().getTheContext() instanceof QuizContext) {
+//                        // skip it, leave it up
+//                    }
+//                    else {
+//                        __lastInstance.removeResource();
+//                    }
+//                }
             }
         });
 
@@ -538,5 +537,11 @@ public class CmMainPanel extends BorderLayoutContainer {
         
         return false;
     }-*/;
+
+
+
+    public void setContextSubTitle(String contextSubTitle) {
+        _westPanelWrapper.setHeadingText(contextSubTitle);        
+    }
     
 }

@@ -1,5 +1,6 @@
 package hotmath.gwt.cm.client.ui.context;
 
+import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
@@ -8,6 +9,8 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.SetLessonCompletedAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.ResourceMenuButton;
+import hotmath.gwt.cm_tools.client.ui.ResourceMenuButton.RegisterCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -60,6 +63,19 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
         
         PrescriptionSessionDataResource review=null;
         // setTitle("Choose a resource type, then click one of its items.");
+        
+        ResourceMenuButton.RegisterCallback callback = new RegisterCallback() {
+            @Override
+            public void registerItems(String label, List<InmhItemData> resouresToRegister) {
+                PrescriptionCmGuiDefinition._registeredResources.put(label, resouresToRegister);                
+            }
+            
+            @Override
+            public void loadResourceIntoHistory(String label, String resource) {
+                CmHistoryManager.loadResourceIntoHistory(label, resource);
+            }
+        };
+        
         for (PrescriptionSessionDataResource resource : resources) {
             
             /** do not show EPPs
@@ -76,7 +92,7 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
                 }
             }
             
-            ResourceMenuButton btnResource = new ResourceMenuButton(resource);
+            ResourceMenuButton btnResource = new ResourceMenuButton(resource, callback);
 
             resourceButtons.put(resource.getType().label(), btnResource);
             
@@ -103,7 +119,7 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
         add(new HTML("<hr class='resource-separator'/>"));
         add(createFiller());
 
-        ResourceMenuButton rbtn = new ResourceMenuButton(review);
+        ResourceMenuButton rbtn = new ResourceMenuButton(review, callback);
         if(isCustomProgram) {
             rbtn.setEnabled(false);
         }
@@ -111,13 +127,15 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
         add(createFiller());
 
         for (PrescriptionSessionDataResource resource : new CmInmhStandardResources()) {
-    		ResourceMenuButton btn = new ResourceMenuButton(resource);
+    		ResourceMenuButton btn = new ResourceMenuButton(resource, callback);
     		add(btn);
     		add(createFiller());
     		resourceButtons.put(resource.getType().label(), btn);
         }
     }
 
+    
+    
     
     private Widget createFiller() {
     	return new HTML("<div class='resource-filler'> &nbsp; </div>");

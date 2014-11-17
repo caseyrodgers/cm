@@ -52,7 +52,6 @@ public class GetTopicPrescriptionCommand implements ActionHandler<GetTopicPrescr
         
         int userSharedUser = CatchupMathProperties.getInstance().getProblemAsInt("topic_search_shared_user", 737521); // 24412);
         
-        
         String lesson = action.getTopicFile();
         if(!lesson.endsWith(".html")) {
             lesson = lookupLessonFileFromName(conn, lesson);

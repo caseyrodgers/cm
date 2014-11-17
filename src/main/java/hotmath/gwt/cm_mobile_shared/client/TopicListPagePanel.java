@@ -344,7 +344,7 @@ public class TopicListPagePanel extends AbstractPagePanel {
         CmList<Topic> topics = new CmArrayList<Topic>();
         for(int i=0,t=lines.length;i<t;i++) {
             String p[] = lines[i].split("\\|");
-            Topic topic = new Topic(p[0],p[1]);
+            Topic topic = new Topic(p[0],p[1], "");
             topics.add(topic);
         }
         return topics;

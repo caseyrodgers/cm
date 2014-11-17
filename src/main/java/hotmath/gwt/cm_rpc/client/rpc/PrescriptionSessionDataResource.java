@@ -55,6 +55,7 @@ public class PrescriptionSessionDataResource implements IsSerializable {
 	List<InmhItemData> items = new ArrayList<InmhItemData>();
 
 
+
 	public List<InmhItemData> getItems() {
 		return items;
 	}

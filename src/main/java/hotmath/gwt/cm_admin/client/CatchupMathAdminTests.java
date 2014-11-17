@@ -23,6 +23,8 @@ import hotmath.gwt.cm_tools.client.search.LessonSearchWindow;
 import hotmath.gwt.cm_tools.client.teacher.AddFolderDialog;
 import hotmath.gwt.cm_tools.client.ui.DateRangePickerDialog;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
+import hotmath.gwt.cm_tools.client.ui.SearchPanel;
+import hotmath.gwt.cm_tools.client.ui.TopicExplorerManager;
 import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.util.CreateTemplateFromClipboardImage;
@@ -47,6 +49,12 @@ public class CatchupMathAdminTests {
         
         if(test.equals("CustomProgramDialog")) {
         	CustomProgramDialog.startTest();
+        }
+        else if(test.equals("TopicExplorerManager")) {
+            TopicExplorerManager.startTest();
+        }
+        else if(test.equals("SearchPanel")) {
+            SearchPanel.startTest();
         }
         else if(test.equals("TrendingDataWindow")) {
             TrendingDataWindow.startTest();

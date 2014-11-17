@@ -281,6 +281,15 @@ h1,h2,h3,h4 {
 		!important;
 }
 
+
+.header-panel-search-btn {
+	position: absolute !important;
+	left: 275px;
+	top: 4px;
+	height: 30px;
+}
+
+
 .header-panel-cmu-btn {
 	height: 34px;
 	left: 44%;

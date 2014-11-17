@@ -45,7 +45,7 @@ public class HistoryPanel extends FlowPanel {
                         }
                     }
                     if(!found)
-                        __historyLessons.add(new Topic(p[0], p[1]));
+                        __historyLessons.add(new Topic(p[0], p[1], ""));
                 }
             }
         }
@@ -66,7 +66,7 @@ public class HistoryPanel extends FlowPanel {
                 break;
             }
         }
-        lessons.add(0,new Topic(title, file));
+        lessons.add(0,new Topic(title, file, ""));
 
         if (Storage.isSupported()) {
             Storage storeage = Storage.getLocalStorage();

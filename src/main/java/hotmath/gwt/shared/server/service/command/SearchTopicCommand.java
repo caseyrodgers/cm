@@ -20,6 +20,11 @@ import org.apache.log4j.Logger;
  * 
  * Search for a lesson/topic using wildcards
  * 
+ * Returns a list of topics that match search.
+ * 
+ * User can select a given lesson (multi?) and have
+ * a prescription created based on that lesson.
+ * 
  * 
  * @author casey
  * 
@@ -43,7 +48,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                 if(url == null) {
                     url = hit.getName();
                 }
-                topics.add(new Topic(hit.getTitle(),url));
+                topics.add(new Topic(hit.getTitle(),url, hit.getSummary()));
             }
         } catch (Throwable e) {
             e.printStackTrace();

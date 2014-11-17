@@ -40,6 +40,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
+import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -132,6 +133,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         _grid.getView().setAutoExpandColumn(l.get(l.size()-1));
         _grid.getView().setStripeRows(true);
         _grid.getView().setColumnLines(true);
+        _grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         _grid.addHandler(new DoubleClickHandler() {
             @Override

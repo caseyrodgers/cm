@@ -454,6 +454,9 @@ public class UserInfo implements  Response {
      * @return
      */
     static public UserInfo getInstance() {
+        if(__instance == null) {
+            __instance = new UserInfo();
+        }
         return __instance;
     }
     

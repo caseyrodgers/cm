@@ -84,12 +84,17 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
     /** Should the whiteboard be shown
      */
     protected DisplayMode getInitialWhiteboardDisplay() {
-        if(UserInfo.getInstance().isShowWorkRequired() || __lastDisplayMode == DisplayMode.WHITEBOARD) {
-            return DisplayMode.WHITEBOARD;
+        if(UserInfo.getInstance() == null) {
+            return DisplayMode.TUTOR;
         }
         else {
-            return DisplayMode.TUTOR;
-        }        
+            if(UserInfo.getInstance().isShowWorkRequired() || __lastDisplayMode == DisplayMode.WHITEBOARD) {
+                return DisplayMode.WHITEBOARD;
+            }
+            else {
+                return DisplayMode.TUTOR;
+            }
+        }
     }
     
     
@@ -111,12 +116,16 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
      */
     @Override
     public ResourceViewerState getInitialMode() {
-        if(UserInfo.getInstance().isShowWorkRequired() ||
-                __lastDisplayMode != null && __lastDisplayMode == DisplayMode.WHITEBOARD) {
-            return ResourceViewerState.MAXIMIZED;
+        if(UserInfo.getInstance() == null) {
+            return ResourceViewerState.OPTIMIZED; 
         }
         else {
-            return ResourceViewerState.OPTIMIZED;
+            if(UserInfo.getInstance().isShowWorkRequired() ||  __lastDisplayMode != null && __lastDisplayMode == DisplayMode.WHITEBOARD) {
+                return ResourceViewerState.MAXIMIZED;
+            }
+            else {
+                return ResourceViewerState.OPTIMIZED;
+            }
         }
     }
     
