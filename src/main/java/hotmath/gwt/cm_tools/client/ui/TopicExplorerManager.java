@@ -30,6 +30,8 @@ public class TopicExplorerManager extends GWindow {
         setHeadingText("Catchup Math Topic Explorer");
         setMaximizable(true);
         
+        setModal(false);
+        
         // _tabPanel.add(_searchPanel, new TabItemConfig("Search",  false));
         setWidget(_tabPanel);
         

@@ -31,10 +31,13 @@ import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.FocusEvent;
+import com.sencha.gxt.widget.core.client.event.FocusEvent.FocusHandler;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 public class CmMainPanel extends BorderLayoutContainer {
 
-	public static CmMainPanel __lastInstance;
+	public static CmMainPanel __activeInstance;
 
 	public CmMainResourceWrapper _mainContentWrapper;
 
@@ -67,7 +70,7 @@ public class CmMainPanel extends BorderLayoutContainer {
 	 */
 	public CmMainPanel(final CmGuiDefinition cmGuiDef) {
 
-		__lastInstance = this;
+		__activeInstance = this;
 		
 		addStyleName("cm-main-panel");
 		
@@ -157,7 +160,7 @@ public class CmMainPanel extends BorderLayoutContainer {
 	 * 
 	 */
 	public void removeResource() {
-	    __lastInstance._mainContentWrapper.getResourceWrapper().clear();
+	    __activeInstance._mainContentWrapper.getResourceWrapper().clear();
 	    _lastResourceViewer = null;
 	    _lastResourceContentPanel = null;
 	}
@@ -220,26 +223,26 @@ public class CmMainPanel extends BorderLayoutContainer {
 						switch (event.getEventType()) {
 
 						case EVENT_TYPE_RESOURCE_VIEWER_OPEN:
-							__lastInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
+							__activeInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
 							break;
 
 						case EVENT_TYPE_RESOURCE_VIEWER_CLOSE:
-							__lastInstance.expandResourceButtons();
-							__lastInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
+							__activeInstance.expandResourceButtons();
+							__activeInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
 							break;
 
 						case EVENT_TYPE_WINDOW_RESIZED:
-							__lastInstance._mainContentWrapper.fireWindowResized();
+							__activeInstance._mainContentWrapper.fireWindowResized();
 							break;
 							
 							
 						case EVENT_TYPE_MAXIMIZE_RESOURCE:
-						    __lastInstance.maximizeResource();
+						    __activeInstance.maximizeResource();
 						    break;
 						    
 						    
                         case EVENT_TYPE_OPTIMIZE_RESOURCE:
-                            __lastInstance.optimizeResource();
+                            __activeInstance.optimizeResource();
                             break;
 						    
 
@@ -253,7 +256,7 @@ public class CmMainPanel extends BorderLayoutContainer {
 							setQuizQuestionDisplayAsActive(null);
 							
 							
-							__lastInstance.maximizeResource();
+							__activeInstance.maximizeResource();
 							break;
 							
 							
@@ -267,34 +270,34 @@ public class CmMainPanel extends BorderLayoutContainer {
 							 * only hide windows if they might contain a
 							 * whiteboard
 							 */
-							if (__lastInstance != null
-								&& __lastInstance._mainContentWrapper != null
-								&& __lastInstance._lastResourceViewer != null
-								&& (__lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
-							         && ((CmResourcePanelImplWithWhiteboard)__lastInstance._lastResourceViewer).isWhiteboardActive()
-							         || __lastInstance._lastResourceViewer instanceof ResourceViewerImplTutor)){
+							if (__activeInstance != null
+								&& __activeInstance._mainContentWrapper != null
+								&& __activeInstance._lastResourceViewer != null
+								&& (__activeInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
+							         && ((CmResourcePanelImplWithWhiteboard)__activeInstance._lastResourceViewer).isWhiteboardActive()
+							         || __activeInstance._lastResourceViewer instanceof ResourceViewerImplTutor)){
 									/**
 									 * If the whiteboard is active
 									 * hide the current resource to avoid Flash
 									 * z-order issues
 									 * 
 									 */
-									__lastInstance._mainContentWrapper.getResourceWrapper().clear();
+									__activeInstance._mainContentWrapper.getResourceWrapper().clear();
 							}
 							break;
 
 						case EVENT_TYPE_MODAL_WINDOW_CLOSED:
-							if (__lastInstance != null
-									&& __lastInstance._mainContentWrapper != null
-									&& __lastInstance._lastResourceViewer != null
-									&& __lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
-	                                && (__lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
-	                                        && ((CmResourcePanelImplWithWhiteboard)__lastInstance._lastResourceViewer).isWhiteboardActive()
-	                                        || __lastInstance._lastResourceViewer instanceof ResourceViewerImplTutor)){
+							if (__activeInstance != null
+									&& __activeInstance._mainContentWrapper != null
+									&& __activeInstance._lastResourceViewer != null
+									&& __activeInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
+	                                && (__activeInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
+	                                        && ((CmResourcePanelImplWithWhiteboard)__activeInstance._lastResourceViewer).isWhiteboardActive()
+	                                        || __activeInstance._lastResourceViewer instanceof ResourceViewerImplTutor)){
 								       /** If whiteboard is active, restore any resources
 								        * 
 								        */
-										__lastInstance.showLastResource();
+										__activeInstance.showLastResource();
 										
 										/** Trigger a refresh to allow any viewer to reset any
 										 *  data that might be reset if panel is removed/added.
@@ -305,17 +308,17 @@ public class CmMainPanel extends BorderLayoutContainer {
 							break;
 							
                         case EVENT_TYPE_MODAL_WINDOW_CLEAR:
-                            if (__lastInstance != null) {
-                                __lastInstance._mainContentWrapper = null;
-                                __lastInstance = null;
+                            if (__activeInstance != null) {
+                                __activeInstance._mainContentWrapper = null;
+                                __activeInstance = null;
                             }
                             break;
                             
                             
                             
                         case EVENT_TYPE_TOPIC_CHANGED:
-                            if(__lastInstance != null) {
-                                __lastInstance.removeResource();
+                            if(__activeInstance != null) {
+                                __activeInstance.removeResource();
                             }
                             break;
 						}
@@ -447,7 +450,7 @@ public class CmMainPanel extends BorderLayoutContainer {
     }
     
     
-
+    
     public void showResource(CmResourcePanel panel, String title) {
         showResource(panel, title, true);
     }

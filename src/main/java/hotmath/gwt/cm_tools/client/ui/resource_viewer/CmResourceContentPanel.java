@@ -77,7 +77,7 @@ public class CmResourceContentPanel extends ContentPanel {
             }
         }
         
-        boolean isCurrentlyMaximized = (CmMainPanel.__lastInstance._mainContentWrapper.getWrapperMode() == WrapperType.MAXIMIZED);
+        boolean isCurrentlyMaximized = (CmMainPanel.__activeInstance._mainContentWrapper.getWrapperMode() == WrapperType.MAXIMIZED);
         
         __currentDisplayState = isCurrentlyMaximized?ResourceViewerState.MAXIMIZED:ResourceViewerState.OPTIMIZED;
         viewerState = __currentDisplayState;
@@ -125,6 +125,9 @@ public class CmResourceContentPanel extends ContentPanel {
          * resources maximized
          * 
          */
+        if(true)
+            return;
+        
         if (viewerState == ResourceViewerState.OPTIMIZED) {
             setupDisplayForOptimize();
         } else {

@@ -186,8 +186,8 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
                 
                 // CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
-                if (CmMainPanel.__lastInstance != null) {
-                    CmMainPanel.__lastInstance._mainContentWrapper.getResourceWrapper().forceLayout();
+                if (CmMainPanel.__activeInstance != null) {
+                    CmMainPanel.__activeInstance._mainContentWrapper.getResourceWrapper().forceLayout();
                 }
             }
         });
@@ -350,7 +350,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
         String title = "Correct " + numCorrect + " out of " + limit;
         InfoPopupBox.display(new CmInfoConfig("Problem Set Complete",title));
 
-        CmMainPanel.__lastInstance.removeResource();
+        CmMainPanel.__activeInstance.removeResource();
 
         new SolutionSetCompleteDialog(numCorrect, limit);
     }

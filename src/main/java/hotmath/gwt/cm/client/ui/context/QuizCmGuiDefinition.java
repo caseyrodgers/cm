@@ -186,7 +186,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition  {
         QuizContext qc = (QuizContext) getContext();
         qc.setTitle(_htmlResult.getTitle());
 
-        CmMainPanel.__lastInstance.showResource(resourcePanel, _htmlResult.getTitle());
+        CmMainPanel.__activeInstance.showResource(resourcePanel, _htmlResult.getTitle());
 
         ContextController.getInstance().setCurrentContext(qc);
 

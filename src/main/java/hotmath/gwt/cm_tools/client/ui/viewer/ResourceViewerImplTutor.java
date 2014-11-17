@@ -220,7 +220,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         String title = "Correct " + numCorrect + " out of " + limit;
         InfoPopupBox.display(new CmInfoConfig("Problem Set Complete",title));
 
-        CmMainPanel.__lastInstance.removeResource();
+        CmMainPanel.__activeInstance.removeResource();
 
         new SolutionSetCompleteDialog(numCorrect, limit);
     }
@@ -349,8 +349,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                 addResource(tutorPanel, getResourceItem().getTitle());
 
                 // CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
-                if (CmMainPanel.__lastInstance != null)
-                    CmMainPanel.__lastInstance._mainContentWrapper.getResourceWrapper().forceLayout();
+                if (CmMainPanel.__activeInstance != null)
+                    CmMainPanel.__activeInstance._mainContentWrapper.getResourceWrapper().forceLayout();
 
                 try {
                     /**

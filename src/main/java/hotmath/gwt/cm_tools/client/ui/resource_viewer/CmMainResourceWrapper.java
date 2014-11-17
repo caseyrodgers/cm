@@ -88,7 +88,7 @@ public class CmMainResourceWrapper {
                         container.forceLayout();
                     }
                     else {
-                        int h = getCalculatedHeight(CmMainPanel.__lastInstance, resourcePanel);
+                        int h = getCalculatedHeight(CmMainPanel.__activeInstance, resourcePanel);
                         if (h > 0) {
                             container.setHeight(h);
                         }
@@ -98,7 +98,7 @@ public class CmMainResourceWrapper {
                     isFiring = false;
                 }
                 
-                CmMainPanel.__lastInstance.forceLayout();
+                CmMainPanel.__activeInstance.forceLayout();
             }
         });
 
@@ -161,7 +161,7 @@ public class CmMainResourceWrapper {
         _wrapper.add(_contentPanel);
         
         _wrapper.forceLayout();
-        CmMainPanel.__lastInstance.forceLayout();
+        CmMainPanel.__activeInstance.forceLayout();
     }
 
     public WrapperType getWrapperMode() {

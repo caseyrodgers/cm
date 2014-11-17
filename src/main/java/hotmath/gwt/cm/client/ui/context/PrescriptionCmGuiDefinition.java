@@ -107,7 +107,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         final int sessionNumberF = sessionNumber;
 
         // clear any existing resource
-        CmMainPanel.__lastInstance.removeResource();
+        CmMainPanel.__activeInstance.removeResource();
 
         CmBusyManager.setBusy(true);
 
@@ -190,14 +190,14 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     if (location.getResourceNumber() > -1) {
 
                         InmhItemData itemData = resourceList.get(location.getResourceNumber());
-                        CmMainPanel.__lastInstance.showResource(itemData);
+                        CmMainPanel.__activeInstance.showResource(itemData);
 
                     } else {
                         String resourceId = location.getResourceId();
                         InmhItemData item = new InmhItemData();
                         item.setType(CmResourceType.mapResourceType(resourceTypeToView));
                         item.setFile(resourceId);
-                        CmMainPanel.__lastInstance.showResource(item);
+                        CmMainPanel.__activeInstance.showResource(item);
                     }
                 }
             }
@@ -306,7 +306,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 
                 HTML ohtml = new HTML(html);
                 ohtml.addStyleName("prescription-help-panel");
-                CmMainPanel.__lastInstance.showCenterMessage(ohtml);
+                CmMainPanel.__activeInstance.showCenterMessage(ohtml);
                 //ohtml.getElement().<FxElement>cast().fadeToggle();
             }
         };

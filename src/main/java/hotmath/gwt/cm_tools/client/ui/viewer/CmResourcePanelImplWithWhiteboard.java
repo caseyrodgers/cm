@@ -314,11 +314,11 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
         	add(flowContainer);
             //CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(true);
         	
-        	CmMainPanel.__lastInstance.ensureOptimizedResource();
+        	CmMainPanel.__activeInstance.ensureOptimizedResource();
         }
         else {
             
-            CmMainPanel.__lastInstance.ensureMaximizeResource();
+            CmMainPanel.__activeInstance.ensureMaximizeResource();
 
             if(_showWorkBtn != null)
                 _showWorkBtn.setText("Hide Whiteboard");
@@ -374,7 +374,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             borderLayoutContainer.setEastWidget(_showWorkPanel, bld);
             add(borderLayoutContainer);
             
-            CmMainPanel.__lastInstance.ensureMaximizeResource();
+            CmMainPanel.__activeInstance.ensureMaximizeResource();
         }
         
 

@@ -273,7 +273,7 @@ public class CmMainResourceWrapper_Old {
                                 currentContainer.setHeight(resourcePanel.getOptimalHeight());
                             }
                             else {
-                                int h = CmMainResourceWrapper_Old.getCalculatedHeight(CmMainPanel.__lastInstance, resourcePanel);
+                                int h = CmMainResourceWrapper_Old.getCalculatedHeight(CmMainPanel.__activeInstance, resourcePanel);
                                 if (h > 0) {
                                     //Info.display("fireWindowResized", " h==" + h);
                                     currentContainer.setHeight(h);

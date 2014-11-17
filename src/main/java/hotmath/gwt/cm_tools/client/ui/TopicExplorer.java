@@ -7,10 +7,8 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.ui.resource.CmInmhStandardResources;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,14 +25,14 @@ import com.sencha.gxt.widget.core.client.info.Info;
 public class TopicExplorer extends SimpleContainer {
     
     private Topic topic;
-    CmMainPanel _mainPanel;
+    CmMainPanel2 _mainPanel;
     private PrescriptionData prescriptionData;
     private TopicExplorerGuiContext _guiContext;
     public TopicExplorer(Topic topic) {
         this.topic = topic;
     
         _guiContext = new TopicExplorerGuiContext(topic);
-        _mainPanel = new CmMainPanel(_guiContext);
+        _mainPanel = new CmMainPanel2(_guiContext);
         CenterLayoutContainer lc = new CenterLayoutContainer();
         lc.setWidget(new HTML("<h1>Loading " + topic.getName() + "</h1>"));
         

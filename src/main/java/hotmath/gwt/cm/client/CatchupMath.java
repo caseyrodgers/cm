@@ -115,7 +115,7 @@ public class CatchupMath implements EntryPoint {
         _mainPort = new Viewport() {
             protected void onWindowResize(int width, int height) {
                 super.onWindowResize(width, height);
-                if (CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContentWrapper != null) {
+                if (CmMainPanel.__activeInstance != null && CmMainPanel.__activeInstance._mainContentWrapper != null) {
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WINDOW_RESIZED));
                 }
                 if (CmRpcCore.EVENT_BUS != null) {
@@ -369,7 +369,7 @@ public class CatchupMath implements EntryPoint {
         CmRpcCore.EVENT_BUS.addHandler(TutorContainerActivatedEvent.TYPE, new TutorContainerActivatedEventHandler() {
             @Override
             public void tutorContainerActivated(TutorContainerActivatedEvent event) {
-                CmMainPanel.__lastInstance.removeResourceIfTutor();
+                CmMainPanel.__activeInstance.removeResourceIfTutor();
             }
         });
 

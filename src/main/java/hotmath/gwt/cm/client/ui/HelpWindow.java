@@ -158,8 +158,8 @@ public class HelpWindow extends GWindow {
             toolBar.add(new MyOptionButton("Reset Problem", "Reset the current problem.", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
-                    if(CmMainPanel.__lastInstance != null) {
-                        CmResourcePanel resource = CmMainPanel.__lastInstance.getLastResource();
+                    if(CmMainPanel.__activeInstance != null) {
+                        CmResourcePanel resource = CmMainPanel.__activeInstance.getLastResource();
                         if(resource instanceof ResourceViewerImplTutor2) {
                             String pid = ((ResourceViewerImplTutor2)resource).getResourceItem().getFile();
                             new ResetLessonDialog(UserInfo.getInstance().getUid(), pid);
@@ -268,7 +268,7 @@ public class HelpWindow extends GWindow {
         /** There is a conflict between the Quiz panel and Quiz Results .. 
          * they both cannot be active at the same time. 
          */
-        if(false && CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance.isResourceQuiz()) {
+        if(false && CmMainPanel.__activeInstance != null && CmMainPanel.__activeInstance.isResourceQuiz()) {
             studentDetailsBtn.setEnabled(false);
         }
         
@@ -393,8 +393,8 @@ public class HelpWindow extends GWindow {
 
         Widget panelToChange = null;
 
-        if (CmMainPanel.__lastInstance != null) {
-            panelToChange = CmMainPanel.__lastInstance._mainContentWrapper.getResourceWrapper();
+        if (CmMainPanel.__activeInstance != null) {
+            panelToChange = CmMainPanel.__activeInstance._mainContentWrapper.getResourceWrapper();
         } else {
             panelToChange = WelcomePanel.__instance;
         }

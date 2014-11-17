@@ -1419,16 +1419,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 	public List<GroupDto> getAssignmentGroups(final int aid) {
 		List<GroupDto> groups = new ArrayList<GroupDto>();
 		try {
-			List<GroupInfoModel> groupModels = CmAdminDao.getInstance()
-					.getActiveGroups(aid);
+			List<GroupInfoModel> groupModels = CmAdminDao.getInstance().getActiveGroups(aid);
 
 			List<Integer> inList = new ArrayList<Integer>();
 			for (GroupInfoModel gm : groupModels) {
 				inList.add(gm.getId());
 			}
 
-			String sql = CmMultiLinePropertyReader.getInstance().getProperty(
-					"GET_ASSIGNMENT_GROUP_INFO");
+			String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENT_GROUP_INFO");
 			sql = QueryHelper.createInListSQL(sql, inList);
 			groups.addAll(getJdbcTemplate().query(sql, new Object[] {},
 					new RowMapper<GroupDto>() {

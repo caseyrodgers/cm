@@ -91,7 +91,7 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
                 }
                 
                 
-                CmMainPanel.__lastInstance.forceLayout();
+                CmMainPanel.__activeInstance.forceLayout();
             }
         }.register();
     }
