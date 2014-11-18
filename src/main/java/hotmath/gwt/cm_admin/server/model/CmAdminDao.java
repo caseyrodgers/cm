@@ -281,8 +281,9 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
 			ps.setString(1, gm.getGroupName());
 			ps.setString(2, null);
 			ps.setInt(3, 1);
-			ps.setInt(4, (gm.isSystemSelfReg())?1:0);
-			ps.setInt(5, adminUid);
+			ps.setInt(4, (gm.isSelfReg())?1:0);
+			ps.setInt(5, (gm.isSystemSelfReg())?1:0);
+			ps.setInt(6, adminUid);
 
 			int count = ps.executeUpdate();
 			if (count == 1) {
