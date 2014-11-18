@@ -17,6 +17,7 @@ public class SaveAutoRegistrationAction implements Action<RpcData>{
     public SaveAutoRegistrationAction(Integer adminId, StudentModelI student, boolean isSystemSelfReg) {
         this.adminId = adminId;
         this.student = student;
+        this.isSystemSelfReg = isSystemSelfReg;
     }
     
     public Integer getAdminId() {
