@@ -3,6 +3,9 @@ package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -40,9 +43,17 @@ public class CmMainResourceWrapper {
 
     WrapperType _wrapperType;
 
-    public CmMainResourceWrapper(WrapperType wrapperType) {
+    private ResourceWrapperCallback callback;
 
+    public interface ResourceWrapperCallback {
+
+        /** get the widget this wrapper is contained in */
+        ResizeContainer getResizeContainer();
+    }
+    
+    public CmMainResourceWrapper(WrapperType wrapperType, ResourceWrapperCallback callback) {
         this._wrapperType = wrapperType;
+        this.callback = callback;
         setWrapperMode(wrapperType);
     }
 
@@ -88,7 +99,7 @@ public class CmMainResourceWrapper {
                         container.forceLayout();
                     }
                     else {
-                        int h = getCalculatedHeight(CmMainPanel.__activeInstance, resourcePanel);
+                        int h = getCalculatedHeight(callback.getResizeContainer(), resourcePanel);
                         if (h > 0) {
                             container.setHeight(h);
                         }
@@ -98,7 +109,7 @@ public class CmMainResourceWrapper {
                     isFiring = false;
                 }
                 
-                CmMainPanel.__activeInstance.forceLayout();
+                callback.getResizeContainer().forceLayout();
             }
         });
 
@@ -161,7 +172,7 @@ public class CmMainResourceWrapper {
         _wrapper.add(_contentPanel);
         
         _wrapper.forceLayout();
-        CmMainPanel.__activeInstance.forceLayout();
+        callback.getResizeContainer().forceLayout();
     }
 
     public WrapperType getWrapperMode() {

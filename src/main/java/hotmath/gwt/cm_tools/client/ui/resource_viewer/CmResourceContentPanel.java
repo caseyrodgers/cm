@@ -55,29 +55,39 @@ public class CmResourceContentPanel extends ContentPanel {
      * 
      * 
      * @param container
-     * @param panel
+     * @param resourceViewer
      */
-    public CmResourceContentPanel(final CmResourcePanel panel, String title) {
-        this._panel = panel;
+    public interface ResourceContentCallback {
+        void closeResource();
 
+        boolean isMaximized();
+    }
+    public CmResourceContentPanel(final CmResourcePanel resourceViewer, String title, final ResourceContentCallback callback) {
+        this._panel = resourceViewer;
+        ResourceContentCallback this_callback = callback;
         setHeadingHtml(title);
         addStyleName("cm-resource-viewer-container");
-        if(panel.getContainerStyleName() != null) {
-            addStyleName(panel.getContainerStyleName());
+        if(resourceViewer.getContainerStyleName() != null) {
+            addStyleName(resourceViewer.getContainerStyleName());
         }
 
         /**
          * add any resource specific tools to resource container header
          * 
          */
-        List<Widget> tools = panel.getContainerTools();
+        List<Widget> tools = resourceViewer.getContainerTools();
         if (tools != null) {
             for (int i = 0, t = tools.size(); i < t; i++) {
                 getHeader().addTool(tools.get(i));
             }
         }
-        
-        boolean isCurrentlyMaximized = (CmMainPanel.__activeInstance._mainContentWrapper.getWrapperMode() == WrapperType.MAXIMIZED);
+        /**
+        // how to know if system is currently expanded
+        // global runtime options?
+        // (CmMainPanel.__activeInstance._mainContentWrapper.getWrapperMode() == WrapperType.MAXIMIZED);
+         * 
+         */
+        boolean isCurrentlyMaximized = callback.isMaximized();
         
         __currentDisplayState = isCurrentlyMaximized?ResourceViewerState.MAXIMIZED:ResourceViewerState.OPTIMIZED;
         viewerState = __currentDisplayState;
@@ -86,35 +96,34 @@ public class CmResourceContentPanel extends ContentPanel {
          * Maximize is an optional feature
          * 
          */
-        if (panel.allowMaximize()) {
+        if (resourceViewer.allowMaximize()) {
             String text = isCurrentlyMaximized?SHRINK_TEXT:EXPAND_TEXT;
             _maximize = new TextButton(text, new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
-                    closeResource(event, panel);                
+                    closeResource(event, resourceViewer);                
             }});
             
            getHeader().addTool(_maximize);
         }
-        
+
         /**
          * Close is optional
          * 
          */
-        if (panel.allowClose()) {
+        if (resourceViewer.allowClose()) {
             getHeader().addTool(new TextButton("Close", new SelectHandler() {
-                
                 @Override
                 public void onSelect(SelectEvent event) {
-                    panel.removeResourcePanel();
-                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE, panel));
+                    resourceViewer.removeResourcePanel();
+                    
+                    callback.closeResource();
+                    
                 }
             }));
         }
         
-
- 
-        if (!panel.showContainer()) {
+        if (!resourceViewer.showContainer()) {
             getElement().setAttribute("style","background:transparent");
             setBorders(false);
             setBodyBorder(false);
@@ -125,18 +134,20 @@ public class CmResourceContentPanel extends ContentPanel {
          * resources maximized
          * 
          */
-        if(true)
-            return;
-        
         if (viewerState == ResourceViewerState.OPTIMIZED) {
             setupDisplayForOptimize();
         } else {
             setupDisplayForMaximized();
         }
+        
+        setPanelWidget(resourceViewer, false, false);
 
-        setPanelWidget(panel, false, false);
     }
     
+    
+    public void removeExpandButton() {
+        _maximize.removeFromParent();
+    }
     
     public CmResourcePanel getResourcePanel () {
         return _panel;
@@ -192,18 +203,23 @@ public class CmResourceContentPanel extends ContentPanel {
     public void setPanelWidget(CmResourcePanel panel, boolean trackChange, boolean fireCmEvent) {
         _panel = panel;
         clear();
-        
+
+
         Widget lc = panel.getResourcePanel();
-        
+
+
         /** if tutor, then make background transparent
          *  TODO: move from here..
          */
         if(panel.shouldContainerBeTransparent()) {
             getBody().applyStyles("background: transparent;border: none;");
         }
-        
+
+
         setWidget(lc);
-        
+
+
+
         if (trackChange) {
             /**
              * If resource is 'forced' to open maximum, do not allow it affect
