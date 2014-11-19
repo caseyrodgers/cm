@@ -7,9 +7,6 @@ import hotmath.gwt.cm_rpc.client.model.Topic;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class TopicExplorerManager extends GWindow {
     
@@ -38,15 +35,15 @@ public class TopicExplorerManager extends GWindow {
         
         setModal(false);
         
-        // _tabPanel.add(_searchPanel, new TabItemConfig("Search",  false));
+        _tabPanel.add(_searchPanel, new TabItemConfig("Search",  false));
         setWidget(_tabPanel);
         
-        addTool(new TextButton("Search", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                new SearchPanel().showWindow();
-            }
-        }));
+//        addTool(new TextButton("Search", new SelectHandler() {
+//            @Override
+//            public void onSelect(SelectEvent event) {
+//                new SearchPanel().showWindow();
+//            }
+//        }));
         
         setVisible(true);
     }

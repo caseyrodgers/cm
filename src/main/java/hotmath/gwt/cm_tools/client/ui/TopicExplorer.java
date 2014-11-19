@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -191,4 +193,6 @@ public class TopicExplorer extends SimpleContainer {
         /** load the first resource */
         callback.loadResourceIntoHistory(CmResourceType.REVIEW.label(),  "0");
     }
+    
+    
 }
