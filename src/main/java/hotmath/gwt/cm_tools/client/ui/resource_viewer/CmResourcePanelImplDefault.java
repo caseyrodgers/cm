@@ -38,10 +38,8 @@ public class CmResourcePanelImplDefault extends FlowLayoutContainer implements C
     }
 
     public void addResource(Widget w, String title, String styleName) {
-        
         clear();
         add(w);
-        
         //forceLayout();
     }
 

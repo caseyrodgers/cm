@@ -183,6 +183,12 @@ public enum EventType{
      *  
      */
     EVENT_TYPE_MATHJAX_RENDER,
+
+    
+    /** Force any GUI related refresh needed
+     * (for example, in GXT forceLayout)
+     */
+    EVENT_TYPE_FORCE_GUI_REFRESH,
     
     
     /** Perform any needed GUI or server action 

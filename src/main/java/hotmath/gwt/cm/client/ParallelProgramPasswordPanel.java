@@ -49,9 +49,8 @@ public class ParallelProgramPasswordPanel extends CmMainResourceWrapper {
 
     String parallelProgName;
 
-    public ParallelProgramPasswordPanel() {
-
-        super(WrapperType.OPTIMIZED);
+    public ParallelProgramPasswordPanel(ResourceWrapperCallback callback) {
+        super(WrapperType.OPTIMIZED, callback);
 
         _framedPanel = new FramedPanel();
         _framedPanel.setStyleName("register-student-form-panel");

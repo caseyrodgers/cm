@@ -38,6 +38,7 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.assignment.StudentAssignmentViewerPanel;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper.ResourceWrapperCallback;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
 import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
@@ -48,7 +49,6 @@ import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
-import hotmath.gwt.shared.client.util.CmLoggerWindow;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.SystemSyncChecker;
@@ -68,6 +68,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.Viewport;
 
@@ -115,7 +116,7 @@ public class CatchupMath implements EntryPoint {
         _mainPort = new Viewport() {
             protected void onWindowResize(int width, int height) {
                 super.onWindowResize(width, height);
-                if (CmMainPanel.__activeInstance != null && CmMainPanel.__activeInstance._mainContentWrapper != null) {
+                if (CmMainPanel.getActiveInstance() != null && CmMainPanel.getActiveInstance()._mainContentWrapper != null) {
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WINDOW_RESIZED));
                 }
                 if (CmRpcCore.EVENT_BUS != null) {
@@ -369,7 +370,7 @@ public class CatchupMath implements EntryPoint {
         CmRpcCore.EVENT_BUS.addHandler(TutorContainerActivatedEvent.TYPE, new TutorContainerActivatedEventHandler() {
             @Override
             public void tutorContainerActivated(TutorContainerActivatedEvent event) {
-                CmMainPanel.__activeInstance.removeResourceIfTutor();
+                CmMainPanel.getActiveInstance().removeResourceIfTutor();
             }
         });
 
@@ -627,7 +628,12 @@ public class CatchupMath implements EntryPoint {
             @Override
             public void onSuccess() {
                 _mainContainer.clear();
-                _mainContainer.add(new AutoStudentRegistrationPanel().getResourceWrapper());
+                _mainContainer.add(new AutoStudentRegistrationPanel(new ResourceWrapperCallback() {
+                    @Override
+                    public ResizeContainer getResizeContainer() {
+                        return CmMainPanel.getActiveInstance();
+                    }
+                }).getResourceWrapper());
                 _mainContainer.forceLayout();
             }
         });
@@ -639,7 +645,12 @@ public class CatchupMath implements EntryPoint {
             @Override
             public void onSuccess() {
                 _mainContainer.clear();
-                _mainContainer.add(new ParallelProgramPasswordPanel().getResourceWrapper());
+                _mainContainer.add(new ParallelProgramPasswordPanel(new ResourceWrapperCallback() {
+                    @Override
+                    public ResizeContainer getResizeContainer() {
+                        return CmMainPanel.getActiveInstance();
+                    }
+                }).getResourceWrapper());
                 _mainContainer.forceLayout();
             }
         });

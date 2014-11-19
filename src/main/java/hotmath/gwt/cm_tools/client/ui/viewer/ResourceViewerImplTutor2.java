@@ -17,7 +17,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
@@ -186,8 +185,8 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
                 
                 // CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
-                if (CmMainPanel.__activeInstance != null) {
-                    CmMainPanel.__activeInstance._mainContentWrapper.getResourceWrapper().forceLayout();
+                if (ResourceViewerImplTutor2.super._callback.getResizeContainer() != null) {
+                    ResourceViewerImplTutor2.super._callback.getResizeContainer().forceLayout();
                 }
             }
         });
@@ -349,9 +348,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
     static private void setSolutionSetComplete(int numCorrect, int limit) {
         String title = "Correct " + numCorrect + " out of " + limit;
         InfoPopupBox.display(new CmInfoConfig("Problem Set Complete",title));
-
-        CmMainPanel.__activeInstance.removeResource();
-
+        // _callback.getResizeContainer().removeResource();
         new SolutionSetCompleteDialog(numCorrect, limit);
     }
 

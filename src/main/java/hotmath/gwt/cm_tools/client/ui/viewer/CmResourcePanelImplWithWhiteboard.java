@@ -23,10 +23,12 @@ import java.util.List;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
@@ -42,6 +44,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
     public enum DisplayMode{TUTOR,WHITEBOARD};
     
     DisplayMode _displayMode;
+    protected WhiteboardResourceCallback _callback;
     static DisplayMode __lastDisplayMode = null;
     
     static TextButton _saveWhiteboard;
@@ -73,8 +76,18 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
         });
     }
     
+    static public interface WhiteboardResourceCallback {
+        void ensureOptimizedResource();
+        void ensureMaximizeResource();
+        ResizeContainer getResizeContainer();
+    }
+    
     public CmResourcePanelImplWithWhiteboard() {
         _displayMode = getInitialWhiteboardDisplay();
+    }
+    
+    public void setCallback(WhiteboardResourceCallback callback) {
+        this._callback = callback;
     }
 
     public boolean isWhiteboardActive() {
@@ -314,11 +327,11 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
         	add(flowContainer);
             //CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(true);
         	
-        	CmMainPanel.__activeInstance.ensureOptimizedResource();
+        	_callback.ensureOptimizedResource();
         }
         else {
             
-            CmMainPanel.__activeInstance.ensureMaximizeResource();
+            _callback.ensureMaximizeResource();
 
             if(_showWorkBtn != null)
                 _showWorkBtn.setText("Hide Whiteboard");
@@ -374,7 +387,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             borderLayoutContainer.setEastWidget(_showWorkPanel, bld);
             add(borderLayoutContainer);
             
-            CmMainPanel.__activeInstance.ensureMaximizeResource();
+            _callback.ensureMaximizeResource();
         }
         
 

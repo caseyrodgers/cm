@@ -22,7 +22,7 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -107,7 +107,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         final int sessionNumberF = sessionNumber;
 
         // clear any existing resource
-        CmMainPanel.__activeInstance.removeResource();
+        CmMainPanel.getActiveInstance().removeResource();
 
         CmBusyManager.setBusy(true);
 
@@ -190,14 +190,14 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     if (location.getResourceNumber() > -1) {
 
                         InmhItemData itemData = resourceList.get(location.getResourceNumber());
-                        CmMainPanel.__activeInstance.showResource(itemData);
+                        CmMainPanel.getActiveInstance().showResource(itemData);
 
                     } else {
                         String resourceId = location.getResourceId();
                         InmhItemData item = new InmhItemData();
                         item.setType(CmResourceType.mapResourceType(resourceTypeToView));
                         item.setFile(resourceId);
-                        CmMainPanel.__activeInstance.showResource(item);
+                        CmMainPanel.getActiveInstance().showResource(item);
                     }
                 }
             }
@@ -306,7 +306,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 
                 HTML ohtml = new HTML(html);
                 ohtml.addStyleName("prescription-help-panel");
-                CmMainPanel.__activeInstance.showCenterMessage(ohtml);
+                CmMainPanel.getActiveInstance().showCenterMessage(ohtml);
                 //ohtml.getElement().<FxElement>cast().fadeToggle();
             }
         };
@@ -372,7 +372,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                      * a Solution FIF was entered correct, so we want to mark
                      * this (current) solution as having been completed
                      */
-                    ResourceViewerImplTutor.solutionHasBeenViewed_Gwt(null);
+                    ResourceViewerImplTutor2.solutionHasBeenViewed_Gwt(null);
                 }
             }
         });

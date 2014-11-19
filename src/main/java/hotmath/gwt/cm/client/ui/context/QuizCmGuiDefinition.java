@@ -14,8 +14,8 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.QuizPage;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
+import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.WhiteboardResourceCallback;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -98,7 +99,9 @@ public class QuizCmGuiDefinition implements CmGuiDefinition  {
          * combination
          * 
          */
-        CmResourcePanel resourcePanel = new CmResourcePanelImplWithWhiteboard() {
+
+        
+        CmResourcePanelImplWithWhiteboard resourcePanel = new CmResourcePanelImplWithWhiteboard() {
         	
         	@Override
         	public boolean isQuiz() {
@@ -179,6 +182,24 @@ public class QuizCmGuiDefinition implements CmGuiDefinition  {
                 }.register();                
             }
         };
+        
+        WhiteboardResourceCallback callback = new WhiteboardResourceCallback() {
+            @Override
+            public ResizeContainer getResizeContainer() {
+                return CmMainPanel.getActiveInstance();
+            }
+            
+            @Override
+            public void ensureOptimizedResource() {
+                CmMainPanel.getActiveInstance().ensureOptimizedResource();
+            }
+            
+            @Override
+            public void ensureMaximizeResource() {
+                CmMainPanel.getActiveInstance().ensureMaximizeResource();
+            }
+        };
+        resourcePanel.setCallback(callback);;
 
         resourcePanel.addResource(qp, "Quiz");
         //resourcePanel.setScrollMode(ScrollMode.AUTOY);
@@ -186,7 +207,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition  {
         QuizContext qc = (QuizContext) getContext();
         qc.setTitle(_htmlResult.getTitle());
 
-        CmMainPanel.__activeInstance.showResource(resourcePanel, _htmlResult.getTitle());
+        CmMainPanel.getActiveInstance().showResource(resourcePanel, _htmlResult.getTitle());
 
         ContextController.getInstance().setCurrentContext(qc);
 

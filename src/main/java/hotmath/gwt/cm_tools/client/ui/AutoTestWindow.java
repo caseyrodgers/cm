@@ -94,8 +94,8 @@ public class AutoTestWindow extends GWindow {
         	@Override
         	public void onSelect(SelectEvent event) {
                 UserInfo.getInstance().setAutoTestMode(false);
-                CmMainPanel.__activeInstance.remove(AutoTestWindow.this);
-                CmMainPanel.__activeInstance.forceLayout();
+                CmMainPanel.getActiveInstance().remove(AutoTestWindow.this);
+                CmMainPanel.getActiveInstance().forceLayout();
                 __instance = null;
             }
         });

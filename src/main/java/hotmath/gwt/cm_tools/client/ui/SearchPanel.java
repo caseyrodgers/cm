@@ -6,6 +6,8 @@ import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import java.util.List;
 
 import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
@@ -72,12 +74,27 @@ public class SearchPanel implements IsWidget {
     }
     
     public void showWindow() {
-        this.window = new GWindow(true);
-        this.window.setHeadingText("Catchup Math Topic Search");
-        this.window.setPixelSize(550, 150);
-        this.window.setResizable(false);
-        this.window.setWidget(this);
-        this.window.setVisible(true);
+        
+        if(TopicExplorerManager.isInitialized()) {
+            TopicExplorerManager.getInstance().setVisible(true);
+        }
+        else {
+            this.window = new GWindow(true);
+            this.window.setHeadingText("Catchup Math Topic Search");
+            this.window.setPixelSize(550, 150);
+            this.window.setResizable(false);
+            this.window.setCollapsible(false);
+            this.window.setMinimizable(false);
+            this.window.setWidget(this);
+            this.window.setVisible(true);
+            
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    combo.focus();
+                }
+            });
+        }
     }
 
     interface Bundle extends ClientBundle {
@@ -238,6 +255,9 @@ public class SearchPanel implements IsWidget {
             flow.add(combo);
 
             vp.setWidget(flow);
+            
+            
+            combo.focus();
         }
 
         return vp;

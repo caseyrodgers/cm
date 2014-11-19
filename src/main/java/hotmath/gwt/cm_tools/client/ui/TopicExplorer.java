@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -108,7 +109,9 @@ public class TopicExplorer extends SimpleContainer {
             public void loadResourceIntoHistory(String label, String item) {
                 List<InmhItemData> resources = _registeredResources.get(label);
                 Info.display("Load",  "Load resource: " + label + ", " + item);
-                InmhItemData resource = resources.get(0);
+                
+                int index = Integer.parseInt(item);
+                InmhItemData resource = resources.get(index);
 
                 _mainPanel.showResource(resource);
                 
@@ -129,6 +132,7 @@ public class TopicExplorer extends SimpleContainer {
                 case TESTSET:
                 case ACTIVITY_STANDARD:
                 case RESULTS:
+                    /** skip these */
                     continue;
             }
             
@@ -181,5 +185,10 @@ public class TopicExplorer extends SimpleContainer {
         
         
         ((SimplePanel)_guiContext.getWestWidget()).setWidget(flow);
+        
+        
+        
+        /** load the first resource */
+        callback.loadResourceIntoHistory(CmResourceType.REVIEW.label(),  "0");
     }
 }

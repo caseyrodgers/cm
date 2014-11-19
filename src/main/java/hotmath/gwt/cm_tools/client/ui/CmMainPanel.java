@@ -8,13 +8,14 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedAction;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedHandler;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper.ResourceWrapperCallback;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper.WrapperType;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceContentCallback;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -31,13 +32,11 @@ import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.event.FocusEvent;
-import com.sencha.gxt.widget.core.client.event.FocusEvent.FocusHandler;
-import com.sencha.gxt.widget.core.client.info.Info;
+import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 
 public class CmMainPanel extends BorderLayoutContainer {
 
-	public static CmMainPanel __activeInstance;
+	private static CmMainPanel __activeInstance;
 
 	public CmMainResourceWrapper _mainContentWrapper;
 
@@ -68,6 +67,15 @@ public class CmMainPanel extends BorderLayoutContainer {
 	 * @param cmGuiDef
 	 *            The GUI model to use
 	 */
+	
+    
+    ResourceWrapperCallback _resourceCallback = new ResourceWrapperCallback() {
+        @Override
+        public ResizeContainer getResizeContainer() {
+            return __activeInstance;
+        }
+    };
+    
 	public CmMainPanel(final CmGuiDefinition cmGuiDef) {
 
 		__activeInstance = this;
@@ -76,8 +84,7 @@ public class CmMainPanel extends BorderLayoutContainer {
 		
 		getElement().setAttribute("style","position:relative;");
 		
-		
-		_mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED);
+		_mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED,_resourceCallback);
 		
 		this.cmGuiDef = cmGuiDef;
 		
@@ -223,40 +230,53 @@ public class CmMainPanel extends BorderLayoutContainer {
 						switch (event.getEventType()) {
 
 						case EVENT_TYPE_RESOURCE_VIEWER_OPEN:
-							__activeInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
+						    if(__activeInstance != null) {
+						        __activeInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
+						    }
 							break;
 
 						case EVENT_TYPE_RESOURCE_VIEWER_CLOSE:
-							__activeInstance.expandResourceButtons();
-							__activeInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
+	                          if(__activeInstance != null) {
+    							__activeInstance.expandResourceButtons();
+    							__activeInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
+	                          }
 							break;
 
 						case EVENT_TYPE_WINDOW_RESIZED:
-							__activeInstance._mainContentWrapper.fireWindowResized();
+	                          if(__activeInstance != null) {
+							    __activeInstance._mainContentWrapper.fireWindowResized();
+	                          }
 							break;
 							
 							
 						case EVENT_TYPE_MAXIMIZE_RESOURCE:
-						    __activeInstance.maximizeResource();
+						    if(__activeInstance != null) {
+						        __activeInstance.maximizeResource();
+						    }
 						    break;
 						    
 						    
                         case EVENT_TYPE_OPTIMIZE_RESOURCE:
-                            __activeInstance.optimizeResource();
+                            if(__activeInstance != null) {
+                                __activeInstance.optimizeResource();
+                            }
                             break;
 						    
 
 						case EVENT_TYPE_WHITEBOARD_READY:
-							setWhiteboardIsVisible(true);
-							setQuizQuestionDisplayAsActive(getLastQuestionPid());
+	                        if(__activeInstance != null) {
+    							setWhiteboardIsVisible(true);
+    							setQuizQuestionDisplayAsActive(getLastQuestionPid());
+	                        }
 							break;
 
 						case EVENT_TYPE_WHITEBOARD_CLOSED:
-							setWhiteboardIsVisible(false);
-							setQuizQuestionDisplayAsActive(null);
+                            if(__activeInstance != null) {
+							    setWhiteboardIsVisible(false);
+							    setQuizQuestionDisplayAsActive(null);
 							
-							
-							__activeInstance.maximizeResource();
+							    __activeInstance.maximizeResource();
+                            }							    
 							break;
 							
 							
@@ -275,7 +295,7 @@ public class CmMainPanel extends BorderLayoutContainer {
 								&& __activeInstance._lastResourceViewer != null
 								&& (__activeInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
 							         && ((CmResourcePanelImplWithWhiteboard)__activeInstance._lastResourceViewer).isWhiteboardActive()
-							         || __activeInstance._lastResourceViewer instanceof ResourceViewerImplTutor)){
+							         || __activeInstance._lastResourceViewer instanceof ResourceViewerImplTutor2)){
 									/**
 									 * If the whiteboard is active
 									 * hide the current resource to avoid Flash
@@ -293,7 +313,7 @@ public class CmMainPanel extends BorderLayoutContainer {
 									&& __activeInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
 	                                && (__activeInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
 	                                        && ((CmResourcePanelImplWithWhiteboard)__activeInstance._lastResourceViewer).isWhiteboardActive()
-	                                        || __activeInstance._lastResourceViewer instanceof ResourceViewerImplTutor)){
+	                                        || __activeInstance._lastResourceViewer instanceof ResourceViewerImplTutor2)){
 								       /** If whiteboard is active, restore any resources
 								        * 
 								        */
@@ -341,12 +361,27 @@ public class CmMainPanel extends BorderLayoutContainer {
 												$wnd.setQuizActiveQuestion_Gwt = @hotmath.gwt.cm_tools.client.ui.CmMainPanel::setQuizQuestionActive_Gwt(Ljava/lang/String;);
 												}-*/;
 
+	
+	ResourceContentCallback callback = new ResourceContentCallback() {
+        @Override
+        public void closeResource() {
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE, _lastResourceViewer));            
+        }
+        
+        @Override
+        public boolean isMaximized() {
+            boolean isCurrentlyMaximized = (__activeInstance._mainContentWrapper.getWrapperMode() == WrapperType.MAXIMIZED);
+            return isCurrentlyMaximized;
+        }
+    };
+	
+	
 	/** Have to create a new Wrapper each time .. other objects
 	 *  are reused, include the content panel and the resource viewer.
 	 */
 	public void maximizeResource() {
-	    _mainContentWrapper = new CmMainResourceWrapper(WrapperType.MAXIMIZED);
-	    _mainContentWrapper.setContentPanel(new CmResourceContentPanel(_lastResourceViewer,_lastResourceContentPanel.getHeader().getText()));
+	    _mainContentWrapper = new CmMainResourceWrapper(WrapperType.MAXIMIZED, _resourceCallback);
+	    _mainContentWrapper.setContentPanel(new CmResourceContentPanel(_lastResourceViewer,_lastResourceContentPanel.getHeader().getText(), callback));
 	    setCenterWidget(_mainContentWrapper.getResourceWrapper());
 	    
 	    forceLayout();
@@ -356,8 +391,8 @@ public class CmMainPanel extends BorderLayoutContainer {
     }
 	
 	protected void optimizeResource() {
-	    _mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED);
-	    _mainContentWrapper.setContentPanel(new CmResourceContentPanel(_lastResourceViewer,_lastResourceContentPanel.getHeader().getText()));
+	    _mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED, _resourceCallback);
+	    _mainContentWrapper.setContentPanel(new CmResourceContentPanel(_lastResourceViewer,_lastResourceContentPanel.getHeader().getText(), callback));
         setCenterWidget(_mainContentWrapper.getResourceWrapper());	    
         
         forceLayout();
@@ -465,15 +500,15 @@ public class CmMainPanel extends BorderLayoutContainer {
         
         switch(panel.getInitialMode()) {
             case MAXIMIZED:
-                _mainContentWrapper = new CmMainResourceWrapper(WrapperType.MAXIMIZED);
+                _mainContentWrapper = new CmMainResourceWrapper(WrapperType.MAXIMIZED, _resourceCallback);
                 break;
                 
             case OPTIMIZED:
-                _mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED);
+                _mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED, _resourceCallback);
                 break;
         }
         
-        _lastResourceContentPanel = new CmResourceContentPanel(panel, title);
+        _lastResourceContentPanel = new CmResourceContentPanel(panel, title, callback);
         _mainContentWrapper.setContentPanel(_lastResourceContentPanel);
         
         
@@ -485,7 +520,8 @@ public class CmMainPanel extends BorderLayoutContainer {
         centerData.setSplit(true);
         
         //setCenterWidget(new TextButton("Test"));
-        setCenterWidget(_mainContentWrapper.getResourceWrapper(), centerData);
+        ResizeContainer v = _mainContentWrapper.getResourceWrapper();
+        setCenterWidget(v, centerData);
         
         if(trackView) {
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN, panel));
@@ -495,7 +531,7 @@ public class CmMainPanel extends BorderLayoutContainer {
     }
 
     public void showCenterMessage(HTML ohtml) {
-        _mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED);
+        _mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED, _resourceCallback);
         _mainContentWrapper.getResourceWrapper().add(ohtml);
         setCenterWidget(_mainContentWrapper.getResourceWrapper());
         forceLayout();
@@ -545,6 +581,12 @@ public class CmMainPanel extends BorderLayoutContainer {
 
     public void setContextSubTitle(String contextSubTitle) {
         _westPanelWrapper.setHeadingText(contextSubTitle);        
+    }
+
+
+
+    public static CmMainPanel getActiveInstance() {
+        return __activeInstance;
     }
     
 }

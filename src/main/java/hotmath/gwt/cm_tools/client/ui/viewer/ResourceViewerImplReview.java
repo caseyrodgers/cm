@@ -4,7 +4,6 @@ import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.shared.client.CmShared;
@@ -17,6 +16,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -47,7 +47,7 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
         return STYLE_NAME;
     }
 
-    static HTML _mainHtmlPanel = new HTML();
+    HTML _mainHtmlPanel = new HTML();
     public Widget getResourcePanel() {
         addResource(_mainHtmlPanel, getResourceItem().getTitle());
 
@@ -90,8 +90,15 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
                     }
                 }
                 
+                /** todo:  uggh...
+                 * 
+                 */
+//                Widget o = _mainHtmlPanel.getParent().getParent().getParent();
+//                if(_mainHtmlPanel.getParent().getParent().getParent() instanceof ResizeContainer) {
+//                    ((ResizeContainer)_mainHtmlPanel.getParent().getParent().getParent()).forceLayout();
+//                }
                 
-                CmMainPanel.__activeInstance.forceLayout();
+                // CmMainPanel.__activeInstance.forceLayout();
             }
         }.register();
     }

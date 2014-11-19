@@ -145,13 +145,13 @@ public class HeaderPanel extends FlowLayoutContainer {
 						case EVENT_TYPE_CONTEXTCHANGED:
 							CmContext context = (CmContext) event
 									.getEventData();
-							boolean tr = CmMainPanel.__activeInstance == null;
-							if (CmMainPanel.__activeInstance != null) {
+							boolean tr = CmMainPanel.getActiveInstance() == null;
+							if (CmMainPanel.getActiveInstance() != null) {
 								/**
 								 * note we set a default heading, no matter what
 								 * the test type
 								 */
-								CmMainPanel.__activeInstance.setContextSubTitle(context.getContextSubTitle());
+								CmMainPanel.getActiveInstance().setContextSubTitle(context.getContextSubTitle());
 							}
 							break;
 						case EVENT_TYPE_TOPIC_CHANGED:

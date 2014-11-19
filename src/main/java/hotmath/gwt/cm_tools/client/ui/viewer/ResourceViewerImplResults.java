@@ -31,7 +31,6 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
 
     public ResourceViewerImplResults() {
         addStyleName(STYLE_NAME);
-        
         //setScrollMode(ScrollMode.AUTOY);
     }
 

@@ -21,6 +21,10 @@ public class TopicExplorerManager extends GWindow {
         return __instance;
     }
 
+    static public boolean isInitialized() {
+        return __instance != null;
+    }
+    
     TabPanel _tabPanel = new TabPanel();
     SearchPanel _searchPanel = new SearchPanel();
     private TopicExplorerManager() {
@@ -29,6 +33,8 @@ public class TopicExplorerManager extends GWindow {
         setPixelSize(850, 650);
         setHeadingText("Catchup Math Topic Explorer");
         setMaximizable(true);
+        //setMinimizable(true);;
+        setCollapsible(true);
         
         setModal(false);
         

@@ -1,7 +1,6 @@
 package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.rpc.CheckUserAccountStatusAction;
 import hotmath.gwt.cm_rpc.client.rpc.LogUserInAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -15,7 +14,6 @@ import hotmath.gwt.cm_tools.client.ui.MyFieldSet;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import java.util.List;
@@ -50,9 +48,9 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
 
     int LABEL_LEN = 100, FIELD_LEN = 200;
     
-    public AutoStudentRegistrationPanel() {
+    public AutoStudentRegistrationPanel(ResourceWrapperCallback callback) {
 
-        super(WrapperType.OPTIMIZED);
+        super(WrapperType.OPTIMIZED, callback);
 
         _framedPanel = new FramedPanel();
         _framedPanel.setHeight(300);
