@@ -20,6 +20,7 @@ import hotmath.gwt.cm_tools.client.ui.MyIconButton;
 import hotmath.gwt.cm_tools.client.ui.SearchComboBoxPanel;
 import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.ui.ShowUserProgramStatusDialog;
+import hotmath.gwt.cm_tools.client.ui.TopicExplorerManager;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedHandler;
@@ -104,7 +105,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 		searchButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                new SearchComboBoxPanel().showWindow();
+                TopicExplorerManager.getInstance().setVisible(true);
             }
         });
 		new QuickTip(searchButton).setToolTip("Search for topics");

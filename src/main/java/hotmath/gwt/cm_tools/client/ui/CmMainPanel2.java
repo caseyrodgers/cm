@@ -9,6 +9,7 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceContentCallback;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
+import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.WhiteboardResourceCallback;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -345,8 +346,15 @@ public class CmMainPanel2 extends BorderLayoutContainer {
 //        CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
     }
 
-    
-    
+
+    WhiteboardResourceCallback tutorCallback = new WhiteboardResourceCallback() {
+        public void ensureMaximizeResource() {}
+        public void ensureOptimizedResource() {}
+        public ResizeContainer getResizeContainer() {
+            return CmMainPanel2.this;
+        }
+    };
+
     
     /**
      * Display a single resource, remove any previous
@@ -367,6 +375,10 @@ public class CmMainPanel2 extends BorderLayoutContainer {
                 public void onSuccess(ResourceViewerFactory instance) {
                     try {
                         CmResourcePanel viewer = instance.create(resourceItem);
+                        
+                        if(viewer instanceof ResourceViewerImplTutor2) {
+                            ((ResourceViewerImplTutor2)viewer).setCallback(tutorCallback);
+                        }
                         showResource(viewer, resourceItem.getTitle(), true);
                     } catch (Exception e) {
                         CatchupMathTools.showAlert("Could not load resource: " + e.getLocalizedMessage());

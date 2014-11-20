@@ -15,6 +15,7 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.Res
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
+import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.WhiteboardResourceCallback;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -446,7 +447,26 @@ public class CmMainPanel extends BorderLayoutContainer {
 																				   $wnd.setWhiteboardIsVisible(whiteboardVisible);
 																				   }-*/;
 
-	
+
+    WhiteboardResourceCallback whiteboardCallback = new WhiteboardResourceCallback() {
+
+        @Override
+        public void ensureOptimizedResource() {
+            CmMainPanel.this.ensureOptimizedResource();
+        }
+
+        @Override
+        public void ensureMaximizeResource() {
+            CmMainPanel.this.ensureMaximizeResource();
+        }
+
+        @Override
+        public ResizeContainer getResizeContainer() {
+            return CmMainPanel.__activeInstance;
+        }
+        
+    };
+
 	
     /**
      * Display a single resource, remove any previous
@@ -467,6 +487,11 @@ public class CmMainPanel extends BorderLayoutContainer {
                 public void onSuccess(ResourceViewerFactory instance) {
                     try {
                         CmResourcePanel viewer = instance.create(resourceItem);
+                        
+                        if(viewer instanceof ResourceViewerImplTutor2) {
+                            ((ResourceViewerImplTutor2)viewer).setCallback(whiteboardCallback);
+                        }
+                        
                         showResource(viewer, resourceItem.getTitle(), true);
                     } catch (Exception e) {
                         CatchupMathTools.showAlert("Could not load resource: " + e.getLocalizedMessage());
