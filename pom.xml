@@ -8,8 +8,8 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>Catchup Math</name>
 	<properties>
-		<gwtVersion>2.6.1</gwtVersion>
-		<gwtHome>${basedir}/libs/2.6.1</gwtHome>
+		<gwtVersion>2.7.0</gwtVersion>
+		<gwtHome>${basedir}/libs/2.7.0</gwtHome>
 		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>
 		<gxt.version>3.1.2</gxt.version>
 	</properties>
@@ -28,23 +28,13 @@
 
 	<repositories>
 
-        <!-- For User-Agent-Utils -->
-		<repository>
-		  <id>bitwalker.user-agent-utils.mvn.repo</id>
-		  <url>https://raw.githubusercontent.com/HaraldWalker/user-agent-utils/mvn-repo/</url>
-		  <!-- use snapshot version -->
-		  <snapshots>
-		     <enabled>true</enabled>
-		      <updatePolicy>always</updatePolicy>
-		   </snapshots>
-		</repository>
-
+                <!-- 
 		<repository>
 			<id>sencha-commercial-release</id>
 			<name>Sencha commercial releases</name>
 			<url>https://maven.sencha.com/repo/commercial-release/</url>
 		</repository>
-
+                -->
 
 		<repository>
 			<id>gson</id>
@@ -102,13 +92,6 @@
 			<groupId>com.cedarsoftware</groupId>
 			<artifactId>json-io</artifactId>
 			<version>2.7.1</version>
-		</dependency>
-
-	
-		<dependency>
-		   <groupId>bitwalker</groupId>
-		   <artifactId>UserAgentUtils</artifactId>
-		   <version>1.13</version>
 		</dependency>
 	
 		<dependency>
@@ -319,7 +302,7 @@
 		<dependency>
 			<groupId>gwt2swf</groupId>
 			<artifactId>gwt2swf</artifactId>
-			<version>0.6.0</version>
+			<version>0.6.1</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -773,7 +756,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.6.1</version>
+				<version>2.7.0</version>
 
 				<configuration>
 					<extraJvmArgs>-Xss1m -Xms1024m -Xmx1024m -Dgwt.logLevel=DEBUG</extraJvmArgs>
