@@ -12,7 +12,8 @@
       <entry-point class='hotmath.gwt.cm_admin.client.CatchupMathAdmin'/>
       
       <inherits name="com.sencha.gxt.theme.blue.Blue" />
-
+      
+      <set-property name="gxt.user.agent" value="chrome" />
 
       <!--
       <add-linker name="xsiframe"/>

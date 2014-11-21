@@ -15,7 +15,7 @@ public interface StudentProblemProperties extends PropertyAccess<String> {
 
 	ValueProvider<StudentProblemDto, String> status();
 
-	ValueProvider<StudentProblemDto, String> isGraded();
+	ValueProvider<StudentProblemDto, Boolean> isGraded();
 	
 	ValueProvider<StudentProblemDto, Boolean> hasShowWork();
 

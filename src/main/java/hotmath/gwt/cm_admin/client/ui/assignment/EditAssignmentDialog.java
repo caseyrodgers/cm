@@ -340,7 +340,7 @@ public class EditAssignmentDialog {
     }
     
     public interface SubmitOptionsProperties extends PropertyAccess<String> {
-        @Path("name") 
+        @Path("option") 
         ModelKeyProvider<SubmitOptions> key();
 
         LabelProvider<SubmitOptions> option(); 

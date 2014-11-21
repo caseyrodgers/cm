@@ -1,11 +1,10 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
-import java.util.List;
-
-import hotmath.gwt.cm_mobile3.client.ui.CalculatorWindowForMobile;
-import hotmath.gwt.cm_mobile3.client.ui.LessonSelectionDialog;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
+import hotmath.gwt.cm_mobile_shared.client.ui.LessonSelectionDialog;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
+
+import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

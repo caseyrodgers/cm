@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_mobile3.client.ui;
+package hotmath.gwt.cm_mobile_shared.client.ui;
 
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.activity.AssignmentProblemActivity;

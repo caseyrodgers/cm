@@ -31,12 +31,12 @@ public class HighlightsDataWindow extends GWindow {
 
     public static HighlightsDataWindow getSharedInstance(Integer aid) {
         //TODO: reuse __instance
-        //if(__instance == null) {
+        if(__instance == null) {
             __instance = new HighlightsDataWindow();
-        //}
-        //else {
-        //    __instance.reloadAllReports();
-        //}
+        }
+        else {
+            __instance.reloadAllReports();
+        }
         __instance.setAdminId(aid);
         __instance.setVisible(true);
         
@@ -66,7 +66,7 @@ public class HighlightsDataWindow extends GWindow {
 
         _westData = new BorderLayoutData();
         _westData.setSize(210);
-        _westData.setCollapsible(true);
+        //_westData.setCollapsible(true);
         _westData.setFloatable(true);
 
         _centerData = new BorderLayoutData();
