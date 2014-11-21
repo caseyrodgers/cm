@@ -144,7 +144,7 @@ public class SearchPanel extends BorderLayoutContainer {
     private void searchForMatches() {
         String searchFor = _inputBox.getCurrentValue();
         if(searchFor == null || searchFor.length() < 4) {
-            CmMessageBox.showAlert("Enter at least three letters.");
+            CmMessageBox.showAlert("Enter at least four letters.");
         }
         else {
             doSearch(searchFor);

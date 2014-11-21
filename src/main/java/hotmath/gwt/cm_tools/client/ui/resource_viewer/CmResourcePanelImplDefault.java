@@ -8,6 +8,7 @@ import java.util.List;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 
 
 /** 
@@ -40,7 +41,11 @@ public class CmResourcePanelImplDefault extends FlowLayoutContainer implements C
     public void addResource(Widget w, String title, String styleName) {
         clear();
         add(w);
-        //forceLayout();
+        
+        Widget parent = getParent();
+        if(parent instanceof ResizeContainer) {
+            ((ResizeContainer)parent).forceLayout();
+        }
     }
 
     @Override
