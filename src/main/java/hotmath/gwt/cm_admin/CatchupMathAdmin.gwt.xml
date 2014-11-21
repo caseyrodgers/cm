@@ -13,12 +13,12 @@
       
       <inherits name="com.sencha.gxt.theme.blue.Blue" />
       
-      <set-property name="gxt.user.agent" value="chrome" />
 
       <!--
       <add-linker name="xsiframe"/>
       <set-configuration-property name="devModeRedirectEnabled" value="true"/>
       <set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>      
+      <set-property name="gxt.user.agent" value="chrome" />
 
       
       <set-property name="gxt.user.agent" value="ie6,ie7,ie8,ie9,safari3,safari4,safari5,chrome,gecko1_8,gecko1_9" />
