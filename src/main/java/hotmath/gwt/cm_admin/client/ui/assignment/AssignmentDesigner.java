@@ -50,10 +50,6 @@ public class AssignmentDesigner extends BorderLayoutContainer {
             }
         });
         
-        
-        
-        
-        
         CmRpcCore.EVENT_BUS.addHandler(TutorPanelExclusiveEvent.TYPE, new TutorPanelExclusiveHandler() {
             @Override
             public void tutorNeedsExclusiveAccess() {
