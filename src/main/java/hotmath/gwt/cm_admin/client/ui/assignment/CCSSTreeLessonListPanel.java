@@ -35,7 +35,6 @@ import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.DelayedTask;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
-import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.data.shared.TreeStore;
 import com.sencha.gxt.data.shared.loader.ChildTreeStoreBinding;
 import com.sencha.gxt.data.shared.loader.TreeLoader;
@@ -43,7 +42,6 @@ import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent.CheckChangedHandler;
-import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.tree.Tree;
 import com.sencha.gxt.widget.core.client.tree.Tree.CheckCascade;
 
@@ -57,7 +55,6 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
 
     CallbackOnSelectedLesson _callBack;
 
-    Grid<CCSSLesson> _grid;
     Tree<BaseDto, String> _tree;
 
     protected CCSSData _ccssData;
@@ -66,12 +63,6 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
         _callBack = callBack;
         
         setWidget(new DefaultGxtLoadingPanel("Loading ..."));
-    }
-
-    public interface GridProperties extends PropertyAccess<String> {
-        ModelKeyProvider<CCSSLesson> label();
-
-        ValueProvider<CCSSLesson, String> name();
     }
 
     TreeStore<BaseDto> _treeStore;
@@ -90,7 +81,7 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
         readDataAndBuildTree();
     }
 
-    public void makeTree(CCSSData ccssData) {
+    private void makeTree(CCSSData ccssData) {
         _treeStore = setupTreeStore(ccssData);
         
         TreeLoader<BaseDto> loader = new TreeLoader<BaseDto>(proxy) {
@@ -146,7 +137,7 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
 
                         QuestionViewerPanel.getInstance().viewQuestion(p, false);
                     }
-                    if (dto != null && dto.getLevel() == CCSSData.STANDARD) {
+                    else if (dto != null && dto.getLevel() == CCSSData.STANDARD) {
                     	CCSSStandard ccss = (CCSSStandard)dto;
                     	new StandardWindowForCCSS(ccss.getName(),ccss.getSummary());
                     }
@@ -155,7 +146,6 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
             
         };
         _tree.setCell(cell);
-        
         
         @SuppressWarnings("unused")
 		final DelayedTask task = new DelayedTask() {
@@ -299,7 +289,7 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
                 CmMessageBox.showAlert("Error adding: " + name + ", ID: " + folder.getId());
             }
         }
-      }
+    }
 
     private static FolderDto makeFolder(String name) {
         FolderDto theReturn = new FolderDto(++BaseDto.autoId, name);

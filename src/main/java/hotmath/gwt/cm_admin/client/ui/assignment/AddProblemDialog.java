@@ -11,6 +11,7 @@ import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
+import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSection;
@@ -31,11 +32,13 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.TopicExplorerPanel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.model.CCSSLesson;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -45,6 +48,7 @@ import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -95,6 +99,7 @@ public class AddProblemDialog extends GWindow {
     AssignmentTreeAllLessonsListingPanel _treeAllLessonsPanel;
     AssignmentTreeCustomProblemsListingPanel _treeCustomProblemsPanel;
     TabPanel _tabPanel;
+    TextButton _exploreLessonBtn;
 
     public AddProblemDialog() {
         super(false);
@@ -102,6 +107,8 @@ public class AddProblemDialog extends GWindow {
         setHeadingHtml("Add Problems to Assignment");
         setPixelSize(700, 480);
         setMaximizable(true);
+        _exploreLessonBtn = createExploreLessonButton();
+        addButton(_exploreLessonBtn);
         addButton(createAddSelectionButton());
 
         TextButton btnClose = new TextButton("Cancel", new SelectHandler() {
@@ -276,6 +283,36 @@ public class AddProblemDialog extends GWindow {
             }
         });
         btn.setToolTip("Add all checked problems to current assignment.");
+        return btn;
+    }
+
+    private TextButton createExploreLessonButton() {
+        TextButton btn = new TextButton("Explore Lesson", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+
+            	BaseDto base = getActiveTree().getSelectionModel().getSelectedItem();
+                if ((base instanceof LessonDto) == false && (base instanceof CCSSLesson) == false) {
+                    CmMessageBox.showAlert("Please click on a lesson to select it.");
+                    return;
+                }
+                String name = null;
+                String file = null;
+                if (base instanceof LessonDto) {
+                    LessonDto lesson = (LessonDto)base;
+                    name = lesson.getName();
+                    file = lesson.getLessonFile();
+                }
+                else {
+                	CCSSLesson lesson = (CCSSLesson)base;
+                    name = lesson.getName();
+                    file = lesson.getFile();
+                }
+                Topic topic = new Topic(name, file, null);
+                TopicExplorerPanel.getInstance().exploreTopic(topic);
+            }
+        });
+        btn.setToolTip("Explore selected lesson.");
         return btn;
     }
 
@@ -555,7 +592,7 @@ public class AddProblemDialog extends GWindow {
             public void onBrowserEvent(Context context, Element parent, String value, NativeEvent event,
                     ValueUpdater<String> valueUpdater) {
                 super.onBrowserEvent(context, parent, value, event, valueUpdater);
-                if ("click".equals(event.getType())) {
+                if (BrowserEvents.CLICK.equalsIgnoreCase(event.getType())) {
                     BaseDto base = _tree.getSelectionModel().getSelectedItem();
                     if (base instanceof ProblemDto) {
                         ProblemDto p = (ProblemDto) base;
@@ -565,6 +602,7 @@ public class AddProblemDialog extends GWindow {
                     }
                     else {
                         QuestionViewerPanel.getInstance().removeQuestion();
+                        Log.debug("View Question", "NONE");
                     }
                 }
             }
