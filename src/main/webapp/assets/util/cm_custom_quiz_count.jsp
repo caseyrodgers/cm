@@ -22,15 +22,16 @@
     String today = sdf.format(new java.util.Date());
 
 	String header =
-        String.format("%-15s\t%8s\t%12s\n\n", 
-        		"User Name", "CQ Count", "Expires");
+        String.format("%-15s\t%8s\t%12s\t%7s\n\n", 
+        		"User Name", "CQ Count", "Expires", "Expired");
 
 	StringBuilder sb = new StringBuilder();
 
     try {
     	conn = HMConnectionPool.getConnection();
 
-    	String sql = "select a.user_name, s.cq_count, sss.date_expire from " +
+    	String sql = "select a.user_name, s.cq_count, sss.date_expire, " +
+    			     "if(sss.date_expire > curdate(), 'NO', 'YES') as expired from " +
     	             "(select admin_id, count(*) cq_count from HA_CUSTOM_QUIZ  group by admin_id )s " +
     			     "join HA_ADMIN a on a.aid = s.admin_id " +
     	             "join SUBSCRIBERS ss on ss.id = a.subscriber_id " +
@@ -49,8 +50,8 @@
 			String expireDateStr = sdf.format(expireDate);
 
 			sb.append(
-            String.format("%-15s\t%8d\t%12s\n", 
-            		rs.getString("user_name"), rs.getInt("cq_count"), expireDateStr));
+            String.format("%-15s\t%8d\t%12s\t%7s\n", 
+            		rs.getString("user_name"), rs.getInt("cq_count"), expireDateStr, rs.getString("expired")));
 		 }
     }
     catch (Exception e){
