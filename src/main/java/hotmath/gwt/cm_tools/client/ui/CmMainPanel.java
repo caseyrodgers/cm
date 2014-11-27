@@ -26,6 +26,7 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.LayoutRegion;
@@ -229,6 +230,12 @@ public class CmMainPanel extends BorderLayoutContainer {
 					@Override
 					public void handleEvent(CmEvent event) {
 						switch (event.getEventType()) {
+                        
+                        case EVENT_TYPE_FORCE_GUI_REFRESH:
+                            if(__activeInstance != null) {
+                                __activeInstance._mainContentWrapper.fireWindowResized();
+                            }
+                            break;
 
 						case EVENT_TYPE_RESOURCE_VIEWER_OPEN:
 						    if(__activeInstance != null) {
@@ -536,8 +543,11 @@ public class CmMainPanel extends BorderLayoutContainer {
         _lastResourceContentPanel = new CmResourceContentPanel(panel, title, callback);
         _mainContentWrapper.setContentPanel(_lastResourceContentPanel);
         
-        
         _lastResourceContentPanel.setHeadingText(title);
+        
+        
+        //_mainContentWrapper.getResourceWrapper().clear();
+        //_mainContentWrapper.getResourceWrapper().add(panel.getResourcePanel());
 
         BorderLayoutData centerData = new BorderLayoutData();
         centerData.setCollapsible(true);

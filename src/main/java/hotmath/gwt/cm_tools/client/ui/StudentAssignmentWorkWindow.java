@@ -87,7 +87,6 @@ public class StudentAssignmentWorkWindow extends GWindow {
     }
     
     interface GridProperties extends PropertyAccess<String> {
-        @Path("id")
         ModelKeyProvider<StudentAssignment> assignKey();
         ValueProvider<StudentAssignment, Date> dueDate();
         ValueProvider<StudentAssignment, String> comments();

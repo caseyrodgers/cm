@@ -194,6 +194,11 @@ public class CatchupMath implements EntryPoint {
         });
         
         
+        if(CatchupMathTests.runTest()) {
+            return;
+        }
+        
+        
 //        Event.addNativePreviewHandler(new Event.NativePreviewHandler() { 
 //            public void onPreviewNativeEvent(NativePreviewEvent event) { 
 //                    NativeEvent ne = event.getNativeEvent(); 

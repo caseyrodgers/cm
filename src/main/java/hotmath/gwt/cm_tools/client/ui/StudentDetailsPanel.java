@@ -595,8 +595,6 @@ interface DetailsProperties extends PropertyAccess<StudentActivityModel> {
     @Path("id")
     ModelKeyProvider<StudentActivityModel> key();
 
-    ValueProvider<StudentActivityModel, String> message();
-
     ValueProvider<StudentActivityModel, String> useDate();
 
     ValueProvider<StudentActivityModel, String> program();

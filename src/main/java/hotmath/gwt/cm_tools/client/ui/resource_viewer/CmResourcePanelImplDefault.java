@@ -2,13 +2,17 @@ package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.List;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.ResizeContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
 
 /** 
@@ -41,11 +45,7 @@ public class CmResourcePanelImplDefault extends FlowLayoutContainer implements C
     public void addResource(Widget w, String title, String styleName) {
         clear();
         add(w);
-        
-        Widget parent = getParent();
-        if(parent instanceof ResizeContainer) {
-            ((ResizeContainer)parent).forceLayout();
-        }
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_FORCE_GUI_REFRESH));
     }
 
     @Override

@@ -32,7 +32,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_tools.client.ui.TopicExplorerPanel;
+import hotmath.gwt.cm_tools.client.ui.TopicExplorerManager;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -309,7 +309,7 @@ public class AddProblemDialog extends GWindow {
                     file = lesson.getFile();
                 }
                 Topic topic = new Topic(name, file, null);
-                TopicExplorerPanel.getInstance().exploreTopic(topic);
+                TopicExplorerManager.getInstance().exploreTopic(topic);
             }
         });
         btn.setToolTip("Explore selected lesson.");

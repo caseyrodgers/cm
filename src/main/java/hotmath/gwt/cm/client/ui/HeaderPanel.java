@@ -17,7 +17,6 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.MyIconButton;
-import hotmath.gwt.cm_tools.client.ui.SearchComboBoxPanel;
 import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.ui.ShowUserProgramStatusDialog;
 import hotmath.gwt.cm_tools.client.ui.TopicExplorerManager;
@@ -31,7 +30,6 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
-import hotmath.gwt.shared.client.util.MyResources;
 import hotmath.gwt.shared.client.util.SystemSyncChecker;
 
 import com.google.gwt.core.client.GWT;
@@ -42,7 +40,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.widget.core.client.button.IconButton;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -57,8 +54,6 @@ public class HeaderPanel extends FlowLayoutContainer {
 	HTML _helloInfo = new HTML();
 	private MyIconButton helpButton;
 	StudentAssignmentButton _assignmentsAnchor;
-
-	MyResources myResources = GWT.create(MyResources.class);
 
 	private CmAwardPanel _awards;
 

@@ -1,7 +1,11 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -12,7 +16,10 @@ import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 
 public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
     public ResourceViewerImplActivity() {
@@ -42,7 +49,15 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
                 swfWidget.addParam("wmode", "opaque");
 
                 swfWidget.setStyleName("activity-widget");
-                addResource(swfWidget, getResourceItem().getTitle());
+                
+                
+                SimplePanel sp = new SimplePanel();
+                sp.getElement().setAttribute("style",  "background: green");
+                // sp.setWidget(swfWidget);
+                
+                
+                sp.setWidget(swfWidget);
+                addResource(sp, getResourceItem().getTitle());
             }
             panel = this;
         }
@@ -107,5 +122,29 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
         $wnd.flash_RppComplete = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplRppFlashCard::flash_RppComplete();
         $wnd.flash_Rpp_getCompletionRule  = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplRppFlashCard::flash_Rpp_getCompletionRule();
      }-*/;
+    
+    
+    
+    static public void startTest() {
+        new GwtTester(new TestWidget() {
+            @Override
+            public void runTest() {
+                String t = "http://test.catchupmath.com/hotmath_help/games/factortris/factortris_hotmath_sound.swf";
+                ResourceViewerImplActivity ra = new ResourceViewerImplActivity();
+                InmhItemData item = new InmhItemData(CmResourceType.ACTIVITY, t, "Test");
+                ra.setResourceItem(item);
+                GWindow w = new GWindow(true);
+                
+                ContentPanel cp = new ContentPanel();
+                cp.setWidget(new HTML("<div style='background: black'>test</div>"));
+                w.setWidget(cp);
+                cp.forceLayout();
+                w.setVisible(true);
+            }
+        });
+        
+        
+        
+    }
     
 }

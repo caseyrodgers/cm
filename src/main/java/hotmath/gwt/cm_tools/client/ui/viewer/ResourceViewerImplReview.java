@@ -1,9 +1,12 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.shared.client.CmShared;
@@ -16,7 +19,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -131,5 +133,17 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
 
     public Integer getOptimalWidth() {
         return 550;
+    }
+
+
+    public static void startTest() {
+        new GwtTester(new TestWidget() {
+            @Override
+            public void runTest() {
+                GWindow w = new GWindow(true);
+                w.setWidget(new ResourceViewerImplReview());
+                w.setVisible(true);
+            }
+        });
     }
 }

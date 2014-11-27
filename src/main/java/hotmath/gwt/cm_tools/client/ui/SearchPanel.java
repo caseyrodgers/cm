@@ -37,6 +37,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
 /** panel that has a static text input field, 
  *  a list of matches below
@@ -44,8 +46,11 @@ import com.sencha.gxt.widget.core.client.form.TextField;
  * @author casey
  *
  */
+
+
+
 public class SearchPanel extends BorderLayoutContainer {
-    
+	ReviewPanel _reviewPanel = new ReviewPanel();
     TextField _inputBox = new TextField();
     ListView<Topic, Topic> _listView;
     public SearchPanel() {
@@ -59,7 +64,18 @@ public class SearchPanel extends BorderLayoutContainer {
                 exploreSelectedTopic();
             }
         }), new BorderLayoutData(30));
-        setCenterWidget(blcI);
+        
+        
+        BorderLayoutData eastData = new BorderLayoutData(250);
+        eastData.setSplit(true);
+        eastData.setCollapsible(true);
+        setEastWidget(_reviewPanel, eastData);
+        
+        BorderLayoutData centerData = new BorderLayoutData();
+        centerData.setSplit(true);
+        centerData.setCollapsible(true);
+        
+        setCenterWidget(blcI, centerData);
     }
     
     interface Props extends PropertyAccess<Topic> {
@@ -71,7 +87,8 @@ public class SearchPanel extends BorderLayoutContainer {
     
     interface ListViewTemplate extends XTemplates {
         // @XTemplate("<div class='{style.searchItem}'><h3><span>{post.date:date(\"M/d/yyyy\")}<br />by {post.author}</span>{post.title}</h3>{post.excerpt}</div>")
-        @XTemplate("<div class='{style.searchItem}'><h3>{post.name}</span></h3>{post.excerpt}</div>")
+        // @XTemplate("<div class='{style.searchItem}'><h3>{post.name}</span></h3>{post.excerpt}</div>")
+        @XTemplate("<div class='{style.searchItem}'><h3>{post.name}</span></h3></div>")
         SafeHtml render(Topic post, SearchStyle style);
     }
     final ListViewTemplate template = GWT.create(ListViewTemplate.class);
@@ -98,10 +115,24 @@ public class SearchPanel extends BorderLayoutContainer {
             }
         }, DoubleClickEvent.getType());
         
+        
+        _listView.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<Topic>() {
+			@Override
+			public void onSelectionChanged(SelectionChangedEvent<Topic> event) {
+				showSelectedReview();
+			}
+        });
         return _listView;
     }
     
-    protected void exploreSelectedTopic() {
+    protected void showSelectedReview() {
+    	Topic si = _listView.getSelectionModel().getSelectedItem();
+    	if(si != null) {
+    		_reviewPanel.loadReview(si.getFile(), si.getName());
+    	}
+	}
+
+	protected void exploreSelectedTopic() {
         Topic topic = _listView.getSelectionModel().getSelectedItem();
         if(topic == null) {
             CmMessageBox.showAlert("No topic selected.");
