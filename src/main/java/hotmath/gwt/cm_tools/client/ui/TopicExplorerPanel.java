@@ -29,7 +29,7 @@ public class TopicExplorerPanel extends GWindow {
     private TopicExplorerPanel() {
         super(true);
         
-        setPixelSize(850, 650);
+        setPixelSize(950, 650);
         setMaximizable(true);
         setCollapsible(true);
         setModal(true);
