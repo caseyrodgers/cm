@@ -27,5 +27,7 @@ public class ReviewPanel extends ContentPanel {
 		flow.setScrollMode(ScrollMode.AUTO);
 		flow.add(panel.getResourcePanel());
 		setWidget(flow);
+		
+		forceLayout();
 	}
 }

@@ -65,10 +65,7 @@ public class TopicExplorerManager extends GWindow {
                 _searchPanel._inputBox.focus();
             }
         });
-        
-        
-        addTool(createTtButton());
-        
+
     }
     
     ToolTipConfig config;
