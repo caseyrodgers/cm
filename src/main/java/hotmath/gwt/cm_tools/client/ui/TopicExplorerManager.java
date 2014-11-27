@@ -67,32 +67,6 @@ public class TopicExplorerManager extends GWindow {
         });
 
     }
-    
-    ToolTipConfig config;
-    public interface TtRenderer extends ToolTipConfig.ToolTipRenderer<Object>, XTemplates {    	 
-        @Override
-        @XTemplate(source = "TopicExplorerManagerToolTip.html")
-        public SafeHtml renderToolTip(Object data);
-    }
-    
-    private TtRenderer renderer = GWT.create(TtRenderer.class);
-    
-    private Widget createTtButton() {
-		
-    	TextButton btn = new TextButton("Custom");
-        config = new ToolTipConfig();
-        config.setBodyHtml("Prints the current document");
-        config.setTitleHtml("Template Tip");
-        config.setMouseOffsetX(0);
-        config.setMouseOffsetY(0);
-        config.setAnchor(Side.LEFT);
-        config.setRenderer(renderer);
-        config.setCloseable(true);
-        config.setMaxWidth(415);
-        btn.setToolTipConfig(config);
-        
-        return btn;
-	}
 
 	public void exploreTopic(Topic topic) {
         Widget panel = new TopicExplorer(topic).asWidget();
