@@ -122,9 +122,7 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
         $wnd.flash_RppComplete = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplRppFlashCard::flash_RppComplete();
         $wnd.flash_Rpp_getCompletionRule  = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplRppFlashCard::flash_Rpp_getCompletionRule();
      }-*/;
-    
-    
-    
+
     static public void startTest() {
         new GwtTester(new TestWidget() {
             @Override

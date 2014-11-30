@@ -10,6 +10,9 @@ import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -92,14 +95,7 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
                     }
                 }
                 
-                /** todo:  uggh...
-                 * 
-                 */
-//                Widget o = _mainHtmlPanel.getParent().getParent().getParent();
-//                if(_mainHtmlPanel.getParent().getParent().getParent() instanceof ResizeContainer) {
-//                    ((ResizeContainer)_mainHtmlPanel.getParent().getParent().getParent()).forceLayout();
-//                }
-                
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_FORCE_GUI_REFRESH));
                 // CmMainPanel.__activeInstance.forceLayout();
             }
         }.register();

@@ -66,7 +66,7 @@ public class SearchPanel extends BorderLayoutContainer {
         }), new BorderLayoutData(30));
         
         
-        BorderLayoutData eastData = new BorderLayoutData(250);
+        BorderLayoutData eastData = new BorderLayoutData(350);
         eastData.setSplit(true);
         eastData.setCollapsible(true);
         setEastWidget(_reviewPanel, eastData);
