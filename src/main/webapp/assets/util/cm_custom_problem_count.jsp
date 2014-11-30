@@ -53,7 +53,7 @@
 		    String teacherName = rs.getString("teacher_name").trim();
 
 			sb.append(
-            String.format("%-10s\t%-30s\t%-30s\t%8d\t%-8s\t%12s\n", 
+            String.format("%-10s\t%-30s\t%-20s\t%8d\t%-8s\t%12s\n", 
             		userName, schoolName, rs.getString("teacher_name"), rs.getInt("cp_count"), rs.getString("status"), expireDateStr));
 		 }
     }
