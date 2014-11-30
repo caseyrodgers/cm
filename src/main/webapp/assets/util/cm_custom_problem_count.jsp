@@ -48,8 +48,8 @@
 			String expireDateStr = sdf.format(expireDate);
 
 			sb.append(
-            String.format("%-10s\t%-30s\t%-20s\t%8d\t%-8s\t%12s\n", 
-            		rs.getString("user_name"), rs.getString("school_type"), rs.getString("teacher_name"), rs.getInt("cp_count"), rs.getString("status"), expireDateStr));
+            String.format("%-10.10s\t%-30.30s\t%-20.20s\t%8d\t%-8s\t%12s\n", 
+            		rs.getString("user_name").trim(), rs.getString("school_type"), rs.getString("teacher_name"), rs.getInt("cp_count"), rs.getString("status"), expireDateStr));
 		 }
     }
     catch (Exception e){
