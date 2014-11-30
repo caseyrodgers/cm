@@ -2,17 +2,12 @@ package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
-import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.List;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
 
 /** 

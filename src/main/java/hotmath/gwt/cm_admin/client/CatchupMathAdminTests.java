@@ -28,6 +28,7 @@ import hotmath.gwt.cm_tools.client.ui.SearchPanel;
 import hotmath.gwt.cm_tools.client.ui.TopicExplorerManager;
 import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplActivity;
 import hotmath.gwt.cm_tools.client.util.CreateTemplateFromClipboardImage;
 import hotmath.gwt.cm_tools.client.util.WhiteboardTemplatesManager;
 import hotmath.gwt.shared.client.CmShared;
@@ -50,6 +51,9 @@ public class CatchupMathAdminTests {
         
         if(test.equals("CustomProgramDialog")) {
         	CustomProgramDialog.startTest();
+        }
+        else if(test.equals("ResourceViewerImplActivity")) {
+            ResourceViewerImplActivity.startTest();
         }
         else if(test.equals("SearchPanel")) {
             SearchPanel.startTest();

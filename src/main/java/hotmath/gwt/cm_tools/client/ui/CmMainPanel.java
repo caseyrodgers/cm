@@ -26,6 +26,7 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -233,6 +234,7 @@ public class CmMainPanel extends BorderLayoutContainer {
                         
                         case EVENT_TYPE_FORCE_GUI_REFRESH:
                             if(__activeInstance != null) {
+                                __activeInstance.setWidget(__activeInstance.getWidget());  // really force UI update
                                 __activeInstance._mainContentWrapper.fireWindowResized();
                             }
                             break;
@@ -562,6 +564,19 @@ public class CmMainPanel extends BorderLayoutContainer {
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN, panel));
         }
         
+        
+        /** Force GXT/GWT to update UI!
+         *  normal forceLayout does not seem 
+         *  to work with child panels are initialized
+         *  after visible (ie, flash objects/games ..etc..)
+         *  
+         */
+        new Timer() {
+            @Override
+            public void run() {
+                setWidget(getWidget());
+            }
+        }.schedule(0100);;
         forceLayout();
     }
 

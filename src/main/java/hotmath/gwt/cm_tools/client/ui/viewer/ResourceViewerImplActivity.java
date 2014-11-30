@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -15,11 +16,10 @@ import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
 import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 
 public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
     public ResourceViewerImplActivity() {
@@ -49,15 +49,7 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
                 swfWidget.addParam("wmode", "opaque");
 
                 swfWidget.setStyleName("activity-widget");
-                
-                
-                SimplePanel sp = new SimplePanel();
-                sp.getElement().setAttribute("style",  "background: green");
-                // sp.setWidget(swfWidget);
-                
-                
-                sp.setWidget(swfWidget);
-                addResource(sp, getResourceItem().getTitle());
+                addResource(swfWidget, getResourceItem().getTitle());
             }
             panel = this;
         }
@@ -128,16 +120,26 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
             @Override
             public void runTest() {
                 String t = "http://test.catchupmath.com/hotmath_help/games/factortris/factortris_hotmath_sound.swf";
+                final GWindow w = new GWindow(true);
+                
+                
                 ResourceViewerImplActivity ra = new ResourceViewerImplActivity();
                 InmhItemData item = new InmhItemData(CmResourceType.ACTIVITY, t, "Test");
                 ra.setResourceItem(item);
-                GWindow w = new GWindow(true);
                 
-                ContentPanel cp = new ContentPanel();
-                cp.setWidget(new HTML("<div style='background: black'>test</div>"));
-                w.setWidget(cp);
-                cp.forceLayout();
+                final Widget resourcePanel = ra.getResourcePanel();
+                resourcePanel.getElement().setAttribute("style",  "background: black");
+                
+                w.setWidget(resourcePanel);
+                w.forceLayout();
                 w.setVisible(true);
+             
+                new Timer() {
+                    @Override
+                    public void run() {
+                        w.setWidget(resourcePanel);
+                    }
+                }.schedule(100);
             }
         });
         
