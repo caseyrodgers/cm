@@ -46,10 +46,15 @@
 			java.sql.Date d = rs.getDate("date_expire");
 			java.util.Date expireDate = new java.util.Date(d.getTime());
 			String expireDateStr = sdf.format(expireDate);
+			String userName = rs.getString("user_name").trim();
+			if (userName.length() > 10) userName = userName.substring(0,10);
+		    String schoolName = rs.getString("school_type").trim();
+		    if (schoolName.length() > 30) schoolName = schoolName.substring(0,30);
+		    String teacherName = rs.getString("teacher_name").trim();
 
 			sb.append(
-            String.format("%-10.10s\t%-30.30s\t%-20.20s\t%8d\t%-8s\t%12s\n", 
-            		rs.getString("user_name").trim(), rs.getString("school_type"), rs.getString("teacher_name"), rs.getInt("cp_count"), rs.getString("status"), expireDateStr));
+            String.format("%-10s\t%-30s\t%-30s\t%8d\t%-8s\t%12s\n", 
+            		userName, schoolName, rs.getString("teacher_name"), rs.getInt("cp_count"), rs.getString("status"), expireDateStr));
 		 }
     }
     catch (Exception e){
