@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplReview;
@@ -7,13 +8,21 @@ import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class ReviewPanel extends ContentPanel {
 	
-	public ReviewPanel() {
-		
+	public ReviewPanel(final CallbackOnComplete callback) {
 		setWidget(new DefaultGxtLoadingPanel("No selected topic"));
+		addTool(new TextButton("Explore Topic", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                callback.isComplete();
+            }
+        }));
 		//setHeaderVisible(false);
 	}
 

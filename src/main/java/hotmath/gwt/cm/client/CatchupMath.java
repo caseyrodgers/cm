@@ -110,6 +110,14 @@ public class CatchupMath implements EntryPoint {
     public void onModuleLoad() {
         __thisInstance = this;
         CmLogger.info("Catchup Math Startup");
+        
+        
+        
+        
+        if(CatchupMathTests.runTest()) {
+            CmBusyManager.showLoading(false);
+            return;
+        }
 
         // GXT.setDefaultTheme(Theme.GRAY, true);
 
@@ -192,11 +200,7 @@ public class CatchupMath implements EntryPoint {
                 CmRpcCore.EVENT_BUS.fireEvent(new CmLogoutEvent());
             }
         });
-        
-        
-        if(CatchupMathTests.runTest()) {
-            return;
-        }
+
         
         
 //        Event.addNativePreviewHandler(new Event.NativePreviewHandler() { 

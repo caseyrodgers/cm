@@ -4,18 +4,11 @@ import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.Style.Side;
-import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
-import com.sencha.gxt.widget.core.client.tips.ToolTipConfig.ToolTipRenderer;
 
 public class TopicExplorerManager extends GWindow {
     
@@ -36,7 +29,7 @@ public class TopicExplorerManager extends GWindow {
     private TopicExplorerManager() {
         super(true);
         
-        setPixelSize(850, 650);
+        setPixelSize(700, 550);
         setHeadingText("Catchup Math Topic Explorer");
         setMaximizable(true);
         //setMinimizable(true);;
@@ -86,5 +79,4 @@ public class TopicExplorerManager extends GWindow {
             }
         });
     }
-
 }

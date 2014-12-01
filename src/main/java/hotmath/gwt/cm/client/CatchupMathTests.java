@@ -1,27 +1,25 @@
 package hotmath.gwt.cm.client;
 
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplActivity;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplReview;
-import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.cm_tools.client.CatchupMathSharedTests;
 
 
 /** Run test identified by test URL param 
  * 
  * @return
  */
-public class CatchupMathTests {
+public class CatchupMathTests extends CatchupMathSharedTests {
     public static boolean runTest() {
-        String test = CmShared.getQueryParameterValue("test");
-        if(test.equals("ResourceViewerImplReview")) {
-            ResourceViewerImplReview.startTest();
-        }
-        else if(test.equals("ResourceViewerImplActivity")) {
-            ResourceViewerImplActivity.startTest();
-        }
-        else {
+        
+        if(!CatchupMathSharedTests.runTest()) {
+            /** local CM only tests
+             * 
+             */
             return false;
         }
-        return true;
+        else {
+            return true;
+        }
+        
     }
 
 }

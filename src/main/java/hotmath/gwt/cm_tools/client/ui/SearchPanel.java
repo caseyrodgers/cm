@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -50,7 +51,12 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
 
 
 public class SearchPanel extends BorderLayoutContainer {
-	ReviewPanel _reviewPanel = new ReviewPanel();
+	ReviewPanel _reviewPanel = new ReviewPanel(new CallbackOnComplete() {
+        @Override
+        public void isComplete() {
+            exploreSelectedTopic();
+        }
+    });
     TextField _inputBox = new TextField();
     ListView<Topic, Topic> _listView;
     public SearchPanel() {
@@ -68,12 +74,12 @@ public class SearchPanel extends BorderLayoutContainer {
         
         BorderLayoutData eastData = new BorderLayoutData(350);
         eastData.setSplit(true);
-        eastData.setCollapsible(true);
+        // eastData.setCollapsible(true);
         setEastWidget(_reviewPanel, eastData);
         
         BorderLayoutData centerData = new BorderLayoutData();
         centerData.setSplit(true);
-        centerData.setCollapsible(true);
+        // centerData.setCollapsible(true);
         
         setCenterWidget(blcI, centerData);
     }
@@ -174,8 +180,8 @@ public class SearchPanel extends BorderLayoutContainer {
     
     private void searchForMatches() {
         String searchFor = _inputBox.getCurrentValue();
-        if(searchFor == null || searchFor.length() < 4) {
-            CmMessageBox.showAlert("Enter at least four letters.");
+        if(searchFor == null || searchFor.length() < 2) {
+            CmMessageBox.showAlert("Enter at least two letters.");
         }
         else {
             doSearch(searchFor);
@@ -193,6 +199,10 @@ public class SearchPanel extends BorderLayoutContainer {
                 Log.debug("search ('" + searchFor + "') matches: " + result.size());
                 _listView.getStore().clear();
                 _listView.getStore().addAll(result);
+                
+                if(result.size() > 0) {
+                    _listView.getSelectionModel().select(result.get(0), false);
+                }
             }
             
             @Override
