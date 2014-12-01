@@ -27,7 +27,6 @@ import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.LayoutRegion;
@@ -37,7 +36,7 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 
-public class CmMainPanel extends BorderLayoutContainer {
+public class CmMainPanel extends CmMainPanelShared {
 
 	private static CmMainPanel __activeInstance;
 
@@ -518,12 +517,11 @@ public class CmMainPanel extends BorderLayoutContainer {
         showResource(_lastResourceViewer,_lastResourceContentPanel.getHeader().getText());
     }
     
-    
-    
     public void showResource(CmResourcePanel panel, String title) {
         showResource(panel, title, true);
     }
-    public void showResource(CmResourcePanel panel, String title, boolean trackView) {
+    
+    public void showResource(final CmResourcePanel panel, String title, boolean trackView) {
         
         
         if(_lastResourceViewer != null) {
@@ -563,21 +561,7 @@ public class CmMainPanel extends BorderLayoutContainer {
         if(trackView) {
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN, panel));
         }
-        
-        
-        /** Force GXT/GWT to update UI!
-         *  normal forceLayout does not seem 
-         *  to work with child panels are initialized
-         *  after visible (ie, flash objects/games ..etc..)
-         *  
-         */
-        new Timer() {
-            @Override
-            public void run() {
-                setWidget(getWidget());
-            }
-        }.schedule(0100);;
-        forceLayout();
+        super.makeSureUiIsRefreshed(panel);
     }
 
     public void showCenterMessage(HTML ohtml) {

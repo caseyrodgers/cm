@@ -86,6 +86,11 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
         _displayMode = getInitialWhiteboardDisplay();
     }
     
+    @Override
+    public boolean needForcedUiRefresh() {
+        return false;
+    }
+    
     public void setCallback(WhiteboardResourceCallback callback) {
         this._callback = callback;
     }

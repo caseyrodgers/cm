@@ -118,4 +118,9 @@ public class CmResourcePanelImplDefault extends FlowLayoutContainer implements C
     public boolean shouldContainerBeTransparent() {
         return false;
     }
+    
+    @Override
+    public boolean needForcedUiRefresh() {
+        return false;
+    }
 }

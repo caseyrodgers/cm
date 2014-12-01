@@ -12,6 +12,7 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.WhiteboardResourceCallback;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -19,6 +20,7 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.List;
 
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.LayoutRegion;
@@ -28,7 +30,7 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 
-public class CmMainPanel2 extends BorderLayoutContainer {
+public class CmMainPanel2 extends CmMainPanelShared {
 
     public CmMainResourceWrapper _mainContentWrapper;
 
@@ -65,6 +67,9 @@ public class CmMainPanel2 extends BorderLayoutContainer {
     ResourceWrapperCallback _callback;
     
     public CmMainPanel2(final CmGuiDefinition cmGuiDef) {
+        
+        forceLayoutOnResize = true;
+        
         
         _callback= new ResourceWrapperCallback() {
             @Override
@@ -131,13 +136,6 @@ public class CmMainPanel2 extends BorderLayoutContainer {
         
     }
     
-    
-    
-    @Override
-    public void forceLayout() {
-        // TODO Auto-generated method stub
-        super.forceLayout();
-    }
     
     public void setMainPanelContainer() {
 
@@ -434,9 +432,6 @@ public class CmMainPanel2 extends BorderLayoutContainer {
         _lastResourceContentPanel.removeExpandButton();
 
         _mainContentWrapper.setContentPanel(_lastResourceContentPanel);
-
-        // _lastResourceContentPanel.setWidget(new Label("TEST TEST"));
-
         
         
         _lastResourceContentPanel.setHeadingText(title);
@@ -452,8 +447,8 @@ public class CmMainPanel2 extends BorderLayoutContainer {
         if(trackView) {
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN, panel));
         }
-        
-        forceLayout();
+
+        super.makeSureUiIsRefreshed(panel);
     }
 
     public void showCenterMessage(HTML ohtml) {

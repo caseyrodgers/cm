@@ -117,4 +117,14 @@ public interface CmResourcePanel {
      * @return
      */
     boolean shouldContainerBeTransparent();
+
+
+    /** does this resource require forced UI refresh, even
+     * overriding the normal forceUpdate.
+     * 
+     * THIS IS A HACK and is only required to work around a refresh bug with externally initialied code (outside of the ui refresh loop)
+     * 
+     * @return
+     */
+    boolean needForcedUiRefresh();
 }

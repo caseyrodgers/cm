@@ -35,6 +35,10 @@ public class ResourceViewerImplWebLink extends SimpleContainer implements CmReso
         addStyleName("resource-viewer-container");
     }
     
+    @Override
+    public boolean needForcedUiRefresh() {
+        return false;
+    }
 
     /**
      * Add the resource to the center

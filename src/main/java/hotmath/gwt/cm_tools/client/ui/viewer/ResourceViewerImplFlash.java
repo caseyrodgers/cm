@@ -17,6 +17,12 @@ import com.sencha.gxt.widget.core.client.container.SimpleContainer;
         
     }
     
+    
+    @Override
+    public boolean needForcedUiRefresh() {
+        return true;
+    }
+    
     @Override
     public Integer getOptimalHeight() {
         return 450;
