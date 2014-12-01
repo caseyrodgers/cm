@@ -94,7 +94,7 @@ public class SearchPanel extends BorderLayoutContainer {
     interface ListViewTemplate extends XTemplates {
         // @XTemplate("<div class='{style.searchItem}'><h3><span>{post.date:date(\"M/d/yyyy\")}<br />by {post.author}</span>{post.title}</h3>{post.excerpt}</div>")
         // @XTemplate("<div class='{style.searchItem}'><h3>{post.name}</span></h3>{post.excerpt}</div>")
-        @XTemplate("<div class='{style.searchItem}'><h3>{post.name}</span></h3></div>")
+        @XTemplate("<div class='{style.searchItem}'>{post.name}</span></div>")
         SafeHtml render(Topic post, SearchStyle style);
     }
     final ListViewTemplate template = GWT.create(ListViewTemplate.class);

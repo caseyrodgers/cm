@@ -14,6 +14,7 @@ import hotmath.search.Hit;
 
 import java.sql.Connection;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -48,7 +49,9 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                 if(url == null) {
                     url = hit.getName();
                 }
-                topics.add(new Topic(hit.getTitle(),url, hit.getSummary()));
+                String title = hit.getTitle();
+                title = StringEscapeUtils.unescapeHtml(title);
+                topics.add(new Topic(title,url, hit.getSummary()));
             }
         } catch (Throwable e) {
             e.printStackTrace();
