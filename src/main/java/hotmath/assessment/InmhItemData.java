@@ -190,62 +190,55 @@ public class InmhItemData {
         return widgets;
     }
 
-    private List<String> findSolutionsInRandomRange(final Connection conn, String range) throws Exception {
+    /** return list of pids that randomly selected
+     *  from pids created by expanding range.
+     *  
+     *  range = test,casey,1.1,[1-5-2] 
+     *  means: "set of 2 randomly selected pids from a set of 5 pids (1-5)
+     *  
+     * @param conn
+     * @param range 
+     * @return
+     * @throws Exception
+     */
+    public List<String> findSolutionsInRandomRange(final Connection conn, String range) throws Exception {
+        List<String> pids = new ArrayList<String>();
         try {
             //range="test,casey,1.1,[1-5-2]";
-            List<String> pids = new ArrayList<String>();
             if(!range.contains("[")) {
+                // is not a range
                 pids.add(range);
             }
             else {
                 
                 logger.info("Parsing random range: " + range);
                 
-                String pieces[] = range.split(",");
-                
-                String s = range.substring(range.indexOf("[")+1,range.indexOf("]"));
-                String spieces[] = s.split("-");
-                int start = SbUtilities.getInt(spieces[0]);
-                int end = SbUtilities.getInt(spieces[1]);
-                int numToCreate = SbUtilities.getInt(spieces[2]);
-                
-                
-                
-                int maxAttempts=numToCreate * 5;
-                List<Integer> added=new ArrayList<Integer>();
-                while(maxAttempts-- > -1) {
+                if(range.indexOf("{") > -1) {
                     
-                    // get random selection
-                    int problemNumberToTry = SbUtilities.getRandomNumber(end-(start-1));
+                    logger.info("Parsing random range (explicit set): " + range);
                     
+                    int l = range.indexOf("{");
+                    int r = range.indexOf("}");
+                    String entries[] = range.substring(l+1,  r).split(",");
                     
-                    // get the active associated pid
-                    String book = pieces[0];
-                    String problemSet = pieces[1];
-                    String chapter = pieces[2].split("\\.")[0];
-                    String section = pieces[2].split("\\.")[1];
-
-                    problemNumberToTry += start;
-
-                    logger.info("trying random problem: " + problemNumberToTry);
-
-                    // only if not already read
-                    if(!added.contains(problemNumberToTry)) {
-                        added.add(problemNumberToTry);
-                        String activePid = lookupActivePid(conn,book, chapter, section, problemSet, problemNumberToTry);
-                        
-                        logger.info("Read random pid: " + activePid);
-                        
-
-                        if(activePid != null) {
-                            pids.add(activePid);
-                            numToCreate--;
-                            
-                            if(numToCreate == 0) {
-                                break;
-                            }
-                        }
+                    List<String> possiblePids = new ArrayList<String>();
+                    for(String e: entries) {
+                        possiblePids.add(e.trim());
                     }
+                    
+                    int numToCreate = Integer.parseInt(range.split("}")[1].split("]")[0].split("-")[1]);
+                    createRandomSet(pids, conn, possiblePids, numToCreate);
+                }
+                else {
+                    // range set
+                    
+                    String s = range.substring(range.indexOf("[")+1,range.indexOf("]"));
+                    String tokens[] = s.split("-");
+                    int start = SbUtilities.getInt(tokens[0]);
+                    int end = SbUtilities.getInt(tokens[1]);
+                    int numToCreate = SbUtilities.getInt(tokens[2]);
+                    
+                    createRandomSet(pids, conn, range, start, end, numToCreate);
                 }
             }
             
@@ -254,6 +247,73 @@ public class InmhItemData {
         catch(Exception e) {
             logger.error("Error", e);
             throw e;
+        }
+    }
+
+    private void createRandomSet(List<String> pids, Connection conn, List<String> possiblePids, int numToCreate) {
+
+        int maxAttempts=numToCreate * 5;
+        while(maxAttempts-- > -1) {
+            
+            // get random selection
+            int pidToTry = SbUtilities.getRandomNumber( possiblePids.size());
+            
+            
+            // get the active associated pid
+            String pid = possiblePids.get(pidToTry);
+
+            logger.debug("trying random explicit problem: " + pidToTry);
+
+            // only if not already read
+            if(!pids.contains(pid)) {
+                pids.add(pid);
+                numToCreate--;
+                if(numToCreate == 0) {
+                    break;
+                }
+            }
+        }        
+    }
+
+    private void createRandomSet(List<String> pids, Connection conn, String range, int start, int end, int numToCreate) throws Exception {
+        
+        String pieces[] = range.split(",");
+
+        int maxAttempts=numToCreate * 5;
+        List<Integer> added=new ArrayList<Integer>();
+        while(maxAttempts-- > -1) {
+            
+            // get random selection
+            int problemNumberToTry = SbUtilities.getRandomNumber(end-(start-1));
+            
+            
+            // get the active associated pid
+            String book = pieces[0];
+            String problemSet = pieces[1];
+            String chapter = pieces[2].split("\\.")[0];
+            String section = pieces[2].split("\\.")[1];
+
+            problemNumberToTry += start;
+
+            logger.info("trying random problem: " + problemNumberToTry);
+
+            // only if not already read
+            if(!added.contains(problemNumberToTry)) {
+                added.add(problemNumberToTry);
+                String activePid = lookupActivePid(conn,book, chapter, section, problemSet, problemNumberToTry);
+                
+                logger.info("Read random pid: " + activePid);
+                
+
+                if(activePid != null) {
+                    pids.add(activePid);
+                    numToCreate--;
+                    
+                    if(numToCreate == 0) {
+                        break;
+                    }
+                }
+            }
         }
     }
 
