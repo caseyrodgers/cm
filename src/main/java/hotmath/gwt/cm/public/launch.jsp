@@ -16,7 +16,7 @@
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <title>Catchup Math</title>  
         <script type="text/javascript"
-             src="/assets/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">s
+             src="/assets/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
         </script>
 
         
