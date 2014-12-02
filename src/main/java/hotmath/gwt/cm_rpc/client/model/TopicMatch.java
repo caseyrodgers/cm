@@ -36,7 +36,7 @@ public class TopicMatch implements Response {
     
     public String getTopicName() {
         // return value = "[" + matchWeight + "]" + topic.getName();
-        return topic.getName() + " [" + matchWeight + "]";
+        return topic.getName() + " [" + matchWeight + "]    ";
     }
 
     public Topic getTopic() {
