@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.search;
 
 import hotmath.gwt.cm_rpc.client.model.Topic;
+import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
@@ -42,9 +43,9 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 
 public class LessonSearchPanel extends SimpleContainer {
 
-    Grid<Topic> _gridOfLessons;
+    Grid<TopicMatch> _gridOfLessons;
     private TextField _lessonText;
-    protected CmList<Topic> _allLessons;
+    protected CmList<TopicMatch> _allLessons;
     TabPanel _tabPanel = new TabPanel();
     
     public LessonSearchPanel() {
@@ -89,15 +90,15 @@ public class LessonSearchPanel extends SimpleContainer {
             return;
         }
         
-        List<Topic> listNew = null;
+        List<TopicMatch> listNew = null;
         if(text == null || text.length() == 0) {
             listNew = _allLessons;
         }
         else {
-            listNew = new ArrayList<Topic>();
+            listNew = new ArrayList<TopicMatch>();
             String searchFor =  text.toLowerCase();
-            for(Topic t: _allLessons) {
-                if(t.getName().toLowerCase().contains(searchFor)) {
+            for(TopicMatch t: _allLessons) {
+                if(t.getTopic().getName().toLowerCase().contains(searchFor)) {
                     listNew.add(t);
                 }
             }
@@ -107,7 +108,7 @@ public class LessonSearchPanel extends SimpleContainer {
     }
 
     private void getLessonsFromServer() {
-        new RetryAction<CmList<Topic>>() {
+        new RetryAction<CmList<TopicMatch>>() {
             @Override
             public void attempt() {
                 SearchTopicAction action = new SearchTopicAction(SearchType.LESSON_LIKE,"%" + _lessonText.getValue() + "%");
@@ -116,7 +117,7 @@ public class LessonSearchPanel extends SimpleContainer {
             }
             
             @Override
-            public void oncapture(CmList<Topic> value) {
+            public void oncapture(CmList<TopicMatch> value) {
                 _allLessons = value;
                 _gridOfLessons.getStore().clear();
                 _gridOfLessons.getStore().addAll(value);
@@ -125,14 +126,14 @@ public class LessonSearchPanel extends SimpleContainer {
     }
 
     LessonGridProps _props = GWT.create(LessonGridProps.class);
-    private Grid<Topic> createLessonGrid() {
-        ListStore<Topic> store = new ListStore<Topic>(_props.key());
-        ArrayList<ColumnConfig<Topic, ?>> list = new ArrayList<ColumnConfig<Topic, ?>>();
+    private Grid<TopicMatch> createLessonGrid() {
+        ListStore<TopicMatch> store = new ListStore<TopicMatch>(_props.key());
+        ArrayList<ColumnConfig<TopicMatch, ?>> list = new ArrayList<ColumnConfig<TopicMatch, ?>>();
         
-        list.add(new ColumnConfig<Topic, String>(_props.name(), 200, "Topic Name"));
+        list.add(new ColumnConfig<TopicMatch, String>(_props.name(), 200, "Topic Name"));
         
-        ColumnModel<Topic> cm = new ColumnModel<Topic>(list);
-        Grid<Topic> grid = new Grid<Topic>(store,  cm);
+        ColumnModel<TopicMatch> cm = new ColumnModel<TopicMatch>(list);
+        Grid<TopicMatch> grid = new Grid<TopicMatch>(store,  cm);
         grid.getView().setAutoExpandColumn(list.get(0));
         grid.getView().setForceFit(true);
         
@@ -140,7 +141,7 @@ public class LessonSearchPanel extends SimpleContainer {
         grid.addRowDoubleClickHandler(new RowDoubleClickHandler() {
             @Override
             public void onRowDoubleClick(RowDoubleClickEvent event) {
-                loadTopic(_gridOfLessons.getSelectionModel().getSelectedItem());
+                loadTopic(_gridOfLessons.getSelectionModel().getSelectedItem().getTopic());
             }
         });
         
@@ -172,9 +173,10 @@ public class LessonSearchPanel extends SimpleContainer {
     }
 
     interface LessonGridProps extends PropertyAccess<String> {
-        @Path("file")
-        ModelKeyProvider<Topic> key();
+        @Path("topic.file")
+        ModelKeyProvider<TopicMatch> key();
 
-        ValueProvider<Topic, String> name();
+        @Path("topic.name")
+        ValueProvider<TopicMatch, String> name();
     }
 }

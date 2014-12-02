@@ -11,6 +11,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.Topic;
+import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
@@ -47,9 +48,9 @@ public class SearchActivity implements SearchView.Presenter {
         eventBus.fireEvent(new SystemIsBusyEvent(true));
         
         SearchTopicAction action = new SearchTopicAction(search);
-        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<Topic>>() {
+        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<TopicMatch>>() {
             @Override
-            public void onSuccess(CmList<Topic> result) {
+            public void onSuccess(CmList<TopicMatch> result) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
                 callBack.searchResults(result);
             }
@@ -63,7 +64,7 @@ public class SearchActivity implements SearchView.Presenter {
     }
 
     static public interface CallBack {
-        void searchResults(CmList<Topic> results);
+        void searchResults(CmList<TopicMatch> results);
     }
 
     @Override

@@ -3,7 +3,7 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.model.Topic;
+import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -12,32 +12,37 @@ import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchStyle;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.IdentityValueProvider;
+import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.FramedPanel;
-import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
@@ -58,7 +63,8 @@ public class SearchPanel extends BorderLayoutContainer {
         }
     });
     TextField _inputBox = new TextField();
-    ListView<Topic, Topic> _listView;
+    Grid<TopicMatch> _grid;
+    
     public SearchPanel() {
         setNorthWidget(createHeader(), new BorderLayoutData(40));
         
@@ -74,19 +80,23 @@ public class SearchPanel extends BorderLayoutContainer {
         
         BorderLayoutData eastData = new BorderLayoutData(350);
         eastData.setSplit(true);
-        // eastData.setCollapsible(true);
-        setEastWidget(_reviewPanel, eastData);
+        eastData.setCollapsible(true);
+        
+        ContentPanel cp = new ContentPanel();
+        cp.setWidget(blcI);
+        setWestWidget(cp, eastData);
         
         BorderLayoutData centerData = new BorderLayoutData();
         centerData.setSplit(true);
-        // centerData.setCollapsible(true);
+        //centerData.setCollapsible(true);
         
-        setCenterWidget(blcI, centerData);
+        setCenterWidget(_reviewPanel, centerData);
     }
     
-    interface Props extends PropertyAccess<Topic> {
-        ModelKeyProvider<Topic> file();
-        ValueProvider<Topic, Topic> name();
+    interface Props extends PropertyAccess<TopicMatch> {
+        @Path("topic.file")
+        ModelKeyProvider<TopicMatch> file();
+        ValueProvider<TopicMatch, String> topicName();
     }
     
     
@@ -94,57 +104,56 @@ public class SearchPanel extends BorderLayoutContainer {
     interface ListViewTemplate extends XTemplates {
         // @XTemplate("<div class='{style.searchItem}'><h3><span>{post.date:date(\"M/d/yyyy\")}<br />by {post.author}</span>{post.title}</h3>{post.excerpt}</div>")
         // @XTemplate("<div class='{style.searchItem}'><h3>{post.name}</span></h3>{post.excerpt}</div>")
-        @XTemplate("<div class='{style.searchItem}'>{post.name}</span></div>")
-        SafeHtml render(Topic post, SearchStyle style);
+        @XTemplate("<div class='{style.searchItem}'>{post.topicName}</span></div>")
+        SafeHtml render(TopicMatch post, SearchStyle style);
     }
     final ListViewTemplate template = GWT.create(ListViewTemplate.class);
     
     Props props = GWT.create(Props.class); 
     private Widget createListView() {
-        ListStore<Topic> store = new ListStore<Topic>(props.file());
-        
         final SearchBundle b = GWT.create(SearchBundle.class);
         b.css().ensureInjected();
 
-        _listView = new ListView<Topic, Topic>(store, new IdentityValueProvider<Topic>());
-        _listView.setCell(new AbstractCell<Topic>() {
-            @Override
-            public void render(com.google.gwt.cell.client.Cell.Context context, Topic value, SafeHtmlBuilder sb) {
-                sb.append(template.render(value,b.css()));
-            }
-        });
+        List<ColumnConfig<TopicMatch, ?>> cols = new ArrayList<ColumnConfig<TopicMatch,?>>();
+        cols.add(new ColumnConfig<TopicMatch, String>(props.topicName(), 160,  "Topic"));
         
-        _listView.addHandler(new DoubleClickHandler() {
+        ColumnModel<TopicMatch> colModel = new ColumnModel<TopicMatch>(cols);
+        ListStore<TopicMatch> gstore = new ListStore<TopicMatch>(props.file());
+        _grid = new Grid<TopicMatch>(gstore, colModel);
+        _grid.getView().setAutoFill(true);
+        _grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        
+        _grid.addHandler(new DoubleClickHandler() {
             @Override
             public void onDoubleClick(DoubleClickEvent event) {
                 exploreSelectedTopic();
             }
         }, DoubleClickEvent.getType());
+
         
-        
-        _listView.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<Topic>() {
-			@Override
-			public void onSelectionChanged(SelectionChangedEvent<Topic> event) {
-				showSelectedReview();
-			}
+        _grid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<TopicMatch>() {
+            @Override
+            public void onSelectionChanged(SelectionChangedEvent<TopicMatch> event) {
+                showSelectedReview();
+            }
         });
-        return _listView;
+        return _grid;
     }
     
     protected void showSelectedReview() {
-    	Topic si = _listView.getSelectionModel().getSelectedItem();
+    	TopicMatch si = _grid.getSelectionModel().getSelectedItem();
     	if(si != null) {
-    		_reviewPanel.loadReview(si.getFile(), si.getName());
+    		_reviewPanel.loadReview(si.getTopic().getFile(), si.getTopic().getName());
     	}
 	}
 
 	protected void exploreSelectedTopic() {
-        Topic topic = _listView.getSelectionModel().getSelectedItem();
+        TopicMatch topic = _grid.getSelectionModel().getSelectedItem();
         if(topic == null) {
             CmMessageBox.showAlert("No topic selected.");
         }
         else {
-            TopicExplorerManager.getInstance().exploreTopic(topic);
+            TopicExplorerManager.getInstance().exploreTopic(topic.getTopic());
         }
     }
 
@@ -190,18 +199,19 @@ public class SearchPanel extends BorderLayoutContainer {
     private void doSearch(final String searchFor) {
         SearchTopicAction action = new SearchTopicAction(searchFor);
         
-        
         CmBusyManager.setBusy(true);
-        CmShared.getCmService().execute(action, new AsyncCallback<CmList<Topic>>() {
+        CmShared.getCmService().execute(action, new AsyncCallback<CmList<TopicMatch>>() {
             @Override
-            public void onSuccess(CmList<Topic> result) {
+            public void onSuccess(CmList<TopicMatch> result) {
                 CmBusyManager.setBusy(false);
                 Log.debug("search ('" + searchFor + "') matches: " + result.size());
-                _listView.getStore().clear();
-                _listView.getStore().addAll(result);
+                _grid.getStore().clear();
+                _grid.getStore().clearSortInfo();
+                
+                _grid.getStore().addAll(result);
                 
                 if(result.size() > 0) {
-                    _listView.getSelectionModel().select(result.get(0), false);
+                    _grid.getSelectionModel().select(result.get(0), false);
                 }
             }
             

@@ -3,6 +3,7 @@ package hotmath.gwt.cm_search.client.activity;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.model.Topic;
+import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_search.client.ClientFactory;
@@ -37,7 +38,7 @@ public class SearchActivity extends AbstractActivity implements SearchView.Prese
         if(place != null && place.getToken() != null && place.getToken().length() > 2) {
             doSearch(place.getToken(),new CallBack() {
                 @Override
-                public void searchResults(CmList<Topic> results) {
+                public void searchResults(CmList<TopicMatch> results) {
                     view.showSearchResults(place.getToken(),results);
                 }
             });
@@ -54,9 +55,9 @@ public class SearchActivity extends AbstractActivity implements SearchView.Prese
         Log.info("Doing search: " + search);
         
         SearchTopicAction action = new SearchTopicAction(search);
-        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<Topic>>() {
+        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<TopicMatch>>() {
             @Override
-            public void onSuccess(CmList<Topic> result) {
+            public void onSuccess(CmList<TopicMatch> result) {
                 callBack.searchResults(result);
             }
             
@@ -74,6 +75,6 @@ public class SearchActivity extends AbstractActivity implements SearchView.Prese
     
     
     static public interface CallBack {
-        void searchResults(CmList<Topic> results);
+        void searchResults(CmList<TopicMatch> results);
     }
 }

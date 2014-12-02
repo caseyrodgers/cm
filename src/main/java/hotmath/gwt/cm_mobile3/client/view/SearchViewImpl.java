@@ -11,6 +11,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc.client.model.Topic;
+import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 import java.util.List;
@@ -86,16 +87,17 @@ public class SearchViewImpl extends AbstractPagePanel implements SearchView {
     protected void handleSearchButton(ClickEvent ce) {
         presenter.doSearch(searchField.getText(), new CallBack() {
             @Override
-            public void searchResults(CmList<Topic> results) {
+            public void searchResults(CmList<TopicMatch> results) {
                 showResults(results);
             }
         });
     }
 
-    private void showResults(CmList<Topic> topics) {
+    private void showResults(CmList<TopicMatch> topics) {
         listItems.clear();
-        for (Topic topic : topics) {
+        for (TopicMatch topicMatch : topics) {
 
+            Topic topic = topicMatch.getTopic();
             GenericTextTag<String> tt = new MyGenericTextTag(topic);
             tt.addStyleName("group");
             tt.addHandler(new TouchClickHandler<String>() {

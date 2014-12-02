@@ -8,6 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc.client.model.Topic;
+import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_search.client.CatchupMathSearch;
 
@@ -69,11 +70,12 @@ public class SearchViewImpl extends Composite implements SearchView {
     }
 
     @Override
-    public void showSearchResults(String searchedFor, CmList<Topic> topics) {
+    public void showSearchResults(String searchedFor, CmList<TopicMatch> topics) {
         searchField.setValue(searchedFor);
         listItems.clear();
-        for (Topic topic : topics) {
+        for (TopicMatch topicMatch : topics) {
 
+            Topic topic = topicMatch.getTopic();
             GenericTextTag<String> tt = new MyGenericTextTag(topic);
             tt.addStyleName("group");
             tt.addHandler(new TouchClickHandler<String>() {

@@ -20,5 +20,4 @@ public interface SearchListViewTemplate extends XTemplates {
     public interface SearchStyle extends CssResource {
         String searchItem();
     }
-
 }

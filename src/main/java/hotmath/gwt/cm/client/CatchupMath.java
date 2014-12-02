@@ -111,9 +111,6 @@ public class CatchupMath implements EntryPoint {
         __thisInstance = this;
         CmLogger.info("Catchup Math Startup");
         
-        
-        
-        
         if(CatchupMathTests.runTest()) {
             CmBusyManager.showLoading(false);
             return;
