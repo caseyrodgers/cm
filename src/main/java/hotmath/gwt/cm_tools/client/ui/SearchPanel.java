@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -23,6 +24,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -45,6 +47,7 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
+import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 /** panel that has a static text input field, 
  *  a list of matches below
@@ -113,12 +116,22 @@ public class SearchPanel extends BorderLayoutContainer {
     private Widget createListView() {
         final SearchBundle b = GWT.create(SearchBundle.class);
         b.css().ensureInjected();
-
+        final ListStore<TopicMatch> gstore = new ListStore<TopicMatch>(props.file());
         List<ColumnConfig<TopicMatch, ?>> cols = new ArrayList<ColumnConfig<TopicMatch,?>>();
-        cols.add(new ColumnConfig<TopicMatch, String>(props.topicName(), 160,  "Topic"));
+        ColumnConfig<TopicMatch, String> col = new ColumnConfig<TopicMatch, String>(props.topicName(), 160,  "Topic");
+        col.setCell(new AbstractCell<String>() {
+            @Override
+            public void render(com.google.gwt.cell.client.Cell.Context context, String value, SafeHtmlBuilder sb) {
+                TopicMatch tm = gstore.getAll().get(context.getIndex());
+                
+                sb.appendHtmlConstant("<h1 qtitle='Topic' qtip='" + value + "'>" + value + "</h1>");
+            }
+        });
+        
+        cols.add(col);
         
         ColumnModel<TopicMatch> colModel = new ColumnModel<TopicMatch>(cols);
-        ListStore<TopicMatch> gstore = new ListStore<TopicMatch>(props.file());
+        
         _grid = new Grid<TopicMatch>(gstore, colModel);
         _grid.getView().setAutoFill(true);
         _grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -137,6 +150,10 @@ public class SearchPanel extends BorderLayoutContainer {
                 showSelectedReview();
             }
         });
+        
+        
+        new QuickTip(_grid);
+        
         return _grid;
     }
     
@@ -196,6 +213,8 @@ public class SearchPanel extends BorderLayoutContainer {
             doSearch(searchFor);
         }
     }
+    
+    
     private void doSearch(final String searchFor) {
         SearchTopicAction action = new SearchTopicAction(searchFor);
         

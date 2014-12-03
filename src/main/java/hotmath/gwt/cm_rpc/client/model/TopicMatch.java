@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_rpc.client.model;
 
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 public class TopicMatch implements Response {
@@ -35,8 +36,14 @@ public class TopicMatch implements Response {
     }
     
     public String getTopicName() {
-        // return value = "[" + matchWeight + "]" + topic.getName();
-        return topic.getName() + " [" + matchWeight + "]    ";
+        
+        if(CmGwtUtils.getQueryParameter("debug") == null) {
+            return topic.getName();
+        }
+        else {
+            //  return value = "[" + matchWeight + "]" + topic.getName();
+            return topic.getName() + " [" + matchWeight + "]    ";
+        }
     }
 
     public Topic getTopic() {
