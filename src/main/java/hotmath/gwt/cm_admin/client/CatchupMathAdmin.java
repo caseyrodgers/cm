@@ -57,6 +57,15 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             }
         };
         CmBusyManager.setViewPort(mainPort);
+        
+        
+
+        if(CatchupMathAdminTests.runTest()) {
+            CmBusyManager.setBusy(false);
+            return;
+        }
+        
+
 
         
 //        String launchSub = CmShared.getQueryParameter("load");
@@ -110,11 +119,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     private void completeLoginProcess(final int uid) {
         
         Log.debug("CatchupMathAdmin: login complete, is Mobile: " + UserInfoBase.getInstance().isMobile());
-
-        if(CatchupMathAdminTests.runTest()) {
-        	return;
-        }
-        
         new MessageOfTheDayDialog(new CallbackGeneric() {
             @Override
             public void callbackReady() {

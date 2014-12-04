@@ -30,6 +30,8 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.core.client.Style.SelectionMode;
+import com.sencha.gxt.core.client.util.Rectangle;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
@@ -41,6 +43,7 @@ import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.IconButton;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.tree.Tree;
@@ -278,10 +281,16 @@ public class ProgramDetailsPanel extends GWindow {
     	loader.addLoadHandler(new ChildTreeStoreBinding<ProgListModel>(store));
     	_tree.setLoader(loader);
 
+    	_tree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     	FramedPanel fp = new FramedPanel();
     	fp.setHeaderVisible(false);
+    	
+    	/** work around tree selection color conflicting with FramedPanel */
+    	_tree.getElement().setAttribute("style",  "background: white;");
     	fp.setWidget(_tree);
     	setWidget(fp);
+    	
+        
     	forceLayout();
     }
 

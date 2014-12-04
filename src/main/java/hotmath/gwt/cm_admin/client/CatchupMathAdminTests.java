@@ -98,7 +98,10 @@ public class CatchupMathAdminTests extends CatchupMathSharedTests {
             }     
             else if(test.equals("CollectEmailFromUserDialog")) {
                 CollectEmailFromUserDialog.startTest();
-            }            
+            }   
+            
+            
+            return true;
         }
         
         return false;
