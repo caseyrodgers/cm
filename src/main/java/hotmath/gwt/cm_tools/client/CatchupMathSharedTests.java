@@ -10,6 +10,7 @@ import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.SearchComboBoxPanel;
 import hotmath.gwt.cm_tools.client.ui.SearchPanel;
 import hotmath.gwt.cm_tools.client.ui.TopicExplorerManager;
+import hotmath.gwt.cm_tools.client.ui.TopicExplorerWindow;
 import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplActivity;
@@ -33,8 +34,10 @@ public class CatchupMathSharedTests {
     public static boolean runTest() {
         String test = CmShared.getQueryParameterValue("test");
         
-        
-        if(test.equals("GradeLevelChooser")) {
+        if(test.equals("TopicExplorerWindow")) {
+            TopicExplorerWindow.startTest();
+        }
+        else if(test.equals("GradeLevelChooser")) {
             GradeLevelChooser.startTest();
         }
         else if(test.equals("ResourceViewerImplActivity")) {

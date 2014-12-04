@@ -105,8 +105,9 @@ public class CatchupMathAdminTests extends CatchupMathSharedTests {
             
             return true;
         }
-        
-        return false;
+        else {
+            return true;
+        }
     }
 
         
