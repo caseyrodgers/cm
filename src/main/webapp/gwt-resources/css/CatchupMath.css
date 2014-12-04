@@ -1418,3 +1418,12 @@ SolutionSetCompleteDialog .results {
 	top: 10px;
 	width: 200px;
 }
+
+
+.topic-list-item {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+    color: #1C97D1;
+    font-weight: bold;
+    line-height: 2em;
+}
