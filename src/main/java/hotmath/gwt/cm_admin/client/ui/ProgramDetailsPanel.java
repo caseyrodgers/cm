@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
+import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.model.program_listing.CmTreeNode;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapter;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
@@ -16,6 +17,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.ProgListModel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
+import hotmath.gwt.cm_tools.client.ui.TopicExplorerManager;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -25,8 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.editor.client.Editor.Path;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -77,6 +77,9 @@ public class ProgramDetailsPanel extends GWindow {
     private void buildGui() {
         setHeadingText("Lesson Topics Covered in Programs");
         setPixelSize(WIDTH, 400);
+
+        TextButton eBtn = createExploreLessonButton();
+        getHeader().addTool(eBtn);
 
         TextButton cBtn = new TextButton("Collapse All", new SelectHandler() {
             @Override
@@ -219,6 +222,26 @@ public class ProgramDetailsPanel extends GWindow {
             }
         }
         return null;
+    }
+
+    private TextButton createExploreLessonButton() {
+        TextButton btn = new TextButton("Explore Lesson", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+
+            	ProgListModel base = _tree.getSelectionModel().getSelectedItem();
+            	if (base == null || base.getLevel() != ProgramListing.LEVEL_LESS) {
+                    CmMessageBox.showAlert("Please click on a lesson to select it.");
+                    return;
+                }
+                String name = base.getLabel();
+                String file = base.getPath();
+                Topic topic = new Topic(name, file, null);
+                TopicExplorerManager.getInstance().exploreTopic(topic);
+            }
+        });
+        btn.setToolTip("Explore selected lesson.");
+        return btn;
     }
 
     interface Props extends PropertyAccess<ProgListModel> {
@@ -387,7 +410,9 @@ public class ProgramDetailsPanel extends GWindow {
                 for (int i = 0, t = lessons.size(); i < t; i++) {
                     ProgramLesson pl = lessons.get(i);
                     pl.setId(globalId++);
-                    models.add(new ProgListModel(pl));
+                    ProgListModel plm = new ProgListModel(pl);
+                    plm.setPath(pl.getFile());
+                    models.add(plm);
                 }
                 callback.onSuccess(models);
             }
