@@ -13,8 +13,11 @@ import hotmath.search.HMIndexSearcher;
 import hotmath.search.HMIndexWriter;
 import hotmath.search.HMIndexWriterFactory;
 import hotmath.search.Hit;
+import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,6 +25,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
+
+import com.sdicons.json.validator.impl.predicates.Array;
+
 
 /**
  * 
@@ -63,10 +69,33 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         } catch (Throwable e) {
             e.printStackTrace();
         }
-
-        return getOrderedTopics(topics, action.getSearch());
+        return getOrderedTopics(makeSureOnlyExplorableTopicsIncluded(conn, topics), action.getSearch());
     }
     
+    private  List<Topic> makeSureOnlyExplorableTopicsIncluded(Connection conn, List<Topic> topics) throws Exception {
+        List<String> titles = new ArrayList<String>();
+        PreparedStatement ps=null;
+        try {
+            String sql = "select distinct lesson from HA_PROGRAM_LESSONS_static";
+            ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+               titles.add(rs.getString(1));   
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,  ps, null);
+        }
+        
+        List<Topic> assignableTopics = new ArrayList<Topic>();
+        for(Topic t: topics) {
+            if(titles.contains(t.getName())) {
+                assignableTopics.add(t);
+            }
+        }
+        return assignableTopics;
+    }
+
     private CmList<TopicMatch> getOrderedTopics(List<Topic> topics, String search) {
         
         // find entries that match exactly and move to top        

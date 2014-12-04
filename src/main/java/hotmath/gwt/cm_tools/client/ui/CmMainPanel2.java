@@ -373,7 +373,6 @@ public class CmMainPanel2 extends CmMainPanelShared {
                 public void onSuccess(ResourceViewerFactory instance) {
                     try {
                         CmResourcePanel viewer = instance.create(resourceItem);
-                        
                         if(viewer instanceof ResourceViewerImplTutor2) {
                             ((ResourceViewerImplTutor2)viewer).setCallback(tutorCallback);
                         }
@@ -442,6 +441,9 @@ public class CmMainPanel2 extends CmMainPanelShared {
         centerData.setSplit(true);
         
         //setCenterWidget(new TextButton("Test"));
+        
+        //panel.getResourcePanel().setVisible(false);
+        
         setCenterWidget(_mainContentWrapper.getResourceWrapper(), centerData);
         
         if(trackView) {

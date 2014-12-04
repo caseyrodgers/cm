@@ -3,7 +3,6 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 
 import com.google.gwt.user.client.Timer;
-import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 
 public class CmMainPanelShared extends BorderLayoutContainer {
@@ -18,20 +17,18 @@ public class CmMainPanelShared extends BorderLayoutContainer {
      *  
      */
     public void makeSureUiIsRefreshed(final CmResourcePanel panel) {
-        new Timer() {
-            @Override
-            public void run() {
-                forceLayout();
-                if(panel.needForcedUiRefresh()) {
-                    
-                    BorderLayoutData centerData = new BorderLayoutData();
-                    centerData.setCollapsible(true);
-                    centerData.setMargins(new Margins(1, 0,1, 1));
-                    centerData.setSplit(true);
-                    setCenterWidget(getCenterWidget());
+        if(panel.needForcedUiRefresh()) {
+            new Timer() {
+                @Override
+                public void run() {
+                    panel.getResourcePanel().setVisible(true);
+                    forceLayout();
                 }
-            }
-        }.schedule(WAIT_TIME);  
+            }.schedule(WAIT_TIME);
+        }
+        else {
+            forceLayout();
+        }
     }
    
 
