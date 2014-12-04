@@ -124,7 +124,8 @@ public class SearchPanel extends BorderLayoutContainer {
             public void render(com.google.gwt.cell.client.Cell.Context context, String value, SafeHtmlBuilder sb) {
                 TopicMatch tm = gstore.getAll().get(context.getIndex());
                 
-                sb.appendHtmlConstant("<h1 qtitle='Topic' qtip='" + value + "'>" + value + "</h1>");
+                String tip = value + " [" + tm.getMatchWeight() + "]";
+                sb.appendHtmlConstant("<span class='topic-list-item' qtitle='Topic' qtip='" + tip + "'>" + value + "</span>");
             }
         });
         

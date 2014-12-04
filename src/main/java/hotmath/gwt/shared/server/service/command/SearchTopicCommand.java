@@ -126,19 +126,19 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
      */
     private MatchWeight determineMatchWeight(Topic t, String search) {
         if(_checkTitleMatchesAbsolute(t, search)) {
-            return MatchWeight.TITLE_HAS_ONLY_SEARCH;
+            return MatchWeight.TITLE_MATCH_ABSOLUTE;
         }
         else if(_checkTitleMatchesAbsolutePlus(t, search)) {
-            return MatchWeight.TITLE_HAS_ALL_PLUS;
+            return MatchWeight.TITLE_MATCH_ALL_PLUS;
         }
         else if(_checkContentContainsAll(t, search)) {
-            return MatchWeight.P_TAG_CONTAINS_ALL;
+            return MatchWeight.CONTENT_MATCH_ALL;
         }
         else if(_checkTitleContainsSome(t, search)) {
-            return MatchWeight.TITLE_CONTAINS_SOME;
+            return MatchWeight.TITLE_MATCH_SOME;
         }
         else if(_checkContentContainsSome(t, search)) {
-            return MatchWeight.P_TAG_CONTAINS_SOME;
+            return MatchWeight.CONTENT_MATCH_SOME;
         }
         return null;
     }

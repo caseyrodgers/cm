@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.HotMathProperties;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionCustomMobile;
 import hotmath.cm.util.CatchupMathProperties;
@@ -20,6 +21,7 @@ import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.sql.SqlUtilities;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,6 +29,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.htmlparser.Parser;
+import org.htmlparser.filters.NodeClassFilter;
+import org.htmlparser.tags.TitleTag;
+import org.htmlparser.util.NodeList;
+
+import sb.util.SbFile;
 
 
 
@@ -107,13 +115,37 @@ public class GetTopicPrescriptionCommand implements ActionHandler<GetTopicPrescr
             if(rs.next()) {
                 return rs.getString(1);
             }
-            return null;
+            
+            return extractTitleFromFile(file);
         }
         finally {
             SqlUtilities.releaseResources(null, ps,null);
         }
     }
     
+    static Parser htmlParser = new Parser();  
+    private String  extractTitleFromFile(String file) throws Exception {
+        
+        String base = HotMathProperties.getInstance().getHotMathWebBase() + HotMathProperties.getInstance().getINMHWebHome();
+        String htmlContents = new SbFile(new File(base, file)).getFileContents().toString("\n");
+        htmlParser.setInputHTML(htmlContents);
+        String title = getTitleContent(htmlParser);
+        
+        return title;
+    }
+    
+    private String getTitleContent(Parser htmlParser) throws Exception {
+        
+        NodeList list = htmlParser.extractAllNodesThatMatch(new NodeClassFilter(TitleTag.class));
+        
+        String title=null;
+        if (list.size() > 0) {
+            title = ((TitleTag) list.elementAt(0)).getTitle();
+        }
+        return title;
+    }
+
+
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         // TODO Auto-generated method stub

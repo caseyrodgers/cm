@@ -5,6 +5,7 @@ package hotmath.gwt.cm_tools.client;
 import hotmath.gwt.cm_tools.client.search.LessonSearchWindow;
 import hotmath.gwt.cm_tools.client.teacher.AddFolderDialog;
 import hotmath.gwt.cm_tools.client.ui.DateRangePickerDialog;
+import hotmath.gwt.cm_tools.client.ui.GradeLevelChooser;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.SearchComboBoxPanel;
 import hotmath.gwt.cm_tools.client.ui.SearchPanel;
@@ -33,7 +34,10 @@ public class CatchupMathSharedTests {
         String test = CmShared.getQueryParameterValue("test");
         
         
-        if(test.equals("ResourceViewerImplActivity")) {
+        if(test.equals("GradeLevelChooser")) {
+            GradeLevelChooser.startTest();
+        }
+        else if(test.equals("ResourceViewerImplActivity")) {
             ResourceViewerImplActivity.startTest();
         }
         else if(test.equals("SearchPanel")) {
