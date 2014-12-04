@@ -30,6 +30,7 @@ public class TopicExplorerWindow extends GWindow {
             @Override
             public void runTest() {
                 Topic topic = new Topic("Graphing Square Root Functions", "topics/graphing-square-root-functions.html",null);
+                topic = new Topic("Multiplying Decimals","topics/multiplying-decimals.html", null);
                 new TopicExplorerWindow(topic, true);
             }
         });

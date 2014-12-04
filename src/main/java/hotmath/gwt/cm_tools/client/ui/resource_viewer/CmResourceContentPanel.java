@@ -146,7 +146,9 @@ public class CmResourceContentPanel extends ContentPanel {
     
     
     public void removeExpandButton() {
-        _maximize.removeFromParent();
+        if(_maximize != null) {
+            _maximize.removeFromParent();
+        }
     }
     
     public CmResourcePanel getResourcePanel () {
