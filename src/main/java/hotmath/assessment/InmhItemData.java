@@ -147,7 +147,10 @@ public class InmhItemData {
                         if(rangePids.size() == 0) {
                             logger.warn("No random problems found: " + this + ", " + range.getRange());
                         }
-                        
+                        else {
+                            logger.info("random range contains: " + rangePids.size());
+                            logger.debug("random range: " + rangePids);
+                        }
                         canCache=false;
                     }
                     

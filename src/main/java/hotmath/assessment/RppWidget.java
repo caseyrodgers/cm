@@ -96,6 +96,10 @@ public class RppWidget {
      * @return
      */
     public boolean isGradeLevel(int gradeLevel) {
+        if(gradeLevels.size() == 0) {
+            return true;
+        }
+        
        for(Integer gl: gradeLevels)  {
            if(gl == gradeLevel) {
                return true;

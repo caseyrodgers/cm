@@ -345,7 +345,7 @@ public class AssessmentPrescription {
             if (rpp.isFlashRequired())
                 continue;
 
-            if (!filterItems || (rpp.getGradeLevels().size() == 0 || rpp.isGradeLevel(programGradLevel))) {
+            if (!filterItems || rpp.isGradeLevel(programGradLevel)) {
                 
                 for(RppWidget rppExpand: expandProblemSetPids(rpp)) {
                     session.add(new SessionData(itemData.getInmhItem(), rppExpand));
