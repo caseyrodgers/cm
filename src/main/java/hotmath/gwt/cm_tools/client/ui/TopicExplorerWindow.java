@@ -21,7 +21,7 @@ public class TopicExplorerWindow extends GWindow {
         Widget panel = new TopicExplorer(topic).asWidget();
         setWidget(panel);
         
-        setModal(false);
+        setModal(isModal);
 
         setVisible(true);
     }

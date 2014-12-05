@@ -522,8 +522,6 @@ public class CmMainPanel extends CmMainPanelShared {
     }
     
     public void showResource(final CmResourcePanel panel, String title, boolean trackView) {
-        
-        
         if(_lastResourceViewer != null) {
             _lastResourceViewer.removeResourcePanel();
         }

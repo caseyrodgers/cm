@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_core.client.util.GwtTester;
-import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -9,7 +7,6 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 

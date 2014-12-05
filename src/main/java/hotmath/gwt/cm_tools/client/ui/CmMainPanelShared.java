@@ -2,7 +2,8 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 
-import com.google.gwt.user.client.Timer;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 
 public class CmMainPanelShared extends BorderLayoutContainer {
@@ -19,14 +20,13 @@ public class CmMainPanelShared extends BorderLayoutContainer {
     public void makeSureUiIsRefreshed(final CmResourcePanel panel) {
         if(panel.needForcedUiRefresh()) {
             panel.getResourcePanel().setVisible(false);
-            new Timer() {
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                 @Override
-                public void run() {
-                    
+                public void execute() {
                     panel.getResourcePanel().setVisible(true);
                     forceLayout();
                 }
-            }.schedule(WAIT_TIME);
+            });
         }
         else {
             forceLayout();
