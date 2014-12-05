@@ -37,6 +37,11 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
     public Widget getResourcePanel() {
         __lastItemData = getResourceItem();
 
+        // for testing
+        String t = "http://test.catchupmath.com/hotmath_help/games/factortris/factortris_hotmath_sound.swf";
+        __lastItemData.setFile(t);
+        
+        
         if (panel == null) {
             if (!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
                 HTML html = new HTML(CmShared.FLASH_ALT_CONTENT);
@@ -44,7 +49,6 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
             } else {
                 SWFSettings s = new SWFSettings();
                 s.setMinPlayerVersion(new PlayerVersion(CmShared.FLASH_MIN_VERSION));
-                String t = getResourceItem().getFile();
                 SWFWidget swfWidget = new SWFWidget(t, "100%", "100%", s);
                 swfWidget.addParam("wmode", "opaque");
 

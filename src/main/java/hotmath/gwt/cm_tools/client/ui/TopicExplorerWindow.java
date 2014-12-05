@@ -20,6 +20,7 @@ public class TopicExplorerWindow extends GWindow {
         
         Widget panel = new TopicExplorer(topic).asWidget();
         setWidget(panel);
+        
         setModal(false);
 
         setVisible(true);
@@ -29,8 +30,8 @@ public class TopicExplorerWindow extends GWindow {
         new GwtTester(new TestWidget() {
             @Override
             public void runTest() {
-                Topic topic = new Topic("Graphing Square Root Functions", "topics/graphing-square-root-functions.html",null);
-                topic = new Topic("Multiplying Decimals","topics/multiplying-decimals.html", null);
+                // Topic topic = new Topic("Graphing Square Root Functions", "topics/graphing-square-root-functions.html",null);
+                Topic topic = new Topic("Multiplying Decimals","topics/multiplying-decimals.html", null);
                 new TopicExplorerWindow(topic, true);
             }
         });

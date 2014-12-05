@@ -18,9 +18,11 @@ public class CmMainPanelShared extends BorderLayoutContainer {
      */
     public void makeSureUiIsRefreshed(final CmResourcePanel panel) {
         if(panel.needForcedUiRefresh()) {
+            panel.getResourcePanel().setVisible(false);
             new Timer() {
                 @Override
                 public void run() {
+                    
                     panel.getResourcePanel().setVisible(true);
                     forceLayout();
                 }
