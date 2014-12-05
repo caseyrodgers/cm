@@ -86,7 +86,8 @@ public class TopicExplorer extends SimpleContainer {
         buildUiInternal(prescription.getPrescriptionData());
     }
 
-    static Map<String, List<InmhItemData>> _registeredResources = new HashMap<String, List<InmhItemData>>();
+    private Map<String, List<InmhItemData>> _registeredResources = new HashMap<String, List<InmhItemData>>();
+
     public void buildUiInternal(PrescriptionData pData) {
         
         FlowLayoutContainer flow = new FlowLayoutContainer();
@@ -99,7 +100,7 @@ public class TopicExplorer extends SimpleContainer {
         //setScrollMode(ScrollMode.NONE);
         flow.addStyleName("prescription-cm-gui-definition-resource-panel");
 
-        boolean isCustomProgram = false;
+        //boolean isCustomProgram = false;
 
         ResourceMenuButton.RegisterCallback callback = new ResourceMenuButton.RegisterCallback() {
             @Override
@@ -136,6 +137,8 @@ public class TopicExplorer extends SimpleContainer {
                 case RESULTS:
                     /** skip these */
                     continue;
+			    default:
+				    break;
             }
             
             if(resource.getType() == CmResourceType.WEBLINK) {
