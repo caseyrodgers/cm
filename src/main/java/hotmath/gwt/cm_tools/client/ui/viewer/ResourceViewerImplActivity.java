@@ -38,8 +38,8 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
         __lastItemData = getResourceItem();
 
         // for testing
-        String t = "http://test.catchupmath.com/hotmath_help/games/factortris/factortris_hotmath_sound.swf";
-        __lastItemData.setFile(t);
+        //String t = "http://test.catchupmath.com/hotmath_help/games/factortris/factortris_hotmath_sound.swf";
+        //__lastItemData.setFile(t);
         
         
         if (panel == null) {
@@ -49,7 +49,7 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
             } else {
                 SWFSettings s = new SWFSettings();
                 s.setMinPlayerVersion(new PlayerVersion(CmShared.FLASH_MIN_VERSION));
-                SWFWidget swfWidget = new SWFWidget(t, "100%", "100%", s);
+                SWFWidget swfWidget = new SWFWidget(getResourceItem().getFile(), "100%", "100%", s);
                 swfWidget.addParam("wmode", "opaque");
 
                 swfWidget.setStyleName("activity-widget");
