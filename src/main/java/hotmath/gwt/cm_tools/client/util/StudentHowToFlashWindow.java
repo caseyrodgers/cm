@@ -8,6 +8,9 @@ import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
 import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+
 
 public class StudentHowToFlashWindow extends GWindow {
     
@@ -29,15 +32,23 @@ public class StudentHowToFlashWindow extends GWindow {
             CatchupMathTools.showAlert("Please upgrade your Flash version to at least " + CmShared.FLASH_MIN_VERSION);
         }
         else {
-            SWFSettings s = new SWFSettings();
+             SWFSettings s = new SWFSettings();
             s.setMinPlayerVersion(new PlayerVersion(CmShared.FLASH_MIN_VERSION));
-            SWFWidget swfWidget = new SWFWidget(URL, "100%", "100%", s);
+            final SWFWidget swfWidget = new SWFWidget(URL, "100%", "100%", s);
             swfWidget.addParam("wmode", "opaque");
             swfWidget.addFlashVar("thumb", "http://catchupmath.com/assets/teacher_videos/Student%20video%20last%20time/FirstFrame.png");
             swfWidget.addFlashVar("autostart", "true");
             
             swfWidget.setStyleName("activity-widget");
-            add(swfWidget);
+            
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    setWidget(swfWidget);
+                }
+            });
+            
+            
         }
     }
 }

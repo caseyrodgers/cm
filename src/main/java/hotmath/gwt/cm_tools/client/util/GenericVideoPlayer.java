@@ -5,12 +5,14 @@ import pl.rmalinowski.gwt2swf.client.ui.SWFSettings;
 import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
 import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+
 public class GenericVideoPlayer extends GWindow {
 
 	String videoPlayerId = "flowPlayer_" + System.currentTimeMillis();
 
 	public GenericVideoPlayer(String videoToPlay, String title) {
-
 		super(true);
 
 		setHeadingText(title);
@@ -25,7 +27,7 @@ public class GenericVideoPlayer extends GWindow {
 		 * add id to force no cache .. is a bug with flowplayer that if in cache
 		 * it only plays once.
 		 */
-		SWFWidget swfWidget = new SWFWidget(
+		final SWFWidget swfWidget = new SWFWidget(
 				"/cm_student/flowplayer-3.1.5.swf?id=" + videoPlayerId, "100%",
 				"100%", s);
 
@@ -41,7 +43,17 @@ public class GenericVideoPlayer extends GWindow {
 		swfWidget.addParam("quality", "high");
 		swfWidget.addParam("cachebusting", "true");
 		swfWidget.addParam("bgcolor", "000000");
-		add(swfWidget);
 
+		/** flash content needs to be added
+		 *  after the widget has been sized by parent
+		 *  
+		 */
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                setWidget(swfWidget);
+                forceLayout();
+            }
+        });
 	}
 }
