@@ -22,6 +22,7 @@ import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentPanelButton;
+import hotmath.gwt.cm_tools.client.ui.TopicExplorerManager;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
@@ -437,22 +438,17 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         mi.setToolTip("Create and manage custom programs and quizzes");
         customMenu.add(mi);
         
-        
         customButton.setMenu(customMenu);
-        
         toolbar.add(customButton);
 
-        toolbar.add(new StudentPanelButton("Program Details", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                GWT.runAsync(new CmRunAsyncCallback() {
-                    @Override
-                    public void onSuccess() {
-                        ProgramDetailsPanel.showPanel(_cmAdminMdl);
-                    }
-                });
-            }
-        }));
+        TextButton lessonsButton = new TextButton("Lessons");
+        lessonsButton.setToolTip("Explore Lessons and Program Details");
+        Menu lessonsMenu = new Menu();
+        lessonsMenu.add(createExploreLessonsButton());
+        lessonsMenu.add(createProgramDetailsButton());
+                
+        lessonsButton.setMenu(lessonsMenu);
+        toolbar.add(lessonsButton);
 
         toolbar.add(exportStudentsToolItem(_grid));
 
@@ -469,7 +465,49 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         return toolbar;
     }
 
-    private TextButton createRegistrationButton() {
+    private Widget createProgramDetailsButton() {
+        MenuItem mi = new MenuItem("Program Details", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                if(UserInfoBase.getInstance().isMobile()) {
+                    new FeatureNotAvailableToMobile();
+                    return;
+                }
+                
+                GWT.runAsync(new CmRunAsyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                    	ProgramDetailsPanel.showPanel(_cmAdminMdl);
+                    }
+                });
+            }
+        });
+        mi.setToolTip("View Program Details");
+		return mi;
+	}
+
+	private Widget createExploreLessonsButton() {
+        MenuItem mi = new MenuItem("Search", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                if(UserInfoBase.getInstance().isMobile()) {
+                    new FeatureNotAvailableToMobile();
+                    return;
+                }
+                
+                GWT.runAsync(new CmRunAsyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                    	TopicExplorerManager.getInstance().setVisible(true);
+                    }
+                });
+            }
+        });
+        mi.setToolTip("Search for and explore Lessons");
+		return mi;
+	}
+
+	private TextButton createRegistrationButton() {
         TextButton btn = new StudentPanelButton("Student Registration");
         btn.setToolTip("Register students with Catchup Math");
 
@@ -782,7 +820,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                     @Override
                     public void onSuccess() {
 
-                        // new GradeBookDialog(_cmAdminMdl.getId());
                         int groupIdToLoad = 0;
                         StudentModelI selected = _grid.getSelectionModel().getSelectedItem();
                         if (selected != null) {
@@ -864,7 +901,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         });
     }
 
-    int currentStudentCount;
     static final int MAX_REPORT_CARD = 50;
 
     private MyMenuItem defineReportCardItem(final Grid<StudentModelI> grid) {
@@ -880,7 +916,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                             studentUids.add(store.get(i).getUid());
                         }
                         int studentCount = studentUids.size();
-                        if (studentCount > 0 && currentStudentCount <= MAX_REPORT_CARD) {
+                        if (studentCount > 0 && studentCount <= MAX_REPORT_CARD) {
                             GWT.runAsync(new CmRunAsyncCallback() {
 
                                 @Override
@@ -903,7 +939,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                             if (studentCount < 1)
                                 CmMessageBox.showAlert("Report Cards", "No students currently displayed.");
                             else
-                                CmMessageBox.showAlert("Report Cards", currentStudentCount
+                                CmMessageBox.showAlert("Report Cards", studentCount
                                         + " students selected, please choose a 'Group' and/or use 'Text Search' to select " + MAX_REPORT_CARD
                                         + " or fewer students.");
                         }
@@ -925,7 +961,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                     studentUids.add(store.get(i).getUid());
                 }
                 int studentCount = studentUids.size();
-                if (studentCount > 0 && currentStudentCount <= MAX_REPORT_CARD) {
+                if (studentCount > 0 && studentCount <= MAX_REPORT_CARD) {
 
                     GWT.runAsync(new CmRunAsyncCallback() {
 
@@ -946,9 +982,9 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                     });
                 } else {
                     if (studentCount < 1)
-                        CmMessageBox.showAlert("Report Cards", "No students currently displayed.");
+                        CmMessageBox.showAlert("Assignment Report", "No students currently displayed.");
                     else
-                        CmMessageBox.showAlert("Report Cards", currentStudentCount
+                        CmMessageBox.showAlert("Assignment Report", studentCount
                                 + " students selected, please choose a 'Group' and/or use 'Text Search' to select " + MAX_REPORT_CARD + " or fewer students.");
                 }
             }
