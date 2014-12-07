@@ -16,11 +16,10 @@ public class TopicExplorerWindow extends GWindow {
         setMaximizable(true);
         //setMinimizable(true);;
         setCollapsible(true);
-        setModal(isModal);
         
         Widget panel = new TopicExplorer(topic).asWidget();
         setWidget(panel);
-        
+
         setModal(isModal);
 
         setVisible(true);
