@@ -31,7 +31,7 @@ public class TopicExplorerManager extends GWindow {
         super(true);
         
         setPixelSize(700, 550);
-        setHeadingText("Catchup Math Topic Explorer");
+        setHeadingText("Catchup Math Lesson Explorer");
         setMaximizable(true);
         //setMinimizable(true);;
         setCollapsible(true);
@@ -73,7 +73,7 @@ public class TopicExplorerManager extends GWindow {
             @Override
             public void runTest() {
                 Topic topic = new Topic("Graphing Square Root Functions", "topics/graphing-square-root-functions.html",null);
-                TopicExplorerManager.getInstance();
+                new TopicExplorerManager();
                 //new TopicExplorerManager().exploreTopic(topic);
             }
         });

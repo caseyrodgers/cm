@@ -58,6 +58,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
@@ -69,6 +70,7 @@ import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.Component;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
@@ -149,6 +151,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         lc.setCenterWidget(sc, new BorderLayoutData(400));
 
         setCenterWidget(lc);
+        
         setSouthWidget(new FiltersPanel(cmAdminMdl,dateRangePanel), new BorderLayoutData(35));
 
         final Menu contextMenu = new Menu();
@@ -442,7 +445,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         toolbar.add(customButton);
 
         TextButton lessonsButton = new TextButton("Lessons");
-        lessonsButton.setToolTip("Explore Lessons and Program Details");
         Menu lessonsMenu = new Menu();
         lessonsMenu.add(createExploreLessonsButton());
         lessonsMenu.add(createProgramDetailsButton());

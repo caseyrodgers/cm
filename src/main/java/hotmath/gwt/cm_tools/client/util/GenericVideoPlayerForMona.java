@@ -9,6 +9,7 @@ public class GenericVideoPlayerForMona extends GenericVideoPlayer {
         super(video.getFile(),video.getTitle());
         setPixelSize(330,320);
         setModal(true);
+        
         setVisible(true);
     }
     

@@ -17,7 +17,7 @@ public class ReviewPanel extends ContentPanel {
 	
 	public ReviewPanel(final CallbackOnComplete callback) {
 		setWidget(new DefaultGxtLoadingPanel("No selected topic"));
-		addTool(new TextButton("Explore Topic", new SelectHandler() {
+		addTool(new TextButton("Explore Lesson", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 callback.isComplete();

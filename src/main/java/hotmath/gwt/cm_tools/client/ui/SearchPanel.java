@@ -23,9 +23,12 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -67,13 +70,15 @@ public class SearchPanel extends BorderLayoutContainer {
     });
     TextField _inputBox = new TextField();
     Grid<TopicMatch> _grid;
-    
+    private ContentPanel _westPanel;
+    private BorderLayoutContainer _centerPanel;
     public SearchPanel() {
-        setNorthWidget(createHeader(), new BorderLayoutData(40));
+        
+        setNorthWidget(createHeader(), new BorderLayoutData(55));
         
         BorderLayoutContainer blcI = new BorderLayoutContainer();
         blcI.setCenterWidget(createListView());
-        blcI.setSouthWidget(new TextButton("Explore Topic", new SelectHandler() {
+        blcI.setSouthWidget(new TextButton("Explore Lesson", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 exploreSelectedTopic();
@@ -85,15 +90,22 @@ public class SearchPanel extends BorderLayoutContainer {
         eastData.setSplit(true);
         eastData.setCollapsible(true);
         
-        ContentPanel cp = new ContentPanel();
-        cp.setWidget(blcI);
-        setWestWidget(cp, eastData);
+        _westPanel = new ContentPanel();
+        _westPanel.setWidget(blcI);
+        _westPanel.setEnabled(false);
+        
+        setWestWidget(_westPanel, eastData);
         
         BorderLayoutData centerData = new BorderLayoutData();
         centerData.setSplit(true);
         //centerData.setCollapsible(true);
         
-        setCenterWidget(_reviewPanel, centerData);
+        _centerPanel = new BorderLayoutContainer();
+        _centerPanel.setCenterWidget(_reviewPanel);
+        _centerPanel.setSouthWidget(new HTML("<div style='text-align: center;margin-top: 5px;font-size: .9em;font-style: italic'>Press Explore Lesson to see all the lesson resources</div>"), new BorderLayoutData(30));
+        
+        _centerPanel.setEnabled(false);
+        setCenterWidget(_centerPanel, centerData);
     }
     
     interface Props extends PropertyAccess<TopicMatch> {
@@ -112,13 +124,14 @@ public class SearchPanel extends BorderLayoutContainer {
     }
     final ListViewTemplate template = GWT.create(ListViewTemplate.class);
     
-    Props props = GWT.create(Props.class); 
+    Props props = GWT.create(Props.class);
+    private HTML _searchMessage; 
     private Widget createListView() {
         final SearchBundle b = GWT.create(SearchBundle.class);
         b.css().ensureInjected();
         final ListStore<TopicMatch> gstore = new ListStore<TopicMatch>(props.file());
         List<ColumnConfig<TopicMatch, ?>> cols = new ArrayList<ColumnConfig<TopicMatch,?>>();
-        ColumnConfig<TopicMatch, String> col = new ColumnConfig<TopicMatch, String>(props.topicName(), 160,  "Topic");
+        ColumnConfig<TopicMatch, String> col = new ColumnConfig<TopicMatch, String>(props.topicName(), 160,  "Lesson");
         col.setCell(new AbstractCell<String>() {
             @Override
             public void render(com.google.gwt.cell.client.Cell.Context context, String value, SafeHtmlBuilder sb) {
@@ -168,7 +181,7 @@ public class SearchPanel extends BorderLayoutContainer {
 	protected void exploreSelectedTopic() {
         TopicMatch topic = _grid.getSelectionModel().getSelectedItem();
         if(topic == null) {
-            CmMessageBox.showAlert("No topic selected.");
+            CmMessageBox.showAlert("No lesson selected.");
         }
         else {
             TopicExplorerManager.getInstance().exploreTopic(topic.getTopic());
@@ -191,6 +204,9 @@ public class SearchPanel extends BorderLayoutContainer {
                 searchForMatches();
             }
         }),bld);
+        _searchMessage = new HTML();
+        blc.setSouthWidget(_searchMessage, new BorderLayoutData(25));
+        
         fp.setWidget(blc);
         
         _inputBox.addChangeHandler(new ChangeHandler() {
@@ -199,16 +215,25 @@ public class SearchPanel extends BorderLayoutContainer {
                 searchForMatches();
             }
         });
+        _inputBox.addKeyDownHandler(new KeyDownHandler() {
+            @Override
+            public void onKeyDown(KeyDownEvent event) {
+                if(_searchMessage.getText().length() > 0) {
+                    _searchMessage.setText("");
+                }
+            }
+        });
         
-        _inputBox.setToolTip("Enter a word or phrase associated with a Topic.   Press ENTER or click the Search button to find matches.");
+        _inputBox.setToolTip("Enter a word or phrase associated with a Lesson.   Press ENTER or click the Search button to find matches.");
         return fp;
     }
     
     
     private void searchForMatches() {
+        showSearchMessage("");
         String searchFor = _inputBox.getCurrentValue();
         if(searchFor == null || searchFor.length() < 2) {
-            CmMessageBox.showAlert("Enter at least two letters.");
+            showSearchMessage("Enter at least two letters.");
         }
         else {
             doSearch(searchFor);
@@ -219,6 +244,7 @@ public class SearchPanel extends BorderLayoutContainer {
     private void doSearch(final String searchFor) {
         SearchTopicAction action = new SearchTopicAction(searchFor);
         
+        showSearchMessage("Searching ...");
         CmBusyManager.setBusy(true);
         CmShared.getCmService().execute(action, new AsyncCallback<CmList<TopicMatch>>() {
             @Override
@@ -232,6 +258,13 @@ public class SearchPanel extends BorderLayoutContainer {
                 
                 if(result.size() > 0) {
                     _grid.getSelectionModel().select(result.get(0), false);
+                    enableMainArea(true);
+                    
+                    showSearchMessage("Found " + result.size() + " " + (result.size()==1?"match":"matches"));
+                }
+                else {
+                    enableMainArea(false);
+                    showSearchMessage("No matches found.");
                 }
             }
             
@@ -240,12 +273,21 @@ public class SearchPanel extends BorderLayoutContainer {
                 CmBusyManager.setBusy(false);
                 caught.printStackTrace();
                 Log.error("Error", caught);
-                CmMessageBox.showAlert("There was a problem getting matches");
+                CmMessageBox.showAlert("There was a problem getting matches" + caught.getMessage());
             }
         });
     }
     
     
+    protected void showSearchMessage(String message) {
+        _searchMessage.setHTML("<div style='margin-top: 3px;color: red;font-weight: bold;'>" + message + "</div>");
+    }
+
+    protected void enableMainArea(boolean b) {
+        _centerPanel.setEnabled(b);
+        _westPanel.setEnabled(b);
+    }
+
     static public void startTest() {
         new GwtTester(new TestWidget() {
            @Override

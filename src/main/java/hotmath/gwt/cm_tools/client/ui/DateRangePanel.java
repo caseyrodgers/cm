@@ -105,7 +105,7 @@ public class DateRangePanel extends HorizontalPanel  {
 
 		dateRangeFilter = new TextField();
 		dateRangeFilter.setEmptyText(" Use \"set\" for Date Range");
-		dateRangeFilter.setWidth("160px");
+		dateRangeFilter.setWidth("155px");
 		dateRangeFilter.setReadOnly(true);
 		dateRangeFilter.setToolTip("No date range filter applied");
 		dateRangeFilter.addHandler(

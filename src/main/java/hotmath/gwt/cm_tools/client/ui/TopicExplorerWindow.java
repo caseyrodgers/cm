@@ -12,7 +12,7 @@ public class TopicExplorerWindow extends GWindow {
         super(true);
         
         setPixelSize(700, 550);
-        setHeadingText("Explore Topic");
+        setHeadingText("Explore Lesson");
         setMaximizable(true);
         //setMinimizable(true);;
         setCollapsible(true);
