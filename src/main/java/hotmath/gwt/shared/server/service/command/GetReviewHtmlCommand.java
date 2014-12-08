@@ -46,10 +46,22 @@ public class GetReviewHtmlCommand implements ActionHandler<GetReviewHtmlAction, 
         HmContentExtractor ext = new HmContentExtractor();
         String htmlCooked = ext.extractContent(html, getBaseDirectory(action.isSpanish()));
 
+        htmlCooked = fixupForUniqueResourceLoad(htmlCooked, action.getUniqueInstanceKey());
+        
         result.setLesson(htmlCooked);
         return result;
     }
     
+
+    /** Replace call to doLoadResource, with a specific identifier.  This is to allow having multiple
+     * review viewers up ... only changing the one viewable.  Otherwise, when a link is clicked all viewers would be
+     * affected.  This is a problem in the lesson explorer.
+     * 
+     */    
+    private String fixupForUniqueResourceLoad(String htmlCooked, int uniqInstance) {
+        return htmlCooked.replace("doLoadResource(", "doLoadResource_Gwt(" + uniqInstance + ",");
+    }
+
     private String getFile(String file, boolean isSpanish) {
         return getLangPath(isSpanish) + file;
     }

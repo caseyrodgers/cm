@@ -1,10 +1,13 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_core.client.event.LoadReviewHtmlEvent;
+import hotmath.gwt.cm_core.client.event.LoadReviewHtmlHandler;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
@@ -33,19 +36,49 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
     TextButton _spanishButton;
 
     boolean itemHasSpanish;
+    
+    static int __uniqResourceViewerKey;
+
+    private int _uniqueInstanceKey;
+
+    static {
+        setupJsniHooks();
+    }
 
     public ResourceViewerImplReview() {
         addStyleName(STYLE_NAME);
-        
         setScrollMode(ScrollMode.AUTO);
+        
+        
+        this._uniqueInstanceKey=__uniqResourceViewerKey++;
+        
+        CmRpcCore.EVENT_BUS.addHandler(LoadReviewHtmlEvent.TYPE, new LoadReviewHtmlHandler() {
+            @Override
+            public void loadLesson(String file, int uniqueInstanceKey) {
+                if(uniqueInstanceKey == ResourceViewerImplReview.this._uniqueInstanceKey) {
+                    getResourceItem().setFile(file);
+                    getLessonData();
+                }
+            }
+        });
     }
     
+    static ResourceViewerImplReview __lastReviewViewer=null; 
+    static public void doResourceLoad(int uniqueInstanceKey, String key, String file) {
+        CmRpcCore.EVENT_BUS.fireEvent(new LoadReviewHtmlEvent(file,uniqueInstanceKey));
+    }
 
+    static private native void setupJsniHooks() /*-{
+        $wnd.doLoadResource_Gwt = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplReview::doResourceLoad(I Ljava/lang/String;Ljava/lang/String;);
+    }-*/;
+
+    public int getUniqueInstanceKey() {
+        return this._uniqueInstanceKey;
+    }
     @Override
     public ResourceViewerState getInitialMode() {
         return ResourceViewerState.OPTIMIZED;
     }
-
 
     @Override
     public String getContainerStyleName() {
@@ -62,13 +95,12 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
     }
 
     private void getLessonData() {
-        
         final InmhItemData resource = getResourceItem();
         final String file = resource.getFile();
         new RetryAction<LessonResult>() {
             @Override   
             public void attempt() {
-                GetReviewHtmlAction action = new GetReviewHtmlAction(file);
+                GetReviewHtmlAction action = new GetReviewHtmlAction(file,_uniqueInstanceKey);
                 if (__isSpanish)
                     action.setSpanish(true);
                 setAction(action);
@@ -94,7 +126,6 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
                         _spanishButton.setEnabled(true);
                     }
                 }
-                
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_FORCE_GUI_REFRESH));
                 // CmMainPanel.__activeInstance.forceLayout();
             }

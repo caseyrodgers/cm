@@ -5,17 +5,34 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 public class GetReviewHtmlAction implements Action<LessonResult>{
     
     String file;
+    int uniqueInstanceKey;
     boolean spanish;
 
     public GetReviewHtmlAction() {}
     
     public GetReviewHtmlAction(String file) {
-        this(file, false);
+        this(file, 0);
+    }
+    
+    public GetReviewHtmlAction(String file, int uniqueInstanceKey) {
+        this(file, false, uniqueInstanceKey);
     }
     
     public GetReviewHtmlAction(String file, boolean spanish) {
+        this(file, spanish,0);
+    }
+    public GetReviewHtmlAction(String file, boolean spanish, int uniqueInstanceKey) {
         this.file = file;
         this.spanish = spanish;
+        this.uniqueInstanceKey = uniqueInstanceKey;
+    }
+
+    public int getUniqueInstanceKey() {
+        return uniqueInstanceKey;
+    }
+
+    public void setUniqueInstanceKey(int uniqueInstanceKey) {
+        this.uniqueInstanceKey = uniqueInstanceKey;
     }
 
     /** Return absolute path to file either Spanish or English ,

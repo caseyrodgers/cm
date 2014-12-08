@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Slider;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 public class TopicExplorerManager extends GWindow {
     
@@ -27,6 +28,8 @@ public class TopicExplorerManager extends GWindow {
     
     TabPanel _tabPanel = new TabPanel();
     SearchPanel _searchPanel = new SearchPanel();
+    
+
     private TopicExplorerManager() {
         super(true);
         
@@ -58,6 +61,8 @@ public class TopicExplorerManager extends GWindow {
         });
 
     }
+
+   
 
     public void exploreTopic(final Topic topic) {
         Widget panel = new TopicExplorer(topic).asWidget();
