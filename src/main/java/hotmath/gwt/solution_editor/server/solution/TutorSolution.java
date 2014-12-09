@@ -120,7 +120,7 @@ public class TutorSolution implements SbTestImpl {
     static public TutorSolution parse(String xml) throws Exception  {
         try {
             /** Use the JDOM parser until we can work out details with 
-             * SimpleXML dealing with elments containing text+child-elements.
+             * SimpleXML dealing with elements containing text+child-elements.
              * 
              */
             
