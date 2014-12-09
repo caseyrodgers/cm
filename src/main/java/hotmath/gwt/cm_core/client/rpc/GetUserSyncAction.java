@@ -4,7 +4,10 @@ import hotmath.gwt.cm_core.client.model.UserSyncInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
 public class GetUserSyncAction implements Action<UserSyncInfo> {
-    int uid;
+
+	private static final long serialVersionUID = 4531006320763180455L;
+
+	int uid;
     private int userActiveMinutes;
     boolean fullSyncCheck;
 
