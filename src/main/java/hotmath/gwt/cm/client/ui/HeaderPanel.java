@@ -94,7 +94,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 		add(awardTip);
 		add(_helloInfo);
 
-		if(CmShared.getQueryParameter("debug") != null) {
+		if(CmShared.isDebug() == true) {
     		SexyButton searchButton = new SexyButton("Search");
     		searchButton.addStyleName("header-panel-search-btn");
     		searchButton.addClickHandler(new ClickHandler() {
