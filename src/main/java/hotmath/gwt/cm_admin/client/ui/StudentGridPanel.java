@@ -369,7 +369,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
             return;
 
         if (sm.getProgram().getIsActiveProgram() == false) {
-            if (CmShared.isDebug() == true) {
+            if (CmShared.isDebug() == false) {
                 CmMessageBox.showAlert("Student is using a Parallel Program, login is not possible at this time.");
             }
             return;
