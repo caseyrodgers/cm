@@ -58,7 +58,6 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
@@ -70,7 +69,6 @@ import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.Component;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
@@ -418,7 +416,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         toolbar.add(highlightsButton());
 
         TextButton customButton = new TextButton("Custom");
-        customButton.setToolTip("Create and manage custom content");
         Menu customMenu = new Menu();
         customMenu.add(createManageCustomProblemsButton());
         
@@ -511,7 +508,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
 	private TextButton createRegistrationButton() {
         TextButton btn = new StudentPanelButton("Student Registration");
-        btn.setToolTip("Register students with Catchup Math");
 
         Menu menu = new Menu();
         menu.add(defineRegisterItem());
@@ -862,7 +858,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     private TextButton displayPrintableReportToolItem(final Grid<StudentModelI> grid) {
         TextButton btn = new TextButton("Print");
         // btn.setIconStyle("printer-icon");
-        btn.setToolTip("Create a file for printing or sharing");
 
         Menu menu = new Menu();
         menu.add(defineSummaryItem(grid));
