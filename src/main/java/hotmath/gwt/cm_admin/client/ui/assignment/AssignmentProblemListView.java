@@ -180,7 +180,7 @@ public class AssignmentProblemListView extends ContentPanel {
         _deleteButton = createDelButton();
         addTool(_deleteButton);
 
-        if (CmShared.getQueryParameter("debug") != null) {
+        if (CmShared.isDebug() == true) {
 
             final ToggleButton tb = new ToggleButton("Run Test");
             tb.addSelectHandler(new SelectHandler() {
@@ -479,7 +479,7 @@ public class AssignmentProblemListView extends ContentPanel {
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                if (CmShared.getQueryParameter("debug") == null && !callback.isDraftMode()) {
+                if (CmShared.isDebug() == true && !callback.isDraftMode()) {
                     CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
                     return;
                 }
@@ -538,7 +538,7 @@ public class AssignmentProblemListView extends ContentPanel {
             @Override
             public void onSelect(SelectEvent event) {
 
-                if (CmShared.getQueryParameter("debug") == null && !callback.isDraftMode()) {
+                if (CmShared.isDebug() == true && !callback.isDraftMode()) {
                     CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
                     return;
                 }

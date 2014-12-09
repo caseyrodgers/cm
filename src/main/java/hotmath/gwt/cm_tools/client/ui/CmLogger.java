@@ -43,7 +43,7 @@ public class CmLogger  {
     }
     
     private void _debug(String msg) {
-        if(CmShared.getQueryParameter("debug") != null) {
+        if(CmShared.isDebug() == true) {
             Info.display("Debug", msg);
     	}
     	Log.debug(msg);

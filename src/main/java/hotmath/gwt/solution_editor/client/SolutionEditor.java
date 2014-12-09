@@ -88,7 +88,7 @@ public class SolutionEditor implements EntryPoint {
 
                                 @Override
                                 public void onFailure(Throwable exe) {
-                                    if (CmShared.getQueryParameter("debug") != null)
+                                    if (CmShared.isDebug() == true)
                                         Window.alert("Error sending info about uncaught exception: " + exe);
                                 }
                             });

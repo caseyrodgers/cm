@@ -86,12 +86,12 @@ public class CustomProgramDialog extends GWindow {
         _instance = this;
         this.adminModel = adminModel;
         setStyleName("custom-prescription-dialog");
-        setHeadingText("Catchup Math Custom Program Definitions");
+        setHeadingText("Custom Program Definitions");
 
         setModal(true);
         setPixelSize(400, 420);
 
-        _isDebug = CmShared.getQueryParameter("debug") != null;
+        _isDebug = CmShared.isDebug() == true;
 
         buildGui();
         getCustomProgramDefinitions();
@@ -115,7 +115,7 @@ public class CustomProgramDialog extends GWindow {
 
         TabItemConfig tabCustomProgram = new TabItemConfig("Custom Programs", false);
 
-        if (CmShared.getQueryParameter("debug") != null) {
+        if (CmShared.isDebug() == true) {
             Menu contextMenu = new Menu();
             contextMenu.add(new MenuItem("Export", new SelectionHandler<MenuItem>() {
                 @Override

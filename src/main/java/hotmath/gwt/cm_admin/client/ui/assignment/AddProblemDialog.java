@@ -132,7 +132,7 @@ public class AddProblemDialog extends GWindow {
         addButton(btnClose);
 
 
-        if(CmShared.getQueryParameter("debug") != null) {
+        if(CmShared.isDebug() == true) {
             addTool(new TextButton("Create Problem", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {

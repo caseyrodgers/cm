@@ -305,7 +305,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     private static StudentAssignmentSelectorDialog __lastInstance;
     public static void showSharedDialog() {
         
-        if(true || CmShared.getQueryParameter("debug") == null) {
+        if(true || CmShared.isDebug() == false) {
             __lastInstance = null;
         }
         if(__lastInstance == null) {

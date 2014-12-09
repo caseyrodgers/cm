@@ -67,7 +67,7 @@ public class GradeBookPanel extends ContentPanel {
         addRefreshButton();
         addGradeButton();
         
-        if(CmShared.getQueryParameter("debug") != null) {
+        if(CmShared.isDebug() == true) {
             addLoadCmStudentButton();
         }
         

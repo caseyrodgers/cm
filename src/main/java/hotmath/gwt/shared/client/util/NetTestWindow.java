@@ -73,7 +73,7 @@ public class NetTestWindow extends GWindow {
         borderLayout.setNorthWidget(new HTML(html), new BorderLayoutData(40));
         borderLayout.setCenterWidget(_grid);
      
-        if(CmShared.getQueryParameter("debug")!=null) {
+        if(CmShared.isDebug() == true) {
             addButton(new TextButton("Stop Tests", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
@@ -164,7 +164,7 @@ public class NetTestWindow extends GWindow {
     
     private void runTest(final int testNum, final long dataSize) {
         
-        if(CmShared.getQueryParameter("debug")==null)
+        if(CmShared.isDebug() == false)
             _btnCheck.setEnabled(false);
 
         new RetryAction<NetTestModel>() {
@@ -222,7 +222,7 @@ public class NetTestWindow extends GWindow {
             @Override
             public void oncapture(NetTestModel value) {
                 CmBusyManager.setBusy(false);
-                if(CmShared.getQueryParameter("debug")==null) {
+                if(CmShared.isDebug() == false) {
                     CatchupMathTools.showAlert("Thank you", "Thank you.  The results have been saved on our server.");
                 }
             }

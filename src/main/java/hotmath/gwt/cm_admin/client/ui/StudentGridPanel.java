@@ -174,7 +174,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         });
         contextMenu.add(teacherMode);
 
-        if (CmShared.getQueryParameter("debug") != null) {
+        if (CmShared.isDebug() == true) {
             MenuItem studentDetails = new MenuItem("Student Details");
             studentDetails.addSelectionHandler(new SelectionHandler<Item>() {
                 public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<Item> event) {
@@ -369,7 +369,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
             return;
 
         if (sm.getProgram().getIsActiveProgram() == false) {
-            if (CmShared.getQueryParameter("debug") == null) {
+            if (CmShared.isDebug() == true) {
                 CmMessageBox.showAlert("Student is using a Parallel Program, login is not possible at this time.");
             }
             return;
@@ -863,7 +863,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         menu.add(defineSummaryItem(grid));
         menu.add(defineReportCardItem(grid));
         
-        if(CmShared.getQueryParameter("debug") != null) {
+        if(CmShared.isDebug() == true) {
             menu.add(defineAssignmentReportItem(grid));
         }
 

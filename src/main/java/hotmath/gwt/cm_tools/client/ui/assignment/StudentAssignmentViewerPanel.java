@@ -94,7 +94,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             
             @Override
             public boolean showStatus() {
-                if(CmShared.getQueryParameter("debug") != null) {
+                if(CmShared.isDebug() == true) {
                     return true;
                 }
                 else {

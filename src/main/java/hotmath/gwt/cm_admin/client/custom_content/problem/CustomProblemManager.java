@@ -277,7 +277,7 @@ public class CustomProblemManager extends GWindow {
 
         _gridPanel.addTool(btn);
 
-        if (CmShared.getQueryParameter("debug") != null) {
+        if (CmShared.isDebug() == true) {
             addTool(new TextButton("Refresh", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {

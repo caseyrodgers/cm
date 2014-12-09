@@ -53,7 +53,7 @@ public class HelpWindow extends GWindow {
         
         setVisible(true);
         
-        if(CmShared.getQueryParameter("debug") != null) {
+        if(CmShared.isDebug() == true) {
             GWT.runAsync(new CmRunAsyncCallback() {
                 @Override
                 public void onSuccess() {

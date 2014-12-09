@@ -197,7 +197,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                     + "You may retry this operation by clicking 'OK'.\n"
                     + "However if the error persists, contact Technical Support.";
                     
-                    if(CmShared.getQueryParameter("debug") != null) {
+                    if(CmShared.isDebug() == true) {
                         msg += "\n\n" + throwable.getMessage();
                     }
                     
@@ -307,7 +307,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
 
                 @Override
                 public void onFailure(Throwable exe) {
-                    if(CmShared.getQueryParameter("debug") != null)
+                    if(CmShared.isDebug() == true)
                         Window.alert("Error sending info about retry action: " + exe);
                 }
             });

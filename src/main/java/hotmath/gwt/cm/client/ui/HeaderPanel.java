@@ -156,7 +156,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 							 * Only show modal popup if not in auto test mode
 							 * 
 							 */
-							if (CmShared.getQueryParameter("debug") != null
+							if (CmShared.isDebug() == true
 									|| UserInfo.getInstance().isAutoTestMode()
 									|| CmHistoryQueue.getInstance()
 											.isInitializingToNonStandard())

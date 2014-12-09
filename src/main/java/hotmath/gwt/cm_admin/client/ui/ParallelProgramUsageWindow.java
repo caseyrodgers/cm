@@ -104,7 +104,7 @@ public class ParallelProgramUsageWindow extends GWindow {
         
         getParallelProgramUsageRPC(store, ppModel);
 
-        if (CmShared.getQueryParameter("debug") != null) {
+        if (CmShared.isDebug() == true) {
             Menu debugMenu = buildDebugMenu();
             ppumGrid.setContextMenu(debugMenu);
         }

@@ -17,7 +17,7 @@ public class FooterPanel extends FlowLayoutContainer {
 		
 		String html = "<ul class='h-menu'>";
 
-		if (CmShared.getQueryParameter("debug") != null) {
+		if (CmShared.isDebug() == true) {
 			html += "<li><a href='javascript:void(0)' onclick='resetProgram_Gwt();return false;'>Reset</a></li>";
 			html += "<li><a href='javascript:void(0)' onclick='showPrescriptionData_Gwt();return false;'>prescription data</a></li>";
 			html += "<li><a href='javascript:void(0)' onclick='showPrescriptionSession_Gwt();return false;'>prescription sessions</a></li>";

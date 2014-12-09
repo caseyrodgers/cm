@@ -35,7 +35,7 @@ public class EndOfProgramWindow extends GWindow {
         addStyleName("end-of-program-window");
         setHeadingText("Program Completed!");
 
-        if(CmShared.getQueryParameter("debug") == null) {
+        if(CmShared.isDebug() == false) {
             setClosable(false);
         }
         addButton(new TextButton("OK", new SelectHandler() {

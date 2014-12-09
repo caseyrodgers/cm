@@ -174,7 +174,7 @@ public class QuizContext implements CmContext {
             public void attempt() {
                 CmBusyManager.setBusy(true);
 
-                if (CmShared.getQueryParameter("debug") != null) {
+                if (CmShared.isDebug() == true) {
                     InfoPopupBox.display("Quiz Check", "Checking quiz ...");
                 }
 

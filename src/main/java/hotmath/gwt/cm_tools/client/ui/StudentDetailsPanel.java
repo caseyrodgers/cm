@@ -149,7 +149,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 
         getStudentActivityRPC(store, studentModel);
 
-        if (CmShared.getQueryParameter("debug") != null) {
+        if (CmShared.isDebug() == true) {
             Menu debugMenu = buildDebugMenu();
             samGrid.setContextMenu(debugMenu);
         }

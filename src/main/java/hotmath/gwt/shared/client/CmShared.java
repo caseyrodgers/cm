@@ -58,7 +58,7 @@ public class CmShared implements EntryPoint {
             @Override
             public void onUncaughtException(Throwable e) {
 
-                if (CmShared.getQueryParameter("debug") != null) {
+                if (isDebug()) {
                     Window.alert("Uncaught Exception: " + e.toString());
                     e.printStackTrace();
                 }
@@ -77,7 +77,7 @@ public class CmShared implements EntryPoint {
 
                                 @Override
                                 public void onFailure(Throwable exe) {
-                                    if (CmShared.getQueryParameter("debug") != null)
+                                    if (isDebug())
                                         Window.alert("Error sending info about uncaught exception: " + exe);
                                 }
                             });
@@ -329,12 +329,16 @@ public class CmShared implements EntryPoint {
         return key;
     }
 
+    static public boolean isDebug() {
+    	return (_queryParameters.get("debug") != null);
+    }
+
     static private void displayLoginError(Exception exception) {
         exception.printStackTrace();
         CmLogger.error("Login error: ", exception);
 
         String msg = "We suggest you refresh this page by pressing the F5 function key.";
-        if (_queryParameters.get("debug") != null)
+        if (isDebug())
             msg += "<br/>" + exception.getMessage() + "";
 
         if (exception instanceof CmExceptionLoginInvalid) {

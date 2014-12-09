@@ -85,7 +85,7 @@ public class CustomProgramDesignerDialog extends GWindow {
 
 		/**
 		 * if debug mode, the always allow edit boolean isDebug =
-		 * CmShared.getQueryParameter("debug")!=null;
+		 * CmShared.isDebug() == true;
 		 */
 
 		if (customProgram != null) {
@@ -305,7 +305,7 @@ public class CustomProgramDesignerDialog extends GWindow {
 	 */
 	private void enableForm(boolean yn) {
 
-		if (CmShared.getQueryParameter("debug") != null) {
+		if (CmShared.isDebug() == true) {
 			yn = true;
 		}
 

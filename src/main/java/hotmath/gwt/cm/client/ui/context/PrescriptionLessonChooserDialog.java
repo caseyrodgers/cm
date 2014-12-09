@@ -86,7 +86,7 @@ public class PrescriptionLessonChooserDialog extends GWindow {
 
                 CmLogger.debug("NextQuiz: pData.areAllLessonsCompleted() = " + pData.areAllLessonsCompleted() + ", "
                         + pData.getCountCompletedTopics() + ", " + pData.getSessionTopics().size());
-                if (CmShared.getQueryParameter("debug") == null && !pData.areAllLessonsCompleted()) {
+                if (CmShared.isDebug() == false && !pData.areAllLessonsCompleted()) {
                     Info.display("Not Finished", "Please complete all lessons first");
                     return;
                 }
@@ -224,7 +224,7 @@ public class PrescriptionLessonChooserDialog extends GWindow {
         if (UserInfo.getInstance().isCustomProgram()) {
             _nextSegment.setVisible(false);
         } else {
-            if (CmShared.getQueryParameter("debug") != null || pData.areAllLessonsCompleted()) {
+            if (CmShared.isDebug() == true || pData.areAllLessonsCompleted()) {
                 _nextSegment.setEnabled(true);
                 _nextSegment.setVisible(true);
             } else {

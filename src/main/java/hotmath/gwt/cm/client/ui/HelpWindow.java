@@ -147,7 +147,7 @@ public class HelpWindow extends GWindow {
 	
         
 
-        if(CmShared.getQueryParameter("debug") != null) {
+        if(CmShared.isDebug() == true) {
             
             toolBar.add(new MyOptionButton("Reset Lesson", "Reset the problems for the current lesson.", new SelectHandler() {
                 @Override
@@ -196,7 +196,7 @@ public class HelpWindow extends GWindow {
 
         flc.add(fs);
         
-        if (CmShared.getQueryParameter("debug") != null) {
+        if (CmShared.isDebug() == true) {
             FieldSet fsDebug = new FieldSet();
             fsDebug.setHeadingText("Debug Info");
             fsDebug.add(new HTML(UserInfo.getInstance().getUserStatus()));
@@ -225,7 +225,7 @@ public class HelpWindow extends GWindow {
         
         flc.add(fsAdditional);
 
-        if (UserInfo.getInstance().isSingleUser() || CmShared.getQueryParameter("debug") != null) {
+        if (UserInfo.getInstance().isSingleUser() || CmShared.isDebug() == true) {
 
             TextButton setupButton = new MyOptionButton("Setup Catchup Math","Modify your Catchup Math settings.", new SelectHandler() {
                 @Override
@@ -288,7 +288,7 @@ public class HelpWindow extends GWindow {
         
 
         
-        if (CmShared.getQueryParameter("debug") != null) {
+        if (CmShared.isDebug() == true) {
         	addtionalTb.add(new TextButton("Connection Check", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {

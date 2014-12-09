@@ -24,7 +24,7 @@ public class EndOfProgramPanel extends CenterLayoutContainer {
         lc.setHeight(200);
         addStyleName(UserInfo.getInstance().getBackgroundStyle());
         
-        if(CmShared.getQueryParameter("debug") != null) {
+        if(CmShared.isDebug() == true) {
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_LOGOUT));
         }
         lc.add(new HTML(EndOfProgramWindow.msg));
