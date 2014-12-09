@@ -479,7 +479,7 @@ public class AssignmentProblemListView extends ContentPanel {
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                if (CmShared.isDebug() == true && !callback.isDraftMode()) {
+                if (CmShared.isDebug() == false && !callback.isDraftMode()) {
                     CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
                     return;
                 }
@@ -538,7 +538,7 @@ public class AssignmentProblemListView extends ContentPanel {
             @Override
             public void onSelect(SelectEvent event) {
 
-                if (CmShared.isDebug() == true && !callback.isDraftMode()) {
+                if (CmShared.isDebug() == false && !callback.isDraftMode()) {
                     CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
                     return;
                 }
