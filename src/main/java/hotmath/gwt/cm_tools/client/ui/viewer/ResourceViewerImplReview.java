@@ -41,10 +41,21 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
 
     private int _uniqueInstanceKey;
 
+    private ReviewCallback reviewCallback;
+
     static {
         setupJsniHooks();
     }
 
+    static public interface ReviewCallback {
+        void newTopicLoaded(String file, String title);
+    }
+    
+    public ResourceViewerImplReview(ReviewCallback callback) {
+        this();
+        this.reviewCallback = callback;
+    }
+    
     public ResourceViewerImplReview() {
         addStyleName(STYLE_NAME);
         setScrollMode(ScrollMode.AUTO);
@@ -128,6 +139,10 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
                 }
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_FORCE_GUI_REFRESH));
                 // CmMainPanel.__activeInstance.forceLayout();
+                
+                if(reviewCallback != null) {
+                    reviewCallback.newTopicLoaded(result.getItem().getFile(), result.getItem().getTitle());
+                }
             }
         }.register();
     }

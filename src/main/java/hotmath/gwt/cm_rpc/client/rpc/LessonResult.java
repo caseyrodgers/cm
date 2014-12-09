@@ -6,10 +6,12 @@ public class LessonResult implements Response {
     String lesson;
     String warning;
     boolean hasSpanish;
+    InmhItemData item;
     
     public LessonResult() {}
-    public LessonResult(String lesson) {
+    public LessonResult(String lesson, InmhItemData item) {
         this.lesson = lesson;
+        this.item = item;
     }
     public String getLesson() {
         return lesson;
@@ -28,5 +30,11 @@ public class LessonResult implements Response {
     }
     public void setHasSpanish(boolean hasSpanish) {
         this.hasSpanish = hasSpanish;
+    }
+    public InmhItemData getItem() {
+        return item;
+    }
+    public void setItem(InmhItemData item) {
+        this.item = item;
     }
 }

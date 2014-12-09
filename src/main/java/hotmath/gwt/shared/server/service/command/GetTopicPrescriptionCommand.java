@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.HotMathProperties;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionCustomMobile;
 import hotmath.cm.util.CatchupMathProperties;
@@ -19,22 +18,13 @@ import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.StudentUserProgramModel;
-import hotmath.util.sql.SqlUtilities;
+import hotmath.testset.ha.info.CmLessonDao;
 
-import java.io.File;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.htmlparser.Parser;
-import org.htmlparser.filters.NodeClassFilter;
-import org.htmlparser.tags.TitleTag;
-import org.htmlparser.util.NodeList;
-
-import sb.util.SbFile;
 
 
 
@@ -62,7 +52,7 @@ public class GetTopicPrescriptionCommand implements ActionHandler<GetTopicPrescr
         
         String lesson = action.getTopicFile();
         if(!lesson.endsWith(".html")) {
-            lesson = lookupLessonFileFromName(conn, lesson);
+            lesson = CmLessonDao.getInstance().lookupLessonFileFromName(conn, lesson);
         }
 
         HaTest custTest = HaTestDao.getInstance().createTest(userSharedUser,HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()), HaTestDao.EMPTY_TEST);
@@ -74,7 +64,7 @@ public class GetTopicPrescriptionCommand implements ActionHandler<GetTopicPrescr
         testRun.setHaTest(custTest);
         
         List<CustomLessonModel> lessonModels = new ArrayList<CustomLessonModel>();
-        lessonModels.add(new CustomLessonModel(getTopicLessonTitle(conn, lesson), lesson, "General"));
+        lessonModels.add(new CustomLessonModel(CmLessonDao.getInstance().getTopicLessonTitle(lesson), lesson, "General"));
         
         AssessmentPrescription prescription = new AssessmentPrescriptionCustomMobile(conn, testRun, lessonModels);
         res = GetPrescriptionCommand.createPrescriptionResponse(conn, prescription, 0);
@@ -83,67 +73,7 @@ public class GetTopicPrescriptionCommand implements ActionHandler<GetTopicPrescr
         return res;
     }
 
-    
-    private String lookupLessonFileFromName(Connection conn, String lesson) throws Exception {
-        PreparedStatement p=null;
-        try {
-            String sql = "select distinct file from HA_PROGRAM_LESSONS_static where lesson = ?";
-            p = conn.prepareStatement(sql);
-            
-            p.setString(1, lesson);
-            ResultSet rs = p.executeQuery();
-            if(!rs.first()) {
-                throw new Exception("No lesson file found: " + lesson);
-            }
-            else {
-                String file = rs.getString("file");
-                return file;
-            }
-        }
-        finally {
-            SqlUtilities.releaseResources(null,  p, null);
-        }
-    }
 
-
-    private String getTopicLessonTitle(final Connection conn, String file) throws Exception {
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement("select lesson from HA_PROGRAM_LESSONS where file = ? limit 1");
-            ps.setString(1, file);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                return rs.getString(1);
-            }
-            
-            return extractTitleFromFile(file);
-        }
-        finally {
-            SqlUtilities.releaseResources(null, ps,null);
-        }
-    }
-    
-    static Parser htmlParser = new Parser();  
-    private String  extractTitleFromFile(String file) throws Exception {
-        
-        String base = HotMathProperties.getInstance().getHotMathWebBase() + HotMathProperties.getInstance().getINMHWebHome();
-        String htmlContents = new SbFile(new File(base, file)).getFileContents().toString("\n");
-        htmlParser.setInputHTML(htmlContents);
-        String title = getTitleContent(htmlParser);
-        
-        return title;
-    }
-    
-    private String getTitleContent(Parser htmlParser) throws Exception {
-        
-        NodeList list = htmlParser.extractAllNodesThatMatch(new NodeClassFilter(TitleTag.class));
-        
-        String title=null;
-        if (list.size() > 0) {
-            title = ((TitleTag) list.elementAt(0)).getTitle();
-        }
-        return title;
-    }
 
 
     @Override

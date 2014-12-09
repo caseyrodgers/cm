@@ -2,11 +2,14 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.HotMathProperties;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_rpc_core.server.service.ActionHandlerManualConnectionManagement;
+import hotmath.testset.ha.info.CmLessonDao;
 import hotmath.util.HmContentExtractor;
 
 import java.io.File;
@@ -46,8 +49,10 @@ public class GetReviewHtmlCommand implements ActionHandler<GetReviewHtmlAction, 
         HmContentExtractor ext = new HmContentExtractor();
         String htmlCooked = ext.extractContent(html, getBaseDirectory(action.isSpanish()));
 
+        
         htmlCooked = fixupForUniqueResourceLoad(htmlCooked, action.getUniqueInstanceKey());
         
+        result.setItem(new InmhItemData(CmResourceType.REVIEW,action.getFile(), CmLessonDao.getInstance().getTopicLessonTitle(action.getFile())));
         result.setLesson(htmlCooked);
         return result;
     }

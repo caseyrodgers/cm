@@ -2,11 +2,13 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
-import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.ReviewPanel.ReviewPanelCallback;
 import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchBundle;
 import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchStyle;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
@@ -62,19 +64,19 @@ import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 
 public class SearchPanel extends BorderLayoutContainer {
-	ReviewPanel _reviewPanel = new ReviewPanel(new CallbackOnComplete() {
+	ReviewPanel _reviewPanel = new ReviewPanel(new ReviewPanelCallback() {
         @Override
-        public void isComplete() {
-            exploreSelectedTopic();
+        public void exporeTopic(InmhItemData item) {
+            TopicExplorerManager.getInstance().exploreTopic(new hotmath.gwt.cm_rpc.client.model.Topic(item.getTitle(), item.getFile(), ""));
         }
     });
+	
     TextField _inputBox = new TextField();
     Grid<TopicMatch> _grid;
     private ContentPanel _westPanel;
     private BorderLayoutContainer _centerPanel;
     public SearchPanel() {
-        
-        setNorthWidget(createHeader(), new BorderLayoutData(55));
+        setNorthWidget(createHeader(), new BorderLayoutData(60));
         
         BorderLayoutContainer blcI = new BorderLayoutContainer();
         blcI.setCenterWidget(createListView());
@@ -174,7 +176,7 @@ public class SearchPanel extends BorderLayoutContainer {
     protected void showSelectedReview() {
     	TopicMatch si = _grid.getSelectionModel().getSelectedItem();
     	if(si != null) {
-    		_reviewPanel.loadReview(si.getTopic().getFile(), si.getTopic().getName());
+    		_reviewPanel.loadReview(new InmhItemData(CmResourceType.REVIEW, si.getTopic().getFile(), si.getTopic().getName()));
     	}
 	}
 

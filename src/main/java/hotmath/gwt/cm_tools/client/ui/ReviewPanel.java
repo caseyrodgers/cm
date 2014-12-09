@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplReview;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplReview.ReviewCallback;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
@@ -14,22 +14,36 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class ReviewPanel extends ContentPanel {
-	
-	public ReviewPanel(final CallbackOnComplete callback) {
-		setWidget(new DefaultGxtLoadingPanel("No selected topic"));
+    static public interface ReviewPanelCallback {
+        void exporeTopic(InmhItemData item);
+    }
+    ReviewPanelCallback _callback;
+    
+	public ReviewPanel(final ReviewPanelCallback callback) {
+	    this._callback = callback;
+		setWidget(new DefaultGxtLoadingPanel("No selected lesson"));
 		addTool(new TextButton("Explore Lesson", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                callback.isComplete();
+                _callback.exporeTopic(_item);
             }
         }));
 		//setHeaderVisible(false);
 	}
 
-	public void loadReview(String reviewFile, String reviewTitle) {
-
-		ResourceViewerImplReview panel = new ResourceViewerImplReview();
-		InmhItemData item = new InmhItemData(CmResourceType.REVIEW, reviewFile, reviewTitle);
+	InmhItemData _item=null;
+	public void loadReview(InmhItemData item) {
+	    
+	    this._item = item;
+		ResourceViewerImplReview panel = new ResourceViewerImplReview(new ReviewCallback() {
+		    public void newTopicLoaded(String file, String title) {
+		        setHeadingText(title);
+		        _item = new InmhItemData(CmResourceType.REVIEW, file, title);
+		    }
+		});
+		
+		setHeadingText(item.getTitle());
+		
 		panel.setResourceItem(item);
 	
 		FlowLayoutContainer flow = new FlowLayoutContainer();
