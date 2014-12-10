@@ -196,7 +196,7 @@ public class SearchPanel extends BorderLayoutContainer {
         
         
         BorderLayoutContainer blc = new BorderLayoutContainer();
-        blc.setCenterWidget(new FieldLabel(_inputBox, "Topic Search"));
+        blc.setCenterWidget(new FieldLabel(_inputBox, "Lesson Search"));
         BorderLayoutData bld = new BorderLayoutData(50);
         bld.setMargins(new Margins(0,0,0,10));
         blc.setEastWidget(new TextButton("Search!", new SelectHandler() {
