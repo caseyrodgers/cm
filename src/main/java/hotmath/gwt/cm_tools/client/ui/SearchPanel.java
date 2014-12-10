@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
@@ -29,6 +30,7 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -50,6 +52,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 import com.sencha.gxt.widget.core.client.tips.QuickTip;
@@ -211,15 +214,14 @@ public class SearchPanel extends BorderLayoutContainer {
         
         fp.setWidget(blc);
         
-        _inputBox.addChangeHandler(new ChangeHandler() {
-            @Override
-            public void onChange(ChangeEvent event) {
-                searchForMatches();
-            }
-        });
         _inputBox.addKeyDownHandler(new KeyDownHandler() {
             @Override
             public void onKeyDown(KeyDownEvent event) {
+                
+                if(event.getNativeEvent().getKeyCode() == 13) {
+                    searchForMatches();
+                }
+                
                 if(_searchMessage.getText().length() > 0) {
                     _searchMessage.setText("");
                 }
@@ -232,6 +234,9 @@ public class SearchPanel extends BorderLayoutContainer {
     
     
     private void searchForMatches() {
+        if(CmShared.isDebug()) {
+            Info.display("Searching", "Searching for matches ..");
+        }
         showSearchMessage("");
         String searchFor = _inputBox.getCurrentValue();
         if(searchFor == null || searchFor.length() < 2) {
