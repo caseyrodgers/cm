@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_core.client.event.RppHasBeenViewedEvent;
+import hotmath.gwt.cm_core.client.event.RppHasBeenViewedEventHandler;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -7,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -39,6 +42,15 @@ public class TopicExplorer extends SimpleContainer {
         setWidget(lc);
 
         loadDataFromServer();
+        
+        
+        CmRpcCore.EVENT_BUS.addHandler(RppHasBeenViewedEvent.TYPE, new RppHasBeenViewedEventHandler() {
+            @Override
+            public void rppHasBeenViewed(RppHasBeenViewedEvent item) {
+                
+                _mainPanel.markRppAsViewed(item);
+            }
+        });
     }
 
     @Override

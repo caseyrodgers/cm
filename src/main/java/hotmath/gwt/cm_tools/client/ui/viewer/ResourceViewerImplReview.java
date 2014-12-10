@@ -67,12 +67,19 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
             @Override
             public void loadLesson(String file, int uniqueInstanceKey) {
                 if(uniqueInstanceKey == ResourceViewerImplReview.this._uniqueInstanceKey) {
+                    System.out.println("Load Lesson: " + uniqueInstanceKey);
                     getResourceItem().setFile(file);
                     getLessonData();
                 }
             }
         });
     }
+    
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+    }
+    
     
     static ResourceViewerImplReview __lastReviewViewer=null; 
     static public void doResourceLoad(int uniqueInstanceKey, String key, String file) {

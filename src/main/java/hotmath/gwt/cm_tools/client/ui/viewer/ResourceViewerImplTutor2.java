@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_core.client.event.RppHasBeenViewedEvent;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
@@ -441,6 +442,8 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
             //item.setViewed(true);
             UserInfo.getInstance().setViewCount(UserInfo.getInstance().getViewCount()+1);
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE, item));
+            
+            CmRpcCore.EVENT_BUS.fireEvent(new RppHasBeenViewedEvent(item));
         }
     }
 
@@ -570,12 +573,8 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
                 if (event.getEventType() == EventType.EVENT_TYPE_WHITEBOARDUPDATED) {
+                    // force save of whiteboared data.
                     _instance.whiteBoardHasBeenUpdated((String) event.getEventData());
-                }
-                else if(event.getEventType() == EventType.EVENT_TYPE_MODAL_WINDOW_OPEN) {
-//                    if(__lastDisplayMode == DisplayMode.WHITEBOARD) {
-//                        CmMainPanel.__lastInstance.removeResource();
-//                    }
                 }
             }
         });

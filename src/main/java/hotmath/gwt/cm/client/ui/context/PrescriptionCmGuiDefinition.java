@@ -223,8 +223,9 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
      * @param resourceItem
      */
     public void markResourceAsViewed(final InmhItemData resourceItem) {
-        if (UserInfo.getInstance().getRunId() == 0)
-            CmLogger.error("PrescriptionCmGuiDefinition: run_id is null!");
+        if (UserInfo.getInstance().getRunId() == 0) {
+            CmLogger.info("PrescriptionCmGuiDefinition: run_id is null!");
+        }
 
 
         markResourceAsViewed(resourceItem, new CallbackOnComplete() {

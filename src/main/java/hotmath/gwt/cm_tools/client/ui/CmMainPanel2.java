@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_core.client.event.RppHasBeenViewedEvent;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
@@ -192,7 +193,6 @@ public class CmMainPanel2 extends CmMainPanelShared {
             }
         }
     }
-    
     public CmResourcePanel getLastResource() {
         return _lastResourceViewer;
     }
@@ -504,6 +504,12 @@ public class CmMainPanel2 extends CmMainPanelShared {
 
     public void setContextSubTitle(String contextSubTitle) {
         _westPanelWrapper.setHeadingText(contextSubTitle);        
+    }
+
+
+    public void markRppAsViewed(RppHasBeenViewedEvent item) {
+        // TODO Auto-generated method stub
+        
     }
     
 }
