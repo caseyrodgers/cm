@@ -91,7 +91,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
         return false;
     }
     
-    public void setCallback(WhiteboardResourceCallback callback) {
+    public void setWhiteboardCallback(WhiteboardResourceCallback callback) {
         this._callback = callback;
     }
 

@@ -129,6 +129,11 @@ public class TopicExplorer extends SimpleContainer {
                 
                 forceLayout();
             }
+            
+            @Override
+            public boolean shouldTrackViewedResources() {
+                return false;
+            }
         };
 
         

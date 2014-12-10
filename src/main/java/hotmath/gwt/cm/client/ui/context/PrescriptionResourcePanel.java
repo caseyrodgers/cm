@@ -74,6 +74,11 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
             public void loadResourceIntoHistory(String label, String resource) {
                 CmHistoryManager.loadResourceIntoHistory(label, resource);
             }
+            
+            @Override
+            public boolean shouldTrackViewedResources() {
+                return true;
+            }
         };
         
         for (PrescriptionSessionDataResource resource : resources) {

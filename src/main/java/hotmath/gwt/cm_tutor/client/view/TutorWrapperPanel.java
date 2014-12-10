@@ -157,14 +157,13 @@ public class TutorWrapperPanel extends Composite {
                 jsni_setActiveTutorWrapper(TutorWrapperPanel.this.tutorWrapperId);
             }
         }, MouseDownEvent.getType());
-        
-        
     }
-    
-    @Override
-    protected void onDetach() {
-    	super.onDetach();
-    	jsni_unregisterTutorWrapper(this.tutorWrapperId);
+
+    /** Unregister this TutorWrapperPanel with 
+     * the external js TutorManager in (tutor_tablet.js)
+     */
+    public void unregisterTutorWrapper() {
+        jsni_unregisterTutorWrapper(this.tutorWrapperId);
     }
 
     

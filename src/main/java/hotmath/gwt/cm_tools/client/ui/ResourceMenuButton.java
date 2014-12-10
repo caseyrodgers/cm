@@ -15,7 +15,6 @@ import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.Window;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.CheckChangeEvent;
 import com.sencha.gxt.widget.core.client.event.CheckChangeEvent.CheckChangeHandler;
@@ -45,8 +44,13 @@ public class ResourceMenuButton extends TextButton {
 
     public interface RegisterCallback {
         void registerItems(String label, List<InmhItemData> items);
-
         void loadResourceIntoHistory(String label, String string);
+        
+        /** should this button be used to track viewed resources
+         *  or should it be disconnected from current state of views.
+         * @return
+         */
+        boolean shouldTrackViewedResources();
     }
     public ResourceMenuButton(final PrescriptionSessionDataResource resource, RegisterCallback callback) {
         super(resource.getLabel());
@@ -88,8 +92,6 @@ public class ResourceMenuButton extends TextButton {
         addHandler(new BeforeSelectionHandler<String>() {
             @Override
             public void onBeforeSelection(BeforeSelectionEvent<String> event) {
-
-                Window.alert("Before Select ResourceMenuButton");
 
                 if (getMenu() == null)
                     return;
@@ -134,9 +136,18 @@ public class ResourceMenuButton extends TextButton {
      * 
      */
     public boolean updateCheckMarks() {
-        if (!resource.getType().equals(CmResourceType.PRACTICE) && !resource.getType().equals(CmResourceType.CMEXTRA))
+        
+        if(!this.registerCallback.shouldTrackViewedResources()) {
             return false;
-
+        }
+        
+        /** only mark RPPs
+         * 
+         */
+        if (!resource.getType().equals(CmResourceType.PRACTICE) 
+                && !resource.getType().equals(CmResourceType.CMEXTRA)) {
+            return false;
+        }
         boolean isComplete = true;
         int viewed = 0;
         // make sure each MenuItem shows correct state
@@ -207,7 +218,7 @@ public class ResourceMenuButton extends TextButton {
                 isComplete = false;
 
             MenuItem item = null;
-            if (resource.getType().equals(CmResourceType.PRACTICE) || resource.getType().equals(CmResourceType.CMEXTRA)) {
+            if (this.registerCallback.shouldTrackViewedResources() && (resource.getType().equals(CmResourceType.PRACTICE) || resource.getType().equals(CmResourceType.CMEXTRA))) {
                 final CheckMenuItem citem = new CheckMenuItem(id.getTitle());
                 citem.setChecked(id.isViewed(), true);
                 item = citem;
@@ -248,7 +259,7 @@ public class ResourceMenuButton extends TextButton {
             });
         }
 
-        if (resource.getType().equals(CmResourceType.PRACTICE) && isComplete) {
+        if (this.registerCallback.shouldTrackViewedResources() && resource.getType().equals(CmResourceType.PRACTICE) && isComplete) {
             indicateCompletion();
         }
 

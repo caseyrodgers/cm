@@ -497,7 +497,7 @@ public class CmMainPanel extends CmMainPanelShared {
                         CmResourcePanel viewer = instance.create(resourceItem);
                         
                         if(viewer instanceof ResourceViewerImplTutor2) {
-                            ((ResourceViewerImplTutor2)viewer).setCallback(whiteboardCallback);
+                            ((ResourceViewerImplTutor2)viewer).setWhiteboardCallback(whiteboardCallback);
                         }
                         
                         showResource(viewer, resourceItem.getTitle(), true);

@@ -183,7 +183,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition  {
             }
         };
         
-        WhiteboardResourceCallback callback = new WhiteboardResourceCallback() {
+        WhiteboardResourceCallback whiteboardCallback = new WhiteboardResourceCallback() {
             @Override
             public ResizeContainer getResizeContainer() {
                 return CmMainPanel.getActiveInstance();
@@ -199,7 +199,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition  {
                 CmMainPanel.getActiveInstance().ensureMaximizeResource();
             }
         };
-        resourcePanel.setCallback(callback);;
+        resourcePanel.setWhiteboardCallback(whiteboardCallback);;
 
         resourcePanel.addResource(qp, "Quiz");
         //resourcePanel.setScrollMode(ScrollMode.AUTOY);

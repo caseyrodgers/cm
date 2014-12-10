@@ -13,6 +13,7 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.WhiteboardResourceCallback;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2.TutorViewerProperties;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
@@ -345,11 +346,19 @@ public class CmMainPanel2 extends CmMainPanelShared {
     }
 
 
-    WhiteboardResourceCallback tutorCallback = new WhiteboardResourceCallback() {
+    WhiteboardResourceCallback whiteboardTutorCallback = new WhiteboardResourceCallback() {
         public void ensureMaximizeResource() {}
         public void ensureOptimizedResource() {}
         public ResizeContainer getResizeContainer() {
             return CmMainPanel2.this;
+        }
+    };
+    
+    
+    TutorViewerProperties tutorViewerProperties = new TutorViewerProperties() {
+        @Override
+        public boolean shouldFireTutorEvents() {
+            return false;
         }
     };
 
@@ -374,7 +383,8 @@ public class CmMainPanel2 extends CmMainPanelShared {
                     try {
                         CmResourcePanel viewer = instance.create(resourceItem);
                         if(viewer instanceof ResourceViewerImplTutor2) {
-                            ((ResourceViewerImplTutor2)viewer).setCallback(tutorCallback);
+                            ((ResourceViewerImplTutor2)viewer).setWhiteboardCallback(whiteboardTutorCallback);
+                            ((ResourceViewerImplTutor2)viewer).setTutorViewerProperties(tutorViewerProperties);
                         }
                         showResource(viewer, resourceItem.getTitle(), true);
                     } catch (Exception e) {

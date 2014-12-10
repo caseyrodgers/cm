@@ -53,6 +53,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
 
     static public final String STYLE_NAME="resource-viewer-impl-tutor";
     SolutionInfo _solutionInfo;
+    private TutorViewerProperties _tutorViewerProperties;
 
     public ResourceViewerImplTutor2() {
         _instance = this;
@@ -85,9 +86,32 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
        // addExternTutorHooks(this);
     }
 
+    
+    /** Properties used to control this instance of the tutor resource viewer
+     * 
+     * @author casey
+     *
+     */
+    public static interface TutorViewerProperties {
+        /** should tutor events that affect external
+         * dependencies be fired? Such as when
+         * used in a closed-system, such as TutorExplorer
+         * which is completely outside and separate from
+         * the CM prescription.
+         * 
+         * @return
+         */
+        boolean shouldFireTutorEvents();
+    }
+    public void setTutorViewerProperties(TutorViewerProperties props) {
+        this._tutorViewerProperties = props;
+    }
+    public TutorViewerProperties getTutorViewerProperties(){
+        return this._tutorViewerProperties;
+    }
+    
     TutorWrapperPanel tutorPanel;
     public void showSolution() {
-
 
         CmLogger.debug("ResourceViewerImplTutor2: loading solution '" + pid + "'");
 
@@ -108,7 +132,10 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
             
             @Override
             public void solutionHasBeenViewed(String value) {
-                solutionHasBeenViewed_Gwt(value);
+                
+                if(_tutorViewerProperties == null || _tutorViewerProperties.shouldFireTutorEvents()) {
+                    solutionHasBeenViewed_Gwt(value);
+                }
             }
             
             @Override
