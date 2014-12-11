@@ -65,7 +65,6 @@ public class CmIdleTimeWatcher {
                 // force a flush of any pending time 
                 // and then reset fully
                 CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent(true, new CallbackOnComplete() {
-                    
                     @Override
                     public void isComplete() {
                         Log.debug("ForceSystemSyncCheckEvent: complete ");
