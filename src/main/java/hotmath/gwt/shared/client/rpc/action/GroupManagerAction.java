@@ -26,6 +26,7 @@ public class GroupManagerAction implements Action<RpcData>{
     boolean noPublicWebLinks;
     Integer passPercent;
     Integer isSelfReg;
+    private boolean disableSearch;
 
 	public GroupManagerAction(){}
 
@@ -150,5 +151,15 @@ public class GroupManagerAction implements Action<RpcData>{
 	}
 
 
-    public enum ActionType{DELETE,CREATE,UNREGISTER_STUDENTS,UPDATE,GROUP_PROGRAM_ASSIGNMENT,GROUP_PROPERTY_SET};    
+    public enum ActionType{DELETE,CREATE,UNREGISTER_STUDENTS,UPDATE,GROUP_PROGRAM_ASSIGNMENT,GROUP_PROPERTY_SET}
+
+
+    public void setDisableSearch(boolean disableSearch) {
+        this.disableSearch = disableSearch;
+    }
+
+    public boolean isDisableSearch() {
+        return disableSearch;
+    };    
+    
 }

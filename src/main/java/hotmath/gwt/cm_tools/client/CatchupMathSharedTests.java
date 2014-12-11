@@ -55,7 +55,7 @@ public class CatchupMathSharedTests {
         else if(test.equals("ccss")) {
             CCSSCoverageWindow.startTest();
         }
-        else if(test.equals("register")) {
+        else if(test.equals("RegisterStudent")) {
             RegisterStudent.startTest();
         }
         else if(test.equals("UserActivityLogDialog")) {

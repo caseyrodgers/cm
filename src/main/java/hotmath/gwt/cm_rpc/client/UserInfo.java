@@ -330,6 +330,8 @@ public class UserInfo implements  Response {
 
     private CmDestination firstDestination;
 
+    private boolean disableSearch;
+
     public boolean isDemoUser() {
 	    return(this.isDemoUser);
 	}
@@ -506,6 +508,14 @@ public class UserInfo implements  Response {
     
     public void setFirstDestination(CmDestination dest) {
         this.firstDestination = dest;
+    }
+
+    public void setDisableSearch(boolean disableSearch) {
+        this.disableSearch = disableSearch;
+    }
+    
+    public boolean getDisableSearch() {
+        return this.disableSearch;
     }
 
 }

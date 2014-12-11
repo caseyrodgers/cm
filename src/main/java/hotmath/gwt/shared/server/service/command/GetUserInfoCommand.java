@@ -130,6 +130,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setLimitGames(settings.getLimitGames());
             userInfo.setDisableCalcAlways(settings.getDisableCalcAlways());
             userInfo.setDisableCalcQuizzes(settings.getDisableCalcQuizzes());
+            userInfo.setDisableSearch(settings.isNoSearch());
             
             /**if is custom program or parallel program, then override the default EndOfProgram
              * action to force a stop.

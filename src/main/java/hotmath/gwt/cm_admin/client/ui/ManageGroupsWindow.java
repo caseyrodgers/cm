@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
@@ -17,7 +20,6 @@ import hotmath.gwt.cm_tools.client.ui.PassPercent;
 import hotmath.gwt.cm_tools.client.ui.PassPercentCombo;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
@@ -100,7 +102,6 @@ public class ManageGroupsWindow extends GWindow {
     private void addSelfRegGroupLegend() {
         SimpleContainer simp = new SimpleContainer();
         simp.setWidget(new HTML("<span style='margin-right: 30px;'><img style='background:red;' width='8' height='8' src='/gwt-resources/images/spacer.gif'>&nbsp;Self Registration Group</span>"));
-        //lc.setStyleAttribute("padding-right", String.valueOf(width - 230));
         getButtonBar().add(simp);
     }
 
@@ -440,12 +441,27 @@ public class ManageGroupsWindow extends GWindow {
             }
         }.register();
     }
+    
+    
+    
+    
+    static public void startTest() {
+        new GwtTester(new TestWidget() {
+            @Override
+            public void runTest() {
+                CmAdminModel admin = new CmAdminModel();
+                admin.setUid(2);
+                new ManageGroupsWindow(admin);
+            }
+        });
+    }
+
+
 }
 
 /**
  * Provide standard button sizes and configuration
  * 
- * @author casey
  * 
  */
 class MyButton extends TextButton {
@@ -473,6 +489,7 @@ class GroupManagerGlobalSettings extends GWindow {
     CheckBox stopAtProgramEnd;
     CheckBox disableCalcAlways;
     CheckBox disableCalcQuizzes;
+    CheckBox disableSearch;
     CheckBox isNoPublicWebLinks;
     ComboBox <PassPercent> passCombo;
 
@@ -499,6 +516,11 @@ class GroupManagerGlobalSettings extends GWindow {
         
         MyFieldSet fs = new MyFieldSet("Group Settings", 403);
         
+        disableSearch = new CheckBox();
+        disableSearch.setBoxLabel("");
+        fs.addThing(new MyFieldLabel(disableSearch,"Disable lesson search", 290));
+        
+
         showWorkRequired = new CheckBox();
         showWorkRequired.setBoxLabel("");
         showWorkRequired.setToolTip("If checked, the whiteboard will be shown with each problem.");
@@ -521,7 +543,7 @@ class GroupManagerGlobalSettings extends GWindow {
         disableCalcQuizzes = new CheckBox();
         disableCalcQuizzes.setBoxLabel("");
         fs.addThing(new MyFieldLabel(disableCalcQuizzes,"Disable whiteboard calculator for quizzes", 290));
-
+        
 
         isNoPublicWebLinks = new CheckBox();
         isNoPublicWebLinks.setBoxLabel("");
@@ -580,6 +602,7 @@ class GroupManagerGlobalSettings extends GWindow {
                 action.setDisableCalcAlways(disableCalcAlways.getValue());
                 action.setDisableCalcQuizzes(disableCalcQuizzes.getValue());
                 action.setNoPublicWebLinks(isNoPublicWebLinks.getValue());
+                action.setDisableSearch(disableSearch.getValue());
                 PassPercent passPercent = passCombo.getValue();
                 if (passPercent != null) {
                 	String percentStr = passPercent.getPercent();
@@ -600,5 +623,4 @@ class GroupManagerGlobalSettings extends GWindow {
             }
         }.register();
     }
-
 }

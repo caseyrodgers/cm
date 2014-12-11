@@ -93,20 +93,6 @@ public class HeaderPanel extends FlowLayoutContainer {
 
 		add(awardTip);
 		add(_helloInfo);
-
-		if(CmShared.isDebug() == true) {
-    		SexyButton searchButton = new SexyButton("Search");
-    		searchButton.addStyleName("header-panel-search-btn");
-    		searchButton.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    TopicExplorerManager.getInstance().setVisible(true);
-                }
-            });
-    		new QuickTip(searchButton).setToolTip("Search for lessons");
-    		add(searchButton);
-		}
-		
 		helpButton = new MyIconButton("header-panel-help-btn");
 		helpButton.addSelectHandler(new SelectHandler() {
 			@Override
@@ -297,6 +283,23 @@ public class HeaderPanel extends FlowLayoutContainer {
 									.getCorrectPercent() + "%";
 				}
 			}
+			
+			
+
+	        if(!UserInfo.getInstance().getDisableSearch()) {
+	            SexyButton searchButton = new SexyButton("Search");
+	            searchButton.addStyleName("header-panel-search-btn");
+	            searchButton.addClickHandler(new ClickHandler() {
+	                @Override
+	                public void onClick(ClickEvent event) {
+	                    TopicExplorerManager.getInstance().setVisible(true);
+	                }
+	            });
+	            new QuickTip(searchButton).setToolTip("Search for lessons");
+	            add(searchButton);
+	        }
+	        
+
 			_helloInfo.setHTML(s);
 		}
 	}

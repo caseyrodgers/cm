@@ -17,10 +17,20 @@ public class StudentSettingsModel implements Response {
 	boolean disableCalcAlways;
 	boolean disableCalcQuizzes;
 	boolean noPublicWebLinks;
+	boolean noSearch;
 
 	public StudentSettingsModel() {}
 	
-	public boolean getTutoringAvailable() {
+	
+	public boolean isNoSearch() {
+        return noSearch;
+    }
+
+    public void setNoSearch(boolean noSearch) {
+        this.noSearch = noSearch;
+    }
+
+    public boolean getTutoringAvailable() {
 		return tutoringAvailable;
 	}
 
@@ -78,9 +88,10 @@ public class StudentSettingsModel implements Response {
 
     @Override
     public String toString() {
-        return "StudentSettingsModel [tutoringAvailable=" + tutoringAvailable + ", showWorkRequired=" + showWorkRequired + ", limitGames=" + limitGames
-                + ", stopAtProgramEnd=" + stopAtProgramEnd + ", disableCalcAlways=" + disableCalcAlways + ", disableCalcQuizzes=" + disableCalcQuizzes
-                + ", noPublicWebLinks=" + noPublicWebLinks + "]";
+        return "StudentSettingsModel [tutoringAvailable=" + tutoringAvailable + ", showWorkRequired="
+                + showWorkRequired + ", limitGames=" + limitGames + ", stopAtProgramEnd=" + stopAtProgramEnd
+                + ", disableCalcAlways=" + disableCalcAlways + ", disableCalcQuizzes=" + disableCalcQuizzes
+                + ", noPublicWebLinks=" + noPublicWebLinks + ", noSearch=" + noSearch + "]";
     }
 
 }

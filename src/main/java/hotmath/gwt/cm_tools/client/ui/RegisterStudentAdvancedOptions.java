@@ -43,6 +43,8 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 	private CheckBox isDisableCalcAlways;
 	private CheckBox isDisableCalcQuizzes;
 	private CheckBox isNoPublicWebLinks;
+	
+	private CheckBox isDisableSearch;
 
 	private ComboBox <PassPercent> passCombo;
 	private SectionNumberCombo sectionCombo;
@@ -159,6 +161,13 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 		isDisableCalcQuizzes.setValue(options.getSettings().getDisableCalcQuizzes());
         advOptions.addThing(new MyFieldLabel(isDisableCalcQuizzes, "Disable whiteboard calculator for quizzes", LABEL_LEN, 10));
 
+        
+        isDisableSearch = new CheckBox();
+        isDisableSearch.setValue(options.getSettings().isNoSearch());
+        advOptions.addThing(new MyFieldLabel(isDisableSearch, "Disable lesson search", LABEL_LEN, 10));
+
+        
+        
         if (sectionIsSettable) {
             sectionCombo = new SectionNumberCombo(0);
             advOptions.addThing(new MyFieldLabel(sectionCombo, "Select Section", LABEL_LEN));
@@ -319,6 +328,7 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
                 ssm.setDisableCalcAlways(isDisableCalcAlways.getValue());
                 ssm.setDisableCalcQuizzes(isDisableCalcQuizzes.getValue());
                 ssm.setNoPublicWebLinks(isNoPublicWebLinks.getValue());
+                ssm.setNoSearch(isDisableSearch.getValue());
 
                 /*
                  * don't want to place "0" in the section number list...
@@ -339,6 +349,7 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
                 options.setPassPercent(passPercent);
                 options.setSettings(ssm);
                 options.setSectionNum(sectionNum);
+                
                 callback.setAdvancedOptions(options);
 
                 advOptWindow.close();

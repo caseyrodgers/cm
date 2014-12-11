@@ -113,6 +113,7 @@ public class CmGwtUtils {
         ui.setLimitGames(o.get("limitGames").isBoolean().booleanValue());
         ui.setDisableCalcAlways(o.get("disableCalcAlways").isBoolean().booleanValue());
         ui.setDisableCalcQuizzes(o.get("disableCalcQuizzes").isBoolean().booleanValue());
+        ui.setDisableSearch(o.get("disableSearch").isBoolean().booleanValue());
         ui.setLoginName(getJsonString(o.get("loginName")));
         ui.setPassPercentRequired(getJsonInt(o.get("passPercentRequired")));
         ui.setPassword(getJsonString(o.get("password")));
