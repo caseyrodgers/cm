@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
 import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.model.StringHolder;
@@ -174,7 +175,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         });
         contextMenu.add(teacherMode);
 
-        if (CmShared.isDebug() == true) {
+        if (CmCore.isDebug() == true) {
             MenuItem studentDetails = new MenuItem("Student Details");
             studentDetails.addSelectionHandler(new SelectionHandler<Item>() {
                 public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<Item> event) {
@@ -369,7 +370,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
             return;
 
         if (sm.getProgram().getIsActiveProgram() == false) {
-            if (CmShared.isDebug() == false) {
+            if (CmCore.isDebug() == false) {
                 CmMessageBox.showAlert("Student is using a Parallel Program, login is not possible at this time.");
             }
             return;
@@ -863,7 +864,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         menu.add(defineSummaryItem(grid));
         menu.add(defineReportCardItem(grid));
         
-        if(CmShared.isDebug() == true) {
+        if(CmCore.isDebug() == true) {
             menu.add(defineAssignmentReportItem(grid));
         }
 

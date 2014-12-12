@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.util;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -73,7 +74,7 @@ public class NetTestWindow extends GWindow {
         borderLayout.setNorthWidget(new HTML(html), new BorderLayoutData(40));
         borderLayout.setCenterWidget(_grid);
      
-        if(CmShared.isDebug() == true) {
+        if(CmCore.isDebug() == true) {
             addButton(new TextButton("Stop Tests", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
@@ -164,7 +165,7 @@ public class NetTestWindow extends GWindow {
     
     private void runTest(final int testNum, final long dataSize) {
         
-        if(CmShared.isDebug() == false)
+        if(CmCore.isDebug() == false)
             _btnCheck.setEnabled(false);
 
         new RetryAction<NetTestModel>() {
@@ -222,7 +223,7 @@ public class NetTestWindow extends GWindow {
             @Override
             public void oncapture(NetTestModel value) {
                 CmBusyManager.setBusy(false);
-                if(CmShared.isDebug() == false) {
+                if(CmCore.isDebug() == false) {
                     CatchupMathTools.showAlert("Thank you", "Thank you.  The results have been saved on our server.");
                 }
             }

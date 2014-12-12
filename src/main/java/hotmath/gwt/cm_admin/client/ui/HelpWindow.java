@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.FeedbackWindow;
@@ -53,7 +53,7 @@ public class HelpWindow extends GWindow {
         
         setVisible(true);
         
-        if(CmShared.isDebug() == true) {
+        if(CmCore.isDebug() == true) {
             GWT.runAsync(new CmRunAsyncCallback() {
                 @Override
                 public void onSuccess() {

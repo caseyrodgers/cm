@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.GradeBookPanel;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.shared.client.CmShared;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
@@ -61,7 +61,7 @@ public class AssignmentStatusDialog extends GWindow {
             }
         });
         addRemove.setToolTip("Add or remove students assigned to this assignment (Draft mode only.)");
-        if(asgn.getStatus().equals("Draft") || CmShared.isDebug() == true) {
+        if(asgn.getStatus().equals("Draft") || CmCore.isDebug() == true) {
             addRemove.setEnabled(true);
         } else {
             addRemove.setEnabled(false);

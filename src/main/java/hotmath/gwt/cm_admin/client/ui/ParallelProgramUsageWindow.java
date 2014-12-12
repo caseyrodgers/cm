@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -104,7 +105,7 @@ public class ParallelProgramUsageWindow extends GWindow {
         
         getParallelProgramUsageRPC(store, ppModel);
 
-        if (CmShared.isDebug() == true) {
+        if (CmCore.isDebug() == true) {
             Menu debugMenu = buildDebugMenu();
             ppumGrid.setContextMenu(debugMenu);
         }

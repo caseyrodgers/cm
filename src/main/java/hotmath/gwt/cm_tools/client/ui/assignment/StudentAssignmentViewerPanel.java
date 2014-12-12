@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
@@ -94,7 +95,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             
             @Override
             public boolean showStatus() {
-                if(CmShared.isDebug() == true) {
+                if(CmCore.isDebug() == true) {
                     return true;
                 }
                 else {

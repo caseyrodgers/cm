@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_admin.client.ui.CustomProgramAddQuizDialog.Callback;
 import hotmath.gwt.cm_admin.client.ui.list.ListCustomLesson;
 import hotmath.gwt.cm_admin.client.ui.list.ListCustomLesson.CallbackOnDoubleClick;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -85,7 +86,7 @@ public class CustomProgramDesignerDialog extends GWindow {
 
 		/**
 		 * if debug mode, the always allow edit boolean isDebug =
-		 * CmShared.isDebug() == true;
+		 * CmCore.isDebug() == true;
 		 */
 
 		if (customProgram != null) {
@@ -305,7 +306,7 @@ public class CustomProgramDesignerDialog extends GWindow {
 	 */
 	private void enableForm(boolean yn) {
 
-		if (CmShared.isDebug() == true) {
+		if (CmCore.isDebug() == true) {
 			yn = true;
 		}
 

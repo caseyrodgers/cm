@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui.ui;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.util.SystemSyncChecker;
 
 import com.google.gwt.user.client.Window;
@@ -35,7 +35,7 @@ public class EndOfProgramWindow extends GWindow {
         addStyleName("end-of-program-window");
         setHeadingText("Program Completed!");
 
-        if(CmShared.isDebug() == false) {
+        if(CmCore.isDebug() == false) {
             setClosable(false);
         }
         addButton(new TextButton("OK", new SelectHandler() {

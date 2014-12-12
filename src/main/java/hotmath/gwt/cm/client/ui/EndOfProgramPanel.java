@@ -1,8 +1,8 @@
 package hotmath.gwt.cm.client.ui;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.ui.ui.EndOfProgramWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -24,7 +24,7 @@ public class EndOfProgramPanel extends CenterLayoutContainer {
         lc.setHeight(200);
         addStyleName(UserInfo.getInstance().getBackgroundStyle());
         
-        if(CmShared.isDebug() == true) {
+        if(CmCore.isDebug() == true) {
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_LOGOUT));
         }
         lc.add(new HTML(EndOfProgramWindow.msg));

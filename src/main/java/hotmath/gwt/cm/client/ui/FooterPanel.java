@@ -1,5 +1,6 @@
 package hotmath.gwt.cm.client.ui;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.shared.client.CmShared;
@@ -17,7 +18,7 @@ public class FooterPanel extends FlowLayoutContainer {
 		
 		String html = "<ul class='h-menu'>";
 
-		if (CmShared.isDebug() == true) {
+		if (CmCore.isDebug() == true) {
 			html += "<li><a href='javascript:void(0)' onclick='resetProgram_Gwt();return false;'>Reset</a></li>";
 			html += "<li><a href='javascript:void(0)' onclick='showPrescriptionData_Gwt();return false;'>prescription data</a></li>";
 			html += "<li><a href='javascript:void(0)' onclick='showPrescriptionSession_Gwt();return false;'>prescription sessions</a></li>";

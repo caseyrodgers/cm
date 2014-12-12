@@ -216,7 +216,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
         
         final int times[] = {0};
         
-//        if(CmShared.isDebug() == true) {
+//        if(CmCore.isDebug() == true) {
 //            TextButton crash = new TextButton("Crash Test");
 //            // add whiteboard crash button if in debug mode
 //            crash.addSelectHandler(new SelectHandler() {

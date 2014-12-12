@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemTreeTable.TreeTableCallback;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.model.TeacherIdentity;
@@ -277,7 +278,7 @@ public class CustomProblemManager extends GWindow {
 
         _gridPanel.addTool(btn);
 
-        if (CmShared.isDebug() == true) {
+        if (CmCore.isDebug() == true) {
             addTool(new TextButton("Refresh", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {

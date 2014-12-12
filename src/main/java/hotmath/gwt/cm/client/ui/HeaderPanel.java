@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.award.CmAwardPanel;
 import hotmath.gwt.cm_core.client.award.CmAwardPanel.AwardCallback;
@@ -142,7 +143,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 							 * Only show modal popup if not in auto test mode
 							 * 
 							 */
-							if (CmShared.isDebug() == true
+							if (CmCore.isDebug() == true
 									|| UserInfo.getInstance().isAutoTestMode()
 									|| CmHistoryQueue.getInstance()
 											.isInitializingToNonStandard())
@@ -283,7 +284,6 @@ public class HeaderPanel extends FlowLayoutContainer {
 									.getCorrectPercent() + "%";
 				}
 			}
-			
 			
 
 	        if(!UserInfo.getInstance().getDisableSearch()) {

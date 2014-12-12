@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.cm_core.client.CmCore;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.sencha.gxt.widget.core.client.info.Info;
@@ -43,7 +43,7 @@ public class CmLogger  {
     }
     
     private void _debug(String msg) {
-        if(CmShared.isDebug() == true) {
+        if(CmCore.isDebug() == true) {
             Info.display("Debug", msg);
     	}
     	Log.debug(msg);

@@ -1,5 +1,6 @@
 package hotmath.gwt.cm.client.ui.context;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.UserInfoBase.Mode;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -129,7 +130,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition  {
             @Override
             public List<Widget> getContainerTools() {
                 ArrayList<Widget> list2 = new ArrayList<Widget>();
-                if (CmShared.isDebug() == true || UserInfoBase.getInstance().getMode() == Mode.TEACHER_MODE) {
+                if (CmCore.isDebug() == true || UserInfoBase.getInstance().getMode() == Mode.TEACHER_MODE) {
                     list2.add(new TextButton("Mark Correct", new SelectHandler() {
                         @Override
                         public void onSelect(SelectEvent event) {

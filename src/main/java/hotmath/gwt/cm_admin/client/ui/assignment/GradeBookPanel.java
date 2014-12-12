@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGradeBookAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
@@ -67,7 +68,7 @@ public class GradeBookPanel extends ContentPanel {
         addRefreshButton();
         addGradeButton();
         
-        if(CmShared.isDebug() == true) {
+        if(CmCore.isDebug() == true) {
             addLoadCmStudentButton();
         }
         

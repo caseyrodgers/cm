@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.Callback;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.GetCorrelatedTopicsPrescriptionAction;
@@ -180,7 +181,7 @@ public class AssignmentProblemListView extends ContentPanel {
         _deleteButton = createDelButton();
         addTool(_deleteButton);
 
-        if (CmShared.isDebug() == true) {
+        if (CmCore.isDebug() == true) {
 
             final ToggleButton tb = new ToggleButton("Run Test");
             tb.addSelectHandler(new SelectHandler() {
@@ -479,7 +480,7 @@ public class AssignmentProblemListView extends ContentPanel {
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                if (CmShared.isDebug() == false && !callback.isDraftMode()) {
+                if (CmCore.isDebug() == false && !callback.isDraftMode()) {
                     CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
                     return;
                 }
@@ -538,7 +539,7 @@ public class AssignmentProblemListView extends ContentPanel {
             @Override
             public void onSelect(SelectEvent event) {
 
-                if (CmShared.isDebug() == false && !callback.isDraftMode()) {
+                if (CmCore.isDebug() == false && !callback.isDraftMode()) {
                     CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
                     return;
                 }

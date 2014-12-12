@@ -15,6 +15,7 @@ import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm.client.ui.context.QuizCheckResultsWindow;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.event.CmLogoutEvent;
@@ -58,8 +59,10 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.HasNativeEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.History;
@@ -75,7 +78,7 @@ import com.sencha.gxt.widget.core.client.container.Viewport;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class CatchupMath implements EntryPoint {
+public class CatchupMath implements EntryPoint, HasNativeEvent {
     static {
         publishNative();
         publishNativeJsAfterLoad();
@@ -145,7 +148,7 @@ public class CatchupMath implements EntryPoint {
         _mainPortWrapper.setCenterWidget(_mainContainer, bdata);
 
         bdata = new BorderLayoutData(20);
-        if (CmShared.getQueryParameter("debug") != null || CmShared.getQueryParameter("debug_uid") != null) {
+        if (CmCore.isDebug() == true || CmShared.getQueryParameter("debug_uid") != null) {
             FooterPanel footer = new FooterPanel();
             _mainPortWrapper.setSouthWidget(footer, new BorderLayoutData(20));
         }
@@ -720,4 +723,10 @@ public class CatchupMath implements EntryPoint {
 
                                                           $wnd.showMotivationalVideo_Gwt = @hotmath.gwt.cm.client.CatchupMath::showMotivationalVideo_Gwt(Ljava/lang/String;);
                                                           }-*/;
+
+	@Override
+	public NativeEvent getNativeEvent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -4,6 +4,7 @@ import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemLeafNode;
 import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentTreeAllLessonsListingPanel.CallbackOnSelectedLesson;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentTreeCustomProblemsListingPanel.CallbackOnSelectedCustomProblem;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
@@ -32,7 +33,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_tools.client.ui.TopicExplorerManager;
 import hotmath.gwt.cm_tools.client.ui.TopicExplorerWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
@@ -132,7 +132,7 @@ public class AddProblemDialog extends GWindow {
         addButton(btnClose);
 
 
-        if(CmShared.isDebug() == true) {
+        if(CmCore.isDebug() == true) {
             addTool(new TextButton("Create Problem", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {

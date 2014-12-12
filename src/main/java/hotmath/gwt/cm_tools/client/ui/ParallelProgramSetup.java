@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -39,7 +40,7 @@ public class ParallelProgramSetup extends RegisterStudent {
     
 	public ParallelProgramSetup(CmAsyncRequest callback, CmAdminModel adminModel) {
 		// exclude Auto-Enroll Program unless in debug mode
-	    super(null, adminModel, (CmShared.isDebug() == false));
+	    super(null, adminModel, (CmCore.isDebug() == false));
 
 	    doIt(callback);
 	}	

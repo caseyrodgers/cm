@@ -4,6 +4,7 @@ import hotmath.gwt.cm_admin.client.ui.CustomProgramAddQuizDialog.Callback;
 import hotmath.gwt.cm_admin.client.ui.list.ListCustomProgram;
 import hotmath.gwt.cm_admin.client.ui.list.ListCustomProgram.CallbackOnDoubleClick;
 import hotmath.gwt.cm_admin.client.ui.list.ListCustomQuiz;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
@@ -91,7 +92,7 @@ public class CustomProgramDialog extends GWindow {
         setModal(true);
         setPixelSize(400, 420);
 
-        _isDebug = CmShared.isDebug() == true;
+        _isDebug = CmCore.isDebug() == true;
 
         buildGui();
         getCustomProgramDefinitions();
@@ -115,7 +116,7 @@ public class CustomProgramDialog extends GWindow {
 
         TabItemConfig tabCustomProgram = new TabItemConfig("Custom Programs", false);
 
-        if (CmShared.isDebug() == true) {
+        if (CmCore.isDebug() == true) {
             Menu contextMenu = new Menu();
             contextMenu.add(new MenuItem("Export", new SelectionHandler<MenuItem>() {
                 @Override

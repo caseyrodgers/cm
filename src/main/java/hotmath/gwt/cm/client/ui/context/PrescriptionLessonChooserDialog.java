@@ -4,6 +4,7 @@ import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
@@ -15,7 +16,6 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.ui.EndOfProgramWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -86,7 +86,7 @@ public class PrescriptionLessonChooserDialog extends GWindow {
 
                 CmLogger.debug("NextQuiz: pData.areAllLessonsCompleted() = " + pData.areAllLessonsCompleted() + ", "
                         + pData.getCountCompletedTopics() + ", " + pData.getSessionTopics().size());
-                if (CmShared.isDebug() == false && !pData.areAllLessonsCompleted()) {
+                if (CmCore.isDebug() == false && !pData.areAllLessonsCompleted()) {
                     Info.display("Not Finished", "Please complete all lessons first");
                     return;
                 }
@@ -224,7 +224,7 @@ public class PrescriptionLessonChooserDialog extends GWindow {
         if (UserInfo.getInstance().isCustomProgram()) {
             _nextSegment.setVisible(false);
         } else {
-            if (CmShared.isDebug() == true || pData.areAllLessonsCompleted()) {
+            if (CmCore.isDebug() == true || pData.areAllLessonsCompleted()) {
                 _nextSegment.setEnabled(true);
                 _nextSegment.setVisible(true);
             } else {

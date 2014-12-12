@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.CatchupMath;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsForUserAction;
@@ -305,7 +306,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     private static StudentAssignmentSelectorDialog __lastInstance;
     public static void showSharedDialog() {
         
-        if(true || CmShared.isDebug() == false) {
+        if(true || CmCore.isDebug() == false) {
             __lastInstance = null;
         }
         if(__lastInstance == null) {

@@ -3,6 +3,7 @@ package hotmath.gwt.cm.client.ui.context;
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
 import hotmath.gwt.cm.client.ui.context.HaveYouCheckedYourWorkWindow.Callback;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
@@ -174,7 +175,7 @@ public class QuizContext implements CmContext {
             public void attempt() {
                 CmBusyManager.setBusy(true);
 
-                if (CmShared.isDebug() == true) {
+                if (CmCore.isDebug() == true) {
                     InfoPopupBox.display("Quiz Check", "Checking quiz ...");
                 }
 

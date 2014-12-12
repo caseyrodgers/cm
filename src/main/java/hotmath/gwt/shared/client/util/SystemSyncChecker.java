@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.client.util;
 
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.event.CmLogoutEvent;
 import hotmath.gwt.cm_core.client.event.CmLogoutHandler;
@@ -48,7 +49,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                 "Please Refresh your browser by pressing the F5 key or click the button below. " +
                 "Thank you for using Catchup Math!");
 
-        if(CmShared.getQueryParameter("debug") != null) {
+        if(CmCore.isDebug() == true) {
             if(version != null) {
                 add(new HTML("GetCatchupMathVersionAction: " + version.getVersion() + " current: " + CatchupMathVersionInfo.getBuildVersion()));
             }
@@ -83,7 +84,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
         
         
         /** do it first */
-        checkForUpdate(true, null);
+        //checkForUpdate(true, null);
     }
     
     
@@ -91,7 +92,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
      * 
      * Only call server if window is not currently being displayed.
      * 
-     * If doFUllCheck is false, then full check is not performed
+     * If doFullCheck is false, then full check is not performed,
      * only activeMinutes is transfered.
      * 
      */
@@ -132,7 +133,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                      if(version != null && version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
                          new SystemSyncChecker(version);
                      }
-                     else if(!"ADMIN".equals(startType) && !"AUTO_CREATE".equals(startType) && CmShared.getQueryParameter("debug") == null) {
+                     else if(!"ADMIN".equals(startType) && !"AUTO_CREATE".equals(startType) && CmCore.isDebug() == false) {
                          
                     	 /** only for CM Student not in debug mode */
                          String k1=info.getCurrentUserLoginKey();

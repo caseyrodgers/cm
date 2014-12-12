@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc.client.rpc.ResetStudentActivityAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -149,7 +150,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 
         getStudentActivityRPC(store, studentModel);
 
-        if (CmShared.isDebug() == true) {
+        if (CmCore.isDebug() == true) {
             Menu debugMenu = buildDebugMenu();
             samGrid.setContextMenu(debugMenu);
         }

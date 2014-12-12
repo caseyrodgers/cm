@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.rpc;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.InformationOnlyException;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
@@ -197,7 +198,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                     + "You may retry this operation by clicking 'OK'.\n"
                     + "However if the error persists, contact Technical Support.";
                     
-                    if(CmShared.isDebug() == true) {
+                    if(CmCore.isDebug() == true) {
                         msg += "\n\n" + throwable.getMessage();
                     }
                     
@@ -307,7 +308,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
 
                 @Override
                 public void onFailure(Throwable exe) {
-                    if(CmShared.isDebug() == true)
+                    if(CmCore.isDebug() == true)
                         Window.alert("Error sending info about retry action: " + exe);
                 }
             });

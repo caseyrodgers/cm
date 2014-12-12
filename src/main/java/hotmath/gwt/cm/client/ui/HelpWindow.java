@@ -1,5 +1,6 @@
 package hotmath.gwt.cm.client.ui;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm.client.WelcomePanel;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
@@ -147,7 +148,7 @@ public class HelpWindow extends GWindow {
 	
         
 
-        if(CmShared.isDebug() == true) {
+        if(CmCore.isDebug() == true) {
             
             toolBar.add(new MyOptionButton("Reset Lesson", "Reset the problems for the current lesson.", new SelectHandler() {
                 @Override
@@ -196,7 +197,7 @@ public class HelpWindow extends GWindow {
 
         flc.add(fs);
         
-        if (CmShared.isDebug() == true) {
+        if (CmCore.isDebug() == true) {
             FieldSet fsDebug = new FieldSet();
             fsDebug.setHeadingText("Debug Info");
             fsDebug.add(new HTML(UserInfo.getInstance().getUserStatus()));
@@ -225,7 +226,7 @@ public class HelpWindow extends GWindow {
         
         flc.add(fsAdditional);
 
-        if (UserInfo.getInstance().isSingleUser() || CmShared.isDebug() == true) {
+        if (UserInfo.getInstance().isSingleUser() || CmCore.isDebug() == true) {
 
             TextButton setupButton = new MyOptionButton("Setup Catchup Math","Modify your Catchup Math settings.", new SelectHandler() {
                 @Override
@@ -288,7 +289,7 @@ public class HelpWindow extends GWindow {
         
 
         
-        if (CmShared.isDebug() == true) {
+        if (CmCore.isDebug() == true) {
         	addtionalTb.add(new TextButton("Connection Check", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {

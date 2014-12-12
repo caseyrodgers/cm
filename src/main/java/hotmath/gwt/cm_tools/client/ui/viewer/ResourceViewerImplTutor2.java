@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.event.RppHasBeenViewedEvent;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -64,7 +65,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
          * solution.
          *
          */
-        if(CmShared.isDebug() == true) {
+        if(CmCore.isDebug() == true) {
             
             addHandler(new DoubleClickHandler() {
                 @Override
@@ -465,7 +466,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
      */
     static public void solutionHasBeenViewed_Gwt(String eventName) {
         InmhItemData item = _instance.getResourceItem();
-        if(CmShared.isDebug() == true || !item.isViewed()) {
+        if(CmCore.isDebug() == true || !item.isViewed()) {
             //item.setViewed(true);
             UserInfo.getInstance().setViewCount(UserInfo.getInstance().getViewCount()+1);
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE, item));
