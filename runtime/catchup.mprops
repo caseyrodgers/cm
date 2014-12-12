@@ -25,7 +25,7 @@ SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_em
        ifnull(s.limit_games, 0) as limit_games, ifnull(s.show_work_required, 0) as show_work_required,
        ifnull(s.stop_at_program_end, 0) as stop_at_program_end, ifnull(s.tutoring_available, 0) as tutoring_available,
        ifnull(s.disable_calculator_always, 0) as disable_calculator_always, ifnull(s.disable_calculator_quizzes, 0) as disable_calculator_quizzes,
-       ifnull(s.no_public_weblinks, 0) as no_public_weblinks,
+       ifnull(s.no_public_weblinks, 0) as no_public_weblinks,ifnull(s.disable_search, 0) as disable_search,
        trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
        ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, g.is_active, g.is_self_reg,
        cp.id as custom_program_id, cp.name as custom_program_name,q.qid as custom_quiz_id, q.name as custom_quiz_name,
@@ -88,6 +88,7 @@ SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_em
        ifnull(s.limit_games, 0) as limit_games, ifnull(s.show_work_required, 0) as show_work_required,
        ifnull(s.stop_at_program_end, 0) as stop_at_program_end, ifnull(s.tutoring_available, 0) as tutoring_available,
        ifnull(s.disable_calculator_always, 0) as disable_calculator_always, ifnull(s.disable_calculator_quizzes, 0) as disable_calculator_quizzes,       
+       ifnull(s.disable_search, 0) as disable_search,
        trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
        ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, g.is_active, g.is_self_reg,
        ifnull(ux.current_lesson, 0) as current_lesson, ifnull(ux.lesson_count, 0) as lesson_count,
@@ -302,12 +303,7 @@ WHERE h.uid in (XXX)
 
 .key=SETTINGS_SELECT_SQL
 
-select limit_games,
-       show_work_required,
-       stop_at_program_end,
-       tutoring_available,
-       disable_calculator_always,
-       disable_calculator_quizzes
+select  *
 from   HA_USER_SETTINGS
 where  user_id = ? 
 
