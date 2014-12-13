@@ -208,7 +208,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             }
         });
         
-        if(UserInfo.getInstance().isDisableCalcAlways() || isQuiz() && UserInfo.getInstance().isDisableCalcQuizzes()) {
+        if(UserInfo.getInstance() == null || (UserInfo.getInstance().isDisableCalcAlways() || isQuiz() && UserInfo.getInstance().isDisableCalcQuizzes())) {
         	calculator.setEnabled(false);
         }
         
