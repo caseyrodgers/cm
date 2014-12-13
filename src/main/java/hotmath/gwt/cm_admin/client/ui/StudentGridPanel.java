@@ -448,8 +448,13 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         lessonsMenu.add(createProgramDetailsButton());
                 
         lessonsButton.setMenu(lessonsMenu);
-        //toolbar.add(lessonsButton);
-        toolbar.add(createProgramDetailsButton());
+        toolbar.add(lessonsButton);
+        toolbar.add(new TextButton("Program Details", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                showProgramDetails();
+            }
+        }));
 
         toolbar.add(exportStudentsToolItem(_grid));
 
@@ -470,24 +475,28 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         MenuItem mi = new MenuItem("Program Details", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
-                if(UserInfoBase.getInstance().isMobile()) {
-                    new FeatureNotAvailableToMobile();
-                    return;
-                }
-                
-                GWT.runAsync(new CmRunAsyncCallback() {
-                    @Override
-                    public void onSuccess() {
-                    	ProgramDetailsPanel.showPanel(_cmAdminMdl);
-                    }
-                });
+                showProgramDetails();
             }
         });
         mi.setToolTip("View Program Details");
 		return mi;
 	}
 
-	private Widget createExploreLessonsButton() {
+	protected void showProgramDetails() {
+        if(UserInfoBase.getInstance().isMobile()) {
+            new FeatureNotAvailableToMobile();
+            return;
+        }
+        
+        GWT.runAsync(new CmRunAsyncCallback() {
+            @Override
+            public void onSuccess() {
+                ProgramDetailsPanel.showPanel(_cmAdminMdl);
+            }
+        });
+    }
+
+    private Widget createExploreLessonsButton() {
         MenuItem mi = new MenuItem("Search", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
