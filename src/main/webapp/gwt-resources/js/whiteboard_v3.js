@@ -206,13 +206,14 @@ var Whiteboard = function (cont, isStatic, _opts) {
         title: 'Navigator',
         classes: 'big_tool_button button_nav',
         text: ""
-    }*/
+    }
         , {
             name: 'button_temp',
             title: 'Figures',
             classes: 'big_tool_button button_temp',
             text: "Figure"
         }
+        */
     ];
 
     function getNextObjectID() {
@@ -3690,7 +3691,7 @@ var w = maxWidth;
             cmd_keys["power"] = "^";
             cmd_keys["sqrt"] = "\\sqrt";
             cmd_keys["prod"] = "*";
-            cmd_keys["div"] = "÷";
+            cmd_keys["div"] = "ï¿½";
             cmd_keys["neq"] = "\\ne";
             nav_keys["Up"] = "Up";
             nav_keys["Down"] = "Down";

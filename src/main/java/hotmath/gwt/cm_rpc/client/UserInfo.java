@@ -445,7 +445,6 @@ public class UserInfo implements  Response {
     static private UserInfo __instance;
 
     /** The CM Student user object
-     *  (will be null for CM Admin)
      *  
      *  This is only active for one session, meaning there will only be one
      *  userid... The state of that user will change: diff topic,resource,etc.
@@ -456,7 +455,13 @@ public class UserInfo implements  Response {
      * @return
      */
     static public UserInfo getInstance() {
+        if(__instance == null) {
+            __instance = new UserInfo();
+            __instance.setUserAccountType(UserType.SCHOOL_USER);
+        }
         return __instance;
+        
+        
     }
     
     /** Set the shared user object

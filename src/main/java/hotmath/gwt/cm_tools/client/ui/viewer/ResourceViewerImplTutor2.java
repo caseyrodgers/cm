@@ -190,11 +190,12 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
         CmBusyManager.setBusy(true);
         
         
-        if (!UserInfo.getInstance().isShowWorkRequired())
+        if (UserInfo.getInstance() != null && !UserInfo.getInstance().isShowWorkRequired()) {
             hasShowWork = true;
+        }
         
         boolean shouldExpandSolution = false;
-        if (UserInfo.getInstance().isAutoTestMode()) {
+        if (UserInfo.getInstance() != null && UserInfo.getInstance().isAutoTestMode()) {
             shouldExpandSolution = true;
         }
         
