@@ -29,14 +29,14 @@ public class CmCore implements EntryPoint {
      * @return
      */
     static public String getQueryParameterValue(String name) {
-        if(_queryParameters == null) {
-            _queryParameters = readQueryString();
-        }
-        String v = _queryParameters.get(name);
+        String v = getQueryParameter(name);
         return (v != null) ? v : "";
     }
     
     static public String getQueryParameter(String name) {
+        if(_queryParameters == null) {
+            _queryParameters = readQueryString();
+        }
         return _queryParameters.get(name);
     }
     
