@@ -152,7 +152,7 @@ public class CustomProgramDesignerDialog extends GWindow {
 	CallbackOnDoubleClick callDbl = new CallbackOnDoubleClick() {
         @Override
         public void doubleClicked(CustomLessonModel lessonModel) {
-            CmMessageBox.showAlert("List was double clicked");
+            // CmMessageBox.showAlert("List was double clicked");
         }
     };
 	ListView<CustomLessonModel, String> _listAll = new ListCustomLesson(callDbl);

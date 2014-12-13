@@ -1,6 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserInfo.UserType;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
@@ -1714,11 +1717,19 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
     }
 
     public static void startTest() {
-        StudentModel cm = null;
-        new StudentModel();
-        CmAdminModel adminM = new CmAdminModel();
-        adminM.setUid(2);
-        new RegisterStudent(cm, adminM).showWindow();
+        
+        new GwtTester(new TestWidget() {
+            @Override
+            public void runTest() {
+                StudentModel cm = new StudentModel();
+                cm.setName("TestFirst TestLast");
+                cm.setGroup("_debug");
+                UserInfo.getInstance().setUserAccountType(UserType.SCHOOL_USER);
+                CmAdminModel adminM = new CmAdminModel();
+                adminM.setUid(2);
+                new RegisterStudent(cm, adminM).showWindow();
+            }
+        });
     }
 }
 
