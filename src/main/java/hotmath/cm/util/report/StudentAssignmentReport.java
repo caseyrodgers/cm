@@ -160,7 +160,7 @@ public class StudentAssignmentReport {
 						gradedAssignmentCount++;
 						String gradeStr = sa.getHomeworkGrade();
 						int grade = 0;
-						if (gradeStr.indexOf("%") > 0) {
+						if (gradeStr != null && gradeStr.indexOf("%") > 0) {
    						    grade = Integer.parseInt(gradeStr.replaceAll("%", "").trim());
 						}
 						if (logger.isDebugEnabled())
