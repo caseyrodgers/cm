@@ -448,7 +448,8 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         lessonsMenu.add(createProgramDetailsButton());
                 
         lessonsButton.setMenu(lessonsMenu);
-        toolbar.add(lessonsButton);
+        //toolbar.add(lessonsButton);
+        toolbar.add(createProgramDetailsButton());
 
         toolbar.add(exportStudentsToolItem(_grid));
 
