@@ -256,7 +256,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         });
         CmAdminDataReader.getInstance().addReader(this);
 
-        if (CmShared.getQueryParameter("show_quiz") != null) {
+        if (CmCore.getQueryParameter("show_quiz") != null) {
             new CustomProgramAddQuizDialog(this._cmAdminMdl.getUid(), null, null, false);
         }
 

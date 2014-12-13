@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
 import hotmath.gwt.cm.client.ui.context.CmAutoTest.ResourceObject;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -12,7 +13,6 @@ import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -212,7 +212,7 @@ public class PrescriptionContext implements CmContext {
             CmResourceType type = CmResourceType.mapResourceType(rt.toLowerCase());
             List<InmhItemData> resources = PrescriptionCmGuiDefinition._registeredResources.get(resourceType);
             int which = 0;
-            boolean onlyRpp = CmShared.getQueryParameter("test_rpp_only") != null;
+            boolean onlyRpp = CmCore.getQueryParameter("test_rpp_only") != null;
             for (final InmhItemData r : resources) {
 
                 if (r.getType() != type)

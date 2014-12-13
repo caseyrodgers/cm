@@ -8,60 +8,14 @@ import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 
 public class CmGwtUtils {
 
-    static Map<String, String> _queryParameters = null;
-    static {
-        _queryParameters = CmGwtUtils.readQueryString();
-    }
-
-    /**
-     * Return the parameter passed on query string
-     * 
-     * returns null if parameter not set
-     * 
-     * @param name
-     * @return
-     */
-    static public String getQueryParameter(String name) {
-        return _queryParameters.get(name);
-    }
-
-    /**
-     * Return parameter for value or empty string if not set
-     * 
-     * @param name
-     * @return
-     */
-    static public String getQueryParameterValue(String name) {
-        String v = _queryParameters.get(name);
-        return (v != null) ? v : "";
-    }
-
-    /**
-     * Convert string+list to string+string of all URL parameters
-     * 
-     */
-    static public Map<String, String> readQueryString() {
-        Map<String, String> m = new HashMap<String, String>();
-        Map<String, List<String>> query = Window.Location.getParameterMap();
-        for (String s : query.keySet()) {
-            m.put(s, query.get(s).get(0));
-        }
-        Window.Location.getHostName();
-        return m;
-    }
 
     static native public String getUserAgent() /*-{
                                                if(typeof navigator !== 'undefined') {
@@ -168,8 +122,8 @@ public class CmGwtUtils {
         }
 
         // if run_id passed in, then allow user to view_only
-        if (CmGwtUtils.getQueryParameter("run_id") != null) {
-            int runId = Integer.parseInt(CmGwtUtils.getQueryParameter("run_id"));
+        if (CmCore.getQueryParameter("run_id") != null) {
+            int runId = Integer.parseInt(CmCore.getQueryParameter("run_id"));
             // setup user to masquerade as real user
             ui.setRunId(runId);
             ui.setActiveUser(false);

@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_test.client;
 
-import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.rpc.GetCatchupMathDebugAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCatchupMathDebugAction.DebugAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
@@ -92,7 +92,7 @@ public class CatchupMathTest implements EntryPoint {
         docPanel.add(_textArea, DockPanel.SOUTH);
         RootPanel.get().add(docPanel);
 
-        String gotoWhiteboard = CmGwtUtils.getQueryParameter("goto");
+        String gotoWhiteboard = CmCore.getQueryParameter("goto");
         if (gotoWhiteboard != null) {
             String p[] = gotoWhiteboard.split(",");
             _forceStop = true;

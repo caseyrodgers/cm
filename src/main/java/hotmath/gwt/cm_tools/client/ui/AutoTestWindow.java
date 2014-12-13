@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
-import hotmath.gwt.shared.client.CmShared;
 
 import java.util.Date;
 
@@ -47,7 +47,7 @@ public class AutoTestWindow extends GWindow {
         
     	super(true);
     	setModal(false);
-        CmShared.setQueryParameter("test_rpp_only", "true");
+        CmCore.setQueryParameter("test_rpp_only", "true");
         setResizable(true);
         setMaximizable(true);
         setMinimizable(true);
@@ -121,7 +121,7 @@ public class AutoTestWindow extends GWindow {
         run.setToolTip("Toggle the auto test process");
         
         final ToggleButton rppOnly = new ToggleButton("RPP/RPA only");
-        if(CmShared.getQueryParameter("test_rpp_only") != null) {
+        if(CmCore.getQueryParameter("test_rpp_only") != null) {
             rppOnly.setValue(true);
         }
         rppOnly.addSelectHandler(new SelectHandler() {
@@ -130,11 +130,11 @@ public class AutoTestWindow extends GWindow {
 			public void onSelect(SelectEvent event) {
                 if(rppOnly.getValue()) {
                     addLogMessage("Enabling RPP only mode");
-                    CmShared.setQueryParameter("test_rpp_only", "true");
+                    CmCore.setQueryParameter("test_rpp_only", "true");
                 }
                 else {
                     addLogMessage("Disabling RPP only mode");
-                    CmShared.removeQueryParameter("test_rpp_only");
+                    CmCore.removeQueryParameter("test_rpp_only");
                 }
             }
         });

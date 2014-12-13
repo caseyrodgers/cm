@@ -1,7 +1,7 @@
 package hotmath.gwt.cm.client.ui;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.shared.client.CmShared;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.ContentPanel;
@@ -23,7 +23,7 @@ public class NoProgramAssignedPanel extends CenterLayoutContainer {
         lc.addButton(new TextButton("Retry", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                CmShared.reloadUser();
+                CmCore.reloadUser();
             }
         }));
         setWidget(lc);

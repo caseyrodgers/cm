@@ -49,7 +49,7 @@ public class CmAwardPanel extends Composite {
 		_starPanel.getElement().setAttribute("style", "position: absolute");
 		initWidget(_starPanel);
 		
-		if(CmGwtUtils.getQueryParameterValue("test").equals("awards")) {
+		if(CmCore.getQueryParameterValue("test").equals("awards")) {
 			startTest();
 		}
 	}

@@ -4,6 +4,10 @@ import hotmath.HotMathException;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -21,6 +25,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class HaUser extends HaBasicUserImpl {
+
     
     int aid;
 	public Integer getAid() {
@@ -58,6 +63,7 @@ public class HaUser extends HaBasicUserImpl {
     }
 
     public HaUser() {
+        
     }
     
     public boolean isShowWorkRequired() {
@@ -358,48 +364,38 @@ public class HaUser extends HaBasicUserImpl {
 	    }    				
 	}
 	
-	public static HaUser createUser(String adminId, String userName, String passCode,String testName,String testConfigJson) throws Exception {
-	    Connection conn=null;
-	    PreparedStatement pstat=null;
-	    ResultSet rs = null;
-	    try {
-	        String sql = "insert into HA_USER(admin_id,user_name,user_passcode,test_def_id,test_config_json)" +
-	                     "select ? as admin_id,? as user_name,? as passcode,test_def_id,? as test_config_json " +
-	                     "from   HA_TEST_DEF " +
-	                     "where  test_name = ?";
-	        conn = HMConnectionPool.getConnection();
-
-	        pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-	        pstat.setInt(1,Integer.parseInt(adminId));
-	        pstat.setString(2, userName);
-	        pstat.setString(3, passCode);
-	        pstat.setString(4, testConfigJson);
-	        pstat.setString(5, testName);
-	        
-	        int cnt = pstat.executeUpdate();
-	        if(cnt != 1)
-	        	throw new HotMathException("Could not register new student");
-	        
-		    int uid = -1;
-		    rs = pstat.getGeneratedKeys();
-		    if (rs.next()) {
-		    	uid = rs.getInt(1);
-		    } else {
-		    	throw new HotMathException("Error creating PK for user");
-		    }
-	        HaUser user = lookUser(conn,uid,null);
-	        return user;
-	    }
-	    catch(HotMathException hme) {
-	        throw hme;
-	    }
-	    catch(Exception e) {
-	        throw new HotMathException(e,"Error removing HA student: " + e.getMessage());
-	    }
-	    finally {
-	        SqlUtilities.releaseResources(rs,pstat,conn);
-	    }		
+	public static HaUser createUser(int adminId, String userName, String passCode,String testName,String testConfigJson) throws Exception {
+	    
+	    // create new user
+        StudentModelI student = new StudentModel();
+        student.setName(userName);
+        
+        student.setPasscode(passCode);
+        // student.setPassPercent("80%");
+        student.setAdminUid(adminId);
+        student.setGroupId(1);
+        
+        StudentProgramModel stdProgram = new StudentProgramModel();
+        stdProgram.setProgramType(testName);
+        stdProgram.setSubjectId("");
+        student.setProgram(stdProgram);
+        
+        student.getSettings().setTutoringAvailable(false);
+        student.getSettings().setShowWorkRequired(false);
+        
+        Connection conn=null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            CmStudentDao csd = CmStudentDao.getInstance();
+            student = csd.addStudent(conn, student, false);
+            
+            return lookUser(conn, student.getUid(), null);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null,conn);
+        }
+        
+        
 	}
 	
 

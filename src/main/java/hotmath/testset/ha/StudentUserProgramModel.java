@@ -90,7 +90,7 @@ public class StudentUserProgramModel {
         this.userId = userId;
     }
     public Integer getTestDefId() {
-        return testDefId;
+        return testDefId!=null?testDefId:getTestDef().getTestDefId();
     }
     public void setTestDefId(Integer testDefId) {
         this.testDefId = testDefId;

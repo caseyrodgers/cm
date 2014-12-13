@@ -53,7 +53,7 @@ public class CmIdleTimeWatcher {
 
     private void checkIfIdle() {
 
-        Log.debug("CmIdleTimeWatcher","check if idle (active minutes: " + getActiveMinutes(false) + ")");
+        //Log.debug("CmIdleTimeWatcher","check if idle (active minutes: " + getActiveMinutes(false) + ")");
 
         long timeNow = System.currentTimeMillis();
         long diffKeyboard = timeNow - _lastKeyBoardActivity;

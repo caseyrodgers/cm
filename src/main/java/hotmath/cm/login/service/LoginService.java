@@ -11,7 +11,9 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
+import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc_core.client.ClientInfo;
 import hotmath.gwt.cm_rpc_core.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc_core.client.CmExceptionDoNotNotify;
@@ -25,8 +27,12 @@ import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;
 import hotmath.gwt.shared.client.rpc.action.LoginAction;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.testset.ha.HaAdmin;
+import hotmath.testset.ha.HaTestRun;
+import hotmath.testset.ha.HaTestRunDao;
+import hotmath.testset.ha.HaUser;
 import hotmath.testset.ha.HaUserAutoRegSelfPay;
 import hotmath.testset.ha.HaUserDao;
+import hotmath.testset.ha.HaUserFactory;
 import hotmath.testset.ha.HaUserParallelProgram;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.Jsonizer;
@@ -86,8 +92,10 @@ public class LoginService extends HttpServlet {
 		String key = req.getParameter("key");
 		
 		_isMobileOverride = SbUtilities.getBoolean(req.getParameter("mobile"));
+		
+		String exploreTopic = req.getParameter("explore");
 
-		boolean isDebug   =false;
+		boolean isDebug=false;
 		
 		/** real_login passed as hidden input from login.html
 		 *   
@@ -155,12 +163,21 @@ public class LoginService extends HttpServlet {
 			 * To allow use of already created connection.
 			 *  
 			 */
-			HaUserLoginInfo userLoginInfo = ActionDispatcher.getInstance().execute(loginAction, conn);
-
-			HaBasicUser cmUser = userLoginInfo.getHaUser();
-			HaLoginInfo loginInfo = userLoginInfo.getHaLoginInfo();
-
+			HaUserLoginInfo userLoginInfo;
+			HaLoginInfo loginInfo;
+			HaBasicUser cmUser;
+			if(exploreTopic==null) {
+			    userLoginInfo = ActionDispatcher.getInstance().execute(loginAction, conn);
+			    cmUser = userLoginInfo.getHaUser();
+			    loginInfo = userLoginInfo.getHaLoginInfo();
+			}
+			else {
+			    cmUser = HaUserFactory.createAnonymousUser(exploreTopic);
+			    loginInfo = new HaLoginInfo();
+			    loginInfo.setUserId(cmUser.getUserKey());
+			}
 			assert(cmUser != null);
+			assert(loginInfo != null);
 
 
 			/** either redirect this user to CM using current information

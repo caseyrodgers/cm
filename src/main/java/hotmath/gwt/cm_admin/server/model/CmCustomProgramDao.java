@@ -1031,5 +1031,27 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         System.exit(0);
     }
 
+    /** get (create if needed) Custom program with named lessons
+     * 
+     * @param conn
+     * @param aNON_AID
+     * @param progName
+     * @param lessons
+     * @return
+     */
+    public CustomProgramModel getAnonymousCustomProgram(Connection conn, int adminId, String progName, List<CustomLessonModel> lessons) throws Exception {
+        PreparedStatement ps=null;
+        try {
+            CustomProgramModel cp = getCustomProgram(conn, adminId, progName);
+            if(cp == null) {
+                cp = createNewCustomProgram(conn, adminId, progName, lessons);
+            }
+            return cp;
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+    }
+
     
 }

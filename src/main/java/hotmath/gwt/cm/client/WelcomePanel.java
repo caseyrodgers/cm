@@ -1,8 +1,8 @@
 package hotmath.gwt.cm.client;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.shared.client.CmShared;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -32,10 +32,10 @@ public class WelcomePanel extends CenterLayoutContainer {
 
         main.setHeadingText("Welcome to Catchup Math");
 
-        if (CmShared.getQueryParameterValue("type").equals("1")) {
+        if (CmCore.getQueryParameterValue("type").equals("1")) {
             main.setPixelSize(370,190);
             main.add(new SampleSessionInfo());
-        } else if (CmShared.getQueryParameterValue("type").equals("2") || UserInfo.getInstance().getViewCount() == 0) {
+        } else if (CmCore.getQueryParameterValue("type").equals("2") || UserInfo.getInstance().getViewCount() == 0) {
             main.setPixelSize(330, 200);
             main.add(new StandardInfo());
         } else {

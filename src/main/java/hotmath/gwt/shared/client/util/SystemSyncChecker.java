@@ -17,6 +17,7 @@ import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
 
@@ -84,7 +85,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
         
         
         /** do it first */
-        //checkForUpdate(true, null);
+        checkForUpdate(true, null);
     }
     
     
@@ -111,11 +112,12 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
              action.setUserActiveMinutes(CmIdleTimeWatcher.getInstance().getActiveMinutes(true));
              Log.debug("SystemSyncChecker: Setting active minutes to: " + action.getUserActiveMinutes());
          }
-         Log.debug("SystemSyncChecker: " + action.toString());
+         System.out.println("SystemSyncChecker: " + action.toString());
+         
          CmShared.getCmService().execute(action, new AsyncCallback<UserSyncInfo>() {
              @Override
             public void onSuccess(UserSyncInfo info) {
-                 
+                 System.out.println("GetCatchupMathVersionAction: return from server->" + info);
                  try {
                      if(!doFullCheck) {
                          return;

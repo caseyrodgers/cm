@@ -1,7 +1,7 @@
 package hotmath.gwt.cm.client.ui.context;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.shared.client.CmShared;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -53,7 +53,7 @@ public class AutoAdvancedProgramWindow extends GWindow {
                  * force a page refresh to load newly changed program.
                  * Otherwise, things are out of sync with server.
                  */
-                CmShared.reloadUser();
+                CmCore.reloadUser();
             }
         });
 

@@ -30,6 +30,9 @@
 
   <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
   <link rel="stylesheet" type="text/css" href="/css/SexyButtons/sexybuttons.css" />
+  
+   <link rel="stylesheet" type="text/css" href="/gwt-resources/js/calculator/jquery.calculator.css" />
+  
   </head>
 
   <body>

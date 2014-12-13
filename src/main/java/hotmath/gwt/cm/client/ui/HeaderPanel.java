@@ -287,16 +287,19 @@ public class HeaderPanel extends FlowLayoutContainer {
 			
 
 	        if(!UserInfo.getInstance().getDisableSearch()) {
-	            SexyButton searchButton = new SexyButton("Search");
-	            searchButton.addStyleName("header-panel-search-btn");
-	            searchButton.addClickHandler(new ClickHandler() {
-	                @Override
-	                public void onClick(ClickEvent event) {
-	                    TopicExplorerManager.getInstance().setVisible(true);
-	                }
-	            });
-	            new QuickTip(searchButton).setToolTip("Search for lessons");
-	            add(searchButton);
+	            
+	            if(CmCore.isDebug()) {
+    	            SexyButton searchButton = new SexyButton("Search");
+    	            searchButton.addStyleName("header-panel-search-btn");
+    	            searchButton.addClickHandler(new ClickHandler() {
+    	                @Override
+    	                public void onClick(ClickEvent event) {
+    	                    TopicExplorerManager.getInstance().showSearch();
+    	                }
+    	            });
+    	            new QuickTip(searchButton).setToolTip("Search for lessons");
+    	            add(searchButton);
+	            }
 	        }
 	        
 

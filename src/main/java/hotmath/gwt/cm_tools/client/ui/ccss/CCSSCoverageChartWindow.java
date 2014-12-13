@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
-import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
@@ -83,7 +83,7 @@ public class CCSSCoverageChartWindow extends GWindow {
             }
         }));
 
-        if(CmGwtUtils.getQueryParameter("debug") != null)
+        if(CmCore.getQueryParameter("debug") != null)
             getHeader().addTool(new TextButton("Print Report", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {

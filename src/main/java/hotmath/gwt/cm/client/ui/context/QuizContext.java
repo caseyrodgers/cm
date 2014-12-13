@@ -216,7 +216,7 @@ public class QuizContext implements CmContext {
                         
                         @Override
                         public void requestComplete(String requestData) {
-                            CmShared.reloadUser();
+                            CmCore.reloadUser();
                         }
                     });
                     

@@ -117,7 +117,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         toolBar.add(displayReportCardToolItem(studentModel));
 
         toolBar.add(displayAssignmentReportToolItem(studentModel));
-        if (CmShared.getQueryParameter("XdebugX") != null) {
+        if (CmCore.getQueryParameter("XdebugX") != null) {
             toolBar.add(displayAssignmentWorkToolItem(studentModel));
         }
 

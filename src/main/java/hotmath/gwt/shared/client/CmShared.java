@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.UserInfoBase.Mode;
@@ -50,7 +51,7 @@ public class CmShared implements EntryPoint {
     public void onModuleLoad() {
         
         
-        if(CmGwtUtils.getQueryParameter("debugjs") != null) {
+        if(CmCore.getQueryParameter("debugjs") != null) {
             CmLoggerWindow.getInstance().setVisible(true);
         }
         
@@ -58,7 +59,7 @@ public class CmShared implements EntryPoint {
             @Override
             public void onUncaughtException(Throwable e) {
 
-                if (isDebug()) {
+                if (CmCore.isDebug()) {
                     Window.alert("Uncaught Exception: " + e.toString());
                     e.printStackTrace();
                 }
@@ -89,39 +90,8 @@ public class CmShared implements EntryPoint {
         });
     }
 
-    static Map<String, String> _queryParameters = new HashMap<String, String>();
-
-    /**
-     * Return the parameter passed on query string
-     * 
-     * returns null if parameter not set
-     * 
-     * @param name
-     * @return
-     */
-    static public String getQueryParameter(String name) {
-        return _queryParameters.get(name);
-    }
-
-    static public void setQueryParameter(String name, String value) {
-        _queryParameters.put(name, value);
-    }
-
-    static public void removeQueryParameter(String name) {
-        _queryParameters.remove(name);
-    }
-
-    /**
-     * Return parameter for value or empty string if not set
-     * 
-     * @param name
-     * @return
-     */
-    static public String getQueryParameterValue(String name) {
-        String v = _queryParameters.get(name);
-        return (v != null) ? v : "";
-    }
-
+    
+    
     /**
      * return string used to launch cm_student.
      * 
@@ -158,8 +128,6 @@ public class CmShared implements EntryPoint {
             + "</p>" + "</div>";
 
     static {
-        _queryParameters = readQueryString();
-
         EventBus.getInstance().addEventListener(new CmEventListener() {
 
             @Override
@@ -215,13 +183,6 @@ public class CmShared implements EntryPoint {
      */
     static public void handleLoginProcessAsync(final CmLoginAsync callback) {
         try {
-            /**
-             * Provide shortcut, single argument entry for debugging a user
-             */
-            if (_queryParameters.get("debug_uid") != null) {
-                _queryParameters.put("debug", "true");
-                _queryParameters.put("uid", _queryParameters.get("debug_uid"));
-            }
             // first see if run_id is passed, if so
             // the user is in 'view' mode and we must
             // inform the server not to update the
@@ -273,7 +234,7 @@ public class CmShared implements EntryPoint {
 
                 UserInfoBase.getInstance().setEmail(loginInfo.getEmail());
 
-                if (CmShared.getQueryParameter("mode") != null && CmShared.getQueryParameter("mode").equals("t")) {
+                if (CmCore.getQueryParameter("mode") != null && CmCore.getQueryParameter("mode").equals("t")) {
                     UserInfoBase.getInstance().setMode(Mode.TEACHER_MODE);
                 }
 
@@ -291,36 +252,9 @@ public class CmShared implements EntryPoint {
         }
     }
 
-    /**
-     * Reload the current user's page allowing any changed program configuration
-     * to take effect.
-     * 
-     * Make sure there is a uid parameter to deal with possible GETs
-     * 
-     */
-    static public void reloadUser() {
-        String queryString = "";
-        boolean hasUid = false;
-        for (String k : _queryParameters.keySet()) {
-            if (queryString.length() > 0) {
-                queryString += "&";
-            }
-            if (k.equals("uid")) {
-                hasUid = true;
-            }
-            queryString += k + "=" + _queryParameters.get(k);
-        }
-        if (!hasUid) {
-            if (queryString.length() > 0) {
-                queryString += "&";
-            }
-            queryString += "uid=" + UserInfo.getInstance().getUid();
-        }
-        Window.Location.replace("/loginService?" + queryString);
-    }
 
     static public String getSecurityKey() {
-        String key = _queryParameters.get("key");
+        String key = CmCore.getQueryParameter("key");
         if (key == null) {
             // see if key in JS variable
             key = getSecurityKeyFromExternalJs();
@@ -329,16 +263,12 @@ public class CmShared implements EntryPoint {
         return key;
     }
 
-    static public boolean isDebug() {
-    	return (_queryParameters.get("debug") != null);
-    }
-
     static private void displayLoginError(Exception exception) {
         exception.printStackTrace();
         CmLogger.error("Login error: ", exception);
 
         String msg = "We suggest you refresh this page by pressing the F5 function key.";
-        if (isDebug())
+        if (CmCore.isDebug())
             msg += "<br/>" + exception.getMessage() + "";
 
         if (exception instanceof CmExceptionLoginInvalid) {
@@ -482,7 +412,7 @@ public class CmShared implements EntryPoint {
                 CmServiceAsync s = CmShared.getCmService();
                 int altTest = 0;
                 try {
-                    altTest = Integer.parseInt(CmShared.getQueryParameter("alt_test"));
+                    altTest = Integer.parseInt(CmCore.getQueryParameter("alt_test"));
                     CmLogger.info("Resetting to alternate test " + altTest);
                 } catch (Exception e) {
                     // quiet
@@ -503,7 +433,7 @@ public class CmShared implements EntryPoint {
      * 
      */
     static public void refreshPage() {
-        CmShared.reloadUser();
+        CmCore.reloadUser();
     }
 
     /**

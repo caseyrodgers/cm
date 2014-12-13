@@ -20,8 +20,8 @@ import hotmath.gwt.cm_admin.client.ui.assignment.EditAssignmentDialog;
 import hotmath.gwt.cm_admin.client.ui.assignment.FinalExamCreationManager;
 import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
 import hotmath.gwt.cm_admin.client.ui.list.ListCustomLesson;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_tools.client.CatchupMathSharedTests;
-import hotmath.gwt.shared.client.CmShared;
 
 
 
@@ -39,7 +39,7 @@ public class CatchupMathAdminTests extends CatchupMathSharedTests {
             /** run admin only tests here
              * 
              */
-            String test =  CmShared.getQueryParameterValue("test");
+            String test =  CmCore.getQueryParameterValue("test");
             if(test.equals("ManageGroupsWindow")) {
                 ManageGroupsWindow.startTest();
             }

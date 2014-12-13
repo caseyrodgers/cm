@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tutor.client.view;
 
-import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoEvent;
@@ -17,7 +17,6 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.Problem
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteEvent;
@@ -46,7 +45,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /** Provides a standard tutor viewer that handles the complications
@@ -107,7 +105,7 @@ public class TutorWrapperPanel extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
 
         /** Turn on debugging CSS */
-        if (CmGwtUtils.getQueryParameter("debug") != null) {
+        if (CmCore.getQueryParameter("debug") != null) {
             addStyleName("debug-mode");
         }
 
@@ -410,7 +408,7 @@ public class TutorWrapperPanel extends Composite {
         boolean installCustomSteps = tutorCallback.installCustomSteps();
 
 
-        if(CmGwtUtils.getQueryParameterValue("debug_problem").equals("true")) {
+        if(CmCore.getQueryParameterValue("debug_problem").equals("true")) {
             tutorCallback.debugLogOut("Problem Debug", "Enabling problem debug");
             enableTutorDebugMode(true);
         }

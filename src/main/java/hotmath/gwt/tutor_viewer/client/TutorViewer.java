@@ -1,6 +1,6 @@
 package hotmath.gwt.tutor_viewer.client;
 
-import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -10,7 +10,6 @@ import hotmath.gwt.tutor_viewer.client.ui.GenerateTutorContextPanel;
 import hotmath.gwt.tutor_viewer.client.ui.ShowTutorContextPanel;
 import hotmath.gwt.tutor_viewer.client.ui.TutorViewerPanelSimple;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -42,8 +41,8 @@ import com.google.gwt.user.client.ui.RootPanel;
         
         UserInfo.setInstance(new UserInfo());
         
-        if(CmGwtUtils.getQueryParameter("generate_context_all") != null) {
-            String hm = CmGwtUtils.getQueryParameter("how_many");
+        if(CmCore.getQueryParameter("generate_context_all") != null) {
+            String hm = CmCore.getQueryParameter("how_many");
             if(hm == null) {
                 hm = "100";
             }
@@ -52,15 +51,15 @@ import com.google.gwt.user.client.ui.RootPanel;
             RootPanel.get().add(new GenerateTutorContextsAll(howMany).createContexts(null));
         }
         else {
-            String pid = CmGwtUtils.getQueryParameter("pid");
+            String pid = CmCore.getQueryParameter("pid");
             if(pid == null) {
                 Window.alert("pid parameter must be specified on the URL");
             }
             
-            if(CmGwtUtils.getQueryParameter("show_context") != null) {
+            if(CmCore.getQueryParameter("show_context") != null) {
                 RootPanel.get().add(new ShowTutorContextPanel().showAllContexts(pid));
             }
-            else if(CmGwtUtils.getQueryParameter("generate_context") != null) {
+            else if(CmCore.getQueryParameter("generate_context") != null) {
                 RootPanel.get().add(new GenerateTutorContextPanel().createContexts(pid));
             }
             else {

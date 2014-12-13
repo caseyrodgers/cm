@@ -1,5 +1,6 @@
 package hotmath.gwt.cm.client.ui;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.rpc.ResetUserPrescripionLessonAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -63,7 +64,7 @@ public class ResetLessonDialog extends GWindow {
                 CmBusyManager.setBusy(false);
                 
                 if(value.getDataAsString("status").equals("OK")) {
-                    CmShared.reloadUser();
+                    CmCore.reloadUser();
                 }
             }
         }.register();

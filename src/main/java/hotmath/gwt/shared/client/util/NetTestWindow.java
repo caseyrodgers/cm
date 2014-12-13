@@ -142,7 +142,7 @@ public class NetTestWindow extends GWindow {
     final double TEST_MULTIPLIER=10;
     public void runTests() {
         
-        String numNetTests = CmShared.getQueryParameter("net_test_count");
+        String numNetTests = CmCore.getQueryParameter("net_test_count");
         if(numNetTests != null) {
             _numTestsToRun = Integer.parseInt(numNetTests);
         }

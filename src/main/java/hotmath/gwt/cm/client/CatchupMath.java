@@ -60,9 +60,9 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.HasNativeEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.HasNativeEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.History;
@@ -148,14 +148,14 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
         _mainPortWrapper.setCenterWidget(_mainContainer, bdata);
 
         bdata = new BorderLayoutData(20);
-        if (CmCore.isDebug() == true || CmShared.getQueryParameter("debug_uid") != null) {
+        if (CmCore.isDebug() == true || CmCore.getQueryParameter("debug_uid") != null) {
             FooterPanel footer = new FooterPanel();
             _mainPortWrapper.setSouthWidget(footer, new BorderLayoutData(20));
         }
 
         
         /** Turn on debugging CSS */
-        if (CmGwtUtils.getQueryParameter("debug") != null) {
+        if (CmCore.getQueryParameter("debug") != null) {
         	_mainPortWrapper.addStyleName("debug-mode");
         }
         
@@ -172,10 +172,10 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
             }
         });
 
-        if(CmShared.getQueryParameterValue("test").equals("assignment")) {
+        if(CmCore.getQueryParameterValue("test").equals("assignment")) {
             showAssignment(1, null);
         }
-        else if(CmShared.getQueryParameterValue("test").equals("search")) {
+        else if(CmCore.getQueryParameterValue("test").equals("search")) {
             new LessonSearchWindow();
             return;
         }
@@ -239,7 +239,7 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
 
             CmDestination firstLocation = UserInfoDao.loadUserAndReturnFirstAction(jsonUserInfo);
 
-            if (CmShared.getQueryParameterValue("type").equals("su")) {
+            if (CmCore.getQueryParameterValue("type").equals("su")) {
                 UserInfo.getInstance().setUserAccountType(UserInfo.UserType.SINGLE_USER);
             }
             if (UserInfo.getInstance().isSingleUser())
@@ -269,10 +269,10 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
                     UserInfo.getInstance().setActiveUser(false);
                     showParallelProgramPasswordPanel();
                     return;
-                } else if (CmShared.getQueryParameterValue("type").equals("auto_test")) {
+                } else if (CmCore.getQueryParameterValue("type").equals("auto_test")) {
                     startNormalOperation();
-                } else if (CmShared.getQueryParameter("debug_info") != null) {
-                    setDebugOverrideInformation(CmShared.getQueryParameter("debug_info"));
+                } else if (CmCore.getQueryParameter("debug_info") != null) {
+                    setDebugOverrideInformation(CmCore.getQueryParameter("debug_info"));
                     startNormalOperation();
                 } else if (firstLocation.getPlace() == CmPlace.PRESCRIPTION || firstLocation.getPlace() == CmPlace.QUIZ) {
                     /**
@@ -383,7 +383,7 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
             }
         });
 
-        String ac = CmShared.getQueryParameterValue("type");
+        String ac = CmCore.getQueryParameterValue("type");
         if (ac.equals("auto_test_net")) {
             /** should we only run net test? */
             new NetTestWindow(TestApplication.CM_STUDENT, UserInfo.getInstance().getUid()).repeatTestEvery(10000);

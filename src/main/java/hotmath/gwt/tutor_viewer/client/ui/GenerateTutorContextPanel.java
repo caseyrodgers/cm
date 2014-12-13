@@ -1,6 +1,6 @@
 package hotmath.gwt.tutor_viewer.client.ui;
 
-import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
@@ -27,7 +27,7 @@ public class GenerateTutorContextPanel extends Composite {
     final static String DEFAULT_CONFIG = "{\"limit\":10}";
     public String _jsonConfig;
     public GenerateTutorContextPanel() {
-        _jsonConfig = CmGwtUtils.getQueryParameter("config");
+        _jsonConfig = CmCore.getQueryParameter("config");
         if(_jsonConfig == null) {
             _jsonConfig = DEFAULT_CONFIG;
         }

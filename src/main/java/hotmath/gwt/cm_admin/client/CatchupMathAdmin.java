@@ -68,7 +68,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
 
         
-//        String launchSub = CmShared.getQueryParameter("load");
+//        String launchSub = CmCore.getQueryParameter("load");
 //        if(launchSub != null) {
 //            if(launchSub.startsWith("student_details")) {
 //                

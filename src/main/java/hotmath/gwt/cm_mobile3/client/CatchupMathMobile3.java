@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_mobile3.client;
 
-import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.award.CmAwardPanel;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
@@ -186,7 +186,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
             History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
 
-            String suid = CmGwtUtils.getQueryParameter("uid");
+            String suid = CmCore.getQueryParameter("uid");
             if (suid != null) {
                 _uid = Integer.parseInt(suid);
                 SharedData.saveUidToLocalStorage(_uid);
@@ -239,7 +239,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
     private boolean loadFirstPanelMaybe(int uid) {
         boolean handled=false;
         try {
-            String type = CmGwtUtils.getQueryParameter("type");
+            String type = CmCore.getQueryParameter("type");
             if(type == null) {
                 type = "";
             }

@@ -1,6 +1,6 @@
 package hotmath.gwt.assignment_print.client;
 
-import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
         
         int aid=0;
         try {
-        	aid=Integer.parseInt(CmGwtUtils.getQueryParameter("aid"));
+        	aid=Integer.parseInt(CmCore.getQueryParameter("aid"));
         }
         catch(Exception e) {
         	Window.alert("You need to specify the assignment id (aid=X)");

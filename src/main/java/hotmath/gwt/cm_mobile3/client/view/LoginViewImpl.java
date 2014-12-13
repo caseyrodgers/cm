@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
-import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_mobile3.client.activity.LoginActivity.UserInfo;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
@@ -90,7 +90,7 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
         if(userInfo != null) {
             usernameBox.setText(userInfo.getUser());
             
-            if(CmGwtUtils.getQueryParameter("debug") == null) {
+            if(CmCore.getQueryParameter("debug") == null) {
                 passwordBox.setText("");
             }
             else {

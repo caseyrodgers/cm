@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
@@ -22,15 +22,12 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -234,7 +231,7 @@ public class SearchPanel extends BorderLayoutContainer {
     
     
     private void searchForMatches() {
-        if(CmShared.isDebug()) {
+        if(CmCore.isDebug()) {
             Info.display("Searching", "Searching for matches ..");
         }
         showSearchMessage("");

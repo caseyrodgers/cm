@@ -6,25 +6,32 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_mobile_shared.server.rpc.GetCmMobileLoginCommand;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc_core.client.CmUserException;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
+import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramComposite;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
+import hotmath.testset.ha.info.CmLessonDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -697,6 +704,45 @@ public class HaUserFactory {
 		}
 		return serviceMap;
 	}
+	
+	
+
+	/** Create an anonymous user, which is only used
+	 *  for a single lesson.
+	 * @param exploreTopic 
+	 *  
+	 * @return
+	 */
+    public static HaUser createAnonymousUser(String exploreTopic) throws Exception {
+        int ANON_AID = 2; 
+        
+        HaUser user = HaUser.createUser(ANON_AID, "anonymous user", "anonymous_" + System.currentTimeMillis(), "Custom", null);
+        user.setExpireDate(new Date(System.currentTimeMillis() + (1000 * 60 * 60)));
+        
+        Connection conn=null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            
+            CmStudentDao dao = CmStudentDao.getInstance();
+            StudentModelI sm = dao.getStudentModel(conn, user.getUid());
+            
+            /** create Custom Program, with this one lesson as */
+            String progName = "anonymous_" + exploreTopic;
+            List<CustomLessonModel> lessons = new ArrayList<CustomLessonModel>();
+            lessons.add(new CustomLessonModel(CmLessonDao.getInstance().getTopicLessonTitle(exploreTopic), exploreTopic, null));
+            CustomProgramModel customProg = CmCustomProgramDao.getInstance().getAnonymousCustomProgram(conn,  ANON_AID, progName, lessons);
+            StudentUserProgramModel program = new StudentUserProgramModel();
+            program.setTestDef( HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()));
+            program.setCustomProgramId(customProg.getProgramId());
+            
+            dao.assignProgramToStudent(conn, user.getUid(), program);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,  null,  conn);
+        }
+        return user;
+    }
+    
 
 	/**
 	 *
@@ -752,4 +798,5 @@ public class HaUserFactory {
 			e.printStackTrace();
 		}
 	}
+
 }

@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.util;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
@@ -40,8 +41,8 @@ public class UserInfoDao {
                 UserInfo.setInstance(user);
                 
                 // if run_id passed in, then allow user to view_only
-                if(CmShared.getQueryParameter("run_id") != null) {
-                    int runId = Integer.parseInt(CmShared.getQueryParameter("run_id"));
+                if(CmCore.getQueryParameter("run_id") != null) {
+                    int runId = Integer.parseInt(CmCore.getQueryParameter("run_id"));
                     // setup user to masquerade as real user
                     user.setRunId(runId);
                     user.setActiveUser(false);

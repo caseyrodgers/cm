@@ -57,7 +57,7 @@ public class AssignmentData {
     private AssignmentData(CallbackWhenDataReady callBack) {
         this.callBack = callBack;
         try {
-            _uid = SharedData.getMobileUser().getUserId();   // Integer.parseInt(CmGwtUtils.getQueryParameter("uid"));
+            _uid = SharedData.getMobileUser().getUserId();   // Integer.parseInt(CmCore.getQueryParameter("uid"));
             Log.info("uid: " + _uid);
             readUserAssignmentData(_uid);
         }

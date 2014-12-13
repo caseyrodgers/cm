@@ -43,24 +43,31 @@ public class GetTopicPrescriptionCommand implements ActionHandler<GetTopicPrescr
     @Override
     public PrescriptionSessionResponse execute(final Connection conn, GetTopicPrescriptionAction action) throws Exception {
 
-        PrescriptionSessionResponse res = (PrescriptionSessionResponse)CmCacheManager.getInstance().retrieveFromCache(CacheName.TOPIC_SEARCH_PRESCRIPTION, action.getTopicFile());
-        if(res != null) {
-            return res;
+        int userIdToUse=0;
+        PrescriptionSessionResponse res=null;
+        if(action.getUid() == 0) {
+            res = (PrescriptionSessionResponse)CmCacheManager.getInstance().retrieveFromCache(CacheName.TOPIC_SEARCH_PRESCRIPTION, action.getTopicFile());
+            if(res != null) {
+                return res;
+            }
+            
+            userIdToUse = CatchupMathProperties.getInstance().getProblemAsInt("topic_search_shared_user",737521 ); // 24412);
         }
-        
-        int userSharedUser = CatchupMathProperties.getInstance().getProblemAsInt("topic_search_shared_user",737521 ); // 24412);
+        else {
+            userIdToUse = action.getUid();
+        }
         
         String lesson = action.getTopicFile();
         if(!lesson.endsWith(".html")) {
             lesson = CmLessonDao.getInstance().lookupLessonFileFromName(conn, lesson);
         }
 
-        HaTest custTest = HaTestDao.getInstance().createTest(userSharedUser,HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()), HaTestDao.EMPTY_TEST);
+        HaTest custTest = HaTestDao.getInstance().createTest(userIdToUse,HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()), HaTestDao.EMPTY_TEST);
         StudentUserProgramModel userProgram = new StudentUserProgramModel();
         custTest.setProgramInfo(userProgram);
         
         int numQuestions =  custTest.getNumTestQuestions();
-        HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn, userSharedUser, custTest.getTestId(), numQuestions, 0, 0);
+        HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn, userIdToUse, custTest.getTestId(), numQuestions, 0, 0);
         testRun.setHaTest(custTest);
         
         List<CustomLessonModel> lessonModels = new ArrayList<CustomLessonModel>();

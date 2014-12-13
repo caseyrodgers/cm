@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client;
 
 
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_tools.client.search.LessonSearchWindow;
 import hotmath.gwt.cm_tools.client.teacher.AddFolderDialog;
 import hotmath.gwt.cm_tools.client.ui.DateRangePickerDialog;
@@ -16,7 +17,6 @@ import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplActivity;
 import hotmath.gwt.cm_tools.client.util.CreateTemplateFromClipboardImage;
 import hotmath.gwt.cm_tools.client.util.WhiteboardTemplatesManager;
-import hotmath.gwt.shared.client.CmShared;
 
 
 /** Run test identified by test URL param 
@@ -32,7 +32,7 @@ public class CatchupMathSharedTests {
 	 * @return
 	 */
     public static boolean runTest() {
-        String test = CmShared.getQueryParameterValue("test");
+        String test = CmCore.getQueryParameterValue("test");
         
         if(test.equals("TopicExplorerWindow")) {
             TopicExplorerWindow.startTest();
