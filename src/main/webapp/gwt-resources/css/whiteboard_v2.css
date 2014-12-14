@@ -408,3 +408,8 @@
     resize:none;
     overflow:hidden;	
 }
+
+
+button[name=button_temp] {
+	display: none;
+}
