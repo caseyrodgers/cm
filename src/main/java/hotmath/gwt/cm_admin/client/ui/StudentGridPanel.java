@@ -442,13 +442,12 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         customButton.setMenu(customMenu);
         toolbar.add(customButton);
 
-        TextButton lessonsButton = new TextButton("Lessons");
-        Menu lessonsMenu = new Menu();
-        lessonsMenu.add(createExploreLessonsButton());
-        lessonsMenu.add(createProgramDetailsButton());
-                
-        lessonsButton.setMenu(lessonsMenu);
-        toolbar.add(lessonsButton);
+//        TextButton lessonsButton = new TextButton("Lessons");
+//        Menu lessonsMenu = new Menu();
+//        lessonsMenu.add(createExploreLessonsButton());
+//        lessonsMenu.add(createProgramDetailsButton());
+//        lessonsButton.setMenu(lessonsMenu);
+//        toolbar.add(lessonsButton);
         toolbar.add(new TextButton("Program Details", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
