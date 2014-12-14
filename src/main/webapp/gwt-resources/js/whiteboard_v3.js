@@ -206,14 +206,13 @@ var Whiteboard = function (cont, isStatic, _opts) {
         title: 'Navigator',
         classes: 'big_tool_button button_nav',
         text: ""
-    }
+    }*/
         , {
             name: 'button_temp',
             title: 'Figures',
             classes: 'big_tool_button button_temp',
             text: "Figure"
         }
-        */
     ];
 
     function getNextObjectID() {

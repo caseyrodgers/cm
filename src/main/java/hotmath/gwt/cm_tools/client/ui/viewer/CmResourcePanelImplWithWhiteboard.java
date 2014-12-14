@@ -335,8 +335,9 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
         	_callback.ensureOptimizedResource();
         }
         else {
-            
-            _callback.ensureMaximizeResource();
+            if(_callback != null) {
+                _callback.ensureMaximizeResource();
+            }
 
             if(_showWorkBtn != null)
                 _showWorkBtn.setText("Hide Whiteboard");
@@ -392,7 +393,9 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             borderLayoutContainer.setEastWidget(_showWorkPanel, bld);
             add(borderLayoutContainer);
             
-            _callback.ensureMaximizeResource();
+            if(_callback != null) {
+                _callback.ensureMaximizeResource();
+            }
         }
         
 
