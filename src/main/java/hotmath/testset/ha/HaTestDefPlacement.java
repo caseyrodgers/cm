@@ -222,7 +222,7 @@ public class HaTestDefPlacement extends HaTestDef {
                 }
             }
             else if(thisTest.indexOf("elementary") > -1) {
-                if(correct < 9) {   
+                if(correct < 10) {   
                     program = CmProgram.ELEMALG;
                 }
                 else {

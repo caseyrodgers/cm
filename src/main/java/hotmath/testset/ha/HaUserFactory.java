@@ -17,6 +17,7 @@ import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramComposite;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.util.CmException;
@@ -731,11 +732,12 @@ public class HaUserFactory {
             List<CustomLessonModel> lessons = new ArrayList<CustomLessonModel>();
             lessons.add(new CustomLessonModel(CmLessonDao.getInstance().getTopicLessonTitle(exploreTopic), exploreTopic, null));
             CustomProgramModel customProg = CmCustomProgramDao.getInstance().getAnonymousCustomProgram(conn,  ANON_AID, progName, lessons);
-            StudentUserProgramModel program = new StudentUserProgramModel();
-            program.setTestDef( HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()));
-            program.setCustomProgramId(customProg.getProgramId());
             
-            dao.assignProgramToStudent(conn, user.getUid(), program);
+            StudentProgramModel program = sm.getProgram();
+            program.setCustom(new CustomProgramComposite(customProg.getProgramId(), customProg.getProgramName(),0,null));
+            program.setProgramType(CmProgramType.CUSTOM);
+            
+            dao.assignProgramToStudent(conn, user.getUid(), program,null,null);
         }
         finally {
             SqlUtilities.releaseResources(null,  null,  conn);

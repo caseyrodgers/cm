@@ -842,6 +842,8 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
     public CustomProgramModel createNewCustomProgram(final Connection conn, Integer adminId, String name,
             List<CustomLessonModel> lessons) throws Exception {
         PreparedStatement stmt = null;
+        
+        logger.debug("Creating new anonymous Custom Program");
 
         makeSureNameIsValid(conn, name);
 
