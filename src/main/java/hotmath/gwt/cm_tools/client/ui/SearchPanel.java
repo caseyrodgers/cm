@@ -18,8 +18,6 @@ import hotmath.gwt.shared.client.CmShared;
 import java.util.ArrayList;
 import java.util.List;
 
-import jodd.servlet.tag.UnsetTag;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
@@ -97,6 +95,13 @@ public class SearchPanel extends BorderLayoutContainer {
         }), new BorderLayoutData(30));
         
         _westPanel = new ContentPanel();
+        _westPanel.setHeadingHtml("Click Explore see all lesson resources");
+        _westPanel.addTool(new TextButton("Explore", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                exploreSelectedTopic();
+            }
+        }));
         _westPanel.setWidget(blcI);
         _westPanel.setEnabled(false);
         

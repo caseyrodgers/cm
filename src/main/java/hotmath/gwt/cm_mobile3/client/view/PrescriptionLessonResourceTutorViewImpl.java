@@ -12,6 +12,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewEvent
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar.Callback;
+import hotmath.gwt.cm_mobile_shared.client.view.TutorCallbackMobileDefault;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
@@ -24,7 +25,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
-import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 
 import java.util.List;
@@ -54,7 +54,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 
     
 	public PrescriptionLessonResourceTutorViewImpl() {
-	    tutorPanel = new TutorWrapperPanel(true,true,true,true,new TutorCallbackDefault(){
+	    tutorPanel = new TutorWrapperPanel(true,true,true,true,new TutorCallbackMobileDefault(){
 	        @Override
 	        public void solutionHasBeenViewed(String value) {
 	            presenter.markSolutionAsComplete();

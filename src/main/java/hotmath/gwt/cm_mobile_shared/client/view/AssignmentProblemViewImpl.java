@@ -169,7 +169,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
         _lessons = problem.getLessons();
         
-        tutor = new TutorWrapperPanel(true, true, false, false, new TutorCallbackDefault() {
+        tutor = new TutorWrapperPanel(true, true, false, false, new TutorCallbackMobileDefault() {
 
             @Override
             public void solutionHasBeenViewed(String value) {
