@@ -18,6 +18,8 @@ import hotmath.gwt.shared.client.CmShared;
 import java.util.ArrayList;
 import java.util.List;
 
+import jodd.servlet.tag.UnsetTag;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
@@ -42,6 +44,8 @@ import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
@@ -75,6 +79,11 @@ public class SearchPanel extends BorderLayoutContainer {
     Grid<TopicMatch> _grid;
     private ContentPanel _westPanel;
     private BorderLayoutContainer _centerPanel;
+    CenterLayoutContainer _centerPanelEmpty;
+
+    private BorderLayoutData _centerData;
+
+    private BorderLayoutData _westData;
     public SearchPanel() {
         setNorthWidget(createHeader(), new BorderLayoutData(60));
         
@@ -87,27 +96,34 @@ public class SearchPanel extends BorderLayoutContainer {
             }
         }), new BorderLayoutData(30));
         
-        
-        BorderLayoutData eastData = new BorderLayoutData(350);
-        eastData.setSplit(true);
-        eastData.setCollapsible(true);
-        
         _westPanel = new ContentPanel();
         _westPanel.setWidget(blcI);
         _westPanel.setEnabled(false);
         
-        setWestWidget(_westPanel, eastData);
+        _westData = new BorderLayoutData(350);
+        _westData.setSplit(true);
+        _westData.setCollapsible(true);
         
-        BorderLayoutData centerData = new BorderLayoutData();
-        centerData.setSplit(true);
+        _centerData = new BorderLayoutData();
+        _centerData.setSplit(true);
         //centerData.setCollapsible(true);
+        
+        _centerPanelEmpty = new CenterLayoutContainer();
+        FlowLayoutContainer flow = new FlowLayoutContainer();
+        flow.setPixelSize(320,  50);
+        String html = "<p style='padding: 5px;color: #666;'>" +
+                      "Enter just a few letters of the lesson " +
+                      "you are searching for in the textbox above.  Once your lesson is found you can 'explore' its resources." +
+                      "</p>";
+        flow.add(new HTML(html));
+        _centerPanelEmpty.setWidget(flow);
+
         
         _centerPanel = new BorderLayoutContainer();
         _centerPanel.setCenterWidget(_reviewPanel);
         _centerPanel.setSouthWidget(new HTML("<div style='text-align: center;margin-top: 5px;font-size: .9em;font-style: italic'>Press Explore Lesson to see all the lesson resources</div>"), new BorderLayoutData(30));
         
-        _centerPanel.setEnabled(false);
-        setCenterWidget(_centerPanel, centerData);
+        enableMainArea(false);
     }
     
     interface Props extends PropertyAccess<TopicMatch> {
@@ -288,8 +304,19 @@ public class SearchPanel extends BorderLayoutContainer {
     }
 
     protected void enableMainArea(boolean b) {
-        _centerPanel.setEnabled(b);
-        _westPanel.setEnabled(b);
+        if(!b) {
+            remove(_westPanel);
+            setCenterWidget(_centerPanelEmpty);
+        }
+        else {
+            _centerPanel.setEnabled(true);
+            _westPanel.setEnabled(true);
+            
+            setWestWidget(_westPanel, _westData);
+            setCenterWidget(_centerPanel, _centerData);
+        }
+        
+        forceLayout();
     }
 
     static public void startTest() {
