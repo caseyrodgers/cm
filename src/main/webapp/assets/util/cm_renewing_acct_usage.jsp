@@ -1,0 +1,134 @@
+<%@ page import="hotmath.util.*" %>
+<%@ page import="hotmath.util.sql.SqlUtilities" %>
+<%@ page import="hotmath.cm.util.CmMultiLinePropertyReader" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.sql.Connection" %>
+<%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="java.sql.Statement" %>
+<%@ page import="java.sql.ResultSet" %>
+
+<%
+    Connection conn = null;
+    ResultSet rs = null;
+    PreparedStatement ps = null;
+    Statement stmt = null;
+    
+    String errMsg = null;
+    
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+
+    String today = sdf.format(new java.util.Date());
+
+	String header =
+        String.format("%-10s\t%-11s\t%-11s\t%-8s\t%-8s\t%-8s\t%-9s\n\n", 
+        		"Subscriber ID", "Create Date", "Expire Date", "Prof RPP", "Chap RPP", "Exit RPP", "Total RPP");
+
+	StringBuilder sb = new StringBuilder();
+	int profTotal = 0;
+	int chapTotal = 0;
+	int exitTotal = 0;
+	int rppTotal  = 0;
+
+    try {
+    	conn = HMConnectionPool.getConnection();
+
+    	String sql = "select a.subscriber_id, ss.date_created, ss.date_expire, ifnull(p.prof_rpp_count, 0) as prof_rpp_count, ifnull(c.chap_rpp_count,0) as chap_rpp_count, " +
+    	             "ifnull(e.exit_rpp_count,0) as exit_rpp_count, prof_rpp_count+chap_rpp_count+exit_rpp_count as total_rpp_count " +
+    			     "from v_cm_renewed_admin a " +
+    			     "join SUBSCRIBERS_SERVICES ss on a.subscriber_id = ss.subscriber_id " +
+    			     "left outer join ( " +
+    			     "    select a.admin_id, 'PROF' as program, count(*) as prof_rpp_count " +
+    			     "    from v_cm_renewed_admin a " +
+    			     "    join HA_USER us on us.admin_id = a.admin_id " +
+    			     "    join HA_TEST_DEF d on prog_id = 'PROF' " +
+    			     "    join HA_TEST t on t.user_id = us.uid and t.test_def_id = d.test_def_id " +
+    			     "    join HA_TEST_RUN r on r.test_id = t.test_id " +
+    			     "    join HA_TEST_RUN_INMH_USE u on u.run_id = r.run_id and u.item_type='practice' " +
+    			     "    group by us.admin_id " +
+    			     ") p on p.admin_id = a.admin_id " +
+    			     "left outer join ( " +
+    			     "    select us.admin_id, 'CHAP' as program, count(*) as chap_rpp_count " +
+    			     "    from HA_TEST_DEF d " +
+    			     "    join HA_TEST t on t.test_def_id = d.test_def_id " +
+    			     "    join HA_TEST_RUN r on r.test_id = t.test_id " +
+    			     "    join HA_TEST_RUN_INMH_USE u on u.run_id = r.run_id and u.item_type='practice' " +
+    			     "    join v_cm_renewed_admin a " +
+    			     "    join HA_USER us on us.admin_id = a.admin_id and us.uid = t.user_id " +
+    			     "    where d.prog_id = 'CHAP' " +
+    			     "    group by us.admin_id " +
+    			     ") c on c.admin_id = a.admin_id " +
+    	    		 "left outer join ( " +
+    	    		 "    select us.admin_id, 'EXIT' as program, count(*) as exit_rpp_count " +
+    	    		 "    from HA_TEST_DEF d " +
+    	    		 "    join HA_TEST t on t.test_def_id = d.test_def_id " +
+    	    		 "    join HA_TEST_RUN r on r.test_id = t.test_id " +
+    	    		 "    join HA_TEST_RUN_INMH_USE u on u.run_id = r.run_id and u.item_type='practice' " +
+    	    		 "    join v_cm_renewed_admin a " +
+    	    	     "    join HA_USER us on us.admin_id = a.admin_id and us.uid = t.user_id " +
+    	    		 "    where d.prog_id like '%EXIT%' " +
+    	    		 "    group by us.admin_id " +
+    	    		 ") e on c.admin_id = a.admin_id " +
+    			     "where ss.service_name = 'catchup'" +
+    	    		 " order by a.subscriber_id";
+    	
+    	stmt = conn.createStatement();
+
+		rs = stmt.executeQuery(sql);
+		 
+		while (rs.next()) {
+			/*
+			 * select a.subscriber_id, ss.date_created, ss.date_expire, ifnull(p.prof_rpp_count, 0) as prof_rpp_count, ifnull(c.chap_rpp_count,0) as chap_rpp_count, " +
+             "ifnull(c.exit_rpp_count,0) as exit_rpp_count, prof_rpp_count+chap_rpp_count+exit+rpp_count as total_rpp_count 
+			*/
+			String subscriberId = rs.getString("subscriber_id");
+			java.sql.Date d = rs.getDate("date_created");
+			java.util.Date date = new java.util.Date(d.getTime());
+			String createDateStr = sdf.format(date);
+			d = rs.getDate("date_expire");
+			date = new java.util.Date(d.getTime());
+			String expireDateStr = sdf.format(date);
+			profTotal += rs.getInt("prof_rpp_count");
+			chapTotal += rs.getInt("chap_rpp_count");
+			exitTotal += rs.getInt("exit_rpp_count");
+			rppTotal += rs.getInt("total_rpp_count");
+
+			sb.append(
+            String.format("%-10s\t%-11s\t%-11s\t%8d\t%8d\t%8d\t%9d\n", 
+            		subscriberId, createDateStr, expireDateStr, rs.getInt("prof_rpp_count"), rs.getInt("chap_rpp_count"),
+            		rs.getInt("exit_rpp_count"), rs.getInt("total_rpp_count")));
+		}
+    }
+    catch (Exception e){
+    	errMsg = e.getMessage();
+    }
+    finally {
+    	SqlUtilities.releaseResources(rs, null, conn);
+    }
+%>
+
+<html>
+  <body>
+    <h2>
+      CM Renewing Account Usage
+    </h2>
+    <pre>
+ Date: <%= today %>
+
+    <%
+    if (errMsg != null) {
+    %>
+ Error message: <%= errMsg %>
+    <%
+    }
+    else { %>
+ <%=header.toString() %>
+ <%=sb.toString() %>
+ <% }
+    sb = new StringBuilder();
+    sb.append(String.format("\n\t\t\t\tTotals:\t\t%8d\t%8d\t%8d\t%9d\n", 
+    		profTotal, chapTotal, exitTotal, rppTotal));
+ %>
+ <%=sb.toString() %>
+    </pre>
+  </body>
+</html>
