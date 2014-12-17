@@ -49,291 +49,270 @@ import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 public class HeaderPanel extends FlowLayoutContainer {
 
-	static public HeaderPanel __instance;
+    static public HeaderPanel __instance;
 
-	Label _headerText;
-	HTML _helloInfo = new HTML();
-	private MyIconButton helpButton;
-	StudentAssignmentButton _assignmentsAnchor;
+    Label _headerText;
+    HTML _helloInfo = new HTML();
+    private MyIconButton helpButton;
+    StudentAssignmentButton _assignmentsAnchor;
 
-	private CmAwardPanel _awards;
+    private CmAwardPanel _awards;
 
-	public static void showRppDetails(boolean showRppDetails) {
-		if (__instance != null) {
-			__instance.setLoginInfo(showRppDetails);
-		}
-	}
+    public static void showRppDetails(boolean showRppDetails) {
+        if (__instance != null) {
+            __instance.setLoginInfo(showRppDetails);
+        }
+    }
 
-	public HeaderPanel() {
-		__instance = this;
-		setStyleName("header-panel");
-		_helloInfo.setStyleName("hello-info");
-		_helloInfo.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				new ShowUserProgramStatusDialog();
-			}
-		});
+    public HeaderPanel() {
+        __instance = this;
+        setStyleName("header-panel");
+        _helloInfo.setStyleName("hello-info");
+        _helloInfo.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                new ShowUserProgramStatusDialog();
+            }
+        });
 
-		final SimpleContainer awardTip = new SimpleContainer(); 
-		awardTip.setToolTip("Shows your awards for the current session");
-		_awards = new CmAwardPanel(new AwardCallback() {
-			public void awardPosted(int totalAwards) {
-				String tip = null;
-				if(totalAwards == 1) {
-					tip = "You've solved 1 problem correctly on the first attempt so far this session.";
-				}
-				else {
-					tip = "You've solved " + totalAwards + " problems correctly on the first attempt so far this session.";
-				}
+        final SimpleContainer awardTip = new SimpleContainer();
+        awardTip.setToolTip("Shows your awards for the current session");
+        _awards = new CmAwardPanel(new AwardCallback() {
+            public void awardPosted(int totalAwards) {
+                String tip = null;
+                if (totalAwards == 1) {
+                    tip = "You've solved 1 problem correctly on the first attempt so far this session.";
+                } else {
+                    tip = "You've solved " + totalAwards
+                            + " problems correctly on the first attempt so far this session.";
+                }
 
-				awardTip.setToolTip(tip);
-			}
-		});
-		awardTip.setWidget(_awards);
+                awardTip.setToolTip(tip);
+            }
+        });
+        awardTip.setWidget(_awards);
 
-		add(awardTip);
-		add(_helloInfo);
-		helpButton = new MyIconButton("header-panel-help-btn");
-		helpButton.addSelectHandler(new SelectHandler() {
-			@Override
-			public void onSelect(SelectEvent event) {
+        add(awardTip);
+        add(_helloInfo);
+        helpButton = new MyIconButton("header-panel-help-btn");
+        helpButton.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
 
-				Event currentEvent = helpButton.getCurrentEvent();
-				if (currentEvent != null && currentEvent.getCtrlKey()) {
-					new ShowDebugUrlWindow();
-				} else {
-					GWT.runAsync(new CmRunAsyncCallback() {
-						@Override
-						public void onSuccess() {
-							new HelpWindow();
-						}
-					});
-				}
-			}
-		});
-		add(helpButton);
+                Event currentEvent = helpButton.getCurrentEvent();
+                if (currentEvent != null && currentEvent.getCtrlKey()) {
+                    new ShowDebugUrlWindow();
+                } else {
+                    GWT.runAsync(new CmRunAsyncCallback() {
+                        @Override
+                        public void onSuccess() {
+                            new HelpWindow();
+                        }
+                    });
+                }
+            }
+        });
+        add(helpButton);
 
-		_headerText = new Label();
-		_headerText.addStyleName("header-panel-title");
-		// add(_headerText);
+        _headerText = new Label();
+        _headerText.addStyleName("header-panel-title");
+        // add(_headerText);
 
-		EventBus.getInstance().addEventListener(
-				new CmEventListenerImplDefault() {
-					public void handleEvent(final CmEvent event) {
-						switch (event.getEventType()) {
-						case EVENT_TYPE_USERCHANGED:
-							setLoginInfo();
-							break;
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+            public void handleEvent(final CmEvent event) {
+                switch (event.getEventType()) {
+                case EVENT_TYPE_USERCHANGED:
+                    setLoginInfo();
+                    break;
 
-						case EVENT_TYPE_CONTEXTCHANGED:
-							CmContext context = (CmContext) event
-									.getEventData();
-							boolean tr = CmMainPanel.getActiveInstance() == null;
-							if (CmMainPanel.getActiveInstance() != null) {
-								/**
-								 * note we set a default heading, no matter what
-								 * the test type
-								 */
-								CmMainPanel.getActiveInstance().setContextSubTitle(context.getContextSubTitle());
-							}
-							break;
-						case EVENT_TYPE_TOPIC_CHANGED:
-							/**
-							 * Only show modal popup if not in auto test mode
-							 * 
-							 */
-							if (CmCore.isDebug() == true
-									|| UserInfo.getInstance().isAutoTestMode()
-									|| CmHistoryQueue.getInstance()
-											.isInitializingToNonStandard())
-								InfoPopupBox.display(new CmInfoConfig(
-										"Current Topic", "Current topic is: "
-												+ event.getEventData()));
-							else {
-								// new ContextChangeMessage((String)
-								// event.getEventData());
-							}
-							break;
+                case EVENT_TYPE_CONTEXTCHANGED:
+                    CmContext context = (CmContext) event.getEventData();
+                    boolean tr = CmMainPanel.getActiveInstance() == null;
+                    if (CmMainPanel.getActiveInstance() != null) {
+                        /**
+                         * note we set a default heading, no matter what the
+                         * test type
+                         */
+                        CmMainPanel.getActiveInstance().setContextSubTitle(context.getContextSubTitle());
+                    }
+                    break;
+                case EVENT_TYPE_TOPIC_CHANGED:
+                    /**
+                     * Only show modal popup if not in auto test mode
+                     * 
+                     */
+                    if (CmCore.isDebug() == true || UserInfo.getInstance().isAutoTestMode()
+                            || CmHistoryQueue.getInstance().isInitializingToNonStandard())
+                        InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: "
+                                + event.getEventData()));
+                    else {
+                        // new ContextChangeMessage((String)
+                        // event.getEventData());
+                    }
+                    break;
 
-						case EVENT_TYPE_USER_LOGIN:
-							/**
-							 * done after login to allow parter info to be set
-							 * first
-							 */
-							addLogoutButton();
-							break;
+                case EVENT_TYPE_USER_LOGIN:
+                    /**
+                     * done after login to allow parter info to be set first
+                     */
+                    addLogoutButton();
+                    break;
 
-						case EVENT_TYPE_LOGOUT:
-							setLogout();
-							break;
-						}
+                case EVENT_TYPE_LOGOUT:
+                    setLogout();
+                    break;
+                }
 
-					}
-				});
-	}
+            }
+        });
+    }
 
-	public void enable() {
-		// no op
-	}
+    public void enable() {
+        // no op
+    }
 
-	protected void updateUserTutorStats(UserTutorWidgetStats userStats) {
-		UserInfo.getInstance().setTutorInputWidgetStats(userStats);
-		setLoginInfo();
-	}
+    protected void updateUserTutorStats(UserTutorWidgetStats userStats) {
+        UserInfo.getInstance().setTutorInputWidgetStats(userStats);
+        setLoginInfo();
+    }
 
-	private void updateAssignmentMessage(AssignmentUserInfo assInfo) {
-		if (assInfo.isAdminUsingAssignments()) {
-			if (_assignmentsAnchor == null) {
-				_assignmentsAnchor = new StudentAssignmentButton();
+    private void updateAssignmentMessage(AssignmentUserInfo assInfo) {
+        if (assInfo.isAdminUsingAssignments()) {
+            if (_assignmentsAnchor == null) {
+                _assignmentsAnchor = new StudentAssignmentButton();
 
-				/**
-				 * Assignments not available for retail accounts
-				 * 
-				 */
-				add(_assignmentsAnchor);
-			}
-			if (_assignmentsAnchor != null) {
-				_assignmentsAnchor.setState(UserInfo.getInstance()
-						.getAssignmentMetaInfo());
-			}
-		}
-	}
+                /**
+                 * Assignments not available for retail accounts
+                 * 
+                 */
+                add(_assignmentsAnchor);
+            }
+            if (_assignmentsAnchor != null) {
+                _assignmentsAnchor.setState(UserInfo.getInstance().getAssignmentMetaInfo());
+            }
+        }
+    }
 
-	/**
-	 * TODO: how to share this between student and admin
-	 * 
-	 */
-	IconButton logoutButton;
+    /**
+     * TODO: how to share this between student and admin
+     * 
+     */
+    IconButton logoutButton;
 
-	private void addLogoutButton() {
-		final CmPartner partner = UserInfoBase.getInstance().getPartner();
-		String logoClass = null;
-		if (partner != null) {
-			logoClass = "header-panel-logout-btn_cm-partner-" + partner.key;
-		} else {
-			logoClass = "header-panel-logout-btn";
-		}
+    private void addLogoutButton() {
+        final CmPartner partner = UserInfoBase.getInstance().getPartner();
+        String logoClass = null;
+        if (partner != null) {
+            logoClass = "header-panel-logout-btn_cm-partner-" + partner.key;
+        } else {
+            logoClass = "header-panel-logout-btn";
+        }
 
-		logoutButton = new IconButton(logoClass);
-		logoutButton.addSelectHandler(new SelectHandler() {
-			@Override
-			public void onSelect(SelectEvent event) {
-				SystemSyncChecker.checkForUpdate(false,
-						new CallbackOnComplete() {
-							@Override
-							public void isComplete() {
-								if (partner != null) {
-									CmLogger.info("Doing custom thing: "
-											+ partner.onCloseLink);
-									try {
-										Window.Location
-												.assign(partner.onCloseLink);
-									} catch (Exception e) {
-										CatchupMathTools
-												.showAlert("Error returning to our partner page: "
-														+ e.getMessage());
-									}
-								} else {
-									Window.Location
-											.assign(CmShared.CM_HOME_URL);
-								}
-							}
-						});
-			}
-		});
+        logoutButton = new IconButton(logoClass);
+        logoutButton.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                SystemSyncChecker.checkForUpdate(false, new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        if (partner != null) {
+                            CmLogger.info("Doing custom thing: " + partner.onCloseLink);
+                            try {
+                                Window.Location.assign(partner.onCloseLink);
+                            } catch (Exception e) {
+                                CatchupMathTools.showAlert("Error returning to our partner page: " + e.getMessage());
+                            }
+                        } else {
+                            Window.Location.assign(CmShared.CM_HOME_URL);
+                        }
+                    }
+                });
+            }
+        });
 
-		add(logoutButton);
-	}
+        add(logoutButton);
+    }
 
-	private void setLogout() {
-		if (logoutButton != null) {
-			remove(logoutButton);
-			logoutButton = null;
-		}
+    private void setLogout() {
+        if (logoutButton != null) {
+            remove(logoutButton);
+            logoutButton = null;
+        }
 
-		if (helpButton != null) {
-			remove(helpButton);
-			helpButton = null;
-		}
-	}
+        if (helpButton != null) {
+            remove(helpButton);
+            helpButton = null;
+        }
+    }
 
-	public void setLoginInfo(boolean showRppDetails) {
-		UserInfo user = UserInfo.getInstance();
-		int viewCount = UserInfo.getInstance().getViewCount();
-		if (user != null) {
-			String nameCap = user.getUserName();
-			if (nameCap == null)
-				return;
+    public void setLoginInfo(boolean showRppDetails) {
+        UserInfo user = UserInfo.getInstance();
+        int viewCount = UserInfo.getInstance().getViewCount();
+        if (user != null) {
+            String nameCap = user.getUserName();
+            if (nameCap == null)
+                return;
 
-			/**
-			 * Check for demo user and normalize the display name
-			 * 
-			 */
-			if (nameCap.startsWith("Student: "))
-				nameCap = "Student";
+            /**
+             * Check for demo user and normalize the display name
+             * 
+             */
+            if (nameCap.startsWith("Student: "))
+                nameCap = "Student";
 
-			nameCap = nameCap.substring(0, 1).toUpperCase()
-					+ nameCap.substring(1);
-			String s = "Welcome <b>" + nameCap + "</b>.";
-			if (viewCount > 1  && showRppDetails == true) {
-				s += "  You have completed " + viewCount + " problems. ";
-				if (UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() > 0) {
-					s += "Your <a href='#'>score</a> is "
-							+ UserInfo.getInstance().getTutorInputWidgetStats()
-									.getCorrectPercent() + "%";
-				}
-			}
-			
+            nameCap = nameCap.substring(0, 1).toUpperCase() + nameCap.substring(1);
+            String s = "Welcome <b>" + nameCap + "</b>.";
+            if (viewCount > 1 && showRppDetails == true) {
+                s += "  You have completed " + viewCount + " problems. ";
+                if (UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() > 0) {
+                    s += "Your <a href='#'>score</a> is "
+                            + UserInfo.getInstance().getTutorInputWidgetStats().getCorrectPercent() + "%";
+                }
+            }
 
-	        if(!UserInfo.getInstance().getDisableSearch()) {
-	            
-	            if(CmCore.isDebug()) {
-    	            SexyButton searchButton = new SexyButton("Search");
-    	            searchButton.addStyleName("header-panel-search-btn");
-    	            searchButton.addClickHandler(new ClickHandler() {
-    	                @Override
-    	                public void onClick(ClickEvent event) {
-    	                    TopicExplorerManager.getInstance().showSearch();
-    	                }
-    	            });
-    	            new QuickTip(searchButton).setToolTip("Search for lessons");
-    	            add(searchButton);
-	            }
-	        }
-	        
+            if (!UserInfo.getInstance().getDisableSearch()) {
+                SexyButton searchButton = new SexyButton("Search");
+                searchButton.addStyleName("header-panel-search-btn");
+                searchButton.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        TopicExplorerManager.getInstance().showSearch();
+                    }
+                });
+                new QuickTip(searchButton).setToolTip("Search for lessons");
+                add(searchButton);
+            }
 
-			_helloInfo.setHTML(s);
-		}
-	}
+            _helloInfo.setHTML(s);
+        }
+    }
 
-	public void setLoginInfo() {
-		setLoginInfo(true);
-	}
+    public void setLoginInfo() {
+        setLoginInfo(true);
+    }
 
-	/**
-	 * Update all info fields and titles in header areas
-	 */
-	public void setHeaderInfo() {
-		CatchupMathTools.showAlert("Set Header info");
-	}
+    /**
+     * Update all info fields and titles in header areas
+     */
+    public void setHeaderInfo() {
+        CatchupMathTools.showAlert("Set Header info");
+    }
 
-	static {
-		CmRpcCore.EVENT_BUS.addHandler(UserTutorWidgetStatusUpdatedEvent.TYPE,
-				new UserTutorWidgetStatusUpdatedHandler() {
-					@Override
-					public void userStatsUpdate(UserTutorWidgetStats userStats) {
-						__instance.updateUserTutorStats(userStats);
-					}
-				});
+    static {
+        CmRpcCore.EVENT_BUS.addHandler(UserTutorWidgetStatusUpdatedEvent.TYPE,
+                new UserTutorWidgetStatusUpdatedHandler() {
+                    @Override
+                    public void userStatsUpdate(UserTutorWidgetStats userStats) {
+                        __instance.updateUserTutorStats(userStats);
+                    }
+                });
 
-		CmRpcCore.EVENT_BUS.addHandler(AssignmentsUpdatedEvent.TYPE,
-				new AssignmentsUpdatedHandler() {
-					@Override
-					public void assignmentsUpdated(AssignmentUserInfo assInfo) {
-						UserInfo.getInstance().setAssignmentMetaInfo(assInfo);
-						__instance.updateAssignmentMessage(assInfo);
-					}
-				});
-	}
+        CmRpcCore.EVENT_BUS.addHandler(AssignmentsUpdatedEvent.TYPE, new AssignmentsUpdatedHandler() {
+            @Override
+            public void assignmentsUpdated(AssignmentUserInfo assInfo) {
+                UserInfo.getInstance().setAssignmentMetaInfo(assInfo);
+                __instance.updateAssignmentMessage(assInfo);
+            }
+        });
+    }
 }
