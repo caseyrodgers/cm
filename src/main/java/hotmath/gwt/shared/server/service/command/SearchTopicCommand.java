@@ -66,34 +66,35 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                 title = StringEscapeUtils.unescapeHtml(title);
                 topics.add(new Topic(title,url, hit.getSummary()));
             }
+        
+            return getOrderedTopics(makeSureOnlyExplorableTopicsIncluded(conn, topics), action.getSearch());
+            
         } catch (Throwable e) {
             e.printStackTrace();
+            throw e;
         }
-        return getOrderedTopics(makeSureOnlyExplorableTopicsIncluded(conn, topics), action.getSearch());
+        
     }
     
     private  List<Topic> makeSureOnlyExplorableTopicsIncluded(Connection conn, List<Topic> topics) throws Exception {
-        List<String> titles = new ArrayList<String>();
+        List<Topic> titles = new ArrayList<Topic>();
         PreparedStatement ps=null;
         try {
-            String sql = "select distinct lesson from HA_PROGRAM_LESSONS_static";
+            String sql = "select * from inmh_assessment where file = ?";
             ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-               titles.add(rs.getString(1));   
+            for(Topic t: topics) {
+                ps.setString(1,  t.getFile());
+                ResultSet rs = ps.executeQuery();
+                if(rs.first()) {
+                   titles.add(t);   
+                }
             }
+            
+            return titles;
         }
         finally {
             SqlUtilities.releaseResources(null,  ps, null);
         }
-        
-        List<Topic> assignableTopics = new ArrayList<Topic>();
-        for(Topic t: topics) {
-            if(titles.contains(t.getName())) {
-                assignableTopics.add(t);
-            }
-        }
-        return assignableTopics;
     }
 
     private CmList<TopicMatch> getOrderedTopics(List<Topic> topics, String search) {
