@@ -66,7 +66,7 @@
     	    	     "    join HA_USER us on us.admin_id = a.admin_id and us.uid = t.user_id " +
     	    		 "    where d.prog_id like '%GRAD PREP%' " +
     	    		 "    group by us.admin_id " +
-    	    		 ") e on c.admin_id = a.admin_id " +
+    	    		 ") e on e.admin_id = a.admin_id " +
     			     "where ss.service_name = 'catchup'" +
     	    		 " order by a.subscriber_id";
     	
