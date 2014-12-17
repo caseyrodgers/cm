@@ -27,13 +27,12 @@
 	int profTotal = 0;
 	int chapTotal = 0;
 	int exitTotal = 0;
-	int rppTotal  = 0;
 
     try {
     	conn = HMConnectionPool.getConnection();
 
     	String sql = "select a.subscriber_id, ss.date_created, ss.date_expire, ifnull(p.prof_rpp_count, 0) as prof_rpp_count, ifnull(c.chap_rpp_count,0) as chap_rpp_count, " +
-    	             "ifnull(e.exit_rpp_count,0) as exit_rpp_count, prof_rpp_count+chap_rpp_count+exit_rpp_count as total_rpp_count " +
+    	             "ifnull(e.exit_rpp_count,0) as exit_rpp_count " +
     			     "from v_cm_renewed_admin a " +
     			     "join SUBSCRIBERS_SERVICES ss on a.subscriber_id = ss.subscriber_id " +
     			     "left outer join ( " +
@@ -65,7 +64,7 @@
     	    		 "    join HA_TEST_RUN_INMH_USE u on u.run_id = r.run_id and u.item_type='practice' " +
     	    		 "    join v_cm_renewed_admin a " +
     	    	     "    join HA_USER us on us.admin_id = a.admin_id and us.uid = t.user_id " +
-    	    		 "    where d.prog_id like '%EXIT%' " +
+    	    		 "    where d.prog_id like '%GRAD PREP%' " +
     	    		 "    group by us.admin_id " +
     	    		 ") e on c.admin_id = a.admin_id " +
     			     "where ss.service_name = 'catchup'" +
@@ -87,15 +86,17 @@
 			d = rs.getDate("date_expire");
 			date = new java.util.Date(d.getTime());
 			String expireDateStr = sdf.format(date);
-			profTotal += rs.getInt("prof_rpp_count");
-			chapTotal += rs.getInt("chap_rpp_count");
-			exitTotal += rs.getInt("exit_rpp_count");
-			rppTotal += rs.getInt("total_rpp_count");
+			int prof = rs.getInt("prof_rpp_count");
+			int chap = rs.getInt("chap_rpp_count");
+			int exit = rs.getInt("exit_rpp_count");
+			profTotal += prof;
+			chapTotal += chap;
+			exitTotal += exit;
 
 			sb.append(
             String.format("%-10s\t%-11s\t%-11s\t%8d\t%8d\t%8d\t%9d\n", 
-            		subscriberId, createDateStr, expireDateStr, rs.getInt("prof_rpp_count"), rs.getInt("chap_rpp_count"),
-            		rs.getInt("exit_rpp_count"), rs.getInt("total_rpp_count")));
+            		subscriberId, createDateStr, expireDateStr, prof, chap, exit,
+            		prof+chap+exit ));
 		}
     }
     catch (Exception e){
@@ -126,7 +127,7 @@
  <% }
     sb = new StringBuilder();
     sb.append(String.format("\n\t\t\t\tTotals:\t\t%8d\t%8d\t%8d\t%9d\n", 
-    		profTotal, chapTotal, exitTotal, rppTotal));
+    		profTotal, chapTotal, exitTotal, profTotal+chapTotal+exitTotal));
  %>
  <%=sb.toString() %>
     </pre>
