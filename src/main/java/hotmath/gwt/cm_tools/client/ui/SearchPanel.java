@@ -120,7 +120,7 @@ public class SearchPanel extends BorderLayoutContainer {
         
         _centerPanelEmpty = new CenterLayoutContainer();
         FlowLayoutContainer flow = new FlowLayoutContainer();
-        flow.setPixelSize(320,  60);
+        flow.setWidth(320);
         String html = "<p style='font-size: 1.3em;padding: 5px;color: #666;'>" +
                       "Enter just a few letters of the lesson " +
                       "you are searching for in the textbox above.  Once your lesson is found you can 'explore' its resources." +
