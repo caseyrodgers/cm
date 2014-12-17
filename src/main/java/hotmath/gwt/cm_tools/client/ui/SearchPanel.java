@@ -71,6 +71,11 @@ public class SearchPanel extends BorderLayoutContainer {
         public void exporeTopic(InmhItemData item) {
             TopicExplorerManager.getInstance().exploreTopic(new hotmath.gwt.cm_rpc.client.model.Topic(item.getTitle(), item.getFile(), ""));
         }
+        
+        @Override
+        public void newTopicLoaded() {
+            _grid.getSelectionModel().deselectAll();
+        }
     });
 	
     TextField _inputBox = new TextField();
@@ -95,7 +100,7 @@ public class SearchPanel extends BorderLayoutContainer {
         }), new BorderLayoutData(30));
         
         _westPanel = new ContentPanel();
-        _westPanel.setHeadingHtml("Click Explore see all lesson resources");
+        _westPanel.setHeadingHtml("Click Explore to see all lesson resources");
         _westPanel.addTool(new TextButton("Explore", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {

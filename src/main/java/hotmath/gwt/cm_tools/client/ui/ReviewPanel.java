@@ -16,7 +16,13 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 public class ReviewPanel extends ContentPanel {
     static public interface ReviewPanelCallback {
         void exporeTopic(InmhItemData item);
+        
+        /** call when a new lesson review has been loaded
+         * 
+         */
+        void newTopicLoaded();
     }
+    
     ReviewPanelCallback _callback;
     
 	public ReviewPanel(final ReviewPanelCallback callback) {
@@ -32,13 +38,18 @@ public class ReviewPanel extends ContentPanel {
 	}
 
 	InmhItemData _item=null;
-	public void loadReview(InmhItemData item) {
+	public void loadReview(final InmhItemData item) {
 	    
 	    this._item = item;
 		ResourceViewerImplReview panel = new ResourceViewerImplReview(new ReviewCallback() {
 		    public void newTopicLoaded(String file, String title) {
 		        setHeadingText(title);
+		        
+		        if(!title.equals(item.getTitle())) {
+		            _callback.newTopicLoaded();
+		        }
 		        _item = new InmhItemData(CmResourceType.REVIEW, file, title);
+		        
 		    }
 		});
 		
