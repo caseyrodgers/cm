@@ -139,7 +139,7 @@
  <%=sb.toString() %>
  <% }
     sb = new StringBuilder();
-    sb.append(String.format("\n\t\\t\t\t\t\t\t\t\t\tTotals:\t\t%8d\t%8d\t%8d\t%10d\t%9d\n", 
+    sb.append(String.format("\n\t\t\t\t\t\t\t\t\tTotals:\t\t%8d\t%8d\t%8d\t%10d\t%9d\n", 
     		profTotal, chapTotal, exitTotal, cstmTotal, profTotal+chapTotal+exitTotal+cstmTotal));
  %>
  <%=sb.toString() %>
