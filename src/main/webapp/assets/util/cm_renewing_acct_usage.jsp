@@ -92,7 +92,7 @@
 			String salesRep = rs.getString("sales_rep");
 			String schoolName = rs.getString("school_name");
 			if (schoolName.length() > 49) schoolName = schoolName.substring(0,49);
-			schoolName += "(" + salesRep.substring(0,1) + ")";
+			schoolName += "(" + salesRep.substring(0,1).toUpperCase() + ")";
 			String passcode = rs.getString("passcode");
 			java.sql.Date d = rs.getDate("date_created");
 			java.util.Date date = new java.util.Date(d.getTime());
