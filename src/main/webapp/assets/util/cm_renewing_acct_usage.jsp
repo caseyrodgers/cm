@@ -20,8 +20,8 @@
     String today = sdf.format(new java.util.Date());
 
 	String header =
-        String.format("%-10s\t%-11s\t%-11s\t%-8s\t%-8s\t%-8s\t%-10s\t%-9s\n\n", 
-        		"Subscriber ID", "Create Date", "Expire Date", "Prof RPP", "Chap RPP", "Exit RPP", "Custom RPP", "Total RPP");
+        String.format("%-52s\t%-11s\t%-11s\t%-8s\t%-8s\t%-8s\t%-10s\t%-9s\n\n", 
+        		"School Name", "Password", "Create Date", "Prof RPP", "Chap RPP", "Exit RPP", "Custom RPP", "Total RPP");
 
 	StringBuilder sb = new StringBuilder();
 	int profTotal = 0;
@@ -32,10 +32,12 @@
     try {
     	conn = HMConnectionPool.getConnection();
 
-    	String sql = "select a.subscriber_id, ss.date_created, ss.date_expire, ifnull(p.rpp_count, 0) as prof_rpp_count, ifnull(c.rpp_count,0) as chap_rpp_count, " +
+    	String sql = "select ifnull(s.school_type,'NO NAME') as school_name, aa.passcode, ss.date_created, ifnull(s.sales_zone, 'l') as sales_rep, ifnull(p.rpp_count, 0) as prof_rpp_count, ifnull(c.rpp_count,0) as chap_rpp_count, " +
     	             "ifnull(e.rpp_count,0) as exit_rpp_count, ifnull(u.rpp_count,0) as cstm_rpp_count " +
     			     "from v_cm_renewed_admin a " +
     			     "join SUBSCRIBERS_SERVICES ss on a.subscriber_id = ss.subscriber_id " +
+    			     "join SUBSCRIBERS s on s.id = ss.subscriber_id " +
+    			     "join HA_ADMIN aa on aa.subscriber_id = s.id " +
     			     "left outer join ( " +
     			     "    select a.admin_id, 'PROF' as program, count(*) as rpp_count " +
     			     "    from v_cm_renewed_admin a " +
@@ -80,20 +82,21 @@
     	    	     "    group by us.admin_id " +
     	    	     ") u on u.admin_id = a.admin_id " +
     			     "where ss.service_name = 'catchup'" +
-    	    		 " order by a.subscriber_id";
+    	    		 " order by school_name";
     	
     	stmt = conn.createStatement();
 
 		rs = stmt.executeQuery(sql);
 		 
 		while (rs.next()) {
-			String subscriberId = rs.getString("subscriber_id");
+			String salesRep = rs.getString("sales_rep");
+			String schoolName = rs.getString("school_name");
+			if (schoolName.length() > 49) schoolName = schoolName.substring(0,49);
+			schoolName += "(" + salesRep.substring(0,1) + ")";
+			String passcode = rs.getString("passcode");
 			java.sql.Date d = rs.getDate("date_created");
 			java.util.Date date = new java.util.Date(d.getTime());
 			String createDateStr = sdf.format(date);
-			d = rs.getDate("date_expire");
-			date = new java.util.Date(d.getTime());
-			String expireDateStr = sdf.format(date);
 			int prof = rs.getInt("prof_rpp_count");
 			int chap = rs.getInt("chap_rpp_count");
 			int exit = rs.getInt("exit_rpp_count");
@@ -104,8 +107,8 @@
 			cstmTotal += cstm;
 
 			sb.append(
-            String.format("%-10s\t%-11s\t%-11s\t%8d\t%8d\t%8d\t%10d\t%9d\n", 
-            		subscriberId, createDateStr, expireDateStr, prof, chap, exit, cstm,
+            String.format("%-52s\t%-11s\t%-11s\t%8d\t%8d\t%8d\t%10d\t%9d\n", 
+            		schoolName, passcode, createDateStr, prof, chap, exit, cstm,
             		prof+chap+exit+cstm ));
 		}
     }
@@ -136,7 +139,7 @@
  <%=sb.toString() %>
  <% }
     sb = new StringBuilder();
-    sb.append(String.format("\n\t\t\t\tTotals:\t\t%8d\t%8d\t%8d\t%10d\t%9d\n", 
+    sb.append(String.format("\n\t\\t\t\t\t\t\t\t\t\tTotals:\t\t%8d\t%8d\t%8d\t%10d\t%9d\n", 
     		profTotal, chapTotal, exitTotal, cstmTotal, profTotal+chapTotal+exitTotal+cstmTotal));
  %>
  <%=sb.toString() %>
