@@ -1,4 +1,8 @@
-
+delete from HA_USER
+where admin_id not in (
+  select aid
+  from HA_ADMIN
+);
 
 delete from CM_USER_PROGRAM
 where user_id not in (
