@@ -79,7 +79,12 @@ function showVideo(obj, key) {
 }
 
 function showStudentVideo() {
-    showTeacherVideo('', 'student-how-to');
+	if (isIPadOrIPhone()) {
+        showTeacherVideo('', 'student-how-to-mobile');
+	}
+	else {
+		showTeacherVideo('', 'student-how-to-desktop');
+	}
 }
 
 function showTeacherVideo(obj, key) {
@@ -429,7 +434,14 @@ var Videos =
 	     type:       'mp4'
 	 },
 	 {
-		 key:        'student-how-to',
+		 key:        'student-how-to-desktop',
+		 title:      'Student How To',
+		 firstFrame: 'assets/teacher_videos/student-how-to/student-how-to.png',
+		 videoURI:   'assets/teacher_videos/student-how-to/student-how-to-desktop.mp4',
+	     type:       'mp4'
+	 },
+	 {
+		 key:        'student-how-to-mobile',
 		 title:      'Student How To',
 		 firstFrame: 'assets/teacher_videos/student-how-to/student-how-to.png',
 		 videoURI:   'assets/teacher_videos/student-how-to/student-how-to-360.mp4',
