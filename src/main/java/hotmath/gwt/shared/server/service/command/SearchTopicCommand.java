@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.flusher.Flushable;
+import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch.MatchWeight;
@@ -21,12 +23,13 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
-import com.sdicons.json.validator.impl.predicates.Array;
 
 
 /**
@@ -45,14 +48,30 @@ import com.sdicons.json.validator.impl.predicates.Array;
 public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmList<TopicMatch>> {
 
     static Logger __logger = Logger.getLogger(SearchTopicCommand.class);
-
+    static Map<String, Integer> __rankings;
+    
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return SearchTopicAction.class;
     }
+    
+   
+    static {
+        HotmathFlusher.getInstance().addFlushable(new Flushable() {
+            public void flush() {
+                __rankings = null;
+            }
+        });
+    }
 
     @Override
     public CmList<TopicMatch> execute(Connection conn, SearchTopicAction action) throws Exception {
+        
+        
+        if(__rankings == null) {
+            __rankings = __readLessonRankings(conn);
+        }
+        
         List<Topic> topics = new ArrayList<Topic>();
         try {
             Hit[] results = HMIndexSearcher.getInstance().searchFor("inmh", action.getSearch());
@@ -76,6 +95,23 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         
     }
     
+    private Map<String, Integer> __readLessonRankings(Connection conn) throws Exception {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        PreparedStatement ps=null;
+        try {
+            String sql = "select * from HA_LESSON_RANK";
+            ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                map.put(rs.getString("lesson_file"), rs.getInt("rank"));
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps,  null);    
+        }
+        return map;
+    }
+
     private  List<Topic> makeSureOnlyExplorableTopicsIncluded(Connection conn, List<Topic> topics) throws Exception {
         List<Topic> titles = new ArrayList<Topic>();
         PreparedStatement ps=null;
@@ -128,15 +164,42 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                 MatchWeight m1 = o1.getMatchWeight();
                 MatchWeight m2 = o2.getMatchWeight();
                 
-                t1 = getMatchWeightPadding(m1) + t1;
-                t2 = getMatchWeightPadding(m2) + t2;
+                String padding1 = getMatchWeightPadding(m1);
+                String padding2 = getMatchWeightPadding(m2);
                 
-                return t1.compareTo(t2);
+                if(padding1.equals(padding2)) {
+                    int ranking1 = getLessonRanking(o1.getTopic().getFile());
+                    int ranking2 = getLessonRanking(o2.getTopic().getFile());
+
+                    // then only compare ranking
+                    int res = ranking1 - ranking2;
+                    return res;
+                }
+                else {
+                    // different sections
+                    t1 = padding1 + t1;
+                    t2 = padding2 + t2;
+                    return t1.compareTo(t2);
+                }
             }
         });        
         return ordered;
     }
+
     
+
+
+    final static int HIGHEST_POSSIBLE_RANK = 50000;
+    private int getLessonRanking(String file) {
+        Integer rank = __rankings.get(file);
+        if(rank != null) {
+            return rank;
+        }
+        else {
+            return HIGHEST_POSSIBLE_RANK;
+        }
+    }
+
     
 
     private String getMatchWeightPadding(MatchWeight m1) {
