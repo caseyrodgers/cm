@@ -44,6 +44,8 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
@@ -217,26 +219,16 @@ public class SearchPanel extends BorderLayoutContainer {
     }
 
     private Widget createHeader() {
+        _searchMessage = new HTML();
         FramedPanel fp = new FramedPanel();
         fp.setHeaderVisible(false);
-        
-        
-        BorderLayoutContainer blc = new BorderLayoutContainer();
-        blc.setCenterWidget(new FieldLabel(_inputBox, "Lesson Search"));
-        BorderLayoutData bld = new BorderLayoutData(50);
-        bld.setMargins(new Margins(0,0,0,10));
-        blc.setEastWidget(new TextButton("Search!", new SelectHandler() {
-            
+        TextButton searchBtn = new TextButton("Search!", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 searchForMatches();
             }
-        }),bld);
-        _searchMessage = new HTML();
-        blc.setSouthWidget(_searchMessage, new BorderLayoutData(25));
-        
-        fp.setWidget(blc);
-        
+        });
+
         _inputBox.addKeyDownHandler(new KeyDownHandler() {
             @Override
             public void onKeyDown(KeyDownEvent event) {
@@ -252,6 +244,20 @@ public class SearchPanel extends BorderLayoutContainer {
         });
         
         _inputBox.setToolTip("Enter a word or phrase associated with a Lesson.   Press ENTER or click the Search button to find matches.");
+        
+        HorizontalLayoutContainer hl = new HorizontalLayoutContainer();
+        hl.add(new MyFieldLabel(_inputBox, "Lesson Search", 85, 250));
+        HorizontalLayoutData hld = new HorizontalLayoutData(20,20);
+        hld.setMargins(new Margins(0,0,0,4));
+        hl.add(searchBtn, hld);
+        hl.setHeight(20);
+        
+        FlowLayoutContainer flow = new FlowLayoutContainer();
+        flow.add(hl);
+        flow.add(_searchMessage);
+        fp.setWidget(flow);
+        
+        
         return fp;
     }
     
