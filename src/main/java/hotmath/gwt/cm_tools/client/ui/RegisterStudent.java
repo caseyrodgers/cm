@@ -332,10 +332,12 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         progCombo = createProgramCombo(progStore);
         _fsProgram.addThing(new MyFieldLabel(progCombo, "Program type", LABEL_WIDTH, FIELD_WIDTH));
 
+        getAccountInfoRPC(cmAdminMdl.getUid());
+        
         setupStdProgramUI();
         setupCustomProgramUI();
 
-        getAccountInfoRPC(cmAdminMdl.getUid());
+
 
         cardPanel = new CardLayoutContainer();
         cardPanel.add(_fsStdProg);
@@ -446,7 +448,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             ssm.setDisableCalcAlways(stuSettingsMdl.getDisableCalcAlways());
             ssm.setDisableCalcQuizzes(stuSettingsMdl.getDisableCalcQuizzes());
             ssm.setNoPublicWebLinks(stuSettingsMdl.isNoPublicWebLinks());
-            ssm.setNoSearch(stuSettingsMdl.isNoSearch());
+            ssm.setSearchAllowMode(stuSettingsMdl.getSearchAllowMode());
         } else {
             /** use account data to set tutoring available */
             if (acctInfoMdl != null) {
@@ -867,7 +869,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
 
                 /** If is free, then shown only Prof and Custom as available */
                 for (StudyProgramExt md : progList) {
-                    if (acctInfoMdl.getIsFreeAccount()) {
+                    if (acctInfoMdl != null && acctInfoMdl.getIsFreeAccount()) {
                         String pn = md.getTitle();
                         if (!pn.contains("Proficiency") && !pn.contains("Custom")) {
                             md.setStyleIsFree("is-free-account-label");
@@ -877,7 +879,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
 
                 /** If is free, then show only Essentials as available. */
                 for (StudyProgramExt md : customProgList) {
-                    if (acctInfoMdl.getIsFreeAccount()) {
+                    if (acctInfoMdl != null && acctInfoMdl.getIsFreeAccount()) {
                         String pn = md.getTitle();
                         if (!pn.contains("Essentials")) {
                             md.setStyleIsFree("is-free-account-label");
@@ -927,7 +929,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             public void oncapture(CmList<SubjectModel> result) {
 
                 for (SubjectModel sm : result) {
-                    if (acctInfoMdl.getIsFreeAccount()) {
+                    if (acctInfoMdl != null && acctInfoMdl.getIsFreeAccount()) {
                         if (!sm.getSubject().equals("Essentials")) {
                             sm.setStyleIsFree("is-free-account-label");
                         }
@@ -1684,7 +1686,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 || !origValue.getTutoringAvailable() == newValue.getTutoringAvailable()
                 || !origValue.getDisableCalcAlways() == newValue.getDisableCalcAlways() 
                 || !origValue.getDisableCalcQuizzes() == newValue.getDisableCalcQuizzes()
-                || !origValue.isNoSearch() == newValue.isNoSearch()
+                || origValue.getSearchAllowMode() != newValue.getSearchAllowMode()
                );
     }
 
@@ -1722,6 +1724,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             @Override
             public void runTest() {
                 StudentModel cm = new StudentModel();
+                //cm.setProgram(new StudentProgramModel(programId, subjectId, programType, sectionCount));
                 cm.setName("TestFirst TestLast");
                 cm.setGroup("_debug");
                 UserInfo.getInstance().setUserAccountType(UserType.SCHOOL_USER);
@@ -1731,8 +1734,9 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             }
         });
     }
+    
+    public static abstract class AdvOptCallback {
+        abstract void setAdvancedOptions(AdvancedOptionsModel options);
+    }
 }
 
-abstract class AdvOptCallback {
-    abstract void setAdvancedOptions(AdvancedOptionsModel options);
-}

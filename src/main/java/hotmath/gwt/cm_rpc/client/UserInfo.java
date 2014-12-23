@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_rpc.client;
 
+import hotmath.gwt.cm_core.client.model.SearchAllowMode;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
@@ -330,7 +331,7 @@ public class UserInfo implements  Response {
 
     private CmDestination firstDestination;
 
-    private boolean disableSearch;
+    private SearchAllowMode searchMode;
 
     public boolean isDemoUser() {
 	    return(this.isDemoUser);
@@ -512,12 +513,12 @@ public class UserInfo implements  Response {
         this.firstDestination = dest;
     }
 
-    public void setDisableSearch(boolean disableSearch) {
-        this.disableSearch = disableSearch;
+    public void setSearchAllowMode(SearchAllowMode searchMode) {
+        this.searchMode = searchMode;
     }
     
-    public boolean getDisableSearch() {
-        return this.disableSearch;
+    public SearchAllowMode getSearchAllowMode() {
+        return this.searchMode;
     }
 
 }

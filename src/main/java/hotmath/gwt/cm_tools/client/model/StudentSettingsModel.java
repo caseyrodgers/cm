@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.model;
 
+import hotmath.gwt.cm_core.client.model.SearchAllowMode;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 /**
@@ -9,7 +10,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
  */
 
 public class StudentSettingsModel implements Response {
-
 	boolean tutoringAvailable;
 	boolean showWorkRequired;
 	boolean limitGames;
@@ -17,18 +17,20 @@ public class StudentSettingsModel implements Response {
 	boolean disableCalcAlways;
 	boolean disableCalcQuizzes;
 	boolean noPublicWebLinks;
-	boolean noSearch;
+	SearchAllowMode searchAllowMode;
 
 	public StudentSettingsModel() {}
 	
-	
-	public boolean isNoSearch() {
-        return noSearch;
+
+    public SearchAllowMode getSearchAllowMode() {
+        return searchAllowMode;
     }
 
-    public void setNoSearch(boolean noSearch) {
-        this.noSearch = noSearch;
+
+    public void setSearchAllowMode(SearchAllowMode searchAllowMode) {
+        this.searchAllowMode = searchAllowMode;
     }
+
 
     public boolean getTutoringAvailable() {
 		return tutoringAvailable;
@@ -91,7 +93,7 @@ public class StudentSettingsModel implements Response {
         return "StudentSettingsModel [tutoringAvailable=" + tutoringAvailable + ", showWorkRequired="
                 + showWorkRequired + ", limitGames=" + limitGames + ", stopAtProgramEnd=" + stopAtProgramEnd
                 + ", disableCalcAlways=" + disableCalcAlways + ", disableCalcQuizzes=" + disableCalcQuizzes
-                + ", noPublicWebLinks=" + noPublicWebLinks + ", noSearch=" + noSearch + "]";
+                + ", noPublicWebLinks=" + noPublicWebLinks + ", searchAllowMode=" + searchAllowMode + "]";
     }
 
 }

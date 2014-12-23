@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_core.client.model.SearchAllowMode;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
@@ -26,13 +27,21 @@ public class GroupManagerAction implements Action<RpcData>{
     boolean noPublicWebLinks;
     Integer passPercent;
     Integer isSelfReg;
-    private boolean disableSearch;
+    SearchAllowMode searchAllow;
 
 	public GroupManagerAction(){}
 
     public GroupManagerAction(ActionType actionType,Integer adminId) {
         this.adminId = adminId;
         this.actionType = actionType;        
+    }
+
+    public SearchAllowMode getSearchAllow() {
+        return searchAllow;
+    }
+
+    public void setSearchAllow(SearchAllowMode searchAllow) {
+        this.searchAllow = searchAllow;
     }
 
     public boolean isNoPublicWebLinks() {
@@ -152,14 +161,4 @@ public class GroupManagerAction implements Action<RpcData>{
 
 
     public enum ActionType{DELETE,CREATE,UNREGISTER_STUDENTS,UPDATE,GROUP_PROGRAM_ASSIGNMENT,GROUP_PROPERTY_SET}
-
-
-    public void setDisableSearch(boolean disableSearch) {
-        this.disableSearch = disableSearch;
-    }
-
-    public boolean isDisableSearch() {
-        return disableSearch;
-    };    
-    
 }

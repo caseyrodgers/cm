@@ -3,6 +3,7 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_admin.server.model.ParallelProgramDao;
+import hotmath.gwt.cm_core.client.model.SearchAllowMode;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -51,7 +52,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
                 doGroupPropertySet(conn, action.getAdminId(), action.getGroupId(), action.getShowWorkRequired(),
                         action.getDisallowTutoring(), action.getLimitGames(), action.getStopAtProgramEnd(),
                         action.getPassPercent(), action.getDisableCalcAlways(), action.getDisableCalcQuizzes(),
-                        action.isNoPublicWebLinks(), action.isDisableSearch());
+                        action.isNoPublicWebLinks(), action.getSearchAllow());
                 break;
     
             default:
@@ -186,7 +187,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
      */
     private void doGroupPropertySet(final Connection conn, Integer adminId, Integer groupId, Boolean showWorkRequired,
             Boolean disallowTutoring, Boolean limitGames, Boolean stopAtProgramEnd, Integer passPercent,
-            Boolean disableCalcAlways, Boolean disableCalcQuizzes, boolean isNoPublicWebLinks, boolean isSearchDisabled) throws Exception {
+            Boolean disableCalcAlways, Boolean disableCalcQuizzes, boolean isNoPublicWebLinks, SearchAllowMode searchAllow) throws Exception {
         PreparedStatement ps = null;
         try {
             if (groupId == -1) {
@@ -203,7 +204,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 dao.updateStudentSettings(conn, rs.getInt("uid"), showWorkRequired, !disallowTutoring, limitGames,
-                        stopAtProgramEnd, passPercent, disableCalcAlways, disableCalcQuizzes, isNoPublicWebLinks, isSearchDisabled);
+                        stopAtProgramEnd, passPercent, disableCalcAlways, disableCalcQuizzes, isNoPublicWebLinks, searchAllow);
             }
         } finally {
             SqlUtilities.releaseResources(null, ps, null);

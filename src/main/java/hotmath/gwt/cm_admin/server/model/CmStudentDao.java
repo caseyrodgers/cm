@@ -7,6 +7,7 @@ import static hotmath.gwt.cm_rpc.client.model.StudentModelI.HAS_TUTORING_USE_KEY
 import hotmath.assessment.InmhItemData;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_core.client.model.SearchAllowMode;
 import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.StringHolder;
@@ -1053,7 +1054,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 mdl.setDisableCalcAlways(rs.getInt("diasable_calculator_always") > 0);
                 mdl.setDisableCalcQuizzes(rs.getInt("disable_calculator_quizzes") > 0);
                 mdl.setNoPublicWebLinks(rs.getInt("no_public_weblinks") > 0);
-                mdl.setNoSearch(rs.getInt("disable_search")>0);
+                mdl.setSearchAllowMode(SearchAllowMode.lookup(rs.getInt("disable_search")));
             }
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
@@ -1064,7 +1065,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     public void updateStudentSettings(final Connection conn, StudentModelI sm, Integer passPercent) throws Exception {
         StudentSettingsModel ssm = sm.getSettings();
         updateStudentSettings(conn, sm.getUid(), ssm.getShowWorkRequired(), ssm.getTutoringAvailable(), ssm.getLimitGames(), ssm.getStopAtProgramEnd(),
-                passPercent, ssm.getDisableCalcAlways(), ssm.getDisableCalcQuizzes(), ssm.isNoPublicWebLinks(), ssm.isNoSearch());
+                passPercent, ssm.getDisableCalcAlways(), ssm.getDisableCalcQuizzes(), ssm.isNoPublicWebLinks(), ssm.getSearchAllowMode());
     }
 
     /**
@@ -1081,7 +1082,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public void updateStudentSettings(final Connection conn, Integer uid, Boolean showWorkRequired, Boolean tutoringAvailable, Boolean limitGames,
-            Boolean stopAtProgramEnd, Integer passPercent, Boolean disableCalcAlways, Boolean disableCalcQuizzes, boolean isNoPublicWeblinks, boolean isSearchDisabled) throws Exception {
+            Boolean stopAtProgramEnd, Integer passPercent, Boolean disableCalcAlways, Boolean disableCalcQuizzes, boolean isNoPublicWeblinks, SearchAllowMode searchAllowMode) throws Exception {
 
         PreparedStatement ps1 = null;
         PreparedStatement ps2 = null;
@@ -1110,7 +1111,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             disable = (disableCalcQuizzes == null || disableCalcQuizzes == false) ? 0 : 1;
             ps2.setInt(6, disable);
             ps2.setInt(7,  isNoPublicWeblinks?1:0);
-            ps2.setInt(8, isSearchDisabled?1:0);
+            ps2.setInt(8, searchAllowMode.getLevel());
             ps2.setInt(9, uid);
 
             int cnt = ps2.executeUpdate();
@@ -1816,7 +1817,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                     mdl.setDisableCalcAlways(rs.getInt("disable_calculator_always") > 0);
                     mdl.setDisableCalcQuizzes(rs.getInt("disable_calculator_quizzes") > 0);
                     
-                    mdl.setNoSearch(rs.getInt("disable_search") > 0);
+                    mdl.setSearchAllowMode(SearchAllowMode.lookup(rs.getInt("disable_search")));
 
                     sm.setLastQuiz(rs.getString("last_quiz"));
                     sm.setChapter(getChapter(rs.getString("test_config_json")));
@@ -2121,7 +2122,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             mdl.setDisableCalcAlways(rs.getInt("disable_calculator_always") > 0);
             mdl.setDisableCalcQuizzes(rs.getInt("disable_calculator_quizzes") > 0);
             mdl.setNoPublicWebLinks(rs.getInt("no_public_weblinks")!=0?true:false);
-            mdl.setNoSearch(rs.getInt("disable_search") > 0);
+            mdl.setSearchAllowMode(SearchAllowMode.lookup(rs.getInt("disable_search")));
 
             sm.setLastQuiz(rs.getString("last_quiz"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
@@ -2192,7 +2193,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0 && ((tutoringEnabledForAdmin == null) || tutoringEnabledForAdmin));
             mdl.setDisableCalcAlways(rs.getInt("disable_calculator_always") > 0);
             mdl.setDisableCalcQuizzes(rs.getInt("disable_calculator_quizzes") > 0);
-            mdl.setNoSearch(rs.getInt("disable_search") > 0);
+            mdl.setSearchAllowMode(SearchAllowMode.lookup(rs.getInt("disable_search")));
 
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
 

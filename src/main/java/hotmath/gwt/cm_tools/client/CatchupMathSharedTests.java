@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.teacher.AddFolderDialog;
 import hotmath.gwt.cm_tools.client.ui.DateRangePickerDialog;
 import hotmath.gwt.cm_tools.client.ui.GradeLevelChooser;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
+import hotmath.gwt.cm_tools.client.ui.RegisterStudentAdvancedOptions;
 import hotmath.gwt.cm_tools.client.ui.SearchComboBoxPanel;
 import hotmath.gwt.cm_tools.client.ui.SearchPanel;
 import hotmath.gwt.cm_tools.client.ui.TopicExplorerManager;
@@ -33,8 +34,11 @@ public class CatchupMathSharedTests {
 	 */
     public static boolean runTest() {
         String test = CmCore.getQueryParameterValue("test");
-        
-        if(test.equals("TopicExplorerWindow")) {
+
+        if(test.equals("RegisterStudentAdvancedOptions")) {
+            RegisterStudentAdvancedOptions.startTest();
+        }
+        else if(test.equals("TopicExplorerWindow")) {
             TopicExplorerWindow.startTest();
         }
         else if(test.equals("GradeLevelChooser")) {

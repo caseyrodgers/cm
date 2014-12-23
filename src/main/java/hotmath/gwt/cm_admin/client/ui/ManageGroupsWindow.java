@@ -18,6 +18,7 @@ import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldSet;
 import hotmath.gwt.cm_tools.client.ui.PassPercent;
 import hotmath.gwt.cm_tools.client.ui.PassPercentCombo;
+import hotmath.gwt.cm_tools.client.ui.SearchAllowCombo;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
@@ -489,9 +490,10 @@ class GroupManagerGlobalSettings extends GWindow {
     CheckBox stopAtProgramEnd;
     CheckBox disableCalcAlways;
     CheckBox disableCalcQuizzes;
-    CheckBox disableSearch;
+    
     CheckBox isNoPublicWebLinks;
     ComboBox <PassPercent> passCombo;
+    SearchAllowCombo searchCombo;
 
     CmAdminModel cm;
 
@@ -515,11 +517,9 @@ class GroupManagerGlobalSettings extends GWindow {
         VerticalLayoutContainer vertMain = new VerticalLayoutContainer();
         
         MyFieldSet fs = new MyFieldSet("Group Settings", 403);
-        
-        disableSearch = new CheckBox();
-        disableSearch.setBoxLabel("");
-        fs.addThing(new MyFieldLabel(disableSearch,"Disable lesson search", 290));
-        
+
+        searchCombo = new SearchAllowCombo();
+        fs.addThing(new MyFieldLabel(searchCombo,"Disable lesson search", 290));
 
         showWorkRequired = new CheckBox();
         showWorkRequired.setBoxLabel("");
@@ -602,7 +602,7 @@ class GroupManagerGlobalSettings extends GWindow {
                 action.setDisableCalcAlways(disableCalcAlways.getValue());
                 action.setDisableCalcQuizzes(disableCalcQuizzes.getValue());
                 action.setNoPublicWebLinks(isNoPublicWebLinks.getValue());
-                action.setDisableSearch(disableSearch.getValue());
+                action.setSearchAllow(searchCombo.getSearchMode());
                 PassPercent passPercent = passCombo.getValue();
                 if (passPercent != null) {
                 	String percentStr = passPercent.getPercent();

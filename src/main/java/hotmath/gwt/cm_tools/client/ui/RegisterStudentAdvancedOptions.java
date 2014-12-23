@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_core.client.model.SearchAllowMode;
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramMetaInfoAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.model.AdvancedOptionsModel;
@@ -7,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.SectionNumber;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
+import hotmath.gwt.cm_tools.client.ui.RegisterStudent.AdvOptCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -44,9 +48,8 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 	private CheckBox isDisableCalcQuizzes;
 	private CheckBox isNoPublicWebLinks;
 	
-	private CheckBox isDisableSearch;
-
 	private ComboBox <PassPercent> passCombo;
+	private SearchAllowCombo  searchCombo;
 	private SectionNumberCombo sectionCombo;
 
 	private CmAdminModel cmAdminMdl;
@@ -162,9 +165,9 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
         advOptions.addThing(new MyFieldLabel(isDisableCalcQuizzes, "Disable whiteboard calculator for quizzes", LABEL_LEN, 10));
 
         
-        isDisableSearch = new CheckBox();
-        isDisableSearch.setValue(options.getSettings().isNoSearch());
-        advOptions.addThing(new MyFieldLabel(isDisableSearch, "Disable lesson search", LABEL_LEN, 10));
+        searchCombo = new SearchAllowCombo();
+        searchCombo.setValue(options.getSettings().getSearchAllowMode());
+        advOptions.addThing(new MyFieldLabel(searchCombo, "Search", LABEL_LEN, 145));
 
         
         
@@ -225,8 +228,11 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
  			passCombo.disable();
 
  		boolean sectionSelectAvail=options.isSectionIsSettable();
-		if (sectionSelectAvail == false)
-			sectionCombo.disable();
+		if (sectionSelectAvail == false) {
+		    if(sectionCombo != null) {
+		        sectionCombo.disable();
+		    }
+		}
 
 	}
 
@@ -328,7 +334,7 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
                 ssm.setDisableCalcAlways(isDisableCalcAlways.getValue());
                 ssm.setDisableCalcQuizzes(isDisableCalcQuizzes.getValue());
                 ssm.setNoPublicWebLinks(isNoPublicWebLinks.getValue());
-                ssm.setNoSearch(isDisableSearch.getValue());
+                ssm.setSearchAllowMode(searchCombo.getSearchMode());
 
                 /*
                  * don't want to place "0" in the section number list...
@@ -357,5 +363,55 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 	    });
 		return saveBtn;
 	}
+
+	
+
+//    static public class SearchAllow {
+//        
+//        String desc;
+//        int level;
+//        
+//        public SearchAllow(String desc, int level) {
+//            this.desc = desc;
+//            this.level = level;
+//        }
+//
+//        public String getDesc() {
+//            return desc;
+//        }
+//
+//        public void setDesc(String desc) {
+//            this.desc = desc;
+//        }
+//
+//        public int getLevel() {
+//            return level;
+//        }
+//
+//        public void setLevel(int level) {
+//            this.level = level;
+//        }
+//    }
+
+	public static void startTest() {
+
+	    new GwtTester(new TestWidget() {
+            @Override
+            public void runTest() {
+                AdvOptCallback callback = new AdvOptCallback() {
+                    public void setAdvancedOptions(AdvancedOptionsModel options) {
+                    }
+                };
+                CmAdminModel cm = new CmAdminModel();
+                cm.setUid(2);
+                AdvancedOptionsModel options = new AdvancedOptionsModel();
+                options.setSettings(new StudentSettingsModel());
+                options.getSettings().setSearchAllowMode(SearchAllowMode.DISABLED_ALWAYS);
+                StudentProgramModel selectedProgram = new StudentProgramModel();
+                new RegisterStudentAdvancedOptions(callback, cm, options, true, true, selectedProgram);
+            }
+        });
+	}
+	
 
 }

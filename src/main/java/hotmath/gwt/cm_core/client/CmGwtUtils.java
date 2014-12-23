@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_core.client;
 
+import hotmath.gwt.cm_core.client.model.SearchAllowMode;
 import hotmath.gwt.cm_core.client.util.LoginInfoEmbedded;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -67,7 +68,7 @@ public class CmGwtUtils {
         ui.setLimitGames(o.get("limitGames").isBoolean().booleanValue());
         ui.setDisableCalcAlways(o.get("disableCalcAlways").isBoolean().booleanValue());
         ui.setDisableCalcQuizzes(o.get("disableCalcQuizzes").isBoolean().booleanValue());
-        ui.setDisableSearch(o.get("disableSearch").isBoolean().booleanValue());
+        ui.setSearchAllowMode(SearchAllowMode.lookup(o.get("searchAllowMode").isString().stringValue()));
         ui.setLoginName(getJsonString(o.get("loginName")));
         ui.setPassPercentRequired(getJsonInt(o.get("passPercentRequired")));
         ui.setPassword(getJsonString(o.get("password")));

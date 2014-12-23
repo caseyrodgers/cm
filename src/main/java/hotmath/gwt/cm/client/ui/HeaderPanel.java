@@ -1,10 +1,14 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
+import hotmath.gwt.cm.client.ui.context.QuizContext;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.award.CmAwardPanel;
 import hotmath.gwt.cm_core.client.award.CmAwardPanel.AwardCallback;
+import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEvent;
+import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEventHandler;
+import hotmath.gwt.cm_core.client.model.SearchAllowMode;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -18,7 +22,6 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.MyIconButton;
-import hotmath.gwt.cm_tools.client.ui.SearchComboBoxPanel;
 import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.ui.ShowUserProgramStatusDialog;
 import hotmath.gwt.cm_tools.client.ui.TopicExplorerManager;
@@ -136,6 +139,14 @@ public class HeaderPanel extends FlowLayoutContainer {
                          */
                         CmMainPanel.getActiveInstance().setContextSubTitle(context.getContextSubTitle());
                     }
+                    
+                    if(context instanceof QuizContext){
+                        CmRpcCore.EVENT_BUS.fireEvent(new CmQuizModeActivatedEvent(true));
+                    }
+                    else {
+                        CmRpcCore.EVENT_BUS.fireEvent(new CmQuizModeActivatedEvent(false));
+                    }
+                    
                     break;
                 case EVENT_TYPE_TOPIC_CHANGED:
                     /**
@@ -271,8 +282,8 @@ public class HeaderPanel extends FlowLayoutContainer {
                 }
             }
 
-            if (!UserInfo.getInstance().getDisableSearch()) {
-                SexyButton searchButton = new SexyButton("Search");
+            if (UserInfo.getInstance().getSearchAllowMode() != SearchAllowMode.DISABLED_ALWAYS) {
+                final SexyButton searchButton = new SexyButton("Search");
                 searchButton.addStyleName("header-panel-search-btn");
                 searchButton.addClickHandler(new ClickHandler() {
                     @Override
@@ -283,6 +294,15 @@ public class HeaderPanel extends FlowLayoutContainer {
                 });
                 new QuickTip(searchButton).setToolTip("Search for lessons");
                 add(searchButton);
+                
+                CmRpcCore.EVENT_BUS.addHandler(CmQuizModeActivatedEvent.TYPE,  new CmQuizModeActivatedEventHandler() {
+                    @Override
+                    public void quizModeActivated(boolean yesNo) {
+                        if(UserInfo.getInstance().getSearchAllowMode() != SearchAllowMode.ENABLED_ALWAYS) {
+                            searchButton.setEnabled(!yesNo);
+                        }
+                    }
+                });
             }
 
             _helloInfo.setHTML(s);
