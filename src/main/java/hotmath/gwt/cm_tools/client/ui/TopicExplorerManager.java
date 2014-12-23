@@ -77,7 +77,13 @@ public class TopicExplorerManager extends GWindow {
         CmRpcCore.EVENT_BUS.addHandler(CmQuizModeActivatedEvent.TYPE, new CmQuizModeActivatedEventHandler() {
             @Override
             public void quizModeActivated(boolean yesNo) {
-                setVisible(!yesNo);
+                
+                if(yesNo) {
+                    setVisible(false);
+                }
+                else {
+                    // don't show automatically
+                }
             }
         });
     }
