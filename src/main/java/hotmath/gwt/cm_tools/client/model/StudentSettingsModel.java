@@ -22,8 +22,13 @@ public class StudentSettingsModel implements Response {
 	public StudentSettingsModel() {}
 	
 
+	/** return the SearchAllowMode
+	 *  if null, return default of ENABLED_EXCEPT_TESTS
+	 *  
+	 * @return
+	 */
     public SearchAllowMode getSearchAllowMode() {
-        return searchAllowMode;
+        return searchAllowMode != null?searchAllowMode:SearchAllowMode.ENABLED_EXCEPT_TESTS;  // defaul
     }
 
 
