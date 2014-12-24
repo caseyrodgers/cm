@@ -296,7 +296,10 @@ public class HeaderPanel extends FlowLayoutContainer {
             add(searchButton);
             
             /** if always disabled, no need to track changes */
-            if(UserInfo.getInstance().getSearchAllowMode() != SearchAllowMode.DISABLED_ALWAYS) {        
+            if(UserInfo.getInstance().getSearchAllowMode() == SearchAllowMode.DISABLED_ALWAYS) {
+            	searchButton.setEnabled(false);
+            }
+            else {
 		        CmRpcCore.EVENT_BUS.addHandler(CmQuizModeActivatedEvent.TYPE,  new CmQuizModeActivatedEventHandler() {
 		            @Override
 		            public void quizModeActivated(boolean yesNo) {
