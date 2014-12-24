@@ -444,7 +444,7 @@ var Videos =
 		 key:        'student-how-to-mobile',
 		 title:      'Student How To',
 		 firstFrame: 'assets/teacher_videos/student-how-to/student-how-to.png',
-		 videoURI:   'assets/teacher_videos/student-how-to/student-how-to-360.mp4',
+		 videoURI:   'assets/teacher_videos/student-how-to/student-how-to-mobile.mp4',
 	     type:       'mp4'
 	 },
 	 {
