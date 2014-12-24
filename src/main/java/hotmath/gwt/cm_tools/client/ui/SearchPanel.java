@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
+import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
@@ -209,12 +210,15 @@ public class SearchPanel extends BorderLayoutContainer {
 	}
 
 	protected void exploreSelectedTopic() {
-        TopicMatch topic = _grid.getSelectionModel().getSelectedItem();
-        if(topic == null) {
+		
+		InmhItemData item = _reviewPanel.getItem();
+        // TopicMatch topic = _grid.getSelectionModel().getSelectedItem();
+        if(item == null) {
             CmMessageBox.showAlert("No lesson selected.");
         }
         else {
-            TopicExplorerManager.getInstance().exploreTopic(topic.getTopic());
+            Topic topic = new Topic(item.getTitle(), item.getFile(), "");
+			TopicExplorerManager.getInstance().exploreTopic(topic);
         }
     }
 

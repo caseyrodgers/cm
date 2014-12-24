@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplReview;
@@ -63,5 +64,8 @@ public class ReviewPanel extends ContentPanel {
 		setWidget(flow);
 		
 		forceLayout();
+	}
+	public InmhItemData getItem() {
+		return _item;
 	}
 }
