@@ -282,27 +282,29 @@ public class HeaderPanel extends FlowLayoutContainer {
                 }
             }
 
-            if (UserInfo.getInstance().getSearchAllowMode() != SearchAllowMode.DISABLED_ALWAYS) {
-                final SexyButton searchButton = new SexyButton("Search");
-                searchButton.addStyleName("header-panel-search-btn");
-                searchButton.addClickHandler(new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        // new SearchComboBoxPanel().showWindow();
-                        TopicExplorerManager.getInstance().showSearch();
-                    }
-                });
-                new QuickTip(searchButton).setToolTip("Search for lessons");
-                add(searchButton);
-                
-                CmRpcCore.EVENT_BUS.addHandler(CmQuizModeActivatedEvent.TYPE,  new CmQuizModeActivatedEventHandler() {
-                    @Override
-                    public void quizModeActivated(boolean yesNo) {
-                        if(UserInfo.getInstance().getSearchAllowMode() != SearchAllowMode.ENABLED_ALWAYS) {
-                            searchButton.setEnabled(!yesNo);
-                        }
-                    }
-                });
+           
+            final SexyButton searchButton = new SexyButton("Search");
+            searchButton.addStyleName("header-panel-search-btn");
+            searchButton.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    // new SearchComboBoxPanel().showWindow();
+                    TopicExplorerManager.getInstance().showSearch();
+                }
+            });
+            new QuickTip(searchButton).setToolTip("Search for lessons");
+            add(searchButton);
+            
+            /** if always disabled, no need to track changes */
+            if(UserInfo.getInstance().getSearchAllowMode() != SearchAllowMode.DISABLED_ALWAYS) {        
+		        CmRpcCore.EVENT_BUS.addHandler(CmQuizModeActivatedEvent.TYPE,  new CmQuizModeActivatedEventHandler() {
+		            @Override
+		            public void quizModeActivated(boolean yesNo) {
+		                if(UserInfo.getInstance().getSearchAllowMode() != SearchAllowMode.ENABLED_ALWAYS) {
+		                    searchButton.setEnabled(!yesNo);
+		                }
+		            }
+		        });
             }
 
             _helloInfo.setHTML(s);
