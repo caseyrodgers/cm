@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
+import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEvent;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
@@ -323,6 +324,12 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         }
         
         _dateTurnedIn.setValue(DateUtils4Gwt.getPrettyDateString(assignment.getTurnInDate()));
+        
+        /** if isPreventLesson enabeled for this assignment the put system in 
+         *  QUIZ_MODE
+         *  
+         */
+        CmRpcCore.EVENT_BUS.fireEvent(new CmQuizModeActivatedEvent(assignment.getAssignment().isPreventLessonAccess()));
     }
 
     public void readAssignmentFromServer(final int assignKey, final String pidToLoad) {
