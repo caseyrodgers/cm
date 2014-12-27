@@ -106,18 +106,23 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
     	 IndexReader reader = HMIndexSearcher.getInstance().getIndexReader("inmh");
 
     	 for (int i=0; i<reader.maxDoc(); i++) {
-    		    if (reader.isDeleted(i))
+    		    if (reader.isDeleted(i)) {
     		        continue;
+    		    }
 
     		    Document doc = reader.document(i);
     		    String content = doc.get("summary");
     		    String title = doc.get("title");
+    		    String file = doc.get("name");
+    		    if(file == null || content == null) {
+    		    	continue;
+    		    }
     		    
     		    if(content.toLowerCase().indexOf(search) > -1 
     		    		|| title.toLowerCase().indexOf(search) > -1) {
     		    	
     		    	
-    		    	topics.add(new Topic(doc.get("name"),title, content));
+    		    	topics.add(new Topic(title, file, content));
     		    }
     		    
     		}
@@ -267,7 +272,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         }
         else {
         	return MatchWeight.CONTENT_MATCH_SIMPLE;
-        }
+        }	
     }
 
     private boolean _checkContentContainsSome(Topic topic, String search) {
