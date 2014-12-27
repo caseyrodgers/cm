@@ -118,11 +118,15 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
     		    	continue;
     		    }
     		    
+    		    
     		    if(content.toLowerCase().indexOf(search) > -1 
     		    		|| title.toLowerCase().indexOf(search) > -1) {
     		    	
-    		    	
-    		    	topics.add(new Topic(title, file, content));
+    		    	int t=file.indexOf("topics/");
+    		    	if(t > -1) {
+    		    		String url = file.substring(t);    		    	
+    		    		topics.add(new Topic(title, url, content));
+    		    	}
     		    }
     		    
     		}

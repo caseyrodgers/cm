@@ -19,7 +19,8 @@ public class SearchTopicCommand_Test extends TestCase {
     }
     
     public void testIt2() throws Exception {
-        new SearchTopicCommand().execute(HMConnectionPool.getConnection(), new SearchTopicAction(SearchType.LESSON_LIKE, "%Integer%"));
+    	CmList<TopicMatch> results = new SearchTopicCommand().execute(HMConnectionPool.getConnection(), new SearchTopicAction(SearchType.LESSON_LIKE, "Integer"));
+        assertTrue(results.size() > 0);
     }
 
 }
