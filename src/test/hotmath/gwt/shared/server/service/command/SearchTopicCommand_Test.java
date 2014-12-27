@@ -10,8 +10,12 @@ public class SearchTopicCommand_Test extends TestCase {
     public SearchTopicCommand_Test(String name) {
         super(name);
     }
+  
+    public void testIt1() throws Exception {
+        new SearchTopicCommand().execute(HMConnectionPool.getConnection(), new SearchTopicAction(SearchType.LESSON_LIKE, "di"));
+    }
     
-    public void testIt() throws Exception {
+    public void testIt2() throws Exception {
         new SearchTopicCommand().execute(HMConnectionPool.getConnection(), new SearchTopicAction(SearchType.LESSON_LIKE, "%Integer%"));
     }
 

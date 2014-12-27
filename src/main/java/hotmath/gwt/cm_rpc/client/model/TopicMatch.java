@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_rpc.client.model;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-import hotmath.gwt.shared.client.CmShared;
 
 public class TopicMatch implements Response {
     
@@ -23,7 +22,10 @@ public class TopicMatch implements Response {
        TITLE_MATCH_ALL_PLUS,
        
        /** 1. title match search absolute */
-       TITLE_MATCH_ABSOLUTE 
+       TITLE_MATCH_ABSOLUTE, 
+       
+       /** 0. matches simple text instring */       
+       CONTENT_MATCH_SIMPLE 
 
        };
     

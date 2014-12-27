@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -29,6 +30,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 
 
 
@@ -85,17 +88,46 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                 title = StringEscapeUtils.unescapeHtml(title);
                 topics.add(new Topic(title,url, hit.getSummary()));
             }
+            
+            topics.addAll(doSimpleTextSearch(action.getSearch()));
         
             return getOrderedTopics(makeSureOnlyExplorableTopicsIncluded(conn, topics), action.getSearch());
             
         } catch (Throwable e) {
-            e.printStackTrace();
+            __logger.error("Error occurred executing search", e);
             throw e;
         }
         
     }
     
-    private Map<String, Integer> __readLessonRankings(Connection conn) throws Exception {
+    private Collection<? extends Topic> doSimpleTextSearch(String search) throws Exception {
+         
+    	 List<Topic> topics = new ArrayList<Topic>();
+    	 IndexReader reader = HMIndexSearcher.getInstance().getIndexReader("inmh");
+
+    	 for (int i=0; i<reader.maxDoc(); i++) {
+    		    if (reader.isDeleted(i))
+    		        continue;
+
+    		    Document doc = reader.document(i);
+    		    String content = doc.get("summary");
+    		    String title = doc.get("title");
+    		    
+    		    if(content.toLowerCase().indexOf(search) > -1 
+    		    		|| title.toLowerCase().indexOf(search) > -1) {
+    		    	
+    		    	
+    		    	topics.add(new Topic(doc.get("name"),title, content));
+    		    }
+    		    
+    		}
+    	 
+    	 
+    	 return topics;
+
+	}
+
+	private Map<String, Integer> __readLessonRankings(Connection conn) throws Exception {
         Map<String, Integer> map = new HashMap<String, Integer>();
         PreparedStatement ps=null;
         try {
@@ -233,7 +265,9 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         else if(_checkContentContainsSome(t, search)) {
             return MatchWeight.CONTENT_MATCH_SOME;
         }
-        return null;
+        else {
+        	return MatchWeight.CONTENT_MATCH_SIMPLE;
+        }
     }
 
     private boolean _checkContentContainsSome(Topic topic, String search) {
