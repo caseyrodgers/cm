@@ -3,15 +3,20 @@ package hotmath.gwt.cm.client;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.util.VideoPlayerWindow;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -32,15 +37,18 @@ public class WelcomePanel extends CenterLayoutContainer {
 
         main.setHeadingText("Welcome to Catchup Math");
 
+        VerticalLayoutContainer vMain = new VerticalLayoutContainer();
         if (CmCore.getQueryParameterValue("type").equals("1")) {
             main.setPixelSize(370,190);
-            main.add(new SampleSessionInfo());
+            vMain.add(new SampleSessionInfo());
         } else if (CmCore.getQueryParameterValue("type").equals("2") || UserInfo.getInstance().getViewCount() == 0) {
             main.setPixelSize(330, 200);
-            main.add(new StandardInfo());
+            vMain.add(new StandardInfo());
+            vMain.add(getHyperlink());
         } else {
             main.setPixelSize(350, 200);
-            main.add(new StandardInfo());
+            vMain.add(new StandardInfo());
+            vMain.add(getHyperlink());
         }
 
         _goBtn = new TextButton("Begin Catchup Math");
@@ -51,8 +59,8 @@ public class WelcomePanel extends CenterLayoutContainer {
             public void onSelect(SelectEvent event) {
                 startup();                
             }
-        })
-        ;
+        });
+        main.add(vMain);
         main.addButton(_goBtn);
         
         
@@ -70,7 +78,25 @@ public class WelcomePanel extends CenterLayoutContainer {
         add(main);
     }
 
-    private void startup() {
+    protected void showStudentHowToVideo() {
+    	new VideoPlayerWindow("How to use Catchup Math", "assets/teacher_videos/student-how-to/student-how-to-desktop.mp4");
+	}
+
+    protected Hyperlink getHyperlink() {
+        Hyperlink hl = new Hyperlink();
+        hl.setText("Video: How to use Catchup Math");
+		hl.getElement().setAttribute("style", "margin-left:25px; margin-top:10px; text-decoration:underline; color:#00A8FF; cursor:pointer;");
+        ClickHandler handler = new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				showStudentHowToVideo();
+			}
+        };
+		hl.addHandler(handler, ClickEvent.getType());
+        return hl;
+    }
+
+	private void startup() {
         
         _goBtn.setEnabled(false);
         try {
@@ -127,9 +153,7 @@ public class WelcomePanel extends CenterLayoutContainer {
                 html = "<p>You will start this Catchup Math session with a quiz.</p>";
             }
             
-            html += "<p>Please work out your answers carefully using our whiteboard or pencil and paper.</p>" +
-                    "<a style='display: block;margin-left: 10px;text-decoration: underline;color: #00A8FF;' " +
-                    " href='#' onclick='showMotivationalVideo_Gwt();return false;'>Video: How to use Catchup Math</a>";
+            html += "<p>Please work out your answers carefully using our whiteboard or pencil and paper.</p>";
             
             html = "<div class='welcome-wrapper-internal'>" + html + "</div>";
             setHTML(html);
