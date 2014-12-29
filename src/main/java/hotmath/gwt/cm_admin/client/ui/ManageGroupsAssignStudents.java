@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import java.util.List;
+
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
@@ -21,6 +23,7 @@ import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Label;
+import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.dnd.core.client.DND.Feedback;
 import com.sencha.gxt.dnd.core.client.ListViewDragSource;
@@ -109,6 +112,7 @@ public class ManageGroupsAssignStudents extends GWindow {
             }
         });
 		_listAll.setStore(storeAll);
+		//_listAll.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		//_listAll.setTemplate(templateOther);
 
 		ListStore<StudentModelI> store = new ListStore<StudentModelI>(__propsStudentGridProperties.id());
@@ -184,18 +188,23 @@ public class ManageGroupsAssignStudents extends GWindow {
 	}
 	
 	private void moveSelectedInto() {
-	    StudentModelI selected = _listAll.getSelectionModel().getSelectedItem();
+	    List<StudentModelI> selected = _listAll.getSelectionModel().getSelectedItems();
 	    if(selected != null) {
-	        _listAll.getStore().remove(selected);
-	        _listInGroup.getStore().add(selected);
+	        for(StudentModelI student: selected) {
+    	        _listAll.getStore().remove(student);
+    	        _listInGroup.getStore().add(student);
+	        }
 	    }
 	    
 	}
 	
 	private void moveSelectedOut() {
-        StudentModelI s1 = _listInGroup.getSelectionModel().getSelectedItem();
-        _listInGroup.getStore().remove(s1);
-        _listAll.getStore().add(s1);
+	    
+	    List<StudentModelI> selected = _listInGroup.getSelectionModel().getSelectedItems();
+        for(StudentModelI student: selected) {
+            _listInGroup.getStore().remove(student);
+            _listAll.getStore().add(student);
+	    }
 	}
 
 	private void saveChanges() {
