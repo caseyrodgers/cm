@@ -110,6 +110,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
 
                 Topic pidTopic = findTopicAssoicatedWithPid(conn, pid);
                 if (pidTopic != null) {
+                    __logger.info("Adding search match: " + pid);
                     topics.add(pidTopic);
                 }
             }
