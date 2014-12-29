@@ -36,29 +36,29 @@ import org.apache.lucene.index.IndexReader;
 
 
 /**
- * 
+ *
  * Search for a lesson/topic using wildcards
- * 
+ *
  * Returns a list of topics that match search.
- * 
+ *
  * User can select a given lesson (multi?) and have
  * a prescription created based on that lesson.
- * 
- * 
+ *
+ *
  * @author casey
- * 
+ *
  */
 public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmList<TopicMatch>> {
 
     static Logger __logger = Logger.getLogger(SearchTopicCommand.class);
     static Map<String, Integer> __rankings;
-    
+
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return SearchTopicAction.class;
     }
-    
-   
+
+
     static {
         HotmathFlusher.getInstance().addFlushable(new Flushable() {
             public void flush() {
@@ -69,12 +69,12 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
 
     @Override
     public CmList<TopicMatch> execute(Connection conn, SearchTopicAction action) throws Exception {
-        
-        
+
+
         if(__rankings == null) {
             __rankings = __readLessonRankings(conn);
         }
-        
+
         List<Topic> topics = new ArrayList<Topic>();
         try {
             Hit[] results = HMIndexSearcher.getInstance().searchFor("inmh", action.getSearch());
@@ -88,55 +88,55 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                 title = StringEscapeUtils.unescapeHtml(title);
                 topics.add(new Topic(title,url, hit.getSummary()));
             }
-            
-            topics.addAll(doSimpleTextSearch(action.getSearch()));
-        
+
+            //topics.addAll(doSimpleTextSearch(action.getSearch()));
+
             return getOrderedTopics(makeSureOnlyExplorableTopicsIncluded(conn, topics), action.getSearch());
-            
+
         } catch (Throwable e) {
             __logger.error("Error occurred executing search", e);
             throw e;
         }
-        
+
     }
-    
+
     private Collection<? extends Topic> doSimpleTextSearch(String search) throws Exception {
-         
-    	 List<Topic> topics = new ArrayList<Topic>();
-    	 IndexReader reader = HMIndexSearcher.getInstance().getIndexReader("inmh");
 
-    	 for (int i=0; i<reader.maxDoc(); i++) {
-    		    if (reader.isDeleted(i)) {
-    		        continue;
-    		    }
+         List<Topic> topics = new ArrayList<Topic>();
+         IndexReader reader = HMIndexSearcher.getInstance().getIndexReader("inmh");
 
-    		    Document doc = reader.document(i);
-    		    String content = doc.get("summary");
-    		    String title = doc.get("title");
-    		    String file = doc.get("name");
-    		    if(file == null || content == null) {
-    		    	continue;
-    		    }
-    		    
-    		    
-    		    if(content.toLowerCase().indexOf(search) > -1 
-    		    		|| title.toLowerCase().indexOf(search) > -1) {
-    		    	
-    		    	int t=file.indexOf("topics/");
-    		    	if(t > -1) {
-    		    		String url = file.substring(t);    		    	
-    		    		topics.add(new Topic(title, url, content));
-    		    	}
-    		    }
-    		    
-    		}
-    	 
-    	 
-    	 return topics;
+         for (int i=0; i<reader.maxDoc(); i++) {
+                    if (reader.isDeleted(i)) {
+                        continue;
+                    }
 
-	}
+                    Document doc = reader.document(i);
+                    String content = doc.get("summary");
+                    String title = doc.get("title");
+                    String file = doc.get("name");
+                    if(file == null || content == null) {
+                        continue;
+                    }
 
-	private Map<String, Integer> __readLessonRankings(Connection conn) throws Exception {
+
+                    if(content.toLowerCase().indexOf(search) > -1
+                                || title.toLowerCase().indexOf(search) > -1) {
+
+                        int t=file.indexOf("topics/");
+                        if(t > -1) {
+                                String url = file.substring(t);
+                                topics.add(new Topic(title, url, content));
+                        }
+                    }
+
+                }
+
+
+         return topics;
+
+        }
+
+        private Map<String, Integer> __readLessonRankings(Connection conn) throws Exception {
         Map<String, Integer> map = new HashMap<String, Integer>();
         PreparedStatement ps=null;
         try {
@@ -148,7 +148,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
             }
         }
         finally {
-            SqlUtilities.releaseResources(null, ps,  null);    
+            SqlUtilities.releaseResources(null, ps,  null);
         }
         return map;
     }
@@ -163,10 +163,10 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                 ps.setString(1,  t.getFile());
                 ResultSet rs = ps.executeQuery();
                 if(rs.first()) {
-                   titles.add(t);   
+                   titles.add(t);
                 }
             }
-            
+
             return titles;
         }
         finally {
@@ -175,8 +175,8 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
     }
 
     private CmList<TopicMatch> getOrderedTopics(List<Topic> topics, String search) {
-        
-        // find entries that match exactly and move to top        
+
+        // find entries that match exactly and move to top
         CmList<TopicMatch> ordered = new CmArrayList<TopicMatch>();
         for(int i=topics.size()-1;i>-1;i--) {
             Topic t = topics.get(i);
@@ -185,7 +185,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                 ordered.add(new TopicMatch(t,matchWeight));
             }
         }
-        
+
         // first sort entire list
         Collections.sort(ordered, new Comparator<TopicMatch>() {
             @Override
@@ -200,14 +200,14 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                 }
                 t1 = t1.toLowerCase();
                 t2 = t2.toLowerCase();
-                
-                
+
+
                 MatchWeight m1 = o1.getMatchWeight();
                 MatchWeight m2 = o2.getMatchWeight();
-                
+
                 String padding1 = getMatchWeightPadding(m1);
                 String padding2 = getMatchWeightPadding(m2);
-                
+
                 if(padding1.equals(padding2)) {
                     int ranking1 = getLessonRanking(o1.getTopic().getFile());
                     int ranking2 = getLessonRanking(o2.getTopic().getFile());
@@ -223,11 +223,11 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                     return t1.compareTo(t2);
                 }
             }
-        });        
+        });
         return ordered;
     }
 
-    
+
 
 
     final static int HIGHEST_POSSIBLE_RANK = 50000;
@@ -241,7 +241,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         }
     }
 
-    
+
 
     private String getMatchWeightPadding(MatchWeight m1) {
         int numSpaces = m1.ordinal()+1;
@@ -253,7 +253,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
     }
 
     /** SEE CM-996
-     * 
+     *
      * @param t
      * @param search
      * @return
@@ -275,8 +275,8 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
             return MatchWeight.CONTENT_MATCH_SOME;
         }
         else {
-        	return MatchWeight.CONTENT_MATCH_SIMPLE;
-        }	
+                return MatchWeight.CONTENT_MATCH_SIMPLE;
+        }
     }
 
     private boolean _checkContentContainsSome(Topic topic, String search) {
@@ -289,7 +289,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
 
     private boolean _checkTitleContainsSome(Topic topic, String search) {
         String t = topic.getName();
-        
+
         if(containsSomeSearchTerms(t, search)) {
             return true;
         }
@@ -298,7 +298,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
 
     private boolean _checkContentContainsAll(Topic t, String search) {
         String content = t.getExcerpt();
-        
+
         if(containsAllSearchTerms(content,  search)) {
             return true;
         }
@@ -315,7 +315,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         return false;
     }
 
-    
+
     private boolean _checkTitleMatchesAbsolutePlus(Topic topic, String search) {
         String t = topic.getName();
         if(containsAllSearchTerms(t, search)) {
@@ -323,7 +323,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         }
         return false;
     }
-    
+
     private boolean containsAllSearchTerms(String name, String search) {
         String words[] = search.toLowerCase().split(" ");
         name = name.toLowerCase();
@@ -345,7 +345,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         }
         return false;
     }
-    
+
     static public void main(String as[]) {
         try {
             HMIndexWriter hmIw = HMIndexWriterFactory.getHMIndexWriter("inmh");
