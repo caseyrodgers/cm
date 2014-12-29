@@ -43,4 +43,16 @@ public class Topic implements IsSerializable {
     public String toString() {
         return "Topic [name=" + name + ", file=" + file + ", excerpt=" + excerpt + "]";
     }
+    
+    
+    @Override
+    public boolean equals(Object obj) {
+        
+        if(obj instanceof Topic) {
+            return ((Topic)obj).getFile().equals(getFile());
+        }
+        else {
+            return super.equals(obj);
+        }
+    }
 }

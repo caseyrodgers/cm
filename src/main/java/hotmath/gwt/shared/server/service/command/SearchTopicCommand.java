@@ -99,20 +99,20 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                 topics.add(new Topic(title, url, hit.getSummary()));
             }
 
-//            Hit[] resultsSolutions = HMIndexSearcher.getInstance().searchFor("solutions", action.getSearch());
-//            for (Hit hit : resultsSolutions) {
-//                String url = hit.getUrl();
-//                if (url == null) {
-//                    url = hit.getName();
-//                }
-//
-//                String pid = hit.getName();
-//
-//                Topic pidTopic = findTopicAssoicatedWithPid(conn, pid);
-//                if (pidTopic != null) {
-//                    topics.add(pidTopic);
-//                }
-//            }
+            Hit[] resultsSolutions = HMIndexSearcher.getInstance().searchFor("solutions", action.getSearch());
+            for (Hit hit : resultsSolutions) {
+                String url = hit.getUrl();
+                if (url == null) {
+                    url = hit.getName();
+                }
+
+                String pid = hit.getName();
+
+                Topic pidTopic = findTopicAssoicatedWithPid(conn, pid);
+                if (pidTopic != null) {
+                    topics.add(pidTopic);
+                }
+            }
 
             // topics.addAll(doSimpleTextSearch(action.getSearch()));
 

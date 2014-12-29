@@ -9,27 +9,27 @@ public class TopicMatch implements Response {
     
     /** in descending weighted order */
     public static enum MatchWeight {
-        /** 6 Next, displaying lessons where the first <p> tag contains one or more search words */
+
+        /** 6. matches simple text instring */
+        CONTENT_MATCH_SIMPLE,
+
+        /** 5. matches content of solution */              
+        SOLUTION_CONTENT_MATCH,
+        
+        /** 4 Next, displaying lessons where the first <p> tag contains one or more search words */
         CONTENT_MATCH_SOME,
         
-        /** > 5 -Next, displaying lessons where Title tag contains one or more search words */
+        /** > 3 -Next, displaying lessons where Title tag contains one or more search words */
         TITLE_MATCH_SOME,
 
-        /** 4 -Next, displaying lessons where the first <p> tag contains all search words */
+        /** 2 -Next, displaying lessons where the first <p> tag contains all search words */
         CONTENT_MATCH_ALL,
 
-        /** 3 Next, displaying lessons where the Title tag contains all search words along with some other words */
+        /** 1 Next, displaying lessons where the Title tag contains all search words along with some other words */
        TITLE_MATCH_ALL_PLUS,
        
-       /** 2. title match search absolute */
-       TITLE_MATCH_ABSOLUTE, 
-       
-       /** 1. matches content of solution */              
-       SOLUTION_CONTENT_MATCH,
-       
-       /** 0. matches simple text instring */
-       CONTENT_MATCH_SIMPLE
-
+       /** 0. title match search absolute */
+       TITLE_MATCH_ABSOLUTE 
        };
     
     public TopicMatch() {}
