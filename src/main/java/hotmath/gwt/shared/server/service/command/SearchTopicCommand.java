@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,6 +66,18 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         });
     }
 
+    class MyListSet extends ArrayList<Topic> {
+        
+        @Override
+        public boolean add(Topic element) {
+            if(!contains(element)) {
+                return super.add(element);
+            }
+            else {
+                return false;
+            }
+        }
+    }
     @Override
     public CmList<TopicMatch> execute(Connection conn, SearchTopicAction action) throws Exception {
 
@@ -74,7 +85,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
             __rankings = __readLessonRankings(conn);
         }
 
-        Set<Topic> topics = new HashSet<Topic>();
+        List<Topic> topics = new MyListSet();
         try {
             Hit[] resultsInmh = HMIndexSearcher.getInstance().searchFor("inmh", action.getSearch());
             for (Hit hit : resultsInmh) {
@@ -88,20 +99,20 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                 topics.add(new Topic(title, url, hit.getSummary()));
             }
 
-            Hit[] resultsSolutions = HMIndexSearcher.getInstance().searchFor("solutions", action.getSearch());
-            for (Hit hit : resultsSolutions) {
-                String url = hit.getUrl();
-                if (url == null) {
-                    url = hit.getName();
-                }
-
-                String pid = hit.getName();
-
-                Topic pidTopic = findTopicAssoicatedWithPid(conn, pid);
-                if (pidTopic != null) {
-                    topics.add(pidTopic);
-                }
-            }
+//            Hit[] resultsSolutions = HMIndexSearcher.getInstance().searchFor("solutions", action.getSearch());
+//            for (Hit hit : resultsSolutions) {
+//                String url = hit.getUrl();
+//                if (url == null) {
+//                    url = hit.getName();
+//                }
+//
+//                String pid = hit.getName();
+//
+//                Topic pidTopic = findTopicAssoicatedWithPid(conn, pid);
+//                if (pidTopic != null) {
+//                    topics.add(pidTopic);
+//                }
+//            }
 
             // topics.addAll(doSimpleTextSearch(action.getSearch()));
 
@@ -191,7 +202,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
      * @return
      * @throws Exception
      */
-    private List<Topic> makeSureOnlyExplorableTopicsIncluded(Connection conn, Set<Topic> topics) throws Exception {
+    private List<Topic> makeSureOnlyExplorableTopicsIncluded(Connection conn, List<Topic> topics) throws Exception {
         List<Topic> titles = new ArrayList<Topic>();
         PreparedStatement ps = null;
         try {
