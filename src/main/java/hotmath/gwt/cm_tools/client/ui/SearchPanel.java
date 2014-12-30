@@ -94,15 +94,14 @@ public class SearchPanel extends BorderLayoutContainer {
         
         BorderLayoutContainer blcI = new BorderLayoutContainer();
         blcI.setCenterWidget(createListView());
-        blcI.setSouthWidget(new TextButton("Open", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                exploreSelectedTopic();
-            }
-        }), new BorderLayoutData(30));
+//        blcI.setSouthWidget(new TextButton("Open", new SelectHandler() {
+//            @Override
+//            public void onSelect(SelectEvent event) {
+//                exploreSelectedTopic();
+//            }
+//        }), new BorderLayoutData(30));
         
         _westPanel = new ContentPanel();
-        _westPanel.setHeadingHtml("Click Explore to see all lesson resources");
 //        _westPanel.addTool(new TextButton("Explore", new SelectHandler() {
 //            @Override
 //            public void onSelect(SelectEvent event) {
@@ -118,7 +117,7 @@ public class SearchPanel extends BorderLayoutContainer {
         
         _centerData = new BorderLayoutData();
         _centerData.setSplit(true);
-        //_centerData.setCollapsible(true);
+        _centerData.setCollapsible(true);
         
         _centerPanelEmpty = new CenterLayoutContainer();
         FlowLayoutContainer flow = new FlowLayoutContainer();
