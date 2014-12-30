@@ -45,7 +45,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     static CatchupMathAdmin instance;
 
     public void onModuleLoad() {
-        
+
         CmLogger.info("CatchupMathAdmin is starting");
 
         instance = this;
@@ -57,21 +57,17 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             }
         };
         CmBusyManager.setViewPort(mainPort);
-        
-        
 
+
+        /*
         if(CatchupMathAdminTests.runTest()) {
             CmBusyManager.setBusy(false);
             return;
         }
-        
+        */
 
-
-        
-//        String launchSub = CmCore.getQueryParameter("load");
 //        if(launchSub != null) {
 //            if(launchSub.startsWith("student_details")) {
-//                
 //                Log.info("Launching tool Student Details");
 //                int studentUid = Integer.parseInt(launchSub.split(":")[1]);
 //                launchOnlyStudentDetails(studentUid);
@@ -86,7 +82,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //        }
 
         BorderLayoutContainer borderMain = new BorderLayoutContainer();
-        
+
         BorderLayoutData bdata = new BorderLayoutData(40);
         headerPanel = new HeaderPanel();
         borderMain.setNorthWidget(headerPanel, bdata);
@@ -94,9 +90,9 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         mainContainer = new BorderLayoutContainer();
         mainContainer.addStyleName("main-container");
 
-        
+
         //borderMain.getElement().setAttribute("style",  "background-color: red");
-        
+
         borderMain.setCenterWidget(mainContainer);
         mainPort.setWidget(borderMain);
 
@@ -117,7 +113,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
 
     private void completeLoginProcess(final int uid) {
-        
+
         Log.debug("CatchupMathAdmin: login complete, is Mobile: " + UserInfoBase.getInstance().isMobile());
         new MessageOfTheDayDialog(new CallbackGeneric() {
             @Override
@@ -125,7 +121,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
                 Log.debug("Message of day callback complete.");
             }
         });
-        
+
 
         cmAdminMdl = new CmAdminModel();
         cmAdminMdl.setUid(uid);
@@ -150,7 +146,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         }
     }
 
-	private void loadMainPage() {
+        private void loadMainPage() {
         CmLogger.info("Loading CMAdmin main page");
         mainContainer.clear();
 
@@ -210,20 +206,20 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //                            CmBusyManager.setBusy(false);
 //                            CmAdminModel adminModel = new CmAdminModel();
 //                            adminModel.setUid(2);
-//                            
+//
 //                            RegisterStudent rs = new RegisterStudent(student, adminModel, true, true);
-//                    		/**
-//                    		 * Assign buttons to the button bar on the Window
-//                    		 */
+//                              /**
+//                               * Assign buttons to the button bar on the Window
+//                               */
 //                            ButtonBar bb = new ButtonBar();
-//                    		for (TextButton btn : rs.getActionButtons()) {
-//                    			btn.addStyleName("register-student-btn");
-//                    			String txt = btn.getText();
-//                    			if(txt.equals("Save")) {
-//                    				bb.add(btn);
-//                    			}
-//                    		}
-//                    		mainPort.add(rs);
+//                              for (TextButton btn : rs.getActionButtons()) {
+//                                      btn.addStyleName("register-student-btn");
+//                                      String txt = btn.getText();
+//                                      if(txt.equals("Save")) {
+//                                              bb.add(btn);
+//                                      }
+//                              }
+//                              mainPort.add(rs);
 //                            RootPanel.get().add(mainPort);
 //                        } finally {
 //                            CmBusyManager.setBusy(false);
@@ -232,8 +228,8 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //                }.register();
 //            }
 //        });
-//    }    
-    
+//    }
+
 //    private void launchOnlyStudentDetails(final int studentUid) {
 //      GWT.runAsync(new CmRunAsyncCallback() {
 //
@@ -258,6 +254,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //          }
 //      });
 //    }
-    
-    
+
+
 }
