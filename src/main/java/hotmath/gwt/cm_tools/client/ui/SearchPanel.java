@@ -3,16 +3,13 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
-import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
-import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.ui.ReviewPanel.ReviewPanelCallback;
 import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchBundle;
 import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchStyle;
+import hotmath.gwt.cm_tools.client.ui.TopicExplorer.Callback;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 
@@ -22,7 +19,6 @@ import java.util.List;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -47,9 +43,9 @@ import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
@@ -69,17 +65,20 @@ import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 
 public class SearchPanel extends BorderLayoutContainer {
-	ReviewPanel _reviewPanel = new ReviewPanel(new ReviewPanelCallback() {
-        @Override
-        public void exporeTopic(InmhItemData item) {
-            TopicExplorerManager.getInstance().exploreTopic(new hotmath.gwt.cm_rpc.client.model.Topic(item.getTitle(), item.getFile(), ""));
-        }
-        
-        @Override
-        public void newTopicLoaded() {
-            _grid.getSelectionModel().deselectAll();
-        }
-    });
+//	ReviewPanel _reviewPanel = new ReviewPanel(new ReviewPanelCallback() {
+//        @Override
+//        public void exporeTopic(InmhItemData item) {
+//            TopicExplorerManager.getInstance().exploreTopic(new hotmath.gwt.cm_rpc.client.model.Topic(item.getTitle(), item.getFile(), ""));
+//        }
+//        
+//        @Override
+//        public void newTopicLoaded() {
+//            _grid.getSelectionModel().deselectAll();
+//        }
+//    });
+	
+	
+	SimpleContainer _explorerWrapper = new SimpleContainer();
 	
     TextField _inputBox = new TextField();
     Grid<TopicMatch> _grid;
@@ -95,7 +94,7 @@ public class SearchPanel extends BorderLayoutContainer {
         
         BorderLayoutContainer blcI = new BorderLayoutContainer();
         blcI.setCenterWidget(createListView());
-        blcI.setSouthWidget(new TextButton("Explore", new SelectHandler() {
+        blcI.setSouthWidget(new TextButton("Open", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 exploreSelectedTopic();
@@ -104,22 +103,22 @@ public class SearchPanel extends BorderLayoutContainer {
         
         _westPanel = new ContentPanel();
         _westPanel.setHeadingHtml("Click Explore to see all lesson resources");
-        _westPanel.addTool(new TextButton("Explore", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                exploreSelectedTopic();
-            }
-        }));
+//        _westPanel.addTool(new TextButton("Explore", new SelectHandler() {
+//            @Override
+//            public void onSelect(SelectEvent event) {
+//                exploreSelectedTopic();
+//            }
+//        }));
         _westPanel.setWidget(blcI);
         _westPanel.setEnabled(false);
         
-        _westData = new BorderLayoutData(350);
+        _westData = new BorderLayoutData(250);
         _westData.setSplit(true);
         _westData.setCollapsible(true);
         
         _centerData = new BorderLayoutData();
         _centerData.setSplit(true);
-        //centerData.setCollapsible(true);
+        //_centerData.setCollapsible(true);
         
         _centerPanelEmpty = new CenterLayoutContainer();
         FlowLayoutContainer flow = new FlowLayoutContainer();
@@ -133,9 +132,7 @@ public class SearchPanel extends BorderLayoutContainer {
 
         
         _centerPanel = new BorderLayoutContainer();
-        _centerPanel.setCenterWidget(_reviewPanel);
-        _centerPanel.setSouthWidget(new HTML("<div style='text-align: center;margin-top: 5px;font-size: .9em;font-style: italic'>Click Explore to see all the lesson resources</div>"), new BorderLayoutData(30));
-        
+        _centerPanel.setCenterWidget(_explorerWrapper);
         enableMainArea(false);
     }
     
@@ -199,23 +196,35 @@ public class SearchPanel extends BorderLayoutContainer {
         return _grid;
     }
     
+    Callback _theCallback = new Callback() {
+        @Override
+        public void resourceIsLoaded() {
+            _explorerWrapper.forceLayout();
+        }
+    };
+    
     protected void showSelectedReview() {
     	TopicMatch si = _grid.getSelectionModel().getSelectedItem();
     	if(si != null) {
-    		_reviewPanel.loadReview(new InmhItemData(CmResourceType.REVIEW, si.getTopic().getFile(), si.getTopic().getName()));
+    	    
+    	    TopicExplorer topicExplorer = new TopicExplorer(si.getTopic());
+    	    topicExplorer.setCallback(_theCallback);
+    	    _explorerWrapper.setWidget(topicExplorer);
+    	    _explorerWrapper.forceLayout();
+    	    
+    		// _reviewPanel.loadReview(new InmhItemData(CmResourceType.REVIEW, si.getTopic().getFile(), si.getTopic().getName()));
     	}
 	}
 
 	protected void exploreSelectedTopic() {
 		
-		InmhItemData item = _reviewPanel.getItem();
-        // TopicMatch topic = _grid.getSelectionModel().getSelectedItem();
-        if(item == null) {
+		// InmhItemData item = null;// _reviewPanel.getItem();
+	    TopicMatch topic = _grid.getSelectionModel().getSelectedItem();
+        if(topic == null) {
             CmMessageBox.showAlert("No lesson selected.");
         }
         else {
-            Topic topic = new Topic(item.getTitle(), item.getFile(), "");
-			TopicExplorerManager.getInstance().exploreTopic(topic);
+			TopicExplorerManager.getInstance().exploreTopic(topic.getTopic());
         }
     }
 

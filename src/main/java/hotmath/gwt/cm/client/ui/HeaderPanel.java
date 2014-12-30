@@ -312,7 +312,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 		            public void quizModeActivated(boolean yesNo) {
 		                if(UserInfo.getInstance().getSearchAllowMode() != SearchAllowMode.ENABLED_ALWAYS) {
 		                    searchButton.setEnabled(!yesNo);
-		                    searchButton.getElement().setAttribute("qtip",  yesNo?_enabledTooltip:_disabledTooltip);
+		                    searchButton.getElement().setAttribute("qtip",  !yesNo?_enabledTooltip:_disabledTooltip);
 		                }
 		            }
 		        });

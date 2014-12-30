@@ -33,12 +33,11 @@ public class TopicExplorerManager extends GWindow {
     TabPanel _tabPanel = new TabPanel();
     SearchPanel _searchPanel = new SearchPanel();
     
-
     
     private TopicExplorerManager() {
         super(true);
         
-        setPixelSize(700, 550);
+        setPixelSize(800, 600);
         setHeadingText("Catchup Math Lesson Explorer");
         setMaximizable(true);
         //setMinimizable(true);;
@@ -47,7 +46,7 @@ public class TopicExplorerManager extends GWindow {
         setModal(false);
         
         _tabPanel.add(_searchPanel, new TabItemConfig("Search",  false));
-        setWidget(_tabPanel);
+        setWidget(_searchPanel);
         
 //        addTool(new TextButton("Search", new SelectHandler() {
 //            @Override

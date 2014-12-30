@@ -57,9 +57,14 @@ public class TopicExplorer extends SimpleContainer {
     public Widget asWidget() {
         return this;
     }
+
     
+    static public interface Callback {
+        void resourceIsLoaded();
+    }
     
     Map<String, ResourceMenuButton> resourceButtons = new HashMap<String, ResourceMenuButton>();
+    private Callback _callback;
     
     private void loadDataFromServer() {
         new RetryAction<PrescriptionSessionResponse>() {
@@ -83,6 +88,9 @@ public class TopicExplorer extends SimpleContainer {
         
     }
     
+    public void setCallback(Callback callback) {
+        this._callback = callback;
+    }
     
     private Widget createFiller() {
         return new HTML("<div class='resource-filler'> &nbsp; </div>");
@@ -126,8 +134,10 @@ public class TopicExplorer extends SimpleContainer {
                 InmhItemData resource = resources.get(index);
 
                 _mainPanel.showResource(resource);
-                
-                forceLayout();
+
+                if(_callback != null) {
+                    _callback.resourceIsLoaded();
+                }
             }
             
             @Override
