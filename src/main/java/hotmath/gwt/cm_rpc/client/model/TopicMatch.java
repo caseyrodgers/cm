@@ -40,10 +40,14 @@ public class TopicMatch implements Response {
         this.matchWeight = matchWeight;
     }
     
+    public String getTopicFile() {
+        return topic.getFile();
+    }
+    
     public String getTopicName() {
         return topic.getName();
     }
-
+    
     public Topic getTopic() {
         return topic;
     }
@@ -58,5 +62,11 @@ public class TopicMatch implements Response {
 
     public void setMatchWeight(MatchWeight matchWeight) {
         this.matchWeight = matchWeight;
+    }
+    
+    
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

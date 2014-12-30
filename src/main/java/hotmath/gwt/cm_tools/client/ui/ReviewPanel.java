@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplReview;
@@ -39,16 +38,19 @@ public class ReviewPanel extends ContentPanel {
 	}
 
 	InmhItemData _item=null;
+    private boolean isLoaded;
 	public void loadReview(final InmhItemData item) {
 	    
 	    this._item = item;
+	    this.isLoaded=false;
 		ResourceViewerImplReview panel = new ResourceViewerImplReview(new ReviewCallback() {
 		    public void newTopicLoaded(String file, String title) {
 		        setHeadingText(title);
 		        
-		        if(!title.equals(item.getTitle())) {
+		        if(isLoaded) {
 		            _callback.newTopicLoaded();
 		        }
+		        isLoaded=true;
 		        _item = new InmhItemData(CmResourceType.REVIEW, file, title);
 		        
 		    }

@@ -117,7 +117,16 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
 
             // topics.addAll(doSimpleTextSearch(action.getSearch()));
 
-            return getOrderedTopics(makeSureOnlyExplorableTopicsIncluded(conn, topics), action.getSearch());
+            CmList<TopicMatch> orderedTopics = getOrderedTopics(makeSureOnlyExplorableTopicsIncluded(conn, topics), action.getSearch());
+            
+//            CmList<TopicMatch> orderedTopics2 = new CmArrayList<TopicMatch>();
+//            for(int i=0;i<2;i++) {
+//                orderedTopics2.add(orderedTopics.get(i));
+//            }
+//            
+//            return orderedTopics2;
+            
+            return orderedTopics;
 
         } catch (Throwable e) {
             __logger.error("Error occurred executing search", e);
@@ -137,6 +146,10 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
             if (rs.first()) {
                 String file = rs.getString("file");
                 String title = rs.getString("title");
+
+                title = title.replace("\n", "").trim();
+                title = StringEscapeUtils.unescapeHtml(title);
+                
                 return new Topic(title, file, pid);
             } else {
                 return null;

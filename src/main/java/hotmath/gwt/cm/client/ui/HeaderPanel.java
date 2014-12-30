@@ -295,21 +295,30 @@ public class HeaderPanel extends FlowLayoutContainer {
             new QuickTip(searchButton).setToolTip("Search for lessons");
             add(searchButton);
             
+            final String _disabledTooltip = "Search (currently disabled) lets you view Catchup Math lessons including videos, practice problems, activities and more.";
+            final String _enabledTooltip = "Search lets you view Catchup Math lessons including practice problems, activities and videos.";
+
+            
+            
             /** if always disabled, no need to track changes */
             if(UserInfo.getInstance().getSearchAllowMode() == SearchAllowMode.DISABLED_ALWAYS) {
             	searchButton.setEnabled(false);
+            	searchButton.getElement().setAttribute("qtip",  _disabledTooltip);
             }
             else {
+                searchButton.getElement().setAttribute("qtip",  _enabledTooltip);
 		        CmRpcCore.EVENT_BUS.addHandler(CmQuizModeActivatedEvent.TYPE,  new CmQuizModeActivatedEventHandler() {
 		            @Override
 		            public void quizModeActivated(boolean yesNo) {
 		                if(UserInfo.getInstance().getSearchAllowMode() != SearchAllowMode.ENABLED_ALWAYS) {
 		                    searchButton.setEnabled(!yesNo);
+		                    searchButton.getElement().setAttribute("qtip",  yesNo?_enabledTooltip:_disabledTooltip);
 		                }
 		            }
 		        });
             }
 
+            new QuickTip(searchButton);
             _helloInfo.setHTML(s);
         }
     }

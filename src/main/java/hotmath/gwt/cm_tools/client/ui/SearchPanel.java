@@ -140,12 +140,9 @@ public class SearchPanel extends BorderLayoutContainer {
     }
     
     interface Props extends PropertyAccess<TopicMatch> {
-        @Path("topic.file")
-        ModelKeyProvider<TopicMatch> file();
+        ModelKeyProvider<TopicMatch> topicFile();
         ValueProvider<TopicMatch, String> topicName();
     }
-    
-    
     
     interface ListViewTemplate extends XTemplates {
         // @XTemplate("<div class='{style.searchItem}'><h3><span>{post.date:date(\"M/d/yyyy\")}<br />by {post.author}</span>{post.title}</h3>{post.excerpt}</div>")
@@ -160,7 +157,7 @@ public class SearchPanel extends BorderLayoutContainer {
     private Widget createListView() {
         final SearchBundle b = GWT.create(SearchBundle.class);
         b.css().ensureInjected();
-        final ListStore<TopicMatch> gstore = new ListStore<TopicMatch>(props.file());
+        final ListStore<TopicMatch> gstore = new ListStore<TopicMatch>(props.topicFile());
         List<ColumnConfig<TopicMatch, ?>> cols = new ArrayList<ColumnConfig<TopicMatch,?>>();
         ColumnConfig<TopicMatch, String> col = new ColumnConfig<TopicMatch, String>(props.topicName(), 160,  "Lesson");
         col.setCell(new AbstractCell<String>() {
@@ -168,7 +165,7 @@ public class SearchPanel extends BorderLayoutContainer {
             public void render(com.google.gwt.cell.client.Cell.Context context, String value, SafeHtmlBuilder sb) {
                 TopicMatch tm = gstore.getAll().get(context.getIndex());
                 
-                String tip = value + " [" + tm.getMatchWeight() + "]";
+                String tip = "[" + tm.getMatchWeight() + "]";
                 sb.appendHtmlConstant("<span class='topic-list-item' qtitle='Topic' qtip='" + tip + "'>" + value + "</span>");
             }
         });
@@ -192,7 +189,7 @@ public class SearchPanel extends BorderLayoutContainer {
         _grid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<TopicMatch>() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent<TopicMatch> event) {
-                showSelectedReview();
+               showSelectedReview();
             }
         });
         

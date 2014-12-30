@@ -64,8 +64,6 @@ public class TopicExplorerManager extends GWindow {
         }));
         setVisible(true);
         
-        maximize();
-        
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {

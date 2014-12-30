@@ -343,7 +343,7 @@ public class CustomProgramDesignerDialog extends GWindow {
 			if (customProgram != null && customProgram.getIsTemplate())
 				msg = "<span style='color: red;font-weight: bold'>This is a Built-in Custom Program.  You can make a copy to customize.</span>";
 			else if (customProgram.getIsArchived() == false)
-				msg = "<span style='color: red;font-weight: bold'>This program has been used and may not be edited.  You can archive it or make a copy to customize.</span>";
+				msg = "<span style='color: red;font-weight: bold'>This program is in use and may not be edited.  You can archive it or make a copy to customize.</span>";
 			else
 				msg = "<span style='color: red;font-weight: bold'></span>";
 		}
