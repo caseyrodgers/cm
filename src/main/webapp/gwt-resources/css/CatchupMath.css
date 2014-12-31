@@ -25,6 +25,7 @@ h1,h2,h3,h4 {
 	background-position: 5 5;
 	background-repeat: no-repeat;
 	text-align: left;
+	overflow: visible !important;
 }
 
 .main-port {
@@ -284,7 +285,7 @@ h1,h2,h3,h4 {
 
 .header-panel-search-btn {
 	position: absolute !important;
-	left: 375px;
+	left: 405px;
 	top: 4px;
 	height: 30px;
 }
@@ -1427,3 +1428,4 @@ SolutionSetCompleteDialog .results {
     font-weight: bold;
     line-height: 2em;
 }
+
