@@ -20,6 +20,7 @@ import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,6 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.HTML;
@@ -377,29 +376,34 @@ public class TopicExplorer extends SimpleContainer {
         private void showResource(CmResourcePanel viewer, String title, boolean b) {
             if(_main == null) {
                 _main = new BorderLayoutContainer();
-                if(viewer.getContainerTools() != null && viewer.getContainerTools().size() > 0) {
-                    if(_toolbar == null) {
-                        _toolbar = new HorizontalLayoutContainer();
-                        _toolbar.getElement().setAttribute("style",  "margin: 5px");
-                        for(Widget t: viewer.getContainerTools()) {
-                            _toolbar.add(t);
-                        }
-                        if(resource.getItems().size() > 1) {
-                            final ComboBox<InmhItemData> combo = createItemCombo(resource.getItems());
-                            combo.addSelectionHandler(new SelectionHandler<InmhItemData>() {
-                                
-                                @Override
-                                public void onSelection(SelectionEvent<InmhItemData> event) {
-                                    InmhItemData item = combo.getCurrentValue();
-                                    prepareResource(item);
-                                }
-                            });
-                            combo.getElement().setAttribute("style",  "float: right;position: static !important;margin: 0 20px !important");
-                            _toolbar.add(combo);
-                        }
-                        
-                        _main.setNorthWidget(_toolbar, new BorderLayoutData(35));
+                List<Widget> tools = new ArrayList<Widget>();
+                if(viewer.getContainerTools() == null) {
+                    tools = new ArrayList<Widget>();     
+                }
+                else {
+                    tools = viewer.getContainerTools();
+                }
+                if(_toolbar == null) {
+                    _toolbar = new HorizontalLayoutContainer();
+                    _toolbar.getElement().setAttribute("style",  "margin: 5px");
+                    for(Widget t: viewer.getContainerTools()) {
+                        _toolbar.add(t);
                     }
+                    if(resource.getItems().size() > 1) {
+                        final ComboBox<InmhItemData> combo = createItemCombo(resource.getItems());
+                        combo.addSelectionHandler(new SelectionHandler<InmhItemData>() {
+                            
+                            @Override
+                            public void onSelection(SelectionEvent<InmhItemData> event) {
+                                InmhItemData item = combo.getCurrentValue();
+                                prepareResource(item);
+                            }
+                        });
+                        combo.getElement().setAttribute("style",  "float: right;position: static !important;margin: 0 20px !important");
+                        _toolbar.add(combo);
+                    }
+                    
+                    _main.setNorthWidget(_toolbar, new BorderLayoutData(35));
                 }
                 setWidget(_main);
             }

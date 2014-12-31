@@ -66,7 +66,7 @@ public class CmAwardPanel extends Composite {
 	public void addStar() {
 
 		
-		String html = "<img style='z-index: 999 !important' id='award-big-button' src='/gwt-resources/images/awards/star_big.png' __class='animated " + getRandomAnimationIn() + "'/>";
+		String html = "<img id='award-big-button' src='/gwt-resources/images/awards/star_big.png' class='animated " + getRandomAnimationIn() + "'/>";
 		_starPanel.add(new HTML(html));
 		new Timer() {
 			@Override
@@ -127,7 +127,7 @@ public class CmAwardPanel extends Composite {
 
 		for (int i = 0; i < star10s; i++) {
 			boolean isLast = (starSingles == 0 && i == star10s - 1);
-			html += "<img style='z-index: 999;position: absolute' src='/gwt-resources/images/awards/star_10.png' "
+			html += "<img  src='/gwt-resources/images/awards/star_10.png' "
 		    +  (animateLast && isLast ? " class='animated "	+ getRandomAnimationIn() + "' " : "") + "/>";
 		}
 
