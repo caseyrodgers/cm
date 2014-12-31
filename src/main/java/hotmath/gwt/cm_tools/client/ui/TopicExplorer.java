@@ -386,7 +386,7 @@ public class TopicExplorer extends SimpleContainer {
                 if(_toolbar == null) {
                     _toolbar = new HorizontalLayoutContainer();
                     _toolbar.getElement().setAttribute("style",  "margin: 5px");
-                    for(Widget t: viewer.getContainerTools()) {
+                    for(Widget t: tools) {
                         _toolbar.add(t);
                     }
                     if(resource.getItems().size() > 1) {
