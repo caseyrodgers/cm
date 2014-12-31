@@ -442,11 +442,11 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
 
     public List<Widget> getContainerTools() {
         List<Widget> tools = new ArrayList<Widget>();
-        tools.add(new TextButton("How to Use This", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                new ShowHowToUseDialog().setVisible(true);            }
-        }));
+//        tools.add(new TextButton("How to Use This", new SelectHandler() {
+//            @Override
+//            public void onSelect(SelectEvent event) {
+//                new ShowHowToUseDialog().setVisible(true);            }
+//        }));
         tools.addAll(super.getContainerTools());
         return tools;
     }

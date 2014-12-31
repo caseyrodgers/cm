@@ -10,6 +10,13 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
+import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.WhiteboardResourceCallback;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2.TutorViewerProperties;
+import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -17,25 +24,45 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.data.shared.LabelProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer.AccordionLayoutAppearance;
+import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer.ExpandMode;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.event.ExpandEvent;
+import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 public class TopicExplorer extends SimpleContainer {
     
     private Topic topic;
-    CmMainPanel2 _mainPanel;
+    
     private PrescriptionData prescriptionData;
     private TopicExplorerGuiContext _guiContext;
     public TopicExplorer(Topic topic) {
         this.topic = topic;
     
         _guiContext = new TopicExplorerGuiContext(topic);
-        _mainPanel = new CmMainPanel2(_guiContext);
+        
         CenterLayoutContainer lc = new CenterLayoutContainer();
         lc.setWidget(new HTML("<h1>Loading " + topic.getName() + "</h1>"));
         
@@ -43,12 +70,10 @@ public class TopicExplorer extends SimpleContainer {
 
         loadDataFromServer();
         
-        
         CmRpcCore.EVENT_BUS.addHandler(RppHasBeenViewedEvent.TYPE, new RppHasBeenViewedEventHandler() {
             @Override
             public void rppHasBeenViewed(RppHasBeenViewedEvent item) {
-                
-                _mainPanel.markRppAsViewed(item);
+                // _mainPanel.markRppAsViewed(item);
             }
         });
     }
@@ -78,7 +103,9 @@ public class TopicExplorer extends SimpleContainer {
             @Override
             public void oncapture(PrescriptionSessionResponse prescription) {
                 // CmMessageBox.showAlert("Prescription: " + topics);
-                setWidget(_mainPanel);
+                
+                DefaultGxtLoadingPanel loading = new DefaultGxtLoadingPanel();
+                setWidget(loading);
                 forceLayout();
                 
                 buildUi(prescription);
@@ -98,26 +125,37 @@ public class TopicExplorer extends SimpleContainer {
 
 
     protected void buildUi(PrescriptionSessionResponse prescription) {
-        _mainPanel.setContextSubTitle("" + "<h2>" + topic.getName() +  "</h2>");
-        
         buildUiInternal(prescription.getPrescriptionData());
     }
 
     private Map<String, List<InmhItemData>> _registeredResources = new HashMap<String, List<InmhItemData>>();
 
     public void buildUiInternal(PrescriptionData pData) {
+        final AccordionLayoutContainer accPanel = new AccordionLayoutContainer() {
+            @Override
+            protected void onExpand(ExpandEvent event) {
+                final Widget activeWidget = getActiveWidget();
+                if(activeWidget instanceof AccContentPanel) {
+                    if(__active != null) {
+                        __active.removeResource();
+                        __active = null;
+                    }
+                    __active = ((AccContentPanel)activeWidget);
+                    __active.updateGui();
+                }
+                
+                super.onExpand(event);
+            }
+            
+            
+        };
+        final AccordionLayoutAppearance appearance = GWT.<AccordionLayoutAppearance> create(AccordionLayoutAppearance.class);
+        accPanel.setExpandMode(ExpandMode.SINGLE_FILL);
         
-        FlowLayoutContainer flow = new FlowLayoutContainer();
+        
         
         this.prescriptionData = pData;
         List<PrescriptionSessionDataResource> resources = pData.getCurrSession().getInmhResources();
-
-        flow.clear();
-        
-        //setScrollMode(ScrollMode.NONE);
-        flow.addStyleName("prescription-cm-gui-definition-resource-panel");
-
-        //boolean isCustomProgram = false;
 
         ResourceMenuButton.RegisterCallback callback = new ResourceMenuButton.RegisterCallback() {
             @Override
@@ -127,14 +165,12 @@ public class TopicExplorer extends SimpleContainer {
             
             @Override
             public void loadResourceIntoHistory(String label, String item) {
-                List<InmhItemData> resources = _registeredResources.get(label);
+                List<InmhItemData> resources = _registeredResources.get(label.toLowerCase());
                 Info.display("Load",  "Load resource: " + label + ", " + item);
                 
-                int index = Integer.parseInt(item);
-                InmhItemData resource = resources.get(index);
-
-                _mainPanel.showResource(resource);
-
+//                int index = Integer.parseInt(item);
+//                InmhItemData resource = resources.get(index);
+                // _mainPanel.showResource(resource);
                 if(_callback != null) {
                     _callback.resourceIsLoaded();
                 }
@@ -145,11 +181,17 @@ public class TopicExplorer extends SimpleContainer {
                 return false;
             }
         };
-
+        
+        
         
         PrescriptionSessionDataResource review=null;
         // setTitle("Choose a resource type, then click one of its items.");
         for (PrescriptionSessionDataResource resource : resources) {
+            
+            
+            if(resource.getItems().size() == 0) {
+                continue;
+            }
             
             /** do not show EPPs
              * 
@@ -161,19 +203,30 @@ public class TopicExplorer extends SimpleContainer {
                 case RESULTS:
                     /** skip these */
                     continue;
+                    
+                case PRACTICE:
+                    resource.setLabel("Practice Problems");
+                    break;
+                    
 			    default:
 				    break;
             }
-            
+
+            String cntLabel = resource.getItems().size() + " item" + (resource.getItems().size() == 1?"":"s");
             if(resource.getType() == CmResourceType.WEBLINK) {
                 if(resource.getItems() != null && resource.getItems().size() == 1) {
                     resource.setLabel(resource.getItems().get(0).getTitle());
                 }
             }
             
-            ResourceMenuButton btnResource = new ResourceMenuButton(resource, callback);
+            
+            
+            ContentPanel cp = new AccContentPanel(appearance, resource);
+            cp.setHeadingText(resource.getLabel() + " (" + cntLabel + ")");
+            cp.getHeader().addStyleName("acc-content-panel");
+            // ResourceMenuButton btnResource = new ResourceMenuButton(resource, callback);
 
-            resourceButtons.put(resource.getType().label(), btnResource);
+            // resourceButtons.put(resource.getType().label(), btnResource);
             
             /** if a Custom Program, then make sure the results
              * button is disabled .. there are no quizzes.
@@ -182,11 +235,18 @@ public class TopicExplorer extends SimpleContainer {
                 review = resource;
             }
             else {
-                flow.add(btnResource);
-                flow.add(createFiller());
+                accPanel.add(cp);
             }
-            
         }
+
+        setWidget(accPanel);
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                accPanel.setActiveWidget(accPanel.getWidget(0));
+                forceLayout();
+            }
+        });
 
         //flowLayoutMain.add(vertPanelResources);
 
@@ -213,13 +273,156 @@ public class TopicExplorer extends SimpleContainer {
 //        }
         
         
-        ((SimplePanel)_guiContext.getWestWidget()).setWidget(flow);
+        // ((SimplePanel)_guiContext.getWestWidget()).setWidget(flow);
         
         
         
         /** load the first resource */
         callback.loadResourceIntoHistory(CmResourceType.REVIEW.label(),  "0");
     }
+
+    
+    static AccContentPanel __active;
+
+    class AccContentPanel extends ContentPanel {
+        private PrescriptionSessionDataResource resource;
+
+        public AccContentPanel(AccordionLayoutAppearance appearance, PrescriptionSessionDataResource resource) {
+            super(appearance);
+            this.resource = resource;
+        }
+        
+        public void removeResource() {
+            
+        }
+
+        public void updateGui() {
+            if(getWidget() == null) {
+                prepareResource(resource.getItems().get(0));
+                _callback.resourceIsLoaded();
+            }
+        }
+        
+        
+        WhiteboardResourceCallback whiteboardTutorCallback = new WhiteboardResourceCallback() {
+            public void ensureMaximizeResource() {}
+            public void ensureOptimizedResource() {}
+            public ResizeContainer getResizeContainer() {
+                return null;
+            }
+        };
+        
+        
+        TutorViewerProperties tutorViewerProperties = new TutorViewerProperties() {
+            @Override
+            public boolean shouldFireTutorEvents() {
+                return false;
+            }
+        };
+        
+        private void prepareResource(final InmhItemData which) {
+            try {
+                ResourceViewerFactory.ResourceViewerFactory_Client client = new ResourceViewerFactory.ResourceViewerFactory_Client() {
+                    @Override
+                    public void onUnavailable() {
+                        CatchupMathTools.showAlert("Resource not available");
+                    }
+
+                    @Override
+                    public void onSuccess(ResourceViewerFactory instance) {
+                        try {
+                            
+                            InmhItemData itemToShow = null;
+                            for(InmhItemData i: resource.getItems()) {
+                                if(i == which)    {
+                                    itemToShow = i;
+                                    break;
+                                }
+                            }
+                            if(itemToShow != null) {
+                                CmResourcePanel viewer = instance.create(itemToShow);
+                                if(viewer instanceof ResourceViewerImplTutor2) {
+                                    ((ResourceViewerImplTutor2)viewer).setWhiteboardCallback(whiteboardTutorCallback);
+                                    ((ResourceViewerImplTutor2)viewer).setTutorViewerProperties(tutorViewerProperties);
+                                }
+                                showResource(viewer, itemToShow.getTitle(), true);
+                            }
+                        } catch (Exception e) {
+                            CatchupMathTools.showAlert("Could not load resource: " + e.getLocalizedMessage());
+                        }
+                    }
+                };
+                ResourceViewerFactory.createAsync(client);
+            } catch (Exception hme) {
+                hme.printStackTrace();
+                CatchupMathTools.showAlert("Error: " + hme.getMessage());
+            }            
+        }
+
+
+        HorizontalLayoutContainer _toolbar=null;
+        BorderLayoutContainer _main=null;
+        private void showResource(CmResourcePanel viewer, String title, boolean b) {
+            if(_main == null) {
+                _main = new BorderLayoutContainer();
+                if(viewer.getContainerTools() != null && viewer.getContainerTools().size() > 0) {
+                    if(_toolbar == null) {
+                        _toolbar = new HorizontalLayoutContainer();
+                        _toolbar.getElement().setAttribute("style",  "margin: 5px");
+                        for(Widget t: viewer.getContainerTools()) {
+                            _toolbar.add(t);
+                        }
+                        if(resource.getItems().size() > 1) {
+                            final ComboBox<InmhItemData> combo = createItemCombo(resource.getItems());
+                            combo.addSelectionHandler(new SelectionHandler<InmhItemData>() {
+                                
+                                @Override
+                                public void onSelection(SelectionEvent<InmhItemData> event) {
+                                    InmhItemData item = combo.getCurrentValue();
+                                    prepareResource(item);
+                                }
+                            });
+                            combo.getElement().setAttribute("style",  "float: right;position: static !important;margin: 0 20px !important");
+                            _toolbar.add(combo);
+                        }
+                        
+                        _main.setNorthWidget(_toolbar, new BorderLayoutData(35));
+                    }
+                }
+                setWidget(_main);
+            }
+            _main.setCenterWidget(viewer.getResourcePanel());
+            
+            _callback.resourceIsLoaded();
+        }
+
+        public PrescriptionSessionDataResource getResource() {
+            return resource;
+        }
+
+        public void setResource(PrescriptionSessionDataResource resource) {
+            this.resource = resource;
+        }
+    }
     
     
+
+    interface ItemComboProps extends PropertyAccess<String> {
+        ModelKeyProvider<InmhItemData> file();
+        LabelProvider<InmhItemData> title();
+    }
+    ItemComboProps props = GWT.create(ItemComboProps.class);
+    private ComboBox<InmhItemData> createItemCombo(List<InmhItemData> list) {
+        ListStore<InmhItemData> store = new ListStore<InmhItemData>(props.file());
+        ComboBox<InmhItemData> combo = new ComboBox<InmhItemData>(store, props.title());
+        combo.setAllowBlank(false);
+        combo.setTriggerAction(TriggerAction.ALL);
+        for(InmhItemData i: list) {
+            if(!store.getAll().contains(i)) {
+                store.add(i);
+            }
+        }
+        combo.setValue(store.get(0));
+        return combo;
+    }
 }

@@ -163,7 +163,16 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             id.setType(CmResourceType.PRACTICE);
             id.setWidgetJsonArgs(sdata.getRpp().getWidgetJsonArgs());
             
-            problemsResource.getItems().add(id);
+            boolean found=false;
+            for(InmhItemData p: problemsResource.getItems()) {
+                if(p.getFile().equals(id.getFile())) {
+                    found=true;
+                    break;
+                }
+            }
+            if(!found) {
+                problemsResource.getItems().add(id);
+            }
         }
 
         PrescriptionSessionDataResource lessonResource = new PrescriptionSessionDataResource();
