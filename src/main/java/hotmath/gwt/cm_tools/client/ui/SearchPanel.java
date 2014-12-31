@@ -206,8 +206,7 @@ public class SearchPanel extends BorderLayoutContainer {
     	TopicMatch si = _grid.getSelectionModel().getSelectedItem();
     	if(si != null) {
     	    
-    	    TopicExplorer topicExplorer = new TopicExplorer(si.getTopic());
-    	    topicExplorer.setCallback(_theCallback);
+    	    TopicExplorer topicExplorer = new TopicExplorer(si.getTopic(), _theCallback);
     	    _explorerWrapper.setWidget(topicExplorer);
     	    _explorerWrapper.forceLayout();
     	    

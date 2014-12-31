@@ -53,7 +53,7 @@ public class CatchupMathSharedTests {
         else if(test.equals("TopicExplorerManager")) {
             TopicExplorerManager.startTest();
         }
-        else if(test.equals("SearchPanel")) {
+        else if(test.equals("SearchCombo")) {
             SearchComboBoxPanel.startTest();
         }
         else if(test.equals("ccss")) {

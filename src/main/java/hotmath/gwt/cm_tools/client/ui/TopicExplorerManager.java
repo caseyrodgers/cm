@@ -6,6 +6,7 @@ import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_tools.client.ui.TopicExplorer.Callback;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -94,7 +95,12 @@ public class TopicExplorerManager extends GWindow {
 
     public void exploreTopic(final Topic topic) {
         // Window.open("/loginServer?explore=" + topic.getFile(),"_new", "");
-        Widget panel = new TopicExplorer(topic).asWidget();
+        Widget panel = new TopicExplorer(topic, new Callback() {
+            @Override
+            public void resourceIsLoaded() {
+                // update ui?
+            }
+        }).asWidget();
         _tabPanel.add(panel, new TabItemConfig(topic.getName(),  true));
         _tabPanel.setActiveWidget(panel);
         setVisible(true);

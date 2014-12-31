@@ -30,6 +30,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
@@ -38,6 +39,7 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer.AccordionLayoutAppearance;
 import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer.ExpandMode;
@@ -48,6 +50,8 @@ import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.ExpandEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.info.Info;
 
@@ -57,8 +61,9 @@ public class TopicExplorer extends SimpleContainer {
     
     private PrescriptionData prescriptionData;
     private TopicExplorerGuiContext _guiContext;
-    public TopicExplorer(Topic topic) {
+    public TopicExplorer(Topic topic, Callback callback) {
         this.topic = topic;
+        this._callback = callback;
     
         _guiContext = new TopicExplorerGuiContext(topic);
         
@@ -145,12 +150,10 @@ public class TopicExplorer extends SimpleContainer {
                 
                 super.onExpand(event);
             }
-            
-            
         };
         final AccordionLayoutAppearance appearance = GWT.<AccordionLayoutAppearance> create(AccordionLayoutAppearance.class);
         accPanel.setExpandMode(ExpandMode.SINGLE_FILL);
-        
+        accPanel.setActiveOnTop(true);
         
         
         this.prescriptionData = pData;
@@ -310,7 +313,9 @@ public class TopicExplorer extends SimpleContainer {
                 
                 InmhItemData item = resource.getItems().get(0);
                 prepareResource(item);
-                _callback.resourceIsLoaded();
+                if(_callback != null) {
+                    _callback.resourceIsLoaded();
+                }
             }
         }
         
@@ -373,6 +378,7 @@ public class TopicExplorer extends SimpleContainer {
 
         HorizontalLayoutContainer _toolbar=null;
         BorderLayoutContainer _main=null;
+        ComboBox<InmhItemData> _combo;
         private void showResource(CmResourcePanel viewer, String title, boolean b) {
             if(_main == null) {
                 _main = new BorderLayoutContainer();
@@ -390,17 +396,42 @@ public class TopicExplorer extends SimpleContainer {
                         _toolbar.add(t);
                     }
                     if(resource.getItems().size() > 1) {
-                        final ComboBox<InmhItemData> combo = createItemCombo(resource.getItems());
-                        combo.addSelectionHandler(new SelectionHandler<InmhItemData>() {
+                        
+                        FlowPanel flow = new FlowPanel();
+                        
+                        _combo = createItemCombo(resource.getItems());
+                        _combo.addSelectionHandler(new SelectionHandler<InmhItemData>() {
                             
                             @Override
                             public void onSelection(SelectionEvent<InmhItemData> event) {
-                                InmhItemData item = combo.getCurrentValue();
+                                InmhItemData item = _combo.getCurrentValue();
                                 prepareResource(item);
                             }
                         });
-                        combo.getElement().setAttribute("style",  "float: right;position: static !important;margin: 0 20px !important");
-                        _toolbar.add(combo);
+                        // combo.getElement().setAttribute("style",  "float: right;position: static !important;margin: 0 20px !important");
+                        TextButton prev = new TextButton("<", new SelectHandler() {
+                            @Override
+                            public void onSelect(SelectEvent event) {
+                                moveToItem(-1);
+                            }
+                        });
+                        TextButton next = new TextButton(">", new SelectHandler() {
+                            
+                            @Override
+                            public void onSelect(SelectEvent event) {
+                                moveToItem(1);
+                            }
+                        });
+                        FlowPanel flow2 = new FlowPanel();
+                        flow2.add(prev);
+                        flow2.add(next);
+                        flow2.getElement(). setAttribute("style",  "float: right;");
+                        next.getElement().setAttribute("style",  "float: right;position: static !important");
+                        prev.getElement().setAttribute("style",  "float: right;position: static !important");
+                        _combo.getElement().setAttribute("style",  "float: right;position: static !important;margin: 0 20px 5px 0 !important");
+                        _toolbar.add(_combo);
+                        _toolbar.add(next);
+                        _toolbar.add(prev);
                     }
                     
                     _main.setNorthWidget(_toolbar, new BorderLayoutData(35));
@@ -409,7 +440,30 @@ public class TopicExplorer extends SimpleContainer {
             }
             _main.setCenterWidget(viewer.getResourcePanel());
             
-            _callback.resourceIsLoaded();
+            if(_callback != null) {
+                _callback.resourceIsLoaded();
+            }
+        }
+
+        protected void moveToItem(int amount) {
+            InmhItemData val = _combo.getCurrentValue();
+            List<InmhItemData> items = _combo.getStore().getAll();
+            int which=0;
+            for(InmhItemData item: items) {
+                if(item == val) {
+                    break;
+                }
+                which++;
+            }
+            which += amount;
+            if(which > items.size()) {
+                which = 0;
+            }
+            else if(which < 0) {
+                which = items.size()-1;
+            }
+            _combo.setValue(items.get(which));
+            prepareResource(items.get(which));            
         }
 
         public PrescriptionSessionDataResource getResource() {
@@ -442,3 +496,4 @@ public class TopicExplorer extends SimpleContainer {
         return combo;
     }
 }
+
