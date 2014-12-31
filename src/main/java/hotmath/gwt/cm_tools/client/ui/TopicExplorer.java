@@ -208,6 +208,16 @@ public class TopicExplorer extends SimpleContainer {
                     resource.setLabel("Practice Problems");
                     break;
                     
+                    
+                case WEBLINK_EXTERNAL:
+                    resource.setType(CmResourceType.WEBLINK);
+                    break;
+                    
+                case WEBLINK:
+                    for(InmhItemData i: resource.getItems()) {
+                        i.setType(CmResourceType.WEBLINK);
+                    }
+                    break;
 			    default:
 				    break;
             }
@@ -298,7 +308,9 @@ public class TopicExplorer extends SimpleContainer {
 
         public void updateGui() {
             if(getWidget() == null) {
-                prepareResource(resource.getItems().get(0));
+                
+                InmhItemData item = resource.getItems().get(0);
+                prepareResource(item);
                 _callback.resourceIsLoaded();
             }
         }
