@@ -942,8 +942,7 @@ div[name=steps_tail]
 	list-style-position: inside;
 }
 
-.cm-welcome-panel a:link,.cm-welcome-panel a:visited,.cm-welcome-panel a:active
-	{
+.cm-welcome-panel a:link,.cm-welcome-panel a:visited,.cm-welcome-panel a:active {
 	margin-left: 10px;
 	text-decoration: none;
 }
