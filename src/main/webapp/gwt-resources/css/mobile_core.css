@@ -37,7 +37,10 @@
     color: red;
 }
 
-
 .popup-title {
    width: 100%;
+}
+
+.video-player-mobile {
+	z-index: 9999;
 }
