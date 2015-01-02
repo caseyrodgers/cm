@@ -3,7 +3,8 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.Topic;
-import hotmath.gwt.cm_tools.client.ui.TopicExplorer.Callback;
+import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer;
+import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -37,7 +38,7 @@ public class TopicExplorerPanel extends GWindow {
     }
     
     public void exploreTopic(Topic topic) {
-        Widget topicPanel = new TopicExplorer(topic, new Callback() {
+        Widget topicPanel = new TopicExplorer(topic, new TopicExplorerCallback() {
             @Override
             public void resourceIsLoaded() {
                 forceLayout();

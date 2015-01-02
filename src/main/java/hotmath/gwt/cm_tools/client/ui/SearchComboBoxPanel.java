@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchBundle;
+import hotmath.gwt.cm_tools.client.ui.search.TopicExplorerManager;
 
 import java.util.List;
 

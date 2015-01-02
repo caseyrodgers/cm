@@ -10,11 +10,12 @@ import hotmath.gwt.cm_tools.client.ui.GradeLevelChooser;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudentAdvancedOptions;
 import hotmath.gwt.cm_tools.client.ui.SearchComboBoxPanel;
-import hotmath.gwt.cm_tools.client.ui.SearchPanel;
-import hotmath.gwt.cm_tools.client.ui.TopicExplorerManager;
 import hotmath.gwt.cm_tools.client.ui.TopicExplorerWindow;
 import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
+import hotmath.gwt.cm_tools.client.ui.search.Junk;
+import hotmath.gwt.cm_tools.client.ui.search.SearchPanel;
+import hotmath.gwt.cm_tools.client.ui.search.TopicExplorerManager;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplActivity;
 import hotmath.gwt.cm_tools.client.util.CreateTemplateFromClipboardImage;
 import hotmath.gwt.cm_tools.client.util.WhiteboardTemplatesManager;
@@ -77,9 +78,11 @@ public class CatchupMathSharedTests {
         else if(test.equals("clipboard_image")) {
             CreateTemplateFromClipboardImage.doTest();
         }
-
         else if(test.equals("custom_problem_add_folder")) {
         	AddFolderDialog.doTest();
+        }
+        else if(test.equals("Junk")) {
+            Junk.doTest();
         }
         else {
         	return false;

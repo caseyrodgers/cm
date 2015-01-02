@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_tools.client.ui;
+package hotmath.gwt.cm_tools.client.ui.search;
 
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.util.GwtTester;
@@ -7,9 +7,11 @@ import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchBundle;
 import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchStyle;
-import hotmath.gwt.cm_tools.client.ui.TopicExplorer.Callback;
+import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 
@@ -65,21 +67,9 @@ import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 
 public class SearchPanel extends BorderLayoutContainer {
-//	ReviewPanel _reviewPanel = new ReviewPanel(new ReviewPanelCallback() {
-//        @Override
-//        public void exporeTopic(InmhItemData item) {
-//            TopicExplorerManager.getInstance().exploreTopic(new hotmath.gwt.cm_rpc.client.model.Topic(item.getTitle(), item.getFile(), ""));
-//        }
-//        
-//        @Override
-//        public void newTopicLoaded() {
-//            _grid.getSelectionModel().deselectAll();
-//        }
-//    });
-	
-	
+    
+    
 	SimpleContainer _explorerWrapper = new SimpleContainer();
-	
     TextField _inputBox = new TextField();
     Grid<TopicMatch> _grid;
     private ContentPanel _westPanel;
@@ -195,7 +185,7 @@ public class SearchPanel extends BorderLayoutContainer {
         return _grid;
     }
     
-    Callback _theCallback = new Callback() {
+    TopicExplorerCallback _theCallback = new TopicExplorerCallback() {
         @Override
         public void resourceIsLoaded() {
             _explorerWrapper.forceLayout();

@@ -114,11 +114,11 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
         __thisInstance = this;
         CmLogger.info("Catchup Math Startup");
 
-        /*  if(CatchupMathTests.runTest()) {
+          if(CatchupMathTests.runTest()) {
                 CmBusyManager.showLoading(false);
                 return;
             }
-        */
+        
 
         // GXT.setDefaultTheme(Theme.GRAY, true);
 

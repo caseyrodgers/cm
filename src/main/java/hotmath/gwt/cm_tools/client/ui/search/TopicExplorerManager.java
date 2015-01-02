@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_tools.client.ui;
+package hotmath.gwt.cm_tools.client.ui.search;
 
 import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEvent;
 import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEventHandler;
@@ -6,14 +6,14 @@ import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_tools.client.ui.TopicExplorer.Callback;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.widget.core.client.TabItemConfig;
-import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -31,9 +31,7 @@ public class TopicExplorerManager extends GWindow {
         return __instance != null;
     }
     
-    TabPanel _tabPanel = new TabPanel();
     SearchPanel _searchPanel = new SearchPanel();
-    
     
     private TopicExplorerManager() {
         super(true);
@@ -46,15 +44,7 @@ public class TopicExplorerManager extends GWindow {
         
         setModal(false);
         
-        _tabPanel.add(_searchPanel, new TabItemConfig("Search",  false));
         setWidget(_searchPanel);
-        
-//        addTool(new TextButton("Search", new SelectHandler() {
-//            @Override
-//            public void onSelect(SelectEvent event) {
-//                new SearchPanel().showWindow();
-//            }
-//        }));
         
         addTool(new TextButton("Close Search", new SelectHandler() {
             @Override
@@ -88,21 +78,26 @@ public class TopicExplorerManager extends GWindow {
 
     
     public void showSearch() {
-        _tabPanel.setActiveWidget(_searchPanel);
+        setWidget(_searchPanel);
+        forceLayout();
         setVisible(true);
     }
    
 
     public void exploreTopic(final Topic topic) {
         // Window.open("/loginServer?explore=" + topic.getFile(),"_new", "");
-        Widget panel = new TopicExplorer(topic, new Callback() {
+        Widget panel = new TopicExplorer(topic, new TopicExplorerCallback() {
             @Override
             public void resourceIsLoaded() {
                 // update ui?
             }
         }).asWidget();
-        _tabPanel.add(panel, new TabItemConfig(topic.getName(),  true));
-        _tabPanel.setActiveWidget(panel);
+        
+        
+        BorderLayoutContainer blc = new BorderLayoutContainer();
+        setWidget(panel);
+        forceLayout();
+        
         setVisible(true);
     }
 

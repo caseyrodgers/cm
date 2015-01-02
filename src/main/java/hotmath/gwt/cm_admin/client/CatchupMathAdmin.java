@@ -59,12 +59,12 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         CmBusyManager.setViewPort(mainPort);
 
 
-        /*
+        
         if(CatchupMathAdminTests.runTest()) {
             CmBusyManager.setBusy(false);
             return;
         }
-        */
+        
 
 //        if(launchSub != null) {
 //            if(launchSub.startsWith("student_details")) {

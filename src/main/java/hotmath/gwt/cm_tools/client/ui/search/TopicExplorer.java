@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_tools.client.ui;
+package hotmath.gwt.cm_tools.client.ui.search;
 
 import hotmath.gwt.cm_core.client.event.RppHasBeenViewedEvent;
 import hotmath.gwt.cm_core.client.event.RppHasBeenViewedEventHandler;
@@ -11,11 +11,15 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.MyIconButton;
+import hotmath.gwt.cm_tools.client.ui.ResourceMenuButton;
+import hotmath.gwt.cm_tools.client.ui.TopicExplorerGuiContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.WhiteboardResourceCallback;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2.TutorViewerProperties;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -30,7 +34,8 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
@@ -39,17 +44,15 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.TabItemConfig;
+import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer.AccordionLayoutAppearance;
-import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer.ExpandMode;
-import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
-import com.sencha.gxt.widget.core.client.event.ExpandEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
@@ -61,7 +64,7 @@ public class TopicExplorer extends SimpleContainer {
     
     private PrescriptionData prescriptionData;
     private TopicExplorerGuiContext _guiContext;
-    public TopicExplorer(Topic topic, Callback callback) {
+    public TopicExplorer(Topic topic, TopicExplorerCallback callback) {
         this.topic = topic;
         this._callback = callback;
     
@@ -70,7 +73,23 @@ public class TopicExplorer extends SimpleContainer {
         CenterLayoutContainer lc = new CenterLayoutContainer();
         lc.setWidget(new HTML("<h1>Loading " + topic.getName() + "</h1>"));
         
-        setWidget(lc);
+        
+       
+        
+//        setNorthWidget(new ResourceToolBar(new ResourceToolBar.Callback() {
+//            @Override
+//            public void loadResourceType(CmResourceType type) {
+//                for(int i=0;i<_cardLayout.getWidgetCount();i++) {
+//                    AccContentPanel w = (AccContentPanel)_cardLayout.getWidget(i);
+//                    if(w.getResource().getType() == type) {
+//                        _cardLayout.setActiveWidget(w);
+//                        break;
+//                    }
+//                }                
+//            }
+//        }), new BorderLayoutData(45));
+        
+        setWidget(tabPanel);
 
         loadDataFromServer();
         
@@ -82,18 +101,19 @@ public class TopicExplorer extends SimpleContainer {
         });
     }
 
+
     @Override
     public Widget asWidget() {
         return this;
     }
 
     
-    static public interface Callback {
+    static public interface TopicExplorerCallback {
         void resourceIsLoaded();
     }
     
     Map<String, ResourceMenuButton> resourceButtons = new HashMap<String, ResourceMenuButton>();
-    private Callback _callback;
+    private TopicExplorerCallback _callback;
     
     private void loadDataFromServer() {
         new RetryAction<PrescriptionSessionResponse>() {
@@ -110,7 +130,7 @@ public class TopicExplorer extends SimpleContainer {
                 
                 DefaultGxtLoadingPanel loading = new DefaultGxtLoadingPanel();
                 setWidget(loading);
-                forceLayout();
+                
                 
                 buildUi(prescription);
                 
@@ -119,7 +139,7 @@ public class TopicExplorer extends SimpleContainer {
         
     }
     
-    public void setCallback(Callback callback) {
+    public void setCallback(TopicExplorerCallback callback) {
         this._callback = callback;
     }
     
@@ -134,11 +154,31 @@ public class TopicExplorer extends SimpleContainer {
 
     private Map<String, List<InmhItemData>> _registeredResources = new HashMap<String, List<InmhItemData>>();
 
+    CardLayoutContainer _cardLayout;
+    TabPanel tabPanel;
     public void buildUiInternal(PrescriptionData pData) {
-        final AccordionLayoutContainer accPanel = new AccordionLayoutContainer() {
+        
+        _cardLayout = new CardLayoutContainer() {
             @Override
-            protected void onExpand(ExpandEvent event) {
-                final Widget activeWidget = getActiveWidget();
+            public void setActiveWidget(Widget widget) {
+                if(widget instanceof AccContentPanel) {
+                  if(__active != null) {
+                      __active.removeResource();
+                      __active = null;
+                  }
+                  __active = ((AccContentPanel)widget);
+                  __active.updateGui();
+             
+                  super.setActiveWidget(widget);
+            }
+        }};
+        
+        tabPanel = new TabPanel();
+        
+        tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
+            @Override
+            public void onSelection(SelectionEvent<Widget> event) {
+                final Widget activeWidget = tabPanel.getActiveWidget();
                 if(activeWidget instanceof AccContentPanel) {
                     if(__active != null) {
                         __active.removeResource();
@@ -147,14 +187,8 @@ public class TopicExplorer extends SimpleContainer {
                     __active = ((AccContentPanel)activeWidget);
                     __active.updateGui();
                 }
-                
-                super.onExpand(event);
             }
-        };
-        final AccordionLayoutAppearance appearance = GWT.<AccordionLayoutAppearance> create(AccordionLayoutAppearance.class);
-        accPanel.setExpandMode(ExpandMode.SINGLE_FILL);
-        accPanel.setActiveOnTop(true);
-        
+        });
         
         this.prescriptionData = pData;
         List<PrescriptionSessionDataResource> resources = pData.getCurrSession().getInmhResources();
@@ -203,6 +237,9 @@ public class TopicExplorer extends SimpleContainer {
                 case TESTSET:
                 case ACTIVITY_STANDARD:
                 case RESULTS:
+                case WEBLINK_EXTERNAL:
+                case WEBLINK:
+                    
                     /** skip these */
                     continue;
                     
@@ -210,16 +247,6 @@ public class TopicExplorer extends SimpleContainer {
                     resource.setLabel("Practice Problems");
                     break;
                     
-                    
-                case WEBLINK_EXTERNAL:
-                    resource.setType(CmResourceType.WEBLINK);
-                    break;
-                    
-                case WEBLINK:
-                    for(InmhItemData i: resource.getItems()) {
-                        i.setType(CmResourceType.WEBLINK);
-                    }
-                    break;
 			    default:
 				    break;
             }
@@ -230,16 +257,9 @@ public class TopicExplorer extends SimpleContainer {
                     resource.setLabel(resource.getItems().get(0).getTitle());
                 }
             }
-            
-            
-            
-            ContentPanel cp = new AccContentPanel(appearance, resource);
-            cp.setHeadingText(resource.getLabel() + " (" + cntLabel + ")");
-            cp.getHeader().addStyleName("acc-content-panel");
-            // ResourceMenuButton btnResource = new ResourceMenuButton(resource, callback);
 
-            // resourceButtons.put(resource.getType().label(), btnResource);
-            
+            AccContentPanel cp = new AccContentPanel(resource);
+            cp.setHeadingText(resource.getLabel());
             /** if a Custom Program, then make sure the results
              * button is disabled .. there are no quizzes.
              */
@@ -247,75 +267,72 @@ public class TopicExplorer extends SimpleContainer {
                 review = resource;
             }
             else {
-                accPanel.add(cp);
+                // _cardLayout.add(cp);
+                TabItemConfig tabConfig = new TabItemConfig(resource.getLabel() + " (" + cntLabel + ")", false);
+                tabConfig.setIcon( getResourceIcon(resource.getType()));
+                tabPanel.add(cp,tabConfig);
             }
         }
 
-        setWidget(accPanel);
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-            @Override
-            public void execute() {
-                accPanel.setActiveWidget(accPanel.getWidget(0));
-                forceLayout();
-            }
-        });
-
-        //flowLayoutMain.add(vertPanelResources);
-
-        /**
-         * Add the standard resources
-         * 
-         */
-
-//        flow.add(new HTML("<hr class='resource-separator'/>"));
-//        flow.add(createFiller());
-//
-//        ResourceMenuButton rbtn = new ResourceMenuButton(review, callback);
-//        if(isCustomProgram) {
-//            rbtn.setEnabled(false);
-//        }
-//        flow.add(rbtn);
-//        flow.add(createFiller());
-//
-//        for (PrescriptionSessionDataResource resource : new CmInmhStandardResources()) {
-//            ResourceMenuButton btn = new ResourceMenuButton(resource, callback);
-//            flow.add(btn);
-//            flow.add(createFiller());
-//            resourceButtons.put(resource.getType().label(), btn);
-//        }
+        //_cardLayout.setActiveWidget(_cardLayout.getWidget(0));
         
-        
-        // ((SimplePanel)_guiContext.getWestWidget()).setWidget(flow);
-        
-        
+        setWidget(tabPanel);
         
         /** load the first resource */
         callback.loadResourceIntoHistory(CmResourceType.REVIEW.label(),  "0");
+        
+        
+        
     }
 
     
+    private ImageResource getResourceIcon(CmResourceType type) {
+        switch(type) {
+            case ACTIVITY:
+                return SearchResources.INSTANCE.resourceActivityImage();
+                
+            case VIDEO:
+                return SearchResources.INSTANCE.resourceVideoImage();
+                
+            case PRACTICE:
+                return SearchResources.INSTANCE.resourcePracticeImage();
+                
+            case REVIEW:
+                return SearchResources.INSTANCE.resourceLessonImage();
+                
+            default:
+                CmMessageBox.showAlert("Unknown CmResourceType: " + type);
+        }
+        
+        
+        return null;
+    }
+
     static AccContentPanel __active;
 
     class AccContentPanel extends ContentPanel {
         private PrescriptionSessionDataResource resource;
 
-        public AccContentPanel(AccordionLayoutAppearance appearance, PrescriptionSessionDataResource resource) {
-            super(appearance);
+        public AccContentPanel(PrescriptionSessionDataResource resource) {
             this.resource = resource;
         }
         
         public void removeResource() {
-            
         }
 
         public void updateGui() {
             if(getWidget() == null) {
-                
                 InmhItemData item = resource.getItems().get(0);
-                prepareResource(item);
                 if(_callback != null) {
-                    _callback.resourceIsLoaded();
+                    prepareResource(item);
+                    new Timer() {
+                        @Override
+                        public void run() {
+                            _callback.resourceIsLoaded();
+                        }
+                    }.schedule(1000);
                 }
+                forceLayout();
             }
         }
         
@@ -377,11 +394,11 @@ public class TopicExplorer extends SimpleContainer {
 
 
         HorizontalLayoutContainer _toolbar=null;
-        BorderLayoutContainer _main=null;
         ComboBox<InmhItemData> _combo;
-        private void showResource(CmResourcePanel viewer, String title, boolean b) {
-            if(_main == null) {
-                _main = new BorderLayoutContainer();
+
+
+        private void showResource(final CmResourcePanel viewer, String title, boolean b) {
+            if(getWidget() ==  null) {
                 List<Widget> tools = new ArrayList<Widget>();
                 if(viewer.getContainerTools() == null) {
                     tools = new ArrayList<Widget>();     
@@ -389,57 +406,60 @@ public class TopicExplorer extends SimpleContainer {
                 else {
                     tools = viewer.getContainerTools();
                 }
-                if(_toolbar == null) {
-                    _toolbar = new HorizontalLayoutContainer();
-                    _toolbar.getElement().setAttribute("style",  "margin: 5px");
-                    for(Widget t: tools) {
-                        _toolbar.add(t);
-                    }
-                    if(resource.getItems().size() > 1) {
-                        
-                        FlowPanel flow = new FlowPanel();
-                        
-                        _combo = createItemCombo(resource.getItems());
-                        _combo.addSelectionHandler(new SelectionHandler<InmhItemData>() {
-                            
-                            @Override
-                            public void onSelection(SelectionEvent<InmhItemData> event) {
-                                InmhItemData item = _combo.getCurrentValue();
-                                prepareResource(item);
-                            }
-                        });
-                        // combo.getElement().setAttribute("style",  "float: right;position: static !important;margin: 0 20px !important");
-                        TextButton prev = new TextButton("<", new SelectHandler() {
-                            @Override
-                            public void onSelect(SelectEvent event) {
-                                moveToItem(-1);
-                            }
-                        });
-                        TextButton next = new TextButton(">", new SelectHandler() {
-                            
-                            @Override
-                            public void onSelect(SelectEvent event) {
-                                moveToItem(1);
-                            }
-                        });
-                        FlowPanel flow2 = new FlowPanel();
-                        flow2.add(prev);
-                        flow2.add(next);
-                        flow2.getElement(). setAttribute("style",  "float: right;");
-                        next.getElement().setAttribute("style",  "float: right;position: static !important");
-                        prev.getElement().setAttribute("style",  "float: right;position: static !important");
-                        _combo.getElement().setAttribute("style",  "float: right;position: static !important;margin: 0 20px 5px 0 !important");
-                        _toolbar.add(_combo);
-                        _toolbar.add(next);
-                        _toolbar.add(prev);
-                    }
-                    
-                    _main.setNorthWidget(_toolbar, new BorderLayoutData(35));
+                
+                for(Widget t: tools) {
+                    addTool(t);
                 }
-                setWidget(_main);
+                if(resource.getItems().size() > 1) {
+                    _combo = createItemCombo(resource.getItems());
+                    _combo.addSelectionHandler(new SelectionHandler<InmhItemData>() {
+                        @Override
+                        public void onSelection(SelectionEvent<InmhItemData> event) {
+                            InmhItemData item = _combo.getCurrentValue();
+                            prepareResource(item);
+                        }
+                    });
+                    // combo.getElement().setAttribute("style",  "float: right;position: static !important;margin: 0 20px !important");
+                    TextButton prev = new TextButton("<", new SelectHandler() {
+                        @Override
+                        public void onSelect(SelectEvent event) {
+                            moveToItem(-1);
+                        }
+                    });
+                    prev.setToolTip("Move to previous item");
+                    TextButton next = new TextButton(">", new SelectHandler() {
+                        @Override
+                        public void onSelect(SelectEvent event) {
+                            moveToItem(1);
+                        }
+                    });
+                    next.setToolTip("Move to next item");
+                    prev.getElement().setAttribute("style",  "margin-left: 20px");
+                    addTool(prev);
+                    addTool(_combo);
+                    addTool(next);
+                }
             }
-            _main.setCenterWidget(viewer.getResourcePanel());
             
+            setWidget(viewer.getResourcePanel());
+            
+            if(viewer.needForcedUiRefresh()) {
+                viewer.getResourcePanel().setVisible(false);
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        viewer.getResourcePanel().setVisible(true);
+                        forceLayout();
+                    }
+                });
+            }
+            else {
+                forceLayout();
+            }
+            
+            
+            forceLayout();
+
             if(_callback != null) {
                 _callback.resourceIsLoaded();
             }
@@ -456,7 +476,7 @@ public class TopicExplorer extends SimpleContainer {
                 which++;
             }
             which += amount;
-            if(which > items.size()) {
+            if(which > items.size()-1) {
                 which = 0;
             }
             else if(which < 0) {
@@ -486,6 +506,8 @@ public class TopicExplorer extends SimpleContainer {
         ListStore<InmhItemData> store = new ListStore<InmhItemData>(props.file());
         ComboBox<InmhItemData> combo = new ComboBox<InmhItemData>(store, props.title());
         combo.setAllowBlank(false);
+        combo.setForceSelection(true);
+        combo.setEditable(false);
         combo.setTriggerAction(TriggerAction.ALL);
         for(InmhItemData i: list) {
             if(!store.getAll().contains(i)) {
@@ -497,3 +519,53 @@ public class TopicExplorer extends SimpleContainer {
     }
 }
 
+
+
+
+
+class ResourceToolBar extends FlowLayoutContainer {
+    public interface Callback {
+        void loadResourceType(CmResourceType type);
+    }
+    public ResourceToolBar(final Callback callback) {
+        final MyIconButton resourceActivityButton = new MyIconButton("search-resource-activity-btn");
+        resourceActivityButton.addSelectHandler(new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
+                callback.loadResourceType(CmResourceType.ACTIVITY);
+            }
+        });
+        add(resourceActivityButton);
+ 
+        final MyIconButton resourceVideoButton = new MyIconButton("search-resource-video-btn");
+        resourceVideoButton.addSelectHandler(new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
+                callback.loadResourceType(CmResourceType.VIDEO);
+            }
+        });
+        add(resourceVideoButton);
+        
+        final MyIconButton resourceProblemButton = new MyIconButton("search-resource-problem-btn");
+        resourceProblemButton.addSelectHandler(new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
+                callback.loadResourceType(CmResourceType.PRACTICE);
+            }
+        });
+        add(resourceProblemButton);
+         
+        final MyIconButton resourceLessonButton = new MyIconButton("search-resource-lesson-btn");
+        resourceLessonButton.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                callback.loadResourceType(CmResourceType.REVIEW);
+            }
+        });
+        add(resourceLessonButton);
+        
+   }
+}
