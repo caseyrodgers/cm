@@ -298,14 +298,14 @@ public class InmhItemData {
 
             problemNumberToTry += start;
 
-            logger.info("trying random problem: " + problemNumberToTry);
+            logger.debug("trying random problem: " + problemNumberToTry);
 
             // only if not already read
             if(!added.contains(problemNumberToTry)) {
                 added.add(problemNumberToTry);
                 String activePid = lookupActivePid(conn,book, chapter, section, problemSet, problemNumberToTry);
                 
-                logger.info("Read random pid: " + activePid);
+                logger.debug("Read random pid: " + activePid);
                 
 
                 if(activePid != null) {
