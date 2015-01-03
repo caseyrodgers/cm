@@ -746,7 +746,7 @@ div[name=steps_tail]
 }
 
 .tutor_solution_wrapper {
-	
+	min-width: 450px;
 }
 
 #show-work-force {
@@ -1428,3 +1428,51 @@ SolutionSetCompleteDialog .results {
     line-height: 2em;
 }
 
+
+
+
+
+/** Search releated button icon images */
+.search-resource-lesson-btn {
+	background: url(../images/search/resource_lesson.png) no-repeat center left !important;
+	height: 39px !important;
+	width: 54px !important;
+	float: right;
+	margin: 4px;
+}
+.search-resource-lesson-btnOver {
+	background: url(../images/search/resource_lesson-over.png) no-repeat center left !important;
+}
+
+.search-resource-video-btn {
+	background: url(../images/search/resource_video.png) no-repeat center left !important;
+	height: 39px !important;
+	width: 31px !important;
+	float: right;
+	margin: 4px;
+}
+.search-resource-video-btnOver {
+	background: url(../images/search/resource_video-over.png) no-repeat center left !important;
+}
+
+.search-resource-problem-btn {
+	background: url(../images/search/resource_problem.png) no-repeat center left !important;
+	height: 39px !important;
+	width: 38px !important;
+	float: right;
+	margin: 4px;
+}
+.search-resource-problem-btnOver {
+	background: url(../images/search/resource_problem-over.png) no-repeat center left !important;
+}
+
+.search-resource-activity-btn {
+	background: url(../images/search/resource_activity.png) no-repeat center left !important;
+	height: 39px !important;
+	width: 42px !important;
+	float: right;
+	margin: 4px;
+}
+.search-resource-activity-btnOver {
+	background: url(../images/search/resource_activity-over.png) no-repeat center left !important;
+}
