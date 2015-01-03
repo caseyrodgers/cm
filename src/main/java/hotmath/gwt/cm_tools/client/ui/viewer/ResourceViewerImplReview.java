@@ -56,6 +56,10 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
         this.reviewCallback = callback;
     }
     
+    public void setRevieweCallback(ReviewCallback callback) {
+        this.reviewCallback = callback;
+    }
+    
     public ResourceViewerImplReview() {
         addStyleName(STYLE_NAME);
         setScrollMode(ScrollMode.AUTO);
@@ -112,7 +116,7 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
         return this;
     }
 
-    private void getLessonData() {
+    public void getLessonData() {
         final InmhItemData resource = getResourceItem();
         final String file = resource.getFile();
         new RetryAction<LessonResult>() {
