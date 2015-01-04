@@ -68,8 +68,9 @@ public class ShowWorkPanel2 extends Composite {
         this(whiteboardOutCallback, true);
     }
 
+    static int __whiteboardId;
     public ShowWorkPanel2(ShowWorkPanel2Callback whiteboardOutCallback, boolean setupWhiteboardNow) {
-        this(whiteboardOutCallback,setupWhiteboardNow,true, "whiteboard-1", 0, null);
+        this(whiteboardOutCallback,setupWhiteboardNow,true, "whiteboard-" + (__whiteboardId++), 0, null);
     }
 
     public ShowWorkPanel2(ShowWorkPanel2Callback whiteboardOutCallback, boolean setupWhiteboardNow, boolean isInteractive, String whiteboardId, int height, Widget parentWidget) {

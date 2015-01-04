@@ -139,7 +139,6 @@ public class AccContentPanel extends ContentPanel {
     protected void showResource(final CmResourcePanel viewer, String title, boolean b) {
         if(getWidget() ==  null) {
             List<Widget> tools = getContainerTools(viewer);
-            
             for(Widget t: tools) {
                 addTool(t);
             }
@@ -173,17 +172,17 @@ public class AccContentPanel extends ContentPanel {
                 addTool(next);
             }
         }
-        
         setWidget(viewer.getResourcePanel());
-        if(viewer.needForcedUiRefresh()) {
+        if(true || viewer.needForcedUiRefresh()) {
             viewer.getResourcePanel().setVisible(false);
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            new Timer() {
+                
                 @Override
-                public void execute() {
+                public void run() {
                     viewer.getResourcePanel().setVisible(true);
                     forceLayout();
                 }
-            });
+            }.schedule(1000);
         }
         if(_callback != null) {
             _callback.resourceIsLoaded();

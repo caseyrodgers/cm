@@ -7,6 +7,7 @@ import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.ShowWhiteboardWindow;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
 
 import com.google.gwt.core.client.Scheduler;
@@ -46,6 +47,14 @@ public class TopicExplorerManager extends GWindow {
         
         setWidget(_searchPanel);
         
+        addTool(new TextButton("Show Whiteboard", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                ShowWhiteboardWindow.getInstance().setVisible(true);
+            }
+        }));
+        
+        
         addTool(new TextButton("Close Search", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
@@ -54,6 +63,7 @@ public class TopicExplorerManager extends GWindow {
         }));
         setVisible(true);
         
+      
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {

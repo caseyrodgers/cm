@@ -299,6 +299,12 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
     ShowWorkPanel2 _showWorkPanel;
     
     
+    public void resizeWhiteboard(int height) {
+        if(_showWorkPanel != null) {
+            _showWorkPanel.resizeWhiteboard(height);
+        }
+    }
+    
     
     /** Central method to setup either tutor or whiteboard
      *  display modes.

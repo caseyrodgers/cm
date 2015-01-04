@@ -6,9 +6,7 @@ import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TopicExplorerWindow extends GWindow {
@@ -25,14 +23,13 @@ public class TopicExplorerWindow extends GWindow {
         Widget panel = new TopicExplorer(topic, new TopicExplorerCallback() {
             @Override
             public void resourceIsLoaded() {
-                
-                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                new Timer() {
+                    
                     @Override
-                    public void execute() {
-                        Window.alert("Test");
+                    public void run() {
                         forceLayout();
                     }
-                });
+                }.schedule(1000);
             }
         }).asWidget();
         setWidget(panel);

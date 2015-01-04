@@ -13,6 +13,9 @@ public class AccContentPanelFactory {
             case REVIEW:
                 return new AccContentPanelImplLesson(resource, callback);
                 
+            case PRACTICE:
+                return new AccContentPanelImplSolution(resource, callback);
+                
             case VIDEO:
                 return new AccContentPanelImplVideo(resource, callback);
                 
