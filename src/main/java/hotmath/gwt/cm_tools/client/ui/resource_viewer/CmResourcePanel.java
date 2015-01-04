@@ -122,7 +122,8 @@ public interface CmResourcePanel {
     /** does this resource require forced UI refresh, even
      * overriding the normal forceUpdate.
      * 
-     * THIS IS A HACK and is only required to work around a refresh bug with externally initialied code (outside of the ui refresh loop)
+     * THIS IS A HACK and is only required to work around a refresh bug with externally initialed code (outside of the ui refresh loop)
+     * such as Flash videos .. where there is an external stack executing ... seems to be a problem only in GXT 3.
      * 
      * @return
      */

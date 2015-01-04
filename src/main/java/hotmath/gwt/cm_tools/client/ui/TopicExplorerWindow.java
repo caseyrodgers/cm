@@ -6,6 +6,8 @@ import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TopicExplorerWindow extends GWindow {
@@ -22,14 +24,22 @@ public class TopicExplorerWindow extends GWindow {
         Widget panel = new TopicExplorer(topic, new TopicExplorerCallback() {
             @Override
             public void resourceIsLoaded() {
-                forceLayout();
+                
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        // CmMessageBox.showAlert("Test");
+                        forceLayout();
+                    }
+                });
             }
         }).asWidget();
         setWidget(panel);
 
         setModal(isModal);
-
         setVisible(true);
+
+
     }
 
     public static void startTest() {

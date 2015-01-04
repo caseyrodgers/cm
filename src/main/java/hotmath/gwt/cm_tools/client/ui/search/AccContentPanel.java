@@ -58,8 +58,9 @@ public class AccContentPanel extends ContentPanel {
                     }
                 }.schedule(1000);
             }
-            forceLayout();
+            
         }
+        forceLayout();
     }
     
     
@@ -174,7 +175,6 @@ public class AccContentPanel extends ContentPanel {
         }
         
         setWidget(viewer.getResourcePanel());
-        
         if(viewer.needForcedUiRefresh()) {
             viewer.getResourcePanel().setVisible(false);
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -185,13 +185,6 @@ public class AccContentPanel extends ContentPanel {
                 }
             });
         }
-        else {
-            forceLayout();
-        }
-        
-        
-        forceLayout();
-
         if(_callback != null) {
             _callback.resourceIsLoaded();
         }
