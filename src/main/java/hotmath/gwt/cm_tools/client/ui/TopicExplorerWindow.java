@@ -5,10 +5,10 @@ import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TopicExplorerWindow extends GWindow {
@@ -29,7 +29,7 @@ public class TopicExplorerWindow extends GWindow {
                 Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                     @Override
                     public void execute() {
-                        CmMessageBox.showAlert("Test");
+                        Window.alert("Test");
                         forceLayout();
                     }
                 });
