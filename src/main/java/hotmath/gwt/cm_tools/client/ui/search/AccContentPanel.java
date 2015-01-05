@@ -151,7 +151,7 @@ public class AccContentPanel extends ContentPanel {
                         prepareResource(item);
                     }
                 });
-                // combo.getElement().setAttribute("style",  "float: right;position: static !important;margin: 0 20px !important");
+                _combo.setWidth(200);
                 TextButton prev = new TextButton("<", new SelectHandler() {
                     @Override
                     public void onSelect(SelectEvent event) {
