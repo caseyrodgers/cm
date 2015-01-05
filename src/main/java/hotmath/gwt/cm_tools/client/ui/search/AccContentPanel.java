@@ -173,16 +173,15 @@ public class AccContentPanel extends ContentPanel {
             }
         }
         setWidget(viewer.getResourcePanel());
-        if(true || viewer.needForcedUiRefresh()) {
+        if(viewer.needForcedUiRefresh()) {
             viewer.getResourcePanel().setVisible(false);
             new Timer() {
-                
                 @Override
                 public void run() {
                     viewer.getResourcePanel().setVisible(true);
                     forceLayout();
                 }
-            }.schedule(1000);
+            }.schedule(1);
         }
         if(_callback != null) {
             _callback.resourceIsLoaded();

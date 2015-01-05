@@ -26,6 +26,10 @@ public class AccContentPanelImplSolution extends AccContentPanel {
     }
     
     
+
+    /** Remove all whiteboard buttons
+     * 
+     */
     @Override
     public List<Widget> getContainerTools(CmResourcePanel viewer) {
         List<Widget> tools = super.getContainerTools(viewer);
