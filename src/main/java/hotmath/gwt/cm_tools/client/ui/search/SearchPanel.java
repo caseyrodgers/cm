@@ -236,7 +236,7 @@ public class SearchPanel extends BorderLayoutContainer {
                 }
                 
                 if(_searchMessage.getText().length() > 0) {
-                    _searchMessage.setText("");
+                   // _searchMessage.setText("");
                 }
             }
         });
@@ -261,9 +261,6 @@ public class SearchPanel extends BorderLayoutContainer {
     
     
     private void searchForMatches() {
-        if(CmCore.isDebug()) {
-            Info.display("Searching", "Searching for matches ..");
-        }
         showSearchMessage("");
         String searchFor = _inputBox.getCurrentValue();
         if(searchFor == null || searchFor.length() < 2) {
@@ -276,6 +273,10 @@ public class SearchPanel extends BorderLayoutContainer {
     
     
     private void doSearch(final String searchFor) {
+        if(CmCore.isDebug()) {
+            Info.display("Searching", "Searching for matches ..");
+        }
+
         SearchTopicAction action = new SearchTopicAction(searchFor);
         
         showSearchMessage("Searching ...");
@@ -315,6 +316,7 @@ public class SearchPanel extends BorderLayoutContainer {
     
     protected void showSearchMessage(String message) {
         _searchMessage.setHTML("<div style='margin-top: 3px;color: red;font-weight: bold;'>" + message + "</div>");
+        forceLayout();
     }
 
     protected void enableMainArea(boolean b) {

@@ -38,7 +38,7 @@ public class TopicExplorerManager extends GWindow {
         super(true);
         
         setPixelSize(800, 600);
-        setHeadingText("Catchup Math Lesson Explorer");
+        setHeadingText("Search");
         setMaximizable(true);
         //setMinimizable(true);;
         // setCollapsible(true);
