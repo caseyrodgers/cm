@@ -9,7 +9,6 @@ import hotmath.gwt.cm_core.client.award.CmAwardPanel.AwardCallback;
 import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEvent;
 import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEventHandler;
 import hotmath.gwt.cm_core.client.model.SearchAllowMode;
-import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
@@ -25,7 +24,7 @@ import hotmath.gwt.cm_tools.client.ui.MyIconButton;
 import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.ui.ShowUserProgramStatusDialog;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
-import hotmath.gwt.cm_tools.client.ui.search.TopicExplorerManager;
+import hotmath.gwt.cm_tools.client.ui.search.SearchButton;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedHandler;
 import hotmath.gwt.shared.client.CmShared;
@@ -49,7 +48,6 @@ import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 public class HeaderPanel extends FlowLayoutContainer {
 
@@ -282,43 +280,22 @@ public class HeaderPanel extends FlowLayoutContainer {
                 }
             }
 
-           
-            final SexyButton searchButton = new SexyButton("Search");
-            searchButton.addStyleName("header-panel-search-btn");
-            searchButton.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    // new SearchComboBoxPanel().showWindow();
-                    TopicExplorerManager.getInstance().showSearch();
-                }
-            });
-            new QuickTip(searchButton).setToolTip("Search for lessons");
+            final SearchButton searchButton = new SearchButton();
             add(searchButton);
-            
-            final String _disabledTooltip = "Search (currently disabled) lets you view Catchup Math lessons including videos, practice problems, activities and more.";
-            final String _enabledTooltip = "Search lets you view Catchup Math lessons including practice problems, activities and videos.";
-
-            
-            
             /** if always disabled, no need to track changes */
             if(UserInfo.getInstance().getSearchAllowMode() == SearchAllowMode.DISABLED_ALWAYS) {
             	searchButton.setEnabled(false);
-            	searchButton.getElement().setAttribute("qtip",  _disabledTooltip);
             }
             else {
-                searchButton.getElement().setAttribute("qtip",  _enabledTooltip);
 		        CmRpcCore.EVENT_BUS.addHandler(CmQuizModeActivatedEvent.TYPE,  new CmQuizModeActivatedEventHandler() {
 		            @Override
 		            public void quizModeActivated(boolean yesNo) {
 		                if(UserInfo.getInstance().getSearchAllowMode() != SearchAllowMode.ENABLED_ALWAYS) {
 		                    searchButton.setEnabled(!yesNo);
-		                    searchButton.getElement().setAttribute("qtip",  !yesNo?_enabledTooltip:_disabledTooltip);
 		                }
 		            }
 		        });
             }
-
-            new QuickTip(searchButton);
             _helloInfo.setHTML(s);
         }
     }
