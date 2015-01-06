@@ -283,11 +283,11 @@ h1,h2,h3,h4 {
 }
 
 
-.header-panel-search-btn {
+.cm-search-btn {
 	position: absolute !important;
-	left: 405px;
+	left: 175px;
 	top: 4px;
-	height: 30px;
+	height: 35px;
 }
 
 
@@ -1400,7 +1400,7 @@ SolutionSetCompleteDialog .results {
 
 .student-assignment-button {
 	position: absolute;
-	left: 200px;
+	left: 220px;
 	top: 4px;
 }
 
@@ -1414,7 +1414,7 @@ SolutionSetCompleteDialog .results {
 }
 
 .cm-awards {
-	left: 280px;
+	left: 300px;
 	top: 10px;
 	width: 200px;
 }
