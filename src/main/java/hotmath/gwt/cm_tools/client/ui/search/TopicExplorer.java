@@ -230,7 +230,10 @@ public class TopicExplorer extends SimpleContainer {
 				    break;
             }
 
-            String cntLabel = resource.getItems().size() + " item" + (resource.getItems().size() == 1?"":"s");
+            String cntLabel = "";
+            if(resource.getItems().size() > 1) {
+                cntLabel = " ( " + resource.getItems().size() + " item" + (resource.getItems().size() == 1?"":"s") + ")";
+            }
             if(resource.getType() == CmResourceType.WEBLINK) {
                 if(resource.getItems() != null && resource.getItems().size() == 1) {
                     resource.setLabel(resource.getItems().get(0).getTitle());
@@ -247,7 +250,7 @@ public class TopicExplorer extends SimpleContainer {
             }
             else {
                 // _cardLayout.add(cp);
-                TabItemConfig tabConfig = new TabItemConfig(resource.getLabel() + " (" + cntLabel + ")", false);
+                TabItemConfig tabConfig = new TabItemConfig(resource.getLabel() + cntLabel, false);
                 tabConfig.setIcon( getResourceIcon(resource.getType()));
                 tabPanel.add(cp,tabConfig);
             }
