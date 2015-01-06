@@ -51,9 +51,7 @@ public class TopicExplorer extends SimpleContainer {
         
         CenterLayoutContainer lc = new CenterLayoutContainer();
         lc.setWidget(new HTML("<h1>Loading " + topic.getName() + "</h1>"));
-        
-        
-       
+        setWidget(lc);
         
 //        setNorthWidget(new ResourceToolBar(new ResourceToolBar.Callback() {
 //            @Override
@@ -68,8 +66,6 @@ public class TopicExplorer extends SimpleContainer {
 //            }
 //        }), new BorderLayoutData(45));
         
-        setWidget(tabPanel);
-
         loadDataFromServer();
         
         CmRpcCore.EVENT_BUS.addHandler(RppHasBeenViewedEvent.TYPE, new RppHasBeenViewedEventHandler() {
@@ -262,9 +258,6 @@ public class TopicExplorer extends SimpleContainer {
         
         /** load the first resource */
         callback.loadResourceIntoHistory(CmResourceType.REVIEW.label(),  "0");
-        
-        
-        
     }
 
     

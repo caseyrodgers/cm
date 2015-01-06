@@ -195,11 +195,9 @@ public class SearchPanel extends BorderLayoutContainer {
     protected void showSelectedReview() {
     	TopicMatch si = _grid.getSelectionModel().getSelectedItem();
     	if(si != null) {
-    	    
     	    TopicExplorer topicExplorer = new TopicExplorer(si.getTopic(), _theCallback);
     	    _explorerWrapper.setWidget(topicExplorer);
     	    _explorerWrapper.forceLayout();
-    	    
     		// _reviewPanel.loadReview(new InmhItemData(CmResourceType.REVIEW, si.getTopic().getFile(), si.getTopic().getName()));
     	}
 	}

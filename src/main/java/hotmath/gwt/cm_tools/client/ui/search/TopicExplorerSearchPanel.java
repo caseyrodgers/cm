@@ -6,64 +6,47 @@ import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.ShowWhiteboardWindow;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
-public class TopicExplorerManager extends GWindow {
-    
-    static private TopicExplorerManager __instance;
-    static public TopicExplorerManager getInstance() {
-        if(__instance == null) {
-            __instance = new TopicExplorerManager();
-        }
-        return __instance;
-    }
+public class TopicExplorerSearchPanel extends ContentPanel {
 
-    static public boolean isInitialized() {
-        return __instance != null;
-    }
-    
-    TopicExplorerSearchPanel searchContentPanel = new TopicExplorerSearchPanel();
-    private TopicExplorerManager() {
-        super(true);
+    SearchPanel _searchPanel = new SearchPanel();
+    public TopicExplorerSearchPanel() {
         
-        setPixelSize(800, 600);
-        setHeadingText("Search");
-        setMaximizable(true);
-        //setMinimizable(true);;
-        // setCollapsible(true);
+        setWidget(_searchPanel);
         
-        setModal(false);
-        
-        
-        searchContentPanel.addTool(new TextButton("Close Search", new SelectHandler() {
+        addTool(new TextButton("Show Whiteboard", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                hide();
+                ShowWhiteboardWindow.getInstance().setVisible(true);
             }
         }));
-        
-        setWidget(searchContentPanel);
+
         setVisible(true);
         
+      
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
-                searchContentPanel.setFocus();
+                _searchPanel._inputBox.focus();
             }
         });
+        
         
         CmRpcCore.EVENT_BUS.addHandler(CmQuizModeActivatedEvent.TYPE, new CmQuizModeActivatedEventHandler() {
             @Override
             public void quizModeActivated(boolean yesNo) {
+                
                 if(yesNo) {
                     setVisible(false);
                 }
@@ -76,6 +59,8 @@ public class TopicExplorerManager extends GWindow {
 
     
     public void showSearch() {
+        setWidget(_searchPanel);
+        forceLayout();
         setVisible(true);
     }
    
@@ -104,9 +89,14 @@ public class TopicExplorerManager extends GWindow {
             @Override
             public void runTest() {
                 Topic topic = new Topic("Graphing Square Root Functions", "topics/graphing-square-root-functions.html",null);
-                new TopicExplorerManager();
+                new TopicExplorerSearchPanel();
                 //new TopicExplorerManager().exploreTopic(topic);
             }
         });
+    }
+
+
+    public void setFocus() {
+        _searchPanel._inputBox.focus();
     }
 }

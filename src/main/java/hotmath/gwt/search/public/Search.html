@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <title>Catchup Math Search</title>  
+        <script type="text/javascript"
+             src="/assets/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+        
+        <!--[if gt IE 5.5000]>
+            <link rel="stylesheet" href="gwt-resources/css/CatchupMath-resource_container-IE.css">
+        <![endif]-->
+
+        <link rel="stylesheet" type="text/css" href="/gwt-resources/css/gxt-reset.css" />
+        <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css" />
+        <link rel="stylesheet" type="text/css" href="/css/SexyButtons/sexybuttons.css" />
+        <link rel="stylesheet" type="text/css" href="/gwt-resources/js/calculator/jquery.calculator.css" />
+    </head>
+    <body>
+        <div id="loading">
+            <div class="loading-indicator">
+                <img src="/gwt-resources/images/large-loading.gif" width="32" height="32"/>Catchup Math Search<br />
+                <span id="loading-msg">loading...</span>
+            </div>
+        </div>  
+        <div id='debug-panel'></div>
+        <div id='main-content'></div>
+
+        <script> 
+                console = {
+                    log: function (x) {
+                       // empty
+                    }
+                };
+        </script>
+        <!-- OPTIONAL: include this if you want history support -->
+        <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
+        <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>
+        <script type="text/javascript" language="javascript" src="/search/search.nocache.js"></script>
+    
+        <!--[if lt IE 9]><script type="text/javascript" src='/gwt-resources/js/excanvas.js'></script><![endif]-->
+
+        <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main.nocache"></script>
+        
+        <script>
+            /** for debugging */
+            // _productionMode=false;
+            // InmhButtons = {};
+            /** setup timer to change loading message to a warning
+              if loading message still shown.
+            */
+            function checkForCompletion() {
+               var d = document.getElementById("working...");
+               if(!__cmInitialized) {
+                   d.innerHTML = "<div id='loading-error'><h2>Catchup Math loading delayed.</h2>Please click <a href='http://hotmath.com/resources/util/loading-error.jsp'>here</a> to proceed.</div>";
+               }
+            }
+            setTimeout(checkForCompletion, 60000);
+        </script>
+  </body>
+</html>
