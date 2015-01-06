@@ -56,7 +56,7 @@ public class CmTutor implements EntryPoint {
         if (!point.endsWith("/"))
             point += "/";
         
-        point = "/cm/";
+        point = "/";
         final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
         ((ServiceDefTarget) cmService).setServiceEntryPoint(point + "services/cmService");
         _serviceInstance = cmService;
