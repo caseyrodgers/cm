@@ -1,9 +1,10 @@
 package hotmath.gwt.cm.client.ui;
 
-import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm.client.WelcomePanel;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -354,7 +355,7 @@ public class HelpWindow extends GWindow {
                     @Override
                     public void attempt() {
                         CmBusyManager.setBusy(true);
-                        CmServiceAsync s = CmShared.getCmService();
+                        CmServiceAsync s = CmRpcCore.getCmService();
                         SetBackgroundStyleAction action = new SetBackgroundStyleAction(UserInfo.getInstance().getUid(),
                                 event.getSelectedItem().getStyle());
                         setAction(action);
@@ -431,7 +432,7 @@ public class HelpWindow extends GWindow {
                         CmBusyManager.setBusy(true);
                         GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
                         setAction(action);
-                        CmShared.getCmService().execute(action, this);
+                        CmRpcCore.getCmService().execute(action, this);
                     }
 
                     public void oncapture(StudentModelI student) {
@@ -467,7 +468,7 @@ public class HelpWindow extends GWindow {
                         CmBusyManager.setBusy(true);
                         GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
                         setAction(action);
-                        CmShared.getCmService().execute(action, this);
+                        CmRpcCore.getCmService().execute(action, this);
                     }
 
                     public void oncapture(StudentModelI student) {

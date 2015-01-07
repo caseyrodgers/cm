@@ -28,6 +28,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.LessonDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SectionDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SubjectDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -35,7 +36,6 @@ import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.TopicExplorerWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -395,7 +395,7 @@ public class AddProblemDialog extends GWindow {
                     mAction.getActions().add(action);
                 }
                 setAction(mAction);
-                CmShared.getCmService().execute(mAction, this);
+                CmRpcCore.getCmService().execute(mAction, this);
             }
 
             @Override
@@ -639,7 +639,7 @@ public class AddProblemDialog extends GWindow {
                 GetProgramLessonsAction action = new GetProgramLessonsAction(testDefId, sectionNumber, chap,
                         sectionCount);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -665,7 +665,7 @@ public class AddProblemDialog extends GWindow {
                 CatchupMathTools.setBusy(true);
                 GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction(UserInfoBase.getInstance().getUid(),lesson, file, subject);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -715,7 +715,7 @@ public class AddProblemDialog extends GWindow {
             public void attempt() {
                 GetProgramListingAction action = new GetProgramListingAction(0);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(ProgramListing pl) {

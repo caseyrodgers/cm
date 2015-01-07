@@ -2,13 +2,13 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
 import hotmath.gwt.shared.client.util.CmException;
@@ -101,7 +101,7 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
                 action.setStudentModel(studentTemplate);
                 action.setGroupId(groupId);
                 action.setIsSelfReg(gim.isSelfReg()?1:0);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
             
             public void oncapture(RpcData value) {

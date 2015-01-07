@@ -1,20 +1,20 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import java.util.List;
-
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAssignAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAssignAction.ActionType;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAssignResponse;
+
+import java.util.List;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
@@ -23,7 +23,6 @@ import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Label;
-import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.dnd.core.client.DND.Feedback;
 import com.sencha.gxt.dnd.core.client.ListViewDragSource;
@@ -217,7 +216,7 @@ public class ManageGroupsAssignStudents extends GWindow {
 				cList.addAll(_listInGroup.getStore().getAll());
 				action.setGroupStudents(cList);
 				setAction(action);
-				CmShared.getCmService().execute(action, this);
+				CmRpcCore.getCmService().execute(action, this);
 			}
 
 			@Override
@@ -241,7 +240,7 @@ public class ManageGroupsAssignStudents extends GWindow {
 
 				action.setGroupStudents(cList);
 				setAction(action);
-				CmShared.getCmService().execute(action, this);
+				CmRpcCore.getCmService().execute(action, this);
 			}
 
 			@Override

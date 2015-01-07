@@ -3,12 +3,11 @@ package hotmath.gwt.cm_tools.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.rpc.GetCorrelatedTopicsPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
-import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.List;
@@ -52,7 +51,7 @@ public class ProblemResourcesButton extends TextButton {
             public void attempt() {
                 GetCorrelatedTopicsPrescriptionAction action = new GetCorrelatedTopicsPrescriptionAction(_problem.getPid());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(CmList<PrescriptionSessionResponse> prescriptions) {

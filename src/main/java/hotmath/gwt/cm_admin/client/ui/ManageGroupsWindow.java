@@ -6,6 +6,7 @@ import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -21,7 +22,6 @@ import hotmath.gwt.cm_tools.client.ui.PassPercentCombo;
 import hotmath.gwt.cm_tools.client.ui.SearchAllowCombo;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -356,7 +356,7 @@ public class ManageGroupsWindow extends GWindow {
                 CmBusyManager.setBusy(true);
                 GetGroupAggregateInfoAction action = new GetGroupAggregateInfoAction(adminId);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -396,7 +396,7 @@ public class ManageGroupsWindow extends GWindow {
                 setAction(action);
                 action.setGroupId(groupId);
                 action.setGroupName(groupName);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -429,7 +429,7 @@ public class ManageGroupsWindow extends GWindow {
                 CmBusyManager.setBusy(true);
                 GetTemplateForSelfRegGroupAction action = new GetTemplateForSelfRegGroupAction(gim.getId());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -612,7 +612,7 @@ class GroupManagerGlobalSettings extends GWindow {
                 else {
                     action.setPassPercent(null);
                 }
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

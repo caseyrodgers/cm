@@ -16,6 +16,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction.SaveType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -25,14 +26,11 @@ import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
@@ -109,7 +107,7 @@ public class ProblemDesigner extends Composite {
                 CmBusyManager.setBusy(true);
                 SaveCustomProblemAction action = new SaveCustomProblemAction(_solutionMeta.getPid(), SaveType.HINTSTEP, _solutionMeta);
                 setAction(action);
-                CmShared.getCmService().execute(action,  this);
+                CmRpcCore.getCmService().execute(action,  this);
             }
             public void oncapture(RpcData value) {
                 CmBusyManager.setBusy(false);
@@ -144,7 +142,7 @@ public class ProblemDesigner extends Composite {
                 mAction.getActions().add(new LoadSolutionMetaAction(pid));
                 
                 setAction(mAction);
-                CmShared.getCmService().execute(mAction, this);
+                CmRpcCore.getCmService().execute(mAction, this);
             }
 
             @Override
@@ -253,7 +251,7 @@ public class ProblemDesigner extends Composite {
                 public void attempt() {
                     SaveCustomProblemAction action = new SaveCustomProblemAction(_solutionInfo.getPid(), SaveType.PROBLEM_STATEMENT_TEXT, textAndwhiteboardJson); 
                     setAction(action);
-                    CmShared.getCmService().execute(action, this);
+                    CmRpcCore.getCmService().execute(action, this);
                 }
 
                 @Override
@@ -310,7 +308,7 @@ public class ProblemDesigner extends Composite {
             public void attempt() {
                 SaveCustomProblemAction action = new SaveCustomProblemAction(_solutionInfo.getPid(), SaveType.HINTSTEP, _solutionMeta);
                 setAction(action);
-                CmShared.getCmService().execute(action,  this);
+                CmRpcCore.getCmService().execute(action,  this);
             }
             public void oncapture(RpcData value) {
                 Log.info("Hint saved");

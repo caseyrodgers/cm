@@ -5,13 +5,13 @@ import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.GetAdminTeachersAction;
 import hotmath.gwt.cm_rpc.client.ui.AddAdminTeacherAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.RetryActionManager;
 
@@ -98,7 +98,7 @@ public class TeacherManager extends GWindow {
             public void attempt() {
                 GetAdminTeachersAction action = new GetAdminTeachersAction(UserInfoBase.getInstance().getUid());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -201,7 +201,7 @@ public class TeacherManager extends GWindow {
                 AddAdminTeacherAction action = new AddAdminTeacherAction(UserInfoBase.getInstance().getUid(),
                         teacherName);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

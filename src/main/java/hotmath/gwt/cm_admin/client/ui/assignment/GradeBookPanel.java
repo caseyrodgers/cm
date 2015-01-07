@@ -5,11 +5,11 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGradeBookAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.ui.CmCellRendererBoolean;
 
@@ -99,7 +99,7 @@ public class GradeBookPanel extends ContentPanel {
 
                 GetAssignmentGradeBookAction action = new GetAssignmentGradeBookAction(assignment.getAssignKey());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -234,7 +234,7 @@ public class GradeBookPanel extends ContentPanel {
 //                CmBusyManager.setBusy(true);
 //                CloseAssignmentAction action = new CloseAssignmentAction(UserInfoBase.getInstance().getUid(), ass.getAssignKey());
 //                setAction(action);
-//                CmShared.getCmService().execute(action, this);
+//                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(RpcData data) {

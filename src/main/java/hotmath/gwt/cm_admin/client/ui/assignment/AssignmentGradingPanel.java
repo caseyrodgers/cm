@@ -6,13 +6,13 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetStudentAssignmentAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell;
 import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell.ProblemGridCellCallback;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.text.ParseException;
@@ -329,7 +329,7 @@ public class AssignmentGradingPanel extends ContentPanel {
                 SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(selectedItem.getUid(), _studentAssignment.getAssignment()
                         .getAssignKey(), selectedItem.getPid(), selectedItem.getStatus());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -377,7 +377,7 @@ public class AssignmentGradingPanel extends ContentPanel {
                 GetStudentAssignmentAction action = new GetStudentAssignmentAction(_studentAssignment.getUid(), _studentAssignment.getAssignment()
                         .getAssignKey());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

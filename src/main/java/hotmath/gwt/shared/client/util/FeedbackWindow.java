@@ -2,6 +2,7 @@ package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -33,7 +34,7 @@ public class FeedbackWindow extends PromptMessageBox {
                         @Override
                         public void attempt() {
                             CmBusyManager.setBusy(true);
-                            CmServiceAsync s = CmShared.getCmService();
+                            CmServiceAsync s = CmRpcCore.getCmService();
                             String fullFeedbackStateInfo = getFeedbackState() + ", " + feedbackStateInfo;
                             SaveFeedbackAction action = new SaveFeedbackAction(value, "", fullFeedbackStateInfo);
                             setAction(action);

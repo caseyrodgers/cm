@@ -141,7 +141,7 @@ public class CustomProblemManager extends GWindow {
             public void attempt() {
                 SaveCustomProblemAction action = new SaveCustomProblemAction(problem);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -368,7 +368,7 @@ public class CustomProblemManager extends GWindow {
                 AddCustomProblemTreePathAction action = new AddCustomProblemTreePathAction(teacher, value);
                 setAction(action);
 
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -627,7 +627,7 @@ public class CustomProblemManager extends GWindow {
             public void attempt() {
                 DeleteCustomProblemTreePathAction action = new DeleteCustomProblemTreePathAction(problemTeacher, name, isTeacherNode);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -645,7 +645,7 @@ public class CustomProblemManager extends GWindow {
             public void attempt() {
                 DeleteCustomProblemAction action = new DeleteCustomProblemAction(problem);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -679,7 +679,7 @@ public class CustomProblemManager extends GWindow {
             public void attempt() {
                 CopyCustomProblemAction action = new CopyCustomProblemAction(problem.getPid());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -725,7 +725,7 @@ public class CustomProblemManager extends GWindow {
                 GetCustomProblemAction action = new GetCustomProblemAction(new TeacherIdentity(UserInfoBase
                         .getInstance().getUid(), null, -1));
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

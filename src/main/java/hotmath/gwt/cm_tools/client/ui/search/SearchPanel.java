@@ -5,6 +5,7 @@ import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -13,7 +14,6 @@ import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchBundle;
 import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchStyle;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -279,7 +279,7 @@ public class SearchPanel extends BorderLayoutContainer {
         
         showSearchMessage("Searching ...");
         CmBusyManager.setBusy(true);
-        CmShared.getCmService().execute(action, new AsyncCallback<CmList<TopicMatch>>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<CmList<TopicMatch>>() {
             @Override
             public void onSuccess(CmList<TopicMatch> result) {
                 CmBusyManager.setBusy(false);

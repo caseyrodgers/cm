@@ -112,7 +112,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
                 int thisUserUid=_assignmentProblem.getUserId();
                 SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(thisUserUid,_assignmentProblem.getAssignKey(),prob.getPid(),status);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(RpcData data) {
@@ -163,7 +163,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
         
         // always use zero for run_id
         GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(_assignmentProblem.getUserId(), _assignmentProblem.getInfo().getPid(), _assignmentProblem.getAssignKey());
-        CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
             public void onSuccess(AssignmentWhiteboardData data) {
                 CmBusyManager.setBusy(false);
                 _showWork.loadWhiteboard(data.getCommands());
@@ -188,7 +188,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
                 CmBusyManager.setBusy(true);
                 GetAssignmentSolutionAction action = new GetAssignmentSolutionAction(studentAssignment.getUid(),studentAssignment.getAssignment().getAssignKey(),problem.getPid());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

@@ -254,7 +254,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
 //            public void attempt() {
 //                CmPrintAction action = new CmPrintAction(PrintType.ASSIGNMENT, _studentAssignment.getUid(), _studentAssignment.getAssignment().getAssignKey());
 //                setAction(action);
-//                CmShared.getCmService().execute(action, this);
+//                CmRpcCore.getCmService().execute(action, this);
 //            }
 //
 //            public void oncapture(RpcData data) {
@@ -276,7 +276,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
                         public void attempt() {
                             TurnInAssignmentAction action = new TurnInAssignmentAction(UserInfoBase.getInstance().getUid(),_studentAssignment.getAssignment().getAssignKey());
                             setAction(action);
-                            CmShared.getCmService().execute(action, this);
+                            CmRpcCore.getCmService().execute(action, this);
                         }
     
                         public void oncapture(RpcData data) {
@@ -342,7 +342,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             public void attempt() {
                 GetStudentAssignmentAction action = new GetStudentAssignmentAction(UserInfoBase.getInstance().getUid(),assignKey);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(StudentAssignment assignment) {

@@ -2,7 +2,7 @@ package hotmath.gwt.tutor_viewer.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
-import hotmath.gwt.cm_tutor.client.CmTutor;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 
@@ -40,7 +40,7 @@ public class GenerateTutorContext {
         
         
         GetSolutionAction action = new GetSolutionAction(0, 0, pid);
-        CmTutor.getCmService().execute(action, new AsyncCallback<SolutionInfo>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<SolutionInfo>() {
             @Override
             public void onSuccess(SolutionInfo result) {
                 generateContexts(result, pid, result.getJs(), jsonConfig);

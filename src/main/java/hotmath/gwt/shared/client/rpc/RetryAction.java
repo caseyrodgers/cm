@@ -3,6 +3,7 @@ package hotmath.gwt.shared.client.rpc;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.InformationOnlyException;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -298,7 +299,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
 
         try {
             String nameAndTime = getClass().getName() + ": " + getRequestTime() + " mills, counter; " + instanceCount ;
-            CmShared.getCmService().execute(
+            CmRpcCore.getCmService().execute(
                     new LogRetryActionFailedAction(logType, UserInfo.getInstance().getUid(),nameAndTime,getAction(),CmShared.getStackTraceAsString(throwable)),
                     new AsyncCallback<RpcData>() {
                 @Override

@@ -2,12 +2,12 @@ package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageBarChart;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageUniqueBarChart;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CCSSCoverageBar;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSCoverageChartDataAction;
@@ -69,7 +69,7 @@ public class HighlightsImplCCSSCoverageChartPanel extends Composite implements H
                 action.setType(CCSSCoverageChartDataAction.ReportType.MULTI_STUDENT_CUMULATIVE_CHART);
                 
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

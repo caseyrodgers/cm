@@ -1,12 +1,12 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
 import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.DateRangeWidget;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -146,7 +146,7 @@ public class CCSSCoverageChartWindow extends GWindow {
                 CCSSCoverageChartDataAction action = new CCSSCoverageChartDataAction(getReportType(), _uid, fromDate, toDate);
                 action.setAdminId(_adminId);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
 			@Override

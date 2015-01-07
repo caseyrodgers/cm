@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
@@ -100,7 +101,7 @@ public class CatchupMathTools implements EntryPoint {
      */
     static public void showVersionInfo() {
 
-        CmServiceAsync s = (CmServiceAsync) CmShared.getCmService();
+        CmServiceAsync s = (CmServiceAsync) CmRpcCore.getCmService();
         GetCmVersionInfoAction action = new GetCmVersionInfoAction(CmShared.CM_HOME_URL);
         s.execute(action, new AsyncCallback<CmVersionInfo>() {
 

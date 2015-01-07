@@ -102,7 +102,7 @@ public class AssignmentAddRemoveStudents extends GWindow {
                 }
                 AssignStudentsToAssignmentAction action = new AssignStudentsToAssignmentAction(assignment.getAssignKey(), students);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -137,7 +137,7 @@ public class AssignmentAddRemoveStudents extends GWindow {
                 mAction.getActions().add(new GetAssignmentStudentsAction(assignment.getAssignKey(),TYPE.ALL_IN_GROUP));
                 mAction.getActions().add(new GetAssignmentStudentsAction(assignment.getAssignKey(),TYPE.ASSIGNED));
                 setAction(mAction);
-                CmShared.getCmService().execute(mAction, this);
+                CmRpcCore.getCmService().execute(mAction, this);
             }
 
             @Override

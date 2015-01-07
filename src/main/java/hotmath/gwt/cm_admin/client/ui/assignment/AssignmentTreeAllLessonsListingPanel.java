@@ -6,11 +6,11 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.LessonDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -90,7 +90,7 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
             public void attempt() {
                 GetAssignmentAvailableLessonsAction action = new GetAssignmentAvailableLessonsAction();
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(CmList<LessonDto> lessons) {

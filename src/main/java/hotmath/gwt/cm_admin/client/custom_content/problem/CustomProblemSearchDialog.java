@@ -105,7 +105,7 @@ public class CustomProblemSearchDialog extends GWindow {
 //                CmBusyManager.setBusy(true);
 //                GetLessonsLinkToAction action = new GetLessonsLinkToAction(UserInfoBase.getInstance().getUid());
 //                setAction(action);
-//                CmShared.getCmService().execute(action, this);
+//                CmRpcCore.getCmService().execute(action, this);
 //            }
 //
 //            @Override

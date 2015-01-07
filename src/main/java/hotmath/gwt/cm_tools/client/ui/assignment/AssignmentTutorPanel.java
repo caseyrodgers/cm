@@ -16,7 +16,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEvent;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 
@@ -132,7 +131,7 @@ public class AssignmentTutorPanel extends Composite {
     public void loadSolution(final int uid, final int assignKey, final StudentProblemDto stuProb) {
 
         GetAssignmentSolutionAction action = new GetAssignmentSolutionAction(uid,assignKey, stuProb.getPid());
-        CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentProblem>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<AssignmentProblem>() {
             @Override
             public void onSuccess(AssignmentProblem problem) {
                 loadSolutionIntoGui(uid, assignKey, problem, stuProb);
@@ -211,7 +210,7 @@ public class AssignmentTutorPanel extends Composite {
 
         
         SaveAssignmentTutorInputWidgetAnswerAction action = new SaveAssignmentTutorInputWidgetAnswerAction(_uid, _assignKey,_assProblem.getInfo().getPid(),inputValue,yesNo);
-        CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
                 _assProblem.setLastUserWidgetValue(inputValue);
                 _tutorPanel.setProblemStatus(_assProblem);

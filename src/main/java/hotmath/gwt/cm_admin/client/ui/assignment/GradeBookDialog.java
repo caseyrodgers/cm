@@ -289,7 +289,7 @@ public class GradeBookDialog {
                         releaseGrades);
 
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

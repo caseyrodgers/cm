@@ -3,9 +3,9 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentModel;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetCustomProblemAssignmentInfoAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class AssignmentsUsedPanel extends ContentPanel {
 				CmBusyManager.setBusy(false);
 				GetCustomProblemAssignmentInfoAction action = new GetCustomProblemAssignmentInfoAction(pid);
 				setAction(action);
-				CmShared.getCmService().execute(action,  this);
+				CmRpcCore.getCmService().execute(action,  this);
 			}
 			
 			public void oncapture(hotmath.gwt.cm_rpc_core.client.rpc.CmList<AssignmentModel> asses) {

@@ -9,6 +9,7 @@ import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -19,7 +20,6 @@ import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForCustomProgramWindow;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForCustomQuizWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -289,7 +289,7 @@ public class CustomProgramDialog extends GWindow {
                 action.setDestAdminId(uidToCopyTo);
                 action.setProgramId(sel1.getProgramId());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -464,7 +464,7 @@ public class CustomProgramDialog extends GWindow {
                 CustomQuizDef quiz = _listViewCq.getSelectionModel().getSelectedItem();
                 CustomQuizUsageCountAction action = new CustomQuizUsageCountAction(quiz.getQuizId());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -494,7 +494,7 @@ public class CustomProgramDialog extends GWindow {
                             DeleteCustomQuizAction action = new DeleteCustomQuizAction(adminModel.getUid(), def
                                     .getQuizId());
                             setAction(action);
-                            CmShared.getCmService().execute(action, this);
+                            CmRpcCore.getCmService().execute(action, this);
                         }
 
                         @Override
@@ -526,7 +526,7 @@ public class CustomProgramDialog extends GWindow {
                                     ArchiveCustomQuizAction action = new ArchiveCustomQuizAction(adminModel.getUid(),
                                             def.getQuizId());
                                     setAction(action);
-                                    CmShared.getCmService().execute(action, this);
+                                    CmRpcCore.getCmService().execute(action, this);
                                 }
 
                                 @Override
@@ -569,7 +569,7 @@ public class CustomProgramDialog extends GWindow {
                     CmBusyManager.setBusy(true, false);
                     CustomProgramUsageCountAction action = new CustomProgramUsageCountAction(sel.getProgramId());
                     setAction(action);
-                    CmShared.getCmService().execute(action, this);
+                    CmRpcCore.getCmService().execute(action, this);
                 }
 
                 @Override
@@ -612,7 +612,7 @@ public class CustomProgramDialog extends GWindow {
                         adminModel.getUid());
                 action.setProgramId(program.getProgramId());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -647,7 +647,7 @@ public class CustomProgramDialog extends GWindow {
                         adminModel.getUid());
                 action.setProgramId(program.getProgramId());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -669,7 +669,7 @@ public class CustomProgramDialog extends GWindow {
                 CmBusyManager.setBusy(true);
                 GetCustProgQuizDefsAction action = new GetCustProgQuizDefsAction(adminModel.getUid());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -697,7 +697,7 @@ public class CustomProgramDialog extends GWindow {
                 CustomProgramDefinitionAction action = new CustomProgramDefinitionAction(ActionType.GET,
                         adminModel.getUid());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

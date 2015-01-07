@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import hotmath.gwt.cm_admin.client.ui.StudentListWithCCSSDetailDialog;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CCSSDetail;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSDetailAction;
@@ -82,7 +82,7 @@ public class HighlightsImplCCSSCoveragePanel extends HighlightsImplDetailsPanelB
 
             @Override
             public void attempt() {
-                CmServiceAsync s = CmShared.getCmService();
+                CmServiceAsync s = CmRpcCore.getCmService();
 
                 CCSSDetailAction action = new CCSSDetailAction(Arrays.asList(item.getName()));
                 setAction(action);

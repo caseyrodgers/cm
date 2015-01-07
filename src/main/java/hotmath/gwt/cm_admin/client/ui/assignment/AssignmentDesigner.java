@@ -141,7 +141,7 @@ public class AssignmentDesigner extends BorderLayoutContainer {
                 CmBusyManager.setBusy(true);
                 GetAssignmentAction action = new GetAssignmentAction(_assignment.getAssignKey());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

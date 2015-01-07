@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.StateStandard;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
@@ -73,7 +73,7 @@ public class StudentLessTopicsStateStandardsWindow extends GWindow {
             public void attempt() {
                 GetStateStandardsAction action = new GetStateStandardsAction(topic, state);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

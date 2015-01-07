@@ -1,8 +1,8 @@
 package hotmath.gwt.tutor_viewer.client.ui;
 
 import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.tutor_viewer.client.rpc.SaveSolutionContextsAction;
 import hotmath.gwt.tutor_viewer.client.ui.GenerateTutorContext.GenerateTutorContextCallback;
@@ -55,7 +55,7 @@ public class GenerateTutorContextPanel extends Composite {
     public void saveContexts(final String pid, final List<String> contexts) {
         
         SaveSolutionContextsAction action = new SaveSolutionContextsAction(pid, contexts);
-        CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {
                 addViewerLinks(pid, contexts.size());

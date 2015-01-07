@@ -7,10 +7,10 @@ import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -93,7 +93,7 @@ public class ShowWorkPanel extends Frame {
             @Override
             public void attempt() {
                 setAction(whiteboardActions);
-                CmShared.getCmService().execute(whiteboardActions, this);
+                CmRpcCore.getCmService().execute(whiteboardActions, this);
             }
 
             public void oncapture(CmList<Response> result) {
@@ -172,7 +172,7 @@ public class ShowWorkPanel extends Frame {
                 GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(), pid,
                         runId);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(CmList<WhiteboardCommand> commands) {

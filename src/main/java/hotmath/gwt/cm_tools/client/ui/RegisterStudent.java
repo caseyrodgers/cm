@@ -8,6 +8,7 @@ import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc.client.rpc.GetChaptersForProgramSubjectAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -29,7 +30,6 @@ import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModelProperties;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -812,7 +812,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             public void attempt() {
                 GetProgramDefinitionsAction action = new GetProgramDefinitionsAction(cmAdminMdl.getUid());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(CmList<StudyProgramModel> spmList) {
@@ -923,7 +923,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             public void attempt() {
                 GetSubjectDefinitionsAction action = new GetSubjectDefinitionsAction(progId);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(CmList<SubjectModel> result) {
@@ -956,7 +956,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 CmBusyManager.setBusy(true);
                 AddStudentAction action = new AddStudentAction(sm);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(StudentModelI ai) {
@@ -1022,7 +1022,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 UpdateStudentAction action = new UpdateStudentAction(sm, stuChanged, progChanged, progIsNew,
                         passcodeChanged, passPercentChanged, sectionNumChanged);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(StudentModelI ai) {
@@ -1270,7 +1270,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
 
             @Override
             public void attempt() {
-                CmServiceAsync s = CmShared.getCmService();
+                CmServiceAsync s = CmRpcCore.getCmService();
                 GetChaptersForProgramSubjectAction action = new GetChaptersForProgramSubjectAction(progId, subjId);
                 setAction(action);
                 s.execute(action, this);
@@ -1301,7 +1301,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         new RetryAction<AccountInfoModel>() {
             @Override
             public void attempt() {
-                CmServiceAsync s = CmShared.getCmService();
+                CmServiceAsync s = CmRpcCore.getCmService();
                 GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(uid);
                 setAction(action);
                 CmLogger.info("AccountInfoPanel: reading admin info RPC");

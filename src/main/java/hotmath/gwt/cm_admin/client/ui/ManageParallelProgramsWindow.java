@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -14,7 +15,6 @@ import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.ParallelProgramSetup;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -193,7 +193,7 @@ public class ManageParallelProgramsWindow extends GWindow {
                 CmBusyManager.setBusy(true);
                 GetStudentForParallelProgramAction action = new GetStudentForParallelProgramAction(mdl.getId());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -264,7 +264,7 @@ public class ManageParallelProgramsWindow extends GWindow {
                 CmBusyManager.setBusy(true);
                 DeleteParallelProgramAction action = new DeleteParallelProgramAction(adminId, ppId);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -295,7 +295,7 @@ public class ManageParallelProgramsWindow extends GWindow {
                 CmBusyManager.setBusy(true);
                 GetParallelProgramsAction action = new GetParallelProgramsAction(adminId);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

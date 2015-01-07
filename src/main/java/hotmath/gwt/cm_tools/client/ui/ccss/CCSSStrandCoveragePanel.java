@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.DateRangeWidget;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CCSSStrandCoverageData;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSStrandCoverageDataAction;
@@ -119,7 +119,7 @@ public class CCSSStrandCoveragePanel extends SimpleContainer {
                 CCSSStrandCoverageDataAction action = new CCSSStrandCoverageDataAction(_adminId, _uid,fromDate, toDate);
                 action.setLevelName(_levelName);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

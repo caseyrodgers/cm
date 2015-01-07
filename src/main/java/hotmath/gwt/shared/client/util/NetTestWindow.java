@@ -1,13 +1,13 @@
 package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -179,7 +179,7 @@ public class NetTestWindow extends GWindow {
                 RunNetTestAction action = new RunNetTestAction(testApplication, TestAction.RUN_TEST, NetTestWindow.this.uid, testNum, dataSize);
                 setAction(action);
                 
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
             
             @Override
@@ -217,7 +217,7 @@ public class NetTestWindow extends GWindow {
                 list.addAll(_grid.getStore().getAll());
                 RunNetTestAction action = new RunNetTestAction(testApplication, TestAction.SAVE_RESULTS, NetTestWindow.this.uid, list);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
             
             @Override

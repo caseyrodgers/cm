@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.LogUserInAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -162,7 +163,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
         CmBusyManager.setBusy(true);
         CreateAutoRegistrationAccountAction action = new CreateAutoRegistrationAccountAction(UserInfo.getInstance()
                 .getUid(), lastName.getValue() + ", " + firstName.getValue().trim(), password);
-        CmShared.getCmService().execute(action, new CmAsyncCallback<RpcData>() {
+        CmRpcCore.getCmService().execute(action, new CmAsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData rdata) {
                 CmBusyManager.setBusy(false);
@@ -240,7 +241,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
             @Override
             public void onSelect(SelectEvent event) {
                 LogUserInAction action = new LogUserInAction(null, password, CmShared.getBrowserInfo());
-                CmShared.getCmService().execute(action, new CmAsyncCallback<RpcData>() {
+                CmRpcCore.getCmService().execute(action, new CmAsyncCallback<RpcData>() {
                     public void onSuccess(RpcData result) {
                         CmBusyManager.setBusy(false);
                         String key = result.getDataAsString("key");

@@ -13,6 +13,7 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -23,7 +24,6 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -120,7 +120,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 boolean updateActive = UserInfo.getInstance().isActiveUser();
                 GetPrescriptionAction action = new GetPrescriptionAction(UserInfo.getInstance().getRunId(), sessionNumberF, updateActive);
                 setAction(action);
-                CmShared.getCmService().execute(action,this);
+                CmRpcCore.getCmService().execute(action,this);
             }            
             @Override
             public void oncapture(PrescriptionSessionResponse prescriptionResponse) {
@@ -249,7 +249,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 int sessionNumber = UserInfo.getInstance().getSessionNumber();
                 SetInmhItemAsViewedAction action = new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(), resourceItem.getType(),resourceItem.getFile(),sessionNumber);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
             
             public void oncapture(RpcData result) {

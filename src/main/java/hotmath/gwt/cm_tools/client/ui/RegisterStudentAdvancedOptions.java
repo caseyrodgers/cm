@@ -4,6 +4,7 @@ import hotmath.gwt.cm_core.client.model.SearchAllowMode;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramMetaInfoAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.model.AdvancedOptionsModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
@@ -11,7 +12,6 @@ import hotmath.gwt.cm_tools.client.model.SectionNumber;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent.AdvOptCallback;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.List;
@@ -208,7 +208,7 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
             public void attempt() {
                 GetProgramMetaInfoAction action = new GetProgramMetaInfoAction(program);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(RpcData data) {

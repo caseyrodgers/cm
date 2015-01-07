@@ -3,13 +3,13 @@ package hotmath.gwt.cm_admin.client.ui.highlights;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
@@ -143,7 +143,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
                         DateRangePanel.getInstance().getToDate());
                 action.getUserData().put("ccssLevel",  getLevel());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -249,7 +249,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
                 CmBusyManager.setBusy(true);
                 GetStudentModelAction action = new GetStudentModelAction(model.getUid());
                 setAction(action);
-                CmShared.getCmService().execute(action,this);
+                CmRpcCore.getCmService().execute(action,this);
             }            
             
             @Override

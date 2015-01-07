@@ -2,11 +2,11 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -159,7 +159,7 @@ public class TrendingDataWindow extends GWindow {
                 }
                 GetAdminTrendingDataAction action = new GetAdminTrendingDataAction(onlyActiveOrFullHistory(), adminId, pageAction);
                 setAction(action);
-                CmShared.getCmService().execute(action,this);
+                CmRpcCore.getCmService().execute(action,this);
             }
             
             public void oncapture(CmAdminTrendingDataI trendingData) {

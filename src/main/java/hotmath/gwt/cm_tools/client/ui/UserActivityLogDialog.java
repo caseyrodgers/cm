@@ -3,11 +3,11 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.GetUserActivityLogAction;
 import hotmath.gwt.cm_tools.client.model.ActivityLogRecord;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class UserActivityLogDialog extends GWindow {
             	Date toDate = _dateRangeWidget.getToDate();
                 GetUserActivityLogAction action = new GetUserActivityLogAction(student.getUid(), fromDate, toDate);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

@@ -198,7 +198,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //                        CmBusyManager.setBusy(true);
 //                        GetStudentModelAction action = new GetStudentModelAction(studentUid);
 //                        setAction(action);
-//                        CmShared.getCmService().execute(action, this);
+//                        CmRpcCore.getCmService().execute(action, this);
 //                    }
 //
 //                    public void oncapture(StudentModelI student) {
@@ -241,7 +241,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //                      CmBusyManager.setBusy(true);
 //                      GetStudentModelAction action = new GetStudentModelAction(studentUid);
 //                      setAction(action);
-//                      CmShared.getCmService().execute(action, this);
+//                      CmRpcCore.getCmService().execute(action, this);
 //                  }
 //
 //                  public void oncapture(StudentModelI student) {

@@ -7,17 +7,13 @@ import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tutor.client.view.TutorWithWhiteboardViewer;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class CmTutor implements EntryPoint {
@@ -44,26 +40,5 @@ public class CmTutor implements EntryPoint {
               });
         }
     }
-    
-    
-    static CmServiceAsync _serviceInstance;
-    static public CmServiceAsync getCmService() {
-        return _serviceInstance;
-    }
 
-    static private void setupServices() {
-        String point = GWT.getModuleBaseURL();
-        if (!point.endsWith("/"))
-            point += "/";
-        
-        point = "/";
-        final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
-        ((ServiceDefTarget) cmService).setServiceEntryPoint(point + "services/cmService");
-        _serviceInstance = cmService;
-        
-    }
-    
-    static {
-        setupServices();
-    }
 }

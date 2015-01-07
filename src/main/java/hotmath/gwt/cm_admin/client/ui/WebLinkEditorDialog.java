@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.WebLinkAddTargetsDialog.Callback;
 import hotmath.gwt.cm_admin.client.ui.WebLinksManager.CallbackOnConvertedUrl;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
@@ -9,13 +10,12 @@ import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.LinkViewer;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction.CrudOperation;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -269,7 +269,7 @@ public class WebLinkEditorDialog extends GWindow {
                 CrudOperation actionToDo = editType == EditType.IMPORT? CrudOperation.IMPORT_FROM_PUBLIC: CrudOperation.ADD;
                 DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId, actionToDo, webLinkModel);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

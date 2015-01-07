@@ -175,7 +175,7 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
         MultiActionRequestAction multiRequest = new MultiActionRequestAction();
         multiRequest.getActions().add(new SaveAssignmentTutorInputWidgetAnswerAction(uid,assignKey,this.pid,inputValue,correct));
         multiRequest.getActions().add(new SaveAssignmentProblemStatusAction(uid,assignKey,this.pid, correct?"Correct":"Incorrect"));
-        CmTutor.getCmService().execute(multiRequest, new AsyncCallback<CmList<Response>>() {
+        CmRpcCore.getCmService().execute(multiRequest, new AsyncCallback<CmList<Response>>() {
             public void onSuccess(CmList<Response> result) {
                 assProblem.setLastUserWidgetValue(inputValue);
                 Log.debug("Tutor Widget Answer saved to server.");
@@ -195,7 +195,7 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
         CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(true));
         
         GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(AssignmentData.getUserData().getUid(), pid, assignKey);
-        CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
             public void onSuccess(final AssignmentWhiteboardData whiteData) {
                 __lastWhiteboardData = whiteData;
                 Scheduler.get().scheduleDeferred(new ScheduledCommand() {

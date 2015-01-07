@@ -2,9 +2,9 @@ package hotmath.gwt.cm_tools.client.ui;
 
 // import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -162,7 +162,7 @@ public class AutoRegistrationWindow extends GWindow {
      */
     private void createPreview() {
         CatchupMathTools.setBusy(true);
-        CmServiceAsync s = CmShared.getCmService();
+        CmServiceAsync s = CmRpcCore.getCmService();
         s.execute(new CreateAutoRegistrationPreviewAction(student, uploadFileKey),
                 new AsyncCallback<AutoRegistrationSetup>() {
                     @Override
@@ -215,7 +215,7 @@ public class AutoRegistrationWindow extends GWindow {
 
     private void createStudentAccounts() {
     	CatchupMathTools.setBusy(true);
-        CmServiceAsync s = CmShared.getCmService();
+        CmServiceAsync s = CmRpcCore.getCmService();
         s.execute(new CreateAutoRegistrationAccountsAction(adminId, student, _preview.getEntries()),
                 new AsyncCallback<AutoRegistrationSetup>() {
                     @Override

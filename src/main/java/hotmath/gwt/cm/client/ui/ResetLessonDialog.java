@@ -2,10 +2,10 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.rpc.ResetUserPrescripionLessonAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.user.client.ui.HTML;
@@ -57,7 +57,7 @@ public class ResetLessonDialog extends GWindow {
                 CmBusyManager.setBusy(true);
                 ResetUserPrescripionLessonAction action = new ResetUserPrescripionLessonAction(userId, pidInLesson);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
             @Override
             public void oncapture(RpcData value) {

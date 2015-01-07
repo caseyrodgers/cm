@@ -1,12 +1,12 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -135,7 +135,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
         new RetryAction<AccountInfoModel>() {
             @Override
             public void attempt() {
-                CmServiceAsync s = CmShared.getCmService();
+                CmServiceAsync s = CmRpcCore.getCmService();
                 GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(uid);
                 setAction(action);
                 CmLogger.info("AccountInfoPanel: reading admin info RPC");
@@ -163,7 +163,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
 	        return;
 	    }
 	    
-	    CmServiceAsync s = CmShared.getCmService();
+	    CmServiceAsync s = CmRpcCore.getCmService();
         s.execute(new SaveAutoRegistrationAction(student.getAdminUid(), student, false), new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {

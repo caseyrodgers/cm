@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -8,7 +9,6 @@ import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -126,7 +126,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 		    @Override
 		    public void attempt() {
 		        CmBusyManager.setBusy(true, false);
-		        CmServiceAsync s = CmShared.getCmService();
+		        CmServiceAsync s = CmRpcCore.getCmService();
 		        GetActiveGroupsAction action = new GetActiveGroupsAction(uid);
 		        setAction(action);
 		        s.execute(action,this);

@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_admin.client.ui.WebLinkEditorDialog.EditType;
 import hotmath.gwt.cm_admin.client.ui.WebLinkManagerFilterPanel.SubjectModelLocal;
 import hotmath.gwt.cm_core.client.model.WebLinkConvertedUrlModel;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
@@ -12,20 +13,19 @@ import hotmath.gwt.cm_rpc.client.model.WebLinkModel.AvailableOn;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.LinkViewer;
 import hotmath.gwt.cm_rpc.client.model.WebLinkType;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
-import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksConvertedUrlAction;
-import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction.CrudOperation;
+import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksConvertedUrlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksForAdminAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWebLinksForAdminAction.TypeOfGet;
+import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -272,7 +272,7 @@ public class WebLinksManager extends GWindow {
                 CmBusyManager.setBusy(true);
                 GetWebLinksForAdminAction action = new GetWebLinksForAdminAction(TypeOfGet.PRIVATE, adminId);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -320,7 +320,7 @@ public class WebLinksManager extends GWindow {
             public void attempt() {
                 DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId, CrudOperation.IMPORT_TO_PUBLIC, webLink);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -413,7 +413,7 @@ public class WebLinksManager extends GWindow {
                 CmBusyManager.setBusy(true);
                 DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId, CrudOperation.DELETE, webLink);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -463,7 +463,7 @@ public class WebLinksManager extends GWindow {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 setAction(multiAction);
-                CmShared.getCmService().execute(multiAction, this);
+                CmRpcCore.getCmService().execute(multiAction, this);
             }
 
             @Override
@@ -491,7 +491,7 @@ public class WebLinksManager extends GWindow {
                 CmBusyManager.setBusy(true);
                 GetWebLinksForAdminAction action = new GetWebLinksForAdminAction(TypeOfGet.PUBLIC, 0);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -782,7 +782,7 @@ public class WebLinksManager extends GWindow {
                             CmBusyManager.setBusy(true);
                             DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(adminId, CrudOperation.DELETE, webLink);
                             setAction(action);
-                            CmShared.getCmService().execute(action, this);
+                            CmRpcCore.getCmService().execute(action, this);
                         }
 
                         @Override
@@ -845,7 +845,7 @@ public class WebLinksManager extends GWindow {
                     CmBusyManager.setBusy(true);
                     GetWebLinksConvertedUrlAction action = new GetWebLinksConvertedUrlAction(urlToPreview);
                     setAction(action);
-                    CmShared.getCmService().execute(action, this);
+                    CmRpcCore.getCmService().execute(action, this);
                 }
 
                 @Override

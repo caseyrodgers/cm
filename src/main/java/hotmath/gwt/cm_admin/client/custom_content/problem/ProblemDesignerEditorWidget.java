@@ -6,12 +6,12 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction.SaveType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -185,7 +185,7 @@ public class ProblemDesignerEditorWidget extends GWindow {
                 
                 SaveCustomProblemAction action = new SaveCustomProblemAction(_solutionInfo.getPid(), SaveType.WIDGET, widgetJson);
                 setAction(action);
-                CmShared.getCmService().execute(action,  this);
+                CmRpcCore.getCmService().execute(action,  this);
             }
 
             @Override

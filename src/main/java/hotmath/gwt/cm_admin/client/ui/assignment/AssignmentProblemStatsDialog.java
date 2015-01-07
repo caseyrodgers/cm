@@ -6,12 +6,11 @@ import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStatsUsers;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentRealTimeStatsUsersAction;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetStudentAssignmentAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -118,7 +117,7 @@ public class AssignmentProblemStatsDialog extends GWindow {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CmServiceAsync s = CmShared.getCmService();
+                CmServiceAsync s = CmRpcCore.getCmService();
                 GetStudentAssignmentAction action = new GetStudentAssignmentAction(sm.getUid(), assignKey);
                 setAction(action);
                 CmLogger.info("AccountInfoPanel: reading admin info RPC");
@@ -146,7 +145,7 @@ public class AssignmentProblemStatsDialog extends GWindow {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CmServiceAsync s = CmShared.getCmService();
+                CmServiceAsync s = CmRpcCore.getCmService();
                 GetAssignmentRealTimeStatsUsersAction action = new GetAssignmentRealTimeStatsUsersAction(assignKey, pid);
                 setAction(action);
                 CmLogger.info("AccountInfoPanel: reading admin info RPC");

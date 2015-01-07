@@ -126,7 +126,7 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
                 if (__isSpanish)
                     action.setSpanish(true);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(LessonResult result) {

@@ -116,7 +116,7 @@ public class AssignmentCopyDialog extends GWindow{
             public void attempt() {
                 ImportAssignmentAction action = new  ImportAssignmentAction(UserInfoBase.getInstance().getUid(),currentGroup.getGroupId(),groupModel.getAssignmentId());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
             
             public void oncapture(RpcData result) {
@@ -135,7 +135,7 @@ public class AssignmentCopyDialog extends GWindow{
             public void attempt() {
                 GetGroupAssignmentsAction action = new  GetGroupAssignmentsAction(UserInfoBase.getInstance().getUid());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
             
             public void oncapture(CmList<GroupCopyModel> value) {

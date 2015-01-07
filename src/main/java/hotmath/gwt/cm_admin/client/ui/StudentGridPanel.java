@@ -7,6 +7,7 @@ import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.model.StringHolder;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
@@ -286,7 +287,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                 CmBusyManager.setBusy(true);
                 ResetUserAction action = new ResetUserAction(uid, 0);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -1110,7 +1111,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                 CmBusyManager.setBusy(true);
                 UnregisterStudentsAction action = new UnregisterStudentsAction(smList);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(StringHolder result) {

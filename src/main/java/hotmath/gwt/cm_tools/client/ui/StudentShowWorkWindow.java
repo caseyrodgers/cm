@@ -161,7 +161,7 @@ public class StudentShowWorkWindow extends GWindow {
                             CmBusyManager.setBusy(true);
                             GetWhiteboardDataAction action = new GetWhiteboardDataAction(student.getUid(), pid,  UserInfo.getInstance().getRunId());
                             setAction(action);
-                            CmShared.getCmService().execute(action, this);
+                            CmRpcCore.getCmService().execute(action, this);
                         }
 
                         public void oncapture(CmList<WhiteboardCommand> whiteboardCommands) {
@@ -263,7 +263,7 @@ public class StudentShowWorkWindow extends GWindow {
                             CmBusyManager.setBusy(true);
                             GetWhiteboardDataAction action = new GetWhiteboardDataAction(student.getUid(), pid,  UserInfo.getInstance().getRunId());
                             setAction(action);
-                            CmShared.getCmService().execute(action, this);
+                            CmRpcCore.getCmService().execute(action, this);
                         }
 
                         public void oncapture(CmList<WhiteboardCommand> whiteboardCommands) {
@@ -378,7 +378,7 @@ public class StudentShowWorkWindow extends GWindow {
                 Log.debug("StudentShowWorkWindow: reading student show work list");
                 GetStudentShowWorkAction action = new GetStudentShowWorkAction(student.getUid(), activityModel.getRunId());
                 setAction(action);
-                CmShared.getCmService().execute(action,this);
+                CmRpcCore.getCmService().execute(action,this);
             }
             public void oncapture(CmList<StudentShowWorkModelPojo> list) {
                 CmBusyManager.setBusy(false);

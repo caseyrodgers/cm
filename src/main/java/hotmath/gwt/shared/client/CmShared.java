@@ -6,7 +6,7 @@ import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.UserInfoBase.Mode;
 import hotmath.gwt.cm_core.client.util.LoginInfoEmbedded;
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -31,20 +31,13 @@ import java.util.Map;
 
 import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 
 public class CmShared implements EntryPoint {
-
-    static {
-        setupServices();
-    }
-
     static public String __loginName;
 
     @Override
@@ -67,7 +60,7 @@ public class CmShared implements EntryPoint {
                 try {
                     String nameAndTime = getClass().getName() + ": Uncaught exception: " + new Date();
                     /**
-                    CmShared.getCmService().execute(
+                    CmRpcCore.getCmService().execute(
 
                             new LogRetryActionFailedAction("uncaught exception", UserInfo.getInstance().getUid(), nameAndTime, null, CmShared
                                     .getStackTraceAsString(e)), new AsyncCallback<RpcData>() {
@@ -328,29 +321,7 @@ public class CmShared implements EntryPoint {
         return url;
     }
 
-    /**
-     * Get the single CmServiceAsync instance to all for sending RPC commands.
-     * 
-     * @return
-     */
-    static CmServiceAsync _serviceInstance;
-
-    static public CmServiceAsync getCmService() {
-        return _serviceInstance;
-    }
-
-    static private void setupServices() {
-        Log.info("CatchupMathTools: Setting up services");
-
-        String point = GWT.getModuleBaseURL();
-        if (!point.endsWith("/"))
-            point += "/";
-
-        point = "/";
-        final CmServiceAsync cmService = (CmServiceAsync) GWT.create(CmService.class);
-        ((ServiceDefTarget) cmService).setServiceEntryPoint(point + "services/cmService");
-        _serviceInstance = cmService;
-
+    static {
         registerGlobalGwtJsMethods();
     }
 
@@ -410,7 +381,7 @@ public class CmShared implements EntryPoint {
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
             public void onSuccess() {
-                CmServiceAsync s = CmShared.getCmService();
+                CmServiceAsync s = CmRpcCore.getCmService();
                 int altTest = 0;
                 try {
                     altTest = Integer.parseInt(CmCore.getQueryParameter("alt_test"));

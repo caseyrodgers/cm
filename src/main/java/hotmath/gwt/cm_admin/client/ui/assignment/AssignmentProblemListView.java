@@ -12,10 +12,10 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentRealTimeStatsAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForLessonsWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -247,7 +247,7 @@ public class AssignmentProblemListView extends ContentPanel {
                public void attempt() {
                    GetCorrelatedTopicsPrescriptionAction action = new GetCorrelatedTopicsPrescriptionAction(problem.getPid());
                    setAction(action);
-                   CmShared.getCmService().execute(action, this);
+                   CmRpcCore.getCmService().execute(action, this);
                }
 
                public void oncapture(CmList<PrescriptionSessionResponse> prescriptions) {
@@ -363,7 +363,7 @@ public class AssignmentProblemListView extends ContentPanel {
 
     private void startCheckingRealTimeStats() {
         GetAssignmentRealTimeStatsAction action = new GetAssignmentRealTimeStatsAction(this._assignment.getAssignKey());
-        CmShared.getCmService().execute(action, new AsyncCallback<AssignmentRealTimeStats>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<AssignmentRealTimeStats>() {
             @Override
             public void onSuccess(AssignmentRealTimeStats result) {
                 updateRealTimeStats(result);

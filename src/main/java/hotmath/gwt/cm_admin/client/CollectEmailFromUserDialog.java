@@ -4,10 +4,10 @@ import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.StringHolder;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.SaveAdminEmailAction;
 
@@ -112,7 +112,7 @@ public class CollectEmailFromUserDialog extends GWindow {
 				SaveAdminEmailAction action = new SaveAdminEmailAction(UserInfoBase
 						.getInstance().getUid(), email.getValue());
 				setAction(action);
-				CmShared.getCmService().execute(action, this);
+				CmRpcCore.getCmService().execute(action, this);
 			}
 
 			public void oncapture(StringHolder result) {

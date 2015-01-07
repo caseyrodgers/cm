@@ -114,7 +114,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
          }
          System.out.println("SystemSyncChecker: " + action.toString());
          
-         CmShared.getCmService().execute(action, new AsyncCallback<UserSyncInfo>() {
+         CmRpcCore.getCmService().execute(action, new AsyncCallback<UserSyncInfo>() {
              @Override
             public void onSuccess(UserSyncInfo info) {
                  System.out.println("GetCatchupMathVersionAction: return from server->" + info);

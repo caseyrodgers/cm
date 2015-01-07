@@ -1,23 +1,17 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_admin.client.ui.WebLinkAddTargetsDialog;
-import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.GetCustomProblemLinkedLessonAction;
-import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemLinkedLessonAction;
-import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.client.ui.HTML;
@@ -115,7 +109,7 @@ public class CustomProblemLinkedLessonsPanel extends ContentPanel {
             public void attempt() {
                 GetCustomProblemLinkedLessonAction action = new GetCustomProblemLinkedLessonAction(_pid);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

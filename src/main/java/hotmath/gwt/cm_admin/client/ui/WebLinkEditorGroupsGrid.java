@@ -2,10 +2,10 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetActiveGroupsAction;
 
@@ -78,7 +78,7 @@ public class WebLinkEditorGroupsGrid extends ContentPanel {
                 CmBusyManager.setBusy(true);
                 GetActiveGroupsAction action = new GetActiveGroupsAction(webLinkModel.getAdminId());
                 setAction(action);
-                CmShared.getCmService().execute(action,  this);
+                CmRpcCore.getCmService().execute(action,  this);
             }
             
             @Override

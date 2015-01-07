@@ -1,13 +1,13 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import java.util.Date;
-
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoStatsAction;
 import hotmath.gwt.cm_rpc.client.rpc.UserInfoStats;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
-import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+
+import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
@@ -47,7 +47,7 @@ public class StudentInfoPanel extends Composite{
                 action.setFromDate(fromDate);
                 action.setToDate(toDate);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

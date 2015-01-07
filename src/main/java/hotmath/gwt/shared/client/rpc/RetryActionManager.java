@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.client.rpc;
 
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.shared.client.CmShared;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -80,7 +80,7 @@ public class RetryActionManager {
     private void sendStandardErrorFeedback(String actionErrorCondition) {
         final String comments = createActionQueueStack();
         SaveFeedbackAction action = new SaveFeedbackAction(comments, actionErrorCondition, "internal"); 
-        CmShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {
                 Log.info("Feedback saved: " + comments);

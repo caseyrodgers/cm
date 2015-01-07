@@ -15,11 +15,11 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.LessonDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SubjectDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.util.CmLoggerWindow;
 
@@ -75,7 +75,7 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
             public void attempt() {
                 GetProgramListingAction action = new GetProgramListingAction(UserInfoBase.getInstance().getUid());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(ProgramListing programLessons) {
@@ -301,7 +301,7 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
             public void attempt() {
                 GetProgramLessonsAction action = new GetProgramLessonsAction(chapterNode.getTestDefId(),1,chapterNode.getName(),0);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(CmList<ProgramLesson> lessons) {

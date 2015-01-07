@@ -2,11 +2,11 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.viewer.QuizResultsPdfPanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplResults;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -51,7 +51,7 @@ public class ShowQuizResultsDialog extends GWindow {
                 CmBusyManager.setBusy(true);
                 GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(runId);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

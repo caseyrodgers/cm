@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_admin.client.ui.CCSSLevelComboBoxWidget.CallbackOnSelection;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.StringHolder;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
@@ -11,7 +12,6 @@ import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldSet;
 import hotmath.gwt.cm_tools.client.ui.MyValidatorDef;
 import hotmath.gwt.cm_tools.client.ui.MyValidators;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CCSSGradeLevel;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.ExportStudentsAction;
@@ -21,7 +21,6 @@ import java.util.Date;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -214,7 +213,7 @@ public class ExportStudentData extends SimpleContainer {
             	action.setFromDate(fromDate);
             	action.setToDate(toDate);
 		        setAction(action);
-		        CmShared.getCmService().execute(action,this);
+		        CmRpcCore.getCmService().execute(action,this);
 		    }
 		    
             public void oncapture(StringHolder msg) {

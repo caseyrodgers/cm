@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -13,7 +14,6 @@ import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tutor.client.view.TutorCallback;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ public class ViewPrintAssignmentWindow extends GWindow {
             public void attempt() {
                 GetAssignmentAction action = new GetAssignmentAction(ass.getAssignKey());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -101,7 +101,7 @@ public class ViewPrintAssignmentWindow extends GWindow {
                     mAction.getActions().add(new GetSolutionAction(0, 0, p.getPid()));	
                 }
                 setAction(mAction);
-                CmShared.getCmService().execute(mAction, this);
+                CmRpcCore.getCmService().execute(mAction, this);
             }
 
             @Override

@@ -63,7 +63,7 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
     @Override
     public void prepareShowWorkView(final AssignmentShowWorkView showWorkView) {
             GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(AssignmentData.getUserData().getUid(), pid, assignKey);
-            CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
+            CmRpcCore.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
                 public void onSuccess(final AssignmentWhiteboardData whiteData) {
                     __lastWhiteboardData = whiteData;
                     

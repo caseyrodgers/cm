@@ -7,10 +7,10 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboa
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentTutorPanel.AssignmentTutorPanelCallback;
-import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
 
@@ -166,7 +166,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     private void loadAssignmentWhiteboardData(int uid, int assignKey, String pid) {
         // always use zero for run_id
         GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(uid, pid, assignKey);
-        CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
             public void onSuccess(final AssignmentWhiteboardData data) {
                 Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                     @Override

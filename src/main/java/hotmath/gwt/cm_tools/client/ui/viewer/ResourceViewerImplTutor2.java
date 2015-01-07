@@ -235,7 +235,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
                 CmBusyManager.setBusy(true);
                 GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(), pid,  UserInfo.getInstance().getRunId());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(CmList<WhiteboardCommand> whiteboardCommands) {
@@ -263,7 +263,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
                 SaveTutorInputWidgetAnswerAction action = new SaveTutorInputWidgetAnswerAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getRunId(), pid, value, yesNo);
 
                 setAction(action);
-                CmShared.getCmService().execute(action,this);
+                CmRpcCore.getCmService().execute(action,this);
             }
 
             @Override
@@ -294,7 +294,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
         else {
             final String pid=getResourceItem().getFile();
             SaveSolutionContextAction action = new SaveSolutionContextAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(),pid,__problemNumber, variablesJson);
-            CmShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
+            CmRpcCore.getCmService().execute(action, new AsyncCallback<RpcData>() {
                 @Override
                 public void onSuccess(RpcData result) {
                     _solutionInfo.setContext(new SolutionContext(pid,__problemNumber,variablesJson));

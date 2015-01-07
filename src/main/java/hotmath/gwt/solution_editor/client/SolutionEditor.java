@@ -77,7 +77,7 @@ public class SolutionEditor implements EntryPoint {
                 try {
                     String nameAndTime = getClass().getName() + ": Uncaught exception: " + new Date();
                     /**
-                    CmShared.getCmService().execute(
+                    CmRpcCore.getCmService().execute(
 
                             new LogRetryActionFailedAction("uncaught exception", UserInfo.getInstance().getUid(), nameAndTime, null, CmShared
                                     .getStackTraceAsString(e)), new AsyncCallback<RpcData>() {

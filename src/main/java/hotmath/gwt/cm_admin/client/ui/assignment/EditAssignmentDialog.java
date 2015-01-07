@@ -306,7 +306,7 @@ public class EditAssignmentDialog {
                 int aid = UserInfoBase.getInstance().getUid();
                 GetAssignmentStatusAction action = new GetAssignmentStatusAction(aid, _assignment.getAssignKey());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -409,7 +409,7 @@ public class EditAssignmentDialog {
                 int aid = UserInfoBase.getInstance().getUid();
                 SaveAssignmentAction action = new SaveAssignmentAction(aid, _assignment);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

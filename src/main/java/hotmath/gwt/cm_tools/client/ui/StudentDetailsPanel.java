@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc.client.rpc.ResetStudentActivityAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -13,8 +15,6 @@ import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageByStrandWindow;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageChartWindow;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -257,7 +257,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                 ResetStudentActivityAction action = new ResetStudentActivityAction(studentModel.getUid(), studentActivity.getTestId(),
                         studentActivity.getRunId());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
         }.register();
     }
@@ -569,7 +569,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 
             @Override
             public void attempt() {
-                CmServiceAsync s = CmShared.getCmService();
+                CmServiceAsync s = CmRpcCore.getCmService();
                 DateRangePanel dateRange = DateRangePanel.getInstance();
                 Date fromDate = dateRange != null ? dateRange.getFromDate() : null;
                 Date toDate = dateRange != null ? dateRange.getToDate() : null;

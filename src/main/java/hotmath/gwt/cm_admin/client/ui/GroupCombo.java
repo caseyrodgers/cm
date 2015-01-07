@@ -2,10 +2,10 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetActiveGroupsAction;
 
@@ -95,7 +95,7 @@ public class GroupCombo implements IsWidget {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true, false);
-                CmServiceAsync s = CmShared.getCmService();
+                CmServiceAsync s = CmRpcCore.getCmService();
                 GetActiveGroupsAction action = new GetActiveGroupsAction(adminId);
                 setAction(action);
                 s.execute(action, this);

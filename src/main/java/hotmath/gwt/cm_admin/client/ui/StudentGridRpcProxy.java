@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.StudentSearchInfo;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -102,7 +102,7 @@ public class StudentGridRpcProxy extends RpcProxy<PagingLoadConfigBean, CmStuden
                 }
                 pageAction.setDateRange(dateRange);
 
-                CmShared.getCmService().execute(pageAction, this);
+                CmRpcCore.getCmService().execute(pageAction, this);
 
                 /** always turn off */
                 StudentGridPanel.instance._forceServerRefresh = false;

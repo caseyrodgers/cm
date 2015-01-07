@@ -1,10 +1,10 @@
 package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.QueueMessage;
 import hotmath.gwt.shared.client.rpc.RetryActionManagerQueueWatcher;
 import hotmath.gwt.shared.client.rpc.action.SaveCmLoggerTextAction;
@@ -134,7 +134,7 @@ public class CmLoggerWindow extends GWindow {
                     msgs += msg.toString() + "\n\n";
                 }
                 SaveCmLoggerTextAction action = new SaveCmLoggerTextAction(UserInfo.getInstance().getUid(),msgs);
-                CmShared.getCmService().execute(action,new CmAsyncCallback<RpcData>() {
+                CmRpcCore.getCmService().execute(action,new CmAsyncCallback<RpcData>() {
                     public void onSuccess(RpcData result) {
                         clearLog();
                         CatchupMathTools.showAlert("Log messages saved on server");

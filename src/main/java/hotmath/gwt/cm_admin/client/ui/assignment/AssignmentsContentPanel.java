@@ -209,7 +209,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             public void attempt() {
                 GetUngradedWhiteboardProblemsForAssignmentAction action = new GetUngradedWhiteboardProblemsForAssignmentAction(assignment.getAssignKey());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -254,7 +254,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             public void attempt() {
                 ReleaseAssignmentGradesAction action = new ReleaseAssignmentGradesAction(assignment.getAssignKey());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -295,7 +295,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             public void attempt() {
                 ActivateAssignmentAction action = new ActivateAssignmentAction(assignment.getAssignKey());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(RpcData data) {
@@ -323,7 +323,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             public void attempt() {
                 GetAssignmentsCreatedAction action = new GetAssignmentsCreatedAction(UserInfoBase.getInstance().getUid(), group.getGroupId());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(CmList<Assignment> assignments) {
@@ -441,7 +441,7 @@ public class AssignmentsContentPanel extends ContentPanel {
                 CmBusyManager.setBusy(true);
                 DeleteAssignmentAction action = new DeleteAssignmentAction(ass.getAssignKey());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(RpcData data) {
@@ -520,7 +520,7 @@ public class AssignmentsContentPanel extends ContentPanel {
                 CmBusyManager.setBusy(true);
                 CopyAssignmentAction action = new CopyAssignmentAction(ass.getAssignKey());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(RpcData data) {
@@ -571,7 +571,7 @@ public class AssignmentsContentPanel extends ContentPanel {
                 CmBusyManager.setBusy(true);
                 CloseAssignmentAction action = new CloseAssignmentAction(UserInfoBase.getInstance().getUid(), ass.getAssignKey());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(RpcData data) {

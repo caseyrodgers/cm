@@ -8,10 +8,10 @@ import hotmath.gwt.cm_rpc.client.rpc.AssignStudentsToAssignmentAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.List;
@@ -105,7 +105,7 @@ public class AssignStudentsToAssignmentDialog extends GWindow {
                 students2.addAll(students);
                 AssignStudentsToAssignmentAction action = new AssignStudentsToAssignmentAction(_assignment.getAssignKey(), students2);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

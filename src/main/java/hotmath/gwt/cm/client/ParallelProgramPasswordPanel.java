@@ -3,6 +3,7 @@ package hotmath.gwt.cm.client;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.ParallelProgramLoginAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -150,7 +151,7 @@ public class ParallelProgramPasswordPanel extends CmMainResourceWrapper {
         CmBusyManager.setBusy(true);
         ParallelProgramLoginAction action = new ParallelProgramLoginAction(UserInfo.getInstance().getUid(),
                 password.getValue());
-        CmShared.getCmService().execute(action, new CmAsyncCallback<RpcData>() {
+        CmRpcCore.getCmService().execute(action, new CmAsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData rdata) {
                 CmBusyManager.setBusy(false);

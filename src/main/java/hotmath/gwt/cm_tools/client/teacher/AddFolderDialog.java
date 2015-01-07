@@ -1,12 +1,12 @@
 package hotmath.gwt.cm_tools.client.teacher;
 
 import hotmath.gwt.cm_rpc.client.rpc.AddCustomProblemTreePathAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.RetryActionManager;
 
@@ -62,7 +62,7 @@ public class AddFolderDialog extends GWindow {
 			public void attempt() {
 				AddCustomProblemTreePathAction action = new AddCustomProblemTreePathAction(TeacherManager.getTeacher(), folderName);
 				setAction(action);
-				CmShared.getCmService().execute(action, this);
+				CmRpcCore.getCmService().execute(action, this);
 			}
 
 			@Override

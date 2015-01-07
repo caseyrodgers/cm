@@ -16,9 +16,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tutor.client.CmTutor;
-import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -395,7 +392,7 @@ public class ShowWorkPanel2 extends Composite {
         if (whiteboardActions.getActions().size() == 0)
             return;
 
-        CmTutor.getCmService().execute(whiteboardActions, new AsyncCallback<CmList<Response>>() {
+        CmRpcCore.getCmService().execute(whiteboardActions, new AsyncCallback<CmList<Response>>() {
             @Override
             public void onSuccess(CmList<Response> result) {
 
@@ -423,7 +420,7 @@ public class ShowWorkPanel2 extends Composite {
         final String dataUrl = jsniGetWhiteboardDataUrl(whiteboardId);
         
         SaveWhiteboardAsTemplateAction action = new SaveWhiteboardAsTemplateAction(adminId, dataUrl);
-        CmTutor.getCmService().execute(action,  new AsyncCallback<RpcData>() {
+        CmRpcCore.getCmService().execute(action,  new AsyncCallback<RpcData>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Error saving template: " + caught);

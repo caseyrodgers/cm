@@ -5,11 +5,11 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.viewer.IsQuiz;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -148,7 +148,7 @@ public class QuizPage extends FlowLayoutContainer implements IsQuiz {
 	            GetQuizHtmlAction quizAction = new GetQuizHtmlAction(UserInfo.getInstance().getTestId());
 	            setAction(quizAction);
 	            CmLogger.info("QuizPage.getQuizHtmlFromServer: " + quizAction);
-	            CmShared.getCmService().execute(quizAction, this);
+	            CmRpcCore.getCmService().execute(quizAction, this);
 	        }
 	        
             @Override
@@ -290,7 +290,7 @@ public class QuizPage extends FlowLayoutContainer implements IsQuiz {
                 SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(UserInfo.getInstance().getTestId(), isCorrect, answerChoice, pid);
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_QUIZ_QUESTION_SELECTION_CHANGED,action));
                 setAction(action);
-                CmShared.getCmService().execute(action,this);
+                CmRpcCore.getCmService().execute(action,this);
             }
             @Override
             public void oncapture(RpcData value) {

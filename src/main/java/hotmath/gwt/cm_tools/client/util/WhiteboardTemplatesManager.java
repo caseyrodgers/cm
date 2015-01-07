@@ -9,13 +9,13 @@ import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardTemplatesAction;
 import hotmath.gwt.cm_rpc.client.rpc.ManageWhiteboardTemplatesAction;
 import hotmath.gwt.cm_rpc.client.rpc.ManageWhiteboardTemplatesAction.ManageType;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.core.client.GWT;
@@ -193,7 +193,7 @@ public class WhiteboardTemplatesManager extends GWindow {
                         ManageWhiteboardTemplatesAction action = new ManageWhiteboardTemplatesAction(UserInfoBase
                                 .getInstance().getUid(), item.getPath(), ManageType.DELETE);
                         setAction(action);
-                        CmShared.getCmService().execute(action, this);
+                        CmRpcCore.getCmService().execute(action, this);
                     }
 
                     @Override
@@ -212,7 +212,7 @@ public class WhiteboardTemplatesManager extends GWindow {
                 GetWhiteboardTemplatesAction action = new GetWhiteboardTemplatesAction(UserInfoBase.getInstance()
                         .getUid());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

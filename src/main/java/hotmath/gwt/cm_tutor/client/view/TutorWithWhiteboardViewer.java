@@ -10,10 +10,10 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -93,7 +93,7 @@ public class TutorWithWhiteboardViewer extends Composite {
     public void loadSolution(final int uid, final int assignKey, String pid) {
 
         GetAssignmentSolutionAction action = new GetAssignmentSolutionAction(uid,assignKey, pid);
-        CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentProblem>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<AssignmentProblem>() {
             @Override
             public void onSuccess(AssignmentProblem problem) {
                 loadSolutionIntoGui(uid, assignKey, problem);
@@ -137,7 +137,7 @@ public class TutorWithWhiteboardViewer extends Composite {
 
     private void processTutorWidgetComplete(String inputValue, boolean yesNo) {
         SaveAssignmentTutorInputWidgetAnswerAction action = new SaveAssignmentTutorInputWidgetAnswerAction(_uid, _assignKey,_assProblem.getInfo().getPid(),inputValue,yesNo);
-        CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
                 Log.debug("Tutor Widget Answer saved to server.");
             }
@@ -158,7 +158,7 @@ public class TutorWithWhiteboardViewer extends Composite {
         
         // always use zero for run_id
         GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(uid, pid, assignKey);
-        CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
             public void onSuccess(AssignmentWhiteboardData data) {
                 _showWWork.loadWhiteboard(data.getCommands());
             }

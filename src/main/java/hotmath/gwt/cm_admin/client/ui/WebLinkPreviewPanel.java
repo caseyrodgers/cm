@@ -4,10 +4,10 @@ import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.LinkViewer;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction;
 import hotmath.gwt.cm_rpc.client.rpc.DoWebLinksCrudOperationAction.CrudOperation;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.user.client.Window;
@@ -113,7 +113,7 @@ public class WebLinkPreviewPanel extends GWindow {
                 CrudOperation actionToDo = CrudOperation.ADD;
                 DoWebLinksCrudOperationAction action = new DoWebLinksCrudOperationAction(webLink.getAdminId(), actionToDo, webLink);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

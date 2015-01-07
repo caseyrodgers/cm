@@ -17,7 +17,6 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.Problem
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteEvent;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCorrectEvent;
@@ -265,7 +264,7 @@ public class TutorWrapperPanel extends Composite {
         Log.debug("TutorWrapperPanel->loadSolution: " + pid);
 
         GetSolutionAction action = new GetSolutionAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getRunId(), pid);
-        CmTutor.getCmService().execute(action, new AsyncCallback<SolutionInfo>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<SolutionInfo>() {
             @Override
             public void onSuccess(SolutionInfo result) {
                 try {
@@ -351,7 +350,7 @@ public class TutorWrapperPanel extends Composite {
 
     private void saveTutorWidgetAsComplete(Action<UserTutorWidgetStats> action) {
         if(action != null) {
-            CmTutor.getCmService().execute(action,new AsyncCallback<UserTutorWidgetStats>() {
+            CmRpcCore.getCmService().execute(action,new AsyncCallback<UserTutorWidgetStats>() {
                 @Override
                 public void onSuccess(UserTutorWidgetStats userStats) {
                     CmRpcCore.EVENT_BUS.fireEvent(new UserTutorWidgetStatusUpdatedEvent(userStats));
@@ -698,7 +697,7 @@ public class TutorWrapperPanel extends Composite {
 
             Action<RpcData> action = tutorCallback.getSaveSolutionContextAction(variablesJson, _solutionInfo.getPid(), problemNumber);
             if(action != null) {
-                CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
+                CmRpcCore.getCmService().execute(action, new AsyncCallback<RpcData>() {
                     @Override
                     public void onSuccess(RpcData result) {
                         _solutionInfo.setContext(new SolutionContext(pid, problemNumber, variablesJson));

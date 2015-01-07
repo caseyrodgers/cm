@@ -6,12 +6,12 @@ import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemLinkedLessonAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.List;
@@ -123,7 +123,7 @@ public class CustomProblemPropertiesDialog extends GWindow {
             public void attempt() {
                 SaveCustomProblemLinkedLessonAction action = new SaveCustomProblemLinkedLessonAction(UserInfoBase.getInstance().getUid(), _customProblem.getTeacher().getTeacherId(), pid, comments, new CmArrayList<LessonModel>(lessons));
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

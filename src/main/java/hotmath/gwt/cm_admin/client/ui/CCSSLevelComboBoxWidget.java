@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CCSSGradeLevel;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSLevelsAction;
@@ -115,7 +115,7 @@ public class CCSSLevelComboBoxWidget {
 
             @Override
             public void attempt() {
-                CmServiceAsync s = CmShared.getCmService();
+                CmServiceAsync s = CmRpcCore.getCmService();
 
                 CCSSLevelsAction action = new CCSSLevelsAction();
                 setAction(action);

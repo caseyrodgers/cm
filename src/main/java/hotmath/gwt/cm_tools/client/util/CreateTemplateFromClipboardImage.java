@@ -3,14 +3,12 @@ package hotmath.gwt.cm_tools.client.util;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardAsTemplateAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -19,7 +17,6 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderL
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.TextField;
 
 public class CreateTemplateFromClipboardImage extends GWindow {
     
@@ -105,7 +102,7 @@ public class CreateTemplateFromClipboardImage extends GWindow {
             public void attempt() {
                 SaveWhiteboardAsTemplateAction action = new SaveWhiteboardAsTemplateAction(UserInfoBase.getInstance().getUid(), dataUrl);
                 setAction(action);
-                CmShared.getCmService().execute(action,  this);
+                CmRpcCore.getCmService().execute(action,  this);
             }
 
             @Override

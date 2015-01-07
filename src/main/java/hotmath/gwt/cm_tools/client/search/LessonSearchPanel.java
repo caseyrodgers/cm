@@ -6,9 +6,9 @@ import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchType;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -113,7 +113,7 @@ public class LessonSearchPanel extends SimpleContainer {
             public void attempt() {
                 SearchTopicAction action = new SearchTopicAction(SearchType.LESSON_LIKE,"%" + _lessonText.getValue() + "%");
                 setAction(action);
-                CmShared.getCmService().execute(action,  this);
+                CmRpcCore.getCmService().execute(action,  this);
             }
             
             @Override
@@ -156,7 +156,7 @@ public class LessonSearchPanel extends SimpleContainer {
                 CmBusyManager.setBusy(true);
                 GetTopicPrescriptionAction action = new  GetTopicPrescriptionAction(topic.getFile());
                 setAction(action);
-                CmShared.getCmService().execute(action,  this);
+                CmRpcCore.getCmService().execute(action,  this);
             }
             
             public void oncapture(PrescriptionSessionResponse value) {

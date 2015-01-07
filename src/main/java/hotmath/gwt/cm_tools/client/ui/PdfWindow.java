@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -24,7 +24,7 @@ public class PdfWindow {
             @Override
             public void attempt() {
                 CatchupMathTools.setBusy(true);
-                CmServiceAsync s = CmShared.getCmService();
+                CmServiceAsync s = CmRpcCore.getCmService();
                 setAction(action);
                 s.execute(action,this);                
             }

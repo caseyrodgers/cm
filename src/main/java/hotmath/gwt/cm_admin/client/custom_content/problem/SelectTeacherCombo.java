@@ -5,13 +5,13 @@ import hotmath.gwt.cm_core.client.model.TeacherIdentity;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.GetAdminTeachersAction;
 import hotmath.gwt.cm_rpc.client.ui.AddAdminTeacherAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.teacher.TeacherManager;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.RetryActionManager;
 
@@ -21,17 +21,12 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.Window;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.Composite;
-import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
-import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
-import com.sencha.gxt.widget.core.client.event.HideEvent;
-import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
 public class SelectTeacherCombo extends Composite {
@@ -133,7 +128,7 @@ public class SelectTeacherCombo extends Composite {
 				GetAdminTeachersAction action = new GetAdminTeachersAction(
 						UserInfoBase.getInstance().getUid());
 				setAction(action);
-				CmShared.getCmService().execute(action, this);
+				CmRpcCore.getCmService().execute(action, this);
 			}
 
 			@Override
@@ -172,7 +167,7 @@ public class SelectTeacherCombo extends Composite {
 	            public void attempt() {
 	                AddAdminTeacherAction action = new AddAdminTeacherAction(UserInfoBase.getInstance().getUid(), teacherName);
 	                setAction(action);
-	                CmShared.getCmService().execute(action, this);
+	                CmRpcCore.getCmService().execute(action, this);
 	            }
 
 	            @Override

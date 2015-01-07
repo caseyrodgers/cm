@@ -8,6 +8,7 @@ import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.rpc.GetAllCustomQuizLessonsAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -16,7 +17,6 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.CustomQuizId;
 import hotmath.gwt.shared.client.model.IntValueHolder;
@@ -275,7 +275,7 @@ public class CustomProgramAddQuizDialog extends GWindow {
             public void attempt() {
                 CustomQuizUsageCountAction action = new CustomQuizUsageCountAction(_customQuiz.getQuizId());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
             
             @Override
@@ -396,7 +396,7 @@ public class CustomProgramAddQuizDialog extends GWindow {
 
                 GetCustomQuizAction action = new GetCustomQuizAction(quiz.getQuizId());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -451,7 +451,7 @@ public class CustomProgramAddQuizDialog extends GWindow {
                 		_customQuiz.isInUse(), _customQuiz.isArchived(), _customQuiz.getArchiveDate());
                 SaveCustomQuizAction action = new SaveCustomQuizAction(customQuiz, ids);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -504,7 +504,7 @@ public class CustomProgramAddQuizDialog extends GWindow {
                 CmBusyManager.setBusy(true);
                 GetAllCustomQuizLessonsAction action = new GetAllCustomQuizLessonsAction();
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -535,7 +535,7 @@ public class CustomProgramAddQuizDialog extends GWindow {
                 CmBusyManager.setBusy(true);
                 GetLessonQuestionsAction action = new GetLessonQuestionsAction(lesson.getFile(), lesson.getSubject());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

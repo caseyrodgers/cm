@@ -96,7 +96,7 @@ public class TopicExplorer extends SimpleContainer {
             public void attempt() {
                 GetTopicPrescriptionAction action = new GetTopicPrescriptionAction(topic.getFile());
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
             
             @Override

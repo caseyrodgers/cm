@@ -4,11 +4,11 @@ import hotmath.gwt.cm_admin.client.ui.list.ListCustomLesson;
 import hotmath.gwt.cm_admin.client.ui.list.ListStudents;
 import hotmath.gwt.cm_admin.client.ui.list.ListStudents.CallbackOnDoubleClick;
 import hotmath.gwt.cm_core.client.UserInfoBase;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CustomProgramInfoModel;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramInfoAction;
@@ -95,7 +95,7 @@ public class CustomProgramInfoSubDialog extends GWindow {
                 CmBusyManager.setBusy(true);
                 CustomProgramInfoAction action = new CustomProgramInfoAction(UserInfoBase.getInstance().getUid(), program);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

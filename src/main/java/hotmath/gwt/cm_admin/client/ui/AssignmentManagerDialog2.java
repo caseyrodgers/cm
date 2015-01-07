@@ -184,7 +184,7 @@ public class AssignmentManagerDialog2  {
             public void attempt() {
                 GetAssignmentGroupsAction action = new GetAssignmentGroupsAction(aid);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(CmList<GroupDto> groupInfos) {

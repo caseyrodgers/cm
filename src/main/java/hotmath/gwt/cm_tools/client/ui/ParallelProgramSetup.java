@@ -2,13 +2,13 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.rpc.action.SaveParallelProgramAction;
 import hotmath.gwt.shared.client.util.CmException;
@@ -144,7 +144,7 @@ public class ParallelProgramSetup extends RegisterStudent {
 	        return;
 	    }
 	    
-	    CmServiceAsync s = CmShared.getCmService();
+	    CmServiceAsync s = CmRpcCore.getCmService();
         s.execute(new SaveParallelProgramAction(student.getAdminUid(), student, parellelProgId), new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {

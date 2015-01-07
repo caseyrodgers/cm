@@ -3,9 +3,9 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWorkForUserAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.ui.CmCellRendererBoolean;
 
@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.editor.client.Editor.Path;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -54,7 +53,7 @@ public class StudentAssignmentWorkWindow extends GWindow {
                 action.setFromDate(fromDate);
                 action.setToDate(toDate);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override

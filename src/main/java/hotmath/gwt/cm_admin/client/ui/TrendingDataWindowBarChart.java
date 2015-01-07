@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataDetailAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
@@ -209,7 +209,7 @@ public class TrendingDataWindowBarChart implements IsWidget {
 		CmBusyManager.setBusy(true);
 
 		final String lessonName = trendingData.get(lessonNumber).getLessonName();
-		CmServiceAsync service = CmShared.getCmService();
+		CmServiceAsync service = CmRpcCore.getCmService();
 		GetAdminTrendingDataDetailAction action = new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._pageAction, lessonName, _currentProgramOnly);
 		service.execute(action,
 				new CmAsyncCallback<CmList<StudentModelI>>() {

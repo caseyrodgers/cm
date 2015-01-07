@@ -5,6 +5,7 @@ import hotmath.gwt.cm_admin.client.ui.list.ListCustomLesson;
 import hotmath.gwt.cm_admin.client.ui.list.ListCustomLesson.CallbackOnDoubleClick;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -16,7 +17,6 @@ import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.IntValueHolder;
@@ -121,7 +121,7 @@ public class CustomProgramDesignerDialog extends GWindow {
 					CustomProgramUsageCountAction action = new CustomProgramUsageCountAction(
 							customProgram.getProgramId());
 					setAction(action);
-					CmShared.getCmService().execute(action, this);
+					CmRpcCore.getCmService().execute(action, this);
 				}
 
 				@Override
@@ -386,7 +386,7 @@ public class CustomProgramDesignerDialog extends GWindow {
 				CustomProgramAction action = new CustomProgramAction(
 						ActionType.GET_ALL_LESSONS);
 				setAction(action);
-				CmShared.getCmService().execute(action, this);
+				CmRpcCore.getCmService().execute(action, this);
 			}
 
 			@Override
@@ -412,7 +412,7 @@ public class CustomProgramDesignerDialog extends GWindow {
 						ActionType.GET_CUSTOM_PROGRAM);
 				action.setProgramId(program.getProgramId());
 				setAction(action);
-				CmShared.getCmService().execute(action, this);
+				CmRpcCore.getCmService().execute(action, this);
 			}
 
 			@Override
@@ -472,7 +472,7 @@ public class CustomProgramDesignerDialog extends GWindow {
 				action.setLessons(new CmArrayList<CustomLessonModel>(
 						_listSelected.getStore().getAll()));
 				setAction(action);
-				CmShared.getCmService().execute(action, this);
+				CmRpcCore.getCmService().execute(action, this);
 			}
 
 			public void onFailure(Throwable error) {
@@ -511,7 +511,7 @@ public class CustomProgramDesignerDialog extends GWindow {
 				GetCustProgQuizDefsAction action = new GetCustProgQuizDefsAction(
 						adminModel.getUid());
 				setAction(action);
-				CmShared.getCmService().execute(action, this);
+				CmRpcCore.getCmService().execute(action, this);
 			}
 
 			@Override
@@ -540,7 +540,7 @@ public class CustomProgramDesignerDialog extends GWindow {
 				DeleteCustomQuizAction action = new DeleteCustomQuizAction(
 						adminModel.getUid(), def.getQuizId());
 				setAction(action);
-				CmShared.getCmService().execute(action, this);
+				CmRpcCore.getCmService().execute(action, this);
 			}
 
 			@Override

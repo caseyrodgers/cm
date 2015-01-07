@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSubject;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramType;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramLessonsAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramListingAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.ProgListModel;
@@ -19,7 +20,6 @@ import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.TopicExplorerWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfProgramDetailsReportAction;
 
@@ -409,7 +409,7 @@ public class ProgramDetailsPanel extends GWindow {
                 }
 
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             @Override
@@ -438,7 +438,7 @@ public class ProgramDetailsPanel extends GWindow {
                 GetProgramListingAction action = new GetProgramListingAction(cmAdminMdl.getUid());
                 action.setIncludeBuiltInCustomProgs(true);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(ProgramListing pl) {

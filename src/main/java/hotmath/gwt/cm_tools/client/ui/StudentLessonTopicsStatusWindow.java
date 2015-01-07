@@ -1,13 +1,13 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModelProperties;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForCustomProgramTestAction;
 import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForTestRunAction;
 
@@ -164,7 +164,7 @@ public class StudentLessonTopicsStatusWindow extends GWindow {
         
         CatchupMathTools.setBusy(true);
         
-        CmServiceAsync s = CmShared.getCmService();
+        CmServiceAsync s = CmRpcCore.getCmService();
         
         if (! isCustomProgram) {
         	s.execute(new   GetLessonItemsForTestRunAction(runId), new AsyncCallback<CmList<LessonItemModel>>() {

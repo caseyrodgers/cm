@@ -9,7 +9,6 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.ShowWorkModifiedEvent;
 
 import java.util.List;
@@ -275,7 +274,7 @@ public class ShowWorkPanel extends Composite {
 
         Log.debug("saveWhiteboardToServer: actions=" + whiteboardActions.getActions().size());
 
-        CmTutor.getCmService().execute(whiteboardActions, new AsyncCallback<CmList<Response>>() {
+        CmRpcCore.getCmService().execute(whiteboardActions, new AsyncCallback<CmList<Response>>() {
             @Override
             public void onSuccess(CmList<Response> result) {
 

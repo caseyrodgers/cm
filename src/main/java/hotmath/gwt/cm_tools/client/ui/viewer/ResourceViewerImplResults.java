@@ -5,12 +5,12 @@ import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -74,7 +74,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
                     CmBusyManager.setBusy(true);
                     GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(UserInfo.getInstance().getRunId());
                     setAction(action);
-                    CmShared.getCmService().execute(action, this);
+                    CmRpcCore.getCmService().execute(action, this);
                 }
     
                 public void oncapture(QuizResultsMetaInfo result) {
@@ -119,7 +119,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
                 CmBusyManager.setBusy(true);
                 GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(), "quiz:quiz",  0);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(CmList<WhiteboardCommand> whiteboardCommands) {

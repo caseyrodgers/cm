@@ -258,7 +258,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
                 SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(UserInfoBase.getInstance().getUid(), _studentAssignment
                         .getAssignment().getAssignKey(), prob.getPid(), status);
                 setAction(action);
-                CmShared.getCmService().execute(action, this);
+                CmRpcCore.getCmService().execute(action, this);
             }
 
             public void oncapture(RpcData data) {
