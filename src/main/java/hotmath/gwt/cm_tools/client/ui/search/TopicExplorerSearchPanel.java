@@ -5,6 +5,7 @@ import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_tools.client.ui.ShowWhiteboardWindow;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
+import hotmath.gwt.cm_tools.client.ui.viewer.CalculatorWindow;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -28,6 +29,13 @@ public class TopicExplorerSearchPanel extends ContentPanel {
                 ShowWhiteboardWindow.getInstance().setVisible(true);
             }
         }));
+        addTool(new TextButton("Calculator", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                CalculatorWindow.getInstance().setVisible(true);
+            }
+        }));
+        
 
         setVisible(true);
         

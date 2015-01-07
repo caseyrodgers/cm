@@ -227,8 +227,8 @@ public class TopicExplorer extends SimpleContainer {
             }
 
             String cntLabel = "";
-            if(resource.getItems().size() > 1) {
-                cntLabel = " ( " + resource.getItems().size() + " item" + (resource.getItems().size() == 1?"":"s") + ")";
+            if(resource.getItems().size() > 0) {
+                cntLabel = " ( " + resource.getItems().size() + ")";
             }
             if(resource.getType() == CmResourceType.WEBLINK) {
                 if(resource.getItems() != null && resource.getItems().size() == 1) {
