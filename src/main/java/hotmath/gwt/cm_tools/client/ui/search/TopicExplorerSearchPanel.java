@@ -1,11 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui.search;
 
-import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEvent;
-import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEventHandler;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.Topic;
-import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.ui.ShowWhiteboardWindow;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
 
@@ -39,20 +36,6 @@ public class TopicExplorerSearchPanel extends ContentPanel {
             @Override
             public void execute() {
                 _searchPanel._inputBox.focus();
-            }
-        });
-        
-        
-        CmRpcCore.EVENT_BUS.addHandler(CmQuizModeActivatedEvent.TYPE, new CmQuizModeActivatedEventHandler() {
-            @Override
-            public void quizModeActivated(boolean yesNo) {
-                
-                if(yesNo) {
-                    setVisible(false);
-                }
-                else {
-                    // don't show automatically
-                }
             }
         });
     }

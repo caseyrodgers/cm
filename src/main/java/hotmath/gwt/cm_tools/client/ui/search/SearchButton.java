@@ -38,7 +38,7 @@ public class SearchButton extends TextButton {
             @Override
             public void onSelect(SelectEvent event) {
                 if(_state == ButtonState.DISABLED) {
-                    CmMessageBox.showAlert("Disabled",  "Lesson search is current disabled");
+                    CmMessageBox.showAlert("Disabled",  "Lesson search is currently disabled");
                 }
                 else {
                     TopicExplorerManager.getInstance().showSearch();
