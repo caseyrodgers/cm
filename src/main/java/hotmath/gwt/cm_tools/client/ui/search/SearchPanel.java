@@ -164,14 +164,6 @@ public class SearchPanel extends BorderLayoutContainer {
         _grid.getView().setAutoFill(true);
         _grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         
-        _grid.addHandler(new DoubleClickHandler() {
-            @Override
-            public void onDoubleClick(DoubleClickEvent event) {
-                exploreSelectedTopic();
-            }
-        }, DoubleClickEvent.getType());
-
-        
         _grid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<TopicMatch>() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent<TopicMatch> event) {
