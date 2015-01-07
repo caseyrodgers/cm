@@ -270,7 +270,9 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
             public void oncapture(UserTutorWidgetStats userStats) {
                 CmBusyManager.setBusy(false);
                 
-                CmRpcCore.EVENT_BUS.fireEvent(new UserTutorWidgetStatusUpdatedEvent(userStats));
+                if(_tutorViewerProperties.shouldFireTutorEvents()) {
+                    CmRpcCore.EVENT_BUS.fireEvent(new UserTutorWidgetStatusUpdatedEvent(userStats));
+                }
             }
         }.register();
     }
