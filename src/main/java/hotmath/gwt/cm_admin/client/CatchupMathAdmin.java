@@ -146,7 +146,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         }
     }
 
-        private void loadMainPage() {
+    private void loadMainPage() {
         CmLogger.info("Loading CMAdmin main page");
         mainContainer.clear();
 
