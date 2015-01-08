@@ -40,9 +40,7 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.assignment.StudentAssignmentViewerPanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper.ResourceWrapperCallback;
-import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
-import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
-import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
+import hotmath.gwt.cm_tools.client.util.VideoPlayerWindow;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -60,6 +58,8 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasNativeEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
@@ -67,6 +67,7 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
@@ -694,17 +695,22 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
         });
     }
 
-    static public void showMotivationalVideo_Gwt(final String which) {
-        GWT.runAsync(new CmRunAsyncCallback() {
-            @Override
-            public void onSuccess() {
-                if (which == null) {
-                    new StudentHowToFlashWindow();
-                } else {
-                    new GenericVideoPlayerForMona(MonaVideo.MOTIVATIONAL);
-                }
-            }
-        });
+    static protected void showStudentHowToVideo() {
+    	new VideoPlayerWindow("How to use Catchup Math", "assets/teacher_videos/student-how-to/student-how-to-desktop.mp4");
+	}
+
+    static public Hyperlink getStudentHowToVideoHyperlink() {
+        Hyperlink hl = new Hyperlink();
+        hl.setText("Video: How to use Catchup Math");
+		hl.getElement().setAttribute("style", "margin-left:25px; text-decoration:underline; color:#00A8FF; cursor:pointer;");
+        ClickHandler handler = new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				showStudentHowToVideo();
+			}
+        };
+		hl.addHandler(handler, ClickEvent.getType());
+        return hl;
     }
 
     /**
@@ -721,8 +727,6 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
 
     static private native void publishNativeJsAfterLoad() /*-{
                                                           $wnd.doLoadResource_Gwt = @hotmath.gwt.cm.client.CatchupMath::doResourceLoad(Ljava/lang/String;Ljava/lang/String;);
-
-                                                          $wnd.showMotivationalVideo_Gwt = @hotmath.gwt.cm.client.CatchupMath::showMotivationalVideo_Gwt(Ljava/lang/String;);
                                                           }-*/;
 
         @Override

@@ -85,7 +85,7 @@ public class WelcomePanel extends CenterLayoutContainer {
     protected Hyperlink getHyperlink() {
         Hyperlink hl = new Hyperlink();
         hl.setText("Video: How to use Catchup Math");
-		hl.getElement().setAttribute("style", "margin-left:25px; margin-top:10px; text-decoration:underline; color:#00A8FF; cursor:pointer;");
+		hl.getElement().setAttribute("style", "margin-left:25px; text-decoration:underline; color:#00A8FF; cursor:pointer;");
         ClickHandler handler = new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

@@ -36,6 +36,7 @@ import java.util.Map;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
@@ -294,20 +295,19 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
      *        works.
      */
     static public void showHelpPanel() {
-
         Timer t = new Timer() {
             @Override
             public void run() {
+            	Hyperlink hLink = CatchupMath.getStudentHowToVideoHyperlink();
+        		hLink.getElement().setAttribute("style", "margin-left:15px; margin-1op:15px; text-decoration:underline; color:white; cursor:pointer;");
+
                 String html = 
-                          "<div class='info' style='width: 400px;margin: auto;'>" 
-                        + "<b>Catchup Math: the more you do, the more you learn!</b>" + "<ul>"
-                        + "<li><a style='color: white' href='#' onclick='showMotivationalVideo_Gwt(null);return false;'>How to use Catchup Math</li>"
-                        + "<li><a style='color: white' href='#' onclick='showMotivationalVideo_Gwt(\"musa\");return false;'>Professor Musa Video</li>"
-                        + "</ul></div>";
+                          "<div style='width: 400px;margin: auto;'>" 
+                        + "<b>Catchup Math: the more you do, the more you learn!</b></div>";
                 
                 HTML ohtml = new HTML(html);
-                ohtml.addStyleName("prescription-help-panel");
-                CmMainPanel.getActiveInstance().showCenterMessage(ohtml);
+                //ohtml.addStyleName("prescription-help-panel");
+                CmMainPanel.getActiveInstance().showCenterMessage(ohtml, hLink);
                 //ohtml.getElement().<FxElement>cast().fadeToggle();
             }
         };
@@ -367,7 +367,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                         }
                     }
                 } else if (event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_CLOSE) {
-                    __instance.showHelpPanel();
+                    showHelpPanel();
                 } else if (event.getEventType() == EventType.EVENT_TYPE_SOLUTION_FIF_CORRECT) {
                     /**
                      * a Solution FIF was entered correct, so we want to mark

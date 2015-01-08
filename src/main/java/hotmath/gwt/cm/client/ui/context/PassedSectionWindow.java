@@ -5,8 +5,6 @@ import hotmath.gwt.cm.client.ui.StandardFlowCallback;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
-import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -45,13 +43,6 @@ public class PassedSectionWindow extends GWindow {
         setModal(true);
         add(new HTML(msg));
         setResizable(false);
-        addButton(
-            new TextButton("Congratulations Video", new SelectHandler() {
-                @Override
-                public void onSelect(SelectEvent event) {
-                    new GenericVideoPlayerForMona(MonaVideo.PASS_QUIZ);
-                }
-            }));
 
         addButton(new TextButton("Continue",new SelectHandler() {
             @Override

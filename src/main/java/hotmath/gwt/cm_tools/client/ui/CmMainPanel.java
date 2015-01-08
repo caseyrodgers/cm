@@ -27,7 +27,10 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.LayoutRegion;
 import com.sencha.gxt.core.client.util.Margins;
@@ -562,9 +565,16 @@ public class CmMainPanel extends CmMainPanelShared {
         super.makeSureUiIsRefreshed(panel);
     }
 
-    public void showCenterMessage(HTML ohtml) {
+    public void showCenterMessage(HTML ohtml, Hyperlink howToLink) {
         _mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED, _resourceCallback);
-        _mainContentWrapper.getResourceWrapper().add(ohtml);
+        VerticalPanel vp = new VerticalPanel();
+        vp.addStyleName("prescription-help-panel");
+        FlowPanel fp = new FlowPanel();
+        fp.addStyleName("info");
+        fp.add(ohtml);
+        fp.add(howToLink);
+        vp.add(fp);;
+        _mainContentWrapper.getResourceWrapper().add(vp);
         setCenterWidget(_mainContentWrapper.getResourceWrapper());
         forceLayout();
     }
