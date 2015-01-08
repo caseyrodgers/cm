@@ -16,6 +16,7 @@ import hotmath.search.HMIndexSearcher;
 import hotmath.search.HMIndexWriter;
 import hotmath.search.HMIndexWriterFactory;
 import hotmath.search.Hit;
+import hotmath.search.HitImplBase;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -89,6 +90,9 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         try {
             Hit[] resultsInmh = HMIndexSearcher.getInstance().searchFor("inmh", action.getSearch());
             for (Hit hit : resultsInmh) {
+                
+                HitImplBase hitImpl = (HitImplBase)hit;
+                
                 String url = hit.getUrl();
                 if (url == null) {
                     url = hit.getName();
@@ -96,7 +100,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                 String title = hit.getTitle();
                 title = title.replace("\n", "").trim();
                 title = StringEscapeUtils.unescapeHtml(title);
-                topics.add(new Topic(title, url, hit.getSummary()));
+                topics.add(new Topic(title, url, hit.getContent()));
             }
 
             Hit[] resultsSolutions = HMIndexSearcher.getInstance().searchFor("solutions", action.getSearch());
