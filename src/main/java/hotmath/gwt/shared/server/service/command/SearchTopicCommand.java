@@ -28,7 +28,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -78,6 +77,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
             }
         }
     }
+    
     @Override
     public CmList<TopicMatch> execute(Connection conn, SearchTopicAction action) throws Exception {
 
@@ -315,7 +315,9 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
      * @return
      */
     private MatchWeight determineMatchWeight(Topic t, String search) {
-        if (_checkTitleMatchesAbsolute(t, search)) {
+        if(_checkContentIsPid(t, search)) {
+            return MatchWeight.SOLUTION_CONTENT_MATCH;
+        } else if(_checkTitleMatchesAbsolute(t, search)) {
             return MatchWeight.TITLE_MATCH_ABSOLUTE;
         } else if (_checkTitleMatchesAbsolutePlus(t, search)) {
             return MatchWeight.TITLE_MATCH_ALL_PLUS;
@@ -325,9 +327,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
             return MatchWeight.TITLE_MATCH_SOME;
         } else if (_checkContentContainsSome(t, search)) {
             return MatchWeight.CONTENT_MATCH_SOME;
-        } else if(_checkContentIsPid(t, search)) {
-            return MatchWeight.SOLUTION_CONTENT_MATCH;
-        } else {
+        }  else {
             return MatchWeight.CONTENT_MATCH_SIMPLE;
         }
     }
@@ -341,8 +341,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
     }
     
     private boolean _checkContentIsPid(Topic topic, String search) {
-        ProblemID p = new ProblemID(topic.getExcerpt());
-        return p.getChapter() != null;
+        return new ProblemID(topic.getExcerpt()).getPage() > 0;
     }
     
 
