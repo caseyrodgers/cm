@@ -299,7 +299,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
             @Override
             public void run() {
             	Hyperlink hLink = CatchupMath.getStudentHowToVideoHyperlink();
-        		hLink.getElement().setAttribute("style", "margin-left:15px; margin-1op:15px; text-decoration:underline; color:white; cursor:pointer;");
+        		hLink.getElement().setAttribute("style", "margin-left:15px; margin-top:15px; text-decoration:underline; color:white; cursor:pointer;");
 
                 String html = 
                           "<div style='width: 400px;margin: auto;'>" 
