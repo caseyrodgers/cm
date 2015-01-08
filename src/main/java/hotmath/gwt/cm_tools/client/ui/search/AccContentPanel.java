@@ -137,6 +137,9 @@ public class AccContentPanel extends ContentPanel {
 
 
     protected void showResource(final CmResourcePanel viewer, String title, boolean b) {
+        
+        setHeadingHtml(title);
+        
         if(getWidget() ==  null) {
             List<Widget> tools = getContainerTools(viewer);
             for(Widget t: tools) {
