@@ -9,6 +9,7 @@ import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.util.CmStorage;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
+import hotmath.gwt.cm_mobile_shared.client.view.VideoPlayerWindowMobile;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
@@ -25,9 +26,13 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.core.client.JavaScriptException;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Hyperlink;
 
 /**
  * centralized wrapper for shared global data structures
@@ -250,7 +255,11 @@ public class SharedData {
             status = "<p>You are in the <b>" + testName + "</b> program.</p>";
         }
 
-        PopupMessageBox.showMessage("Welcome " + ui.getUserName(), new HTML(status), null);
+        FlowPanel fp = new FlowPanel();
+        fp.add(new HTML(status));
+        fp.add(getHyperlink());
+
+        PopupMessageBox.showMessage("Welcome " + ui.getUserName(), fp, null);
     }
 
     static int __lastUid;
@@ -300,4 +309,23 @@ public class SharedData {
             }
         });
     }
+
+    static protected void showStudentHowToVideo() {
+    	new VideoPlayerWindowMobile("How to use Catchup Math", "assets/teacher_videos/student-how-to/student-how-to-mobile.mp4");
+	}
+
+    static protected Hyperlink getHyperlink() {
+        Hyperlink hl = new Hyperlink();
+        hl.setText("Video: How to use Catchup Math");
+		hl.getElement().setAttribute("style", "margin-left:25px; margin-top:10px; text-decoration:underline; color:#00A8FF; cursor:pointer;");
+        ClickHandler handler = new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				showStudentHowToVideo();
+			}
+        };
+		hl.addHandler(handler, ClickEvent.getType());
+        return hl;
+    }
+
 }
