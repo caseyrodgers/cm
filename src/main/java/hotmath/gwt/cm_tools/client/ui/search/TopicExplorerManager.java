@@ -45,7 +45,7 @@ public class TopicExplorerManager extends GWindow {
         setModal(true);
         
         
-        searchContentPanel.addTool(new TextButton("Close Search", new SelectHandler() {
+        searchContentPanel.addTool(new TextButton("Close", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 hide();
