@@ -47,11 +47,10 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 700;
-    -moz-border-radius:5px 5px 0 0;
-    border-radius: 5px 5px 0 0;
+    width: 685;
+    -moz-border-radius:5px 9px 0 0;
+    border-radius: 5px 9px 0 0;
     text-align: center;
-    margin-bottom: 10px;
 }
 
 .video-player-mobile {
@@ -65,13 +64,15 @@
     -webkit-box-shadow: 3px 3px 3px #666;
     box-shadow: 3px 3px 3px #666;
 	z-index: 100;
+	left: 100px !important; 
+	top: 100px !important;
 }
 
 .video-player-mobile button {
 	margin-top: 15px;
-	margin-bottom: 15px;
+	margin-bottom: 10px;
 }
 
 .video-div {
-	margin-top: 50px;
+	margin-top: 5px;
 }
