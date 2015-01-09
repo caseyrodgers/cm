@@ -53,6 +53,10 @@ public class TopicExplorerManager extends GWindow {
         }));
         
         setWidget(searchContentPanel);
+        
+        
+        addCloseButton().setText("Close Search");
+
         setVisible(true);
         
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -73,8 +77,6 @@ public class TopicExplorerManager extends GWindow {
                 }
             }
         });
-        
-        addCloseButton().setText("Close Search");
     }
 
     
