@@ -33,7 +33,7 @@ public class TopicExplorerManager extends GWindow {
     
     TopicExplorerSearchPanel searchContentPanel = new TopicExplorerSearchPanel();
     private TopicExplorerManager() {
-        super(true);
+        super(false);
         
         
         setPixelSize(800, 600);
@@ -45,7 +45,7 @@ public class TopicExplorerManager extends GWindow {
         setModal(true);
         
         
-        searchContentPanel.addTool(new TextButton("Close", new SelectHandler() {
+        searchContentPanel.addTool(new TextButton("Close Search", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 hide();
@@ -73,6 +73,8 @@ public class TopicExplorerManager extends GWindow {
                 }
             }
         });
+        
+        addCloseButton().setText("Close Search");
     }
 
     

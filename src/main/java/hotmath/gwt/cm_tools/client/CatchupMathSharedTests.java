@@ -17,6 +17,7 @@ import hotmath.gwt.cm_tools.client.ui.search.Junk;
 import hotmath.gwt.cm_tools.client.ui.search.SearchPanel;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorerManager;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplActivity;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplReview;
 import hotmath.gwt.cm_tools.client.util.CreateTemplateFromClipboardImage;
 import hotmath.gwt.cm_tools.client.util.WhiteboardTemplatesManager;
 
@@ -47,6 +48,9 @@ public class CatchupMathSharedTests {
         }
         else if(test.equals("ResourceViewerImplActivity")) {
             ResourceViewerImplActivity.startTest();
+        }
+        else if(test.equals("ResourceViewerImplReview")) {
+            ResourceViewerImplReview.startTest();
         }
         else if(test.equals("SearchPanel")) {
             SearchPanel.startTest();

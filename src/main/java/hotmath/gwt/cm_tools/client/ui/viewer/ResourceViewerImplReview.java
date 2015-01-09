@@ -6,13 +6,13 @@ import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -194,7 +194,11 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
             @Override
             public void runTest() {
                 GWindow w = new GWindow(true);
-                w.setWidget(new ResourceViewerImplReview());
+                
+                ResourceViewerImplReview review = new ResourceViewerImplReview();
+                InmhItemData item = new InmhItemData(CmResourceType.REVIEW, "topics/complementary-angles.html",  "Test");
+                review.setResourceItem(item);
+                w.setWidget(review.getResourcePanel());
                 w.setVisible(true);
             }
         });

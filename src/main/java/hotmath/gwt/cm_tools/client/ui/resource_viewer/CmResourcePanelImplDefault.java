@@ -106,7 +106,9 @@ public class CmResourcePanelImplDefault extends FlowLayoutContainer implements C
     
     @Override
     public void setResourceItem(InmhItemData item) {
-        this.item = item;
+        
+        // make a nonmutable copy
+        this.item = new InmhItemData(item.getType(), item.getFile(), item.getTitle());
     }
     
     @Override
