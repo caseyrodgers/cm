@@ -10,21 +10,20 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TopicExplorerWindow extends GWindow {
-    
+
     public TopicExplorerWindow(Topic topic, boolean isModal) {
         super(true);
-        
+
         setPixelSize(700, 550);
         setHeadingText("Explore Lesson");
         setMaximizable(true);
         //setMinimizable(true);;
         setCollapsible(true);
-        
+
         Widget panel = new TopicExplorer(topic, new TopicExplorerCallback() {
             @Override
             public void resourceIsLoaded() {
                 new Timer() {
-                    
                     @Override
                     public void run() {
                         forceLayout();
