@@ -257,7 +257,7 @@ public class SharedData {
 
         FlowPanel fp = new FlowPanel();
         fp.add(new HTML(status));
-        fp.add(getHyperlink());
+        //fp.add(getHyperlink());
 
         PopupMessageBox.showMessage("Welcome " + ui.getUserName(), fp, null);
     }
