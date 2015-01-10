@@ -36,6 +36,9 @@ public class TopicExplorerManager extends GWindow {
         super(false);
         
         
+        
+        
+        
         setPixelSize(800, 600);
         setHeadingText("Search");
         setMaximizable(true);

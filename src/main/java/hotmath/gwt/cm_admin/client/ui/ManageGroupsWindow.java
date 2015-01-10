@@ -308,7 +308,7 @@ public class ManageGroupsWindow extends GWindow {
         });
 
         //grid.setWidth("200px");
-        //grid.setHeight("250px");
+        //grid.setHeight("LABEL_LENpx");
         return grid;
     }
 
@@ -518,36 +518,37 @@ class GroupManagerGlobalSettings extends GWindow {
         
         MyFieldSet fs = new MyFieldSet("Group Settings", 403);
 
+        int LABEL_LEN=240;
         searchCombo = new SearchAllowCombo();
-        fs.addThing(new MyFieldLabel(searchCombo,"Disable lesson search", 290));
+        fs.addThing(new MyFieldLabel(searchCombo,"Disable lesson search", LABEL_LEN, 135));
 
         showWorkRequired = new CheckBox();
         showWorkRequired.setBoxLabel("");
         showWorkRequired.setToolTip("If checked, the whiteboard will be shown with each problem.");
-        fs.addThing(new MyFieldLabel(showWorkRequired, "Require Show Work", 290));
+        fs.addThing(new MyFieldLabel(showWorkRequired, "Require Show Work", LABEL_LEN));
 
         limitGames = new CheckBox();
         limitGames.setToolTip("If checked, then no Games can be played.");
         limitGames.setBoxLabel("");
-        fs.addThing(new MyFieldLabel(limitGames, "Disallow Games", 290));
+        fs.addThing(new MyFieldLabel(limitGames, "Disallow Games", LABEL_LEN));
 
         stopAtProgramEnd = new CheckBox();
         stopAtProgramEnd.setBoxLabel("");
         stopAtProgramEnd.setToolTip("If checked, the student's program will stop when complete.");
-        fs.addThing(new MyFieldLabel(stopAtProgramEnd, "Stop at End of Program", 290));
+        fs.addThing(new MyFieldLabel(stopAtProgramEnd, "Stop at End of Program", LABEL_LEN));
 
         disableCalcAlways = new CheckBox();
         disableCalcAlways.setBoxLabel("");
-        fs.addThing(new MyFieldLabel(disableCalcAlways, "Disable whiteboard calculator always", 290));
+        fs.addThing(new MyFieldLabel(disableCalcAlways, "Disable whiteboard calculator always", LABEL_LEN));
 
         disableCalcQuizzes = new CheckBox();
         disableCalcQuizzes.setBoxLabel("");
-        fs.addThing(new MyFieldLabel(disableCalcQuizzes,"Disable whiteboard calculator for quizzes", 290));
+        fs.addThing(new MyFieldLabel(disableCalcQuizzes,"Disable whiteboard calculator for quizzes", LABEL_LEN));
         
 
         isNoPublicWebLinks = new CheckBox();
         isNoPublicWebLinks.setBoxLabel("");
-        fs.addThing(new MyFieldLabel(isNoPublicWebLinks,"Disallow All School's Web Links", 290));
+        fs.addThing(new MyFieldLabel(isNoPublicWebLinks,"Disallow All School's Web Links", LABEL_LEN));
 
         
         passCombo = new PassPercentCombo(false);
@@ -555,7 +556,7 @@ class GroupManagerGlobalSettings extends GWindow {
         passCombo.setEmptyText("---");
         passCombo.setWidth(55);
         passCombo.setAllowBlank(true);
-		fs.addThing(new MyFieldLabel(passCombo,  "Pass Percent", 290));
+		fs.addThing(new MyFieldLabel(passCombo,  "Pass Percent", LABEL_LEN));
         
         vertMain.add(fs);
         
