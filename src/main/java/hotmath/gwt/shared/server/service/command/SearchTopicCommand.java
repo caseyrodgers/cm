@@ -86,9 +86,12 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
             __rankings = __readLessonRankings(conn);
         }
 
+        String searchFor = addOrOperator(action.getSearch());
+        
         List<Topic> topics = new MyListSet();
         try {
-            Hit[] resultsInmh = HMIndexSearcher.getInstance().searchFor("inmh", action.getSearch());
+            
+            Hit[] resultsInmh = HMIndexSearcher.getInstance().searchFor("inmh", searchFor);
             for (Hit hit : resultsInmh) {
                 
                 HitImplBase hitImpl = (HitImplBase)hit;
@@ -103,7 +106,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
                 topics.add(new Topic(title, url, hit.getContent()));
             }
 
-            Hit[] resultsSolutions = HMIndexSearcher.getInstance().searchFor("solutions", action.getSearch());
+            Hit[] resultsSolutions = HMIndexSearcher.getInstance().searchFor("solutions", searchFor);
             for (Hit hit : resultsSolutions) {
                 String url = hit.getUrl();
                 if (url == null) {
@@ -137,6 +140,18 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
             throw e;
         }
 
+    }
+
+    private String addOrOperator(String search) {
+        String words[] = search.split(" ");
+        String strRet=null;
+        for(String w: words) {
+            if(strRet != null) {
+                strRet += " OR ";
+            }
+            strRet += w;
+        }
+        return strRet;
     }
 
     private Topic findTopicAssoicatedWithPid(Connection conn, String pid) throws Exception {
