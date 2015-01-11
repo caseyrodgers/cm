@@ -144,6 +144,10 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
 
     private String addOrOperator(String search) {
         String words[] = search.split(" ");
+        if(words.length < 2) {
+            return search;
+        }
+        
         String strRet=null;
         for(String w: words) {
             if(strRet != null) {
