@@ -68,7 +68,17 @@ public class CmGwtUtils {
         ui.setLimitGames(o.get("limitGames").isBoolean().booleanValue());
         ui.setDisableCalcAlways(o.get("disableCalcAlways").isBoolean().booleanValue());
         ui.setDisableCalcQuizzes(o.get("disableCalcQuizzes").isBoolean().booleanValue());
-        ui.setSearchAllowMode(SearchAllowMode.lookup(o.get("searchAllowMode").isString().stringValue()));
+        
+        /** Check for searchAllowMode, making sure it is specified
+         * TODO: why is this not set...?  PP program do not have it set.
+         */
+        String v = null;
+        JSONValue sam = o.get("searchAllowMode");
+        if(sam != null) {
+        	v = sam.isString().stringValue();        	
+        }
+        
+        ui.setSearchAllowMode(SearchAllowMode.lookup(v));
         ui.setLoginName(getJsonString(o.get("loginName")));
         ui.setPassPercentRequired(getJsonInt(o.get("passPercentRequired")));
         ui.setPassword(getJsonString(o.get("password")));
