@@ -422,7 +422,13 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 passingQuizCount = 0;
             }
 
-            if (sam.isQuiz() && !sam.isCustomQuiz() && sam.getRunId() > 0) {
+            /*
+             * Don't include Custom or Auto-enroll quizzes in Quiz Statistics
+             */
+            if (sam.isQuiz() == true &&
+            	sam.getRunId() > 0 &&
+            	sam.isCustomQuiz() == false &&
+            	sam.getProgramDescr().toLowerCase().startsWith("auto") == false) {
                 if (LOGGER.isDebugEnabled())
                 	LOGGER.debug("runId: " + sam.getRunId());
                 quizCount++;
