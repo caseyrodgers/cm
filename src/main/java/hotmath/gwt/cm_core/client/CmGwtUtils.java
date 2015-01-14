@@ -40,7 +40,7 @@ public class CmGwtUtils {
 
     /**
      * return the user_info data passed in the login bootstrap html
-     * 
+     *
      * @return
      */
     static public native String getUserInfoFromExtenalJs() /*-{
@@ -68,16 +68,19 @@ public class CmGwtUtils {
         ui.setLimitGames(o.get("limitGames").isBoolean().booleanValue());
         ui.setDisableCalcAlways(o.get("disableCalcAlways").isBoolean().booleanValue());
         ui.setDisableCalcQuizzes(o.get("disableCalcQuizzes").isBoolean().booleanValue());
-        
+
         /** Check for searchAllowMode, making sure it is specified
          * TODO: why is this not set...?  PP program do not have it set.
          */
         String v = null;
-        JSONValue sam = o.get("searchAllowMode");
-        if(sam != null) {
-        	v = sam.isString().stringValue();        	
+        try {
+            v = o.get("searchAllowMode").isString().stringValue();
         }
-        
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        //com.google.gwt.user.client.Window.alert("Search Allow Mode: " + v);
+
         ui.setSearchAllowMode(SearchAllowMode.lookup(v));
         ui.setLoginName(getJsonString(o.get("loginName")));
         ui.setPassPercentRequired(getJsonInt(o.get("passPercentRequired")));
@@ -148,7 +151,7 @@ public class CmGwtUtils {
 
     /**
      * return the generic loginInfo jsonized string from bootstrap html
-     * 
+     *
      * @return
      */
     static private native String getLoginInfoFromExtenalJs() /*-{
@@ -167,7 +170,7 @@ public class CmGwtUtils {
     /**
      * extract and store the externalized json login_info created by
      * LoginService
-     * 
+     *
      * @return
      */
     public static LoginInfoEmbedded getLoginInfo() {
@@ -194,7 +197,7 @@ public class CmGwtUtils {
     /**
      * Use the external Hammer.js library to watch for doubletap Close the
      * whiteboard once detected.
-     * 
+     *
      * @param instance
      * @param element
      */
@@ -203,7 +206,7 @@ public class CmGwtUtils {
                                                                        $wnd.Hammer(element).on("doubletap", function(event) {
                                                                        that.@hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemViewImpl::hideWhiteboard()();
                                                                        });
-                                                                       
+
                                                                        //$wnd.Hammer(element).on("pinch", function(event) {
                                                                        //that.@hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemViewImpl::hideWhiteboard()();
                                                                        //});
@@ -220,10 +223,10 @@ public class CmGwtUtils {
         String styles = "width: " + width + ";height: " + height + ";top: " + top;
         widget.setAttribute("style", styles);
     }
-    
+
 
     /** Resize the whiteboard to fully fit the viewable area
-     * 
+     *
      * @param tutorElement
      */
     static public void resizeElement(Element element) {
@@ -235,13 +238,13 @@ public class CmGwtUtils {
     }
 
 
-    
-    
+
+
 
 
     /** Search for a quiz question and scroll it to the top
      *  of viewable area.
-     *  
+     *
      * @param pid
      */
     static native public void jsni_positionQuestionToTopOfViewable(String pid) /*-{
@@ -252,42 +255,42 @@ public class CmGwtUtils {
                 var el = this;
                 var top = $wnd.DL_GetElementTop(el)
                 $wnd.scrollTo(1, top - 70);
-            } 
+            }
         });
     }-*/;
-    
-    
+
+
     static public native void printWindow() /*-{
         $wnd.print();
     }-*/;
-    
-    
+
+
     /** Write to a whiteboard object.
-     * 
+     *
      *  If whiteboard is null, then the last created whiteboard
      *  which is stored in _theWhiteboard is used.  Otherwise,
      *  we update the whiteboard 'whiteboardId'.
-     *  
+     *
      * @param whiteboardId
      * @param command
      * @param commandData
      */
     static public native void jsni_updateWhiteboardAux(String whiteboardId, String command, String commandData) /*-{
-    
+
         var theWhiteboard  = $wnd._cmWhiteboards[whiteboardId];
         if(!theWhiteboard) {
             alert('whiteboard ' + whiteboardId + ' cannot be found in jsni_updateWhiteboardAux');
             return;
         }
-        
+
         var cmdArray = [];
         if (command == 'draw') {
             cmdArray = [['draw', [commandData]]];
         } else if (command == 'clear') {
-            cmdArray = [['clear', []]];                                                                                                  
+            cmdArray = [['clear', []]];
         }
-    
-    
+
+
         var realArray = [];
         for (var i = 0, t = cmdArray.length; i < t; i++) {
             var ele = [];
@@ -295,42 +298,42 @@ public class CmGwtUtils {
             ele[1] = cmdArray[i][1];
             realArray[i] = ele;
         }
-        
+
         theWhiteboard.updateWhiteboard(realArray);
     }-*/;
-    
+
     static public native void jsni_setWhiteboardTemplatesAux(String whiteboardId, String templates) /*-{
-    
+
         var theWhiteboard = $wnd._cmWhiteboards[whiteboardId];
         if(!theWhiteboard) {
             alert('whiteboard ' + whiteboardId + ' cannot be found in jsni_updateWhiteboardAux');
             return;
         }
-    
+
         alert('template function: ' + theWhiteboard.appendTemplates);
     }-*/;
-    
+
 
     /** Called from JSNI to insert into main log
-     * 
+     *
      * @param message
      */
     static public void gwt_log(String message) {
         Log.info("JSNI: " + message);
     }
-    
-    
-    
+
+
+
     static native public String jsni_encodeBase64(String partText) /*-{
         return $wnd.Base64.encode(partText);
     }-*/;
-    
+
     static native public String jsni_decodeBase64(String partText) /*-{
     return $wnd.Base64.decode(partText);
 }-*/;
 
 
 
-    
-    
+
+
 }
