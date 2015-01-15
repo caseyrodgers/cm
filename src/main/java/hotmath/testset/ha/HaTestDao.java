@@ -623,10 +623,13 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
 	            updateTestRunSessions(conn, runId);
 	
 	            /*
-	             * shouldn't update Quiz columns for CP "test runs"
-	             * (pinfo.getCustomProgramId() > 0)
+	             * shouldn't update HA_USER_EXTENDED Quiz columns for
+	             * CP "test runs" (pinfo.getCustomProgramId() > 0)  OR
+	             * Auto-Enroll Quizzes
+	             * TODO: should Custom Quiz (CQ) "test runs" be excluded too?
 	             */
-	            if (pinfo.getCustomProgramId() <= 0)
+	            if (pinfo.getCustomProgramId() <= 0  &&
+	            	pinfo.getTestName().toLowerCase().startsWith("auto-enroll") == false)
 	                HaUserExtendedDao.updateUserExtended(conn, studentUid, testRun);
             }
 
