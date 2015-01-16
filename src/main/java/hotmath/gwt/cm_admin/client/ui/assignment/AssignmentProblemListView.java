@@ -73,6 +73,9 @@ public class AssignmentProblemListView extends ContentPanel {
         this._assignment = assignment;
         this.callback = callback;
 
+        boolean isDraft = assignment.getStatus().equals("Draft");
+        
+        
         AssignmentProblemListPanelProperties props = GWT.create(AssignmentProblemListPanelProperties.class);
 
         ordinalNumberValueProvider = new MyOrdinalProvider();
@@ -81,7 +84,29 @@ public class AssignmentProblemListView extends ContentPanel {
         cols.get(cols.size() - 1).setMenuDisabled(true);
         cols.add(new ColumnConfig<ProblemDtoLocal, String>(props.labelWithType(), 150, "Problems Assigned"));
         cols.get(cols.size() - 1).setMenuDisabled(true);
-        ColumnModel<ProblemDtoLocal> probColModel = new ColumnModel<ProblemDtoLocal>(cols);
+
+        if(!isDraft) {
+	        ColumnConfig<ProblemDtoLocal, String> percentCol = new ColumnConfig<ProblemDtoLocal, String>(props.percentCorrect(), 55, "Correct");
+	        percentCol.setComparator(new Comparator<String>() {
+	            @Override
+	            public int compare(String o1, String o2) {
+	                /** strip of percent and treat as number */
+	                if (o1 == null || o2 == null) {
+	                    return 0;
+	                }
+	                int i1 = Integer.parseInt(o1.split("%")[0].trim());
+	                int i2 = Integer.parseInt(o2.split("%")[0].trim());
+	                return i1 - 12;
+	            }
+	        });
+	        percentCol.setMenuDisabled(true);
+	        cols.add(percentCol);
+	
+	        cols.get(cols.size() - 1).setToolTip(SafeHtmlUtils.fromString("Percentage of correct answers"));
+	        cols.get(cols.size() - 1).setMenuDisabled(true);
+	        cols.get(cols.size() - 1).setToolTip(SafeHtmlUtils.fromSafeConstant("Display percentage of correct answers"));
+        } 
+	        
 
         ModelKeyProvider<ProblemDtoLocal> kp = new ModelKeyProvider<ProblemDtoLocal>() {
             @Override
@@ -104,6 +129,7 @@ public class AssignmentProblemListView extends ContentPanel {
         // root.getHeader().setIcon(ExampleImages.INSTANCE.table());
         root.addStyleName("margin-10");
 
+        ColumnModel<ProblemDtoLocal> probColModel = new ColumnModel<ProblemDtoLocal>(cols);
         problemListGrid = new Grid<ProblemDtoLocal>(store, probColModel);
         problemListGrid.getView().setAutoExpandColumn(cols.get(1));
         problemListGrid.getView().setStripeRows(true);
@@ -125,8 +151,7 @@ public class AssignmentProblemListView extends ContentPanel {
          * If active assignment, then provide real time stats
          * 
          */
-        if (!assignment.getStatus().equals("Draft")) {
-
+        if (!isDraft) {
             problemListGrid.addRowDoubleClickHandler(new RowDoubleClickHandler() {
                 @Override
                 public void onRowDoubleClick(RowDoubleClickEvent event) {
@@ -134,25 +159,7 @@ public class AssignmentProblemListView extends ContentPanel {
                 }
             });
 
-            ColumnConfig<ProblemDtoLocal, String> percentCol = new ColumnConfig<ProblemDtoLocal, String>(props.percentCorrect(), 55, "Correct");
-            percentCol.setComparator(new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    /** strip of percent and treat as number */
-                    if (o1 == null || o2 == null) {
-                        return 0;
-                    }
-                    int i1 = Integer.parseInt(o1.split("%")[0].trim());
-                    int i2 = Integer.parseInt(o2.split("%")[0].trim());
-                    return i1 - 12;
-                }
-            });
-            percentCol.setMenuDisabled(true);
-            cols.add(percentCol);
-
-            cols.get(cols.size() - 1).setToolTip(SafeHtmlUtils.fromString("Percentage of correct answers"));
-            cols.get(cols.size() - 1).setMenuDisabled(true);
-            cols.get(cols.size() - 1).setToolTip(SafeHtmlUtils.fromSafeConstant("Display percentage of correct answers"));
+            
             TextButton answers = new TextButton("Answer Stats", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
