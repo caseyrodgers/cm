@@ -884,11 +884,18 @@ span.group-item-dot {
             
 
 
-.ass-button-indicator {
+.ass-button-indicator, .mobile-search-button {
 	position: absolute;
 	top: 11px;
 	left: 50px;
 }
+
+.mobile-search-button {
+	left: 80px;
+}
+
+
+
 
 .gwt-StackLayoutPanel {
   border-bottom: 1px solid #bbbbbb;
