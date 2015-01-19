@@ -53,6 +53,10 @@ public class SharedData {
     private static CmProgramFlowAction flowAction;
     private static CmMobileUser __mobileUser;
 
+    /** Get the last flow action result
+     * 
+     * @return
+     */
     static public CmProgramFlowAction getFlowAction() {
         if (flowAction == null) {
             flowAction = new CmProgramFlowAction();
@@ -60,6 +64,10 @@ public class SharedData {
         return flowAction;
     }
 
+    /** Set the last flow action result
+     * 
+     * @param flowActionIn
+     */
     static public void setFlowAction(CmProgramFlowAction flowActionIn) {
         flowAction = flowActionIn;
     }

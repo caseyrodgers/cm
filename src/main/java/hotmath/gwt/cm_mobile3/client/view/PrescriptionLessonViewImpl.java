@@ -44,6 +44,8 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
     @UiField
     DivElement correctImage;
     
+    @UiField
+    DivElement buttonBar;
     
     @UiField
     Button choose;
@@ -70,7 +72,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
     TouchClickHandler<String> touchHandler = new TouchClickHandler<String>() {
         @Override
         public void touchClick(TouchClickEvent<String> event) {
-            presenter.loadResource(((MyGenericTextTag)event.getTarget()).resourceItem);
+           loadResource(((MyGenericTextTag)event.getTarget()).resourceItem);
         }
     };
     
@@ -82,7 +84,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
      *  
      * @param lessonData2
      */
-    protected void fixupLessonData(PrescriptionSessionData lessonData) {
+    public void fixupLessonData(PrescriptionSessionData lessonData) {
         
         for(PrescriptionSessionDataResource resource: lessonData.getInmhResources()) {
             for(InmhItemData item: resource.getItems()) {
@@ -95,6 +97,10 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
         }
     }
     
+    protected void loadResource(InmhItemData resourceItem) {
+        presenter.loadResource(resourceItem);        
+    }
+
     @Override
     public void setLesson(PrescriptionSessionData lessonData) {
         

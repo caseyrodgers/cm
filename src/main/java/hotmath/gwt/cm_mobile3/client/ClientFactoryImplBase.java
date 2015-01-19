@@ -15,10 +15,14 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImp
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceWebLinkView;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonSearchView;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonSearchViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile3.client.view.QuizViewImpl;
+import hotmath.gwt.cm_mobile3.client.view.SearchLessonResourceReviewView;
+import hotmath.gwt.cm_mobile3.client.view.SearchLessonResourceReviewViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.SearchView;
 import hotmath.gwt.cm_mobile3.client.view.SearchViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
@@ -59,6 +63,7 @@ public class ClientFactoryImplBase implements ClientFactory {
     PrescriptionLessonResourceResultsView resultsView;
     PrescriptionLessonListingView lessonListingView;
     PrescriptionLessonResourceWebLinkView webLinkView;
+    PrescriptionLessonSearchView searchLessonView;
     
     EndOfProgramView endOfProgramView;
     SearchView searchView;
@@ -67,6 +72,7 @@ public class ClientFactoryImplBase implements ClientFactory {
     private AssignmentListView assignmentListView;
     private AssignmentView assignmentView;
     private AssignmentShowWorkView assShowView;
+    private SearchLessonResourceReviewView searchLessonResourceReviewView;
     
     @Override
     public EventBus getEventBus() {
@@ -220,5 +226,21 @@ public class ClientFactoryImplBase implements ClientFactory {
             webLinkView = new PrescriptionLessonResourceWebLinkViewImpl();
         }
         return webLinkView;
+    }
+
+    @Override
+    public PrescriptionLessonSearchView getPrescriptionLessonSearchView() {
+        if(searchLessonView == null) {
+            searchLessonView = new PrescriptionLessonSearchViewImpl();
+        }
+        return searchLessonView;
+    }
+
+    @Override
+    public SearchLessonResourceReviewView getSearchLessonResourceReviewView() {
+        if(searchLessonResourceReviewView == null) {
+            searchLessonResourceReviewView = new SearchLessonResourceReviewViewImpl();
+        }
+        return searchLessonResourceReviewView;
     }
 }

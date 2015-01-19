@@ -6,21 +6,16 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewEvent;
-import hotmath.gwt.cm_mobile_shared.client.view.LessonViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.view.SubToolBar;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.HTMLPanel;
 
 public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel implements PrescriptionLessonResourceReviewView {
 
@@ -56,14 +51,12 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
             });
         }
         subBar.add(_languageButton);
-        main.add(uiBinder.createAndBindUi(this));
+        
+        reviewHtml = new HTMLPanel("");
+        reviewHtml.addStyleName("prescriptionLessonResourceReviewImpl");
+        main.add(main);
         initWidget(main);
     }
-
-    interface MyUiBinder extends UiBinder<Widget, PrescriptionLessonResourceReviewViewImpl> {
-    }
-
-    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
     @Override
     public String getViewTitle() {
@@ -98,12 +91,12 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
         // reviewTitle.setInnerHTML(title);
     }
  
-    @UiField
-    DivElement reviewHtml;
+    HTMLPanel reviewHtml;
 
     @Override   
     public void setReviewHtml(String html) {
-        reviewHtml.setInnerHTML(html);
+        reviewHtml.clear();
+        reviewHtml.add(new HTML(html));
     }
     
     @Override
@@ -120,6 +113,6 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
 
     @Override
     public void loadLesson(String title, String lesson) {
-        reviewHtml.setInnerHTML(lesson);
+        setReviewHtml(lesson);
     }
 }

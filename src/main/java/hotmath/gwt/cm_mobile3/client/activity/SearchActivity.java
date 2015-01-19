@@ -10,7 +10,6 @@ import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
-import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -106,10 +105,10 @@ public class SearchActivity implements SearchView.Presenter {
             SharedData.setData(user);
         }
         SharedData.getMobileUser().getBaseLoginResponse().getUserInfo().setSessionNumber(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession().getSessionNumber());
-        clientFactory.getPrescriptionLessonView().setLesson(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession());
         
-        new PrescriptionLessonActivity(clientFactory,eventBus).moveToLesson(clientFactory.getPrescriptionLessonView(), 0);
-        this.eventBus.fireEvent(new LoadNewPageEvent(clientFactory.getPrescriptionLessonView()));
+        SearchLessonActivity presenter = new SearchLessonActivity(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession());
+        clientFactory.getPrescriptionLessonSearchView().setPresenter(presenter);
+        this.eventBus.fireEvent(new LoadNewPageEvent(clientFactory.getPrescriptionLessonSearchView()));
     }
 }
 

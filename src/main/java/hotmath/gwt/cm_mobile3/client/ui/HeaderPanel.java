@@ -34,6 +34,7 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_tools.client.ui.search.SearchButton;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
@@ -76,6 +77,7 @@ public class HeaderPanel extends Composite {
     
     
     AssignmentButtonIndicator _assignmentButton = new AssignmentButtonIndicator();
+    MobileSearchButton _searchButton = new MobileSearchButton();
     private TouchAnchor _calcButton;
     public HeaderPanel(EventBus eventBus) {
         
@@ -138,6 +140,7 @@ public class HeaderPanel extends Composite {
 
         _assignmentButton.setVisible(false);        
         basePanel.add(_assignmentButton);
+        basePanel.add(_searchButton);
 
         registerDomTransitionEndedEvent(mActiveTitle.getElement());
         registerDomTransitionEndedEvent(mInactiveTitle.getElement());
