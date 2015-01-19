@@ -107,8 +107,8 @@ public class SearchActivity implements SearchView.Presenter {
         SharedData.getMobileUser().getBaseLoginResponse().getUserInfo().setSessionNumber(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession().getSessionNumber());
         
         SearchLessonActivity presenter = new SearchLessonActivity(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession());
-        clientFactory.getPrescriptionLessonSearchView().setPresenter(presenter);
-        this.eventBus.fireEvent(new LoadNewPageEvent(clientFactory.getPrescriptionLessonSearchView()));
+        clientFactory.getSearchLessonView().setPresenter(presenter);
+        this.eventBus.fireEvent(new LoadNewPageEvent(clientFactory.getSearchLessonView()));
     }
 }
 

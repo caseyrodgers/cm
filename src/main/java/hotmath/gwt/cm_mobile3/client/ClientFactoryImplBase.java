@@ -15,8 +15,8 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImp
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceWebLinkView;
-import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonSearchView;
-import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonSearchViewImpl;
+import hotmath.gwt.cm_mobile3.client.view.SearchLessonView;
+import hotmath.gwt.cm_mobile3.client.view.SearchLessonViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
@@ -63,7 +63,7 @@ public class ClientFactoryImplBase implements ClientFactory {
     PrescriptionLessonResourceResultsView resultsView;
     PrescriptionLessonListingView lessonListingView;
     PrescriptionLessonResourceWebLinkView webLinkView;
-    PrescriptionLessonSearchView searchLessonView;
+    SearchLessonView searchLessonView;
     
     EndOfProgramView endOfProgramView;
     SearchView searchView;
@@ -229,9 +229,9 @@ public class ClientFactoryImplBase implements ClientFactory {
     }
 
     @Override
-    public PrescriptionLessonSearchView getPrescriptionLessonSearchView() {
+    public SearchLessonView getSearchLessonView() {
         if(searchLessonView == null) {
-            searchLessonView = new PrescriptionLessonSearchViewImpl();
+            searchLessonView = new SearchLessonViewImpl();
         }
         return searchLessonView;
     }
