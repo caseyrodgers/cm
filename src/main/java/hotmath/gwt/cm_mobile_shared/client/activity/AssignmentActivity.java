@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client.activity;
 
+import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEvent;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
@@ -83,6 +84,9 @@ public class AssignmentActivity implements AssignmentView.Presenter {
         
         CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(true));
         
+        
+
+        
         AssignmentData.readAssData(new CallbackWhenDataReady() {
             
             @Override
@@ -101,9 +105,6 @@ public class AssignmentActivity implements AssignmentView.Presenter {
                         Log.debug("Error getting assignment", caught);
                     }            
                 });        
-                
-                
-                
             }
         });
     }
@@ -114,6 +115,8 @@ public class AssignmentActivity implements AssignmentView.Presenter {
         __lastStudentAssignment = assignment;
         CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
         view.loadAssignment(assignment);
+        
+        CmRpcCore.EVENT_BUS.fireEvent(new CmQuizModeActivatedEvent(assignment.getAssignment().isPreventLessonAccess()));
     }
 
 

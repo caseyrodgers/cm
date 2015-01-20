@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEvent;
 import hotmath.gwt.cm_mobile3.client.ClientFactory;
 import hotmath.gwt.cm_mobile3.client.event.MoveToNextSegmentEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionResourceEvent;
@@ -17,6 +18,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SetLessonCompletedAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
 import java.util.List;
@@ -43,6 +45,10 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
     @Override
     public void prepareView(final PrescriptionLessonView view) {
         view.setLesson(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession());
+        
+        
+        
+        CmRpcCore.EVENT_BUS.fireEvent(new CmQuizModeActivatedEvent(false));
     }
 
     @Override

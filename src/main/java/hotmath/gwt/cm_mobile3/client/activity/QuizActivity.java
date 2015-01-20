@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEvent;
 import hotmath.gwt.cm_mobile3.client.event.LoadActiveProgramFlowEvent;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
@@ -89,6 +90,10 @@ public class QuizActivity implements QuizView.Presenter {
                 }
             });
         }
+        
+        
+        
+        CmRpcCore.EVENT_BUS.fireEvent(new CmQuizModeActivatedEvent(true));
     }
     
     private void processQuizResult(QuizView quizView, final QuizHtmlResult result) {

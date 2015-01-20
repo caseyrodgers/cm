@@ -2,6 +2,9 @@ package hotmath.gwt.cm_mobile3.client.ui;
 
 
 
+import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEvent;
+import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEventHandler;
+import hotmath.gwt.cm_core.client.model.SearchAllowMode;
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity;
@@ -30,6 +33,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPopEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
@@ -140,18 +144,19 @@ public class HeaderPanel extends Composite {
 
         _assignmentButton.setVisible(false);        
         basePanel.add(_assignmentButton);
+        
+        
         basePanel.add(_searchButton);
 
         registerDomTransitionEndedEvent(mActiveTitle.getElement());
         registerDomTransitionEndedEvent(mInactiveTitle.getElement());
 
-        TouchButton stressTest = new TouchButton("Test", new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                runStressTest();
-            }
-        });
+//        TouchButton stressTest = new TouchButton("Test", new ClickHandler() {
+//            @Override
+//            public void onClick(ClickEvent event) {
+//                runStressTest();
+//            }
+//        });
 
         //basePanel.add(stressTest);
         initWidget(basePanel);
@@ -159,7 +164,21 @@ public class HeaderPanel extends Composite {
         /** Show showing the Welcome panel turn on the Logout button */
         eventBus.addHandler(UserLoginEvent.TYPE, new UserLoginHandler() {
             @Override
-            public void userLogin(CmMobileUser user) {
+            public void userLogin(final CmMobileUser user) {
+                
+                if(user.getUserInfo().getSearchAllowMode() == SearchAllowMode.DISABLED_ALWAYS) {
+                    _searchButton.setAllowSearch(false);
+                }
+                else {
+                    CmRpcCore.EVENT_BUS.addHandler(CmQuizModeActivatedEvent.TYPE,  new CmQuizModeActivatedEventHandler() {
+                        @Override
+                        public void quizModeActivated(boolean yesNo) {
+                            if(user.getUserInfo().getSearchAllowMode() != SearchAllowMode.ENABLED_ALWAYS) {
+                                _searchButton.setAllowSearch(!yesNo);
+                            }
+                        }
+                    });
+                }        
                 showLogoutButton(true);
             }
         });

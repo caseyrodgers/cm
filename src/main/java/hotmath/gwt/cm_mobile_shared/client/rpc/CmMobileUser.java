@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client.rpc;
 
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
@@ -41,6 +42,9 @@ public class CmMobileUser implements Response {
         this.assignmentInfo = assignmentInfo;
     }
     
+    public UserInfo getUserInfo() {
+        return baseLoginResponse.getUserInfo();
+    }
     public AssignmentUserInfo getAssignmentInfo() {
         return assignmentInfo;
     }
