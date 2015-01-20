@@ -1,12 +1,15 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
 
+import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile_shared.client.HasWhiteboard;
 import hotmath.gwt.cm_mobile_shared.client.ListItem;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.google.gwt.user.client.ui.HTMLPanel;
 
@@ -116,7 +119,6 @@ public class SearchLessonViewImpl extends PrescriptionLessonViewImpl implements 
     @Override
     public BackAction getBackAction() {
         return new BackAction() {
-            
             @Override
             public boolean goBack() {
                 return true;

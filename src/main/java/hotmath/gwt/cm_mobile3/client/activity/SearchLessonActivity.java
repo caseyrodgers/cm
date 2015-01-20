@@ -3,15 +3,16 @@ package hotmath.gwt.cm_mobile3.client.activity;
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.ClientFactory;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
-import hotmath.gwt.cm_mobile3.client.view.SearchLessonView;
 import hotmath.gwt.cm_mobile3.client.view.SearchLessonResourceReviewView;
+import hotmath.gwt.cm_mobile3.client.view.SearchLessonView;
 import hotmath.gwt.cm_mobile_shared.client.activity.PrescriptionLessonResourceVideoActivity;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
-import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
+
+import com.allen_sauer.gwt.log.client.Log;
 
 
 
@@ -36,7 +37,7 @@ public class SearchLessonActivity implements SearchLessonView.Presenter {
 
     @Override
     public void loadResource(InmhItemData resourceItem) {
-        PopupMessageBox.showMessage("Load resource: " + resourceItem);
+        Log.info("Load resource: " + resourceItem);
         switch(resourceItem.getType()) {
             case REVIEW:
                 loadResource_Review(resourceItem);

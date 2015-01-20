@@ -9,7 +9,6 @@ import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorAct
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceWebLinkActivity;
 import hotmath.gwt.cm_mobile3.client.activity.QuizActivity;
 import hotmath.gwt.cm_mobile3.client.activity.SearchActivity;
-import hotmath.gwt.cm_mobile3.client.activity.SearchLessonActivity;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.activity.WelcomeActivity;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
