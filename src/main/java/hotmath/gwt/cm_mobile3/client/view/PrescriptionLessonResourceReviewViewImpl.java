@@ -54,7 +54,7 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
         
         reviewHtml = new HTMLPanel("");
         reviewHtml.addStyleName("prescriptionLessonResourceReviewImpl");
-        main.add(main);
+        main.add(reviewHtml);
         initWidget(main);
     }
 
