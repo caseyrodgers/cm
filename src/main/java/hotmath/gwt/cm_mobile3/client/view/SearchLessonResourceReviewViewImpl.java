@@ -55,6 +55,11 @@ public class SearchLessonResourceReviewViewImpl extends AbstractPagePanel implem
         main.add(reviewHtml);
         initWidget(main);
     }
+    
+    @Override
+    public String getHeaderBackground() {
+        return "#7F2909";
+    }
 
     @Override
     public String getViewTitle() {

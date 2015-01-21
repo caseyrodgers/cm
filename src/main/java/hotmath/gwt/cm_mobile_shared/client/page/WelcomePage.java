@@ -44,4 +44,10 @@ public class WelcomePage implements IPage {
     public ApplicationType getApplicationType() {
         return ApplicationType.NONE;
     }
+    
+    @Override
+    public String getHeaderBackground() {
+        return null;
+    }
+
 }

@@ -1,9 +1,7 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
-import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.activity.SearchActivity.CallBack;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
-import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
@@ -73,6 +71,12 @@ public class SearchViewImpl extends AbstractPagePanel implements SearchView {
     @Override
     public String getViewTitle() {
         return "Search Catchup Math";
+    }
+    
+    
+    @Override
+    public String getHeaderBackground() {
+        return "#7F2909"; 
     }
 
     @Override

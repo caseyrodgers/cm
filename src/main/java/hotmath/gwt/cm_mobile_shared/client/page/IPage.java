@@ -44,4 +44,11 @@ public interface IPage {
 
     ApplicationType getApplicationType();
 
+    /** Return the header color when this panel is active
+     *  (null shows default)
+     * 
+     * @return
+     */
+    String getHeaderBackground();
+
 }

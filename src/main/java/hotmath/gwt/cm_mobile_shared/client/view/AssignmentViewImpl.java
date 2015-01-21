@@ -232,7 +232,12 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
     public ApplicationType getApplicationType() {
         return ApplicationType.ASSIGNMENT;        
     }
-    
+
+    @Override
+    public String getHeaderBackground() {
+        return null;
+    }
+
 }
 
 

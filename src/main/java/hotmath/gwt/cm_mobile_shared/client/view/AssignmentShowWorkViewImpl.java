@@ -143,4 +143,9 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
         return ApplicationType.ASSIGNMENT;        
     }
 
+    @Override
+    public String getHeaderBackground() {
+        return null;
+    }
+
 }

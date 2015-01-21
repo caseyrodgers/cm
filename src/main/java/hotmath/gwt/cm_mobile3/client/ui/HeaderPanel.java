@@ -273,6 +273,16 @@ public class HeaderPanel extends Composite {
                 }
             }
         });
+
+        if(mPageStack != null && mPageStack.peek() != null) {
+            String bc = mPageStack.peek().getHeaderBackground();
+            if(bc != null) {
+                basePanel.getElement().setAttribute("style",  "background: " + bc);
+            }
+            else {
+                basePanel.getElement().removeAttribute("style");
+            }
+        }
     }
 
     public void bind(ObservableStack<IPage> pageStack) {
@@ -471,7 +481,6 @@ public class HeaderPanel extends Composite {
             mInactiveButton = oldButton;
             mActiveTitle = newTitle;
             mInactiveTitle = oldTitle;
-
         }
         configureActiveButtonEvent();
     }

@@ -41,5 +41,10 @@ abstract public class AbstractIPageComposite extends Composite implements IPage 
     @Override
     public void isNowActive() {
     }
+    
+    @Override
+    public String getHeaderBackground() {
+        return null;
+    }
 
 }

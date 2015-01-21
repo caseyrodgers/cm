@@ -74,4 +74,9 @@ public class PrescriptionResourcePage implements IPage {
         return ApplicationType.PROGRAM;        
     }
 
+    @Override
+    public String getHeaderBackground() {
+        return null;
+    }
+
 }

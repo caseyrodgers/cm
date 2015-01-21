@@ -9,6 +9,7 @@ import java.util.List;
 
 
 public class QuizPage implements IPage {
+    
     QuizPanel quizPanel;
     
     public QuizPage() {
@@ -61,6 +62,11 @@ public class QuizPage implements IPage {
     @Override
     public ApplicationType getApplicationType() {
         return ApplicationType.PROGRAM;        
+    }
+
+    @Override
+    public String getHeaderBackground() {
+        return null;
     }
 
 }

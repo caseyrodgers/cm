@@ -106,4 +106,10 @@ public class LessonViewImpl extends Composite implements LessonView {
         _body.clear();
         _body.add(new HTML(lessonHtml));
     }
+    
+    
+    @Override
+    public String getHeaderBackground() {
+        return null;
+    }
 }

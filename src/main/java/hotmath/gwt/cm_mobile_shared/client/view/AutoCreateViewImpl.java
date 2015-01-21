@@ -194,4 +194,9 @@ public class AutoCreateViewImpl extends Composite implements AutoCreateView {
         PopupMessageBox.showMessage(html);
     }
 
+    @Override
+    public String getHeaderBackground() {
+        return null;
+    }
+
 }

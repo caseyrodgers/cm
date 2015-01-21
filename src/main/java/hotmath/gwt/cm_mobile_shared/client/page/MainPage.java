@@ -13,6 +13,11 @@ public class MainPage implements IPage {
 	}
 
 	@Override
+	public String getHeaderBackground() {
+	    return null;
+	}
+	
+	@Override
     public void isNowActive() {
         /** empty */
     }

@@ -27,6 +27,15 @@ public abstract class AbstractPagePanel extends Composite {
 	}
 
 	
+	
+	/** Satisfies IPage
+	 * 
+	 * @return
+	 */
+	public String getHeaderBackground() {
+	    return null;
+	}
+	
     
     protected void resetListSelections() {
     	Iterator<Widget> it = listItems.iterator();
@@ -62,5 +71,4 @@ public abstract class AbstractPagePanel extends Composite {
 	public ApplicationType getApplicationType() {
 	    return ApplicationType.PROGRAM;
 	}
-
 }

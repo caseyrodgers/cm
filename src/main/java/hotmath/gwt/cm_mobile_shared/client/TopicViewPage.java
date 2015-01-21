@@ -51,4 +51,10 @@ public class TopicViewPage implements IPage {
     public ApplicationType getApplicationType() {
         return ApplicationType.PROGRAM;
     }
+    
+    @Override
+    public String getHeaderBackground() {
+        return null;
+    }
+
 }

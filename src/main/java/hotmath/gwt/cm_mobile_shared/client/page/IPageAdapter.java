@@ -49,5 +49,10 @@ public class IPageAdapter extends Composite implements IPage {
     public ApplicationType getApplicationType() {
         return ApplicationType.PROGRAM;
     }
+    
+    @Override
+    public String getHeaderBackground() {
+        return null; 
+    }
 
 }

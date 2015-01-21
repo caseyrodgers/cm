@@ -59,6 +59,11 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
     public TokenParser getBackButtonLocation() {
         return null;
     }
+    
+    @Override
+    public String getHeaderBackground() {
+        return "#7F2909";
+    }
 
     @UiField
     HTMLPanel mainPanel;

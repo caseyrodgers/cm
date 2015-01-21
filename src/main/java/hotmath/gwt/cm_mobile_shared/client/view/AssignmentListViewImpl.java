@@ -31,7 +31,6 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
     GenericList listItems = new GenericList();
     Label countLabel;
 
-    private List<StudentAssignmentInfo> _lastAssignments;
     public AssignmentListViewImpl() {
         DockPanel dockPanel = new DockPanel();
         
@@ -54,6 +53,11 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
     @Override
     public Widget asWidget() {
         return this;
+    }
+
+    @Override
+    public String getHeaderBackground() {
+        return null;
     }
 
     @Override
@@ -100,7 +104,6 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
 
     @Override
     public void displayAssigmments(List<StudentAssignmentInfo> assignments) {
-        _lastAssignments = assignments;
         listItems.getList().clear();
         for(StudentAssignmentInfo bm: assignments) {
             
@@ -210,4 +213,6 @@ class MyGenericTextTag extends GenericTextTag<String> {
         String html = "<div style='margin-bottom: 5px;font-size: .8em'>Legend: *=Open; $=Turned in; +=teacher note; G=graded</div>";
         return new HTML(html);
     }
+    
+    
 }

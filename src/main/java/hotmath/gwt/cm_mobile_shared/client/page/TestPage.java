@@ -47,5 +47,10 @@ public class TestPage implements IPage {
         return ApplicationType.NONE;        
     }
 
+    @Override
+    public String getHeaderBackground() {
+        return null;
+    }
+
     
 }

@@ -354,6 +354,11 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         return ApplicationType.ASSIGNMENT;        
     }    
 
+    @Override
+    public String getHeaderBackground() {
+        return null;
+    }
+
 
     static {
         CmRpcCore.EVENT_BUS.addHandler(WindowHasBeenResizedEvent.TYPE, new WindowHasBeenResizedHandler() {

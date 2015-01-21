@@ -46,4 +46,9 @@ public class TopicListPage implements IPage {
         return ApplicationType.PROGRAM;        
     }
 
+    @Override
+    public String getHeaderBackground() {
+        return null;
+    }
+
 }

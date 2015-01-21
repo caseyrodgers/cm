@@ -38,6 +38,14 @@ public class SearchLessonViewImpl extends PrescriptionLessonViewImpl implements 
     }
 
     
+    
+    @Override
+    public String getHeaderBackground() {
+        return "#7F2909"; 
+    }
+
+
+    
     @Override
     public void setLesson(PrescriptionSessionData lessonData) {
         
@@ -108,7 +116,7 @@ public class SearchLessonViewImpl extends PrescriptionLessonViewImpl implements 
     
     @Override
     public String getViewTitle() {
-        return "Lesson Resources";
+        return "Search Resources";
     }
     
     @Override

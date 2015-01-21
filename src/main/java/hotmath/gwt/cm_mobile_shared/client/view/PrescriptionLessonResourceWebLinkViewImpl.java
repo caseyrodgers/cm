@@ -67,4 +67,9 @@ public class PrescriptionLessonResourceWebLinkViewImpl extends Composite impleme
         _main.setWidget(frame);
     }
 
+    @Override
+    public String getHeaderBackground() {
+        return null;
+    }
+
 }
