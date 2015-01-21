@@ -6,6 +6,7 @@ import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEvent;
 import hotmath.gwt.cm_core.client.event.CmQuizModeActivatedEventHandler;
 import hotmath.gwt.cm_core.client.model.SearchAllowMode;
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
+import hotmath.gwt.cm_mobile3.client.ClientFactory;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity;
 import hotmath.gwt.cm_mobile3.client.resource.MyResources;
@@ -26,19 +27,16 @@ import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
-import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPopEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
-import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_tools.client.ui.search.SearchButton;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
@@ -47,7 +45,6 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -81,9 +78,13 @@ public class HeaderPanel extends Composite {
     
     
     AssignmentButtonIndicator _assignmentButton = new AssignmentButtonIndicator();
-    MobileSearchButton _searchButton = new MobileSearchButton();
+    MobileSearchButton _searchButton;
     private TouchAnchor _calcButton;
-    public HeaderPanel(EventBus eventBus) {
+    private ClientFactory _cf;
+    public HeaderPanel(ClientFactory clientFactory) {
+        this._cf = clientFactory;
+        
+        _searchButton = new MobileSearchButton(clientFactory);
         
         basePanel = new FlowPanel();
         basePanel.getElement().setId("header");
@@ -162,7 +163,7 @@ public class HeaderPanel extends Composite {
         initWidget(basePanel);
 
         /** Show showing the Welcome panel turn on the Logout button */
-        eventBus.addHandler(UserLoginEvent.TYPE, new UserLoginHandler() {
+        _cf.getEventBus().addHandler(UserLoginEvent.TYPE, new UserLoginHandler() {
             @Override
             public void userLogin(final CmMobileUser user) {
                 
@@ -183,7 +184,7 @@ public class HeaderPanel extends Composite {
             }
         });
 
-        eventBus.addHandler(UserLogoutEvent.TYPE, new UserLogoutHandler() {
+        _cf.getEventBus().addHandler(UserLogoutEvent.TYPE, new UserLogoutHandler() {
             @Override
             public void userLogout() {
                 showLogoutButton(false);
@@ -191,14 +192,14 @@ public class HeaderPanel extends Composite {
         });
         
         
-        eventBus.addHandler(HeaderTitleChangedEvent.TYPE, new HeaderTitleChangedHandler() {
+        _cf.getEventBus().addHandler(HeaderTitleChangedEvent.TYPE, new HeaderTitleChangedHandler() {
             @Override
             public void headerTitleChanged(String title) {
                 mActiveTitle.setText(title);
             }
         });
         
-        eventBus.addHandler(NewPageLoadedEvent.TYPE,  new NewPageLoadedHandler() {
+        _cf.getEventBus().addHandler(NewPageLoadedEvent.TYPE,  new NewPageLoadedHandler() {
             @Override
             public void pageLoaded(IPage page) {
                 setupDomainSpecificButtons(page);

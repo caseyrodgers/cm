@@ -2,8 +2,8 @@ package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.ClientFactory;
-import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.SearchLessonResourceReviewView;
+import hotmath.gwt.cm_mobile3.client.view.SearchLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.SearchLessonView;
 import hotmath.gwt.cm_mobile_shared.client.activity.PrescriptionLessonResourceVideoActivity;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
@@ -59,7 +59,7 @@ public class SearchLessonActivity implements SearchLessonView.Presenter {
     }
 
     private void loadResource_Solution(InmhItemData resourceItem) {
-        PrescriptionLessonResourceTutorView theView = cf.getPrescriptionLessonResourceTutorView();
+        SearchLessonResourceTutorView theView = cf.getSearchLessonResourceTutorView();
         PrescriptionLessonResourceTutorActivity presenter = new PrescriptionLessonResourceTutorActivity(cf.getEventBus(), resourceItem);
         theView.setPresenter(presenter);
         cf.getEventBus().fireEvent(new LoadNewPageEvent(theView));          

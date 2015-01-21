@@ -38,7 +38,7 @@ public class SearchActivity implements SearchView.Presenter {
     public void doSearch(String search, final CallBack callBack) {
         
         if(search == null || search.length() < 3) {
-            PopupMessageBox.showError("Search string must be at least three letters.");
+            PopupMessageBox.showMessage("Enter a search prase of at least three letters.");
             return;
         }
         

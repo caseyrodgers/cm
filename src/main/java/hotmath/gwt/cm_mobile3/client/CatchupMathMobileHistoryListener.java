@@ -8,7 +8,6 @@ import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceReviewAc
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceWebLinkActivity;
 import hotmath.gwt.cm_mobile3.client.activity.QuizActivity;
-import hotmath.gwt.cm_mobile3.client.activity.SearchActivity;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.activity.WelcomeActivity;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
@@ -163,12 +162,8 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
             eb.fireEvent(new LoadNewPageEvent((IPage) view));
         } else if (type.equals("end_of_program")) {
             eb.fireEvent(new LoadNewPageEvent((IPage) cf.getEndOfProgramView()));
-        } else if (type.equals("search")) {
-            SearchActivity search = new SearchActivity(cf,eb);
-            cf.getSearchView().setPresenter(search);
-            eb.fireEvent(new LoadNewPageEvent((IPage)cf.getSearchView() ));
         }
-
+        
         /** is a prescription resource */
         else if (type.equals("resource")) {
             InmhItemData itemData = null;

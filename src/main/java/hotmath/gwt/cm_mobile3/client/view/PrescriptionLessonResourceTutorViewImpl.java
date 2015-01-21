@@ -53,7 +53,11 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
     ShowWorkSubToolBar _subBar;
 
     
-	public PrescriptionLessonResourceTutorViewImpl() {
+    public PrescriptionLessonResourceTutorViewImpl() {
+        this(null);
+    }
+    
+	public PrescriptionLessonResourceTutorViewImpl(final String whiteboardText) {
 	    tutorPanel = new TutorWrapperPanel(true,true,true,true,new TutorCallbackMobileDefault(){
 	        @Override
 	        public void solutionHasBeenViewed(String value) {
@@ -100,6 +104,13 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	            if(presenter.getItemData().isViewed()) {
 	                tutorPanel.unlockSolution();
 	            }
+	            
+	            TutorWrapperPanel.jsni_showWhiteboardWidgetMessage("Work out your answer on our Whiteboard.");
+	        }
+	        
+	        @Override
+	        public String getWhiteboardText() {
+	            return whiteboardText != null?whiteboardText:super.getWhiteboardText();
 	        }
 	        
 	    });

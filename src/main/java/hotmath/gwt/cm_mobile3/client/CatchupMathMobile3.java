@@ -192,7 +192,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 SharedData.saveUidToLocalStorage(_uid);
             }
 
-
             if (!loadFirstPanelMaybe(_uid)) {
                 History.fireCurrentHistoryState();
             }        
@@ -460,7 +459,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
          * component.
          * 
          */
-        HeaderPanel headerPanel = new HeaderPanel(__clientFactory.getEventBus());
+        HeaderPanel headerPanel = new HeaderPanel(__clientFactory);
         PagesContainerPanel pagesPanel = __clientFactory.getPagesContainer();
 
         FlowPanel mainPanel = new FlowPanel();

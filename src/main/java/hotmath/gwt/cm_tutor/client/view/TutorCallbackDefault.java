@@ -90,4 +90,11 @@ public class TutorCallbackDefault implements TutorCallback {
     native public void scrollToBottomOfScrollPanel() /*-{
         $wnd.scrollTo(0,$doc.body.scrollHeight);
     }-*/;
+    
+    
+    @Override
+    public String getWhiteboardText() {
+        String defaultWhiteboardLabel = "Work out your answer on our whiteboard; your teacher will receive a copy." + "<span class='dont_show_if_epp'> Then, click the buttons below to see the step-by-step answer.</span>";
+        return defaultWhiteboardLabel;
+    }
 }

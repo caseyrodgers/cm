@@ -15,14 +15,16 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImp
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceWebLinkView;
-import hotmath.gwt.cm_mobile3.client.view.SearchLessonView;
-import hotmath.gwt.cm_mobile3.client.view.SearchLessonViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile3.client.view.QuizViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.SearchLessonResourceReviewView;
 import hotmath.gwt.cm_mobile3.client.view.SearchLessonResourceReviewViewImpl;
+import hotmath.gwt.cm_mobile3.client.view.SearchLessonResourceTutorView;
+import hotmath.gwt.cm_mobile3.client.view.SearchLessonResourceTutorViewImpl;
+import hotmath.gwt.cm_mobile3.client.view.SearchLessonView;
+import hotmath.gwt.cm_mobile3.client.view.SearchLessonViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.SearchView;
 import hotmath.gwt.cm_mobile3.client.view.SearchViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
@@ -73,6 +75,7 @@ public class ClientFactoryImplBase implements ClientFactory {
     private AssignmentView assignmentView;
     private AssignmentShowWorkView assShowView;
     private SearchLessonResourceReviewView searchLessonResourceReviewView;
+    private SearchLessonResourceTutorView searchLessonResourceTutorView;
     
     @Override
     public EventBus getEventBus() {
@@ -242,5 +245,13 @@ public class ClientFactoryImplBase implements ClientFactory {
             searchLessonResourceReviewView = new SearchLessonResourceReviewViewImpl();
         }
         return searchLessonResourceReviewView;
+    }
+    
+    @Override
+    public SearchLessonResourceTutorView getSearchLessonResourceTutorView() {
+        if(searchLessonResourceTutorView == null) {
+            searchLessonResourceTutorView = new SearchLessonResourceTutorViewImpl();
+        }
+        return searchLessonResourceTutorView;
     }
 }

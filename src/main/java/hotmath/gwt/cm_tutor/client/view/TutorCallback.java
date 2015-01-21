@@ -137,4 +137,13 @@ public interface TutorCallback {
      * 
      */
 	void scrollToBottomOfScrollPanel();
+
+	
+	/** Return the text to shown for the widget in whiteboard only problems
+	 * 
+	 * null to not show widget area at all for whiteboard problems.
+	 * 
+	 * @return
+	 */
+    String getWhiteboardText();
 }

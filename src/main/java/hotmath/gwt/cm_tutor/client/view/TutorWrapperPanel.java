@@ -383,6 +383,7 @@ public class TutorWrapperPanel extends Composite {
      * @param hasShowWork
      * @param shouldExpandSolution
      * @param solutionContext
+     * @Param whiteboardText is text shown on whiteboard only problems.
      */
     public void externallyLoadedTutor(SolutionInfo info, Widget instance, String jsonConfig, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) {
         _solutionInfo = info;
@@ -394,7 +395,8 @@ public class TutorWrapperPanel extends Composite {
     	return this.tutorDomNode;
     }
 
-    private void initializeTutor(Widget instance, final String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) {
+    private void initializeTutor(Widget instance, final String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, 
+            boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) {
 
         Log.debug("Solution loading: " + pid);
                 _wasWidgetAnswered = false;
@@ -414,8 +416,10 @@ public class TutorWrapperPanel extends Composite {
 
         this.tutorDomNode = instance.getElement();
 
+        String whiteboardText = tutorCallback.getWhiteboardText();
         try {
-            jsni_initializeTutorNative(this.tutorDomNode, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus.name(), installCustomSteps);
+            jsni_initializeTutorNative(this.tutorDomNode, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext,
+                    submitButtonText, indicateWidgetStatus.name(), installCustomSteps, whiteboardText);
         }
         catch(Exception e) {
         	Window.alert("Error initializing tutor: " + e.getMessage());
@@ -510,7 +514,8 @@ public class TutorWrapperPanel extends Composite {
      */
     private native void jsni_initializeTutorNative(Element instance, String pid, String jsonConfig,
             String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,
-            boolean shouldExpandSolution,String solutionContext, String submitButtonText, String indicateWidgetStatus, boolean installCustomSteps) /*-{
+            boolean shouldExpandSolution,String solutionContext, String submitButtonText, 
+            String indicateWidgetStatus, boolean installCustomSteps, String whiteboardText) /*-{
 
 
         // $wnd.debug =  @hotmath.gwt.cm_core.client.CmGwtUtils::gwt_log(Ljava/lang/String;);
@@ -598,7 +603,7 @@ public class TutorWrapperPanel extends Composite {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_tutorQuestionGuessChanged(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id,selection,value);
        }
 
-       $wnd.TutorManager.initializeTutor(instance, pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext,submitButtonText, indicateWidgetStatus, installCustomSteps);
+       $wnd.TutorManager.initializeTutor(instance, pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext,submitButtonText, indicateWidgetStatus, installCustomSteps, whiteboardText);
 
        $wnd.Flashcard_mngr.problemGenDebugInfo =  function (code, info) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_problemGenDebugInfo(Ljava/lang/String;Ljava/lang/String;)(code, info);
