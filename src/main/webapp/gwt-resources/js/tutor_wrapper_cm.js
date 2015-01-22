@@ -15,7 +15,7 @@ var TutorWrapper = (function () {
     var nextId = 1;
 
     // constructor
-    var cls = function (tutorDomNode, pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, shouldExpandSolution, solutionVariableContext, submitButtonText, indicateWidgetStatus, installCustomSteps) {
+    var cls = function (tutorDomNode, pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, shouldExpandSolution, solutionVariableContext, submitButtonText, indicateWidgetStatus, installCustomSteps, whiteboardText) {
     
         // private variables 
         this.id = nextId++;
@@ -44,6 +44,7 @@ var TutorWrapper = (function () {
         this.tutorData=null;
         this.solutionTitle=null;
         this.context=null;
+        this.whiteboardText = whiteboardText;
         
                 
         if(installCustomSteps) { 

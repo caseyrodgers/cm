@@ -66,12 +66,16 @@ var TutorManager = {
     tutorWrappers : [],
     activeTutorWrapper : null,
 
-    initializeTutor : function(tutorNode, pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, shouldExpandSolution, solutionVariableContext, submitButtonText, indicateWidgetStatus, installCustomSteps) {
+    initializeTutor : function(tutorNode, pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, shouldExpandSolution, solutionVariableContext, submitButtonText, indicateWidgetStatus, installCustomSteps, whiteboardText) {
     
+    	
+    	// whiteboardText = null;
+    	
+    	
         // create a new wrapper to manage this instance of the tutor
         var tutorWrapper = new TutorWrapper(tutorNode, pid, jsonConfig, solutionData, 
                                             stepText,solutionTitle,showWork, shouldExpandSolution, solutionVariableContext, 
-                                            submitButtonText, indicateWidgetStatus, installCustomSteps);
+                                            submitButtonText, indicateWidgetStatus, installCustomSteps, whiteboardText);
                               
                               
         TutorManager.activeTutorWrapper = tutorWrapper;              
