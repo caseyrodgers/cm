@@ -257,6 +257,9 @@ public class HeaderPanel extends Composite {
         setCssClass(mInactiveButton, CssAnimate.Off);
     }
 
+    
+    static public String BACKGROUND_SEARCH = "#7F2909";
+    
     private void configureActiveButtonEvent() {
 
         if (mActiveButtonHandlerRegistration != null) {
