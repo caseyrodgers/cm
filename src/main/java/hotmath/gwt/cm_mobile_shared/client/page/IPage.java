@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client.page;
 
+import hotmath.gwt.cm_core.client.BackAction;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 
@@ -18,15 +19,6 @@ public interface IPage {
         NONE
     }
 
-	static public interface BackAction {
-	    /** provide back processing, if return true
-	     *  then normal processing will continue.
-	     *  
-	     * @return
-	     */
-	    boolean goBack(); 
-	}
-	
 	String getViewTitle();
 
 	String getBackButtonText();

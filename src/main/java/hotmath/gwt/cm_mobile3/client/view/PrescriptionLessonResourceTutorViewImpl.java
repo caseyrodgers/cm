@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
 
+import hotmath.gwt.cm_core.client.BackAction;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;

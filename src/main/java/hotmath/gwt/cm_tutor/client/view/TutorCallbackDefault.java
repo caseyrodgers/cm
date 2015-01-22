@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tutor.client.view;
 
+import hotmath.gwt.cm_core.client.BackAction;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -95,5 +96,10 @@ public class TutorCallbackDefault implements TutorCallback {
     public String getWhiteboardText() {
         String defaultWhiteboardLabel = "Work out your answer on our whiteboard; your teacher will receive a copy." + "<span class='dont_show_if_epp'> Then, click the buttons below to see the step-by-step answer.</span>";
         return defaultWhiteboardLabel;
+    }
+
+     @Override
+    public BackAction getTutorReturnButtonAction() {
+        return null;
     }
 }

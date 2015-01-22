@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import hotmath.gwt.cm_core.client.BackAction;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
-import hotmath.gwt.cm_mobile_shared.client.page.IPage.BackAction;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 

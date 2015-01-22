@@ -40,6 +40,7 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -97,9 +98,9 @@ public class TutorWrapperPanel extends Composite {
 
     boolean _wasWidgetAnswered;
 
-    public TutorWrapperPanel(boolean showButtonBar, boolean showReturnButton, boolean showWhiteboardButton, boolean saveVariableContext, TutorCallback tutorCallback) {
+    public TutorWrapperPanel(boolean showButtonBar, boolean showReturnButton, boolean showWhiteboardButton, boolean saveVariableContext, TutorCallback tutorDefine) {
         __lastInstance = this;
-        this.tutorCallback = tutorCallback;
+        this.tutorCallback = tutorDefine;
         this.saveVariableContext = saveVariableContext;
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -126,12 +127,25 @@ public class TutorWrapperPanel extends Composite {
             returnButton.setVisible(false);
         }
         else {
-            returnButton.addClickHandler(new ClickHandler() {
-                @Override
-                native public void onClick(ClickEvent event) /*-{
-                    $wnd.TutorManager.newProblem();
-                }-*/;
-            });
+            
+            if(tutorCallback.getTutorReturnButtonAction() != null) {
+                returnButton.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        if(tutorCallback.getTutorReturnButtonAction().goBack()) {
+                            History.back();
+                        }
+                    }
+                });    
+            }
+            else {
+                returnButton.addClickHandler(new ClickHandler() {
+                    @Override
+                    native public void onClick(ClickEvent event) /*-{
+                        $wnd.TutorManager.newProblem();
+                    }-*/;
+                });
+            }
         }
 
         stepNext.addClickHandler(new ClickHandler() {

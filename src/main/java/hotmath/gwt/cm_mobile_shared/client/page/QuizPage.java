@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client.page;
 
+import hotmath.gwt.cm_core.client.BackAction;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.QuizPanel;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
