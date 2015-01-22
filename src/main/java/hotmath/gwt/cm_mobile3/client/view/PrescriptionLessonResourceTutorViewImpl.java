@@ -105,7 +105,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	                tutorPanel.unlockSolution();
 	            }
 	            
-	            TutorWrapperPanel.jsni_showWhiteboardWidgetMessage("Work out your answer on our Whiteboard.");
+	            // TutorWrapperPanel.jsni_showWhiteboardWidgetMessage("Work out your answer on our Whiteboard.");
 	        }
 	        
 	        @Override
