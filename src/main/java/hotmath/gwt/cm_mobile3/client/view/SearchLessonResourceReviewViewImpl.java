@@ -63,7 +63,7 @@ public class SearchLessonResourceReviewViewImpl extends AbstractPagePanel implem
 
     @Override
     public String getViewTitle() {
-        return "Written Lesson";
+        return "Search Lesson";
     }
 
     @Override

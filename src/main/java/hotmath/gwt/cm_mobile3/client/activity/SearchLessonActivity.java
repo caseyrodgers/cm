@@ -73,7 +73,7 @@ public class SearchLessonActivity implements SearchLessonView.Presenter {
     }
     
     private void loadResource_Video(InmhItemData resourceItem) {
-        PrescriptionLessonResourceVideoView theView = cf.getPrescriptionLessonResourceVideoView();
+        PrescriptionLessonResourceVideoView theView = cf.getSearchLessonResourceVideoView();
         PrescriptionLessonResourceVideoActivity presenter = new PrescriptionLessonResourceVideoActivity(cf.getEventBus(),resourceItem);
         theView.setPresenter(presenter);
         cf.getEventBus().fireEvent(new LoadNewPageEvent(theView));        

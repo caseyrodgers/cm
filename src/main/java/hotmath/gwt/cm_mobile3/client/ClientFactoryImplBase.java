@@ -42,6 +42,7 @@ import hotmath.gwt.cm_mobile_shared.client.view.AssignmentViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceWebLinkViewImpl;
+import hotmath.gwt.cm_mobile_shared.client.view.SearchLessonResourceVideoViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkViewImpl;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -76,6 +77,7 @@ public class ClientFactoryImplBase implements ClientFactory {
     private AssignmentShowWorkView assShowView;
     private SearchLessonResourceReviewView searchLessonResourceReviewView;
     private SearchLessonResourceTutorView searchLessonResourceTutorView;
+    private PrescriptionLessonResourceVideoView searchLessonResourceVideoView;
     
     @Override
     public EventBus getEventBus() {
@@ -253,5 +255,13 @@ public class ClientFactoryImplBase implements ClientFactory {
             searchLessonResourceTutorView = new SearchLessonResourceTutorViewImpl();
         }
         return searchLessonResourceTutorView;
+    }
+    
+    @Override
+    public PrescriptionLessonResourceVideoView getSearchLessonResourceVideoView() {
+        if(searchLessonResourceVideoView == null) {
+            searchLessonResourceVideoView = new SearchLessonResourceVideoViewImpl();
+        }
+        return searchLessonResourceVideoView;
     }
 }
