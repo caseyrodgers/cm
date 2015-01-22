@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tutor.client.view;
 
-import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;

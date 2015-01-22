@@ -327,11 +327,14 @@ public class TutorWrapperPanel extends Composite {
                  *
                  */
                 if(!_wasWidgetAnswered) {
-                    saveTutorWidgetAsComplete(tutorCallback.getSaveTutorWidgetCompleteAction(inputValue, correct));
-                    _wasWidgetAnswered=true;
-
-                    if(correct) {
-                        CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCorrectEvent(true));
+                    Action<UserTutorWidgetStats> tc = tutorCallback.getSaveTutorWidgetCompleteAction(inputValue, correct);
+                    if(tc != null) {
+                        saveTutorWidgetAsComplete(tutorCallback.getSaveTutorWidgetCompleteAction(inputValue, correct));
+                        _wasWidgetAnswered=true;
+    
+                        if(correct) {
+                            CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCorrectEvent(true));
+                        }
                     }
                 }
 

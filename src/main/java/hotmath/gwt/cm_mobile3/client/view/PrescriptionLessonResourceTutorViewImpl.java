@@ -25,6 +25,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
+import hotmath.gwt.cm_tutor.client.view.TutorCallback;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 
 import java.util.List;
@@ -54,66 +55,70 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 
     
     public PrescriptionLessonResourceTutorViewImpl() {
-        this(null);
+        this(null,null);
     }
     
-	public PrescriptionLessonResourceTutorViewImpl(final String whiteboardText) {
-	    tutorPanel = new TutorWrapperPanel(true,true,true,true,new TutorCallbackMobileDefault(){
-	        @Override
-	        public void solutionHasBeenViewed(String value) {
-	            presenter.markSolutionAsComplete();
-	        }
-	        
-	        @Override
-	        public void onNewProblem(int problemNumber) {
-	            tutorNewProblem();
-	        }
-	        
-	        @Override
-	        public void tutorWidgetComplete(String inputValue, boolean correct) {
-	            if(correct) {
+	public PrescriptionLessonResourceTutorViewImpl(final String whiteboardText, TutorCallback tutorCallback) {
+	    
+	    if(tutorCallback == null) {
+	        tutorCallback = new TutorCallbackMobileDefault(){
+	            @Override
+	            public void solutionHasBeenViewed(String value) {
 	                presenter.markSolutionAsComplete();
 	            }
-	        }
-	        
-	        @Override
-	        public void showWhiteboard() {
-	            showWhiteboardPanel();
-	        }
-	        
-	        @Override
-	        public boolean showTutorWidgetInfoOnCorrect() {
-	            return true;
-	        }
-	        
-	        
-	        @Override
-	        public Action<RpcData> getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber) {
-	            int uid=SharedData.getUserInfo().getUid();
-	            int rid=SharedData.getUserInfo().getRunId();
-	            return new SaveSolutionContextAction(uid, rid, pid, problemNumber, variablesJson);
-	        }
-	        
-	        @Override
-            public Action<UserTutorWidgetStats> getSaveTutorWidgetCompleteAction(String value, boolean yesNo) {
-                return new SaveTutorInputWidgetAnswerAction(SharedData.getUserInfo().getUid(), SharedData.getUserInfo().getRunId(),problem.getPid(), value, yesNo);
-            }
-	        
-	        @Override
-	        public void solutionHasBeenInitialized() {
-	            if(presenter.getItemData().isViewed()) {
-	                tutorPanel.unlockSolution();
+	            
+	            @Override
+	            public void onNewProblem(int problemNumber) {
+	                tutorNewProblem();
 	            }
 	            
-	            // TutorWrapperPanel.jsni_showWhiteboardWidgetMessage("Work out your answer on our Whiteboard.");
-	        }
-	        
-	        @Override
-	        public String getWhiteboardText() {
-	            return whiteboardText != null?whiteboardText:super.getWhiteboardText();
-	        }
-	        
-	    });
+	            @Override
+	            public void tutorWidgetComplete(String inputValue, boolean correct) {
+	                if(correct) {
+	                    presenter.markSolutionAsComplete();
+	                }
+	            }
+	            
+	            @Override
+	            public void showWhiteboard() {
+	                showWhiteboardPanel();
+	            }
+	            
+	            @Override
+	            public boolean showTutorWidgetInfoOnCorrect() {
+	                return true;
+	            }
+	            
+	            
+	            @Override
+	            public Action<RpcData> getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber) {
+	                int uid=SharedData.getUserInfo().getUid();
+	                int rid=SharedData.getUserInfo().getRunId();
+	                return new SaveSolutionContextAction(uid, rid, pid, problemNumber, variablesJson);
+	            }
+	            
+	            @Override
+	            public Action<UserTutorWidgetStats> getSaveTutorWidgetCompleteAction(String value, boolean yesNo) {
+	                return new SaveTutorInputWidgetAnswerAction(SharedData.getUserInfo().getUid(), SharedData.getUserInfo().getRunId(),problem.getPid(), value, yesNo);
+	            }
+	            
+	            @Override
+	            public void solutionHasBeenInitialized() {
+	                if(presenter.getItemData().isViewed()) {
+	                    tutorPanel.unlockSolution();
+	                }
+	                
+	                // TutorWrapperPanel.jsni_showWhiteboardWidgetMessage("Work out your answer on our Whiteboard.");
+	            }
+	            
+	            @Override
+	            public String getWhiteboardText() {
+	                return whiteboardText != null?whiteboardText:super.getWhiteboardText();
+	            }
+	        };	        
+	    }
+	    
+	    tutorPanel = new TutorWrapperPanel(true,true,true,true,tutorCallback);
 	    _contentPanel = new FlowPanel();
 	    _subBar = new ShowWorkSubToolBar(false, false, new Callback() {
             @Override
