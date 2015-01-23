@@ -14,6 +14,7 @@ import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchBundle;
 import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchStyle;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.shared.client.rpc.RetryActionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,6 @@ import java.util.List;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -292,12 +291,14 @@ public class SearchPanel extends BorderLayoutContainer {
                 }
             }
             
-            @Override
-            public void onFailure(Throwable caught) {
-                CmBusyManager.setBusy(false);
-                caught.printStackTrace();
-                Log.error("Error", caught);
-                CmMessageBox.showAlert("There was a problem getting matches" + caught.getMessage());
+            
+            
+            public void onFailure(Throwable error) {
+                CmBusyManager.resetBusy();
+                error.printStackTrace();
+                Log.error("Error", error);
+
+                CmMessageBox.showAlert("There was a problem processing your search.  Check Help for some tips.");
             }
         });
     }

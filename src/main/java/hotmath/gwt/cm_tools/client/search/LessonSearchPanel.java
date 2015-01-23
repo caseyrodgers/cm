@@ -122,6 +122,7 @@ public class LessonSearchPanel extends SimpleContainer {
                 _gridOfLessons.getStore().clear();
                 _gridOfLessons.getStore().addAll(value);
             }
+
         }.register();
     }
 

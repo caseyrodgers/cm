@@ -17,7 +17,7 @@ public class HelpWindow extends GWindow {
         super(false);
         
         //setAutoHeight(true);
-        setPixelSize(450,250);
+        setPixelSize(450,350);
         
         setModal(true);
         setResizable(false);

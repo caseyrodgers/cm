@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.search.HMIndexSearcher;
 import hotmath.search.HMIndexWriter;
 import hotmath.search.HMIndexWriterFactory;
