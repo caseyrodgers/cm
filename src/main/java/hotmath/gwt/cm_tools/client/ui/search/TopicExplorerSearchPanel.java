@@ -23,18 +23,18 @@ public class TopicExplorerSearchPanel extends ContentPanel {
         
         setWidget(_searchPanel);
         
-        addTool(new TextButton("Show Whiteboard", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                ShowWhiteboardWindow.getInstance().setVisible(true);
-            }
-        }));
-        addTool(new TextButton("Calculator", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                CalculatorWindow.getInstance().setVisible(true);
-            }
-        }));
+//        addTool(new TextButton("Show Whiteboard", new SelectHandler() {
+//            @Override
+//            public void onSelect(SelectEvent event) {
+//                ShowWhiteboardWindow.getInstance().setVisible(true);
+//            }
+//        }));
+//        addTool(new TextButton("Calculator", new SelectHandler() {
+//            @Override
+//            public void onSelect(SelectEvent event) {
+//                CalculatorWindow.getInstance().setVisible(true);
+//            }
+//        }));
         
 
         setVisible(true);
