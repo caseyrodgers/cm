@@ -3,20 +3,14 @@ package hotmath.gwt.search.client.ui;
 import hotmath.gwt.cm_core.client.award.CmAwardPanel;
 import hotmath.gwt.cm_core.client.award.CmAwardPanel.AwardCallback;
 import hotmath.gwt.cm_tools.client.ui.MyIconButton;
-import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.ui.ShowUserProgramStatusDialog;
-import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class HeaderPanel extends FlowLayoutContainer {
 
@@ -58,25 +52,25 @@ public class HeaderPanel extends FlowLayoutContainer {
 
         add(awardTip);
         add(_helloInfo);
-        helpButton = new MyIconButton("header-panel-help-btn");
-        helpButton.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-
-                Event currentEvent = helpButton.getCurrentEvent();
-                if (currentEvent != null && currentEvent.getCtrlKey()) {
-                    new ShowDebugUrlWindow();
-                } else {
-                    GWT.runAsync(new CmRunAsyncCallback() {
-                        @Override
-                        public void onSuccess() {
-                            new HelpWindow();
-                        }
-                    });
-                }
-            }
-        });
-        add(helpButton);
+        // helpButton = new MyIconButton("header-panel-help-btn");
+//        helpButton.addSelectHandler(new SelectHandler() {
+//            @Override
+//            public void onSelect(SelectEvent event) {
+//
+//                Event currentEvent = helpButton.getCurrentEvent();
+//                if (currentEvent != null && currentEvent.getCtrlKey()) {
+//                    new ShowDebugUrlWindow();
+//                } else {
+//                    GWT.runAsync(new CmRunAsyncCallback() {
+//                        @Override
+//                        public void onSuccess() {
+//                            new HelpWindow();
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//        add(helpButton);
 
         _headerText = new Label();
         _headerText.addStyleName("header-panel-title");

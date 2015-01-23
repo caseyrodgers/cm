@@ -47,6 +47,12 @@ public class SearchViewImpl extends AbstractPagePanel implements SearchView {
         listItemsDiv.add(listItems);
     }
 
+    
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.NONE;
+    }
+    
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;

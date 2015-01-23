@@ -2,6 +2,7 @@ package hotmath.gwt.cm_mobile3.client.view;
 
 import hotmath.gwt.cm_core.client.BackAction;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
@@ -45,6 +46,10 @@ public class SearchLessonResourceTutorViewImpl extends PrescriptionLessonResourc
             }
         });
     }
-
+    
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.NONE;
+    }
 }
  

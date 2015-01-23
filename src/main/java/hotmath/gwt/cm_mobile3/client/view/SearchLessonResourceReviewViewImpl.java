@@ -6,6 +6,7 @@ import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_mobile_shared.client.view.SubToolBar;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 
@@ -57,6 +58,13 @@ public class SearchLessonResourceReviewViewImpl extends AbstractPagePanel implem
         main.add(reviewHtml);
         initWidget(main);
     }
+    
+    
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.NONE;
+    }
+
     
     @Override
     public String getHeaderBackground() {

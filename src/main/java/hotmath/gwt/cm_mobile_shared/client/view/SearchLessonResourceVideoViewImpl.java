@@ -15,4 +15,11 @@ public class SearchLessonResourceVideoViewImpl extends PrescriptionLessonResourc
     public String getHeaderBackground() {
         return HeaderPanel.BACKGROUND_SEARCH;
     }
+    
+    
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.NONE;
+    }
+
 }
