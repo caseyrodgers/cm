@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_search.client;
 
+
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
 import hotmath.gwt.cm_mobile_shared.client.event.DoSearchEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.DoSearchEventHandler;
@@ -9,6 +10,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_search.client.places.SearchPlace;
+import hotmath.gwt.cm_search.client.ui.HeaderPanel;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.activity.shared.ActivityManager;
@@ -22,6 +24,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -101,11 +104,13 @@ public class CatchupMathSearch implements EntryPoint, OrientationChangedHandler 
      */
     public void onModuleLoad2() {
         
-        Log.info("Starting CM Search");
+        HeaderPanel headerPanel = new HeaderPanel(__clientFactory);
+        
+        Log.info("Starting CM Mobile Search");
         
         _rootPanel = RootPanel.get("main-content");
         
-        appWidget.add(new Label("The Main Widget"));
+        appWidget.add(new Label("CM Mobile Search"));
         
         PlaceController placeController =  __clientFactory.getPlaceContainer();
 
@@ -119,7 +124,12 @@ public class CatchupMathSearch implements EntryPoint, OrientationChangedHandler 
         PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
         historyHandler.register(placeController, __eventBus, defaultPlace);
 
-        RootPanel.get("main-content").add(appWidget);
+        
+        FlowPanel flow = new FlowPanel();
+        flow.add(headerPanel);
+        flow.add(appWidget);
+        
+        RootPanel.get("main-content").add(flow);
         
         // Goes to the place represented on URL else default place
         historyHandler.handleCurrentHistory();

@@ -4,6 +4,7 @@ import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.award.CmAwardPanel;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
+import hotmath.gwt.cm_mobile3.client.activity.SearchActivity;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEvent;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEventHandlerImpl;
@@ -267,7 +268,16 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                     }
                 });
                 handled = true;
-            } else if (uid > 0) {
+            } 
+            else if(type.equals("SEARCH")) {
+                ClientFactory cf = __clientFactory;
+                SearchActivity search = new SearchActivity(cf,cf.getEventBus());
+                cf.getSearchView().setPresenter(search);
+                cf.getEventBus().fireEvent(new LoadNewPageEvent((IPage)cf.getSearchView() ));
+                
+                handled = true;
+            }
+            else if (uid > 0) {
                 SharedData.saveUidToLocalStorage(uid);
                 
 //                SharedData.makeSureUserHasBeenRead(new CallbackOnComplete() {
