@@ -113,8 +113,7 @@ public class SearchPanel extends BorderLayoutContainer {
         FlowLayoutContainer flow = new FlowLayoutContainer();
         flow.setWidth(320);
         String html = "<p style='font-size: 1.3em;padding: 5px;color: #666;'>" +
-                      "Enter a word or phrase associated with the lesson " +
-                      "you are searching for in the textbox above.  Once your lesson is found you can 'explore' its resources." +
+                      "Enter a word or phrase in the textbox. Then select a lesson to explore the text, video, activity and practice problems. " +
                       "</p>";
         flow.add(new HTML(html));
         _centerPanelEmpty.setWidget(flow);
@@ -231,7 +230,7 @@ public class SearchPanel extends BorderLayoutContainer {
             }
         });
         
-        _inputBox.setToolTip("Enter a word or phrase associated with a Lesson.   Press ENTER or click the Search button to find matches.");
+        _inputBox.setToolTip("Enter a word or phrase in the textbox. Then select a lesson to explore the text, video, activity and practice problems.");
         
         HorizontalLayoutContainer hl = new HorizontalLayoutContainer();
         hl.add(new MyFieldLabel(_inputBox, "Lesson Search", 85, 250));

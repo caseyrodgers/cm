@@ -55,7 +55,7 @@ public class SearchViewImpl extends Composite implements SearchView {
         
         String val = searchField.getValue();
         if(val == null || val.length() < 3) {
-            PopupMessageBox.showError("Invalid search term");
+            PopupMessageBox.showError("No matching lesson found.");
             return;
         }
         
