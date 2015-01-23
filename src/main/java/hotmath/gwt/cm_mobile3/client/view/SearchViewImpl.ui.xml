@@ -8,8 +8,13 @@
 	   }
 	   
 	   .search_box {
-	      width: 300px;
-	      margin-bottom: 25px;
+	      width: 400px;
+	      margin-bottom: 20px;
+	   }
+	   
+	   .search_box p {
+	      font-size: .9em;
+	      color: #666;
 	   }
 	   
 	   .list-items {
@@ -21,9 +26,12 @@
 	    <div class="{style.search_box}">
 	        <span>Search for Topic: </span>
 	        <g:TextBox ui:field='searchField'/>
+	    <p>
+	        Enter a word or phrase in the textbox. 
+	        Then select a lesson to explore the text, video, activity and practice problems.
+	    </p>
+	        
 	    </div>
-	    
-	
 		<g:Button styleName='sexybutton sexy_cm_silver' ui:field='searchButton'>
 			<span>
 				<span>Search Catchup Math</span>
