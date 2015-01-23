@@ -42,7 +42,8 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
     @Override
     public void setupView(final PrescriptionLessonResourceTutorView view) {
         eventBus.fireEvent(new SystemIsBusyEvent(true));
-        GetSolutionAction action = new GetSolutionAction(0,SharedData.getUserInfo().getRunId(),resourceItem.getFile());
+        int runId = SharedData.getUserInfo()!=null?SharedData.getUserInfo().getRunId():0;
+        GetSolutionAction action = new GetSolutionAction(0,runId,resourceItem.getFile());
         CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<SolutionInfo>() {
             public void onSuccess(SolutionInfo solutionInfo) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));

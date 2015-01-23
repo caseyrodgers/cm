@@ -54,7 +54,7 @@ public class SearchViewImpl extends AbstractPagePanel implements SearchView {
 
     @Override
     public String getBackButtonText() {
-        return SharedData.getUserInfo() != null?"Back":null;
+        return (SharedData.getUserInfo() != null && SharedData.getUserInfo().getUid() != 0)?"Back":null;
     }
 
     @Override

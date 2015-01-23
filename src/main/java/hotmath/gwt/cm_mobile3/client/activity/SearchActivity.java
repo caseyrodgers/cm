@@ -15,6 +15,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -98,15 +99,12 @@ public class SearchActivity implements SearchView.Presenter {
         else {
             SharedData.getFlowAction().getPrescriptionResponse().setPrescriptionData(response.getPrescriptionData());
         }
-
-        if(SharedData.getMobileUser() == null) {
-            CmMobileUser user = new CmMobileUser(0,0,1,0,response.getRunId(),null);
-            user.setBaseLoginResponse(new UserLoginResponse(new UserInfo(0, 0),new CmDestination(CmPlace.PRESCRIPTION)));
-            SharedData.setData(user);
-        }
-        SharedData.getMobileUser().getBaseLoginResponse().getUserInfo().setSessionNumber(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession().getSessionNumber());
         
-        SearchLessonActivity presenter = new SearchLessonActivity(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession());
+        // int sessionNumber = response.getPrescriptionData().getCurrSession().getSessionNumber();
+        // SharedData.getMobileUser().getBaseLoginResponse().getUserInfo().setSessionNumber(sessionNumber);
+        
+        PrescriptionSessionData session = response.getPrescriptionData().getCurrSession(); // SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession();
+        SearchLessonActivity presenter = new SearchLessonActivity(session);
         clientFactory.getSearchLessonView().setPresenter(presenter);
         this.eventBus.fireEvent(new LoadNewPageEvent(clientFactory.getSearchLessonView()));
     }
