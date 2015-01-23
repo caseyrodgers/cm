@@ -6,10 +6,10 @@ import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.search.LessonSearchPanel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorerSearchPanel;
+import hotmath.gwt.search.client.ui.HeaderPanel;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -35,12 +35,14 @@ public class Search implements EntryPoint {
     BorderLayoutContainer _mainPortWrapper = new BorderLayoutContainer();
     public SimpleContainer _mainContainer;
 
-
     /**
      * This is the entry point method.
      */
     public void onModuleLoad() {
         CmLogger.info("Catchup Math Search Startup");
+        
+        
+        HeaderPanel headerPanel = new HeaderPanel();
 
         // GXT.setDefaultTheme(Theme.GRAY, true);
 
@@ -59,26 +61,16 @@ public class Search implements EntryPoint {
 
         CmBusyManager.setViewPort(_mainPort);
 
-        BorderLayoutData bdata = new BorderLayoutData(38);
-
         _mainContainer = new SimpleContainer();
         _mainContainer.setStyleName("main-container");
         _mainContainer.getElement().setId("main-container");
 
-        bdata = new BorderLayoutData();
-        _mainPortWrapper.setCenterWidget(_mainContainer, bdata);
+        _mainPortWrapper.setNorthWidget(headerPanel, new BorderLayoutData(38));
 
-        bdata = new BorderLayoutData(20);
-        
         /** Turn on debugging CSS */
         if (CmCore.getQueryParameter("debug") != null) {
                 _mainPortWrapper.addStyleName("debug-mode");
         }
-
-        /**
-         * Add the main panel to the "hm_content" div on the CatchupMath.html
-         *
-         */
         
         _mainPortWrapper.setCenterWidget(new TopicExplorerSearchPanel());
         RootPanel.get("main-content").add(_mainPort);
@@ -101,7 +93,6 @@ public class Search implements EntryPoint {
                 CmRpcCore.EVENT_BUS.fireEvent(new CmLogoutEvent());
             }
         });
-        
         
         CmBusyManager.showLoading(false);
     }
