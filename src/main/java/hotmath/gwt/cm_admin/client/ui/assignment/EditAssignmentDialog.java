@@ -65,27 +65,27 @@ public class EditAssignmentDialog {
     Assignment _assignment;
     DateField _dueDate;
     ComboBox<AssignmentStatusDto> _assignmentStatus;
-    
-    
-    
+
+
+
     TextButton saveDraftMode, saveAssign;
-    
-    
+
+
     boolean _isDraftMode;
 
     AssignmentDesigner _assignmentDesigner;
 
     public EditAssignmentDialog(Assignment assignment) {
-        
+
         if(UserInfoBase.getInstance().isMobile()) {
             new FeatureNotAvailableToMobile();
             return;
         }
-        
-        
+
+
         this._assignment = assignment;
         _isDraftMode = _assignment.getStatus().equals("Draft");
-        
+
         final GWindow window = new GWindow(false);
         window.setPixelSize(800, 600);
         window.setMaximizable(true);
@@ -114,12 +114,12 @@ public class EditAssignmentDialog {
         FieldLabel commentsLabel = new FieldLabel(_comments, "Comment");
         commentsLabel.setLabelWidth(FIELD_LABEL_LEN);
         header.add(commentsLabel, new VerticalLayoutData(1.0, 50));;
-        
-        
+
+
         HorizontalLayoutData hData1 = new HorizontalLayoutData(100.0,30);
         HorizontalLayoutContainer hCon = new HorizontalLayoutContainer();
         hData1.setMargins(new Margins(0, 20, 0, 20));
-        
+
         _dueDate = new DateField();
         _dueDate.setWidth(100);
         _dueDate.setValue(assignment.getDueDate());
@@ -133,8 +133,8 @@ public class EditAssignmentDialog {
                 if(!checkStatusIsValidChange(event.getItem())) {
                     event.cancel();
                 }
-            }   
-        });        
+            }
+        });
         if(!_isDraftMode) {
             _assignmentStatus.getStore().remove(_assignmentStatus.getStore().size()-1);   // remove draft
             FieldLabel statusLabel = new MyFieldLabel(_assignmentStatus, "Status", 85, 200);
@@ -152,29 +152,29 @@ public class EditAssignmentDialog {
             @Override
             public void onSelect(SelectEvent event) {
                 new EditAssignmentOptionsDialog(_assignment, new Callback() {
-                    
+
                     @Override
                     public void optionsSaved(String submitOption, boolean autoReleaseGrades, boolean isPersonalized, boolean isPreventLesson) {
-                        
+
                         if(submitOption.startsWith("Allow")) {
                             _assignment.setAllowPastDueSubmits(true);
                         }
                         else {
                            _assignment.setAllowPastDueSubmits(false);
                         }
-                        
+
 
                         _assignment.setPersonalized(isPersonalized);
-                        
+
                         _assignment.setPreventLessonAccess(isPreventLesson);
-                        
+
                         _assignment.setAutoRelease(false);
                         if(autoReleaseGrades) {
                             if(thereAreWbProbelms()) {
                                 CmMessageBox.showAlert("Warning", "You cannot auto release grades with assignments containing whiteboard problems.");
                             }
                             else {
-                                _assignment.setAutoRelease(true);                                
+                                _assignment.setAutoRelease(true);
                             }
                         }
                     }
@@ -188,12 +188,12 @@ public class EditAssignmentDialog {
                 if(_assignmentDesigner.getAssignmentPids().size() == 0) {
                     CmMessageBox.showAlert("You need to add problems to the assignment to View/Print it.");
                     return;
-            	}
+                }
 
-            	if (_assignment.getAssignKey() == 0 || _assignmentDesigner.getIsModified() == true) {
+                if (_assignment.getAssignKey() == 0 || _assignmentDesigner.getIsModified() == true) {
                     CmMessageBox.showAlert("You need to Save the assignment to View/Print it.");
                     return;
-            	}
+                }
                 new ViewPrintAssignmentWindow(_assignment);
             }
         }), hData2);
@@ -226,7 +226,7 @@ public class EditAssignmentDialog {
         });
         saveDraftMode.setToolTip("Save in draft mode allowing for future modifcations");
         String saveBtnName = _isDraftMode?"Save/Activate":"Save";
-        
+
         saveAssign = new TextButton(saveBtnName, new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
@@ -249,7 +249,7 @@ public class EditAssignmentDialog {
             new ToolTip(html, new ToolTipConfig("Individualized problems might be different for each student"));
             window.getButtonBar().add(html);
         }
-        
+
 
         if(_isDraftMode) {
             window.addButton(saveDraftMode);
@@ -259,14 +259,14 @@ public class EditAssignmentDialog {
         if(!_isDraftMode) {
             saveDraftMode.setEnabled(false);
         }
-        
+
         window.addCloseButton();
 
         window.setWidget(mainBorderPanel);
 
         window.show();
     }
-    
+
     private boolean isDraftMode() {
         return _isDraftMode;
     }
@@ -277,12 +277,12 @@ public class EditAssignmentDialog {
             CmMessageBox.showAlert("To activate this assignment, click the Save/Activate button");
             return false;
         }
-        
+
         if(statusTo.equals("Draft")) {
             CmMessageBox.showAlert("You cannot change back to draft mode.");
             return false;
         }
-        
+
         if (statusTo.equals("Open")) {
             // only allow change if
             // unless date is today or later.
@@ -298,7 +298,7 @@ public class EditAssignmentDialog {
     }
 
     protected void checkChangeDraftMode() {
-        
+
         new RetryAction<AssignmentStatus>() {
             @Override
             public void attempt() {
@@ -338,12 +338,12 @@ public class EditAssignmentDialog {
 
         LabelProvider<AssignmentStatusDto> statusLabel();
     }
-    
+
     public interface SubmitOptionsProperties extends PropertyAccess<String> {
-        @Path("option") 
+        @Path("option")
         ModelKeyProvider<SubmitOptions> key();
 
-        LabelProvider<SubmitOptions> option(); 
+        LabelProvider<SubmitOptions> option();
     }
 
     private ComboBox<AssignmentStatusDto> createAssignmentStatusCombo() {
@@ -368,20 +368,20 @@ public class EditAssignmentDialog {
 
         return combo;
     }
-    
+
     /** Save the assignment and return if
      *  the save is actually happening.
-     *  
+     *
      * @param asDraft
      * @return
      */
     private boolean saveAssignment(boolean asDraft) {
-        
+
         if(_comments.getValue() == null) {
             CmMessageBox.showAlert("Not Saved", "You must enter a comment before saving.");
             return false;
         }
-        
+
         _assignment.setAssignmentName(_assignmentName.getValue());
         _assignment.setDueDate(_dueDate.getValue());
         _assignment.setComments(_comments.getValue());
@@ -422,17 +422,17 @@ public class EditAssignmentDialog {
 
                 _assignmentDesigner.setIsModified(false);
                 Log.debug("Assignment Saved", "Assignment (" + _assignment.getAssignKey() + ") saved successfully");
-                
+
                 CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
             }
         }.register();
-        
-        
+
+
         return true;
 
     }
-    
-    
+
+
     private boolean thereAreWbProbelms() {
         for(ProblemDto pd: _assignmentDesigner.getAssignmentPids()) {
             if(pd.getProblemType() == ProblemType.WHITEBOARD) {
@@ -442,14 +442,14 @@ public class EditAssignmentDialog {
         return false;
     }
 
-    
+
     static public void startTest() {
         Assignment ass = new Assignment();
         ass.setAdminId(2);
-        ass.setAssignKey(7230);
+        ass.setAssignKey(9257);
         ass.setStatus("Open");
         new AssignmentStatusDialog(ass);
-        
+
         new EditAssignmentDialog(ass);
     }
 }
@@ -461,7 +461,7 @@ class SubmitOptions {
     public SubmitOptions(String option) {
         this.option = option;
     }
-    
+
     public String getOption() {
         return option;
     }

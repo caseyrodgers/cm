@@ -91,13 +91,13 @@
 	</repositories>
 
 	<dependencies>
-
-
+<!--
 		<dependency>
 			<groupId>com.cedarsoftware</groupId>
 			<artifactId>json-io</artifactId>
 			<version>2.7.1</version>
 		</dependency>
+-->
 	
 		<dependency>
 			<groupId>com.googlecode.mgwt</groupId>
@@ -771,7 +771,7 @@
 				<version>2.7.0</version>
 
 				<configuration>
-					<extraJvmArgs>-Xss1m -Xms1024m -Xmx1024m -Dgwt.logLevel=DEBUG</extraJvmArgs>
+					<extraJvmArgs>-Xss1m -Xms1024m -Xmx1024m -Dgwt.logLevel=ERROR</extraJvmArgs>
 					<gwtHome>${gwtHome}</gwtHome>
 					<inplace>true</inplace>
 					<disableCastChecking>true</disableCastChecking>
@@ -779,7 +779,7 @@
 					<compileReport>false</compileReport>
 					<outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
 					<logLevel>ERROR</logLevel>
-					<style>PRETTY</style>
+					<style>OBF</style>
 					<modules>
 						<module>hotmath.gwt.cm.CatchupMath</module>
 						<module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
@@ -790,7 +790,7 @@
                                                 <module>hotmath.gwt.assignment_print.AssignmentPrint</module>
 						<module>hotmath.gwt.cm_search.CatchupMathSearch</module>
 						<!-- <module>hotmath.gwt.cm_tutor.CmTutor</module> <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module> 
-							<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
+						<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
 					</modules>
 					<hostedWebapp>
 						${project.build.directory}/${project.build.finalName}
