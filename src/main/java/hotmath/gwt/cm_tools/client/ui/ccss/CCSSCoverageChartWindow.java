@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
 import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.util.GwtTester;
+import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -31,6 +33,7 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
@@ -54,7 +57,7 @@ public class CCSSCoverageChartWindow extends GWindow {
     int _uid;
     boolean _isGroup;
     CCSSCoverageBarChart _barChart;
-    BorderLayoutContainer container;
+    SimpleContainer container = new SimpleContainer();
 
     TabPanel _tabPanel;
     CheckBox _onlyActiveCheckBox;
@@ -71,10 +74,6 @@ public class CCSSCoverageChartWindow extends GWindow {
         setHeadingText("CCSS Charts" + ((name!=null)?" for " + name:""));
         setWidth(600);
         setHeight(600);
-
-        container = new BorderLayoutContainer();
-        BorderLayoutData blData = new BorderLayoutData();
-        container.setLayoutData(blData);
 
         getHeader().addTool(new TextButton("Refresh", new SelectHandler() {
             @Override
@@ -117,7 +116,7 @@ public class CCSSCoverageChartWindow extends GWindow {
 			}
         	
         });
-        container.setCenterWidget(_tabPanel);
+        container.setWidget(_tabPanel);
     }
 
     private void reportButton() {
@@ -158,6 +157,9 @@ public class CCSSCoverageChartWindow extends GWindow {
                     addCharts(allData);
                 else
                 	showNoData();
+                
+                
+                forceLayout();
                 setVisible(true);
             }
             
@@ -238,5 +240,14 @@ public class CCSSCoverageChartWindow extends GWindow {
                 }
             }
         }});
+    }
+
+    public static void startTest() {
+        new GwtTester(new TestWidget() {
+            @Override
+            public void runTest() {
+                new CCSSCoverageChartWindow(2, 678539, false, "test");
+            }
+        });
     }
 }

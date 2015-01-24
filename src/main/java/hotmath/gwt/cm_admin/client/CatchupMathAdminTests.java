@@ -22,6 +22,7 @@ import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
 import hotmath.gwt.cm_admin.client.ui.list.ListCustomLesson;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_tools.client.CatchupMathSharedTests;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageChartWindow;
 
 
 
@@ -40,7 +41,10 @@ public class CatchupMathAdminTests extends CatchupMathSharedTests {
              * 
              */
             String test =  CmCore.getQueryParameterValue("test");
-            if(test.equals("ManageGroupsWindow")) {
+            if(test.equals("CCSSCoverageChartWindow")) {
+                CCSSCoverageChartWindow.startTest();
+            }
+            else if(test.equals("ManageGroupsWindow")) {
                 ManageGroupsWindow.startTest();
             }
             else if(test.equals("CustomProgramDialog")) {

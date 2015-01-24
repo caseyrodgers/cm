@@ -59,28 +59,13 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         CmBusyManager.setViewPort(mainPort);
 
 
-        
+        /** 
         if(CatchupMathAdminTests.runTest()) {
             CmBusyManager.setBusy(false);
             return;
         }
+        */
         
-
-//        if(launchSub != null) {
-//            if(launchSub.startsWith("student_details")) {
-//                Log.info("Launching tool Student Details");
-//                int studentUid = Integer.parseInt(launchSub.split(":")[1]);
-//                launchOnlyStudentDetails(studentUid);
-//                return;
-//            }
-//            else if(launchSub.startsWith("student_registration")) {
-//                Log.info("Launching tool Student Registration");
-//                int studentUid = Integer.parseInt(launchSub.split(":")[1]);
-//                launchOnlyStudentRegistration(studentUid);
-//                return;
-//            }
-//        }
-
         BorderLayoutContainer borderMain = new BorderLayoutContainer();
 
         BorderLayoutData bdata = new BorderLayoutData(40);
