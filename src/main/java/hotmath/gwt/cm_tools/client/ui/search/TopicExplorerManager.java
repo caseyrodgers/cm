@@ -35,19 +35,17 @@ public class TopicExplorerManager extends GWindow {
     private TopicExplorerManager() {
         super(false);
         
-        
-        
-        
-        
         setPixelSize(800, 600);
         setHeadingText("Search");
         setMaximizable(true);
         //setMinimizable(true);;
         // setCollapsible(true);
-        
+
         setModal(true);
         
-        
+        setAutoHide(true);
+        setBlinkModal(false);
+
         searchContentPanel.addTool(new TextButton("Close Search", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
