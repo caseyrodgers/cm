@@ -38,8 +38,8 @@ public class SearchActivity implements SearchView.Presenter {
     @Override
     public void doSearch(String search, final CallBack callBack) {
         
-        if(search == null || search.length() < 3) {
-            PopupMessageBox.showMessage("Enter a search prase of at least three letters.");
+        if(search == null || search.length() < 2) {
+            PopupMessageBox.showMessage("Enter a search phrase of at least two letters.");
             return;
         }
         

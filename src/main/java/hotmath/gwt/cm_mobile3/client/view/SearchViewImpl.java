@@ -108,7 +108,7 @@ public class SearchViewImpl extends AbstractPagePanel implements SearchView {
         listItems.clear();
         
         if(topics.size() == 0) {
-            listItems.add(new GenericTextTag<String>("h1", "No lessons found."));
+            listItems.add(new GenericTextTag<String>("h1", "Search term not found, try again."));
         }
         else {
             for (TopicMatch topicMatch : topics) {
