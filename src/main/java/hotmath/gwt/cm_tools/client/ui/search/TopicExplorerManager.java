@@ -43,7 +43,7 @@ public class TopicExplorerManager extends GWindow {
 
         setModal(true);
         
-        setAutoHide(true);
+        setAutoHide(false);
         setBlinkModal(false);
 
         searchContentPanel.addTool(new TextButton("Close Search", new SelectHandler() {
