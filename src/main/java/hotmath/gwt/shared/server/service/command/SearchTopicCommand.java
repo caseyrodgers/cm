@@ -149,9 +149,9 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
             return search;
         }
         
-        String strRet=null;
+        String strRet="";
         for(String w: words) {
-            if(strRet != null) {
+            if(strRet.length() > 0) {
                 strRet += " OR ";
             }
             strRet += w;
