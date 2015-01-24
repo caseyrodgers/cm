@@ -106,19 +106,25 @@ public class SearchViewImpl extends AbstractPagePanel implements SearchView {
 
     private void showResults(CmList<TopicMatch> topics) {
         listItems.clear();
-        for (TopicMatch topicMatch : topics) {
-
-            Topic topic = topicMatch.getTopic();
-            GenericTextTag<String> tt = new MyGenericTextTag(topic);
-            tt.addStyleName("group");
-            tt.addHandler(new TouchClickHandler<String>() {
-                @Override
-                public void touchClick(TouchClickEvent<String> event) {
-                    presenter.loadTopic( ((MyGenericTextTag)event.getSource()).getTopic().getFile());
-                }
-            });
-
-            listItems.add(tt);
+        
+        if(topics.size() == 0) {
+            listItems.add(new GenericTextTag<String>("h1", "No lessons found."));
+        }
+        else {
+            for (TopicMatch topicMatch : topics) {
+    
+                Topic topic = topicMatch.getTopic();
+                GenericTextTag<String> tt = new MyGenericTextTag(topic);
+                tt.addStyleName("group");
+                tt.addHandler(new TouchClickHandler<String>() {
+                    @Override
+                    public void touchClick(TouchClickEvent<String> event) {
+                        presenter.loadTopic( ((MyGenericTextTag)event.getSource()).getTopic().getFile());
+                    }
+                });
+    
+                listItems.add(tt);
+            }
         }
     }
 
