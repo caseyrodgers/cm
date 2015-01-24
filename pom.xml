@@ -788,7 +788,7 @@
 						<module>hotmath.gwt.cm_mobile3.CatchupMathMobile3</module>
 						<module>hotmath.gwt.tutor_viewer.TutorViewer</module>
                                                 <module>hotmath.gwt.assignment_print.AssignmentPrint</module>
-						<module>hotmath.gwt.cm_search.CatchupMathSearch</module>
+						<module>hotmath.gwt.search.Search</module>
 						<!-- <module>hotmath.gwt.cm_tutor.CmTutor</module> <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module> 
 						<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
 					</modules>
