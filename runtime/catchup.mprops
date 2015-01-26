@@ -2928,7 +2928,7 @@ from   v_HA_USER_ACTIVE u
 where  u.uid in ( $$UID_LIST$$)
        and u.is_auto_create_template = 0
        and r.is_passing = 1
-       and c.test_def_id not in ( 15, 36 )
+       and c.test_def_id not in ( 15, 36, 57 )
        and r.run_time between ? and ?
 group  by u.uid
 order  by quizzes_passed desc,
@@ -2952,7 +2952,8 @@ from   v_HA_USER_ACTIVE u
                     join HA_TEST_RUN r
                       on r.test_id = t.test_id
              where  r.run_time between ? and ?
-             and t.user_id in ($$UID_LIST$$)
+               and  t.user_id in ($$UID_LIST$$)
+               and  t.test_def_id not in (15, 57)
              group  by user_id) qv
          on qv.user_id = u.uid
        join HA_TEST t
@@ -2963,7 +2964,7 @@ from   v_HA_USER_ACTIVE u
          on r.test_id = t.test_id
 where  u.uid in ( $$UID_LIST$$ )
        and u.is_auto_create_template = 0
-       and c.test_def_id not in ( 15, 36 )
+       and c.test_def_id not in ( 15, 36, 57 )
        and r.run_time between ? and ?
 group  by u.uid
 order  by avg_quiz_score desc,
@@ -2981,6 +2982,7 @@ JOIN   HA_TEST t
  ON    t.user_id = u.uid
  AND   t.user_prog_id = u.user_prog_id
  AND   t.test_segment = u.active_segment
+ AND   t.test_def_id not in (15, 57)
 JOIN   HA_TEST_RUN r
  ON    r.test_id = t.test_id
  AND   r.is_passing = 0
