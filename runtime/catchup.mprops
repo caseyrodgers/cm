@@ -2000,11 +2000,13 @@ WHERE ht.test_id = ?
 select count(*)
 from (
   select tr.run_id
-  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p, HA_TEST_DEF td
   where p.id in (XXX)
     and t.user_prog_id = p.id
     and tr.test_id = t.test_id
     and p.custom_program_id is null
+    and td.test_def_id = t.test_def_id
+    and td.test_def_id not in (15,57)
 ) c
 
 
@@ -2014,13 +2016,15 @@ from (
 select count(*)
 from (
   select tr.run_id
-  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p, HA_TEST_DEF td
   where p.id in (XXX)
     and t.user_prog_id = p.id
     and tr.test_id = t.test_id
     and tr.run_time >= ?
     and tr.run_time <= ?
     and p.custom_program_id is null
+    and td.test_def_id = t.test_def_id
+    and td.test_def_id not in (15,57)
 ) c
 
 
@@ -2030,12 +2034,14 @@ from (
 select count(*)
 from (
   select tr.run_id
-  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p, HA_TEST_DEF td
   where p.id in (XXX)
     and t.user_prog_id = p.id
     and tr.test_id = t.test_id
     and tr.is_passing > 0
     and p.custom_program_id is null
+    and td.test_def_id = t.test_def_id
+    and td.test_def_id not in (15,57)
 ) c
 
 ####
@@ -2044,7 +2050,7 @@ from (
 select count(*)
 from (
   select tr.run_id
-  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p, HA_TEST_DEF td
   where p.id in (XXX)
     and t.user_prog_id = p.id
     and tr.test_id = t.test_id
@@ -2052,6 +2058,8 @@ from (
     and tr.run_time >= ?
     and tr.run_time <= ?
     and p.custom_program_id is null
+    and td.test_def_id = t.test_def_id
+    and td.test_def_id not in (15,57)
 ) c
 
 ####
@@ -2060,12 +2068,14 @@ from (
 select sum(c.answered_correct) as answered_correct, sum(c.answered_incorrect) as answered_incorrect, sum(c.not_answered) as not_answered
 from (
   select tr.answered_correct, tr.answered_incorrect, tr.not_answered
-  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p, HA_TEST_DEF td
   where p.id in (XXX)
     and t.user_prog_id = p.id
     and tr.test_id = t.test_id
     and tr.is_passing > 0
     and p.custom_program_id is null
+    and td.test_def_id = t.test_def_id
+    and td.test_def_id not in (15,57)
 ) c
 
 
@@ -2075,7 +2085,7 @@ from (
 select sum(c.answered_correct) as answered_correct, sum(c.answered_incorrect) as answered_incorrect, sum(c.not_answered) as not_answered
 from (
   select tr.answered_correct, tr.answered_incorrect, tr.not_answered
-  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+  from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p, HA_TEST_DEF td
   where p.id in (XXX)
     and t.user_prog_id = p.id
     and tr.test_id = t.test_id
@@ -2083,6 +2093,8 @@ from (
     and tr.run_time >= ?
     and tr.run_time <= ?
     and p.custom_program_id is null
+    and td.test_def_id = t.test_def_id
+    and td.test_def_id not in (15,57)
 ) c
 
 ####
