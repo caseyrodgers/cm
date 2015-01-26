@@ -3,6 +3,7 @@ package hotmath.gwt.cm.client;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.util.ShowStudentHowToVideo;
 import hotmath.gwt.cm_tools.client.util.VideoPlayerWindow;
 
 import com.google.gwt.core.client.GWT;
@@ -78,10 +79,6 @@ public class WelcomePanel extends CenterLayoutContainer {
         add(main);
     }
 
-    protected void showStudentHowToVideo() {
-    	new VideoPlayerWindow("How to use Catchup Math", "assets/teacher_videos/student-how-to/student-how-to-desktop.mp4");
-	}
-
     protected Hyperlink getHyperlink() {
         Hyperlink hl = new Hyperlink();
         hl.setText("Video: How to use Catchup Math");
@@ -89,7 +86,7 @@ public class WelcomePanel extends CenterLayoutContainer {
         ClickHandler handler = new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				showStudentHowToVideo();
+				new ShowStudentHowToVideo();
 			}
         };
 		hl.addHandler(handler, ClickEvent.getType());

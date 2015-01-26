@@ -23,7 +23,9 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CalculatorWindow;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.ShowStudentHowToVideo;
 import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
+import hotmath.gwt.cm_tools.client.util.VideoPlayerWindow;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -115,7 +117,7 @@ public class HelpWindow extends GWindow {
         TextButton howTo = new MyOptionButton("Using Catchup Math", "Video: How to use Catchup Math", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                new StudentHowToFlashWindow();
+                new ShowStudentHowToVideo();
             }
         });
         toolBar.add(howTo);
