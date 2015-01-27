@@ -2,6 +2,8 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.WelcomePanel;
 import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.CmGwtTestUi;
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
@@ -338,6 +340,9 @@ public class HelpWindow extends GWindow {
                         public void oncapture(RpcData result) {
                             CmBusyManager.setBusy(false);
                             CmMessageBox.showAlert("Transition test setup:  All lessons marked as complete, except the first one");
+                            
+                            
+                            CmShared.refreshPage();
                         }
                     }.register();
                 }
