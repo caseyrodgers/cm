@@ -10,7 +10,8 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
  */
 public class GetCatchupMathDebugAction implements Action<RpcData>{
     
-    public enum DebugAction{GET_NEXT}
+    public enum DebugAction{GET_NEXT, SETUP_TRANSISTION_TEST}
+    int runId;
 
     private DebugAction action;;
     
@@ -18,6 +19,15 @@ public class GetCatchupMathDebugAction implements Action<RpcData>{
     
     public GetCatchupMathDebugAction(DebugAction action) {
         this.action = action;
+    }
+
+    
+    public int getRunId() {
+        return runId;
+    }
+
+    public void setRunId(int runId) {
+        this.runId = runId;
     }
 
     public DebugAction getAction() {

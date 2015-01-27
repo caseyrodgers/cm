@@ -7,9 +7,13 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
+import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+
 
 /** A debugging message 
  * 
@@ -19,6 +23,41 @@ import java.sql.ResultSet;
 public class GetCatchupMathDebugCommand implements ActionHandler<GetCatchupMathDebugAction, RpcData> {
     @Override
     public RpcData execute(Connection conn, GetCatchupMathDebugAction action) throws Exception {
+        
+        switch(action.getAction()) {
+        case GET_NEXT:
+            doGetNext(conn, action);
+            
+        case SETUP_TRANSISTION_TEST:
+            setupTransitionTest(conn, action.getRunId());
+        }
+        
+        return new RpcData("status=OK");
+    }
+
+    private void setupTransitionTest(Connection conn,int runId) throws Exception {
+        PreparedStatement ps=null;
+        try {
+            String sql = 
+                    "update HA_TEST_RUN_LESSON " +
+                    "set date_completed = now() " +
+                    "where run_id = ? " +
+                    "and lesson_number > 0 ";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,  runId);
+            
+            int cnt=ps.executeUpdate();
+            if(cnt == 0) {
+                throw new Exception("No lessons in test_run marked as complete");
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,  ps,  null);
+        }
+        
+    }
+
+    private RpcData doGetNext(Connection conn, GetCatchupMathDebugAction action) throws Exception {
         RpcData data = new RpcData();
         RData rdata = getRData(conn);
         data.putData("rid", rdata.rid);

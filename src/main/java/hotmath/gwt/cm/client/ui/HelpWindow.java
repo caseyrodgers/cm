@@ -2,8 +2,11 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.WelcomePanel;
 import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc.client.rpc.GetCatchupMathDebugAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetCatchupMathDebugAction.DebugAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -11,7 +14,6 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
-import hotmath.gwt.cm_tools.client.search.LessonSearchWindow;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
@@ -24,20 +26,18 @@ import hotmath.gwt.cm_tools.client.ui.viewer.CalculatorWindow;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.ShowStudentHowToVideo;
-import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
-import hotmath.gwt.cm_tools.client.util.VideoPlayerWindow;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
-import hotmath.gwt.shared.client.util.CmLoggerWindow;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.FeedbackWindow;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Frame;
@@ -59,9 +59,21 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
+import com.sencha.gxt.widget.core.client.menu.Item;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 public class HelpWindow extends GWindow {
+
+    class MyMenuItem extends MenuItem {
+        public MyMenuItem(String name, String tooltip, SelectionHandler<Item> handler) {
+            super(name);
+            super.addSelectionHandler(handler);
+
+            setToolTip(tooltip);
+        }
+    }
 
     ComboBox<BackgroundModel> bgCombo;
 
@@ -69,19 +81,19 @@ public class HelpWindow extends GWindow {
 
         super(false);
         setPixelSize(490, 500);
-        
+
         FlowLayoutContainer flc = new FlowLayoutContainer();
 
         setModal(true);
         setResizable(false);
-        //  addStyleName("help-window");
+        // addStyleName("help-window");
         setHeadingText("Catchup Math Help Window, version: " + CatchupMathVersionInfo.getBuildVersion());
 
-//        if (CmMainPanel.__lastInstance != null) {
-//            CmMainPanel.__lastInstance.removeResource();
-//            PrescriptionCmGuiDefinition.showHelpPanel();
-//            CmMainPanel.__lastInstance.expandResourceButtons();
-//        }
+        // if (CmMainPanel.__lastInstance != null) {
+        // CmMainPanel.__lastInstance.removeResource();
+        // PrescriptionCmGuiDefinition.showHelpPanel();
+        // CmMainPanel.__lastInstance.expandResourceButtons();
+        // }
 
         // EventBus.getInstance().fireEvent(new
         // CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
@@ -111,15 +123,16 @@ public class HelpWindow extends GWindow {
         fs.setHeadingText("Using Catchup Math");
         FlowLayoutContainer flowContainer = new FlowLayoutContainer();
         flowContainer.add(messageArea);
-    
+
         ToolBar toolBar = new ToolBar();
-        
+
         TextButton howTo = new MyOptionButton("Using Catchup Math", "Video: How to use Catchup Math", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 new ShowStudentHowToVideo();
             }
         });
+
         toolBar.add(howTo);
 
         TextButton supportBtn = new MyOptionButton("Support", "Get support help", new SelectHandler() {
@@ -138,68 +151,75 @@ public class HelpWindow extends GWindow {
         });
         toolBar.add(btnFeedback);
 
-        
-    
-
         /** Only the owner of the account has access to history */
         if (!UserInfo.getInstance().isActiveUser())
             supportBtn.setEnabled(false);
 
-
         supportBtn.addStyleName("button");
         toolBar.add(supportBtn);
-	
-        
 
-        if(CmCore.isDebug() == true) {
-            
-            toolBar.add(new MyOptionButton("Reset Lesson", "Reset the problems for the current lesson.", new SelectHandler() {
-                @Override
-                public void onSelect(SelectEvent event) {
-                    new ResetLessonDialog(UserInfo.getInstance().getUid(), null);
+        if (CmCore.isDebug() == true) {
+
+            TextButton debugCombo = new TextButton("Debug");
+            Menu menu = new Menu();
+            debugCombo.setMenu(menu);
+
+            menu.add(new MyMenuItem("Connection Check", "Test server connectivity", new SelectionHandler<Item>() {
+                public void onSelection(SelectionEvent<Item> event) {
+                    new NetTestWindow(TestApplication.CM_STUDENT, UserInfo.getInstance().getUid()).runTests();
                 }
             }));
-            toolBar.add(new MyOptionButton("Reset Problem", "Reset the current problem.", new SelectHandler() {
+
+            menu.add(new MyMenuItem("Reset Lesson", "Reset the problems for the current lesson.",
+                    new SelectionHandler<Item>() {
+                        @Override
+                        public void onSelection(SelectionEvent<Item> event) {
+                            new ResetLessonDialog(UserInfo.getInstance().getUid(), null);
+                        }
+                    }));
+
+            menu.add(new MyMenuItem("Reset Problem", "Reset the current problem.", new SelectionHandler<Item>() {
                 @Override
-                public void onSelect(SelectEvent event) {
-                    if(CmMainPanel.getActiveInstance() != null) {
+                public void onSelection(SelectionEvent<Item> event) {
+                    if (CmMainPanel.getActiveInstance() != null) {
                         CmResourcePanel resource = CmMainPanel.getActiveInstance().getLastResource();
-                        if(resource instanceof ResourceViewerImplTutor2) {
-                            String pid = ((ResourceViewerImplTutor2)resource).getResourceItem().getFile();
+                        if (resource instanceof ResourceViewerImplTutor2) {
+                            String pid = ((ResourceViewerImplTutor2) resource).getResourceItem().getFile();
                             new ResetLessonDialog(UserInfo.getInstance().getUid(), pid);
                             return;
                         }
+                        else {
+                            CmMessageBox.showAlert("Not currently viewing a problem");
+                        }
                     }
-                    
-                    CmMessageBox.showAlert("Load the problem you want to reset.");
                 }
             }));
-            
-            TextButton btnComputerCheck = new MyOptionButton("Computer Check", "Verify your computer can run Catchup Math", new SelectHandler() {
-                @Override
-                public void onSelect(SelectEvent event) {
-                    new ComputerCheckWindow();
-                }
-            });
-            toolBar.add(btnComputerCheck);
 
-            TextButton btnSearch = new MyOptionButton("Lesson Search", "Search for a lesson", new SelectHandler() {
-                @Override
-                public void onSelect(SelectEvent event) {
-                    new LessonSearchWindow();
-                }
-            });
-            toolBar.add(btnSearch);
-            
+            menu.add(new MyMenuItem("Setup Transistion Test",
+                    "Setup this prescription for testing transition to next quiz", new SelectionHandler<Item>() {
+                        @Override
+                        public void onSelection(SelectionEvent<Item> event) {
+                            setupTransitionTest();
+                        }
+                    }));
+
+            menu.add(new MyMenuItem("Computer Check", "Verify your computer can run Catchup Math",
+                    new SelectionHandler<Item>() {
+                        public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<Item> event) {
+                            new ComputerCheckWindow();
+                        }
+                    }));
+
+            toolBar.add(debugCombo);
+
         }
-        
-        
+
         flowContainer.add(toolBar);
-        
+
         fs.setWidget(flowContainer);
 
         flc.add(fs);
-        
+
         if (CmCore.isDebug() == true) {
             FieldSet fsDebug = new FieldSet();
             fsDebug.setHeadingText("Debug Info");
@@ -218,113 +238,116 @@ public class HelpWindow extends GWindow {
 
         flc.add(fs);
 
-
         FieldSet fsAdditional = new FieldSet();
         FlowLayoutContainer additionalFlow = new FlowLayoutContainer();
         fsAdditional.setHeadingText("Additional Options and Configuration");
-        ToolBar  addtionalTb = new ToolBar();
+        ToolBar addtionalTb = new ToolBar();
 
         additionalFlow.add(addtionalTb);
         fsAdditional.setWidget(additionalFlow);
-        
+
         flc.add(fsAdditional);
 
         if (UserInfo.getInstance().isSingleUser() || CmCore.isDebug() == true) {
 
-            TextButton setupButton = new MyOptionButton("Setup Catchup Math","Modify your Catchup Math settings.", new SelectHandler() {
-                @Override
-                public void onSelect(SelectEvent event) {
-                    showStudentConfiguration();
-                }
-            });
-            addtionalTb.add(setupButton);
-
-            TextButton restartButton = new MyOptionButton("Restart", "Restart the current program.",new SelectHandler() {
-                @Override
-                public void onSelect(SelectEvent event) {
-                    final ConfirmMessageBox mb = new ConfirmMessageBox("Restart Program",
-                            "Are you sure you would like to restart your current program?");
-                    mb.addDialogHideHandler(new DialogHideHandler() {
+            TextButton setupButton = new MyOptionButton("Setup Catchup Math", "Modify your Catchup Math settings.",
+                    new SelectHandler() {
                         @Override
-                        public void onDialogHide(DialogHideEvent event) {
-                            if (event.getHideButton() == PredefinedButton.YES) {
-                                CmShared.resetProgram_Gwt(UserInfo.getInstance().getUid());
-                            }
+                        public void onSelect(SelectEvent event) {
+                            showStudentConfiguration();
                         }
                     });
-                    mb.setVisible(true);
-                }
-            });
+            addtionalTb.add(setupButton);
+
+            TextButton restartButton = new MyOptionButton("Restart", "Restart the current program.",
+                    new SelectHandler() {
+                        @Override
+                        public void onSelect(SelectEvent event) {
+                            final ConfirmMessageBox mb = new ConfirmMessageBox("Restart Program",
+                                    "Are you sure you would like to restart your current program?");
+                            mb.addDialogHideHandler(new DialogHideHandler() {
+                                @Override
+                                public void onDialogHide(DialogHideEvent event) {
+                                    if (event.getHideButton() == PredefinedButton.YES) {
+                                        CmShared.resetProgram_Gwt(UserInfo.getInstance().getUid());
+                                    }
+                                }
+                            });
+                            mb.setVisible(true);
+                        }
+                    });
             addtionalTb.add(restartButton);
         }
-        
-        TextButton studentDetailsBtn = new MyOptionButton("Student History", "View your history of quizzes, reviews and show work efforts.", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                showStudentHistory();
-            }
-        });
+
+        TextButton studentDetailsBtn = new MyOptionButton("Student History",
+                "View your history of quizzes, reviews and show work efforts.", new SelectHandler() {
+                    @Override
+                    public void onSelect(SelectEvent event) {
+                        showStudentHistory();
+                    }
+                });
         /** Do not allow Student History for demo user */
         if (UserInfo.getInstance().isDemoUser()) {
-        	studentDetailsBtn.setEnabled(false);
-        }
-        
-        /** There is a conflict between the Quiz panel and Quiz Results .. 
-         * they both cannot be active at the same time. 
-         */
-        if(false && CmMainPanel.getActiveInstance() != null && CmMainPanel.getActiveInstance().isResourceQuiz()) {
             studentDetailsBtn.setEnabled(false);
         }
-        
-        
+
+        /**
+         * There is a conflict between the Quiz panel and Quiz Results .. they
+         * both cannot be active at the same time.
+         */
+        if (false && CmMainPanel.getActiveInstance() != null && CmMainPanel.getActiveInstance().isResourceQuiz()) {
+            studentDetailsBtn.setEnabled(false);
+        }
+
         addtionalTb.add(studentDetailsBtn);
-        
+
         TextButton calculator = new TextButton("Calculator", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 CalculatorWindow.getInstance().setVisible(true);
             }
         });
-        if(UserInfo.getInstance().isDisableCalcAlways()) {
-        	calculator.setEnabled(false);
+        if (UserInfo.getInstance().isDisableCalcAlways()) {
+            calculator.setEnabled(false);
         }
         addtionalTb.add(calculator);
-        
-
-        
-        if (CmCore.isDebug() == true) {
-        	addtionalTb.add(new TextButton("Connection Check", new SelectHandler() {
-                @Override
-                public void onSelect(SelectEvent event) {
-                    GWT.runAsync(new CmRunAsyncCallback() {
-                        @Override
-                        public void onSuccess() {
-                            new NetTestWindow(TestApplication.CM_STUDENT, UserInfo.getInstance().getUid()).runTests();
-                        }
-                    });
-                }
-            }));
-        	
-            addtionalTb.add(new TextButton("Debug Log", new SelectHandler() {
-                @Override
-                public void onSelect(SelectEvent event) {
-                    GWT.runAsync(new CmRunAsyncCallback() {
-                        @Override
-                        public void onSuccess() {
-                            CmLoggerWindow.getInstance().setVisible(true);
-                        }
-                    });
-                }
-            }));
-
-        }
 
         setWidget(flc);
         setVisible(true);
     }
 
+    protected void setupTransitionTest() {
+        
+        CmMessageBox.confirm("Setup Transition Test",  "Are you sure you want to setup a transition test?",new ConfirmCallback() {
+            
+            @Override
+            public void confirmed(boolean yesNo) {
+                if(yesNo) {
+                    new RetryAction<RpcData>() {
+                        @Override
+                        public void attempt() {
+                            CmBusyManager.setBusy(true);
+                            CmServiceAsync s = CmRpcCore.getCmService();
+                            GetCatchupMathDebugAction action = new GetCatchupMathDebugAction(DebugAction.SETUP_TRANSISTION_TEST);
+                            action.setRunId(UserInfo.getInstance().getRunId());
+
+                            setAction(action);
+                            s.execute(action, this);
+                        }
+
+                        public void oncapture(RpcData result) {
+                            CmBusyManager.setBusy(false);
+                            CmMessageBox.showAlert("Transition test setup:  All lessons marked as complete, except the first one");
+                        }
+                    }.register();
+                }
+            }
+        });
+    }
+
     public interface BackgroundProperties extends PropertyAccess<String> {
         ModelKeyProvider<BackgroundModel> style();
+
         LabelProvider<BackgroundModel> type();
     }
 
@@ -376,7 +399,6 @@ public class HelpWindow extends GWindow {
                 }.register();
             };
         });
-        
 
         return combo;
     }
@@ -515,7 +537,7 @@ public class HelpWindow extends GWindow {
     }
 }
 
-class BackgroundModel  {
+class BackgroundModel {
 
     private String type;
     private String style;
@@ -540,9 +562,7 @@ class BackgroundModel  {
     public void setStyle(String style) {
         this.style = style;
     }
-    
 }
-
 
 class ComputerCheckWindow extends GWindow {
     public ComputerCheckWindow() {
