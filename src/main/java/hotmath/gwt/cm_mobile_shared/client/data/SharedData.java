@@ -71,13 +71,14 @@ public class SharedData {
     static public void setFlowAction(CmProgramFlowAction flowActionIn) {
         flowAction = flowActionIn;
         
-//        /** transfer real into static 
-//         * 
-//         */
-//        if(flowActionIn.getQuizResult() != null) {
-//            getMobileUser().setTestSegment(flowActionIn.getQuizResult().getQuizSegment());
-//            getMobileUser().setTestId(flowActionIn.getQuizResult().getTestId());
-//        }
+        /** transfer real into static 
+         * 
+         */
+        if(flowActionIn.getQuizResult() != null) {
+            getMobileUser().setTestSegment(flowActionIn.getQuizResult().getQuizSegment());
+            getMobileUser().setTestId(flowActionIn.getQuizResult().getTestId());
+            getMobileUser().getUserInfo().setProgramName(flowActionIn.getQuizResult().getTitle());
+        }
         
     }
 
