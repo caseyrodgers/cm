@@ -115,8 +115,7 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
             @Override
             public void loadNextSegment() {
                 eb.fireEvent(new SystemIsBusyEvent(true));
-                GetCmProgramFlowAction action = new GetCmProgramFlowAction(SharedData.getUserInfo().getUid(),
-                        FlowType.NEXT);
+                GetCmProgramFlowAction action = new GetCmProgramFlowAction(SharedData.getUserInfo().getUid(),FlowType.NEXT);
                 CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmProgramFlowAction>() {
                     @Override
                     public void onSuccess(CmProgramFlowAction result) {

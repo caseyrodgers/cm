@@ -3,6 +3,8 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.rpc.GetCatchupMathDebugAction;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
+import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -49,6 +51,31 @@ public class GetCatchupMathDebugCommand implements ActionHandler<GetCatchupMathD
             int cnt=ps.executeUpdate();
             if(cnt == 0) {
                 throw new Exception("No lessons in test_run marked as complete");
+            }
+            
+            
+            
+            sql = 
+                    "select p.pid " +
+                    "from HA_TEST_RUN_LESSON_PID p " +
+                    " JOIN HA_TEST_RUN_LESSON l on l.id = p.lid " +
+                    " where l.lesson_number = 0 " + 
+                    " and l.run_id = ? ";
+
+            ps.close();
+            
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,  runId);
+            
+            ResultSet rs = ps.executeQuery();
+            
+            // skip first
+            rs.first();
+            
+            while(rs.next()) {
+                String pid = rs.getString(1);
+                SetInmhItemAsViewedAction action = new SetInmhItemAsViewedAction(runId, CmResourceType.PRACTICE, pid, 0);
+                new SetInmhItemAsViewedCommand().execute(conn,  action);
             }
         }
         finally {
