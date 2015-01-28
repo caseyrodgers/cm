@@ -1,8 +1,8 @@
 package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.util.ShowStudentHowToVideo;
 import hotmath.gwt.cm_tools.client.util.VideoPlayerWindow;
 

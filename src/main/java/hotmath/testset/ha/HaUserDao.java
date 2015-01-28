@@ -228,7 +228,7 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
              * 
              */
             destination.setPlace(CmPlace.END_OF_PROGRAM);
-        } else if (userInfo.getRunId() > 0 && hasUserCompletedTestRun(conn, userInfo.getRunId())) {
+        } else if (false) { // do not auto advance to next segment ... userInfo.getRunId() > 0 && hasUserCompletedTestRun(conn, userInfo.getRunId())) {
 
             /**
              * did the user pass this segment, if not then they must repeat it

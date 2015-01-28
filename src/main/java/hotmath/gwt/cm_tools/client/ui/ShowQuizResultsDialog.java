@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.viewer.QuizResultsPdfPanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplResults;
 import hotmath.gwt.shared.client.eventbus.CmEvent;

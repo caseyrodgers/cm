@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.search;
 
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
@@ -8,7 +9,6 @@ import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchType;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;

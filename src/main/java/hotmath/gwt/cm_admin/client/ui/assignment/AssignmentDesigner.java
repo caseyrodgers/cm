@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tutor.client.event.TutorPanelExclusiveEvent;
 import hotmath.gwt.cm_tutor.client.event.TutorPanelExclusiveHandler;
 import hotmath.gwt.shared.client.CmShared;

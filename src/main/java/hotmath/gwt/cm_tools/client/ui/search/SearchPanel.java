@@ -1,13 +1,13 @@
 package hotmath.gwt.cm_tools.client.ui.search;
 
 import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchBundle;

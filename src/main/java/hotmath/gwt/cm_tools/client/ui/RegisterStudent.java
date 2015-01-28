@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -12,7 +13,6 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.AdvancedOptionsModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;

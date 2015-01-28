@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 

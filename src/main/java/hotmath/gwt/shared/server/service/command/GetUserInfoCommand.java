@@ -151,9 +151,18 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setCustomProgram(cmProgram.getUserProgram().isCustom());
             
             
+            
             userInfo.setUserAccountType(accountType);
             userInfo.setPassPercentRequired(userProgram.getConfig().getPassPercent());
             userInfo.setProgramSegmentCount(programSegmentCount);
+            
+            int currTestPassPercent = 0;
+            if(userInfo.getRunId() > 0) {
+                HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(userInfo.getRunId());
+                currTestPassPercent = GetPrescriptionCommand.getTestPassPercent(testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect() + testRun.getNotAnswered(),testRun.getAnsweredCorrect());
+            }
+            userInfo.setCorrectPercent(currTestPassPercent);
+            
             userInfo.setViewCount(sdao.getTotalInmHViewCount(conn,action.getUserId()));
             
             userInfo.setTutorInputWidgetStats(HaUserDao.getInstance().getUserInfoTutorStats(sm.getUid(), null, null));

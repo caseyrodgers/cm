@@ -2,10 +2,12 @@ package hotmath.gwt.search.client;
 
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.event.CmLogoutEvent;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
+import hotmath.gwt.cm_core.client.util.CmBusyManager.BusyHandler;
+import hotmath.gwt.cm_core.client.util.CmBusyManager.BusyState;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorerSearchPanel;
@@ -59,7 +61,18 @@ public class Search implements EntryPoint {
         };
         _mainPort.setWidget(_mainPortWrapper);
 
-        CmBusyManager.setViewPort(_mainPort);
+        CmBusyManager.setBusyHandler(new BusyHandler() {
+            
+            @Override
+            public void showMask(BusyState state) {
+                _mainPort.mask();
+            }
+            
+            @Override
+            public void hideMask() {
+                _mainPort.unmask();
+            }
+        });
 
         _mainContainer = new SimpleContainer();
         _mainContainer.setStyleName("main-container");

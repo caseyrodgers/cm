@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_admin.client.custom_content.problem.CpEditingArea.Callback;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.model.SolutionMetaStep;
@@ -9,7 +10,6 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemAction.SaveType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.shared.client.rpc.RetryAction;

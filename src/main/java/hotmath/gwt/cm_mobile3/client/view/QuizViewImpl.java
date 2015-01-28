@@ -149,8 +149,8 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
 
     @Override
     public String getViewTitle() {
-        int segNum = SharedData.getUserInfo().getTestSegment();
-        int segCount = SharedData.getUserInfo().getProgramSegmentCount();
+        int segNum = SharedData.getFlowAction().getQuizResult().getQuizSegment();
+        int segCount = SharedData.getFlowAction().getQuizResult().getQuizSegmentCount();
         String programName = SharedData.getUserInfo().getTestName();
         String user = SharedData.getUserInfo().getUserName();
         String section = "";

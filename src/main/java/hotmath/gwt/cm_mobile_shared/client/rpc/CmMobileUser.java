@@ -31,17 +31,27 @@ public class CmMobileUser implements Response {
     
     
     AssignmentUserInfo assignmentInfo;
+    private boolean passedTest;
     
     public CmMobileUser() {}
     
-    public CmMobileUser(int uid, int testId, int testSegment, int testSlot, int runId, AssignmentUserInfo assignmentInfo) {
+    public CmMobileUser(int uid, int testId, int testSegment, int testSlot,  boolean passedTest, int runId, AssignmentUserInfo assignmentInfo) {
         this.userId = uid;
         this.testId = testId;
         this.testSegment = testSegment;
         this.testSlot = testSlot;
+        this.passedTest = passedTest;
         this.assignmentInfo = assignmentInfo;
     }
     
+    public boolean isPassedTest() {
+        return passedTest;
+    }
+
+    public void setPassedTest(boolean passedTest) {
+        this.passedTest = passedTest;
+    }
+
     public UserInfo getUserInfo() {
         return baseLoginResponse.getUserInfo();
     }

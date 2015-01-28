@@ -2,12 +2,12 @@ package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;

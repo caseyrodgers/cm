@@ -6,13 +6,13 @@ import hotmath.gwt.cm_admin.client.ui.list.ListCustomProgram.CallbackOnDoubleCli
 import hotmath.gwt.cm_admin.client.ui.list.ListCustomQuiz;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;

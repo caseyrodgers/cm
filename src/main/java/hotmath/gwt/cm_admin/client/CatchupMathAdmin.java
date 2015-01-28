@@ -6,9 +6,11 @@ import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
 import hotmath.gwt.cm_core.client.UserInfoBase;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
+import hotmath.gwt.cm_core.client.util.CmBusyManager.BusyHandler;
+import hotmath.gwt.cm_core.client.util.CmBusyManager.BusyState;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
@@ -56,8 +58,18 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
                 CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
             }
         };
-        CmBusyManager.setViewPort(mainPort);
-
+        CmBusyManager.setBusyHandler(new BusyHandler() {
+            
+            @Override
+            public void showMask(BusyState state) {
+                mainPort.mask();
+            }
+            
+            @Override
+            public void hideMask() {
+                mainPort.unmask();
+            }
+        });
 
         /** 
         if(CatchupMathAdminTests.runTest()) {

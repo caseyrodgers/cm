@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.custom_content.problem;
 
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.model.CustomProblemModel;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
@@ -9,7 +10,6 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveCustomProblemLinkedLessonAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.rpc.RetryAction;

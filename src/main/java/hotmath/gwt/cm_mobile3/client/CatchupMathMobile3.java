@@ -3,6 +3,11 @@ package hotmath.gwt.cm_mobile3.client;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.award.CmAwardPanel;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
+import hotmath.gwt.cm_core.client.flow.CmProgramFlowClientManager;
+import hotmath.gwt.cm_core.client.flow.CmProgramFlowClientManager.CmProgramFlowClientManagerCallback;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
+import hotmath.gwt.cm_core.client.util.CmBusyManager.BusyHandler;
+import hotmath.gwt.cm_core.client.util.CmBusyManager.BusyState;
 import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.cm_mobile3.client.activity.SearchActivity;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
@@ -47,6 +52,7 @@ import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoV
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import java.util.HashMap;
@@ -86,6 +92,19 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
     private boolean __isLoggingOut;
 
     public CatchupMathMobile3() {
+
+        CmBusyManager.setBusyHandler(new BusyHandler() {
+
+            @Override
+            public void showMask(BusyState state) {
+                // empty
+            }
+
+            @Override
+            public void hideMask() {
+                // empty
+            }
+        });
         /*
          * Install an UncaughtExceptionHandler which will produce
          * <code>FATAL</code> log messages
@@ -96,7 +115,8 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
          * register the main Flow listener that handle the transitions from one
          * CM program flow to the next.
          */
-        __clientFactory.getEventBus().addHandler(HandleNextFlowEvent.TYPE, new HandleNextFlowEventHandlerImpl(__clientFactory.getEventBus()));
+        __clientFactory.getEventBus().addHandler(HandleNextFlowEvent.TYPE,
+                new HandleNextFlowEventHandlerImpl(__clientFactory.getEventBus()));
     }
 
     /**
@@ -117,9 +137,10 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
     LoadingDialog loadingDialog = null;
 
-    int _uid=0;
+    int _uid = 0;
+
     private void onModuleLoadAux() {
-        
+
         long startTimeMillis = 0;
         /*
          * Use a <code>if (Log.isDebugEnabled()) {...}</code> guard to ensure
@@ -194,8 +215,35 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             }
 
             if (!loadFirstPanelMaybe(_uid)) {
-                History.fireCurrentHistoryState();
-            }        
+                // History.fireCurrentHistoryState();
+                SharedData.makeSureUserHasBeenRead(new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser()
+                                .getFlowAction()));
+                    }
+                });
+
+            }
+
+            CmProgramFlowClientManager.setFlowCallback(new CmProgramFlowClientManagerCallback() {
+                @Override
+                public void programFlow(CmProgramFlowAction flowResponse) {
+                    SharedData.setFlowAction(flowResponse);
+                    __clientFactory.getEventBus().fireEvent(new HandleNextFlowEvent(flowResponse));
+                }
+
+                @Override
+                public void flowError(Throwable caught) {
+                    PopupMessageBox.showError("There was a problem advancing your program: " + caught.getMessage());
+                }
+
+                @Override
+                public int getUid() {
+                    return SharedData.getMobileUser().getUserId();
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
             Window.alert("Error during startup: " + e.getMessage());
@@ -211,11 +259,10 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
             }
         });
-        
-        
-        
-        /** add a low level down handler to catch any mouse down event
-         *  
+
+        /**
+         * add a low level down handler to catch any mouse down event
+         * 
          */
         _rootPanel.addDomHandler(new MouseDownHandler() {
             @Override
@@ -224,28 +271,27 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             }
         }, MouseDownEvent.getType());
         CmIdleTimeWatcher.getInstance();
-        
-//        Window.addWindowClosingHandler(new Window.ClosingHandler() {
-//            public void onWindowClosing(Window.ClosingEvent closingEvent) {
-//                if(!__isLoggingOut) {
-//                    closingEvent.setMessage("You should logout to make sure any changes are saved!");
-//                }
-//            }
-//          });
+
+        // Window.addWindowClosingHandler(new Window.ClosingHandler() {
+        // public void onWindowClosing(Window.ClosingEvent closingEvent) {
+        // if(!__isLoggingOut) {
+        // closingEvent.setMessage("You should logout to make sure any changes are saved!");
+        // }
+        // }
+        // });
         Log.info("Catchup Math Mobile Initialized");
     }
-    
-    
+
     private boolean loadFirstPanelMaybe(int uid) {
-        boolean handled=false;
+        boolean handled = false;
         try {
             String type = CmCore.getQueryParameter("type");
-            if(type == null) {
+            if (type == null) {
                 type = "";
             }
-            
+
             if (type.equals("AUTO_CREATE")) {
-                
+
                 Log.info("Showing Auto Create login");
                 /** show auto create view */
                 AutoCreateActivity activity = new AutoCreateActivity(uid);
@@ -257,7 +303,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                     }
                 });
                 handled = true;
-            } else if(type.equals("PARALLEL_PROGRAM")) {
+            } else if (type.equals("PARALLEL_PROGRAM")) {
                 Log.info("Showing Parallel Program login");
                 ParallelProgramActivity activity = new ParallelProgramActivity(uid);
                 final ParallelProgramView view = new ParallelProgramViewImpl();
@@ -268,31 +314,30 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                     }
                 });
                 handled = true;
-            } 
-            else if(type.equals("SEARCH")) {
+            } else if (type.equals("SEARCH")) {
                 ClientFactory cf = __clientFactory;
-                SearchActivity search = new SearchActivity(cf,cf.getEventBus());
+                SearchActivity search = new SearchActivity(cf, cf.getEventBus());
                 cf.getSearchView().setPresenter(search);
-                cf.getEventBus().fireEvent(new LoadNewPageEvent((IPage)cf.getSearchView() ));
-                
+                cf.getEventBus().fireEvent(new LoadNewPageEvent((IPage) cf.getSearchView()));
+
                 handled = true;
-            }
-            else if (uid > 0) {
+            } else if (uid > 0) {
                 SharedData.saveUidToLocalStorage(uid);
-                
-//                SharedData.makeSureUserHasBeenRead(new CallbackOnComplete() {
-//                    @Override
-//                    public void isComplete() {
-//                        CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));
-//                    }
-//                });
-//                handled = true;
+
+                // SharedData.makeSureUserHasBeenRead(new CallbackOnComplete() {
+                // @Override
+                // public void isComplete() {
+                // CmRpcCore.EVENT_BUS.fireEvent(new
+                // HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));
+                // }
+                // });
+                // handled = true;
             }
 
         } catch (Exception e) {
             PopupMessageBox.showError("Error reading login information: " + e);
         }
-        
+
         return handled;
     }
 
@@ -407,26 +452,26 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent(false, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {
-                        exitApplication();                        
+                        exitApplication();
                     }
                 }));
             }
         });
     }
-    
+
     private void exitApplication() {
         __isLoggingOut = true;
-        Window.Location.replace("/index.html");        
+        Window.Location.replace("/index.html");
     }
 
     public int getScrollPositionForLast() {
-        if(pageScroll.size() > 0) {
+        if (pageScroll.size() > 0) {
             return pageScroll.get(_pageStack.peek());
-        }
-        else {
+        } else {
             return 0;
         }
     }
+
     public int getScrollPositionFor(IPage page) {
         Integer position = pageScroll.get(page);
         if (position != null) {
@@ -476,7 +521,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         mainPanel.setStyleName("app-panel");
         mainPanel.add(headerPanel);
         mainPanel.add(pagesPanel.getPanel());
-        
+
         mainPanel.add(new CmAwardPanel());
 
         _pageStack = new ObservableStack<IPage>();

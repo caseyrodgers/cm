@@ -1,7 +1,7 @@
 package hotmath.gwt.cm.client.ui.context;
 
-import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
-import hotmath.gwt.cm.client.ui.StandardFlowCallback;
+import hotmath.gwt.cm.client.StandardFlowCallback;
+import hotmath.gwt.cm_core.client.flow.CmProgramFlowClientManager;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_tools.client.ui.GWindow;

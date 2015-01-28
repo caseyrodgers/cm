@@ -1,10 +1,11 @@
-package hotmath.gwt.cm_tools.client;
+package hotmath.gwt.cm_core.client.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.sencha.gxt.widget.core.client.container.Viewport;
+
 
 
 /** Provides central control over the 'isBusy'
@@ -25,14 +26,26 @@ public class CmBusyManager {
 	static List<BusyState> __busyStates = new ArrayList<BusyState>();
 
 	
-	static com.sencha.gxt.widget.core.client.container.Viewport __viewPort3;
+	public static interface BusyHandler {
+        void hideMask();
+
+        void showMask(BusyState state);
+	}
 	
+	static BusyHandler __busyHandler;
 	/** Set the main viewport used for isBusy masking
 	 * 
 	 * @param viewPort
 	 */
-	static public void setViewPort(Viewport viewPort) {
-		__viewPort3 = viewPort;
+	static public void setBusyHandler(BusyHandler handler) {
+	    __busyHandler = handler;
+	}
+	
+	static public BusyHandler getBusyHandler() {
+	    if(__busyHandler == null) {
+	        Window.alert("Busy handler not set");
+	    }
+	    return __busyHandler;
 	}
 
 	/**
@@ -79,11 +92,7 @@ public class CmBusyManager {
     
     
     static private void showBusy(BusyState state) {
-    	//System.out.println("showBusy " + __busyStates.size() + ": " + state.useMask);
-    	if(state.useMask) {
-    		if(__viewPort3 != null)
-    		    __viewPort3.mask();
-    	}
+        __busyHandler.showMask(state);
     	showLoading(true);
     }
     
@@ -108,9 +117,7 @@ public class CmBusyManager {
     				}
     		}
     		if(!hasDeeperMask) {
-    			//System.out.println("Removing mask");
-    		    if(__viewPort3 != null)
-    	            __viewPort3.unmask();
+    		    getBusyHandler().hideMask();
     		}
     	}
     	
@@ -118,9 +125,6 @@ public class CmBusyManager {
     		// System.out.println("Removing busy indicator");
     	    showLoading(false);
     	}
-    	
-    	if(__viewPort3 != null)
-    	    __viewPort3.unmask();
     }
     
     /** Force reset of the isBusy stack and
@@ -130,14 +134,15 @@ public class CmBusyManager {
     static public void resetBusy() {
         __busyStates.clear();
         hideBusy(new BusyState(true));
-    }    
+    }
+    
+    public static class BusyState {
+        boolean useMask=true;
+        public BusyState(boolean useMask) {
+            this.useMask = useMask;
+        }
+    }
 	
 }
 
 
-class BusyState {
-	boolean useMask=true;
-	public BusyState(boolean useMask) {
-		this.useMask = useMask;
-	}
-}

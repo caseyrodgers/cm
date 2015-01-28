@@ -5,7 +5,6 @@ import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.AssignmentsOnlyPanel;
-import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
 import hotmath.gwt.cm.client.ui.EndOfProgramPanel;
 import hotmath.gwt.cm.client.ui.FooterPanel;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
@@ -19,7 +18,11 @@ import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.event.CmLogoutEvent;
+import hotmath.gwt.cm_core.client.flow.CmProgramFlowClientManager;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
+import hotmath.gwt.cm_core.client.util.CmBusyManager.BusyHandler;
+import hotmath.gwt.cm_core.client.util.CmBusyManager.BusyState;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
@@ -33,7 +36,6 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.search.LessonSearchWindow;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
@@ -115,19 +117,18 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
         __thisInstance = this;
         CmLogger.info("Catchup Math Startup");
 
-        /** 
-          if(CatchupMathTests.runTest()) {
-                CmBusyManager.showLoading(false);
-                return;
-            }
-        */
+        /**
+         * if(CatchupMathTests.runTest()) { CmBusyManager.showLoading(false);
+         * return; }
+         */
 
         // GXT.setDefaultTheme(Theme.GRAY, true);
 
         _mainPort = new Viewport() {
             protected void onWindowResize(int width, int height) {
                 super.onWindowResize(width, height);
-                if (CmMainPanel.getActiveInstance() != null && CmMainPanel.getActiveInstance()._mainContentWrapper != null) {
+                if (CmMainPanel.getActiveInstance() != null
+                        && CmMainPanel.getActiveInstance()._mainContentWrapper != null) {
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WINDOW_RESIZED));
                 }
                 if (CmRpcCore.EVENT_BUS != null) {
@@ -137,7 +138,17 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
         };
         _mainPort.setWidget(_mainPortWrapper);
 
-        CmBusyManager.setViewPort(_mainPort);
+        CmBusyManager.setBusyHandler(new BusyHandler() {
+            @Override
+            public void hideMask() {
+                _mainPort.unmask();
+            }
+
+            @Override
+            public void showMask(BusyState state) {
+                _mainPort.mask();
+            }
+        });
 
         BorderLayoutData bdata = new BorderLayoutData(38);
         _headerPanel = new HeaderPanel();
@@ -156,12 +167,10 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
             _mainPortWrapper.setSouthWidget(footer, new BorderLayoutData(20));
         }
 
-
         /** Turn on debugging CSS */
         if (CmCore.getQueryParameter("debug") != null) {
-                _mainPortWrapper.addStyleName("debug-mode");
+            _mainPortWrapper.addStyleName("debug-mode");
         }
-
 
         /**
          * Add the main panel to the "hm_content" div on the CatchupMath.html
@@ -175,18 +184,15 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
             }
         });
 
-        if(CmCore.getQueryParameterValue("test").equals("assignment")) {
+        if (CmCore.getQueryParameterValue("test").equals("assignment")) {
             showAssignment(1, null);
-        }
-        else if(CmCore.getQueryParameterValue("test").equals("search")) {
+        } else if (CmCore.getQueryParameterValue("test").equals("search")) {
             new LessonSearchWindow();
             return;
         }
 
-
-
-
-        /** add a low level down handler to catch any mouse down event
+        /**
+         * add a low level down handler to catch any mouse down event
          *
          */
         _mainContainer.addDomHandler(new MouseDownHandler() {
@@ -204,22 +210,21 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
             }
         });
 
+        CmProgramFlowClientManager.setFlowCallback(new StandardFlowCallback());
 
-
-//        Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
-//            public void onPreviewNativeEvent(NativePreviewEvent event) {
-//                    NativeEvent ne = event.getNativeEvent();
-//                    GWT.log(ne.getCharCode() + " (" + ((char) ne.getCharCode()) + ") " +
-//                                    (ne.getButton() != 1 ? " button=" + ne.getButton() : "") +
-//                                    (ne.getKeyCode() != ne.getCharCode() ? " keyCode=" + ne.getKeyCode() : "") +
-//                                    (ne.getAltKey() ? " ALT" : "") +
-//                                    (ne.getCtrlKey() ? " CTRL" : "") +
-//                                    (ne.getMetaKey() ? " META" : "") +
-//                                    (ne.getShiftKey() ? " SHIFT" : ""));
-//            }
-//       });
-
-
+        // Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
+        // public void onPreviewNativeEvent(NativePreviewEvent event) {
+        // NativeEvent ne = event.getNativeEvent();
+        // GWT.log(ne.getCharCode() + " (" + ((char) ne.getCharCode()) + ") " +
+        // (ne.getButton() != 1 ? " button=" + ne.getButton() : "") +
+        // (ne.getKeyCode() != ne.getCharCode() ? " keyCode=" + ne.getKeyCode()
+        // : "") +
+        // (ne.getAltKey() ? " ALT" : "") +
+        // (ne.getCtrlKey() ? " CTRL" : "") +
+        // (ne.getMetaKey() ? " META" : "") +
+        // (ne.getShiftKey() ? " SHIFT" : ""));
+        // }
+        // });
 
         // CmNotifyManager.getInstance().notify("This is a test notification");
     }
@@ -248,10 +253,10 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
             if (UserInfo.getInstance().isSingleUser())
                 Window.setTitle("Catchup Math: Student");
 
-            if (firstLocation.getPlace() == CmPlace.END_OF_PROGRAM && UserInfo.getInstance().getOnCompletion() == UserProgramCompletionAction.STOP) {
+            if (firstLocation.getPlace() == CmPlace.END_OF_PROGRAM
+                    && UserInfo.getInstance().getOnCompletion() == UserProgramCompletionAction.STOP) {
                 showEndOfProgramPanel();
-            }
-            else if(firstLocation.getPlace() == CmPlace.NO_PROGRAM_ASSIGNED) {
+            } else if (firstLocation.getPlace() == CmPlace.NO_PROGRAM_ASSIGNED) {
                 showNoProgramAssigned();
             } else {
 
@@ -283,10 +288,9 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
                      * position.
                      */
                     startNormalOperation();
-                } else if(firstLocation.getPlace() == CmPlace.ASSIGNMENTS_ONLY) {
+                } else if (firstLocation.getPlace() == CmPlace.ASSIGNMENTS_ONLY) {
                     showAssignmentsOnly();
-                }
-                else {
+                } else {
 
                     /**
                      * Otherwise, show the welcome screen to new visits
@@ -399,7 +403,7 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
     }
 
     private void jumpToFirstLocation() {
-        CmProgramFlowClientManager.getActiveProgramState(new CmProgramFlowClientManager.Callback() {
+        CmProgramFlowClientManager.getActiveProgramState(new StandardFlowCallback() {
             @Override
             public void programFlow(CmProgramFlowAction flowResponse) {
 
@@ -439,6 +443,7 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
                 }
                 CmLogger.info(flowResponse.toString());
             }
+
         });
     }
 
@@ -487,14 +492,15 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
 
             @Override
             public void onSuccess() {
-                final Widget assignmentViewer = new StudentAssignmentViewerPanel(assignKey, pid, new CallbackOnComplete() {
-                    @Override
-                    public void isComplete() {
-                        HeaderPanel.showRppDetails(true);
-                        _mainPortWrapper.setCenterWidget(_mainContainer);
-                        _mainPort.forceLayout();
-                    }
-                });
+                final Widget assignmentViewer = new StudentAssignmentViewerPanel(assignKey, pid,
+                        new CallbackOnComplete() {
+                            @Override
+                            public void isComplete() {
+                                HeaderPanel.showRppDetails(true);
+                                _mainPortWrapper.setCenterWidget(_mainContainer);
+                                _mainPort.forceLayout();
+                            }
+                        });
                 _mainPortWrapper.remove(_mainContainer);
                 HeaderPanel.showRppDetails(false);
                 BorderLayoutData bdata = new BorderLayoutData();
@@ -624,7 +630,8 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
                  * set the data returned from the server as the initial lesson
                  * shown
                  */
-                prescriptionGui.setPrescriptionData(prescriptionResponse, prescriptionResponse.getPrescriptionData().getCurrSession().getSessionNumber());
+                prescriptionGui.setPrescriptionData(prescriptionResponse, prescriptionResponse.getPrescriptionData()
+                        .getCurrSession().getSessionNumber());
             }
         });
     }
@@ -690,27 +697,30 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
             public void onSuccess() {
-                CmLocation location = new CmLocation("p:" + UserInfo.getInstance().getSessionNumber() + ":" + type + ":" + file);
+                CmLocation location = new CmLocation("p:" + UserInfo.getInstance().getSessionNumber() + ":" + type
+                        + ":" + file);
                 CmHistoryManager.getInstance().addHistoryLocation(location);
             }
         });
     }
 
     static protected void showStudentHowToVideo() {
-    	new VideoPlayerWindow("How to use Catchup Math", "assets/teacher_videos/student-how-to/student-how-to-desktop.mp4");
-	}
+        new VideoPlayerWindow("How to use Catchup Math",
+                "assets/teacher_videos/student-how-to/student-how-to-desktop.mp4");
+    }
 
     static public Hyperlink getStudentHowToVideoHyperlink() {
         Hyperlink hl = new Hyperlink();
         hl.setText("Video: How to use Catchup Math");
-		hl.getElement().setAttribute("style", "margin-left:25px; text-decoration:underline; color:#00A8FF; cursor:pointer;");
+        hl.getElement().setAttribute("style",
+                "margin-left:25px; text-decoration:underline; color:#00A8FF; cursor:pointer;");
         ClickHandler handler = new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				showStudentHowToVideo();
-			}
+            @Override
+            public void onClick(ClickEvent event) {
+                showStudentHowToVideo();
+            }
         };
-		hl.addHandler(handler, ClickEvent.getType());
+        hl.addHandler(handler, ClickEvent.getType());
         return hl;
     }
 
@@ -730,9 +740,9 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
                                                           $wnd.doLoadResource_Gwt = @hotmath.gwt.cm.client.CatchupMath::doResourceLoad(Ljava/lang/String;Ljava/lang/String;);
                                                           }-*/;
 
-        @Override
-        public NativeEvent getNativeEvent() {
-                // TODO Auto-generated method stub
-                return null;
-        }
+    @Override
+    public NativeEvent getNativeEvent() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

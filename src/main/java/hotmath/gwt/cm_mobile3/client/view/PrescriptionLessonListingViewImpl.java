@@ -143,7 +143,7 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
     
     private void onSegmentComplete() {
         if(_isComplete) {
-            presenter.moveToNextSegment();
+            presenter.moveToNextFlow();
         }
         else {
             PopupMessageBox.showMessage("You will need to finish all required problems first.");

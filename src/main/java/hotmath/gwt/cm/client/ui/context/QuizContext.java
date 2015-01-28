@@ -1,9 +1,11 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
+import hotmath.gwt.cm.client.StandardFlowCallback;
 import hotmath.gwt.cm.client.ui.context.HaveYouCheckedYourWorkWindow.Callback;
 import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.flow.CmProgramFlowClientManager;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
@@ -11,7 +13,6 @@ import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.QuizPage;
@@ -106,7 +107,7 @@ public class QuizContext implements CmContext {
     private void showQuizResults(CreateTestRunResponse runInfo) {
 
         if (UserInfo.getInstance().isAutoTestMode()) {
-            CmProgramFlowClientManager.getActiveProgramState(new CmProgramFlowClientManager.Callback() {
+            CmProgramFlowClientManager.getActiveProgramState(new StandardFlowCallback() {
                 
                 @Override
                 public void programFlow(CmProgramFlowAction flowResponse) {

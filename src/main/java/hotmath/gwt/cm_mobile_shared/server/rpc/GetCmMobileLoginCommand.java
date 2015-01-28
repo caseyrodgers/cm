@@ -23,6 +23,8 @@ import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand.CustomProgramInfo;
+import hotmath.testset.ha.HaTestRun;
+import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUserFactory;
 import hotmath.util.sql.SqlUtilities;
 
@@ -62,8 +64,10 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
         StudentModelI sm = CmStudentDao.getInstance().getStudentModelBase(conn, basicUser.getUserKey());
         StudentActiveInfo active = programFlow.getActiveInfo();
         
+        boolean didPassTest = false;
+        
         AssignmentUserInfo assignmentInfo = AssignmentDao.getInstance().getStudentAssignmentMetaInfo(sm.getUid());
-        CmMobileUser mobileUser = new CmMobileUser(sm.getUid(), active.getActiveTestId(), active.getActiveSegment(), active.getActiveSegmentSlot(), active.getActiveRunId(), assignmentInfo);
+        CmMobileUser mobileUser = new CmMobileUser(sm.getUid(), active.getActiveTestId(), active.getActiveSegment(), active.getActiveSegmentSlot(), didPassTest, active.getActiveRunId(), assignmentInfo);
 
         
         /** create new security key for this login sesssion */

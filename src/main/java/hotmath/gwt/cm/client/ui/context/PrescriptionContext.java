@@ -1,8 +1,8 @@
 package hotmath.gwt.cm.client.ui.context;
 
-import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
 import hotmath.gwt.cm.client.ui.context.CmAutoTest.ResourceObject;
 import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.flow.CmProgramFlowClientManager;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;

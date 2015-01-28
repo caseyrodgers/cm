@@ -82,8 +82,17 @@ public class AboutDialog extends DialogBox {
             loggedIn = s;
 
             name = SharedData.getUserInfo().getTestName();
-            int seg = SharedData.getUserInfo().getTestSegment();
-            int segCnt = SharedData.getUserInfo().getProgramSegmentCount();
+            int seg = 0;
+            int segCnt = 0;
+            if(SharedData.getFlowAction() != null && SharedData.getFlowAction().getQuizResult() != null) {
+                seg = SharedData.getFlowAction().getQuizResult().getQuizSegment();
+                segCnt = SharedData.getFlowAction().getQuizResult().getQuizSegmentCount();
+            }
+            else {
+                seg = 0;SharedData.getUserInfo().getTestSegment();
+                segCnt = 0;SharedData.getUserInfo().getProgramSegmentCount();
+            }
+            
             if (segCnt > 1) {
                 segment = seg + " of " + segCnt;
             }
