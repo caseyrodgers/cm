@@ -565,13 +565,6 @@ program-details-panel .x-ftree2-node-over {
     font-weight: bold;
 }
 
-
-/** allow adding image to button bar */
-.student-details-window-button-bar {
-   position: relative;	
-}
-
-
 .filters-my-form-panel {
    padding: 10px 0 0 15px !important;
    background: #DFE8F6;	

@@ -6,7 +6,10 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -35,23 +38,26 @@ public class StudentDetailsWindow extends GWindow {
     public StudentDetailsWindow(final StudentModelI studentModel) {
         super(false);
         
-        addStyleName("student-details-window");
         setPixelSize(645, 410);
         setModal(true);
         setResizable(true);
         setMaximizable(true);
         setHeadingText("Student Details For: " + studentModel.getName());
-        addStyleName("student-details-window-container");
 
         studentDetailsPanel = new StudentDetailsPanel(studentModel);
         
         setWidget(studentDetailsPanel);
         
-        getButtonBar().addStyleName("student-details-window-button-bar");
-        getButtonBar().add(studentDetailsPanel.getDateRange());
+        
+        
+        addButton(studentDetailsPanel.getDateRange());
         addButton(closeButton());
-
+        
+        
         setVisible(true);
+        
+        
+        forceLayout();
     }
 
     private TextButton closeButton() {
@@ -67,10 +73,11 @@ public class StudentDetailsWindow extends GWindow {
 
 
     static public void showStudentDetails(final int userId) {
+        
+        CmBusyManager.setBusy(true);
         new RetryAction<StudentModelI>() {
             @Override
             public void attempt() {
-                CmBusyManager.setBusy(true);
                 GetStudentModelAction action = new GetStudentModelAction(userId);
                 setAction(action);
                 CmRpcCore.getCmService().execute(action,this);

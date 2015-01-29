@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_core.client.CmCore;
-import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc.client.rpc.ResetStudentActivityAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -34,6 +34,7 @@ import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -73,7 +74,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
     StudentModelI studentModel;
     private Grid<StudentActivityModel> samGrid;
     private Label _studentCount;
-    private Label dateRange = new Label();
+    private HTML dateRange = new HTML();
     DetailsProperties detailsProps = GWT.create(DetailsProperties.class);
 
     /**
@@ -129,8 +130,6 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         
         toolBar.add(new FillToolItem());
         toolBar.add(displayPrintableReportToolItem(studentModel));
-
-        addStyleName("student-details-window-container");
 
         FlowLayoutContainer northContainer = new FlowLayoutContainer();
         StudentInfoPanel infoPanel = new StudentInfoPanel(studentModel);

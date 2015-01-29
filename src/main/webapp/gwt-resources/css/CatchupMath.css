@@ -763,22 +763,11 @@ div[name=steps_tail]
 	
 }
 
-.student-details-window {
-	
-}
-
 .date-range-label {
-	position: absolute;
-	left: 0;
-	top: 0;
 	color: blue;
 	padding: 5px 10px 0 0;
 }
 
-.student-details-window-container {
-	height: 412px;
-	width: 580px;
-}
 
 .student-details-panel-grid {
 	height: 250px;
