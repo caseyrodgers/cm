@@ -49,11 +49,6 @@ public class GetCatchupMathDebugCommand implements ActionHandler<GetCatchupMathD
             ps.setInt(1,  runId);
             
             int cnt=ps.executeUpdate();
-            if(cnt == 0) {
-                throw new Exception("No lessons in test_run marked as complete");
-            }
-            
-            
             
             sql = 
                     "select p.pid " +
