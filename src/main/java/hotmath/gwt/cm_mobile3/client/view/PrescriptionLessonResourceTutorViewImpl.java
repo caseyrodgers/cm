@@ -56,10 +56,10 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 
     
     public PrescriptionLessonResourceTutorViewImpl() {
-        this(null,null);
+        this(null,true, null);
     }
     
-	public PrescriptionLessonResourceTutorViewImpl(final String whiteboardText, TutorCallback tutorCallback) {
+	public PrescriptionLessonResourceTutorViewImpl(final String whiteboardText, boolean showWhiteboardButtonOnButtonBar, TutorCallback tutorCallback) {
 	    
 	    if(tutorCallback == null) {
 	        tutorCallback = new TutorCallbackMobileDefault(){
@@ -119,7 +119,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	        };	        
 	    }
 	    
-	    tutorPanel = new TutorWrapperPanel(true,true,true,true,tutorCallback);
+	    tutorPanel = new TutorWrapperPanel(true,true,showWhiteboardButtonOnButtonBar,true,tutorCallback);
 	    _contentPanel = new FlowPanel();
 	    _subBar = new ShowWorkSubToolBar(false, false, new Callback() {
             @Override

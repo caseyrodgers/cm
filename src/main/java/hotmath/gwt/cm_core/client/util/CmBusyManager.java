@@ -92,7 +92,9 @@ public class CmBusyManager {
     
     
     static private void showBusy(BusyState state) {
-        __busyHandler.showMask(state);
+        if(state.useMask) {
+            __busyHandler.showMask(state);
+        }
     	showLoading(true);
     }
     

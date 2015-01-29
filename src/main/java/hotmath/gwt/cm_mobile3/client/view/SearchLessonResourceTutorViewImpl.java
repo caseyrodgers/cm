@@ -2,7 +2,6 @@ package hotmath.gwt.cm_mobile3.client.view;
 
 import hotmath.gwt.cm_core.client.BackAction;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
-import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
@@ -12,7 +11,7 @@ import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 public class SearchLessonResourceTutorViewImpl extends PrescriptionLessonResourceTutorViewImpl implements SearchLessonResourceTutorView {
     
     public SearchLessonResourceTutorViewImpl() {
-        super("Work out the problem on our whiteboard.", new TutorCallbackDefault() {
+        super("Work out the problem on our whiteboard.", false, new TutorCallbackDefault() {
             
             @Override
             public Action<RpcData> getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber) {
@@ -33,7 +32,7 @@ public class SearchLessonResourceTutorViewImpl extends PrescriptionLessonResourc
             public void solutionHasBeenViewed(String value) {
                 // do nothing
             }
-            
+    
             @Override
             public BackAction getTutorReturnButtonAction() {
                 return new BackAction() {

@@ -62,12 +62,12 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             
             @Override
             public void showMask(BusyState state) {
-               // mainPort.mask();
+               mainPort.mask();
             }
             
             @Override
             public void hideMask() {
-               // mainPort.unmask();
+               mainPort.unmask();
             }
         });
 
