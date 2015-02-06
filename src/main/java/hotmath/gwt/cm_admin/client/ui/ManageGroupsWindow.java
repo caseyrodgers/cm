@@ -145,7 +145,7 @@ public class ManageGroupsWindow extends GWindow {
             public void onSelect(SelectEvent event) {
                 final GroupInfoModel gim = getGroupInfo();
                 if (gim != null) {
-                    if (gim.getAdminId() == 0) {
+                    if (gim.getAdminId() == 0 || gim.isSystemSelfReg() == true) {
                         CmMessageBox.showAlert("This group cannot be renamed.");
                         return;
                     }
