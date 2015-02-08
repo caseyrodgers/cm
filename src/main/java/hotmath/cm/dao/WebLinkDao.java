@@ -2,6 +2,7 @@ package hotmath.cm.dao;
 
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.QueryHelper;
 import hotmath.cm.util.UserAgentDetect;
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
@@ -23,7 +24,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -172,46 +175,57 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         return processWebLinks(links);
     }
 
-    private Collection<? extends WebLinkModel> processWebLinks(List<WebLinkModel> links) {
-        for (final WebLinkModel wl : links) {
-            String sql = "select wg.*, g.admin_id, g.name as group_name " +
-                    "from    CM_WEBLINK_GROUPS wg " +
-                    "JOIN CM_GROUP g on g.id = wg.group_id " +
-                    "where link_id = ? " + " order by group_name ";
+    private static String SQL_1 =
+    		"select wg.*, g.admin_id, g.name as group_name " +
+            "from    CM_WEBLINK_GROUPS wg " +
+            "JOIN CM_GROUP g on g.id = wg.group_id " +
+            "where wg.link_id in ( $$UID_LIST$$ ) order by group_name ";
 
-            List<GroupInfoModel> groups = getJdbcTemplate().query(sql, new Object[] { wl.getLinkId() }, new RowMapper<GroupInfoModel>() {
-                @Override
-                public GroupInfoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return extractWebLinkGroup(rs);
-                }
-            });
-            wl.getLinkGroups().clear();
-            wl.getLinkGroups().addAll(groups);
+    private static String SQL_2 =
+    		"select * from CM_WEBLINK_LESSONS where link_id in ( $$UID_LIST$$ ) order by id";
 
-            sql = "select * from CM_WEBLINK_LESSONS where link_id = ? order by id";
-            List<LessonModel> lessons = getJdbcTemplate().query(sql, new Object[] { wl.getLinkId() }, new RowMapper<LessonModel>() {
-                @Override
-                public LessonModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new LessonModel(rs.getString("lesson_name"), rs.getString("lesson_file"), rs.getString("lesson_subject"));
-                }
-            });
-            wl.getLinkTargets().clear();
-            wl.getLinkTargets().addAll(lessons);
+    private Collection<? extends WebLinkModel> processWebLinks(List<WebLinkModel> links) throws Exception {
+   
+    	List<Integer> idList = new ArrayList<Integer>();
+    	final Map<Integer, WebLinkModel> map = new HashMap<Integer, WebLinkModel>();
+    	for (WebLinkModel wl : links) {
+    		idList.add(wl.getLinkId());
+        	wl.getLinkGroups().clear();
+        	wl.getLinkTargets().clear();
+    		map.put(wl.getLinkId(), wl);
+    	}
 
-            wl.setSubjectType(lookupLinkSubject(wl));
-
-        }
+    	String sql = QueryHelper.createInListSQL(SQL_1, idList);
+        getJdbcTemplate().query(sql, new RowMapper<GroupInfoModel>() {
+            @Override
+            public GroupInfoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+            	GroupInfoModel m = extractWebLinkGroup(rs);
+            	WebLinkModel wl = map.get(rs.getInt("link_id"));
+            	wl.getLinkGroups().add(m);
+                return m;
+            }
+        });
+    	
+    	sql = QueryHelper.createInListSQL(SQL_2, idList);
+        getJdbcTemplate().query(sql, new RowMapper<LessonModel>() {
+            @Override
+            public LessonModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+            	LessonModel m = new LessonModel(rs.getString("lesson_name"), rs.getString("lesson_file"), rs.getString("lesson_subject"));
+            	WebLinkModel wl = map.get(rs.getInt("link_id"));
+            	wl.getLinkTargets().add(m);
+                wl.setSubjectType(lookupLinkSubject(wl));
+                return m;
+            }
+        });
+    	
         return links;
     }
 
     public Collection<? extends WebLinkModel> getAllWebLinksDefinedForAdminPrivate(int adminId, boolean includePublic) throws Exception {
 
-        String sql = "select * from CM_WEBLINK where is_public = 0 and admin_id = ? and admin_id = ? order by name";
-        if (includePublic) {
-            sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ADMIN_WEBLINKS");
-        }
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ADMIN_WEBLINKS");
 
-        List<WebLinkModel> links = getJdbcTemplate().query(sql, new Object[] { adminId, adminId }, new RowMapper<WebLinkModel>() {
+        List<WebLinkModel> links = getJdbcTemplate().query(sql, new Object[] { adminId, adminId, includePublic?1:0 }, new RowMapper<WebLinkModel>() {
             @Override
             public WebLinkModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return extractWebLinkModel(rs);
@@ -220,7 +234,6 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
         
         /** private will be first, so it should override public
          * 
-         */
         if(false) {
             List<WebLinkModel> linksNoDups = new ArrayList<WebLinkModel>();
             List<String> urlsNoDups = new ArrayList<String>();
@@ -235,6 +248,7 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                 }
             }
         }
+         */
         return processWebLinks(links);
     }
 
