@@ -5149,21 +5149,22 @@ and pid = ?
 select *
 from CM_WEBLINK
 where admin_id = ?
-and is_public = 0
+  and is_public = 0
 
 union 
 
 select *
 from CM_WEBLINK w
 where is_public = 1
-and exists (
+  and 1 = ?
+  and exists (
      select 'x'
      from   CM_GROUP g
-        join HA_USER u on u.group_id = g.id
-      where u.admin_id  = ?
-      and g.no_public_weblinks = 0)
-
-order by name      
+     join HA_USER u on u.group_id = g.id
+     where u.admin_id  = ?
+       and g.no_public_weblinks = 0
+  )
+order by name
 
 #
 # CmPaymentDao
