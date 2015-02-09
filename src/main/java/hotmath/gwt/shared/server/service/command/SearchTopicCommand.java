@@ -82,6 +82,21 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
     
     @Override
     public CmList<TopicMatch> execute(Connection conn, SearchTopicAction action) throws Exception {
+        
+        
+        PreparedStatement ps=null; 
+        try {
+            String sql = "insert into CM_SEARCH_TERMS(search_term, search_date)values(?,now())";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1,  action.getSearch());
+            ps.executeUpdate();
+        }
+        catch(Exception e) {
+            __logger.error("Error saving log record", e);  // eat it
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
 
         if (__rankings == null) {
             __rankings = __readLessonRankings(conn);
