@@ -12,6 +12,8 @@ public class LogMonitorOutputImplDb implements LogMonitorOutput {
         Connection conn = null;
         PreparedStatement ps = null;
 
+        
+        System.out.println("LogMonitor: writing " + actionName);
         try {
             String sql = "insert into HA_ACTION_LOG(type, time_stamp, action_name, action_args, elapse_time, user_id, user_type, action_id)values(?,?,?,?,?,?,?,?)";
             conn = HMConnectionPool.getConnection();
