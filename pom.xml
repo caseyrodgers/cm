@@ -28,18 +28,14 @@
 
 	<repositories>
 
-                <!-- 
-		<repository>
-			<id>sencha-commercial-release</id>
-			<name>Sencha commercial releases</name>
-			<url>https://maven.sencha.com/repo/commercial-release/</url>
-		</repository>
-                -->
+		<!-- <repository> <id>sencha-commercial-release</id> <name>Sencha commercial 
+			releases</name> <url>https://maven.sencha.com/repo/commercial-release/</url> 
+			</repository> -->
 
 		<repository>
-            <id>central</id>
-            <url>http://repo1.maven.org/maven2/</url>
-        </repository>
+			<id>central</id>
+			<url>http://repo1.maven.org/maven2/</url>
+		</repository>
 
 		<repository>
 			<id>gson</id>
@@ -91,14 +87,9 @@
 	</repositories>
 
 	<dependencies>
-<!--
-		<dependency>
-			<groupId>com.cedarsoftware</groupId>
-			<artifactId>json-io</artifactId>
-			<version>2.7.1</version>
-		</dependency>
--->
-	
+		<!-- <dependency> <groupId>com.cedarsoftware</groupId> <artifactId>json-io</artifactId> 
+			<version>2.7.1</version> </dependency> -->
+
 		<dependency>
 			<groupId>com.googlecode.mgwt</groupId>
 			<artifactId>mgwt</artifactId>
@@ -295,14 +286,8 @@
 			<scope>compile</scope>
 		</dependency>
 
-<!-- 
-		<dependency>
-			<groupId>com.extjs.gxt</groupId>
-			<artifactId>gxt</artifactId>
-			<version>2.2.3</version>
-			<scope>compile</scope>
-		</dependency>
- -->		
+		<!-- <dependency> <groupId>com.extjs.gxt</groupId> <artifactId>gxt</artifactId> 
+			<version>2.2.3</version> <scope>compile</scope> </dependency> -->
 
 		<dependency>
 			<groupId>gwt2swf</groupId>
@@ -594,35 +579,38 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency> 
-                    <groupId>lucene</groupId> 
-                    <artifactId>lucene</artifactId> 
-		    <version>2.1</version> 
-                    <scope>compile</scope> 
-                </dependency> 
-		<dependency> 
-                    <groupId>lucene</groupId> 
-                    <artifactId>lucene-snowball</artifactId> 
-		    <version>2.1</version> 
-                    <scope>compile</scope> 
-                </dependency> 
-                 
-                <!-- <dependency> 
-			<groupId>com.codeborne</groupId> <artifactId>selenide</artifactId> <version>2.7</version> 
+		<dependency>
+			<groupId>lucene</groupId>
+			<artifactId>lucene</artifactId>
+			<version>2.1</version>
+			<scope>compile</scope>
 		</dependency>
-                 -->
-        <dependency>
-	        <groupId>org.ow2.asm</groupId>
-	        <artifactId>asm</artifactId>
-	        <version>5.0.3</version>
-        </dependency>
+		<dependency>
+			<groupId>lucene</groupId>
+			<artifactId>lucene-snowball</artifactId>
+			<version>2.1</version>
+			<scope>compile</scope>
+		</dependency>
+<dependency>
+	<groupId>org.apache.lucene</groupId>
+	<artifactId>lucene-spellchecker</artifactId>
+	<version>3.6.2</version>
+</dependency>		
+
+		<!-- <dependency> <groupId>com.codeborne</groupId> <artifactId>selenide</artifactId> 
+			<version>2.7</version> </dependency> -->
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>5.0.3</version>
+		</dependency>
 
 	</dependencies>
 
 
 	<build>
 
-                <testSourceDirectory>src/test</testSourceDirectory> 
+		<testSourceDirectory>src/test</testSourceDirectory>
 
 		<plugins>
 
@@ -741,7 +729,7 @@
 					<cssFinalFile>CatchupMath_combined.css</cssFinalFile>
 
 					<cssSourceFiles>
-					        <param>../../../../../../hotmath2/web/css/tutor_widget.css</param>
+						<param>../../../../../../hotmath2/web/css/tutor_widget.css</param>
 
 						<param>../../../../../../hotmath2/web/css/testset.css</param>
 						<param>../../../../../../hotmath2/web/css/default.css</param>
@@ -787,10 +775,10 @@
 						<module>hotmath.gwt.hm_mobile.HmMobile</module>
 						<module>hotmath.gwt.cm_mobile3.CatchupMathMobile3</module>
 						<module>hotmath.gwt.tutor_viewer.TutorViewer</module>
-                                                <module>hotmath.gwt.assignment_print.AssignmentPrint</module>
+						<module>hotmath.gwt.assignment_print.AssignmentPrint</module>
 						<module>hotmath.gwt.search.Search</module>
 						<!-- <module>hotmath.gwt.cm_tutor.CmTutor</module> <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module> 
-						<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
+							<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
 					</modules>
 					<hostedWebapp>
 						${project.build.directory}/${project.build.finalName}

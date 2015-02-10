@@ -13,6 +13,13 @@ public class InmhItemData_Test extends CmDbTestCase {
         super(name);
     }
     
+    public void testRange1() throws Exception {
+        INeedMoreHelpItem item = new INeedMoreHelpItem(CmResourceType.PRACTICE.label(), "", "Test");  
+        InmhItemData itemData = new InmhItemData(item);
+        String range = "[{PID_1, PID_2, PID_3}-2])";
+        List<String> res = itemData.findSolutionsInRandomRange(conn, range);
+        assertTrue(res.size() == 2);
+    }
     public void testCreateMixedNumbers() throws Exception {
         String file = "topics/mean-median-mode.html";
         INeedMoreHelpItem item = new INeedMoreHelpItem(CmResourceType.PRACTICE.label(), file, "Test");  

@@ -10,8 +10,15 @@ public class HaUserFactory_Test extends TestCase {
     }
 
     
+    public void testcreateAnonymousUser() throws Exception {
+        HaBasicUser basicUser = HaUserFactory.createAnonymousUser("Integers");
+        assertNotNull(basicUser);
+        assertNotNull(basicUser.getUserKey() > 0);
+    }
+
+    
     public void testLookup() throws Exception {
-        HaBasicUser basicUser = HaUserFactory.loginToCatchup("casey_test1","casey_test1");
+        HaBasicUser basicUser = HaUserFactory.loginToCatchup("casey","casey");
     }
 
     public void testLookupAdmin() throws Exception {

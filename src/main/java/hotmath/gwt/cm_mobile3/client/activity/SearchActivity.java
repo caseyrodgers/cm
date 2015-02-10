@@ -18,6 +18,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
+import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchApp;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -47,7 +48,8 @@ public class SearchActivity implements SearchView.Presenter {
         
         eventBus.fireEvent(new SystemIsBusyEvent(true));
         
-        SearchTopicAction action = new SearchTopicAction(search);
+        int uid = SharedData.getMobileUser() != null?SharedData.getMobileUser().getUserId():-1;
+        SearchTopicAction action = new SearchTopicAction(search,SearchApp.CM_MOBILE,uid);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<TopicMatch>>() {
             @Override
             public void onSuccess(CmList<TopicMatch> result) {

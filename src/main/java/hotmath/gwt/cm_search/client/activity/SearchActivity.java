@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
+import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchApp;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_search.client.ClientFactory;
 import hotmath.gwt.cm_search.client.places.SearchPlace;
@@ -54,7 +55,7 @@ public class SearchActivity extends AbstractActivity implements SearchView.Prese
         
         Log.info("Doing search: " + search);
         
-        SearchTopicAction action = new SearchTopicAction(search);
+        SearchTopicAction action = new SearchTopicAction(search,SearchApp.SEARCH_STAND_ALONE,0);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<TopicMatch>>() {
             @Override
             public void onSuccess(CmList<TopicMatch> result) {

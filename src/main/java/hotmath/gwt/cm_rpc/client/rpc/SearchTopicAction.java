@@ -14,8 +14,14 @@ public class SearchTopicAction implements Action<CmList<TopicMatch>> {
         /** Do a wild/like search against title */
         LESSON_LIKE}
     
+    public enum SearchApp {
+        CM_STUDENT,CM_ADMIN,CM_MOBILE,SEARCH_STAND_ALONE,TEST
+    }
+    
     String search;
     private SearchType searchType;
+    private SearchApp searchApp;
+    int uid;
 
     public SearchTopicAction() {}
 
@@ -25,19 +31,37 @@ public class SearchTopicAction implements Action<CmList<TopicMatch>> {
      * @param sessionNumber
      * @param updateActiveInfo
      */
-    public SearchTopicAction(SearchType searchType, String search) {
+    public SearchTopicAction(SearchType searchType, SearchApp searchApp, String search, int uid) {
         this.searchType = searchType;
+        this.searchApp = searchApp;
         this.search = search;
+        this.uid = uid;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 
     /** Default is to search like in lesson
      * 
      * @param search
      */
-    public SearchTopicAction(String search) {
-        this(SearchType.LESSON_LIKE, search);
+    public SearchTopicAction(String search, SearchApp searchApp, int uid) {
+        this(SearchType.LESSON_LIKE, searchApp, search, uid);
     }
     
+    public SearchApp getSearchApp() {
+        return searchApp;
+    }
+
+    public void setSearchApp(SearchApp searchApp) {
+        this.searchApp = searchApp;
+    }
+
     public String getSearch() {
         return search;
     }

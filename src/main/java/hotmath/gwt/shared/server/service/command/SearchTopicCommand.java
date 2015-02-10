@@ -86,9 +86,12 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         
         PreparedStatement ps=null; 
         try {
-            String sql = "insert into CM_SEARCH_TERMS(search_term, search_date)values(?,now())";
+            String sql = "insert into CM_SEARCH_TERMS(search_term, search_app, uid, search_date)values(?,?,?,now())";
             ps = conn.prepareStatement(sql);
             ps.setString(1,  action.getSearch());
+            ps.setString(2, action.getSearchApp().name());
+            ps.setInt(3,  action.getUid());
+            
             ps.executeUpdate();
         }
         catch(Exception e) {

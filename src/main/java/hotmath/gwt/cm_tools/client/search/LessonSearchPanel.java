@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
+import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchApp;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchType;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -111,7 +112,7 @@ public class LessonSearchPanel extends SimpleContainer {
         new RetryAction<CmList<TopicMatch>>() {
             @Override
             public void attempt() {
-                SearchTopicAction action = new SearchTopicAction(SearchType.LESSON_LIKE,"%" + _lessonText.getValue() + "%");
+                SearchTopicAction action = new SearchTopicAction(SearchType.LESSON_LIKE,SearchApp.SEARCH_STAND_ALONE, "%" + _lessonText.getValue() + "%",0);
                 setAction(action);
                 CmRpcCore.getCmService().execute(action,  this);
             }

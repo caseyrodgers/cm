@@ -1,11 +1,15 @@
 package hotmath.gwt.cm_tools.client.ui.search;
 
 import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.UserInfoBase;
+import hotmath.gwt.cm_core.client.UserInfoBase.Mode;
 import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
+import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchApp;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -14,7 +18,6 @@ import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchBundle;
 import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchStyle;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.rpc.RetryActionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -265,7 +268,9 @@ public class SearchPanel extends BorderLayoutContainer {
             Info.display("Searching", "Searching for matches ..");
         }
 
-        SearchTopicAction action = new SearchTopicAction(searchFor);
+        int uid = UserInfoBase.getInstance().getUid();
+        SearchApp appType = UserInfoBase.getInstance().isAdmin()?SearchApp.CM_ADMIN:SearchApp.CM_STUDENT;
+        SearchTopicAction action = new SearchTopicAction(searchFor,appType,uid);
         
         showSearchMessage("Searching ...");
         CmBusyManager.setBusy(true);

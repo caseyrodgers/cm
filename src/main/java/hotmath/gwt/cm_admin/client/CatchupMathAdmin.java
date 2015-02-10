@@ -51,6 +51,8 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         CmLogger.info("CatchupMathAdmin is starting");
 
         instance = this;
+        
+        UserInfoBase.getInstance().setIsAdmin(true);
 
         mainPort = new Viewport() {
             protected void onWindowResize(int width, int height) {
