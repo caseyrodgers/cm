@@ -942,8 +942,10 @@ div[name=steps_tail]
 }
 
 .prescription-help-panel .info {
+	height: 80px;
 	background-color: #303030;
 	padding: 25px;
+	text-align: center;
 	color: white;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
@@ -960,7 +962,7 @@ div[name=steps_tail]
 }
 
 .prescription-help-panel li {
-	list-style-type: disc;;
+	list-style-type: disc;
 }
 
 .prescription-help-panel {
@@ -970,6 +972,17 @@ div[name=steps_tail]
 .prescription-help-panel h2 {
 	color: #E42400;
 }
+
+.prescription-help-panel .search-btn-label {
+	margin-top: 15px;
+}
+.prescription-help-panel .cm-search-btn {
+	position: absolute !important;
+	top: 85px;
+	left: 305px;
+}
+
+
 
 /** Quiz Panel definition */
 #testset_div {

@@ -15,6 +15,7 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceContentCallback;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
+import hotmath.gwt.cm_tools.client.ui.search.SearchButton;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.WhiteboardResourceCallback;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
@@ -27,7 +28,7 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -35,9 +36,12 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.LayoutRegion;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.ResizeContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class CmMainPanel extends CmMainPanelShared {
 
@@ -569,11 +573,21 @@ public class CmMainPanel extends CmMainPanelShared {
         _mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED, _resourceCallback);
         VerticalPanel vp = new VerticalPanel();
         vp.addStyleName("prescription-help-panel");
-        FlowPanel fp = new FlowPanel();
+        
+        
+        FlowLayoutContainer fp = new FlowLayoutContainer();
         fp.addStyleName("info");
+        
+        
         fp.add(ohtml);
         fp.add(howToLink);
-        vp.add(fp);;
+        
+        SearchButton searchButton = new SearchButton();
+        fp.add(new HTML("<div class='search-btn-label'>Search Catchup Math Lessons:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>"));
+        fp.add(searchButton);
+        
+        vp.add(fp);
+        
         _mainContentWrapper.getResourceWrapper().add(vp);
         setCenterWidget(_mainContentWrapper.getResourceWrapper());
         forceLayout();
