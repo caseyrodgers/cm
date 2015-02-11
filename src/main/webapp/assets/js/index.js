@@ -25,9 +25,10 @@ var alg2HTML    = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=al
 var geomHTML    = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=geom'>Geometry</a></div>";
 var basicHTML   = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=basicmath'>College Basic Math</a></div>";
 var elemalgHTML = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=elemalg'>College Elementary Algebra</a></div>";
+var searchHTML   = "<div><a href='http://search.catchupmath.com'>Search Any Lesson</a></div>";
 
 function programMenu() { 
-	html = foundHTML + essHTML + prealgHTML + alg1HTML + alg2HTML + geomHTML + basicHTML + elemalgHTML;
+	html = foundHTML + essHTML + prealgHTML + alg1HTML + alg2HTML + geomHTML + basicHTML + elemalgHTML + searchHTML;
 	showSampleSessionDialog(html, 'Select a Subject');
 }
 
@@ -43,7 +44,7 @@ function showSampleSessionDialog(msg, title, indexVal) {
 
     closer = '';
 
-    var html = '<div style="padding: 10px;">' + msg + '</div>' + closer;
+    var html = '<div style="font-size: 1.3em;padding: 10px;">' + msg + '</div>' + closer;
     var head = '<a href="#" onclick="closeGeneralDialog();return false" class="close"><span>close</span> X</a>' + title;
     YUI().use('overlay', function(Y) {
         _overlay = new Y.Overlay({
