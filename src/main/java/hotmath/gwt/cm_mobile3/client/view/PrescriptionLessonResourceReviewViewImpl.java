@@ -22,11 +22,12 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
 
     Presenter presenter;
     private SexyButton _languageButton;
+    private SubToolBar _subBar;
     
     public PrescriptionLessonResourceReviewViewImpl() {
         FlowPanel main = new FlowPanel();
-        SubToolBar subBar = new SubToolBar();
-        main.add(subBar);
+        _subBar = new SubToolBar();
+        main.add(_subBar);
         
         
         if(_languageButton == null) {
@@ -51,7 +52,7 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
                 }
             });
         }
-        subBar.add(_languageButton);
+        _subBar.add(_languageButton);
         
         reviewHtml = new HTMLPanel("");
         reviewHtml.addStyleName("prescriptionLessonResourceReviewImpl");
@@ -67,6 +68,8 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+        
+        _subBar.setupViewForSearch();
     }
 
 

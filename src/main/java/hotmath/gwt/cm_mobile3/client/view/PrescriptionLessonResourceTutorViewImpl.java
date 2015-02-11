@@ -148,6 +148,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
         });
 	    
 	    _subBar.setupWhiteboardTools(false);
+
 	    
 	    _contentPanel.add(_subBar);
 	    _contentPanel.add(tutorPanel);
@@ -207,6 +208,8 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
     public void setPresenter(Presenter p) {
 		presenter = p;
 		p.setupView(this);
+		
+		_subBar.setupViewForSearch();
     }
 
 	@Override

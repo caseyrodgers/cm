@@ -113,10 +113,11 @@ public class AssignmentActivity implements AssignmentView.Presenter {
 
     protected void setAssignment(AssignmentView view, StudentAssignment assignment) {
         __lastStudentAssignment = assignment;
-        CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
-        view.loadAssignment(assignment);
         
         CmRpcCore.EVENT_BUS.fireEvent(new CmQuizModeActivatedEvent(assignment.getAssignment().isPreventLessonAccess()));
+        
+        CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
+        view.loadAssignment(assignment);
     }
 
 
@@ -130,6 +131,7 @@ public class AssignmentActivity implements AssignmentView.Presenter {
     
     @Override
     public void gotoAssignmentList() {
+        CmRpcCore.EVENT_BUS.fireEvent(new CmQuizModeActivatedEvent(false));
         History.newItem("assignment_list|" + System.currentTimeMillis());
     }
     

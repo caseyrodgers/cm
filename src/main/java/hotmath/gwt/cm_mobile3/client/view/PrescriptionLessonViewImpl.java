@@ -57,9 +57,9 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
     
     @UiField
     Button choose;
+    private SubToolBar _subToolbar;
     
     public PrescriptionLessonViewImpl() {
-        
         FlowPanel main = new FlowPanel();
         main.add(createSubToolbar());
         main.add(uiBinder.createAndBindUi(this));
@@ -70,18 +70,8 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
     }
 
     private Widget createSubToolbar() {
-        
-        SubToolBar sub = new SubToolBar();
-        SexyButton btn = new SexyButton("Search Catchup Math");
-        btn.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                presenter.showSearch();
-            }
-        });
-        sub.add(btn);
-        
-        return sub;
+        _subToolbar = new SubToolBar();
+        return _subToolbar;
     }
 
     interface MyUiBinder extends UiBinder<Widget, PrescriptionLessonViewImpl> {
@@ -95,6 +85,8 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
         this.presenter = presenter;
         
         presenter.prepareView(this);
+        
+        _subToolbar.setupViewForSearch();
     }
     
     TouchClickHandler<String> touchHandler = new TouchClickHandler<String>() {

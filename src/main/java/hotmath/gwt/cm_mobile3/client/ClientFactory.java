@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client;
 
+import hotmath.gwt.cm_mobile3.client.ui.MobileSearchButtonControl;
 import hotmath.gwt.cm_mobile3.client.view.EndOfProgramView;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonListingView;

@@ -32,17 +32,19 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
     GenericList listItems = new GenericList();
     Label countLabel;
 
+    private SubToolBar _subToolBar;
+
     public AssignmentListViewImpl() {
         DockPanel dockPanel = new DockPanel();
         
-        SubToolBar subToolBar = new SubToolBar();
-        subToolBar.add(new SexyButton("Check For Changes", new ClickHandler() {
+        _subToolBar = new SubToolBar();
+        _subToolBar.add(new SexyButton("Check For Changes", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 presenter.readDataFromServer(AssignmentListViewImpl.this, true);
             }
         }));
-        dockPanel.add(subToolBar, DockPanel.NORTH);
+        dockPanel.add(_subToolBar, DockPanel.NORTH);
        
         dockPanel.add(listItems, DockPanel.CENTER);
         initWidget(dockPanel);
@@ -68,6 +70,8 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
         getWidget().getElement().setAttribute("style","display:none");
         
         this.presenter.readDataFromServer(this, false);
+        
+        _subToolBar.setupViewForSearch();
     }
 
     @Override

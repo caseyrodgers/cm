@@ -1,7 +1,11 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
+import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
+import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 public class SubToolBar extends FlowPanel {
@@ -10,6 +14,25 @@ public class SubToolBar extends FlowPanel {
     public SubToolBar() {
         super();
         addStyleName("SubToolBar");
+        
+        _searchButton = new SexyButton("Search For Lesson", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                CatchupMathMobile3._searchControl.showSearchPanel();
+            }
+        });
+    }
+    
+    SexyButton _searchButton;
+    public void setupViewForSearch() {
+        if(CatchupMathMobile3._searchControl.isAllowed()) {
+            if(getWidgetIndex(_searchButton) == -1) {
+                add(_searchButton);
+            }
+        }
+        else {
+            remove(_searchButton);
+        }
     }
 
     public void showReturnTo(boolean b) {

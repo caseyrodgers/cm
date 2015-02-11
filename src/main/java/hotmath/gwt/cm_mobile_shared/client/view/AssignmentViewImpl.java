@@ -39,10 +39,11 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
 
     private CallbackOnComplete callbackWhenLoaded;
 
+    SubToolBar _subBar;
     public AssignmentViewImpl() {
 
         FlowPanel flow = new FlowPanel();
-        SubToolBar subBar = new SubToolBar();
+        _subBar = new SubToolBar();
         _turnInAssignment = new SexyButton("Turn In Assignment", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -55,8 +56,8 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
                 });
             }
         });
-        subBar.add(_turnInAssignment);
-        subBar.add(new SexyButton("Check For Changes", new ClickHandler() {
+        _subBar.add(_turnInAssignment);
+        _subBar.add(new SexyButton("Check For Changes", new ClickHandler() {
             
             @Override
             public void onClick(ClickEvent event) {
@@ -64,7 +65,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
             }
         }));
         
-        flow.add(subBar);
+        flow.add(_subBar);
         _headerInfo = new AssignmentHeaderPanel();
         flow.add(_headerInfo);
 
@@ -117,6 +118,9 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
         this.callbackWhenLoaded = callback;
         
         presenter.loadAssignment(this);
+        
+        
+        _subBar.setupViewForSearch();
     }
 
     @Override

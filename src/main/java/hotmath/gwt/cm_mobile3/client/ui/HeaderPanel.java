@@ -81,10 +81,10 @@ public class HeaderPanel extends Composite {
     MobileSearchButton _searchButton;
     private TouchAnchor _calcButton;
     private ClientFactory _cf;
-    public HeaderPanel(ClientFactory clientFactory) {
+    public HeaderPanel(ClientFactory clientFactory, final MobileSearchButtonControl searchControl) {
         this._cf = clientFactory;
         
-        _searchButton = new MobileSearchButton(clientFactory);
+        _searchButton = new MobileSearchButton(searchControl);
         
         basePanel = new FlowPanel();
         basePanel.getElement().setId("header");
@@ -166,16 +166,15 @@ public class HeaderPanel extends Composite {
         _cf.getEventBus().addHandler(UserLoginEvent.TYPE, new UserLoginHandler() {
             @Override
             public void userLogin(final CmMobileUser user) {
-                
                 if(user.getUserInfo().getSearchAllowMode() == SearchAllowMode.DISABLED_ALWAYS) {
-                    _searchButton.setAllowSearch(false);
+                    searchControl.setAllowSearch(false);
                 }
                 else {
                     CmRpcCore.EVENT_BUS.addHandler(CmQuizModeActivatedEvent.TYPE,  new CmQuizModeActivatedEventHandler() {
                         @Override
                         public void quizModeActivated(boolean yesNo) {
                             if(user.getUserInfo().getSearchAllowMode() != SearchAllowMode.ENABLED_ALWAYS) {
-                                _searchButton.setAllowSearch(!yesNo);
+                                searchControl.setAllowSearch(!yesNo);
                             }
                         }
                     });

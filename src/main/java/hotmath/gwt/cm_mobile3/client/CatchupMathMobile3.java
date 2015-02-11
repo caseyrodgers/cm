@@ -16,6 +16,7 @@ import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEventHandlerImpl;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.ui.HeaderPanel;
+import hotmath.gwt.cm_mobile3.client.ui.MobileSearchButtonControl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonViewImpl;
@@ -81,6 +82,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler {
 
     public static CatchupMathMobile3 __instance;
+    
+    
+    public static MobileSearchButtonControl _searchControl;
 
     ObservableStack<IPage> _pageStack = new ObservableStack<IPage>();
     public Map<IPage, Integer> pageScroll = new HashMap<IPage, Integer>();
@@ -189,6 +193,9 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 }
             }
 
+            _searchControl = new MobileSearchButtonControl(__clientFactory);
+
+
             Controller.installEventBus(__clientFactory.getEventBus());
             _rootPanel.add(createApplicationPanel());
 
@@ -225,7 +232,8 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 });
 
             }
-
+            
+            
             CmProgramFlowClientManager.setFlowCallback(new CmProgramFlowClientManagerCallback() {
                 @Override
                 public void programFlow(CmProgramFlowAction flowResponse) {
@@ -514,7 +522,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
          * component.
          * 
          */
-        HeaderPanel headerPanel = new HeaderPanel(__clientFactory);
+        HeaderPanel headerPanel = new HeaderPanel(__clientFactory, _searchControl);
         PagesContainerPanel pagesPanel = __clientFactory.getPagesContainer();
 
         FlowPanel mainPanel = new FlowPanel();

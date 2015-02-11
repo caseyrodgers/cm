@@ -421,10 +421,12 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             		pageScroll.put(currentPage,  new Integer(currentScrollPos));
             	}
                 _pageStack.push(page);
-                
 //                if(!(page instanceof TutorViewImpl)) {
 //                	eb.fireEvent(new BackPageLoadedEvent(page));
 //                }
+                
+                
+                page.isNowActive();
             }
         });
         
@@ -433,7 +435,8 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         	public void movedBack(final IPage page) {
         		if(true)
         			return;
-        		
+
+        		/**
             	Log.info("LoadNewPageEvent fire: " + page.getClass().getName());
             	if(pageScroll.containsKey(page)) {
             		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -443,6 +446,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 					});
             		
             	}
+            	*/
             }
         });
         
