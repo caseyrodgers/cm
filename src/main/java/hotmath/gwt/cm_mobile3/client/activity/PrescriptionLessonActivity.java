@@ -8,7 +8,9 @@ import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
@@ -49,6 +51,13 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
         
         
         CmRpcCore.EVENT_BUS.fireEvent(new CmQuizModeActivatedEvent(false));
+    }
+    
+    @Override
+    public void showSearch() {
+        SearchActivity search = new SearchActivity(clientFactory,clientFactory.getEventBus());
+        clientFactory.getSearchView().setPresenter(search);
+        clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)clientFactory.getSearchView() ));                
     }
 
     @Override

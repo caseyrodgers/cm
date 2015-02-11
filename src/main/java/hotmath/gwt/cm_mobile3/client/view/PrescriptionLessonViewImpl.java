@@ -1,15 +1,20 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
 import hotmath.gwt.cm_core.client.BackAction;
+import hotmath.gwt.cm_mobile3.client.activity.SearchActivity;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ListItem;
+import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.CmStorage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
+import hotmath.gwt.cm_mobile_shared.client.view.SubToolBar;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
@@ -25,10 +30,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -52,9 +59,29 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
     Button choose;
     
     public PrescriptionLessonViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
+        
+        FlowPanel main = new FlowPanel();
+        main.add(createSubToolbar());
+        main.add(uiBinder.createAndBindUi(this));
         resourceList.add(listItems);
         listItems.addStyleName("touch");
+        
+        initWidget(main);
+    }
+
+    private Widget createSubToolbar() {
+        
+        SubToolBar sub = new SubToolBar();
+        SexyButton btn = new SexyButton("Search Catchup Math");
+        btn.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                presenter.showSearch();
+            }
+        });
+        sub.add(btn);
+        
+        return sub;
     }
 
     interface MyUiBinder extends UiBinder<Widget, PrescriptionLessonViewImpl> {
