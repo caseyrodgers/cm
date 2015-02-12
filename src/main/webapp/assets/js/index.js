@@ -28,10 +28,36 @@ var elemalgHTML = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=el
 var searchHTML   = "<div><a href='http://search.catchupmath.com'>Search Any Lesson</a></div>";
 
 function programMenu() { 
-	html = foundHTML + essHTML + prealgHTML + alg1HTML + alg2HTML + geomHTML + basicHTML + elemalgHTML + searchHTML;
-	showSampleSessionDialog(html, 'Select a Subject');
+	
+	var h = 
+		'<select onchange="showSampleSession(this)"> ' +
+		'<option selected="true">-- Select a Program --</option>' +
+		'<option value="foundations">Foundations</option> ' +
+		'<option value="ess">Pre-Algebra</option> ' +
+		'<option value="pre-alg">Algebra 1</option> ' +
+		'<option value="alg 2">Algebra 2</option> ' +
+		'<option value="geom">Geometry</option> ' +
+		'<option value="basicmath">College Basic Math</option> ' +
+		'<option value="elemalg">College Elementary Algebra</option> ' +
+		'</select>';
+		
+	// html = foundHTML + essHTML + prealgHTML + alg1HTML + alg2HTML + geomHTML + basicHTML + elemalgHTML + searchHTML;
+	
+	var html = "<button onclick='showSearchPage()' style='margin-bottom: 10px;' type='button'>Search Any Lesson</button>";
+	html += h;
+	showSampleSessionDialog(html, 'Sample Session');
 }
 
+function showSampleSession(o) {
+    var program = o.value;
+    if(program) {
+    	document.location.href = '/loginService?user=catchup_demo&pwd=demo&prog=' + program;
+    }
+}
+
+function showSearchPage() {
+	document.location.href = 'http://search.catchupmath.com';
+}
 function showSampleSessionDialog(msg, title, indexVal) {
 	if(!indexVal) {
 		indexVal = 999;
@@ -44,7 +70,7 @@ function showSampleSessionDialog(msg, title, indexVal) {
 
     closer = '';
 
-    var html = '<div style="font-size: 1.3em;padding: 10px;">' + msg + '</div>' + closer;
+    var html = '<div style="font-size: 1.1em;padding: 10px;">' + msg + '</div>' + closer;
     var head = '<a href="#" onclick="closeGeneralDialog();return false" class="close"><span>close</span> X</a>' + title;
     YUI().use('overlay', function(Y) {
         _overlay = new Y.Overlay({
@@ -61,3 +87,4 @@ function showSampleSessionDialog(msg, title, indexVal) {
         _overlay.render();
     });
 }
+
