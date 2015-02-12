@@ -25,7 +25,7 @@ var alg2HTML    = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=al
 var geomHTML    = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=geom'>Geometry</a></div>";
 var basicHTML   = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=basicmath'>College Basic Math</a></div>";
 var elemalgHTML = "<div><a href='loginService?user=catchup_demo&pwd=demo&prog=elemalg'>College Elementary Algebra</a></div>";
-var searchHTML   = "<div style='margin-top: 10px;color: #666'><a href='http://search.catchupmath.com'>Search Any Lesson</a></div>";
+var searchHTML   = "<div style='margin-top: 10px;color: #666'><button type='button' onclick='showSearchPage()'>Search Any Lesson</button></div>";
 
 function programMenu() { 
 	
