@@ -433,6 +433,14 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 passPercent = options.getPassPercent();
                 activeSection = options.getSectionNum();
             }
+            
+            @Override
+            public void refreshDataNow() {
+                EventBus.getInstance().fireEvent(
+                        new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED, true));
+                
+                _window.hide();
+            }
         };
 
         AdvancedOptionsModel options = new AdvancedOptionsModel();
@@ -1737,6 +1745,8 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
     
     public static abstract class AdvOptCallback {
         abstract void setAdvancedOptions(AdvancedOptionsModel options);
+
+        abstract public void refreshDataNow();
     }
 }
 

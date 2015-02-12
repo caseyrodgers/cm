@@ -9,43 +9,52 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
  *
  */
 public class ResetUserAction implements Action<RpcData> {
-	
-	Integer uid;
-	int altTest;  // make sure default is zero,not null
+
+    static public enum ResetType {FULL, RESENT_QUIZ};
+
+    int altTest;
+    private ResetType type;
+	int id;
 	
 	public ResetUserAction() {}
-	
 
-	public ResetUserAction(Integer uid, Integer alternateTest) {
-		this.uid = uid;
-		this.altTest = alternateTest;
-		
+	public ResetUserAction(ResetType type, int id, int altTest) {
+	    this.type = type;
+        this.id = id;  // might be uid, or programId
+        this.altTest = altTest;
 	}
 
 
-	public Integer getUid() {
-		return uid;
-	}
-
-
-	public void setUid(Integer uid) {
-		this.uid = uid;
-	}
-
-
-    public Integer getAltTest() {
+	public int getAltTest() {
         return altTest;
     }
 
-
-    public void setAltTest(Integer altTest) {
+    public void setAltTest(int altTest) {
         this.altTest = altTest;
     }
+
     
-
-
-    @Override
-    public String toString() {
-        return "ResetUserAction [uid=" + uid + ", altTest=" + altTest + "]";
+    /** is uid if FULL, else is programId
+     * 
+     * @return
+     */
+    public int getId() {
+        return id;
     }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    public ResetType getType() {
+        return type;
+    }
+
+
+    public void setType(ResetType type) {
+        this.type = type;
+    }
+
 }

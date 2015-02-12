@@ -18,6 +18,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
+import hotmath.gwt.shared.client.rpc.action.ResetUserAction.ResetType;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
@@ -390,7 +391,7 @@ public class CmShared implements EntryPoint {
                     // quiet
                 }
 
-                s.execute(new ResetUserAction(uid, altTest), new CmAsyncCallback<RpcData>() {
+                s.execute(new ResetUserAction(ResetType.FULL, uid, altTest), new CmAsyncCallback<RpcData>() {
                     @Override
                     public void onSuccess(RpcData result) {
                         refreshPage();

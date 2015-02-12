@@ -344,4 +344,18 @@ public class CmUserProgramDao extends SimpleJdbcDaoSupport {
         }
     }
 
+    public void resetProgramToStartOfCurrentQuiz(int id) {
+        
+//        
+//        getJdbcTemplate().update(new PreparedStatementCreator() {
+//            @Override
+//            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+//                PreparedStatement ps = con.prepareStatement(sql);
+//                ps.setInt(1,gradeLevel);
+//                ps.setInt(2,userProgId);
+//                return ps;
+//            }
+//        });        
+   }
+
 }

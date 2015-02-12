@@ -36,6 +36,7 @@ import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
+import hotmath.gwt.shared.client.rpc.action.ResetUserAction.ResetType;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageExtendedAction;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
@@ -285,7 +286,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                ResetUserAction action = new ResetUserAction(uid, 0);
+                ResetUserAction action = new ResetUserAction(ResetType.FULL,uid, 0);
                 setAction(action);
                 CmRpcCore.getCmService().execute(action, this);
             }
