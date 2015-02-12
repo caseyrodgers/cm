@@ -68,6 +68,7 @@ public class WelcomeActivity implements WelcomeView.Presenter{
             status = "<p>You are in the <b>" + testName + "</b> program.</p>";
         }
         
+        
         return status;
     }
     @Override

@@ -272,6 +272,8 @@ public class SharedData {
         } else {
             status = "<p>You are in the <b>" + testName + "</b> program.</p>";
         }
+        
+        status += "<div>Search any lesson using <img src='/gwt-resources/images/search_mobile-enabled.png'/> except during quizzes.</div>";
 
         FlowPanel fp = new FlowPanel();
         fp.add(new HTML(status));
