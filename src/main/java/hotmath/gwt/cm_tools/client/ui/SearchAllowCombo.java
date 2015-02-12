@@ -18,9 +18,9 @@ import com.sencha.gxt.widget.core.client.form.ComboBox;
 
 
 public class SearchAllowCombo extends ComboBox<SearchAllowMode> {
-	
-	public static final int DEFAULT_PERCENT_IDX = 1;
-	static private SearchAllowProperties __props = GWT.create(SearchAllowProperties.class);
+    
+    public static final int DEFAULT_PERCENT_IDX = 1;
+    static private SearchAllowProperties __props = GWT.create(SearchAllowProperties.class);
 
     public SearchAllowCombo() {
         
@@ -53,9 +53,18 @@ public class SearchAllowCombo extends ComboBox<SearchAllowMode> {
         list.addAll(Arrays.asList(SearchAllowMode.values()));
         return list;
     }
-    
+
+    /** get search mode */
     public SearchAllowMode getSearchMode() {
-        return SearchAllowMode.values()[getValue().getLevel()];
+        try {
+            if(getValue() != null) {
+                return SearchAllowMode.values()[getValue().getLevel()];
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return SearchAllowMode.ENABLED_EXCEPT_TESTS;
     }
 
     interface SearchAllowProperties extends PropertyAccess<String> {
