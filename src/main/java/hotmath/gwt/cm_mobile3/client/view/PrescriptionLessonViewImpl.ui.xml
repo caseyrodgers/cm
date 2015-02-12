@@ -2,11 +2,20 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cm="urn:import:hotmath.gwt.cm_mobile_shared.client.ui"
 	>
+	
+	
+	<ui:style>
+	    .search {
+	        margin-left: 20px;
+	    }
+	</ui:style>
+	
 	<g:HTMLPanel styleName='prescriptionLessonViewImpl'>
 	   <div class="correct_image" ui:field="correctImage"></div>
 	   <h1 ui:field="lessonTitle"></h1>
 	   <div class='buttonBar' ui:field='buttonBar'>
            <cm:TouchButton ui:field="choose" styleName='sexybutton sexy_cm_silver'><span><span>Next Lesson/Quiz</span></span></cm:TouchButton>
+           <cm:TouchButton ui:field="search" styleName='{style.search} sexybutton sexy_cm_silver'><span><span>Search All Lessons</span></span></cm:TouchButton>
 	   </div>
 	   <g:HTMLPanel ui:field='resourceList' styleName='resourceList'></g:HTMLPanel>
 	</g:HTMLPanel>

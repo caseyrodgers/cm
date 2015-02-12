@@ -1,20 +1,15 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
 import hotmath.gwt.cm_core.client.BackAction;
-import hotmath.gwt.cm_mobile3.client.activity.SearchActivity;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ListItem;
-import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
-import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
-import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.CmStorage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
-import hotmath.gwt.cm_mobile_shared.client.view.SubToolBar;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
@@ -57,22 +52,27 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
     
     @UiField
     Button choose;
-    private SubToolBar _subToolbar;
+    
+    @UiField 
+    Button search;
+    
     
     public PrescriptionLessonViewImpl() {
         FlowPanel main = new FlowPanel();
-        main.add(createSubToolbar());
         main.add(uiBinder.createAndBindUi(this));
         resourceList.add(listItems);
         listItems.addStyleName("touch");
         
+        search.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                presenter.showSearch();
+            }
+        });
         initWidget(main);
+        
     }
 
-    private Widget createSubToolbar() {
-        _subToolbar = new SubToolBar();
-        return _subToolbar;
-    }
 
     interface MyUiBinder extends UiBinder<Widget, PrescriptionLessonViewImpl> {
     }
@@ -85,8 +85,6 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
         this.presenter = presenter;
         
         presenter.prepareView(this);
-        
-        _subToolbar.setupViewForSearch();
     }
     
     TouchClickHandler<String> touchHandler = new TouchClickHandler<String>() {
