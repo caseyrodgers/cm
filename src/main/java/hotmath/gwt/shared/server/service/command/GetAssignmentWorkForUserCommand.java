@@ -25,7 +25,9 @@ public class GetAssignmentWorkForUserCommand implements ActionHandler<GetAssignm
 
 			@Override
 			public int compare(StudentAssignment sa1, StudentAssignment sa2) {
-				int test = sa1.getDueDate().after(sa2.getDueDate()) ? 1 : 0;
+				int test = sa2.getDueDate().after(sa1.getDueDate()) ? 1 : 0;
+				if (test != 0) return test;
+				test = sa1.getDueDate().after(sa2.getDueDate()) ? -1 : 0;
 				if (test != 0) return test;
 
 				return (sa1.getComments().compareTo(sa2.getComments()));
