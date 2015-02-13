@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWorkForUserAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
@@ -12,6 +13,7 @@ import hotmath.gwt.shared.client.ui.CmCellRendererBoolean;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -44,6 +46,9 @@ public class StudentAssignmentWorkWindow extends GWindow {
     }
 
     private void readDataFromServer() {
+
+    	CmBusyManager.setBusy(true);
+
         new RetryAction<CmList<StudentAssignment>>() {
             @Override
             public void attempt() {
@@ -58,10 +63,16 @@ public class StudentAssignmentWorkWindow extends GWindow {
 
             @Override
             public void oncapture(CmList<StudentAssignment> list) {
-                _grid.getStore().clear();
-                _grid.getStore().addAll(list);
-                _grid.setLoadMask(false);
-                forceLayout();
+            	try {
+                    _grid.getStore().clear();
+                    _grid.getStore().addAll(list);
+                    _grid.setLoadMask(false);
+                    forceLayout();
+                } catch (Exception e) {
+                    Log.error("Error: " + list.size(), e);
+                } finally {
+                    CmBusyManager.setBusy(false);
+                }
             }
         }.attempt();
     }
