@@ -27,7 +27,7 @@ public class AssignmentStatusDialog extends GWindow {
         super(false);
         setPixelSize(500, 450);
         setMaximizable(true);
-        setHeadingText("Student Status");
+        setHeadingText("Student Assignment Status");
 
         _container = new BorderLayoutContainer();
         _container.setBorders(true);
