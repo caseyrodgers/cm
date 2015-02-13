@@ -10,6 +10,8 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 
 import java.sql.Connection;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class GetAssignmentWorkForUserCommand implements ActionHandler<GetAssignmentWorkForUserAction, CmList<StudentAssignment>>{
 
@@ -17,6 +19,19 @@ public class GetAssignmentWorkForUserCommand implements ActionHandler<GetAssignm
     public CmList<StudentAssignment> execute(Connection conn, GetAssignmentWorkForUserAction action) throws Exception {
         CmList<StudentAssignment> cmList = new CmArrayList<StudentAssignment>();
         cmList.addAll(AssignmentDao.getInstance().getAssignmentWorkForStudent(action.getUid(), action.getFromDate(), action.getToDate()));
+
+        // sort by descending date
+        Collections.sort(cmList, new Comparator<StudentAssignment>() {
+
+			@Override
+			public int compare(StudentAssignment sa1, StudentAssignment sa2) {
+				int test = sa1.getDueDate().after(sa2.getDueDate()) ? 1 : 0;
+				if (test != 0) return test;
+
+				return (sa1.getComments().compareTo(sa2.getComments()));
+			}
+        	
+        });
         return cmList;
     }
 
