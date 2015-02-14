@@ -12,7 +12,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
-import hotmath.gwt.shared.client.util.CmException;
 import hotmath.search.HMIndexSearcher;
 import hotmath.search.HMIndexWriter;
 import hotmath.search.HMIndexWriterFactory;
@@ -35,6 +34,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.MultiFields;
+import org.apache.lucene.util.Bits;
 
 /**
  *
@@ -208,8 +209,10 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         IndexReader reader = HMIndexSearcher.getInstance().getIndexReader("inmh");
 
         for (int i = 0; i < reader.maxDoc(); i++) {
-            if (reader.isDeleted(i)) {
-                continue;
+            
+            Bits liveDocs = MultiFields.getLiveDocs(reader);
+            if (!liveDocs.get(i)) {
+              continue;
             }
 
             Document doc = reader.document(i);
