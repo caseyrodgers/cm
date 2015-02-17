@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_admin.client.ui.assignment;
+package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
@@ -9,8 +9,6 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetStudentAssignmentAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
-import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell;
 import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell.ProblemGridCellCallback;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -78,6 +76,10 @@ public class AssignmentGradingPanel extends ContentPanel {
 
     UpdateGradeCallback _updateGradeCallback;
 
+    public ListStore<StudentProblemDto> getStore() {
+        return _store;
+    }
+    
     public AssignmentGradingPanel(StudentAssignment studentAssignment, ProblemSelectionCallback callBack, UpdateGradeCallback updateGradeCallback) {
         _problemSelectionCallBack = callBack;
         _updateGradeCallback = updateGradeCallback;

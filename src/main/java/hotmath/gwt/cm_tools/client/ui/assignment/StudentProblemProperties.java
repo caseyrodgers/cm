@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_admin.client.ui.assignment;
+package hotmath.gwt.cm_tools.client.ui.assignment;
 
 
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;

@@ -1,9 +1,7 @@
-package hotmath.gwt.cm_admin.client.ui.assignment;
+package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentGradingPanel.ProblemSelectionCallback;
-import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentGradingPanel.UpdateGradeCallback;
-import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
@@ -17,9 +15,11 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentGradingPanel;
+import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentGradingPanel.ProblemSelectionCallback;
+import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentGradingPanel.UpdateGradeCallback;
+import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentQuestionViewerPanel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -230,7 +230,7 @@ public class GradeBookDialog {
     private boolean saveStudentGradeBook(final boolean releaseGrades) {
 
         if (releaseGrades) {
-            agPanel._store.commitChanges();
+            agPanel.getStore().commitChanges();
 
             int cnt = 0;
             for (StudentProblemDto sd : this._stuAssignment.getStudentStatuses().getAssigmentStatuses()) {
@@ -275,7 +275,7 @@ public class GradeBookDialog {
             public void attempt() {
                 CmBusyManager.setBusy(true);
 
-                ListStore<StudentProblemDto> spStore = agPanel._store;
+                ListStore<StudentProblemDto> spStore = agPanel.getStore();
 
                 // commit any edits
                 spStore.commitChanges();

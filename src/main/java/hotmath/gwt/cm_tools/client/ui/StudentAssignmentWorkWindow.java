@@ -2,12 +2,14 @@ package hotmath.gwt.cm_tools.client.ui;
 
 
 import hotmath.gwt.cm_core.client.util.CmBusyManager;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWorkForUserAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.ui.CmCellRendererBoolean;
 
@@ -20,6 +22,9 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
@@ -78,33 +83,33 @@ public class StudentAssignmentWorkWindow extends GWindow {
         }.attempt();
     }
 
-//    private void addGradeButton() {
-//    	TextButton gradeBtn = new TextButton("Grade");
-//    	gradeBtn.setToolTip("View and Grade the selected Assignment");
-//    	gradeBtn.addSelectHandler(new SelectHandler() {
-//            @Override
-//            public void onSelect(SelectEvent event) {
-//                showAssignmentGrading();                
-//            }
-//        });
-//    	addTool(gradeBtn);
-//    }
-//
-//	private void showAssignmentGrading() {
-//		final StudentAssignment studentAssignment = _grid.getSelectionModel()
-//				.getSelectedItem();
-//		if (studentAssignment == null) {
-//			CmMessageBox.showAlert("You need to select an Assignment");
-//		} else {
-//			new GradeBookDialog(studentAssignment, new CallbackOnComplete() {
-//				@Override
-//				public void isComplete() {
-//					// reload data
-//					readDataFromServer();
-//				}
-//			});
-//		}
-//	}
+    private void addGradeButton() {
+    	TextButton gradeBtn = new TextButton("Grade");
+    	gradeBtn.setToolTip("View and Grade the selected Assignment");
+    	gradeBtn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                showAssignmentGrading();                
+            }
+        });
+    	addTool(gradeBtn);
+    }
+
+	private void showAssignmentGrading() {
+		final StudentAssignment studentAssignment = _grid.getSelectionModel()
+				.getSelectedItem();
+		if (studentAssignment == null) {
+			CmMessageBox.showAlert("You need to select an Assignment");
+		} else {
+			new GradeBookDialog(studentAssignment, new CallbackOnComplete() {
+				@Override
+				public void isComplete() {
+					// reload data
+					readDataFromServer();
+				}
+			});
+		}
+	}
 
     private void createGrid() {
         _props = GWT.create(GridProperties.class);

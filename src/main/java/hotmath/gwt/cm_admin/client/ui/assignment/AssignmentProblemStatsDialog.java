@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.GradeBookDialog;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
