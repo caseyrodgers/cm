@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-
 import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
@@ -22,6 +21,7 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
@@ -29,6 +29,12 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 
+/**
+ * Show student's assignment work, most recent first
+ * 
+ * @author bob
+ *
+ */
 public class StudentAssignmentWorkWindow extends GWindow {
     
     private StudentModelI _student;
@@ -37,6 +43,7 @@ public class StudentAssignmentWorkWindow extends GWindow {
 
     Grid<StudentAssignment> _grid;
     GridProperties _props;
+    ContentPanel _contentPanel= new ContentPanel();
 
     public StudentAssignmentWorkWindow(StudentModelI student) {
         super(false);
@@ -45,6 +52,8 @@ public class StudentAssignmentWorkWindow extends GWindow {
         setPixelSize(500, 300);
         setResizable(false);
         super.addCloseButton();
+        addGradeButton();
+        add(_contentPanel);
         setVisible(true);
         createGrid();
         readDataFromServer();
@@ -92,7 +101,7 @@ public class StudentAssignmentWorkWindow extends GWindow {
                 showAssignmentGrading();                
             }
         });
-    	addTool(gradeBtn);
+    	_contentPanel.addTool(gradeBtn);
     }
 
 	private void showAssignmentGrading() {
@@ -127,7 +136,7 @@ public class StudentAssignmentWorkWindow extends GWindow {
         _grid.setLoadMask(true);
         _grid.getView().setAutoExpandColumn(cols.getColumn(0));
         _grid.getView().setAutoFill(true);
-        setWidget(_grid);
+        _contentPanel.setWidget(_grid);
     }
     
     interface GridProperties extends PropertyAccess<String> {
