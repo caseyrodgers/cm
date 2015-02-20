@@ -14,6 +14,7 @@ import hotmath.gwt.shared.client.ui.CmCellRendererBoolean;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;
@@ -79,6 +80,7 @@ public class StudentAssignmentWorkWindow extends GWindow {
             @Override
             public void oncapture(CmList<StudentAssignment> list) {
             	try {
+                    setStudentName(list);
                     _grid.getStore().clear();
                     _grid.getStore().addAll(list);
                     _grid.setLoadMask(false);
@@ -89,6 +91,12 @@ public class StudentAssignmentWorkWindow extends GWindow {
                     CmBusyManager.setBusy(false);
                 }
             }
+
+			private void setStudentName(List<StudentAssignment> list) {
+				for (StudentAssignment sa : list) {
+					sa.setStudentName(_student.getName());
+				}
+			}
         }.attempt();
     }
 
