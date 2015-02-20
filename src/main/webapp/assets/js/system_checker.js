@@ -64,7 +64,7 @@ function checkBrowser() {
             isOk = true;
         }
     } else if (b.indexOf('explorer') > -1) {
-        if (v >= 8 && v < 11) {
+        if (v >= 8 && v < 12) {
             isOk = true;
         }
     } else if (b.indexOf('opera') > -1) {
