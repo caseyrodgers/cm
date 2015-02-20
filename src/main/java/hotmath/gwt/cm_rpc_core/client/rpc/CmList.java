@@ -7,8 +7,8 @@ import java.util.List;
  * 
  * @author bob
  *
- * @param <x>
+ * @param <T>
  */
-public interface CmList<x> extends Response, List<x> {
+public interface CmList<T> extends Response, List<T> {
 
 }
