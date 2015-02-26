@@ -1,12 +1,11 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.model.TopicMatch;
+import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 
 
-public class SearchTopicAction implements Action<CmList<TopicMatch>> {
+public class SearchTopicAction implements Action<TopicSearchResults> {
 
     public enum SearchType{
         /** Absolute search for lesson file */

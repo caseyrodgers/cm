@@ -6,7 +6,10 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 public class MyTextButton extends TextButton {
     
     public MyTextButton(String name, SelectHandler handler, String tip) {
-        super(name, handler);
+        super(name);
+        if(handler != null) {
+            addSelectHandler(handler);
+        }
         setToolTip(tip);
     }
 }

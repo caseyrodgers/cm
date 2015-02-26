@@ -20,9 +20,9 @@ import hotmath.gwt.cm_core.client.UserInfoBase;
 import hotmath.gwt.cm_core.client.event.CmLogoutEvent;
 import hotmath.gwt.cm_core.client.flow.CmProgramFlowClientManager;
 import hotmath.gwt.cm_core.client.util.CmBusyManager;
-import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.cm_core.client.util.CmBusyManager.BusyHandler;
 import hotmath.gwt.cm_core.client.util.CmBusyManager.BusyState;
+import hotmath.gwt.cm_core.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
@@ -117,10 +117,10 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
         __thisInstance = this;
         CmLogger.info("Catchup Math Startup");
 
-        /**
-         * if(CatchupMathTests.runTest()) { CmBusyManager.showLoading(false);
-         * return; }
-         */
+        if (CatchupMathTests.runTest()) {
+            CmBusyManager.showLoading(false);
+            return;
+        }
 
         // GXT.setDefaultTheme(Theme.GRAY, true);
 

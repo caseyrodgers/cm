@@ -3,6 +3,8 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.ProblemID;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
+import hotmath.gwt.cm_core.client.model.SearchSuggestion;
+import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch.MatchWeight;
@@ -17,6 +19,7 @@ import hotmath.search.HMIndexWriter;
 import hotmath.search.HMIndexWriterFactory;
 import hotmath.search.Hit;
 import hotmath.search.HitImplBase;
+import hotmath.search.SearchSuggest;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -50,7 +53,7 @@ import org.apache.lucene.util.Bits;
  * @author casey
  *
  */
-public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmList<TopicMatch>> {
+public class SearchTopicCommand implements ActionHandler<SearchTopicAction,TopicSearchResults> {
 
     static Logger __logger = Logger.getLogger(SearchTopicCommand.class);
     static Map<String, Integer> __rankings;
@@ -81,9 +84,22 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         }
     }
     
+    
+    
+    private static SearchSuggest __suggestionSearcher = null;
+    
     @Override
-    public CmList<TopicMatch> execute(Connection conn, SearchTopicAction action) throws Exception {
+    public TopicSearchResults execute(Connection conn, SearchTopicAction action) throws Exception {
         
+        
+        if(__suggestionSearcher == null) {
+            try {
+                __suggestionSearcher = new SearchSuggest();
+            }
+            catch(Exception e) {
+                __logger.error("error setting up SearchSuggest",  e);
+            }
+        }
         
         PreparedStatement ps=null; 
         try {
@@ -153,7 +169,12 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
 //            
 //            return orderedTopics2;
             
-            return orderedTopics;
+            
+            CmList<SearchSuggestion> suggestions = new CmArrayList<SearchSuggestion>();
+            if(__suggestionSearcher != null) {
+                suggestions.addAll(__suggestionSearcher.getSuggestions(action.getSearch()));
+            }
+            return new TopicSearchResults(orderedTopics, suggestions);
 
         } catch (Throwable e) {
             __logger.error("Error occurred executing search", e);

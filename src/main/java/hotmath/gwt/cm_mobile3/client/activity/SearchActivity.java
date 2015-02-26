@@ -1,18 +1,14 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_mobile3.client.ClientFactory;
 import hotmath.gwt.cm_mobile3.client.view.SearchView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
-import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
-import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
-import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
@@ -50,11 +46,11 @@ public class SearchActivity implements SearchView.Presenter {
         
         int uid = SharedData.getMobileUser() != null?SharedData.getMobileUser().getUserId():-1;
         SearchTopicAction action = new SearchTopicAction(search,SearchApp.CM_MOBILE,uid);
-        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<TopicMatch>>() {
+        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<TopicSearchResults>() {
             @Override
-            public void onSuccess(CmList<TopicMatch> result) {
+            public void onSuccess(TopicSearchResults result) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
-                callBack.searchResults(result);
+                callBack.searchResults(result.getTopics());
             }
             
             @Override

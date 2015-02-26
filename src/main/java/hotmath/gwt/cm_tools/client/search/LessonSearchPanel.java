@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.search;
 
+import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
@@ -109,7 +110,7 @@ public class LessonSearchPanel extends SimpleContainer {
     }
 
     private void getLessonsFromServer() {
-        new RetryAction<CmList<TopicMatch>>() {
+        new RetryAction<TopicSearchResults>() {
             @Override
             public void attempt() {
                 SearchTopicAction action = new SearchTopicAction(SearchType.LESSON_LIKE,SearchApp.SEARCH_STAND_ALONE, "%" + _lessonText.getValue() + "%",0);
@@ -118,10 +119,10 @@ public class LessonSearchPanel extends SimpleContainer {
             }
             
             @Override
-            public void oncapture(CmList<TopicMatch> value) {
-                _allLessons = value;
+            public void oncapture(TopicSearchResults value) {
+                _allLessons = value.getTopics();
                 _gridOfLessons.getStore().clear();
-                _gridOfLessons.getStore().addAll(value);
+                _gridOfLessons.getStore().addAll(_allLessons);
             }
 
         }.register();

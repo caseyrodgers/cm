@@ -2,11 +2,13 @@ package hotmath.gwt.cm_tools.client.ui.search;
 
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
-import hotmath.gwt.cm_core.client.UserInfoBase.Mode;
+import hotmath.gwt.cm_core.client.model.SearchSuggestion;
+import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_core.client.util.CmBusyManager;
+import hotmath.gwt.cm_core.client.util.CmBusyManager.BusyHandler;
+import hotmath.gwt.cm_core.client.util.CmBusyManager.BusyState;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
-import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.TopicMatch;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchApp;
@@ -14,6 +16,7 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_tools.client.ui.MyTextButton;
 import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchBundle;
 import hotmath.gwt.cm_tools.client.ui.SearchListViewTemplate.SearchStyle;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
@@ -25,10 +28,12 @@ import java.util.List;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -36,6 +41,7 @@ import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.util.Margins;
+import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
@@ -50,6 +56,7 @@ import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.Hor
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
@@ -78,6 +85,28 @@ public class SearchPanel extends BorderLayoutContainer {
     private BorderLayoutContainer _centerPanel;
     CenterLayoutContainer _centerPanelEmpty;
 
+    
+    public interface SeachSuggestionChoosen {
+        void choosen(SearchSuggestion suggestion);
+    }
+
+    private List<SearchSuggestion> _currentSuggestions;
+
+    TextButton _suggestionButton = new MyTextButton("?", new SelectHandler() {
+
+        @Override
+        public void onSelect(SelectEvent event) {
+            new SearchSuggestionPopup(_currentSuggestions, new SeachSuggestionChoosen() {
+                @Override
+                public void choosen(SearchSuggestion suggestion) {
+                    _inputBox.setText(suggestion.getSuggestion());
+                    doSearch(suggestion.getSuggestion());
+                }
+            }).show(_suggestionButton);
+        }
+    }, "Search suggestions");
+    
+    
     private BorderLayoutData _centerData;
 
     private BorderLayoutData _westData;
@@ -124,9 +153,44 @@ public class SearchPanel extends BorderLayoutContainer {
         _centerPanel = new BorderLayoutContainer();
         _centerPanel.setCenterWidget(_explorerWrapper);
         enableMainArea(false);
+        
+        
+        
+        startInputWatcherTimer();
+        
     }
     
-    interface Props extends PropertyAccess<TopicMatch> {
+    /** start a timer to watch the _inputText for changes.
+     * 
+     * If there are changes automatically execute the search .. 
+    
+     */
+    String _lastSearchValue;
+    Timer _watchTimer=null;
+    private void startInputWatcherTimer() {
+        if(_watchTimer==null) {
+            _watchTimer = new Timer() {
+                @Override
+                public void run() {
+                    if(isVisible()) {
+                        System.out.println("Checking search box for changes...");
+                        String thisSearch = _inputBox.getCurrentValue();
+                        if(_lastSearchValue != null) {
+                            if(thisSearch != null) {
+                                if(!thisSearch.equals(_lastSearchValue)) {
+                                    doSearch(thisSearch);
+                                }
+                            }
+                        }
+                        _lastSearchValue = thisSearch;
+                    }
+                }
+            };
+            _watchTimer.scheduleRepeating(2000);
+        }
+    }
+
+    interface GridProps extends PropertyAccess<TopicMatch> {
         ModelKeyProvider<TopicMatch> topicFile();
         ValueProvider<TopicMatch, String> topicName();
     }
@@ -139,7 +203,7 @@ public class SearchPanel extends BorderLayoutContainer {
     }
     final ListViewTemplate template = GWT.create(ListViewTemplate.class);
     
-    Props props = GWT.create(Props.class);
+    GridProps props = GWT.create(GridProps.class);
     private HTML _searchMessage; 
     private Widget createListView() {
         final SearchBundle b = GWT.create(SearchBundle.class);
@@ -207,10 +271,29 @@ public class SearchPanel extends BorderLayoutContainer {
         }
     }
 
+	
+	interface ComboProps extends PropertyAccess<String> {
+
+	    @Path("suggestion")
+        ModelKeyProvider<SearchSuggestion> key();
+        LabelProvider<SearchSuggestion> suggestion();
+	}
+	
+	ComboProps comboProps = GWT.create(ComboProps.class);
+    private MyFieldLabel searchField;
+    private ComboBox<SearchSuggestion> _searchCombo;
+	
     private Widget createHeader() {
         _searchMessage = new HTML();
         FramedPanel fp = new FramedPanel();
         fp.setHeaderVisible(false);
+        
+        
+        ListStore<SearchSuggestion> comboStore = new ListStore<SearchSuggestion>(comboProps.key());
+        _searchCombo = new ComboBox<SearchSuggestion>(comboStore,comboProps.suggestion());
+        comboStore.add(new SearchSuggestion("Test 1"));
+        comboStore.add(new SearchSuggestion("Test 2"));
+        
         TextButton searchBtn = new TextButton("Search!", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
@@ -239,6 +322,11 @@ public class SearchPanel extends BorderLayoutContainer {
         HorizontalLayoutData hld = new HorizontalLayoutData(20,20);
         hld.setMargins(new Margins(0,0,0,4));
         hl.add(searchBtn, hld);
+        
+        hld = new HorizontalLayoutData();
+        hld.setMargins(new Margins(0,0,0,40));
+        _suggestionButton.getElement().setAttribute("style",  "display: none");
+        hl.add(_suggestionButton,hld );
         hl.setHeight(20);
         
         FlowLayoutContainer flow = new FlowLayoutContainer();
@@ -263,6 +351,7 @@ public class SearchPanel extends BorderLayoutContainer {
     }
     
     
+            
     private void doSearch(final String searchFor) {
         if(CmCore.isDebug()) {
             Info.display("Searching", "Searching for matches ..");
@@ -274,21 +363,31 @@ public class SearchPanel extends BorderLayoutContainer {
         
         showSearchMessage("Searching ...");
         CmBusyManager.setBusy(true);
-        CmRpcCore.getCmService().execute(action, new AsyncCallback<CmList<TopicMatch>>() {
+        CmRpcCore.getCmService().execute(action, new AsyncCallback<TopicSearchResults>() {
             @Override
-            public void onSuccess(CmList<TopicMatch> result) {
+            public void onSuccess(TopicSearchResults result) {
                 CmBusyManager.setBusy(false);
-                Log.debug("search ('" + searchFor + "') matches: " + result.size());
+                
+                CmList<TopicMatch> topics = result.getTopics();
+                Log.debug("search ('" + searchFor + "') matches: " + topics.size());
                 _grid.getStore().clear();
                 _grid.getStore().clearSortInfo();
                 
-                _grid.getStore().addAll(result);
+                _grid.getStore().addAll(topics);
+
+                _currentSuggestions = result.getSuggestions();
+                if(result.getSuggestions().size() > 0) {
+                    _suggestionButton.getElement().setAttribute("style",  "display: block");
+                }
+                else {
+                    _suggestionButton.getElement().setAttribute("style",  "display: none");
+                }
                 
-                if(result.size() > 0) {
-                    _grid.getSelectionModel().select(result.get(0), false);
+                if(topics.size() > 0) {
+                    _grid.getSelectionModel().select(topics.get(0), false);
                     enableMainArea(true);
                     
-                    showSearchMessage("Found " + result.size() + " " + (result.size()==1?"match":"matches"));
+                    showSearchMessage("Found " + topics.size() + " " + (topics.size()==1?"match":"matches"));
                 }
                 else {
                     enableMainArea(false);
@@ -331,6 +430,20 @@ public class SearchPanel extends BorderLayoutContainer {
     }
 
     static public void startTest() {
+        CmBusyManager.setBusyHandler(new BusyHandler() {
+            
+            @Override
+            public void showMask(BusyState state) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            @Override
+            public void hideMask() {
+                // TODO Auto-generated method stub
+                
+            }
+        });
         new GwtTester(new TestWidget() {
            @Override
            public void runTest() {
