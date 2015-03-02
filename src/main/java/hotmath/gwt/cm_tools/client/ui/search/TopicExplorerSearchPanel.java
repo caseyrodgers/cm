@@ -43,7 +43,7 @@ public class TopicExplorerSearchPanel extends ContentPanel {
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
-                _searchPanel._inputBox.focus();
+                _searchPanel.setInputFocus();
             }
         });
     }
@@ -88,6 +88,6 @@ public class TopicExplorerSearchPanel extends ContentPanel {
 
 
     public void setFocus() {
-        _searchPanel._inputBox.focus();
+        _searchPanel.setInputFocus();
     }
 }

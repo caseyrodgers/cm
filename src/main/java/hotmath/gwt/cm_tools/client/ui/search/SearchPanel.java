@@ -318,16 +318,18 @@ public class SearchPanel extends BorderLayoutContainer {
         _inputBox.setToolTip("Enter a word or phrase in the textbox. Then select a lesson to explore the text, video, activity and practice problems.");
         
         HorizontalLayoutContainer hl = new HorizontalLayoutContainer();
+        hl.setHeight(20);
+
         hl.add(new MyFieldLabel(_inputBox, "Lesson Search", 85, 250));
-        HorizontalLayoutData hld = new HorizontalLayoutData(20,20);
+        
+        HorizontalLayoutData hld = new HorizontalLayoutData();
+        _suggestionButton.setEnabled(false);
+        hl.add(_suggestionButton,hld );
+        
+        hld = new HorizontalLayoutData(20,20);
         hld.setMargins(new Margins(0,0,0,4));
         hl.add(searchBtn, hld);
         
-        hld = new HorizontalLayoutData();
-        hld.setMargins(new Margins(0,0,0,40));
-        _suggestionButton.getElement().setAttribute("style",  "display: none");
-        hl.add(_suggestionButton,hld );
-        hl.setHeight(20);
         
         FlowLayoutContainer flow = new FlowLayoutContainer();
         flow.add(hl);
@@ -377,10 +379,10 @@ public class SearchPanel extends BorderLayoutContainer {
 
                 _currentSuggestions = result.getSuggestions();
                 if(result.getSuggestions().size() > 0) {
-                    _suggestionButton.getElement().setAttribute("style",  "display: block");
+                    _suggestionButton.setEnabled(true);
                 }
                 else {
-                    _suggestionButton.getElement().setAttribute("style",  "display: none");
+                    _suggestionButton.setEnabled(false);
                 }
                 
                 if(topics.size() > 0) {
@@ -453,6 +455,10 @@ public class SearchPanel extends BorderLayoutContainer {
                w.setVisible(true);
            }
        });
+    }
+
+    public void setInputFocus() {
+        _inputBox.focus();
     }
    
 
