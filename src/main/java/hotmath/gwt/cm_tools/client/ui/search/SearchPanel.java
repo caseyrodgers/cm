@@ -29,12 +29,15 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -96,13 +99,7 @@ public class SearchPanel extends BorderLayoutContainer {
 
         @Override
         public void onSelect(SelectEvent event) {
-            new SearchSuggestionPopup(_currentSuggestions, new SeachSuggestionChoosen() {
-                @Override
-                public void choosen(SearchSuggestion suggestion) {
-                    _inputBox.setText(suggestion.getSuggestion());
-                    doSearch(suggestion.getSuggestion());
-                }
-            }).show(_suggestionButton);
+            showSearchSuggestions();
         }
     }, "Search suggestions");
     
@@ -205,6 +202,7 @@ public class SearchPanel extends BorderLayoutContainer {
     
     GridProps props = GWT.create(GridProps.class);
     private HTML _searchMessage; 
+    private HorizontalLayoutContainer _suggestionsContainer;
     private Widget createListView() {
         final SearchBundle b = GWT.create(SearchBundle.class);
         b.css().ensureInjected();
@@ -249,6 +247,18 @@ public class SearchPanel extends BorderLayoutContainer {
         }
     };
     
+    
+    private void showSearchSuggestions() {
+        new SearchSuggestionPopup(_currentSuggestions, new SeachSuggestionChoosen() {
+            @Override
+            public void choosen(SearchSuggestion suggestion) {
+                if(suggestion != null) {
+                    _inputBox.setText(suggestion.getSuggestion());
+                    doSearch(suggestion.getSuggestion());
+                }
+            }
+        }).show(_suggestionsContainer);
+    }
     protected void showSelectedReview() {
     	TopicMatch si = _grid.getSelectionModel().getSelectedItem();
     	if(si != null) {
@@ -282,17 +292,32 @@ public class SearchPanel extends BorderLayoutContainer {
 	ComboProps comboProps = GWT.create(ComboProps.class);
     private MyFieldLabel searchField;
     private ComboBox<SearchSuggestion> _searchCombo;
+    private Anchor _searchAnchor;
 	
     private Widget createHeader() {
         _searchMessage = new HTML();
+        _suggestionsContainer = new HorizontalLayoutContainer();
+        _suggestionsContainer.addStyleName("suggestions-container");
+        
+        _searchAnchor = new Anchor("There are search suggestions");
+        _searchAnchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                showSearchSuggestions();
+            }
+        });
+        
+        // String cssStyle = "position: absolute;top: 23px;left: 140px;width: 200px;";
+        //_suggestionsContainer.getElement().setAttribute("style",  cssStyle);
+        
         FramedPanel fp = new FramedPanel();
         fp.setHeaderVisible(false);
         
         
-        ListStore<SearchSuggestion> comboStore = new ListStore<SearchSuggestion>(comboProps.key());
-        _searchCombo = new ComboBox<SearchSuggestion>(comboStore,comboProps.suggestion());
-        comboStore.add(new SearchSuggestion("Test 1"));
-        comboStore.add(new SearchSuggestion("Test 2"));
+//        ListStore<SearchSuggestion> comboStore = new ListStore<SearchSuggestion>(comboProps.key());
+//        _searchCombo = new ComboBox<SearchSuggestion>(comboStore,comboProps.suggestion());
+//        comboStore.add(new SearchSuggestion("Test 1"));
+//        comboStore.add(new SearchSuggestion("Test 2"));
         
         TextButton searchBtn = new TextButton("Search!", new SelectHandler() {
             @Override
@@ -322,11 +347,11 @@ public class SearchPanel extends BorderLayoutContainer {
 
         hl.add(new MyFieldLabel(_inputBox, "Lesson Search", 85, 250));
         
-        HorizontalLayoutData hld = new HorizontalLayoutData();
-        _suggestionButton.setEnabled(false);
-        hl.add(_suggestionButton,hld );
+//        HorizontalLayoutData hld = new HorizontalLayoutData();
+//        _suggestionButton.setEnabled(false);
+//        hl.add(_suggestionButton,hld );
         
-        hld = new HorizontalLayoutData(20,20);
+        HorizontalLayoutData hld = new HorizontalLayoutData(20,20);
         hld.setMargins(new Margins(0,0,0,4));
         hl.add(searchBtn, hld);
         
@@ -334,6 +359,7 @@ public class SearchPanel extends BorderLayoutContainer {
         FlowLayoutContainer flow = new FlowLayoutContainer();
         flow.add(hl);
         flow.add(_searchMessage);
+        flow.add(_suggestionsContainer);
         fp.setWidget(flow);
         
         
@@ -377,9 +403,19 @@ public class SearchPanel extends BorderLayoutContainer {
                 
                 _grid.getStore().addAll(topics);
 
+                
+                _suggestionsContainer.clear();
                 _currentSuggestions = result.getSuggestions();
                 if(result.getSuggestions().size() > 0) {
                     _suggestionButton.setEnabled(true);
+                    
+                    int cnt = result.getSuggestions().size();
+                    String msg = "There ";
+                    msg += (cnt == 1)?"is":"are";
+                    msg += " search suggestion";
+                    msg += (cnt > 1)?"s":"";
+                    _searchAnchor.setText(msg);
+                    _suggestionsContainer.add(_searchAnchor);
                 }
                 else {
                     _suggestionButton.setEnabled(false);

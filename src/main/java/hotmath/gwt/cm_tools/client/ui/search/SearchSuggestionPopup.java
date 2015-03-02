@@ -30,7 +30,7 @@ public class SearchSuggestionPopup extends Popup {
         
         
         this.callback = seachSuggestionChoosen;
-        setPixelSize(150,  200);
+        setPixelSize(200,  200);
         setAutoHide(true);
         
         FramedPanel frame = new FramedPanel();
@@ -55,11 +55,20 @@ public class SearchSuggestionPopup extends Popup {
         
         frame.setWidget(_view);
         frame.setHeadingText("Search Suggestions");
-        
+ 
         frame.addButton(new TextButton("Select", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 doSelect();
+            }
+        }));
+
+       
+        
+        frame.addButton(new TextButton("Cancel", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                hide();
             }
         }));
 

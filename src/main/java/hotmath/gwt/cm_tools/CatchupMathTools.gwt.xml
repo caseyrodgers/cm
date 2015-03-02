@@ -6,7 +6,7 @@
 
 	<inherits name='com.sencha.gxt.ui.GXT' />
     <inherits name='com.sencha.gxt.chart.Chart'/>
-	
+    
     <inherits name='pl.rmalinowski.gwt2swf.GWT2SWF' />
 
 <!--     

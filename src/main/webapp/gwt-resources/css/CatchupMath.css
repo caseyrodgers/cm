@@ -1478,3 +1478,21 @@ SolutionSetCompleteDialog .results {
 .search-resource-activity-btnOver {
 	background: url(../images/search/resource_activity-over.png) no-repeat center left !important;
 }
+
+
+.suggestions-container {
+   position: absolute !important;
+   top: 24px;
+   left: 140px;
+   width: 200px;
+}	
+
+.suggestions-container a:link {
+	text-decoration: none;
+	color red;
+	font-weight: bold;
+}
+
+.suggestions-container a:hover {
+	text-decoration: underline;
+}
