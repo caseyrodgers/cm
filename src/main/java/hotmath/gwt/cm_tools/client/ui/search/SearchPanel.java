@@ -410,8 +410,9 @@ public class SearchPanel extends BorderLayoutContainer {
                     _suggestionButton.setEnabled(true);
                     
                     int cnt = result.getSuggestions().size();
-                    String msg = "There ";
-                    msg += (cnt == 1)?"is":"are";
+                    String msg = "Here ";
+                    msg += (cnt == 1)?"is ":"are ";
+                    msg += cnt;
                     msg += " search suggestion";
                     msg += (cnt > 1)?"s":"";
                     _searchAnchor.setText(msg);

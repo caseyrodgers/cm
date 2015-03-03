@@ -1482,15 +1482,16 @@ SolutionSetCompleteDialog .results {
 
 .suggestions-container {
    position: absolute !important;
-   top: 24px;
-   left: 140px;
+   top: 20px;
+   left: 185px;
    width: 200px;
 }	
 
 .suggestions-container a:link {
 	text-decoration: none;
-	color red;
-	font-weight: bold;
+	color: black;
+	font-style: italic;
+	font-size: .9em;
 }
 
 .suggestions-container a:hover {
