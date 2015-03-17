@@ -441,7 +441,8 @@ public class SearchPanel extends BorderLayoutContainer {
                 error.printStackTrace();
                 Log.error("Error", error);
 
-                CmMessageBox.showAlert("There was a problem processing your search.  Check Help for some tips.");
+                String msg = "No Matches.  Try searching again using plain text only (for example, type in 'factorial' rather than '!'";
+                CmMessageBox.showAlert(msg);
             }
         });
     }
