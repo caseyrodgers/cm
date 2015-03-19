@@ -23,8 +23,8 @@
     <dispatcher>ERROR</dispatcher>
   </filter-mapping>
   
-  <!--
-      for testing/development
+
+
    <filter>
     <filter-name>DevelopmentFilter</filter-name>
     <filter-class>
@@ -37,7 +37,32 @@
     <dispatcher>REQUEST</dispatcher>
     <dispatcher>ERROR</dispatcher>
   </filter-mapping>
-  -->  
+  
+  	<context-param>
+		<param-name>resteasy.servlet.mapping.prefix</param-name>
+		<param-value>/api/v1</param-value>
+	</context-param>
+	
+	<servlet>
+		<servlet-name>RestEasy</servlet-name>
+		<servlet-class>
+			org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+		</servlet-class>
+		<init-param>
+			<param-name>javax.ws.rs.Application</param-name>
+			<param-value>hotmath.cm.server.rest.Cm2Application</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RestEasy</servlet-name>
+		<url-pattern>/api/v1/*</url-pattern>
+	</servlet-mapping>
+	
+	
+	
+	   <listener>
+      <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
+   </listener>
 
   <listener>
     <listener-class>hotmath.gwt.cm_rpc_core.server.rpc.ContextListener</listener-class>
