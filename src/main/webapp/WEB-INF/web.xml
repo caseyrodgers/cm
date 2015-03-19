@@ -43,7 +43,7 @@
     <listener-class>hotmath.gwt.cm_rpc_core.server.rpc.ContextListener</listener-class>
   </listener>
 
-  <!-- WIRIS (math) editor servlet defs -->
+  <!-- WIRIS (math) editor servlet defs
   <servlet>
      <servlet-name>pluginwiris</servlet-name>
      <servlet-class>com.wiris.plugin.Main</servlet-class>
@@ -60,7 +60,8 @@
      <servlet-name>pluginwiris</servlet-name>
      <url-pattern>/pluginwiris_engine/app/*</url-pattern>
   </servlet-mapping>
-  <!--  END WIRIS editor configuration -->  
+
+  END WIRIS editor configuration -->  
 
   <servlet>
     <servlet-name>cm-init</servlet-name>
