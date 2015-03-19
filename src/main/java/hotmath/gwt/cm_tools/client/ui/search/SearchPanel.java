@@ -170,7 +170,6 @@ public class SearchPanel extends BorderLayoutContainer {
                 @Override
                 public void run() {
                     if(isVisible()) {
-                        System.out.println("Checking search box for changes...");
                         String thisSearch = _inputBox.getCurrentValue();
                         if(_lastSearchValue != null) {
                             if(thisSearch != null) {
