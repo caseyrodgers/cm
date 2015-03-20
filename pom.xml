@@ -112,7 +112,6 @@
 			<version>1.1.2</version>
 		</dependency>
 
-
 		<dependency>
 			<!-- jsoup HTML parser library @ http://jsoup.org/ -->
 			<groupId>org.jsoup</groupId>
@@ -125,7 +124,6 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.11</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>com.sencha.gxt</groupId>
@@ -147,14 +145,11 @@
 			<scope>provided</scope>
 		</dependency>
 
-
 		<dependency>
 			<groupId>com.theoryinpractise</groupId>
 			<artifactId>coffee-maven-plugin</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-
-
 
 		<!-- needed for GWT 2.1 update to UIBinder -->
 		<dependency>
@@ -162,7 +157,6 @@
 			<artifactId>xercesImpl</artifactId>
 			<version>2.9.1</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>net.sourceforge.jeuclid</groupId>
@@ -184,13 +178,11 @@
 			<version>1.4</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>paypal</groupId>
 			<artifactId>paypal_api_combined</artifactId>
 			<version>1.0</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>commons-collections</groupId>
@@ -301,9 +293,6 @@
 			<version>1.0</version>
 			<scope>compile</scope>
 		</dependency>
-
-		<!-- <dependency> <groupId>com.extjs.gxt</groupId> <artifactId>gxt</artifactId> 
-			<version>2.2.3</version> <scope>compile</scope> </dependency> -->
 
 		<dependency>
 			<groupId>gwt2swf</groupId>
@@ -462,7 +451,6 @@
 			<version>0.3.0</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium</artifactId>
@@ -490,7 +478,6 @@
 			<artifactId>simple-xml</artifactId>
 			<version>2.4</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>hotmath</groupId>
@@ -570,7 +557,6 @@
 			<version>1.0.0.GA</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>com.google.gwt.inject</groupId>
 			<artifactId>gin</artifactId>
@@ -578,14 +564,12 @@
 			<scope>compile</scope>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.jodd</groupId>
 			<artifactId>jodd</artifactId>
 			<version>3.3</version>
 			<scope>compile</scope>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.imgscalr</groupId>
@@ -595,23 +579,23 @@
 			<scope>compile</scope>
 		</dependency>
 
-<dependency>
-	<groupId>org.apache.lucene</groupId>
-	<artifactId>lucene-core</artifactId>
-	<version>5.0.0</version>
-</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>5.0.0</version>
+		</dependency>
 
-<dependency>
-	<groupId>org.apache.lucene</groupId>
-	<artifactId>lucene-queryparser</artifactId>
-	<version>5.0.0</version>
-</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queryparser</artifactId>
+			<version>5.0.0</version>
+		</dependency>
 
-<dependency>
-	<groupId>org.apache.lucene</groupId>
-	<artifactId>lucene-analyzers-common</artifactId>
-	<version>5.0.0</version>
-</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers-common</artifactId>
+			<version>5.0.0</version>
+		</dependency>
 <!-- 
 		<dependency>
 			<groupId>lucene</groupId>
@@ -619,13 +603,12 @@
 			<version>2.1</version>
 			<scope>compile</scope>
 		</dependency>
- -->	
-
-<dependency>
-	<groupId>org.apache.lucene</groupId>
-	<artifactId>lucene-suggest</artifactId>
-	<version>5.0.0</version>
-</dependency>
+ -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-suggest</artifactId>
+			<version>5.0.0</version>
+		</dependency>
 
 		<!-- <dependency> <groupId>com.codeborne</groupId> <artifactId>selenide</artifactId> 
 			<version>2.7</version> </dependency> -->
@@ -643,8 +626,6 @@
 		<testSourceDirectory>src/test</testSourceDirectory>
 
 		<plugins>
-
-
 
 			<plugin>
 				<groupId>com.theoryinpractise</groupId>
@@ -665,9 +646,6 @@
 				</executions>
 			</plugin>
 
-
-
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>selenium-maven-plugin</artifactId>
@@ -684,8 +662,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -747,7 +723,6 @@
 				</configuration>
 			</plugin>
 
-
 			<!-- Minimize JS/CSS for CM and CM_MOBILE. All HM resources come from 
 				HM -->
 			<plugin>
@@ -781,8 +756,6 @@
 				</configuration>
 			</plugin>
 
-
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
@@ -808,7 +781,7 @@
 						<module>hotmath.gwt.assignment_print.AssignmentPrint</module>
 						<module>hotmath.gwt.search.Search</module>
 						<!-- <module>hotmath.gwt.cm_tutor.CmTutor</module> <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module> 
-							<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
+						<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
 					</modules>
 					<hostedWebapp>
 						${project.build.directory}/${project.build.finalName}
@@ -844,7 +817,6 @@
 				</dependencies>
 			</plugin>
 
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -859,7 +831,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 
 			<!-- Use ANT to update version information file -->
 
