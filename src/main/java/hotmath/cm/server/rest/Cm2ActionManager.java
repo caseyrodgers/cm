@@ -15,7 +15,7 @@ public class Cm2ActionManager {
         // GetCmProgramFlowAction flowAction = new GetCmProgramFlowAction(userId, FlowType.ACTIVE);
         // GetUserSyncAction syncAction = new GetUserSyncAction(678549);
         
-        GetCm2QuizHtmlAction action = new GetCm2QuizHtmlAction(2594726);
+        GetCm2QuizHtmlAction action = new GetCm2QuizHtmlAction(userId);
         // GetQuizHtmlAction action = new GetQuizHtmlAction(2593696);
         String jsonResponse = new ActionDispacherWrapper().execute(action);
         return jsonResponse;
