@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.HotMathUtilities;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.test.HaTestSet;
 import hotmath.cm.test.HaTestSetQuestion;
