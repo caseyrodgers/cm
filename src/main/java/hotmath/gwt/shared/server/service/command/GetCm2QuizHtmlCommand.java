@@ -61,7 +61,9 @@ public class GetCm2QuizHtmlCommand implements ActionHandler<GetCm2QuizHtmlAction
                 
                 // String htmlWithAbsolute = HotMathUtilities.makeAbsolutePaths(absolutePath, q.getQuestionHtml());
                 
-                String htmlWithAbsolute = q.getQuestionHtml().replace("/help/solutions/", "http://test.hotmath.com/help/solutions/");
+                String htmlWithAbsolute = q.getQuestionHtml().replace("/help/solutions/", "http://test.catchupmath.com/help/solutions/");
+                htmlWithAbsolute = htmlWithAbsolute.replace("/images/specialchars/", "http://test.catchupmath.com/images/specialchars/");
+                
                 
                 QuizCm2Question question = new QuizCm2Question(action.getTestId(),htmlWithAbsolute);
                 result.getQuizQuestions().add(question);
@@ -77,8 +79,8 @@ public class GetCm2QuizHtmlCommand implements ActionHandler<GetCm2QuizHtmlAction
         
         
     }
-    
-    
+
+
     static public String readQuizHtmlTemplate() throws Exception {
         String file = CatchupMathProperties.getInstance().getCatchupRuntime() + "/quiz_template_cm2.vm";
         return new SbFile(file).getFileContents().toString("\n");
