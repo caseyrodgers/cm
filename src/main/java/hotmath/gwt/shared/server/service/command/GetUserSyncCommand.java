@@ -20,7 +20,7 @@ import java.sql.Connection;
  * 
  * (If logout or window close)
  * If fullCheck is not requested, then only save any activeMinute data associated
- * ith logout/window close.
+ * with logout/window close.
  * 
  * 
  * @author casey

@@ -1,1 +1,0 @@
-rsync -avz hotmath.kattare.com:/storage/hotmath2_help /volume2/hm_static > /tmp/rsync.HotmathHelp.log

@@ -1,1 +1,0 @@
-mvn exec:java -Dexec.mainClass="hotmath.cm.util.FindBug_SkippedQuizzes" -Dexec.args="aid=$1" -o

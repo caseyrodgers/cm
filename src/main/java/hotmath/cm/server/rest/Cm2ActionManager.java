@@ -37,6 +37,7 @@ public class Cm2ActionManager {
                     "    JOIN HA_USER u on u.uid = t.user_id " +    
                     "    JOIN HA_ADMIN a on a.aid = u.admin_id   " +
                     "    JOIN HA_TEST_IDS ti on ti.test_id = t.test_id " +
+                    "    JOIN CM_USER_PROGRAM c on c.user_id = u.uid " +
                     " where a.aid in (2, 216, 5) and u.is_active = 1   "  + 
                     " group by t.test_id " +
                     " order by rand()  " +
