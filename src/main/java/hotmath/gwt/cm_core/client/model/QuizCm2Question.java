@@ -11,12 +11,22 @@ public class QuizCm2Question implements Response {
     
     private int quizId;
     private String html;
+    String pid;
 
     public QuizCm2Question() {}
     
-    public QuizCm2Question(int quizId, String html) {
+    public QuizCm2Question(int quizId, String pid, String html) {
         this.quizId = quizId;
+        this.pid = pid;
         this.html = html;
+    }
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 
     public int getQuizId() {

@@ -65,7 +65,7 @@ public class GetCm2QuizHtmlCommand implements ActionHandler<GetCm2QuizHtmlAction
                 htmlWithAbsolute = htmlWithAbsolute.replace("/images/specialchars/", "http://test.catchupmath.com/images/specialchars/");
                 
                 
-                QuizCm2Question question = new QuizCm2Question(action.getTestId(),htmlWithAbsolute);
+                QuizCm2Question question = new QuizCm2Question(action.getTestId(), q.getProblemIndex(), htmlWithAbsolute);
                 result.getQuizQuestions().add(question);
             }
             
