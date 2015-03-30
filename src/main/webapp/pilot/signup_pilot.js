@@ -114,8 +114,44 @@ function checkForm() {
 		return v.match(alphaExp);
   }
   
-  function showSuccess(text) {
-	  $get('email-address').innerHTML = $get('fld_email').value; 
+  function showSuccess(obj) {
+	  var salesRep   = obj.salesRep;
+	  var userName   = obj.username;
+	  var password   = obj.password;
+	  var expireDate = obj.expireDate;
+	  var isCollege  = obj.isCollege;
+	  var schoolName = obj.schoolName;
+	  var passwordLabel = 'Password (for teachers/administrators)'
+	  var emailAddr;
+	  var phoneNumber;
+	  var repName;
+	  var stuPassword = 'quizme';
+	  
+	  if (salesRep != 'tina') {
+	      if (isCollege != '0') {
+	          passwordLabel = 'Password (for instructors/faculty): ';
+	          stuPassword = 'placeme';
+	      }
+	      emailAddr = "<a href='mailto:lincoln@catchupmath.com'>lincoln@catchupmath.com</a>";
+	      phoneNumber = '925-202-4376';
+	      repName = 'David Lincoln';
+	  }
+	  else {
+	      emailAddr = "<a href='mailto:thamilton@catchupmath.com'>thamilton@catchupmath.com</a>";
+	      phoneNumber = '206-331-3886';
+	      repName = 'Tina Hamilton';
+	  }
+  
+	  $get('rep-name').innerHTML = repName;
+	  $get('school-name').innerHTML = schoolName;
+	  $get('password-label').innerHTML = passwordLabel;
+	  $get('password').innerHTML = password;
+	  $get('stu-password').innerHTML = stuPassword;
+	  $get('phone-number').innerHTML = phoneNumber;
+	  $get('email-addr').innerHTML = emailAddr;
+	  $get('username').innerHTML = userName;
+	  $get('username2').innerHTML = userName;
+
 	  $get('signup_panel').style.display = 'none';
 	  $get('success_panel').style.display = 'block';
 	  window.scroll(0,0);
@@ -128,7 +164,8 @@ function checkForm() {
 	    var requestCallback = {
 	        success: function(o) {
 	           YAHOO.cm.signup_progress.destroy();
-	           showSuccess(o.responseText);
+               var obj = eval('(' + o.responseText + ')');
+	           showSuccess(obj);
 	        },
 	        failure: function(o) {
 	            YAHOO.cm.signup_progress.destroy();

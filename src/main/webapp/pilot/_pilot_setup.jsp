@@ -17,6 +17,8 @@
     String additionalEmails = request.getParameter("fld_additional_emails");
     String motivation = request.getParameter("fld_motivation");
 
-    CmPilotCreate.addPilotRequest(title, name, school, zip, email, phone, comments, phoneWhen, schoolPrefix,
+    String json = CmPilotCreate.addPilotRequest(title, name, school, zip, email, phone, comments, phoneWhen, schoolPrefix,
                                   true, studentCount, null, additionalEmails,motivation, isCollegePilot);
+    out.write(json);
+    out.flush();
 %>
