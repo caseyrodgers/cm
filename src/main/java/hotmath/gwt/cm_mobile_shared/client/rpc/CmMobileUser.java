@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
+import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2HtmlResult;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -88,6 +89,7 @@ public class CmMobileUser implements Response {
     }
 
     PrescriptionData prescripion;
+    private QuizCm2HtmlResult quizResponse;
 
 
     public PrescriptionData getPrescripion() {
@@ -156,12 +158,4 @@ public class CmMobileUser implements Response {
         this.securityKey = securityKey;
     }
 
-    @Override
-    public String toString() {
-        return "CmMobileUser [name=" + name + ", userId=" + userId + ", testId=" + testId + ", testSegment="
-                + testSegment + ", testSlot=" + testSlot + ", runId=" + runId + ", securityKey=" + securityKey
-                + ", prescribedLessons=" + prescribedLessons + ", baseLoginResponse=" + baseLoginResponse
-                + ", flowAction=" + flowAction + ", prescripion=" + prescripion + "]";
-    }
-    
 }

@@ -1,4 +1,4 @@
-package hotmath.gwt.shared.server.service.command;
+package hotmath.gwt.shared.server.service.command.cm2;
 
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.test.HaTestSet;
@@ -6,8 +6,8 @@ import hotmath.cm.test.HaTestSetQuestion;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_core.client.model.QuizCm2Question;
-import hotmath.gwt.cm_rpc.client.rpc.GetCm2QuizHtmlAction;
-import hotmath.gwt.cm_rpc.client.rpc.QuizCm2HtmlResult;
+import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2QuizHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2HtmlResult;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -64,11 +64,10 @@ public class GetCm2QuizHtmlCommand implements ActionHandler<GetCm2QuizHtmlAction
                 String htmlWithAbsolute = q.getQuestionHtml().replace("/help/solutions/", "http://test.catchupmath.com/help/solutions/");
                 htmlWithAbsolute = htmlWithAbsolute.replace("/images/specialchars/", "http://test.catchupmath.com/images/specialchars/");
                 
-                
                 QuizCm2Question question = new QuizCm2Question(action.getTestId(), q.getProblemIndex(), htmlWithAbsolute);
                 result.getQuizQuestions().add(question);
             }
-            
+            result.setTestId(haTest.getTestId());
             result.setTitle(testTitle);
             return result;
             

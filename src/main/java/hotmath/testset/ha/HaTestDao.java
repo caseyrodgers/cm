@@ -14,6 +14,7 @@ import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.spring.SpringManager;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -538,8 +539,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             if (testRuns.size() > 0) {
             	testRun = HaTestRunDao.getInstance().lookupTestRun(testRuns.get(0));
 	            testRun.getHaTest().getUser().setActiveTestRunId(testRun.getRunId());
-	            testRun.getHaTest().getUser().setActiveTest(0); // if test_run is active, test is
-	                                             // not
+	            testRun.getHaTest().getUser().setActiveTest(0); // if test_run is active, test is not
 	            testRun.getHaTest().getUser().update();
 	            
 	            throw new Exception("This test has already been checked.");
@@ -790,5 +790,48 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(rs, stmt, null);
         }
     }
+    
+
+    public static int getRandomTestId() throws Exception {
+        
+        Connection conn=null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            String sql = 
+                    " select t.test_id, count(*) as cnt_problems " +
+                    " from   HA_TEST t     " +
+                    "    JOIN HA_USER u on u.uid = t.user_id " +    
+                    "    JOIN HA_ADMIN a on a.aid = u.admin_id   " +
+                    "    JOIN HA_TEST_IDS ti on ti.test_id = t.test_id " +
+                    "    JOIN CM_USER_PROGRAM c on c.user_id = u.uid " +
+                    " where a.aid in (2, 216, 5) and u.is_active = 1   "  + 
+                    " group by t.test_id " +
+                    " order by rand()  " +
+                    " limit 1 ";
+            ResultSet rs = conn.createStatement().executeQuery(sql);
+            rs.next();
+            int testId = rs.getInt("test_id");
+            return testId;
+        }
+        finally {
+            SqlUtilities.releaseResources(null, null, conn);
+        }
+    }
+
+    public static void resetTest(int testId) throws Exception {
+        Connection conn=null;
+        PreparedStatement ps=null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            String sql = 
+                    " delete from HA_TEST_RUN where test_id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,  testId);
+            ps.executeUpdate();
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps, conn);
+        }        
+    }    
 
 }

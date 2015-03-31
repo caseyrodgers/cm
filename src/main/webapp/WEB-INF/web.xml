@@ -240,6 +240,12 @@
   <servlet-mapping>
     <servlet-name>CmService</servlet-name>
     <url-pattern>
+      /services/cmService
+    </url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CmService</servlet-name>
+    <url-pattern>
       /cm_student/services/cmService
     </url-pattern>
   </servlet-mapping>

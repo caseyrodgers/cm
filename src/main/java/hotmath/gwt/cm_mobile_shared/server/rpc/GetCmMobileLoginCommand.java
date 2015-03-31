@@ -23,8 +23,6 @@ import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand.CustomProgramInfo;
-import hotmath.testset.ha.HaTestRun;
-import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUserFactory;
 import hotmath.util.sql.SqlUtilities;
 
@@ -99,10 +97,6 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
         if(isCustomQuiz) {
             testTitle = programFlow.getUserProgram().getCustomQuizName();
         }
-
-        
-        
-        
 
         /**
          * get list of previous prescribed lessons

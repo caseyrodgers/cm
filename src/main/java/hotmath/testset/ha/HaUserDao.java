@@ -17,6 +17,7 @@ import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tools.client.model.ActivityLogRecord;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.spring.SpringManager;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -215,20 +216,21 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
          * Special cases
          * 
          */
-        if(programFlow.getUserProgram().getTestDefId() == CmProgram.ASSIGNMENTS_ONLY.getDefId()) {
+        if (programFlow.getUserProgram().getTestDefId() == CmProgram.ASSIGNMENTS_ONLY.getDefId()) {
             destination.setPlace(CmPlace.ASSIGNMENTS_ONLY);
-        }
-        else if(programFlow.getUserProgram().getTestDefId() == CmProgram.NONE.getDefId()) {
+        } else if (programFlow.getUserProgram().getTestDefId() == CmProgram.NONE.getDefId()) {
             destination.setPlace(CmPlace.NO_PROGRAM_ASSIGNED);
-        }
-        else if (programFlow.getUserProgram().isCustom()
+        } else if (programFlow.getUserProgram().isCustom()
                 && programFlow.getActiveFlowAction(conn).getPlace() == CmPlace.END_OF_PROGRAM) {
             /**
              * is a custom quiz, so we must check separately.
              * 
              */
             destination.setPlace(CmPlace.END_OF_PROGRAM);
-        } else if (false) { // do not auto advance to next segment ... userInfo.getRunId() > 0 && hasUserCompletedTestRun(conn, userInfo.getRunId())) {
+        } else if (false) { // do not auto advance to next segment ...
+                            // userInfo.getRunId() > 0 &&
+                            // hasUserCompletedTestRun(conn,
+                            // userInfo.getRunId())) {
 
             /**
              * did the user pass this segment, if not then they must repeat it
@@ -356,7 +358,8 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
      * @param pid
      * @param correct
      */
-    public UserTutorWidgetStats saveUserTutorInputWidgetAnswer(int uid, final int runId, final String pid, final String value, final boolean correct) throws Exception {
+    public UserTutorWidgetStats saveUserTutorInputWidgetAnswer(int uid, final int runId, final String pid,
+            final String value, final boolean correct) throws Exception {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -364,32 +367,29 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setInt(1, runId);
                 ps.setString(2, pid);
-                ps.setString(3,  value);
+                ps.setString(3, value);
                 ps.setInt(4, correct ? 1 : 0);
 
                 return ps;
             }
         });
-        
+
         return getUserInfoTutorStats(uid, null, null);
     }
-    
-    
-    
+
     public UserInfoStats getUserInfoStats(int uid, Date fromDate, Date toDate) throws Exception {
-        UserInfoStats uStats=null;
-        
+        UserInfoStats uStats = null;
+
         int activeMinutes = getUserActiveTimeForDateRange(uid, fromDate, toDate);
 
-        uStats = new UserInfoStats(uid,  getUserInfoTutorStats(uid, fromDate, toDate), activeMinutes);
+        uStats = new UserInfoStats(uid, getUserInfoTutorStats(uid, fromDate, toDate), activeMinutes);
         return uStats;
     }
-    
-    
+
     public int getUserActiveTimeForDateRange(int uid, Date fromDate, Date toDate) throws Exception {
- 
-    	String[] dates = QueryHelper.getDateTimeRange(fromDate, toDate);
-        
+
+        String[] dates = QueryHelper.getDateTimeRange(fromDate, toDate);
+
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("USER_ACTIVE_TIME_FOR_DATE_RANGE");
         Integer activeMinutes = getJdbcTemplate().queryForObject(sql, new Object[] { uid, dates[0], dates[1] },
                 new RowMapper<Integer>() {
@@ -398,42 +398,41 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
                         return rs.getInt("active_minutes");
                     }
                 });
-        
+
         return activeMinutes;
     }
-    
-    
-    /** Return the percentage correct of all widgets entered
-     * by this user
+
+    /**
+     * Return the percentage correct of all widgets entered by this user
      * 
      * @param uid
      * @return
      */
     public UserTutorWidgetStats getUserInfoTutorStats(int uid, Date fromDate, Date toDate) throws Exception {
-    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("TUTOR_WIDGET_ANSWER_PERCENT_FOR_DATE_RANGE");
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("TUTOR_WIDGET_ANSWER_PERCENT_FOR_DATE_RANGE");
 
-    	final double totals[] = new double[2];
-    	final int TOTAL_WIDGETS=0, COUNT_CORRECT=1;
-    	String dates[] = QueryHelper.getDateTimeRange(fromDate, toDate);
-    	getJdbcTemplate().query(sql, new Object[] { uid, dates[0], dates[1] },new RowMapper<Integer>() {
-    		@Override
-    		public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-    			boolean correct = rs.getInt("correct")!=0;
-    			totals[TOTAL_WIDGETS]++;  // total count
-    			if(correct) {
-    				totals[COUNT_CORRECT]++;  // count correct
-    			}
-    			return 0;
-    		}
-    	});
+        final double totals[] = new double[2];
+        final int TOTAL_WIDGETS = 0, COUNT_CORRECT = 1;
+        String dates[] = QueryHelper.getDateTimeRange(fromDate, toDate);
+        getJdbcTemplate().query(sql, new Object[] { uid, dates[0], dates[1] }, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                boolean correct = rs.getInt("correct") != 0;
+                totals[TOTAL_WIDGETS]++; // total count
+                if (correct) {
+                    totals[COUNT_CORRECT]++; // count correct
+                }
+                return 0;
+            }
+        });
 
-    	double percent = 0;
-    	if (totals[TOTAL_WIDGETS] != 0) {
-    		percent  = (totals[COUNT_CORRECT] / totals[TOTAL_WIDGETS]) * 100;
-    	}
-    	int percentage = (int)Math.round(percent);    
+        double percent = 0;
+        if (totals[TOTAL_WIDGETS] != 0) {
+            percent = (totals[COUNT_CORRECT] / totals[TOTAL_WIDGETS]) * 100;
+        }
+        int percentage = (int) Math.round(percent);
 
-    	return new UserTutorWidgetStats(uid, percentage, (int)totals[TOTAL_WIDGETS], (int)totals[COUNT_CORRECT]);
+        return new UserTutorWidgetStats(uid, percentage, (int) totals[TOTAL_WIDGETS], (int) totals[COUNT_CORRECT]);
     }
 
     public void addUserHasBeenActiveRecord(final int uid, final int activeMinutes) {
@@ -446,7 +445,7 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
                 ps.setInt(2, activeMinutes);
                 return ps;
             }
-        });        
+        });
     }
 
     public Collection<ActivityLogRecord> getUserActivityLog(final int uid, Date fromDate, Date toDate) throws Exception {
@@ -459,11 +458,26 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
                     public ActivityLogRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
                         Date activityDate = rs.getDate("activity_date");
                         String dateLabel = DateUtils.getPrettyDateString(activityDate, true);
-                        return new ActivityLogRecord(key[0]++, uid, activityDate,  rs.getInt("active_minutes"),dateLabel);
+                        return new ActivityLogRecord(key[0]++, uid, activityDate, rs.getInt("active_minutes"),
+                                dateLabel);
                     }
-                });       
+                });
         return list;
     }
 
+    
+    public static int getRandomUserId() throws Exception {
+        Connection conn = null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            String sql = " select uid from junk_cm2_test_users order by rand() limit 1";
+            ResultSet rs = conn.createStatement().executeQuery(sql);
+            rs.next();
+            int testId = rs.getInt("uid");
+            return testId;
+        } finally {
+            SqlUtilities.releaseResources(null, null, conn);
+        }
+    }
 
 }

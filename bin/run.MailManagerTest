@@ -1,0 +1,1 @@
+mvn compile exec:java -Dexec.mainClass="sb.mail.SbMailManager" -Dexec.args="-count=$1" -Dcatalina.base=/tmp -o

@@ -1,0 +1,1 @@
+\mvn exec:java -Dexec.mainClass="hotmath.gwt.shared.server.service.command.stress.CmStressExport" -Dexec.args="-count=$1" -Dcatalina.base=/tmp -o

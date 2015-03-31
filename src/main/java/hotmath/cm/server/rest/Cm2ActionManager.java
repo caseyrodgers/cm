@@ -1,55 +1,66 @@
 package hotmath.cm.server.rest;
 
-import hotmath.gwt.cm_rpc.client.rpc.GetCm2QuizHtmlAction;
-import hotmath.util.HMConnectionPool;
-import hotmath.util.sql.SqlUtilities;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
+import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
+import hotmath.gwt.cm_rpc.client.rpc.cm2.CheckCm2QuizAction;
+import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2MobileLoginAction;
+import hotmath.testset.ha.HaTestDao;
+import hotmath.testset.ha.HaUserDao;
 
 /** Central place to request a CM2 request
  *  with any specialized formatting required.
+ *  
+ *  serves as a wrapper around ActionDispatcher actions.
  *  
  * @author casey
  *
  */
 public class Cm2ActionManager {
 
-    public static String getUserProgram(int userId) throws Exception {
-        // new         // 678549
-        // GetCmProgramFlowAction flowAction = new GetCmProgramFlowAction(userId, FlowType.ACTIVE);
-        // GetUserSyncAction syncAction = new GetUserSyncAction(678549);
+    
+    /** Wrapper around GetUserInfoAction
+     * 
+     *  process login info and returns composite data
+     *  with either relevant quiz or prescription info.
+     * 
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public static String getUserCurrentProgram(int userId) throws Exception {
         
-        int randomTestId = getRandomTestId();
-        GetCm2QuizHtmlAction action = new GetCm2QuizHtmlAction(randomTestId);
+        
+        // int randomTestId = HaTestDao.getRandomTestId();
+        int randomUserId = HaUserDao.getRandomUserId();
+        //int randomRunId = HaTestRunDao.getRandomTestRun();
+        
+        
+        GetCmMobileLoginAction action = new GetCmMobileLoginAction(randomUserId);
+        // GetUserInfoAction action = new GetUserInfoAction(randomUserId, "Random Test");
         String jsonResponse = new ActionDispacherWrapper().execute(action);
+        // GetCm2QuizHtmlAction action = new GetCm2QuizHtmlAction(randomTestId);
+        
         return jsonResponse;
     }
 
-    private static int getRandomTestId() throws Exception {
+
+    //static int TEST_ID=2610241;  // debug
+    static int USER_ID = 678549;
+    public static String checkQuiz(int testId) throws Exception {
         
-        Connection conn=null;
-        try {
-            conn = HMConnectionPool.getConnection();
-            String sql = 
-                    " select t.test_id, count(*) as cnt_problems " +
-                    " from   HA_TEST t     " +
-                    "    JOIN HA_USER u on u.uid = t.user_id " +    
-                    "    JOIN HA_ADMIN a on a.aid = u.admin_id   " +
-                    "    JOIN HA_TEST_IDS ti on ti.test_id = t.test_id " +
-                    "    JOIN CM_USER_PROGRAM c on c.user_id = u.uid " +
-                    " where a.aid in (2, 216, 5) and u.is_active = 1   "  + 
-                    " group by t.test_id " +
-                    " order by rand()  " +
-                    " limit 1 ";
-            ResultSet rs = conn.createStatement().executeQuery(sql);
-            rs.next();
-            int testId = rs.getInt("test_id");
-            return testId;
-        }
-        finally {
-            SqlUtilities.releaseResources(null, null, conn);
-        }
+        HaTestDao.resetTest(testId);
+            
+        
+        CheckCm2QuizAction action = new CheckCm2QuizAction(testId);
+        
+        String jsonResponse = new ActionDispacherWrapper().execute(action);
+        return jsonResponse;
+    }
+    
+    public static String loginUser(int uid, String un, String pwd) throws Exception {
+        // int randomUserId = HaUserDao.getRandomUserId();
+        GetCm2MobileLoginAction action = uid!=0?new GetCm2MobileLoginAction(uid): new GetCm2MobileLoginAction(un, pwd);
+        String jsonResponse = new ActionDispacherWrapper().execute(action);
+        return jsonResponse;
     }
 
 }

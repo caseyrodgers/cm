@@ -624,8 +624,12 @@ public class ActionDispatcher {
 		logger.debug("AssumedCommandPackage: " + assumedCmdPackage);
 
 		/**
-		 * Create a list of possible places to search NOTE: the addition of the
-		 * auto-created server command assumed name
+		 * Create a list of possible places to search.
+		 * 
+		 * commands are named:
+		 * 
+		 * MyThingAction == MyThingCommand
+		 * 
 		 */
 		List<String> places = Arrays.asList(assumedCmdPackage,
 				"hotmath.gwt.shared.server.service.command.",
@@ -633,8 +637,8 @@ public class ActionDispatcher {
 				"hotmath.gwt.cm_mobile.server.rpc.",
 				"hotmath.gwt.cm_mobile_shared.server.rpc.",
 				"hotmath.gwt.solution_editor.server.rpc.",
-				"hotmath.gwt.cm_activity.server.rpc."
-
+				"hotmath.gwt.cm_activity.server.rpc.",
+                "hotmath.gwt.shared.server.service.command.cm2."
 		);
 		for (String place : places) {
 			String commandClass = place + cmdName;

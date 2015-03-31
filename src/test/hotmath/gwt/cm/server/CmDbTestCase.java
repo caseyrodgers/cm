@@ -1,5 +1,8 @@
 package hotmath.gwt.cm.server;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
@@ -16,6 +19,8 @@ import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUser;
+import hotmath.util.HMConnectionPool;
+import hotmath.util.sql.SqlUtilities;
 
 public class CmDbTestCase extends DbTestCase {
     
@@ -102,4 +107,5 @@ public class CmDbTestCase extends DbTestCase {
         _groupModel = CmAdminDao.getInstance().addGroup(conn, _user.getAid(), group);
         return _groupModel;
     }
+    
 }

@@ -1,0 +1,1 @@
+mvn exec:java -Dexec.mainClass="hotmath.assessment.AssessmentPrescriptionCustom"  -Dexec.args="$1" -o

@@ -1,0 +1,1 @@
+mvn exec:java -Dexec.mainClass="hotmath.cm.util.LogMonitor" -Dexec.args=$1 -o

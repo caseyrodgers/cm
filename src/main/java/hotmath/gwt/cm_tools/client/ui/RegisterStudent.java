@@ -1287,7 +1287,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             public void oncapture(CmList<ChapterModel> result) {
 
                 for (ChapterModel cm : result) {
-                    if (acctInfoMdl.getIsFreeAccount()) {
+                    if (acctInfoMdl != null && acctInfoMdl.getIsFreeAccount()) {
                         cm.setStyleIsFree("is-free-account-label");
                     }
                 }

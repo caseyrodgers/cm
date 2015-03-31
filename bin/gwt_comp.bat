@@ -1,0 +1,1 @@
+mvn compile gwt:compile -Dgwt.compiler.force=true -o

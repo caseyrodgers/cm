@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_rpc.client.rpc;
+package hotmath.gwt.cm_rpc.client.rpc.cm2;
 
 
 import hotmath.gwt.cm_core.client.model.QuizCm2Question;

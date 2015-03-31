@@ -9,6 +9,7 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionWidgetResult;
 import hotmath.spring.SpringManager;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -121,6 +122,24 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
                 );
     }
     
+    
+
+    
+    
+    public static int getRandomTestRun() throws Exception {
+        Connection conn = null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            String sql = " select uid from junk_cm2_test_runs order by rand() limit 1";
+            ResultSet rs = conn.createStatement().executeQuery(sql);
+            rs.next();
+            int testId = rs.getInt("uid");
+            return testId;
+        } finally {
+            SqlUtilities.releaseResources(null, null, conn);
+        }
+    }
+
     
 
     public SolutionWidgetResult getRunTutorWidgetValue(int runId, String pid) {

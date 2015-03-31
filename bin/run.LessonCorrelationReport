@@ -1,0 +1,1 @@
+mvn exec:java -Dexec.mainClass="hotmath.testset.ha.report.LessonCorrelationReport" -Dexec.args=$1 -o
