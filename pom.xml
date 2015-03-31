@@ -25,7 +25,6 @@
 		<tag>cm</tag> </scm> <distributionManagement> <repository> <id>repo</id> 
 		<name>The CVS Repository</name> <url>scp://hotmath@hotmath.kattare.com:/home/hotmath/temp</url> 
 		</repository> </distributionManagement> -->
-
 	<repositories>
 
 		<!-- <repository> <id>sencha-commercial-release</id> <name>Sencha commercial 
