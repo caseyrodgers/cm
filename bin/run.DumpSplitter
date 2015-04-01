@@ -1,0 +1,1 @@
+mvn exec:java -Dexec.mainClass="hotmath.backup.DumpSplitter" -Dexec.args="$1" -o
