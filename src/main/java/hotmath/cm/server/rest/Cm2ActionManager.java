@@ -1,6 +1,7 @@
 package hotmath.cm.server.rest;
 
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.CheckCm2QuizAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2MobileLoginAction;
 import hotmath.testset.ha.HaTestDao;
@@ -61,6 +62,11 @@ public class Cm2ActionManager {
         GetCm2MobileLoginAction action = uid!=0?new GetCm2MobileLoginAction(uid): new GetCm2MobileLoginAction(un, pwd);
         String jsonResponse = new ActionDispacherWrapper().execute(action);
         return jsonResponse;
+    }
+
+    public static String getPrescriptionTopic(int runId, int topicIndex) throws Exception {
+        GetPrescriptionAction action = new GetPrescriptionAction(runId, topicIndex, true);
+        return new ActionDispacherWrapper().execute(action);
     }
 
 }

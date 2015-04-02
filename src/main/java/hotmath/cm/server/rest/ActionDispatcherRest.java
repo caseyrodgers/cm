@@ -37,5 +37,12 @@ public class ActionDispatcherRest {
     public String checkQuiz(@PathParam("testId") int testId) throws Exception {
         return Cm2ActionManager.checkQuiz(testId);
     }
+    
+    @POST
+    @GET
+    @Path("/prescription/{runId}/topic/{topicIndex}")
+    public String getPrescription(@PathParam("runId") int runId,@PathParam("topicIndex") int topicIndex) throws Exception {
+        return Cm2ActionManager.getPrescriptionTopic(runId, topicIndex);
+    }    
 
 }
