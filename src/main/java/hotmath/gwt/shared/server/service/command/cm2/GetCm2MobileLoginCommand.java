@@ -5,11 +5,20 @@ import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
+import hotmath.gwt.cm_core.client.model.PrescriptionResource;
+import hotmath.gwt.cm_core.client.model.ResourceItem;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
+import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2MobileUser;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2MobileLoginAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2QuizHtmlAction;
@@ -22,6 +31,7 @@ import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand.CustomProgramInfo;
 import hotmath.testset.ha.HaUserFactory;
@@ -29,6 +39,11 @@ import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import com.sdicons.json.validator.impl.predicates.Array;
 
 public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLoginAction, Cm2MobileUser> {
 
@@ -113,7 +128,9 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             
             CmProgramFlowAction nextAction = programFlow.getActiveFlowAction(conn);
             
-            mobileUser.setFlowAction(nextAction);
+            mobileUser.setPrescriptionTopics(extractPrescriptionTopics(conn, nextAction));
+            
+            //mobileUser.setFlowAction(nextAction);
             
             if(mobileUser.getTestId() > 0) {
                 // is quiz
@@ -127,5 +144,47 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
         
         return mobileUser;
     }
+
+    private List<Cm2PrescriptionTopic> extractPrescriptionTopics(Connection conn, CmProgramFlowAction nextAction) throws Exception {
+        try {
+            List<Cm2PrescriptionTopic> topics = new ArrayList<Cm2PrescriptionTopic>();
+            if(nextAction.getPrescriptionResponse() != null) {
+                
+                PrescriptionSessionResponse pr = nextAction.getPrescriptionResponse();
+                List<SessionTopic> st = pr.getPrescriptionData().getSessionTopics();
+                
+                for(int i=0;i<st.size();i++) {
+                    
+                    // for each topic
+                    //
+                    GetPrescriptionAction pa = new GetPrescriptionAction(pr.getRunId(), i, false);
+                    PrescriptionSessionResponse data = new GetPrescriptionCommand().execute(conn, pa);
+                    
+                    Cm2PrescriptionTopic topic = new Cm2PrescriptionTopic(data.getPrescriptionData().getCurrSession().getTopic(), getResources(data.getPrescriptionData()));
+                    topics.add(topic);
+                }
+            }
+            return topics;
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    private List<PrescriptionResource> getResources(PrescriptionData prescriptionData) {
+        List<PrescriptionResource> resources = new ArrayList<PrescriptionResource>();
+        
+        for(PrescriptionSessionDataResource r: prescriptionData.getCurrSession().getInmhResources()) {
+            PrescriptionResource pr = new PrescriptionResource(r.getType().name()); 
+            for(InmhItemData item: r.getItems()) {
+                pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle()));
+            }
+            
+            resources.add(pr);
+        }
+        return resources;
+    }
+
 
 }

@@ -1,14 +1,16 @@
 package hotmath.gwt.cm_rpc.client.rpc.cm2;
 
 
+import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
-import hotmath.gwt.cm_rpc.client.model.Topic;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Cm2MobileUser implements Response {
     
@@ -19,15 +21,14 @@ public class Cm2MobileUser implements Response {
     int testSlot;
     int runId;
     String securityKey;
-    CmList<Topic> prescribedLessons;
-    
+
     /** composite with normal CM login */
     UserLoginResponse baseLoginResponse;
 
     /** composite with next flow action
      * 
      */
-    CmProgramFlowAction flowAction;
+    CmProgramFlowAction _flowAction;
     
     
     AssignmentUserInfo assignmentInfo;
@@ -35,12 +36,16 @@ public class Cm2MobileUser implements Response {
     
     public Cm2MobileUser() {}
     
+    
+    List<Cm2PrescriptionTopic> prescriptionTopics = new ArrayList<Cm2PrescriptionTopic>();
+    
     public Cm2MobileUser(int uid, int testId, int testSegment, int testSlot,  boolean passedTest, int runId, AssignmentUserInfo assignmentInfo) {
         this.userId = uid;
         this.testId = testId;
         this.testSegment = testSegment;
         this.testSlot = testSlot;
         this.passedTest = passedTest;
+        this.runId = runId;
         this.assignmentInfo = assignmentInfo;
     }
     
@@ -63,14 +68,6 @@ public class Cm2MobileUser implements Response {
         this.assignmentInfo = assignmentInfo;
     }
 
-    public CmProgramFlowAction getFlowAction() {
-        return flowAction;
-    }
-
-    public void setFlowAction(CmProgramFlowAction flowAction) {
-        this.flowAction = flowAction;
-    }
-
     public UserLoginResponse getBaseLoginResponse() {
         return baseLoginResponse;
     }
@@ -79,14 +76,14 @@ public class Cm2MobileUser implements Response {
         this.baseLoginResponse = baseLoginResponse;
     }
 
-    public CmList<Topic> getPrescribedLessons() {
-        return prescribedLessons;
+    public List<Cm2PrescriptionTopic> getPrescriptionTopics() {
+        return this.prescriptionTopics;
     }
-
-    public void setPrescribedLessons(CmList<Topic> prescribedLessons) {
-        this.prescribedLessons = prescribedLessons;
+    
+    public void setPrescriptionTopics(List<Cm2PrescriptionTopic> topics) {
+        this.prescriptionTopics = topics;
     }
-
+    
     PrescriptionData prescripion;
     private QuizCm2HtmlResult quizResponse;
 

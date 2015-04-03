@@ -1,5 +1,7 @@
 package hotmath.cm.server.rest;
 
+import hotmath.gwt.cm_core.client.model.TopicResource;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -8,6 +10,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.json.JSONObject;
+
+import com.cedarsoftware.util.io.JsonReader;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/")
@@ -43,6 +47,23 @@ public class ActionDispatcherRest {
     @Path("/prescription/{runId}/topic/{topicIndex}")
     public String getPrescription(@PathParam("runId") int runId,@PathParam("topicIndex") int topicIndex) throws Exception {
         return Cm2ActionManager.getPrescriptionTopic(runId, topicIndex);
-    }    
+    }
+    
+    
+    @POST
+    @Path("/prescription/{runId}/topic/{topicIndex}/resource")
+    //     /prescription/3545220/topic/1/resource/practice/7
+    public String getPrescriptionResource(@PathParam("runId") int runId,@PathParam("topicIndex") int topicIndex, String json) throws Exception {
+        TopicResource resource = (TopicResource)JsonReader.jsonToJava(json);
+        return Cm2ActionManager.getPrescriptionResource(resource.getFile());
+    }
+    
+    @POST
+    @Path("/solution/{pid}")
+    //     /prescription/3545220/topic/1/resource/practice/7
+    public String getSolution(@PathParam("pid") String pid) throws Exception {
+        return Cm2ActionManager.getSolution(pid);
+    }
+
 
 }
