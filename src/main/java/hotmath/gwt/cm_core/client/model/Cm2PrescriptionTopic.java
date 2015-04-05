@@ -6,12 +6,22 @@ public class Cm2PrescriptionTopic {
     
     private String topic;
     private List<PrescriptionResource> resources;
+    private String topicTextExcerpt;
 
     public Cm2PrescriptionTopic() {}
     
-    public Cm2PrescriptionTopic(String topic, List<PrescriptionResource> resources) {
+    public Cm2PrescriptionTopic(String topic, String topicTextExcerpt, List<PrescriptionResource> resources) {
         this.topic = topic;
         this.resources = resources;
+        this.topicTextExcerpt = topicTextExcerpt;
+    }
+
+    public String getTopicTextExcerpt() {
+        return topicTextExcerpt;
+    }
+
+    public void setTopicTextExcerpt(String topicTextExcerpt) {
+        this.topicTextExcerpt = topicTextExcerpt;
     }
 
     public String getTopic() {

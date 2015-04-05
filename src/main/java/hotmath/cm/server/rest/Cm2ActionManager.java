@@ -67,8 +67,7 @@ public class Cm2ActionManager {
 
     public static String loginUser(int uid, String un, String pwd) throws Exception {
         // int randomUserId = HaUserDao.getRandomUserId();
-        GetCm2MobileLoginAction action = uid != 0 ? new GetCm2MobileLoginAction(uid) : new GetCm2MobileLoginAction(un,
-                pwd);
+        GetCm2MobileLoginAction action = uid != 0 ? new GetCm2MobileLoginAction(uid) : new GetCm2MobileLoginAction(un, pwd);
         String jsonResponse = new ActionDispacherWrapper().execute(action);
         return jsonResponse;
     }

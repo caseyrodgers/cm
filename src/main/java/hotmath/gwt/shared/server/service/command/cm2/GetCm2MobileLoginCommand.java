@@ -14,9 +14,12 @@ import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2MobileUser;
@@ -32,6 +35,7 @@ import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
+import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand.CustomProgramInfo;
 import hotmath.testset.ha.HaUserFactory;
@@ -40,10 +44,7 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import com.sdicons.json.validator.impl.predicates.Array;
 
 public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLoginAction, Cm2MobileUser> {
 
@@ -160,7 +161,11 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
                     GetPrescriptionAction pa = new GetPrescriptionAction(pr.getRunId(), i, false);
                     PrescriptionSessionResponse data = new GetPrescriptionCommand().execute(conn, pa);
                     
-                    Cm2PrescriptionTopic topic = new Cm2PrescriptionTopic(data.getPrescriptionData().getCurrSession().getTopic(), getResources(data.getPrescriptionData()));
+                    PrescriptionSessionData currSess = data.getPrescriptionData().getCurrSession();
+                    String topicHtml = new GetReviewHtmlCommand().execute(conn,new GetReviewHtmlAction(currSess.getFile())).getLesson();
+                    
+                    
+                    Cm2PrescriptionTopic topic = new Cm2PrescriptionTopic(currSess.getTopic(), topicHtml, getResources(data.getPrescriptionData()));
                     topics.add(topic);
                 }
             }
@@ -177,11 +182,15 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
         
         for(PrescriptionSessionDataResource r: prescriptionData.getCurrSession().getInmhResources()) {
             PrescriptionResource pr = new PrescriptionResource(r.getType().name()); 
-            for(InmhItemData item: r.getItems()) {
-                pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle()));
-            }
+            // only types included in Cm2Mobile
+            String t = pr.getType();
             
-            resources.add(pr);
+            if(t.equals(CmResourceType.REVIEW.name()) || t.equals(CmResourceType.PRACTICE.name()) || t.equals(CmResourceType.VIDEO.name())) {
+                for(InmhItemData item: r.getItems()) {
+                    pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle()));
+                }
+                resources.add(pr);
+            }
         }
         return resources;
     }
