@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
@@ -149,7 +150,9 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
     private List<Cm2PrescriptionTopic> extractPrescriptionTopics(Connection conn, CmProgramFlowAction nextAction) throws Exception {
         try {
             List<Cm2PrescriptionTopic> topics = new ArrayList<Cm2PrescriptionTopic>();
-            if(nextAction.getPrescriptionResponse() != null) {
+            if(nextAction.getPlace() == CmPlace.QUIZ) {
+            }
+            else if(nextAction.getPlace() == CmPlace.PRESCRIPTION) {
                 
                 PrescriptionSessionResponse pr = nextAction.getPrescriptionResponse();
                 List<SessionTopic> st = pr.getPrescriptionData().getSessionTopics();
