@@ -14,7 +14,7 @@
 		<gxt.version>3.1.2</gxt.version>
 	</properties>
 
-<!-- comment -->        
+<!-- comment 1 -->        
 	<pluginRepositories>
 		<!-- <pluginRepository> <id>gwt-maven-plugins</id> <url>http://snapshots.repository.codehaus.org/ 
 			</url> </pluginRepository> -->
