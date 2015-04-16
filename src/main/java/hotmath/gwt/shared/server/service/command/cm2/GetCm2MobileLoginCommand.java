@@ -45,6 +45,8 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLoginAction, Cm2MobileUser> {
@@ -59,12 +61,14 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
 
        int uid = action.getUid();
        
+       boolean isDemo=false;
        HaBasicUser basicUser=null;
        if(uid > 0) {
            basicUser = HaUserFactory.getLoginUserInfo(conn, uid, "STUDENT");
        }
        else if(action.getName().equals("catchup_demo") && action.getPassword().equals("demo")) {
            basicUser = HaUserFactory.createDemoUser(conn, "ess");
+           isDemo=true;
         }
        else {
            basicUser = HaUserFactory.loginToCatchup(conn, action.getName(), action.getPassword());
@@ -76,6 +80,10 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
         
 
         CmProgramFlow programFlow = new CmProgramFlow(conn, basicUser.getUserKey());
+        
+        if(isDemo) {
+            programFlow.moveToNextFlowItem(conn);
+        }
         
         StudentModelI sm = CmStudentDao.getInstance().getStudentModelBase(conn, basicUser.getUserKey());
         StudentActiveInfo active = programFlow.getActiveInfo();
@@ -147,7 +155,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
         return mobileUser;
     }
 
-    private List<Cm2PrescriptionTopic> extractPrescriptionTopics(Connection conn, CmProgramFlowAction nextAction) throws Exception {
+    static public List<Cm2PrescriptionTopic> extractPrescriptionTopics(Connection conn, CmProgramFlowAction nextAction) throws Exception {
         try {
             List<Cm2PrescriptionTopic> topics = new ArrayList<Cm2PrescriptionTopic>();
             if(nextAction.getPlace() == CmPlace.QUIZ) {
@@ -169,6 +177,16 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
                     
                     
                     Cm2PrescriptionTopic topic = new Cm2PrescriptionTopic(currSess.getTopic(), topicHtml, getResources(data.getPrescriptionData()));
+                    
+                    
+                    // put in order expected by UI
+                    List<PrescriptionResource> res = topic.getResources();
+                    // swap videos and practice
+                    PrescriptionResource videos = res.get(1);
+                    res.set(1, res.get(2));
+                    res.set(2, videos);
+                    
+                    
                     topics.add(topic);
                 }
             }
@@ -180,7 +198,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
         }
     }
 
-    private List<PrescriptionResource> getResources(PrescriptionData prescriptionData) {
+    static private List<PrescriptionResource> getResources(PrescriptionData prescriptionData) {
         List<PrescriptionResource> resources = new ArrayList<PrescriptionResource>();
         
         for(PrescriptionSessionDataResource r: prescriptionData.getCurrSession().getInmhResources()) {
@@ -190,7 +208,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             
             if(t.equals(CmResourceType.REVIEW.name()) || t.equals(CmResourceType.PRACTICE.name()) || t.equals(CmResourceType.VIDEO.name())) {
                 for(InmhItemData item: r.getItems()) {
-                    pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle()));
+                    pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle(), item.isViewed()));
                 }
                 resources.add(pr);
             }

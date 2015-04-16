@@ -1,20 +1,30 @@
 package hotmath.cm.server.rest;
 
-import com.cedarsoftware.util.io.JsonWriter;
-
 import hotmath.ProblemID;
+import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
+import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.CheckCm2QuizAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2MobileLoginAction;
+import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2CheckedResult;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
+import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaUserDao;
+import hotmath.util.HMConnectionPool;
+import hotmath.util.sql.SqlUtilities;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.cedarsoftware.util.io.JsonWriter;
 
 /**
  * Central place to request a CM2 request with any specialized formatting
@@ -61,8 +71,20 @@ public class Cm2ActionManager {
 
         CheckCm2QuizAction action = new CheckCm2QuizAction(testId);
 
-        String jsonResponse = new ActionDispacherWrapper().execute(action);
-        return jsonResponse;
+        
+        
+        QuizCm2CheckedResult results = ActionDispatcher.getInstance().execute(action);
+        Connection conn=null;
+        try {
+            conn=HMConnectionPool.getConnection();
+            List<Cm2PrescriptionTopic> topics = GetCm2MobileLoginCommand.extractPrescriptionTopics(conn, results.getTestRunResults().getNextAction());
+            results.setPrescriptionTopics(topics);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,null, conn);
+        }
+        String json = JsonWriter.objectToJson(results);
+        return json;
     }
 
     public static String loginUser(int uid, String un, String pwd) throws Exception {
@@ -95,6 +117,10 @@ public class Cm2ActionManager {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static String markRppAsViewed(int rid, int topicIndex, String pid) throws Exception {
+        return new ActionDispacherWrapper().execute(new SetInmhItemAsViewedAction(rid, CmResourceType.PRACTICE, pid, topicIndex));
     }
 
 }

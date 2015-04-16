@@ -5,13 +5,23 @@ public class ResourceItem {
     private String file;
     private String type;
     private String title;
+    private boolean isViewed;
 
     public ResourceItem() {}
     
-    public ResourceItem(String type, String file, String title) {
+    public ResourceItem(String type, String file, String title, boolean isViewed) {
         this.type = type;
         this.file = file;
         this.title = title;
+        this.isViewed = isViewed;
+    }
+
+    public boolean isViewed() {
+        return isViewed;
+    }
+
+    public void setViewed(boolean isViewed) {
+        this.isViewed = isViewed;
     }
 
     public String getFile() {
