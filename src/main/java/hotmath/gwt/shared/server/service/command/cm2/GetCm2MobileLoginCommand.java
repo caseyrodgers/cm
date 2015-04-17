@@ -46,9 +46,8 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLoginAction, Cm2MobileUser> {
 
@@ -68,7 +67,10 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
            basicUser = HaUserFactory.getLoginUserInfo(conn, uid, "STUDENT");
        }
        else if(action.getName().equals("catchup_demo") && action.getPassword().equals("demo")) {
-           basicUser = HaUserFactory.createDemoUser(conn, "ess");
+           String types[] = {"ess", "prealg","alg1", "alg2", "geom"};
+           int rand = new Random().nextInt(types.length);
+           String type = types[rand];
+           basicUser = HaUserFactory.createDemoUser(conn, type);
            isDemo=true;
         }
        else {
