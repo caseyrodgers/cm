@@ -67,12 +67,13 @@ public class ActionDispatcherRest {
 
     @POST
     @Path("/run/{rid}/resource/view")
-    public String markRppAsViewed(@PathParam("rid") int rid, String jsonData) throws Exception {
+    public String markResourceAsViewed(@PathParam("rid") int rid, String jsonData) throws Exception {
         JSONObject jo = new JSONObject(jsonData);
         int topicIndex = jo.getInt("topicIndex");
-        String pid = jo.getString("pid");
+        String type = jo.getString("type");
+        String file = jo.getString("file");
         
-        return Cm2ActionManager.markRppAsViewed(rid, topicIndex, pid);
+        return Cm2ActionManager.markResourceAsViewed(rid, topicIndex, type, file);
     }
 
 }

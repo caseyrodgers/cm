@@ -119,8 +119,11 @@ public class Cm2ActionManager {
         return "";
     }
 
-    public static String markRppAsViewed(int rid, int topicIndex, String pid) throws Exception {
-        return new ActionDispacherWrapper().execute(new SetInmhItemAsViewedAction(rid, CmResourceType.PRACTICE, pid, topicIndex));
+    public static String markResourceAsViewed(int rid, int topicIndex, String type, String file) throws Exception {
+        
+        CmResourceType resourceType = CmResourceType.valueOf(type.toUpperCase());
+        
+        return new ActionDispacherWrapper().execute(new SetInmhItemAsViewedAction(rid, resourceType, file, topicIndex));
     }
 
 }
