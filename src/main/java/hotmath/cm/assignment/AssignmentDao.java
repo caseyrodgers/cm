@@ -749,22 +749,20 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 				lessonList = new CmArrayList<StudentLessonDto>();
 			}
 
-			// if (!lessonName.equals(probDto.getProblem().getLessonFirst())) {
-			// if (lessonName.trim().length() > 0) {
-			// if (lessonStatus != null) {
-			// lessonStatus.setStatus(getLessonStatus(count, completed, pending,
-			// viewed));
-			// }
-			// }
-			// completed = 0;
-			// pending = 0;
-			// count = 0;
-			// viewed = 0;
-			// lessonName =
-			// probDto.getProblem().getLessonFirst().getLessonName();
-			// lessonStatus = new StudentLessonDto(uid, lessonName, null);
-			// lessonList.add(lessonStatus);
-			// }
+			if (!lessonName.equals(probDto.getProblem().getName())) {
+			    if (lessonName.trim().length() > 0) {
+			        if (lessonStatus != null) {
+			            lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
+			        }
+			    }
+			    completed = 0;
+			    pending = 0;
+			    count = 0;
+			    viewed = 0;
+			    lessonName = probDto.getProblem().getName();
+			    lessonStatus = new StudentLessonDto(probDto.getUid(), lessonName, null);
+			    lessonList.add(lessonStatus);
+			}
 
 			count++;
 			totCount++;
@@ -1118,23 +1116,20 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 						.setLessonStatuses(lessonList);
 			}
 
-			// if (!lessonName.equals(probDto.getProblem().getLessonFirst())) {
-			// if (lessonName.trim().length() > 0) {
-			// if (lessonStatus != null) {
-			// lessonStatus.setStatus(getLessonStatus(count, completed, pending,
-			// viewed));
-			// }
-			// }
-			// completed = 0;
-			// pending = 0;
-			// count = 0;
-			// viewed = 0;
-			// lessonName =
-			// probDto.getProblem().getLessonFirst().getLessonName();
-			// lessonStatus = new StudentLessonDto(probDto.getUid(), lessonName,
-			// null);
-			// lessonList.add(lessonStatus);
-			// }
+			if (!lessonName.equals(probDto.getProblem().getName())) {
+			    if (lessonName.trim().length() > 0) {
+			        if (lessonStatus != null) {
+			            lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
+			        }
+			    }
+			    completed = 0;
+			    pending = 0;
+			    count = 0;
+			    viewed = 0;
+			    lessonName = probDto.getProblem().getName();
+			    lessonStatus = new StudentLessonDto(probDto.getUid(), lessonName, null);
+			    lessonList.add(lessonStatus);
+			}
 
 			count++;
 			totCount++;
