@@ -7,16 +7,23 @@ import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_core.client.model.QuizCm2Question;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2QuizHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizAnswer;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2HtmlResult;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
+import hotmath.gwt.shared.client.rpc.action.GetQuizCurrentResultsAction;
+import hotmath.gwt.shared.server.service.command.GetQuizCurrentResultsCommand;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.StudentUserProgramModel;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 import sb.util.SbFile;
 
@@ -67,6 +74,16 @@ public class GetCm2QuizHtmlCommand implements ActionHandler<GetCm2QuizHtmlAction
                 QuizCm2Question question = new QuizCm2Question(action.getTestId(), q.getProblemIndex(), htmlWithAbsolute);
                 result.getQuizQuestions().add(question);
             }
+            
+            GetQuizCurrentResultsAction resultsAction = new GetQuizCurrentResultsAction(action.getTestId());
+            CmList<RpcData> currentResponses = new GetQuizCurrentResultsCommand().execute(conn, resultsAction);
+            
+            // convert to more specific type
+            List<QuizAnswer> answers = new ArrayList<QuizAnswer>();
+            for(RpcData r: currentResponses) {
+                answers.add(new QuizAnswer(r.getDataAsString("pid"), r.getDataAsInt("answer")));
+            }
+            result.setCurrentSelections(answers);
             result.setTestId(haTest.getTestId());
             result.setTitle(testTitle);
             return result;

@@ -8,6 +8,7 @@ import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.CheckCm2QuizAction;
@@ -124,6 +125,10 @@ public class Cm2ActionManager {
         CmResourceType resourceType = CmResourceType.valueOf(type.toUpperCase());
         
         return new ActionDispacherWrapper().execute(new SetInmhItemAsViewedAction(rid, resourceType, file, topicIndex));
+    }
+
+    public static String setQuizAnswer(int tid, String pid, int choiceIndex, boolean isCorrect) throws Exception {
+        return new ActionDispacherWrapper().execute(new SaveQuizCurrentResultAction(tid, isCorrect, choiceIndex, pid));
     }
 
 }

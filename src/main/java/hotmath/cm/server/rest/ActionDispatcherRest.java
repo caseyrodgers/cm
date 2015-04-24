@@ -75,5 +75,19 @@ public class ActionDispatcherRest {
         
         return Cm2ActionManager.markResourceAsViewed(rid, topicIndex, type, file);
     }
+    
+    
+    @POST
+    @Path("/quiz/{tid}/answer")
+    public String setQuizAnswer(@PathParam("tid") int tid, String jsonData) throws Exception {
+        JSONObject jo = new JSONObject(jsonData);
+        int choiceIndex = jo.getInt("choiceIndex");
+        String pid = jo.getString("pid");
+        boolean isCorrect = jo.getBoolean("isCorrect");
+        
+        return Cm2ActionManager.setQuizAnswer(tid, pid, choiceIndex, isCorrect);
+    }
+    
+    
 
 }
