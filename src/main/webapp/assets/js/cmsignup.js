@@ -8,11 +8,9 @@ function setupSignupPage() {
    setupToolTips();   
    
    setCmSelection();
-   
-   
+
    var e1 = document.getElementById('TYPE_SERVICE_CATCHUP');
    e1.onclick = function() {setCmSelection()};
-
 
    var e2 = document.getElementById('TYPE_SERVICE_CATCHUP_YEAR');
    e2.onclick = function() {setCmSelection();};
@@ -50,32 +48,65 @@ var _plan;
 function setCmSelection() {
    var e1 = document.getElementById('TYPE_SERVICE_CATCHUP');
    var e2 = document.getElementById('TYPE_SERVICE_CATCHUP_YEAR');
-   
-   var ew;
+
+   var ew = null;
    if(e1.checked) {
 	   e2.checked = false;
        ew = e1;
    }
-   else {
+   else if (e2.checked) {
 	   e1.checked = false;
 	   ew = e2;
    }
 
-   var cost = ew.getAttribute("cost");
-   setTotalCost(cost);
-      
-   _plan = ew.id;
-   if (cost == "10") {
-       _plan = "TYPE_SERVICE_CATCHUP_GOODMATH15_3MON";
-   }
-   else if (cost == "30") {
-       _plan = "TYPE_SERVICE_CATCHUP_GOODMATH15_YEAR";
-   }
+   if (ew != null) { 
    
-   document.getElementById('selected_services').value = _plan;
+       _plan = ew.id;
+       var cost = ew.getAttribute("cost");
+       if (cost == "10") {
+           _plan = "TYPE_SERVICE_CATCHUP_GOODMATH15_3MON";
+       }
+       else if (cost == "30") {
+           _plan = "TYPE_SERVICE_CATCHUP_GOODMATH15_YEAR";
+       }
+   
+       setTotalCost(ew.getAttribute("cost"));
+   
+       document.getElementById('selected_services').value = _plan;
+   }
+   else {
+       _plan = null;
+       setTotalCost("0");
+       document.getElementById('selected_services').value = null;
+   }
 }
 
-
+function applyCode() {
+	var code = document.getElementById('catchup_code');
+	var e1 = document.getElementById('TYPE_SERVICE_CATCHUP');
+	var e2 = document.getElementById('TYPE_SERVICE_CATCHUP_YEAR');
+	var e3 = document.getElementById('3_months');
+	var e4 = document.getElementById('12_months');
+	var e5 = document.getElementById('code_msg');
+	if (code.value.toUpperCase() == getCode()) {
+		e1.setAttribute("cost", "10");
+		e2.setAttribute("cost", "30");
+		e3.innerHTML = "$10";
+		e4.innerHTML = "$30";
+		e5.innerHTML = "Thank you, prices are updated";
+		e5.setAttribute("style", "color:green; display:block;");
+		
+	}
+	else {
+		e1.setAttribute("cost", "99");
+		e2.setAttribute("cost", "199");
+		e3.innerHTML = "$99";
+		e4.innerHTML = "$199";
+		e5.innerHTML = "Sorry, code is invalid";
+		e5.setAttribute("style", "color:red; display:block;");
+	}
+	setCmSelection();
+}
 
 var _validationErrorCount=0;
 var _totalCost=99;
@@ -475,7 +506,9 @@ function clearErrorMessages() {
  }
 }
 
-
+function getCode() {
+    return 'GOODMATH15';
+}
 
 // Standardized method to check a field is null, show message
 // and return true or false
