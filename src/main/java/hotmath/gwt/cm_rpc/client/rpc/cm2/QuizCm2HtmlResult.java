@@ -18,7 +18,7 @@ public class QuizCm2HtmlResult implements Response {
     String subTitle;
     int userId;
     List<Integer> answers;
-    CmList<RpcData> currentSelections;
+    List<QuizAnswer> currentSelections;
 
     public QuizCm2HtmlResult() {}
     
@@ -78,11 +78,10 @@ public class QuizCm2HtmlResult implements Response {
         this.subTitle = subTitle;
     }
     
-    
-    public CmList<RpcData> getCurrentSelections() {
+    public List<QuizAnswer> getCurrentSelections() {
         return currentSelections;
     }
-    public void setCurrentSelections(CmList<RpcData> currentSelections) {
+    public void setCurrentSelections(List<QuizAnswer> currentSelections) {
         this.currentSelections = currentSelections;
     }    
 }

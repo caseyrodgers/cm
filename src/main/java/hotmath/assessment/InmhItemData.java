@@ -214,11 +214,11 @@ public class InmhItemData {
             }
             else {
                 
-                logger.info("Parsing random range: " + range);
+                logger.debug("Parsing random range: " + range);
                 
                 if(range.indexOf("{") > -1) {
                     
-                    logger.info("Parsing random range (explicit set): " + range);
+                    logger.debug("Parsing random range (explicit set): " + range);
                     
                     int l = range.indexOf("{");
                     int r = range.indexOf("}");

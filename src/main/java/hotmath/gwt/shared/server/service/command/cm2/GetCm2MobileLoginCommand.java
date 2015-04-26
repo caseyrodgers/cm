@@ -182,12 +182,12 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
                     Cm2PrescriptionTopic topic = new Cm2PrescriptionTopic(currSess.getTopic(), topicHtml, getResources(data.getPrescriptionData()));
                     
                     
-                    // put in order expected by UI
-                    List<PrescriptionResource> res = topic.getResources();
-                    // swap videos and practice
-                    PrescriptionResource videos = res.get(1);
-                    res.set(1, res.get(2));
-                    res.set(2, videos);
+//                    // put in order expected by UI
+//                    List<PrescriptionResource> res = topic.getResources();
+//                    // swap videos and practice
+//                    PrescriptionResource videos = res.get(1);
+//                    res.set(1, res.get(2));
+//                    res.set(2, videos);
                     
                     
                     topics.add(topic);
