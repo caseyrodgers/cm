@@ -60,10 +60,17 @@ function setCmSelection() {
 	   e1.checked = false;
 	   ew = e2;
    }
-   
+
+   var cost = ew.getAttribute("cost");
+   setTotalCost(cost);
+      
    _plan = ew.id;
-   
-   setTotalCost(ew.getAttribute("cost"));
+   if (cost == "10") {
+       _plan = "TYPE_SERVICE_CATCHUP_GOODMATH15_3MON";
+   }
+   else if (cost == "30") {
+       _plan = "TYPE_SERVICE_CATCHUP_GOODMATH15_YEAR";
+   }
    
    document.getElementById('selected_services').value = _plan;
 }
