@@ -217,7 +217,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
 
         final List<String> testIds = (List<String>) (segment == EMPTY_TEST ? new ArrayList<String>() : testDef.getTestIdsForSegment(userProgram, segment,
                 config, segmentSlot));
-        __logger.info("createTest(): testIds.size(); " + testIds.size());
+        __logger.debug("createTest(): testIds.size(); " + testIds.size());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
