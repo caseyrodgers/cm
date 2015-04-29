@@ -66,6 +66,13 @@ public class ActionDispatcherRest {
     }
 
     @POST
+    @Path("/prescription/{rid}/solution/{pid}")
+    //     /prescription/3545220/topic/1/resource/practice/7
+    public String getSolutionForTestRun(@PathParam("rid") int rid, @PathParam("pid") String pid) throws Exception {
+        return Cm2ActionManager.getSolution(rid, pid);
+    }
+    
+    @POST
     @Path("/run/{rid}/resource/view")
     public String markResourceAsViewed(@PathParam("rid") int rid, String jsonData) throws Exception {
         JSONObject jo = new JSONObject(jsonData);
@@ -88,6 +95,12 @@ public class ActionDispatcherRest {
         return Cm2ActionManager.setQuizAnswer(tid, pid, choiceIndex, isCorrect);
     }
     
-    
+
+    @POST
+    @Path("/prescription/{rid}/context/{pid}")
+    public String setPrescriptionSolutionContext(@PathParam("rid") int rid, @PathParam("pid") String pid, String context) throws Exception {
+        return Cm2ActionManager.setPrescriptionSolutionContext(rid, pid, context);
+    }
+
 
 }
