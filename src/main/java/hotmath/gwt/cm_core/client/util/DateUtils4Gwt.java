@@ -2,7 +2,9 @@ package hotmath.gwt.cm_core.client.util;
 
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 
@@ -23,14 +25,20 @@ public class DateUtils4Gwt {
 
         long due = dueDate.getTime();
         int oneDay = (60 * 1000) * 60 * 24;
-        long now = new Date().getTime();
+        GregorianCalendar g = new GregorianCalendar();
+        g.set(Calendar.HOUR,0);
+        g.set(Calendar.MINUTE,0);
+        int dy = g.get(Calendar.DAY_OF_YEAR)-1;
+        g.set(Calendar.DAY_OF_YEAR, dy);
+        Date d = g.getTime();
+        long now = d.getTime();
 
         String formatedString;
         if(!useRelative || (due + Assignment.MILLS_IN_DAY) < now ) {
             // past due
             formatedString = formatNormal.format(dueDate);
         }
-        else if (((due - now) / oneDay) < 2) {
+        else if (((due - now) / oneDay) < 1) {
             formatedString = "Today";
         } else if (due < now + (oneDay * 2)) {
             formatedString = "Tomorrow";

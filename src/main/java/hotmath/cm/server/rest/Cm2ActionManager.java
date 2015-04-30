@@ -4,21 +4,26 @@ import hotmath.ProblemID;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.CheckCm2QuizAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2MobileLoginAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2CheckedResult;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaUserDao;
+import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -72,17 +77,15 @@ public class Cm2ActionManager {
 
         CheckCm2QuizAction action = new CheckCm2QuizAction(testId);
 
-        
-        
         QuizCm2CheckedResult results = ActionDispatcher.getInstance().execute(action);
-        Connection conn=null;
+        Connection conn = null;
         try {
-            conn=HMConnectionPool.getConnection();
-            List<Cm2PrescriptionTopic> topics = GetCm2MobileLoginCommand.extractPrescriptionTopics(conn, results.getTestRunResults().getNextAction());
+            conn = HMConnectionPool.getConnection();
+            List<Cm2PrescriptionTopic> topics = GetCm2MobileLoginCommand.extractPrescriptionTopics(conn, results
+                    .getTestRunResults().getNextAction());
             results.setPrescriptionTopics(topics);
-        }
-        finally {
-            SqlUtilities.releaseResources(null,null, conn);
+        } finally {
+            SqlUtilities.releaseResources(null, null, conn);
         }
         String json = JsonWriter.objectToJson(results);
         return json;
@@ -90,7 +93,8 @@ public class Cm2ActionManager {
 
     public static String loginUser(int uid, String un, String pwd) throws Exception {
         // int randomUserId = HaUserDao.getRandomUserId();
-        GetCm2MobileLoginAction action = uid != 0 ? new GetCm2MobileLoginAction(uid) : new GetCm2MobileLoginAction(un, pwd);
+        GetCm2MobileLoginAction action = uid != 0 ? new GetCm2MobileLoginAction(uid) : new GetCm2MobileLoginAction(un,
+                pwd);
         String jsonResponse = new ActionDispacherWrapper().execute(action);
         return jsonResponse;
     }
@@ -106,29 +110,57 @@ public class Cm2ActionManager {
 
     public static String getSolution(String pid) throws Exception {
         try {
-        LoadSolutionMetaAction action1 = new LoadSolutionMetaAction(new ProblemID(pid).getGUID());
-        SolutionMeta solutionSteps = ActionDispatcher.getInstance().execute(action1);
-        GetSolutionAction action = new GetSolutionAction(pid);
-        SolutionResponse solutionInfo2 = ActionDispatcher.getInstance().execute(action);
+            LoadSolutionMetaAction action1 = new LoadSolutionMetaAction(new ProblemID(pid).getGUID());
+            SolutionMeta solutionSteps = ActionDispatcher.getInstance().execute(action1);
+            GetSolutionAction action = new GetSolutionAction(pid);
+            SolutionResponse solutionInfo2 = ActionDispatcher.getInstance().execute(action);
 
-        Cm2SolutionInfo solutionInfo = new Cm2SolutionInfo(solutionSteps.getProblemStatement(), solutionInfo2);
-        return JsonWriter.objectToJson(solutionInfo);
+            Cm2SolutionInfo solutionInfo = new Cm2SolutionInfo(solutionSteps.getProblemStatement(), solutionInfo2);
+            return JsonWriter.objectToJson(solutionInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch(Exception e) {
+        return "";
+    }
+
+    public static String getSolution(int rid, String pid) throws Exception {
+        try {
+            LoadSolutionMetaAction action1 = new LoadSolutionMetaAction(new ProblemID(pid).getGUID());
+            SolutionMeta solutionSteps = ActionDispatcher.getInstance().execute(action1);
+            
+            SolutionResponse solutionInfo2 = ActionDispatcher.getInstance().execute(new GetSolutionAction(pid));
+            
+            SolutionContext context = SolutionDao.getInstance().getSolutionContext(rid, pid);
+            solutionInfo2.setSolutionVariableContext(context!=null?context.getContextJson():null);
+
+            Cm2SolutionInfo solutionInfo = new Cm2SolutionInfo(solutionSteps.getProblemStatement(), solutionInfo2);
+            return JsonWriter.objectToJson(solutionInfo);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "";
     }
 
     public static String markResourceAsViewed(int rid, int topicIndex, String type, String file) throws Exception {
-        
+
         CmResourceType resourceType = CmResourceType.valueOf(type.toUpperCase());
-        
+
         return new ActionDispacherWrapper().execute(new SetInmhItemAsViewedAction(rid, resourceType, file, topicIndex));
     }
 
     public static String setQuizAnswer(int tid, String pid, int choiceIndex, boolean isCorrect) throws Exception {
         return new ActionDispacherWrapper().execute(new SaveQuizCurrentResultAction(tid, isCorrect, choiceIndex, pid));
+    }
+
+    public static String setPrescriptionSolutionContext(int rid, String pid, String context) {
+        try {
+            RpcData results = ActionDispatcher.getInstance().execute(new SaveSolutionContextAction(0, rid, pid, 0, context));
+            return JsonWriter.objectToJson(results);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
