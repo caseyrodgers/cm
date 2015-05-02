@@ -178,9 +178,9 @@ public class Cm2ActionManager {
         }
     }
 
-    public static String savePrescriptionSolutionWhiteboard(int uid, int rid, String pid, String jsonData) throws Exception {
+    public static String savePrescriptionSolutionWhiteboard(int uid, int rid, String pid, String cmdType, String jsonData) throws Exception {
         try {
-            SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(uid, rid, pid, CommandType.DRAW,jsonData);
+            SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(uid, rid, pid, CommandType.valueOf(cmdType.toUpperCase()), jsonData);
             RpcData result = ActionDispatcher.getInstance().execute(action);
             return JsonWriter.objectToJson(result);
         } catch (Exception e) {
