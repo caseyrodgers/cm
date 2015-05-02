@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.ProblemID;
+import hotmath.SolutionManager;
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.flusher.Flushable;
@@ -9,6 +10,8 @@ import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.QuizQuestion;
+import hotmath.solution.Solution;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.io.File;
@@ -72,22 +75,69 @@ public class CustomQuizQuestionManager {
         String lines[] = contents.split("\n");
         
         _dataMap.clear();
-        for(String line: lines) {
-            if(line.startsWith("#")) {
-                continue;
+        
+        
+        Connection conn = null;
+        PreparedStatement ps=null;
+        try {
+            String sql = "select problemindex from SOLUTIONS where problemindex like ? and active = 1";
+            conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(sql);
+            for(String line: lines) {
+                if(line.startsWith("#")) {
+                    continue;
+                }
+                String lesson = SbUtilities.getToken(line, 1, "\t").trim();
+                String pid = SbUtilities.getToken(line, 2, "\t").trim();
+                
+                
+                /** point the active problem
+                 * 
+                 */
+                String activePidSearch = getActivePid(pid);
+                
+                
+                
+                ps.setString(1,  activePidSearch);
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()) {
+                    /** only active problems
+                     * 
+                     */
+                    String activePid = rs.getString("problemindex");
+                    
+                    CustomQuizLessonInfo ci = _dataMap.get(lesson);
+                    if(ci == null) {
+                        ci = new CustomQuizLessonInfo();
+                        _dataMap.put(lesson,ci);
+                    }
+                    ci.pids.add(activePid);
+                }
+                else {
+                    __logger.warn("could not find active problem for pid: " + pid);
+                }
             }
-            String lesson = SbUtilities.getToken(line, 1, "\t").trim();
-            String pid = SbUtilities.getToken(line, 2, "\t").trim();
-            
-            CustomQuizLessonInfo ci = _dataMap.get(lesson);
-            if(ci == null) {
-                ci = new CustomQuizLessonInfo();
-                _dataMap.put(lesson,ci);
-            }
-            ci.pids.add(pid);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,  ps,  conn);
         }
     }
     
+    private String getActivePid(String pid) {
+        String p[] = pid.split("\\_");
+        p[5] = "%";
+        
+        String sout = "";
+        for(String p2: p) {
+            if(sout.length() > 0) {
+                sout += "_";
+            }
+            sout += p2;
+        }
+        return sout;
+    }
+
+
     /** Get all active questions for this lesson.
      * 
      *  Return all active lesson
