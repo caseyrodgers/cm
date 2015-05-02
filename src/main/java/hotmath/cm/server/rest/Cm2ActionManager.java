@@ -7,17 +7,21 @@ import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
-import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.CheckCm2QuizAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2MobileLoginAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2CheckedResult;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
@@ -161,6 +165,28 @@ public class Cm2ActionManager {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String getPrescriptionSolutionWhiteboard(int uid, int rid, String pid) throws Exception {
+        try {
+            GetWhiteboardDataAction action = new GetWhiteboardDataAction(uid, pid, rid);
+            CmList<WhiteboardCommand> result = ActionDispatcher.getInstance().execute(action);
+            return JsonWriter.objectToJson(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public static String savePrescriptionSolutionWhiteboard(int uid, int rid, String pid, String jsonData) throws Exception {
+        try {
+            SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(uid, rid, pid, CommandType.DRAW,jsonData);
+            RpcData result = ActionDispatcher.getInstance().execute(action);
+            return JsonWriter.objectToJson(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
 }

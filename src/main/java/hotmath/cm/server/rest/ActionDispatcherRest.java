@@ -102,5 +102,17 @@ public class ActionDispatcherRest {
         return Cm2ActionManager.setPrescriptionSolutionContext(rid, pid, context);
     }
 
+    
+    
+    @POST
+    @Path("/prescription/{rid}/solution/{pid}/whiteboard/{uid}")
+    public String getPrescriptionSolutionWhiteboard(@PathParam("rid") int rid, @PathParam("pid") String pid, @PathParam("uid") int uid) throws Exception {
+        return Cm2ActionManager.getPrescriptionSolutionWhiteboard(uid, rid, pid);
+    }
 
+    @POST
+    @Path("/prescription/{rid}/solution/{pid}/whiteboard/{uid}/write")
+    public String writePrescriptionSolutionWhiteboard(@PathParam("rid") int rid, @PathParam("pid") String pid, @PathParam("uid") int uid, String jsonData) throws Exception {
+        return Cm2ActionManager.savePrescriptionSolutionWhiteboard(uid, rid, pid, jsonData);
+    }    
 }
