@@ -50,7 +50,7 @@ public class SaveWhiteboardDataCommand implements
 			
 
 		default:
-			CmTutoringDao.saveWhiteboardData(conn, action.getUid(),
+			CmTutoringDao.saveWhiteboardData(conn, action.getUid(),action.getTid(),
 					action.getRid(), action.getPid(), action.getCommandData(),
 					action.getCommandType());
 			break;

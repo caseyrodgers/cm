@@ -380,7 +380,7 @@ public class CmTutoringDao {
 	}
 
 
-	static public void saveWhiteboardData(final Connection conn, int uid,
+	static public void saveWhiteboardData(final Connection conn, int uid,int tid,
 			int rid, String pid, String commandData, CommandType commandType)
 			throws Exception {
 		PreparedStatement pstat = null;
