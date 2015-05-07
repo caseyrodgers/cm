@@ -111,12 +111,16 @@ public class ActionDispatcherRest {
     }
 
     @POST
-    @Path("/prescription/{rid}/solution/{pid}/whiteboard/{uid}/write")
-    public String writePrescriptionSolutionWhiteboard(@PathParam("rid") int rid, @PathParam("pid") String pid, @PathParam("uid") int uid, String jsonData) throws Exception {
+    @Path("/whiteboard/write")
+    public String writePrescriptionSolutionWhiteboard(String jsonData) throws Exception {
         JSONObject jo = new JSONObject(jsonData);
+        int uid = jo.getInt("uid");
+        int rid = jo.getInt("rid");
+        int tid = jo.getInt("tid");
+        String pid = jo.getString("pid");
         String cmdType = jo.getString("type");
         String json = jo.getString("json");
         
-        return Cm2ActionManager.savePrescriptionSolutionWhiteboard(uid, rid, pid, cmdType, json);
+        return Cm2ActionManager.savePrescriptionSolutionWhiteboard(uid, tid, rid, pid, cmdType, json);
     }    
 }
