@@ -67,10 +67,8 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
            basicUser = HaUserFactory.getLoginUserInfo(conn, uid, "STUDENT");
        }
        else if(action.getName().equals("catchup_demo") && action.getPassword().equals("demo")) {
-           String types[] = {"ess", "prealg","alg1", "alg2", "geom"};
-           int rand = new Random().nextInt(types.length);
-           String type = types[rand];
-           basicUser = HaUserFactory.createDemoUser(conn, type);
+           String subject = action.getSubject();
+           basicUser = HaUserFactory.createDemoUser(conn, subject);
            isDemo=true;
         }
        else {
@@ -180,15 +178,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
                     
                     
                     Cm2PrescriptionTopic topic = new Cm2PrescriptionTopic(currSess.getTopic(), topicHtml, getResources(data.getPrescriptionData()));
-                    
-                    
-//                    // put in order expected by UI
-//                    List<PrescriptionResource> res = topic.getResources();
-//                    // swap videos and practice
-//                    PrescriptionResource videos = res.get(1);
-//                    res.set(1, res.get(2));
-//                    res.set(2, videos);
-                    
+
                     
                     topics.add(topic);
                 }
