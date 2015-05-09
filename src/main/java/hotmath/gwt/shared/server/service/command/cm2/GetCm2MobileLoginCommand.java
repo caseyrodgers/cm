@@ -5,6 +5,7 @@ import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.program.CmProgramFlow;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_core.client.model.PrescriptionResource;
@@ -177,6 +178,9 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
                     String topicHtml = new GetReviewHtmlCommand().execute(conn,new GetReviewHtmlAction(currSess.getFile())).getLesson();
                     
                     
+                    // point all solution images to image server
+                    topicHtml = replaceImagesWithSolutionServer("/hotmath_help", topicHtml);
+                    
                     Cm2PrescriptionTopic topic = new Cm2PrescriptionTopic(currSess.getTopic(), topicHtml, getResources(data.getPrescriptionData()));
 
                     
@@ -189,6 +193,12 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             e.printStackTrace();
             throw e;
         }
+    }
+
+    public static String replaceImagesWithSolutionServer(String searchFor, String html) throws Exception {
+        String solutionServer = "http://" + CatchupMathProperties.getInstance().getProperty("cm2.solution.server",  "catchupmath.com");
+        html = html.replaceAll(searchFor, solutionServer + searchFor);
+        return html;
     }
 
     static private List<PrescriptionResource> getResources(PrescriptionData prescriptionData) {
