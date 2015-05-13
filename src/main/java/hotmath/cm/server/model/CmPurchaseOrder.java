@@ -11,6 +11,7 @@ public class CmPurchaseOrder {
 	private CmAddlSchools addlSchools;
 	private CmProfDevl profDevl;
 	private String salesZone;
+	private int total;
 
 	public CmPurchaseOrder() {
 	}
@@ -71,6 +72,14 @@ public class CmPurchaseOrder {
 		this.salesZone = salesZone;
 	}
 
+	public int getTotal() {
+		return total;
+	}
+
+	public void setTotal(int total) {
+		this.total = total;
+	}
+
 	class Address {
 		String street;
 		String city;
@@ -91,7 +100,9 @@ public class CmPurchaseOrder {
 		String poNumber;
 		Date  expirationDateCC;
 		String transactionIdCC;
+		boolean isSuccess;
 		Address address;
+		String cardholder;
 	}
 	
 	class Contact {
@@ -119,4 +130,5 @@ public class CmPurchaseOrder {
 		int feePerDay;
 		int total;
 	}
+
 }
