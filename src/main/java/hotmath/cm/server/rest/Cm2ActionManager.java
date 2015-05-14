@@ -2,6 +2,7 @@ package hotmath.cm.server.rest;
 
 import hotmath.ProblemID;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
+import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
@@ -14,6 +15,8 @@ import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
+import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchApp;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
@@ -181,6 +184,17 @@ public class Cm2ActionManager {
         try {
             SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(uid, tid, rid, pid, CommandType.valueOf(cmdType.toUpperCase()), jsonData);
             RpcData result = ActionDispatcher.getInstance().execute(action);
+            return JsonWriter.objectToJson(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public static String getSearchResults(int uid, String searchFor) throws Exception {
+        try {
+            SearchTopicAction action = new SearchTopicAction(searchFor, SearchApp.CM_MOBILE2, uid);
+            TopicSearchResults result = ActionDispatcher.getInstance().execute(action);
             return JsonWriter.objectToJson(result);
         } catch (Exception e) {
             e.printStackTrace();

@@ -123,5 +123,15 @@ public class ActionDispatcherRest {
         String json = jo.getString("json");
         
         return Cm2ActionManager.savePrescriptionSolutionWhiteboard(uid, tid, rid, pid, cmdType, json);
-    }    
+    }
+    
+    
+    @POST
+    @Path("/search")
+    public String getSearchResults(String jsonData) throws Exception {
+        JSONObject jo = new JSONObject(jsonData);
+        int uid = jo.getInt("uid");
+        String search = jo.getString("searchFor");
+        return Cm2ActionManager.getSearchResults(uid, search);
+    }
 }

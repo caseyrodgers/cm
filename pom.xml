@@ -14,7 +14,7 @@
 		<gxt.version>3.1.2</gxt.version>
 	</properties>
 
-<!-- comment 4 -->        
+	<!-- comment 4 -->
 	<pluginRepositories>
 		<!-- <pluginRepository> <id>gwt-maven-plugins</id> <url>http://snapshots.repository.codehaus.org/ 
 			</url> </pluginRepository> -->
@@ -95,7 +95,7 @@
 		</dependency>
 
 
-        <dependency>
+		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-servlet-initializer</artifactId>
 			<version>3.0.6.Final</version>
@@ -596,14 +596,8 @@
 			<artifactId>lucene-analyzers-common</artifactId>
 			<version>5.0.0</version>
 		</dependency>
-<!-- 
-		<dependency>
-			<groupId>lucene</groupId>
-			<artifactId>lucene-snowball</artifactId>
-			<version>2.1</version>
-			<scope>compile</scope>
-		</dependency>
- -->
+		<!-- <dependency> <groupId>lucene</groupId> <artifactId>lucene-snowball</artifactId> 
+			<version>2.1</version> <scope>compile</scope> </dependency> -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-suggest</artifactId>
@@ -627,14 +621,26 @@
 
 		<plugins>
 
-     <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.18.1</version>
-        <configuration>
-          <skipTests>true</skipTests>
-        </configuration>
-      </plugin>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
 
 
 			<plugin>
@@ -791,7 +797,7 @@
 						<module>hotmath.gwt.assignment_print.AssignmentPrint</module>
 						<module>hotmath.gwt.search.Search</module>
 						<!-- <module>hotmath.gwt.cm_tutor.CmTutor</module> <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module> 
-						<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
+							<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
 					</modules>
 					<hostedWebapp>
 						${project.build.directory}/${project.build.finalName}
