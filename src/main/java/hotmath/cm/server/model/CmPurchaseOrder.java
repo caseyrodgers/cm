@@ -4,12 +4,12 @@ import java.util.Date;
 
 public class CmPurchaseOrder {
 
-	private School school;
-	private Payment payment;
-	private Contact contact;
-	private CmLicense license;
-	private CmAddlSchools addlSchools;
-	private CmProfDevl profDevl;
+	private School school = new School();
+	private Payment payment = new Payment();
+	private Contact contact = new Contact();
+	private CmLicense license = new CmLicense();
+	private CmAddlSchools addlSchools = new CmAddlSchools();
+	private CmProfDevl profDevl = new CmProfDevl();
 	private String salesZone;
 	private int total;
 
@@ -80,7 +80,7 @@ public class CmPurchaseOrder {
 		this.total = total;
 	}
 
-	class Address {
+	public class Address {
 		String street;
 		String city;
 		String state;
@@ -90,7 +90,7 @@ public class CmPurchaseOrder {
 	class School {
 		String name;
 		boolean isCollege;
-		Address address;
+		Address address = new Address();
 	}
 	
 	class Payment {
@@ -101,7 +101,7 @@ public class CmPurchaseOrder {
 		Date  expirationDateCC;
 		String transactionIdCC;
 		boolean isSuccess;
-		Address address;
+		Address address = new Address();
 		String cardholder;
 	}
 	
