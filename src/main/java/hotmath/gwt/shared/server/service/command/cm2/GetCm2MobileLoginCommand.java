@@ -5,6 +5,7 @@ import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.program.CmProgramFlow;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_core.client.model.PrescriptionResource;
@@ -67,10 +68,8 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
            basicUser = HaUserFactory.getLoginUserInfo(conn, uid, "STUDENT");
        }
        else if(action.getName().equals("catchup_demo") && action.getPassword().equals("demo")) {
-           String types[] = {"ess", "prealg","alg1", "alg2", "geom"};
-           int rand = new Random().nextInt(types.length);
-           String type = types[rand];
-           basicUser = HaUserFactory.createDemoUser(conn, type);
+           String subject = action.getSubject();
+           basicUser = HaUserFactory.createDemoUser(conn, subject);
            isDemo=true;
         }
        else {
@@ -179,16 +178,11 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
                     String topicHtml = new GetReviewHtmlCommand().execute(conn,new GetReviewHtmlAction(currSess.getFile())).getLesson();
                     
                     
+                    // point all solution images to image server
+                    topicHtml = replaceImagesWithSolutionServer("/hotmath_help", topicHtml);
+                    
                     Cm2PrescriptionTopic topic = new Cm2PrescriptionTopic(currSess.getTopic(), topicHtml, getResources(data.getPrescriptionData()));
-                    
-                    
-//                    // put in order expected by UI
-//                    List<PrescriptionResource> res = topic.getResources();
-//                    // swap videos and practice
-//                    PrescriptionResource videos = res.get(1);
-//                    res.set(1, res.get(2));
-//                    res.set(2, videos);
-                    
+
                     
                     topics.add(topic);
                 }
@@ -199,6 +193,12 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             e.printStackTrace();
             throw e;
         }
+    }
+
+    public static String replaceImagesWithSolutionServer(String searchFor, String html) throws Exception {
+        String solutionServer = "http://" + CatchupMathProperties.getInstance().getProperty("cm2.solution.server",  "catchupmath.com");
+        html = html.replaceAll(searchFor, solutionServer + searchFor);
+        return html;
     }
 
     static private List<PrescriptionResource> getResources(PrescriptionData prescriptionData) {

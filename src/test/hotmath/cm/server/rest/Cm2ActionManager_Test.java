@@ -15,7 +15,7 @@ public class Cm2ActionManager_Test extends TestCase {
     
 
     public void testLogin1() throws Exception {
-        String userInfo = Cm2ActionManager.loginUser(USER_ID,null,null);
+        String userInfo = Cm2ActionManager.loginUser(USER_ID,null,null,null);
         assertTrue(userInfo != null);
     }
     

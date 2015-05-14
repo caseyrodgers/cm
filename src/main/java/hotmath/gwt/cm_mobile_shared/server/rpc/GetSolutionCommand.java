@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile_shared.server.rpc;
 import hotmath.HotMathLogger;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
@@ -12,6 +13,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_rpc_core.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.gwt.shared.server.service.command.SolutionHTMLCreatorImplFileSystem;
+import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
 import hotmath.solution.SolutionParts;
 import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
@@ -52,6 +54,10 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
 
             solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
 
+            // point all solution images to image server
+            solutionHtml = GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/help/solutions/", solutionHtml);
+
+            
             ProblemNumber problem = new ProblemNumber(ppid.getProblemNumber(), ppid.getProblemSet(),ppid.getGUID(),ppid.getPage()       );
             SolutionResponse rs = new SolutionResponse(problem, solutionHtml, parts.getData(), false, "");
             return rs;

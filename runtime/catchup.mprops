@@ -5180,3 +5180,28 @@ values(?,?,?,?,now())
 .key=GET_TEST_DEF_CONFIG
 
 select test_config_json from HA_TEST_DEF where subj_id = ? and prog_id = ? and is_active in (1,2)
+
+#
+# CmPurchaseOrderDao
+
+.key=PURCHASE_ORDER_CREATE
+
+insert into CM_PURCHASE_ORDER
+  (school_name, school_street, school_city, school_state, school_zip,
+   cc_name, cc_type, cc_last_four, cc_expire_date, cc_transaction_id, cc_is_success,
+   cc_street, cc_city, cc_state, cc_zip,
+   check_number, po_number,
+   instructor_name, instructor_title, instructor_phone, instructor_alt_contact,
+   number_students, number_years, license_total, start_date,
+   number_addl_schools, fee_per_addl_school, addl_school_fee_total,
+   number_prof_dev_days, fee_per_prof_dev_day, prof_dev_fee_total,
+   order_total, sales_zone) VALUES
+  (?, ?, ?, ?, ?,
+   ?, ?, ?, ?, ?, ?,
+   ?, ?, ?, ?,
+   ?, ?,
+   ?, ?, ?, ?,
+   ?, ?, ?, ?,
+   ?, ?, ?,
+   ?, ?, ?,
+   ?, ?)

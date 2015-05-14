@@ -5,14 +5,25 @@ public class GetCm2MobileLoginAction implements Action<Cm2MobileUser> {
     
     String name,password;
     int uid;
+    String subject;
     
     public GetCm2MobileLoginAction(){}
     
-    public GetCm2MobileLoginAction(String user, String pass) {
+    public GetCm2MobileLoginAction(String user, String pass, String subject) {
         this.name = user;
         this.password = pass;
+        this.subject = subject;
     }
     
+    
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
     public GetCm2MobileLoginAction(int uid) {
         this.uid = uid;
     }
