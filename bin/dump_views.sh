@@ -1,0 +1,1 @@
+mysql -u hotmath -pgeometry INFORMATION_SCHEMA  --skip-column-names --batch -e "select table_name from tables where table_type = 'VIEW'  and table_schema = 'hotmath_live_2'"| xargs mysqldump -u hotmath -pgeometry hotmath_live_2 > views.sql
