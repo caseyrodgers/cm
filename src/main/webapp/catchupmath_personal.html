@@ -134,22 +134,35 @@ pageTracker._trackPageview();
                     <h2>Make Your Selection</h2>
                </div>
                <div class='section'>
+                  <div id='optional_code_div' class='signup_section' style='float: right;'>
+                      <div id='catchup_code_div' class='form_field'>
+                          Optional Purchase Code<br/>
+                          <input type='text' name='fld_catchup_code' id='catchup_code' class='input_field' style='width:120px;' tabindex='22'/>
+                          <span style='padding-left:7px;'>
+                              <input type='button' value='Apply' onclick='applyCode();return false;'>
+                          </span>
+                          <div id='code_msg' style='display:none'> &nbsp; </div>
+                      </div>
+                   </div>
                    <div>
                        <input name='cmSelection' id="TYPE_SERVICE_CATCHUP" cost="99"  checked="true" class="service-check" type="radio">
-                       $99  
+                       <span id='3_months'>
+                       $99</span>
                        <span class="service_name">Catchup Math -</span> three months
                    </div>
                    <div>
                        <input name='cmSelection' id="TYPE_SERVICE_CATCHUP_YEAR"  cost="199"  class="service-check" type="radio">
-                       $199  
+                       <span id='12_months'>
+                       $199</span>
                        <span class="service_name">Catchup Math -</span> twelve months
                    </div>
                    
                    <div style='display: none'>
                        <input id="cb_catchup_tutoring"  onclick="return false" _onclick="serviceSelected(this);"  onkeydown="return false"  cost="20" class="service-check" type="checkbox">
                        $20 
-                   <span class="service_name">Add Live Tutoring -</span> 50 minutes (available soon)</div>    
-                 <div>
+                       <span class="service_name">Add Live Tutoring -</span> 50 minutes (available soon)
+                   </div>
+                   <div>
                    <div id='total-plus-message'>
                        <div id='service-total'>Total: $99.00</div>                 
                        <div id='only-if-school-id' style='display: none;'>
@@ -164,22 +177,23 @@ pageTracker._trackPageview();
                               
                 
                <div class='section_title'>
-                       <img src='/assets/images/step_2-38x38.gif'/>
-                       <h2>Email Address</h2>
+                   <img src='/assets/images/step_2-38x38.gif'/>
+                   <h2>Email Address</h2>
                </div>
-                <div class='section'>
-                <div id='registration_div' class='signup_section'>
-                  <div id='email_div'>Email Address
-                    <input type='text' name='fld_parent_email' id='parent_email' class='input_field' tabindex="1"/>
-                    <div class='input_error'> &nbsp; </div>          
-                  </div>
-                  <div id='emailconfirm_div' class='form_field'>
-                    Email (Confirm)
-                    <input type='text'  name='confirm_email' id='confirm_email' class='input_field' tabindex="2"/>
-                    <div class='input_error'> &nbsp; </div> 
-                  </div>
-                </div>
-                </div>
+               <div class='section'>
+                  <div id='registration_div' class='signup_section'>
+                      <div id='email_div'>
+                          Email Address
+                          <input type='text' name='fld_parent_email' id='parent_email' class='input_field' tabindex="1"/>
+                          <div class='input_error'> &nbsp; </div>          
+                      </div>
+                      <div id='emailconfirm_div' class='form_field'>
+                          Email (Confirm)
+                          <input type='text'  name='confirm_email' id='confirm_email' class='input_field' tabindex="2"/>
+                          <div class='input_error'> &nbsp; </div> 
+                      </div>
+                   </div>
+               </div>
                <div class='section_title'>
                    <img src='/assets/images/step_3-38x38.gif'/>
                    <h2>Pay by Credit Card</h2>
@@ -199,7 +213,7 @@ pageTracker._trackPageview();
                     <div class='input_error'> &nbsp; </div>        
                   </div>
                   <div id='cardnum_div' class='form_field'>
-                    Card  Number
+                    Card Number
                     <input value='' type='text' name='card_number' id='card_number' class='input_field' tabindex="14"/>
                       <div class='input_error'> &nbsp; </div>
                   </div>
