@@ -14,7 +14,7 @@ public class SearchTopicAction implements Action<TopicSearchResults> {
         LESSON_LIKE}
     
     public enum SearchApp {
-        CM_STUDENT,CM_ADMIN,CM_MOBILE,SEARCH_STAND_ALONE,TEST
+        CM_STUDENT,CM_ADMIN,CM_MOBILE,SEARCH_STAND_ALONE,TEST, CM_MOBILE2
     }
     
     String search;
