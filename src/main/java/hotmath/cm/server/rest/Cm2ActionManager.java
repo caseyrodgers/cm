@@ -33,7 +33,7 @@ import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
-
+import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import java.sql.Connection;
 import java.util.List;
 
@@ -42,9 +42,9 @@ import com.cedarsoftware.util.io.JsonWriter;
 /**
  * Central place to request a CM2 request with any specialized formatting
  * required.
- * 
+ *
  * serves as a wrapper around ActionDispatcher actions.
- * 
+ *
  * @author casey
  *
  */
@@ -52,10 +52,10 @@ public class Cm2ActionManager {
 
     /**
      * Wrapper around GetUserInfoAction
-     * 
+     *
      * process login info and returns composite data with either relevant quiz
      * or prescription info.
-     * 
+     *
      * @param userId
      * @return
      * @throws Exception
@@ -133,9 +133,9 @@ public class Cm2ActionManager {
         try {
             LoadSolutionMetaAction action1 = new LoadSolutionMetaAction(new ProblemID(pid).getGUID());
             SolutionMeta solutionSteps = ActionDispatcher.getInstance().execute(action1);
-            
+
             SolutionResponse solutionInfo2 = ActionDispatcher.getInstance().execute(new GetSolutionAction(pid));
-            
+
             SolutionContext context = SolutionDao.getInstance().getSolutionContext(rid, pid);
             solutionInfo2.setSolutionVariableContext(context!=null?context.getContextJson():null);
 
@@ -198,6 +198,17 @@ public class Cm2ActionManager {
             return JsonWriter.objectToJson(result);
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public static String getSearchTopic(String topic) throws Exception {
+        try {
+            GetTopicPrescriptionAction action = new GetTopicPrescriptionAction(topic);
+            return JsonWriter.objectToJson(ActionDispatcher.getInstance().execute(action));
+
+        }
+        catch(Exception e) {
             throw e;
         }
     }
