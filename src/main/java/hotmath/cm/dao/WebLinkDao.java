@@ -224,7 +224,6 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
     public Collection<? extends WebLinkModel> getAllWebLinksDefinedForAdminPrivate(int adminId, boolean includePublic) throws Exception {
 
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ADMIN_WEBLINKS");
-
         List<WebLinkModel> links = getJdbcTemplate().query(sql, new Object[] { adminId, adminId, includePublic?1:0 }, new RowMapper<WebLinkModel>() {
             @Override
             public WebLinkModel mapRow(ResultSet rs, int rowNum) throws SQLException {
