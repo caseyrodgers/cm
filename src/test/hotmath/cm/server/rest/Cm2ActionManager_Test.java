@@ -13,6 +13,10 @@ public class Cm2ActionManager_Test extends TestCase {
         super(name);
     }
     
+    public void testGetSearchTopic() throws Exception {
+    	String result = Cm2ActionManager.getSearchTopic("topics/integers.html");
+    	assertNotNull(result);
+    }
 
     public void testSearch() throws Exception {
         String searchResults = Cm2ActionManager.getSearchResults(0, "integers");

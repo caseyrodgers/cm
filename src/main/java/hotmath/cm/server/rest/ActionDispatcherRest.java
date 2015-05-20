@@ -137,8 +137,8 @@ public class ActionDispatcherRest {
 
 
     @POST
-        @Path("/search/topic")
-        public String doSearchLesson(String topic) throws Exception {
+    @Path("/search/topic")
+    public String doSearchLesson(String topic) throws Exception {
         return Cm2ActionManager.getSearchTopic(topic);
     }
 }
