@@ -138,7 +138,10 @@ public class ActionDispatcherRest {
 
     @POST
     @Path("/search/topic")
-    public String doSearchLesson(String topic) throws Exception {
-        return Cm2ActionManager.getSearchTopic(topic);
+    public String doSearchLesson(String jsonData) throws Exception {
+        JSONObject jo = new JSONObject(jsonData);
+        int uid = jo.getInt("uid");
+        String search = jo.getString("topic");
+        return Cm2ActionManager.getSearchTopic(search);
     }
 }
