@@ -349,6 +349,110 @@ function checkOneTeacherPayForm() {
 	return false;   // always return false;
 }
 
+function checkPurchaseOrderPayForm() {
+
+	_totalCost=0;
+    clearErrorMessages();
+    var isValid = true;
+    
+    isValid = verifyPurchaseOrderForm()
+    if (isValid != true) return false;
+
+    if (checkCreditCardData() == false)
+    	isValid = false;
+
+    if (isValid == true)
+    	doPurchaseOrderPay();
+
+    return false;   // always return false;
+}
+
+function checkPurchaseOrderForm() {
+
+	_totalCost=0;
+    clearErrorMessages();
+    var isValid = true;
+    
+    isValid = verifyPurchaseOrder();
+
+    if (isValid == true)
+    	doPurchaseOrder();
+
+    return false;   // always return false;
+}
+
+function verifyPurchaseOrder() {
+
+    var isValid = true;
+
+    fld = $get('institution_name');
+    if(fld.value == '') {
+        if(showError(fld, "Instituion name is required"))
+            isValid = false;
+    }
+
+    fld = $get('institution_name');
+    if(fld.value == '') {
+        if(showError(fld, "Address is required"))
+            isValid = false;
+    }
+
+    fld = $get('institution_city');
+    if(fld.value == '') {
+        if(showError(fld, "City is required"))
+            isValid = false;
+    }
+
+    fld = $get('institution_state_sel');
+    if(fld.selectedIndex < 1) {
+        if(showError(fld, "State is required"))
+            isValid = false;
+    }
+
+    fld = $get('institution_zip');
+    if(fld.value == '') {
+        if(showError(fld, "Zip code is required"))
+            isValid = false;
+    }
+
+    fld = $get('primary_name');
+    if(fld.value == "") {
+        if(showError(fld, "Name is required")) {
+            isValid = false;
+        }
+    }
+
+    fld = $get('primary_title');
+    if(fld.value == "") {
+        if(showError(fld, "Title is required")) {
+            isValid = false;
+        }
+    }
+
+    fld = $get('primary_email');
+    if(fld.value == "") {
+        if(showError(fld, "Email address is required")) {
+            isValid = false;
+        }
+    }
+
+    var errMsg = null;
+    if (isValid == true)
+    	errMsg = validateEmail(fld.value);
+    if (errMsg != null) {
+        if(showError(fld, errMsg))
+            isValid = false;
+    }
+
+    fld = $get('primary_phone');
+    if(fld.value == '') {
+        if(showError(fld, "Phone number is required"))
+            isValid = false;
+    }
+
+    return isValid;
+}
+
 function checkCreditCardData() {
 	var isValid = true;
 
@@ -653,6 +757,14 @@ function doOneTeacherSignup() {
 	   
 	   showProcessingMessage();
 
+}
+
+function doPurchaseOrder() {
+    alert("submitting purchase order (not yet)");
+}
+
+function doPurchaseOrderPay() {
+    alert("submitting purchase order with paymewnt (not yet)");
 }
 
 function showProcessingMessage() {
