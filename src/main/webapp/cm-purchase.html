@@ -124,7 +124,7 @@ pageTracker._trackPageview();
 
               <h1>Purchase Catchup Math for a School, District, or College</h1>
  
-             <form id='sub_form' method="post" onSubmit="return checkForm();return false;" action="#">
+             <form id='sub_form' method="post" onSubmit="return checkPurchaseOrderForm();return false;" action="#">
                 <input type='hidden' name='selected_services' id='selected_services'/>
                 <div class='signup_container'>
 
@@ -245,13 +245,13 @@ pageTracker._trackPageview();
                </div>
                <div class='section'>
                   <div id='additional_div' class='signup_section' style='float:right'>
-                      <div id='numstudents_div'>
+                      <div id='numschools_div'>
                           Number of Additional Schools<br/>
                           <input type='text' name='num_schools' id='num_schools' class='input_field'
                                  title='for district orders, $250 per additional school' tabindex="15"/>
                           <div class='input_error'> &nbsp; </div>          
                       </div>
-                      <div id='addlschools_div' class='form_field'>
+                      <div id='addlschoolsfee_div' class='form_field'>
                           Fee for Addtional Schools<br/>
                           <input type='text'  name='addl_schools_fee' id='addl_schools_fee' class='input_field' tabindex="16" readonly/>
                           <div class='input_error'> &nbsp; </div> 
