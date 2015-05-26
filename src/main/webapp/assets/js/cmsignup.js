@@ -386,19 +386,19 @@ function verifyPurchaseOrder() {
     var isValid = true;
 
     fld = $get('institution_name');
-    if(fld.value == '') {
+    if(fld.value.trim() == '') {
         if(showError(fld, "Instituion name is required"))
             isValid = false;
     }
 
-    fld = $get('institution_name');
+    fld = $get('institution_address');
     if(fld.value == '') {
         if(showError(fld, "Address is required"))
             isValid = false;
     }
 
     fld = $get('institution_city');
-    if(fld.value == '') {
+    if(fld.value.trim() == '') {
         if(showError(fld, "City is required"))
             isValid = false;
     }
@@ -410,27 +410,27 @@ function verifyPurchaseOrder() {
     }
 
     fld = $get('institution_zip');
-    if(fld.value == '') {
+    if(fld.value.trim() == '') {
         if(showError(fld, "Zip code is required"))
             isValid = false;
     }
 
     fld = $get('primary_name');
-    if(fld.value == "") {
+    if(fld.value.trim() == "") {
         if(showError(fld, "Name is required")) {
             isValid = false;
         }
     }
 
     fld = $get('primary_title');
-    if(fld.value == "") {
+    if(fld.value.trim() == "") {
         if(showError(fld, "Title is required")) {
             isValid = false;
         }
     }
 
     fld = $get('primary_email');
-    if(fld.value == "") {
+    if(fld.value.trim() == "") {
         if(showError(fld, "Email address is required")) {
             isValid = false;
         }
@@ -438,14 +438,14 @@ function verifyPurchaseOrder() {
 
     var errMsg = null;
     if (isValid == true)
-    	errMsg = validateEmail(fld.value);
+    	errMsg = validateEmail(fld.value.trim());
     if (errMsg != null) {
         if(showError(fld, errMsg))
             isValid = false;
     }
 
     fld = $get('primary_phone');
-    if(fld.value == '') {
+    if(fld.value.trim() == '') {
         if(showError(fld, "Phone number is required"))
             isValid = false;
     }
