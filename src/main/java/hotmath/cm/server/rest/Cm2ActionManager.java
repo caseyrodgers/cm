@@ -8,13 +8,17 @@ import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
-import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchApp;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
@@ -27,16 +31,19 @@ import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2CheckedResult;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
+import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
+import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
-import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
+
 import java.sql.Connection;
 import java.util.List;
 
+import com.cedarsoftware.util.io.JsonObject;
 import com.cedarsoftware.util.io.JsonWriter;
 
 /**
@@ -65,7 +72,7 @@ public class Cm2ActionManager {
         // int randomTestId = HaTestDao.getRandomTestId();
         int randomUserId = HaUserDao.getRandomUserId();
         // int randomRunId = HaTestRunDao.getRandomTestRun();
-
+        
         GetCmMobileLoginAction action = new GetCmMobileLoginAction(randomUserId);
         // GetUserInfoAction action = new GetUserInfoAction(randomUserId,
         // "Random Test");
@@ -203,10 +210,31 @@ public class Cm2ActionManager {
     }
 
     public static String getSearchTopic(String topic) throws Exception {
+        
+        Connection conn=null;
         try {
+            conn = HMConnectionPool.getConnection();
+            
             GetTopicPrescriptionAction action = new GetTopicPrescriptionAction(topic);
-            return JsonWriter.objectToJson(ActionDispatcher.getInstance().execute(action));
-
+            PrescriptionSessionResponse response = ActionDispatcher.getInstance().execute(action);
+            
+            
+            // for each topic
+            //
+            int runId = 0; // where?
+            //GetPrescriptionAction pa = new GetPrescriptionAction(runId, 0, false);
+            //PrescriptionSessionResponse data = new GetPrescriptionCommand().execute(conn, pa);
+            
+            PrescriptionSessionData currSess = response.getPrescriptionData().getCurrSession();
+            String topicHtml = new GetReviewHtmlCommand().execute(conn,new GetReviewHtmlAction(currSess.getFile())).getLesson();
+            
+            
+            // point all solution images to image server
+            topicHtml = GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/hotmath_help", topicHtml);
+            
+            Cm2PrescriptionTopic topicObject = new Cm2PrescriptionTopic(currSess.getTopic(), topicHtml, GetCm2MobileLoginCommand.getResources(response.getPrescriptionData()));
+            
+            return JsonWriter.objectToJson(topicObject);
         }
         catch(Exception e) {
             throw e;

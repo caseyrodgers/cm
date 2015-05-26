@@ -201,7 +201,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
         return html;
     }
 
-    static private List<PrescriptionResource> getResources(PrescriptionData prescriptionData) {
+    static public List<PrescriptionResource> getResources(PrescriptionData prescriptionData) {
         List<PrescriptionResource> resources = new ArrayList<PrescriptionResource>();
         
         for(PrescriptionSessionDataResource r: prescriptionData.getCurrSession().getInmhResources()) {
