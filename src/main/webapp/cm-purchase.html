@@ -135,40 +135,40 @@ pageTracker._trackPageview();
               <div class='section'>
                 <div id='primary_div' class='signup_section' style='float:right;'>
                   <div id='primaryname_div'>Contact Name<br/>
-                    <input type='text'  name='primary_name' id='primary_name' class='input_field' tabindex="6"/>
-                    <div class='input_error'> &nbsp; </div>          
+                    <input type='text'  name='primary_name' id='primary_name' class='input_field' required tabindex="6"/>
+                    <div class='input_error'> &nbsp; </div>  
                   </div>
                   <div id='primarytitle_div'>Title<br/>
-                    <input type='text'  name='primary_title' id='primary_title' class='input_field' tabindex="7"/>
+                    <input type='text'  name='primary_title' id='primary_title' class='input_field' required tabindex="7"/>
                     <div class='input_error'> &nbsp; </div>
                   </div>  
                   <div id='primaryemail_div'>Email address<br/>
-                    <input type='text'  name='primary_email' id='primary_email' class='input_field' tabindex="8"/>
-                    <div class='input_error'> &nbsp; </div>          
+                    <input type='text'  name='primary_email' id='primary_email' class='input_field' required tabindex="8"/>
+                    <div class='input_error'> &nbsp; </div>
                   </div>  
                   <div id='primaryphone_div'>
                     Phone<br/>
-                    <input type='text'  name='primary_phone' id='primary_phone' class='input_field' tabindex="9"/>
-                    <div class='input_error'> &nbsp; </div>          
+                    <input type='text'  name='primary_phone' id='primary_phone' class='input_field' required tabindex="9"/>
+                    <div class='input_error'> &nbsp; </div>
                   </div>
                   <div id='primaryalternate_div'>
                     Alternate Contact<br/>
                     <textarea  name='primary_alternate' id='primary_alternate' class='input_field' tabindex="10" rows="2" cols="30">
                     </textarea>
-                    <div class='input_error'> &nbsp; </div>          
+                    <div class='input_error'> &nbsp; </div>  
                   </div>
                 </div>
                 <div id='institution_div' class='signup_section'>
                   <div id='institutionname_div'>Institution<br/>
-                    <input type='text'  name='institution_name' id='institution_name' class='input_field' tabindex="1"/>
+                    <input type='text'  name='institution_name' id='institution_name' class='input_field' required tabindex="1"/>
                     <div class='input_error'> &nbsp; </div>          
                   </div>
                   <div id='intitutionaddress_div'>Address<br/>
-                    <input type='text'  name='institution_address' id='institution_address' class='input_field' tabindex="2"/>
+                    <input type='text'  name='institution_address' id='institution_address' class='input_field' required tabindex="2"/>
                     <div class='input_error'> &nbsp; </div>
                   </div>  
                   <div id='institutioncity_div'>City<br/>
-                    <input type='text'  name='institution_city' id='institution_city' class='input_field' tabindex="3"/>
+                    <input type='text'  name='institution_city' id='institution_city' class='input_field' required tabindex="3"/>
                     <div class='input_error'> &nbsp; </div>          
                   </div>  
                   <div id='institutionstate_div'>
@@ -233,13 +233,13 @@ pageTracker._trackPageview();
                   </div>
                   <div id='institutionzip_div'>
                     Zip Code (5-digit)<br/>
-                    <input style='width: 75px;' type='number' min='0' max='99999' step='1' name='institution_zip' id='institution_zip' class='input_field' tabindex="5"/>
+                    <input style='width: 75px;' type='text' maxlength='5' min='00000' name='institution_zip' id='institution_zip' class='input_field' required tabindex="5"/>
                     <div class='input_error'> &nbsp; </div>        
                   </div>
                 </div>
               </div>
                 
-               <div class='section_title'>
+               <div class='section_title' id='license_div'>
                    <img src='/assets/images/step_2-38x38.gif'/>
                    <h2>License</h2>
                </div>
@@ -247,7 +247,7 @@ pageTracker._trackPageview();
                   <div id='additional_div' class='signup_section' style='float:right'>
                       <div id='numschools_div'>
                           Number of Additional Schools<br/>
-                          <input type='number' min='1' name='num_schools' id='num_schools' class='input_field'
+                          <input type='number' min='1' step='1' name='num_schools' id='num_schools' class='input_field'
                                  title='for district orders, $250 per additional school' tabindex="15"/>
                           <div class='input_error'> &nbsp; </div>          
                       </div>
@@ -258,7 +258,7 @@ pageTracker._trackPageview();
                       </div>
                       <div id='numpddays_div' class='form_field'>
                           Number of PD days<br/>
-                          <input type='number' min='1' name='num_pd_days' id='num_pd_days' class='input_field' 
+                          <input type='number' min='1' step='1' name='num_pd_days' id='num_pd_days' class='input_field' 
                                  title='PD at $1500 per day plus travel expenses' tabindex="17"/>
                           <div class='input_error'> &nbsp; </div> 
                       </div>
@@ -274,17 +274,17 @@ pageTracker._trackPageview();
                   <div id='license_div' class='signup_section'>
                       <div id='numstudents_div'>
                           Number of Students<br/>
-                          <input type='number' min='1' name='num_students' step='1' id='num_students' class='input_field' tabindex="11"/>
+                          <input type='number' min='1' name='num_students' step='1' id='num_students' class='input_field' required tabindex="11"/>
                           <div class='input_error'> &nbsp; </div>          
                       </div>
                       <div id='numyears_div' class='form_field'>
                           Number of Years<br/>
-                          <input type='number' min='1' name='num_years' step='1' id='num_years' class='input_field' tabindex="12"/>
+                          <input type='number' min='1' name='num_years' step='1' id='num_years' class='input_field' required tabindex="12"/>
                           <div class='input_error'> &nbsp; </div> 
                       </div>
                       <div id='startdate_div' class='form_field'>
                           Start Date<br/>
-                          <input type='date'  name='start_date' id='start_date' class='input_field' tabindex="13"/>
+                          <input type='date'  name='start_date' id='start_date' class='input_field' required tabindex="13"/>
                           <div class='input_error'> &nbsp; </div> 
                       </div>
                       <div id='startdate_div' class='form_field'>
@@ -450,7 +450,7 @@ pageTracker._trackPageview();
                   </div>
                   <div id='zip_div'>
                     Zip Code (5-digit)<br/>
-                    <input style='width: 75px;' type='text'  name='zip' id='zip' class='input_field' tabindex="25"/>
+                    <input style='width: 75px;' type='number' max='99999' name='zip' id='zip' class='input_field' tabindex="25"/>
                     <div class='input_error'> &nbsp; </div>        
                   </div>
                 </div> 
