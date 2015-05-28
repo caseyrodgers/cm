@@ -233,7 +233,7 @@ pageTracker._trackPageview();
                   </div>
                   <div id='institutionzip_div'>
                     Zip Code (5-digit)<br/>
-                    <input style='width: 75px;' type='text' maxlength='5' min='00000' name='institution_zip' id='institution_zip' class='input_field' required tabindex="5"/>
+                    <input style='width: 75px;' type='text' pattern='[0-9]{5}' maxlength='5' title='Enter a 5 digit Zip Code' name='institution_zip' id='institution_zip' class='input_field' required tabindex="5"/>
                     <div class='input_error'> &nbsp; </div>        
                   </div>
                 </div>
