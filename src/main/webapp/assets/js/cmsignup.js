@@ -367,6 +367,8 @@ function checkPurchaseOrderPayForm() {
     return false;   // always return false;
 }
 
+var payNowEnabled=true;
+
 function checkPurchaseOrderForm() {
 
 	_totalCost=0;
@@ -374,6 +376,9 @@ function checkPurchaseOrderForm() {
     var isValid = true;
     
     isValid = verifyPurchaseOrder();
+
+    if (payNowEnabled == true && checkCreditCardData() == false)
+    	isValid = false;
 
     if (isValid == true)
     	doPurchaseOrder();
@@ -450,7 +455,39 @@ function verifyPurchaseOrder() {
             isValid = false;
     }
 
+    fld = $get('num_students');
+    if(fld.value.trim() == '') {
+        if(showError(fld, "Number of Students is required"))
+            isValid = false;
+    }
+    if (isValid == true) {
+        if (isPosInt(fld.value.trim()) == false) {
+            if(showError(fld, "Number of Students is required"))
+                isValid = false;
+        }
+    }
+
+    fld = $get('num_years');
+    if(fld.value.trim() == '') {
+        if(showError(fld, "Number of Years is required"))
+            isValid = false;
+    } 
+
     return isValid;
+}
+
+function isPositiveInteger(v) {
+    return true;
+}
+
+function isPosInt(v) {
+    if (typeof v === 'number') {
+        alert("v is a number");
+        if (v % 1 === 0 && v > 0) {
+           return true;
+        }
+    }
+    return null;
 }
 
 function checkCreditCardData() {
@@ -1010,4 +1047,48 @@ function oneTeacherComplete(data) {
 function setTotalCost(cost) {
    _totalCost = cost;
    $get('service-total').innerHTML = 'Total: $' + _totalCost + '.00';
+}
+
+function payNowToggle(chkbox) {
+    if (chkbox.checked) {
+        enablePayNow(true);
+    }
+    else {
+        enablePayNow(false);
+    }
+}
+
+function enablePayNow(enable) {
+	var e1 = document.getElementById('payNow_div');
+	var e2 = document.getElementById('card_number');
+	var e3 = document.getElementById('card_ccv2');
+	var e4 = document.getElementById('first_name');
+	var e5 = document.getElementById('last_name');
+	var e6 = document.getElementById('address1');
+	var e7 = document.getElementById('city');
+	var e8 = document.getElementById('zip');
+	var e9 = document.getElementById('paynow_ckbx');
+	payNowEnabled = enable;
+	if (enable == true) {
+    	e1.setAttribute('style', 'display:block');
+    	e2.attributes.required = "required";
+    	e3.attributes.required = "required";
+    	e4.attributes.required = "required";
+    	e5.attributes.required = "required";
+    	e6.attributes.required = "required";
+    	e7.attributes.required = "required";
+    	e8.attributes.required = "required";
+    	e9.setAttribute('title', 'Uncheck to pay later');
+    }
+    else {
+     	e1.setAttribute('style', 'display:none');
+    	e2.attributes.required = "not-required";
+    	e3.attributes.required = "not-required";
+    	e4.attributes.required = "not-required";
+    	e5.attributes.required = "not-required";
+    	e6.attributes.required = "not-required";
+    	e7.attributes.required = "not-required";
+    	e8.attributes.required = "not-required";
+    	e9.setAttribute('title', 'Click to pay now');
+    }
 }

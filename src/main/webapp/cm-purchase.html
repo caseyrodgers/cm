@@ -37,6 +37,14 @@ pageTracker._trackPageview();
 
 <style>
   .info-section {display: none; }
+
+  input[type=checkbox] {
+    /* All browsers except webkit*/
+    transform: scale(2.2);
+
+    /* Webkit browsers*/
+    -webkit-transform: scale(2.2);
+  }
 </style>
 <script>
    /** specify which main menu item is selected
@@ -301,9 +309,10 @@ pageTracker._trackPageview();
                </div>
                <div class='section_title'>
                    <img src='/assets/images/step_3-38x38.gif'/>
-                   <h2>Pay by Credit Card</h2>
+                   <h2>Pay by Credit Card
+                   <input type='checkbox' value='payNow' id='paynow_ckbx' checked onclick='payNowToggle(this)' title='Uncheck to pay later' style='margin-bottom: 3px; margin-left:20px'></h2>
                </div>
-               <div class='section'>
+               <div class='section' id='payNow_div' style='display: block;'>
                 <div id='creditcard2_div' class='signup_section' style='float: right;'>
                   <div id='cardtype_div' class='form_field'>
                     Card Type (May be credit or debit)
@@ -319,12 +328,12 @@ pageTracker._trackPageview();
                   </div>
                   <div id='cardnum_div' class='form_field'>
                     Card Number
-                    <input value='' type='text' name='card_number' id='card_number' class='input_field' tabindex="27"/>
+                    <input value='' type='text' name='card_number' id='card_number' pattern='[0-9]' maxlength='16' required class='input_field' tabindex="27"/>
                       <div class='input_error'> &nbsp; </div>
                   </div>
                   <div id='cardvernum_div' class='form_field'>
                     Card Verification Number<br/>  
-                    <input name="card_ccv2" id="card_ccv2" size="3" maxlength="4"  value="" type="text" tabindex="28"/>
+                    <input name="card_ccv2" id="card_ccv2" size="3" pattern='[0-9]' maxlength="4" required value="" type="text" tabindex="28"/>
                     <a href="#" onClick="return false;"  id='card_info2'>
                       <img src="/assets/images/bt_mini_cvv2.gif" 
                          width="51" height="31" border="0" align="top">
@@ -372,20 +381,20 @@ pageTracker._trackPageview();
                  </div>
                 <div id='creditcard_div' class='signup_section'>
                   <div id='firstname_div'>Cardholder First Name<br/>
-                    <input type='text'  name='first_name' id='first_name' class='input_field' tabindex="20"/>
+                    <input type='text'  name='first_name' id='first_name' required class='input_field' tabindex="20"/>
                     <div class='input_error'> &nbsp; </div>          
                   </div>
                   <div id='lastname_div'>Cardholder Last Name<br/>
-                    <input type='text'  name='last_name' id='last_name' class='input_field' tabindex="21"/>
+                    <input type='text'  name='last_name' id='last_name' required class='input_field' tabindex="21"/>
                     <div class='input_error'> &nbsp; </div>
                   </div>  
                   <div id='address1_div'>Billing Address Line 1<br/>
-                    <input type='text'  name='address1' id='address1' class='input_field' tabindex="22"/>
+                    <input type='text'  name='address1' id='address1' required class='input_field' tabindex="22"/>
                     <div class='input_error'> &nbsp; </div>          
                   </div>  
                   <div id='city_div'>
                     City<br/>
-                    <input type='text'  name='city' id='city' class='input_field' tabindex="23"/>
+                    <input type='text'  name='city' id='city' required class='input_field' tabindex="23"/>
                     <div class='input_error'> &nbsp; </div>          
                   </div>
                   <div id='state_div'>
@@ -450,13 +459,13 @@ pageTracker._trackPageview();
                   </div>
                   <div id='zip_div'>
                     Zip Code (5-digit)<br/>
-                    <input style='width: 75px;' type='number' max='99999' name='zip' id='zip' class='input_field' tabindex="25"/>
+                    <input style='width: 75px;' type='text' name='zip' id='zip' pattern='[0-9]{5}' maxlength='5' title='Enter a 5 digit Zip Code' required class='input_field' tabindex="25"/>
                     <div class='input_error'> &nbsp; </div>        
                   </div>
                 </div> 
                </div>
                </div>
-                <div id='submit_div'>
+                <div id='submit_div' style='padding-top:10px;'>
                     <button type="submit" class="sexybutton sexyred sexylarge" tabindex="31" id='signup_submit' 
                             name='signup_submit'><span><span><span class="ok">Place Order</span></span></span>
                     </button>
