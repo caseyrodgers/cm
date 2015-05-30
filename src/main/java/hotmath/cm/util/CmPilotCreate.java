@@ -13,6 +13,7 @@ import hotmath.subscriber.PurchasePlan;
 import hotmath.subscriber.SalesZone;
 import hotmath.subscriber.SalesZone.Representative;
 import hotmath.subscriber.id.IdCreateStategyImpHmPilot;
+import hotmath.subscriber.service.HotMathSubscriberService;
 import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -64,6 +65,7 @@ public class CmPilotCreate {
 
     List<String> messages = new ArrayList<String>();
     Integer aid;
+    String salesRep;
     
     public CmPilotCreate() {
     }
@@ -294,6 +296,7 @@ public class CmPilotCreate {
     }
 
     static DateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+    static DateFormat _expireDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     /**
      * Add a record to HA_ADMIN_PILOT_REQUEST table and send email to sales
      * manager
@@ -305,12 +308,12 @@ public class CmPilotCreate {
     }
     
     
-    static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
+    static public String addPilotRequest(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneWhen, String schoolPrefix,int studentCount) throws Exception {
         return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true, studentCount,null,null,"", false);
     }
 
-    static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
+    static public String addPilotRequest(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation, int studentCount, CmPartner partner,
             String additionalEmails, String motivation, boolean isCollegePilot) throws Exception {
 
@@ -378,7 +381,7 @@ public class CmPilotCreate {
              * 
              */
             CmPilotCreate pilot = new CmPilotCreate(sub.getId(),false,0,false,1000,partner, isCollegePilot);
-            
+            pilot.salesRep = sub.getSalesZone();            
             
             if(sendEmailConfirmation) {
 	            /** send tracking email to pilot requester
@@ -427,13 +430,17 @@ public class CmPilotCreate {
 	            	logger.error(String.format("*** problem sending pilot request email: %s", txt), e);
 	            }
             }
-            return pilot.getAid();
+            HotMathSubscriberService service = sub.getLatestService("catchup");
+            String expireDate = _expireDateFormat.format(service.getDateExpire());
+            String msg = String.format("{username:'%s', password:'ADMIN123', isCollege:'%d', salesRep:'%s', schoolName:'%s', expireDate:'%s'}",
+            		idToUse.toUpperCase(), isCollegePilot?1:0, pilot.salesRep, sub.getSchoolType(), expireDate);
+            return msg;
         } catch (Exception e) {
         	logger.error(String.format("*** problem adding pilot request for school: %s", school), e);
         } finally {
             SqlUtilities.releaseResources(null, ps, conn);
         }
-        return -1;
+        return "";
     }
 
     static private String parseAdditionalEmails(String additionalEmails) {
