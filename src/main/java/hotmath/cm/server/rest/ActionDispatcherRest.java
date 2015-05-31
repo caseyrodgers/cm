@@ -1,6 +1,7 @@
 package hotmath.cm.server.rest;
 
 import hotmath.gwt.cm_core.client.model.TopicResource;
+import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -144,4 +145,14 @@ public class ActionDispatcherRest {
         String search = jo.getString("topic");
         return Cm2ActionManager.getSearchTopic(search);
     }
+    
+    @POST
+    @Path("/user/{uid}/program/advance")
+    public String advanceUserProgramSection(@PathParam("uid") int uid, String json) throws Exception {
+        JSONObject jo = new JSONObject(json);
+        boolean retake = jo.getInt("retake")==0?false:true;
+
+        return Cm2ActionManager.advanceUserProgram(uid, !retake);
+    }
+ 
 }

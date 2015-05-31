@@ -142,13 +142,13 @@ public class InmhItemData {
                     // contains a random range
                     if(range.getRange().contains("[")) {
                         
-                        logger.info("Generating random range: " + range);
+                        logger.debug("Generating random range: " + range);
                         rangePids = findSolutionsInRandomRange(conn, range.getRange());
                         if(rangePids.size() == 0) {
                             logger.warn("No random problems found: " + this + ", " + range.getRange());
                         }
                         else {
-                            logger.info("random range contains: " + rangePids.size());
+                            logger.debug("random range contains: " + rangePids.size());
                             logger.debug("random range: " + rangePids);
                         }
                         canCache=false;

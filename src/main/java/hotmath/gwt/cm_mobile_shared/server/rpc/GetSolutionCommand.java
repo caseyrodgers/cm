@@ -56,6 +56,8 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
 
             // point all solution images to image server
             solutionHtml = GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/help/solutions/", solutionHtml);
+            
+            solutionHtml = GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/specialchars/", solutionHtml);
 
             
             ProblemNumber problem = new ProblemNumber(ppid.getProblemNumber(), ppid.getProblemSet(),ppid.getGUID(),ppid.getPage()       );
