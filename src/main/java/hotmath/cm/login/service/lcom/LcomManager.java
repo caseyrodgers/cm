@@ -1,6 +1,7 @@
 package hotmath.cm.login.service.lcom;
 
 import hotmath.cm.util.CmPilotCreate;
+import hotmath.cm.util.PilotCreatedInfo;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.model.CmPartner;
@@ -150,15 +151,15 @@ public class LcomManager {
 	 */
 	static private Integer setupNewTeacherAccount(final Connection conn, LcomTeacherSignup teacher) throws Exception {
 	    
-		int teacherAid = CmPilotCreate.addPilotRequest("LCOM Teacher: " + teacher.getTeacherId(), teacher.getFirstLast(), teacher.getSchoolName(), 
+		PilotCreatedInfo pilotCreate = CmPilotCreate.addPilotRequest("LCOM Teacher: " + teacher.getTeacherId(), teacher.getFirstLast(), teacher.getSchoolName(), 
 				teacher.getZip(), teacher.getEmail(), "", "LCOM Teacher signup", "", "lcom", false,0,CmPartner.LCOM,null,"LCOM Teacher Signup", false);
 		
 		
-		if(teacherAid == -1)
+		if(pilotCreate.getAdminId() == -1)
 			throw new CmException("Could not setup LCOM Teacher account, please see server log");
-		teacher.setAdminId(teacherAid);
+		teacher.setAdminId(pilotCreate.getAdminId());
 		new LcomDom().registerTeacher(conn, teacher);
 		
-		return teacherAid;
+		return pilotCreate.getAdminId();
 	}
 }

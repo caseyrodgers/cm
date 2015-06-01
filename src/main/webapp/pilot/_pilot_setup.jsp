@@ -1,3 +1,5 @@
+<%@page import="com.cedarsoftware.util.io.JsonWriter"%>
+<%@page import="hotmath.cm.util.PilotCreatedInfo"%>
 <%@page import="sb.util.SbUtilities"%>
 <%@page import="hotmath.cm.util.CmPilotCreate"%>
 <%
@@ -17,8 +19,8 @@
     String additionalEmails = request.getParameter("fld_additional_emails");
     String motivation = request.getParameter("fld_motivation");
 
-    String json = CmPilotCreate.addPilotRequest(title, name, school, zip, email, phone, comments, phoneWhen, schoolPrefix,
-                                  true, studentCount, null, additionalEmails,motivation, isCollegePilot);
+    PilotCreatedInfo pilotCreated = CmPilotCreate.addPilotRequest(title, name, school, zip, email, phone, comments, phoneWhen, schoolPrefix,true, studentCount, null, additionalEmails,motivation, isCollegePilot);
+    String json = JsonWriter.objectToJson(pilotCreated);
     out.write(json);
     out.flush();
 %>

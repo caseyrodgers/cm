@@ -116,8 +116,8 @@ function checkForm() {
   
   function showSuccess(obj) {
 	  var salesRep   = obj.salesRep;
-	  var userName   = obj.username;
-	  var password   = obj.password;
+	  var userName   = obj.userName;
+	  var password   = obj.passWord;
 	  var expireDate = obj.expireDate;
 	  var isCollege  = obj.isCollege;
 	  var schoolName = obj.schoolName;
@@ -128,7 +128,7 @@ function checkForm() {
 	  var stuPassword = 'quizme';
 	  
 	  if (salesRep != 'tina') {
-	      if (isCollege != '0') {
+	      if (isCollege) {
 	          passwordLabel = 'Password (for instructors/faculty): ';
 	          stuPassword = 'placeme';
 	      }

@@ -306,14 +306,13 @@ public class CmPilotCreate {
     static public void test() throws Exception {
         HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(null,null,null,null,null,null,false);        
     }
-    
-    
-    static public String addPilotRequest(String title, String name, String school, String zip, String email,
+
+    static public PilotCreatedInfo addPilotRequest(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneWhen, String schoolPrefix,int studentCount) throws Exception {
         return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true, studentCount,null,null,"", false);
     }
 
-    static public String addPilotRequest(String title, String name, String school, String zip, String email,
+    static public PilotCreatedInfo addPilotRequest(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation, int studentCount, CmPartner partner,
             String additionalEmails, String motivation, boolean isCollegePilot) throws Exception {
 
@@ -329,8 +328,6 @@ public class CmPilotCreate {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            
-            
             String sql = "insert into HA_ADMIN_PILOT_REQUEST(title,name,school,zip,email,phone,request_date,cc_emails,enrollment,comments,motivation,subscriber_id, is_college)values(?,?,?,?,?,?,now(),?,?,?,?,?,?)";
             conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(sql);
@@ -432,15 +429,17 @@ public class CmPilotCreate {
             }
             HotMathSubscriberService service = sub.getLatestService("catchup");
             String expireDate = _expireDateFormat.format(service.getDateExpire());
-            String msg = String.format("{username:'%s', password:'ADMIN123', isCollege:'%d', salesRep:'%s', schoolName:'%s', expireDate:'%s'}",
-            		idToUse.toUpperCase(), isCollegePilot?1:0, pilot.salesRep, sub.getSchoolType(), expireDate);
-            return msg;
+            
+            
+            //String msg = String.format("{username:'%s', password:'ADMIN123', isCollege:'%d', salesRep:'%s', schoolName:'%s', expireDate:'%s'}",
+            // idToUse.toUpperCase(), isCollegePilot?1:0, pilot.salesRep, sub.getSchoolType(), expireDate);
+            return new PilotCreatedInfo(pilot.getAid(), idToUse.toUpperCase(), "ADMIN123", isCollegePilot, pilot.salesRep, sub.getSchoolType(), expireDate);
         } catch (Exception e) {
         	logger.error(String.format("*** problem adding pilot request for school: %s", school), e);
+        	throw e;
         } finally {
             SqlUtilities.releaseResources(null, ps, conn);
         }
-        return "";
     }
 
     static private String parseAdditionalEmails(String additionalEmails) {
