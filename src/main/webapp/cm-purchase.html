@@ -282,12 +282,12 @@ pageTracker._trackPageview();
                   <div id='license_div' class='signup_section'>
                       <div id='numstudents_div'>
                           Number of Students<br/>
-                          <input type='number' min='1' name='num_students' step='1' id='num_students' class='input_field' required tabindex="11"/>
+                          <input type='number' min='1' name='num_students' step='1' id='num_students' class='input_field' onchange='updateLicenseCost()' required tabindex="11"/>
                           <div class='input_error'> &nbsp; </div>          
                       </div>
                       <div id='numyears_div' class='form_field'>
                           Number of Years<br/>
-                          <input type='number' min='1' name='num_years' step='1' id='num_years' class='input_field' required tabindex="12"/>
+                          <input type='number' min='1' name='num_years' step='1' id='num_years' class='input_field' onchange='updateLicenseCost()' required tabindex="12"/>
                           <div class='input_error'> &nbsp; </div> 
                       </div>
                       <div id='startdate_div' class='form_field'>
@@ -295,9 +295,9 @@ pageTracker._trackPageview();
                           <input type='date'  name='start_date' id='start_date' class='input_field' required tabindex="13"/>
                           <div class='input_error'> &nbsp; </div> 
                       </div>
-                      <div id='startdate_div' class='form_field'>
+                      <div id='licensefee_div' class='form_field'>
                           License Fee<br/>
-                          <input type='text' name='license_fee' id='license_fee' class='input_field' tabindex="14" readonly/>
+                          <input type='text' name='license_fee' id='license_fee' class='input_field' readonly tabindex="14">
                           <div class='input_error'> &nbsp; </div> 
                       </div>
                       <div id='totalorder_div' class='form_field'>
