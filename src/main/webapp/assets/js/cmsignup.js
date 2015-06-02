@@ -1092,3 +1092,84 @@ function enablePayNow(enable) {
     	e9.setAttribute('title', 'Click to pay now');
     }
 }
+
+function updateLicenseCost() {
+    var numStudents = $get('num_students');
+    var numYears = $get('num_years');
+    var licenseFee = document.getElementById('license_fee');
+    if (numStudents.value == "" || numYears.value == "") {
+        licenseFee.value = '';
+        return;
+    }
+    var fee = calculateFee(numStudents.value, numYears.value);
+    licenseFee.value = "$" + fee;   
+}
+
+function calculateFee(nStudents, nYears) {
+    var fee;
+    if (nStudents <= 50) {
+        if (nYears == 1) {
+            fee = nStudents * 15;
+        }
+        else if (nYears == 2) {
+            fee = 599;
+        }
+        else if (nYears == 3) {
+            fee = 849;
+        }
+        return fee;
+    }
+
+    else if (nStudents <= 100) {
+        if (nYears == 1) {
+            fee = 599;
+        }
+        else if (nYears == 2) {
+            fee = 1099;
+        }
+        else if (nYears == 3) {
+            fee = 1599;
+        }
+        return fee;
+    }
+
+    else if (nStudents < 1000) {
+        if (nYears == 1) {
+            fee = 4.99;
+        }
+        if (nYears == 2) {
+            fee = 4.75;
+        }
+        if (nYears == 3) {
+            fee = 4.49;
+        }
+        return fee * nStudents;
+    }
+    else if (nStudents < 5000) {
+        if (nYears == 1) {
+            fee = 4.75;
+        }
+        if (nYears == 2) {
+            fee = 4.49;
+        }
+        if (nYears == 3) {
+            fee = 4.25;
+        }
+        return fee * nStudents;
+    }
+
+    else {
+        if (nYears == 1) {
+            fee = 4.49;
+        }
+        if (nYears == 2) {
+            fee = 4.25;
+        }
+        if (nYears == 3) {
+            fee = 3.99;
+        }
+        return fee * nStudents;
+    
+    }
+
+}
