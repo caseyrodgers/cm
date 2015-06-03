@@ -1094,18 +1094,60 @@ function enablePayNow(enable) {
 }
 
 function updateLicenseCost() {
-    var numStudents = $get('num_students');
-    var numYears = $get('num_years');
-    var licenseFee = document.getElementById('license_fee');
-    if (numStudents.value == "" || numYears.value == "") {
-        licenseFee.value = '';
-        return;
-    }
-    var fee = calculateFee(numStudents.value, numYears.value);
-    licenseFee.value = "$" + fee;   
+    var fee = calculateFee();
+    var licenseFee = $get('license_fee');
+    if (fee != 0) licenseFee.value = '$' + fee;
+    else licenseFee.value = '$0';
+    updateTotalOrder();   
 }
 
-function calculateFee(nStudents, nYears) {
+function updateProfDevCost() {
+    var fee = calcProfDevFee();
+    var profDevFee = $get('pd_days_fee');
+    if (fee != 0) profDevFee.value = "$" + fee;
+    else profDevFee.value = '';
+    updateTotalOrder();   
+}
+
+function calcProfDevFee() {
+    var numPdDays = $get('num_pd_days');
+    if (numPdDays.value != "")
+        return numPdDays.value * 1500;
+    return 0;
+}
+
+function updateAddlSchoolsCost() {
+    var fee = calcAddlSchFee();
+    var addlSchFee = document.getElementById('addl_schools_fee');
+    if (fee != 0) addlSchFee.value = "$" + fee;
+    else addlSchFee.value = '';
+    updateTotalOrder();   
+}
+
+function calcAddlSchFee() {
+    var numSchools = $get('num_schools');
+    if (numSchools.value != "")
+        return numSchools.value * 250;
+    return 0;
+}
+
+function updateTotalOrder() {
+    var fee = calculateFee() + calcAddlSchFee() + calcProfDevFee();
+    var totalOrder = $get('total_order');
+    if (fee != 0) totalOrder.value = '$' + fee;
+    else totalOrder.value = '$0';
+}
+
+function calculateFee() {
+    var numStudents = $get('num_students');
+    var numYears = $get('num_years');
+    if (numStudents.value == "" || numYears.value == "") {
+        return 0;
+    }
+    return calcFee(numStudents.value, numYears.value);
+}
+
+function calcFee(nStudents, nYears) {
     var fee;
     if (nStudents <= 50) {
         if (nYears == 1) {
