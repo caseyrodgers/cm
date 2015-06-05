@@ -5188,7 +5188,7 @@ select test_config_json from HA_TEST_DEF where subj_id = ? and prog_id = ? and i
 
 insert into CM_PURCHASE_ORDER
   (school_name, school_street, school_city, school_state, school_zip,
-   cc_name, cc_type, cc_last_four, cc_expire_date, cc_transaction_id, cc_is_success,
+   cc_name, cc_type, cc_last_four, cc_expire_month, cc_expire_year, cc_transaction_id, cc_is_success,
    cc_street, cc_city, cc_state, cc_zip,
    check_number, po_number,
    instructor_name, instructor_title, instructor_phone, instructor_alt_contact,
@@ -5197,7 +5197,7 @@ insert into CM_PURCHASE_ORDER
    number_prof_dev_days, fee_per_prof_dev_day, prof_dev_fee_total,
    order_total, sales_zone) VALUES
   (?, ?, ?, ?, ?,
-   ?, ?, ?, ?, ?, ?,
+   ?, ?, ?, ?, ?, ?, ?,
    ?, ?, ?, ?,
    ?, ?,
    ?, ?, ?, ?,

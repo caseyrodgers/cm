@@ -111,7 +111,7 @@ public class CmPurchaseOrder {
 		}
 	}
 	
-	class School {
+	public class School {
 		String name;
 		boolean isCollege;
 		Address address = new Address();
@@ -135,12 +135,13 @@ public class CmPurchaseOrder {
 		}
 	}
 	
-	class Payment {
+	public class Payment {
 		String type;
 		String lastFourCC;
 		String checkNumber;
 		String poNumber;
-		Date  expirationDateCC;
+		String expirationMonthCC;
+		String expirationYearCC;
 		String transactionIdCC;
 		boolean isSuccess;
 		Address address = new Address();
@@ -169,11 +170,17 @@ public class CmPurchaseOrder {
 		public void setPoNumber(String poNumber) {
 			this.poNumber = poNumber;
 		}
-		public Date getExpirationDateCC() {
-			return expirationDateCC;
+		public String getExpirationMonthCC() {
+			return expirationMonthCC;
 		}
-		public void setExpirationDateCC(Date expirationDateCC) {
-			this.expirationDateCC = expirationDateCC;
+		public void setExpirationMonthCC(String expirationMonthCC) {
+			this.expirationMonthCC = expirationMonthCC;
+		}
+		public String getExpirationYearCC() {
+			return expirationYearCC;
+		}
+		public void setExpirationYearCC(String expirationYearCC) {
+			this.expirationYearCC = expirationYearCC;
 		}
 		public String getTransactionIdCC() {
 			return transactionIdCC;
@@ -201,10 +208,11 @@ public class CmPurchaseOrder {
 		}
 	}
 	
-	class Contact {
+	public class Contact {
 		String name;
 		String title;
 		String phone;
+		String email;
 		String alternateContact;
 		public String getName() {
 			return name;
@@ -224,6 +232,12 @@ public class CmPurchaseOrder {
 		public void setPhone(String phone) {
 			this.phone = phone;
 		}
+		public String getEmail() {
+			return email;
+		}
+		public void setEmail(String email) {
+			this.email = email;
+		}
 		public String getAlternateContact() {
 			return alternateContact;
 		}
@@ -232,11 +246,11 @@ public class CmPurchaseOrder {
 		}
 	}
 
-	class CmLicense {
+	public class CmLicense {
 		int numStudents;
 		int numYears;
 		Date startDate;
-		float total;
+		double total;
 		public int getNumStudents() {
 			return numStudents;
 		}
@@ -255,15 +269,15 @@ public class CmPurchaseOrder {
 		public void setStartDate(Date startDate) {
 			this.startDate = startDate;
 		}
-		public float getTotal() {
+		public double getTotal() {
 			return total;
 		}
-		public void setTotal(float total) {
+		public void setTotal(double total) {
 			this.total = total;
 		}
 	}
 
-	class CmAddlSchools {
+	public class CmAddlSchools {
 		int numSchools;
 		int feePerSchool;
 		int total;
@@ -287,7 +301,7 @@ public class CmPurchaseOrder {
 		}
 	}
 
-	class CmProfDevl {
+	public class CmProfDevl {
 		int numDays;
 		int feePerDay;
 		int total;
