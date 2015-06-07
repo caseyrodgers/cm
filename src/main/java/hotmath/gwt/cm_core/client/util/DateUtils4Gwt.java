@@ -25,9 +25,14 @@ public class DateUtils4Gwt {
         int oneDay = (60 * 1000) * 60 * 24;
         
 
+        
+
+        
         Date dn = new Date();
         String nowAtMidnight = formatYearMonthDay.format(dn);
-        long now = formatDayOfWeek.parse(nowAtMidnight).getTime();
+        Date date = formatYearMonthDay.parse(nowAtMidnight);
+        long now = date.getTime();
+        
 
         String formatedString;
         if(!useRelative || (due + Assignment.MILLS_IN_DAY) < now ) {
