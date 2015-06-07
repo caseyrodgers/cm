@@ -154,5 +154,12 @@ public class ActionDispatcherRest {
 
         return Cm2ActionManager.advanceUserProgram(uid, !retake);
     }
+    
+    
+    @POST
+    @Path("/assignments/{uid}")
+    public String getAssignmentsListing(@PathParam("uid") int uid) throws Exception {
+        return Cm2ActionManager.getAssignmentsListing(uid);
+    }
  
 }

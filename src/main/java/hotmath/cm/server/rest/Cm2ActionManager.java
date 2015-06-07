@@ -8,12 +8,13 @@ import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsForUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
-import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
@@ -28,18 +29,18 @@ import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.CheckCm2QuizAction;
-import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2MobileUser;
+import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2Assignments;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2MobileLoginAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2QuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2CheckedResult;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2HtmlResult;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
-import hotmath.gwt.shared.server.service.command.cm2.GetCm2QuizHtmlCommand;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.SolutionDao;
@@ -47,6 +48,7 @@ import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.cedarsoftware.util.io.JsonWriter;
@@ -257,6 +259,15 @@ public class Cm2ActionManager {
         QuizCm2HtmlResult quizResponse = ActionDispatcher.getInstance().execute(actionQuiz);
         
         return JsonWriter.objectToJson(quizResponse);
+    }
+
+    public static String getAssignmentsListing(int uid) throws Exception  {
+        CmList<StudentAssignmentInfo> results = ActionDispatcher.getInstance().execute(new GetAssignmentsForUserAction(uid));
+        List<StudentAssignmentInfo> assignList = new ArrayList<StudentAssignmentInfo>();
+        assignList.addAll(results);
+        Cm2Assignments assignments = new Cm2Assignments(assignList);
+        
+        return JsonWriter.objectToJson(assignments);
     }
 
 }
