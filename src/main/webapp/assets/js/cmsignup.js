@@ -448,7 +448,7 @@ function verifyNumericFldsPO() {
     var isValid = true;
     clearErrorMessages();
 
-	var fld = $get('license_fee');
+    var fld = $get('license_fee');
     if(fld.value.trim() != '') {
         if (isNumber(fld.value.trim()) == false) {
             if(showError(fld, "Please enter a numeric value."))
@@ -464,7 +464,7 @@ function verifyNumericFldsPO() {
         }
     }    
 
-    fld = $get('num_pd_days');
+    fld = $get('pd_days_fee');
     if(fld.value.trim() != '') {
         if (isNumber(fld.value.trim()) == false) {
             if(showError(fld, "Please enter a numeric value."))
@@ -1113,7 +1113,8 @@ function calcOrderTotal() {
     var profDevFee = 1 * $get('pd_days_fee').value;
     var total = 0;
     total = licenseFee + profDevFee + addlSchlFee;
-    '$' + total;
+    //alert('total: ' + total);
+    totalOrder.value = '$' + total;
 }
 
 function updateLicenseCost() {
