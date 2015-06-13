@@ -445,7 +445,8 @@ function verifyPurchaseOrder() {
 }
 
 function verifyNumericFldsPO() {
-    isValid = true;
+    var isValid = true;
+    clearErrorMessages();
 
 	var fld = $get('license_fee');
     if(fld.value.trim() != '') {
