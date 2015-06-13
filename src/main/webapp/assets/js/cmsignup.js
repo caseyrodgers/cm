@@ -349,24 +349,6 @@ function checkOneTeacherPayForm() {
 	return false;   // always return false;
 }
 
-function checkPurchaseOrderPayForm() {
-
-	_totalCost=0;
-    clearErrorMessages();
-    var isValid = true;
-    
-    isValid = verifyPurchaseOrderForm()
-    if (isValid != true) return false;
-
-    if (checkCreditCardData() == false)
-    	isValid = false;
-
-    if (isValid == true)
-    	doPurchaseOrderPay();
-
-    return false;   // always return false;
-}
-
 var payNowEnabled=true;
 
 function checkPurchaseOrderForm() {
@@ -460,34 +442,31 @@ function verifyPurchaseOrder() {
         if(showError(fld, "Number of Students is required"))
             isValid = false;
     }
-    if (isValid == true) {
-        if (isPosInt(fld.value.trim()) == false) {
+    else {
+        if (isNumber(fld.value.trim()) == false) {
             if(showError(fld, "Number of Students is required"))
                 isValid = false;
         }
-    }
+    }    
 
     fld = $get('num_years');
     if(fld.value.trim() == '') {
         if(showError(fld, "Number of Years is required"))
             isValid = false;
-    } 
+    }
+    else {
+        if (isNumber(fld.value.trim()) == false) {
+            if(showError(fld, "Number of Students is required"))
+                isValid = false;
+        }
+    }
 
     return isValid;
 }
 
-function isPositiveInteger(v) {
-    return true;
-}
-
-function isPosInt(v) {
-    if (typeof v === 'number') {
-        alert("v is a number");
-        if (v % 1 === 0 && v > 0) {
-           return true;
-        }
-    }
-    return null;
+function isNumber(v) {
+	var val = 1 * v;
+    return (val >= 1);
 }
 
 function checkCreditCardData() {
@@ -775,11 +754,11 @@ function doSignup() {
 function doOneTeacherSignup() {
 	document.getElementById('selected_services').value = 'TYPE_CATCHUP_MATH_ONE_TEACHER';
 
-	   var formObject = document.getElementById('sub_form'); 
-	   YAHOO.util.Connect.setForm(formObject); 
+	var formObject = document.getElementById('sub_form'); 
+	YAHOO.util.Connect.setForm(formObject); 
 
-	        var requestCallback = {
-	        success: function(o) {
+	   var requestCallback = {
+	   success: function(o) {
 	           YAHOO.cm.signup_progress.destroy();
 	           oneTeacherComplete(o.responseText);
 	        },
@@ -797,11 +776,28 @@ function doOneTeacherSignup() {
 }
 
 function doPurchaseOrder() {
-    alert("submitting purchase order (not yet)");
-}
+    alert("submitting purchase order with payment (not yet)");
+    return;
 
-function doPurchaseOrderPay() {
-    alert("submitting purchase order with paymewnt (not yet)");
+	var formObject = document.getElementById('sub_form'); 
+	YAHOO.util.Connect.setForm(formObject); 
+
+	    var requestCallback = {
+	    success: function(o) {
+	       YAHOO.cm.signup_progress.destroy();
+	       cmPurchaseComplete(o.responseText);
+	    },
+	    failure: function(o) {
+	        YAHOO.cm.signup_progress.destroy();
+	        alert('Error performing purchase: ' + o.status);
+	    },
+	    argument: null
+	};
+
+	var cObj = YAHOO.util.Connect.asyncRequest('POST', '/purchase', requestCallback);
+	   
+	showProcessingMessage();
+
 }
 
 function showProcessingMessage() {
@@ -1093,6 +1089,27 @@ function enablePayNow(enable) {
     }
 }
 
+function calcOrderTotal() {
+	//return;
+	
+	var fld = $get('license_fee');
+    var licenseFee = 1 * fld.value;
+    //alert('licenseFee: ' + licenseFee);
+    if (isNumber(fld.value) == false) {
+    	fld.value = '';
+    	calcOrderTotal();
+    	return;
+    }
+
+    var addlSchlFee = calcAddlSchFee();
+    var profDevFee = 1 * $get('pd_days_fee').value;
+    var total = 0;
+    total = licenseFee + profDevFee + addlSchlFee;
+    var totalOrder = $get('total_order');
+    if (total != 0) totalOrder.value = '$' + total;
+    else totalOrder.value = '$0';
+}
+
 function updateLicenseCost() {
     var fee = calculateFee();
     var licenseFee = $get('license_fee');
@@ -1125,10 +1142,11 @@ function updateAddlSchoolsCost() {
 }
 
 function calcAddlSchFee() {
-    var numSchools = $get('num_schools');
-    if (numSchools.value != "")
-        return numSchools.value * 250;
-    return 0;
+    //var numSchools = $get('num_schools');
+    //if (numSchools.value != "")
+    //    return numSchools.value * 250;
+	var addlSchlFee = 1 * $get('addl_schools_fee').value;
+    return addlSchlFee;
 }
 
 function updateTotalOrder() {
