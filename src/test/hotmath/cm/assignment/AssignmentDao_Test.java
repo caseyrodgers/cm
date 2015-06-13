@@ -1,7 +1,7 @@
 package hotmath.cm.assignment;
 
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
-import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAction;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStatsUsers;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentModel;
@@ -17,10 +17,16 @@ import junit.framework.TestCase;
 
 public class AssignmentDao_Test extends TestCase {
     
-    int ASSIGN_KEY=4415;
+    int ASSIGN_KEY=13439;
     
     public AssignmentDao_Test(String name) {
         super(name);
+    }
+    
+    
+    public void testGetResources() throws Exception {
+        List<PrescriptionSessionDataResource> results = AssignmentDao.getInstance().getAssigmentResources(AssignmentDao.getInstance().getAssignment(ASSIGN_KEY));
+        assertTrue(results.size() != 0);
     }
     
     

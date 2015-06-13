@@ -24,9 +24,6 @@ public class DateUtils4Gwt {
         long due = dueDate.getTime();
         int oneDay = (60 * 1000) * 60 * 24;
         
-
-        
-
         
         Date dn = new Date();
         String nowAtMidnight = formatYearMonthDay.format(dn);

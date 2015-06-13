@@ -19,6 +19,11 @@ import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.GroupModel;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentStudentsAction.TYPE;
+import hotmath.gwt.cm_rpc.client.rpc.GetCorrelatedTopicsPrescriptionAction;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStats;
@@ -46,6 +51,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.shared.client.util.CmException;
@@ -3528,4 +3534,66 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		return assignments;		
 	}
 
+	
+	/** create a distinct set of resources for this 
+	 *  assignment.
+	 *  
+	 *  only return video and review resources for now.
+	 * 
+	 * @param assignment
+	 * @return
+	 * @throws Exception
+	 */
+    public List<PrescriptionSessionDataResource> getAssigmentResources(Assignment assignment) throws Exception {
+        
+        List<PrescriptionSessionDataResource> resources = new ArrayList<PrescriptionSessionDataResource>();
+        PrescriptionSessionDataResource videos = new PrescriptionSessionDataResource();
+        videos.setType(CmResourceType.VIDEO);
+        PrescriptionSessionDataResource reviews = new PrescriptionSessionDataResource();
+        reviews.setType(CmResourceType.REVIEW);
+
+        resources.add(videos);
+        resources.add(reviews);
+        
+        for(ProblemDto pid: assignment.getPids()) {
+            GetCorrelatedTopicsPrescriptionAction action = new GetCorrelatedTopicsPrescriptionAction(pid.getPid());
+            CmList<PrescriptionSessionResponse> results = ActionDispatcher.getInstance().execute(action);
+
+            // for each resource in lesson type
+            for(PrescriptionSessionResponse res: results) {
+                
+                // for each resource in type
+                for(PrescriptionSessionDataResource lesRes: res.getPrescriptionData().getCurrSession().getInmhResources()) {
+                    
+                    // for each resource that we want to have returned
+                    for(PrescriptionSessionDataResource mainResource: resources) {
+                        
+                        // for each resource being returned
+                        if(mainResource.getType().equals(lesRes.getType())) {
+                            // return distinct resources of this type
+                            
+                            // for each potential item in resource type
+                            for(InmhItemData id: lesRes.getItems()) {
+                                
+                                // if not already in list, add it
+                                boolean alreadyIn=false;
+                                for(InmhItemData dr: mainResource.getItems()) {
+                                    // already in list?
+                                    if(dr.getFile().equals(id.getFile())) {
+                                        alreadyIn=true;
+                                        break;
+                                    }
+                                }
+                                if(!alreadyIn) {
+                                    mainResource.getItems().add(id);
+                                }
+                           }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return resources;
+    }
 }

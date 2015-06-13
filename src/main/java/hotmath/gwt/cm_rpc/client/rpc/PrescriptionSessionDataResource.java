@@ -20,6 +20,7 @@ public class PrescriptionSessionDataResource implements IsSerializable {
 	String label;
 	boolean viewed;
 	String description;
+	List<InmhItemData> items = new ArrayList<InmhItemData>();
 	List<SubMenuItem> subMenuItems = new ArrayList<SubMenuItem>();
 	
 	public PrescriptionSessionDataResource() {}
@@ -51,10 +52,6 @@ public class PrescriptionSessionDataResource implements IsSerializable {
 	public void setLabel(String label) {
 		this.label = label;
 	}
-
-	List<InmhItemData> items = new ArrayList<InmhItemData>();
-
-
 
 	public List<InmhItemData> getItems() {
 		return items;

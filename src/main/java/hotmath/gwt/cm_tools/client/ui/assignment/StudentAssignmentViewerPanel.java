@@ -203,7 +203,6 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         
 
         BorderLayoutData bd = new BorderLayoutData(200);
-        bd.setCollapsible(true);
         header.setWestWidget(headerLeft,bd);
         
         FlowLayoutContainer cP = new FlowLayoutContainer();

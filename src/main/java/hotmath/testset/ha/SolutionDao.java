@@ -748,7 +748,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	        " from inmh_assessment_lookup l " +
 	        " JOIN ( " +
 	        "     select distinct file, lesson " +
-	        "     from HA_PROGRAM_LESSONS pl " +
+	        "     from HA_PROGRAM_LESSONS_static pl " +
 	        " ) pl   on pl.file = l.file " +
 	        " where l.pid in ($$PID_LIST$$) order by l.file ";
 
