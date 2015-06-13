@@ -256,24 +256,25 @@ pageTracker._trackPageview();
                       <div id='numschools_div'>
                           Number of Additional Schools<br/>
                           <input type='number' min='1' step='1' name='num_schools' id='num_schools' class='input_field'
-                                 onchange='updateAddlSchoolsCost()' title='for district orders, $250 per additional school' tabindex="15"/>
+                                 title='for district orders, $250 per additional school' tabindex="15"/>
                           <div class='input_error'> &nbsp; </div>          
                       </div>
                       <div id='addlschoolsfee_div' class='form_field'>
                           Fee for Addtional Schools<br/>
                           <input type='text' name='addl_schools_fee' id='addl_schools_fee' class='input_field' tabindex="16" 
-                                 readonly/>
+                                 onchange='calcOrderTotal()'/>
                           <div class='input_error'> &nbsp; </div> 
                       </div>
                       <div id='numpddays_div' class='form_field'>
                           Number of PD days<br/>
                           <input type='number' min='1' step='1' name='num_pd_days' id='num_pd_days' class='input_field' 
-                                 onchange='updateProfDevCost()' title='PD at $1500 per day plus travel expenses' tabindex="17"/>
+                                 title='PD at $1500 per day plus travel expenses' tabindex="17"/>
                           <div class='input_error'> &nbsp; </div> 
                       </div>
                       <div id='pddaysfee_div' class='form_field'>
-                          Fee for PD (does not include t/e)<br/>
-                          <input type='text' name='pd_days_fee' id='pd_days_fee' class='input_field' tabindex="18" readonly/>
+                          Fee for PD (does not include travel)<br/>
+                          <input type='text' name='pd_days_fee' id='pd_days_fee' class='input_field' tabindex="18" 
+                                 onchange='calcOrderTotal()'/>
                           <div class='input_error'> &nbsp; </div> 
                       </div>
                       <div id='pddaysfee_div' class='form_field' style='font-size:smaller'>
@@ -283,12 +284,12 @@ pageTracker._trackPageview();
                   <div id='license_div' class='signup_section'>
                       <div id='numstudents_div'>
                           Number of Students<br/>
-                          <input type='number' min='1' name='num_students' step='1' id='num_students' class='input_field' onchange='updateLicenseCost()' required tabindex="11"/>
+                          <input type='number' min='1' name='num_students' step='1' id='num_students' class='input_field' required tabindex="11"/>
                           <div class='input_error'> &nbsp; </div>          
                       </div>
                       <div id='numyears_div' class='form_field'>
                           Number of Years<br/>
-                          <input type='number' min='1' name='num_years' step='1' id='num_years' class='input_field' onchange='updateLicenseCost()' required tabindex="12"/>
+                          <input type='number' min='1' name='num_years' step='1' id='num_years' class='input_field' required tabindex="12"/>
                           <div class='input_error'> &nbsp; </div> 
                       </div>
                       <div id='startdate_div' class='form_field'>
@@ -298,15 +299,16 @@ pageTracker._trackPageview();
                       </div>
                       <div id='licensefee_div' class='form_field'>
                           License Fee<br/>
-                          <input type='text' name='license_fee' id='license_fee' class='input_field' readonly tabindex="14">
+                          <input type='text' name='license_fee' id='license_fee' class='input_field' onchange='calcOrderTotal()' required tabindex="14">
                           <div class='input_error'> &nbsp; </div> 
                       </div>
                       <div id='totalorder_div' class='form_field'>
                           <span style='font-weight: bold'>Total Order</span><br/>
-                          <input type='text' name='total_order' id='total_order' class='input_field' style='font-weight:bold' tabindex="19" readonly/>
+                          <input type='text' name='total_order' id='total_order' class='input_field' style='font-weight:bold' tabindex="19" required/>
                           <div class='input_error'> &nbsp; </div> 
                       </div>
                    </div>
+                   <div style='margin-bottom:30px; font-weight: bold; font-style:italic;'>For the pricing entries, refer to your proposal or the online price list</div>
                </div>
                <div class='section_title'>
                    <img src='/assets/images/step_3-38x38.gif'/>
