@@ -437,6 +437,24 @@ function verifyPurchaseOrder() {
             isValid = false;
     }
 
+    if (verifyNumericFldsPO() == false) {
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function verifyNumericFldsPO() {
+    isValid = true;
+
+	var fld = $get('license_fee');
+    if(fld.value.trim() != '') {
+        if (isNumber(fld.value.trim()) == false) {
+            if(showError(fld, "Please enter a numeric value."))
+                isValid = false;
+        }
+    }    
+
     fld = $get('addl_schools_fee');
     if(fld.value.trim() != '') {
         if (isNumber(fld.value.trim()) == false) {
@@ -1082,24 +1100,19 @@ function enablePayNow(enable) {
 }
 
 function calcOrderTotal() {
-	//return;
-	
+    var totalOrder = $get('total_order');
+    totalOrder.value = '';
+
+    if (verifyNumericFldsPO() == false)
+        return;
+
 	var fld = $get('license_fee');
     var licenseFee = 1 * fld.value;
-    //alert('licenseFee: ' + licenseFee);
-    if (isNumber(fld.value) == false) {
-    	fld.value = '';
-    	calcOrderTotal();
-    	return;
-    }
-
     var addlSchlFee = calcAddlSchFee();
     var profDevFee = 1 * $get('pd_days_fee').value;
     var total = 0;
     total = licenseFee + profDevFee + addlSchlFee;
-    var totalOrder = $get('total_order');
-    if (total != 0) totalOrder.value = '$' + total;
-    else totalOrder.value = '$0';
+    '$' + total;
 }
 
 function updateLicenseCost() {
