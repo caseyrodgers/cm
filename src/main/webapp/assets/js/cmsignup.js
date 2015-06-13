@@ -446,7 +446,6 @@ function verifyPurchaseOrder() {
 
 function verifyNumericFldsPO() {
     var isValid = true;
-    clearErrorMessages();
 
     var fld = $get('license_fee');
     if(fld.value.trim() != '') {
@@ -1103,6 +1102,7 @@ function enablePayNow(enable) {
 function calcOrderTotal() {
     var totalOrder = $get('total_order');
     totalOrder.value = '';
+    clearErrorMessages();
 
     if (verifyNumericFldsPO() == false)
         return;
