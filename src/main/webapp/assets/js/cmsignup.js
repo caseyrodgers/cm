@@ -437,29 +437,21 @@ function verifyPurchaseOrder() {
             isValid = false;
     }
 
-    fld = $get('num_students');
-    if(fld.value.trim() == '') {
-        if(showError(fld, "Number of Students is required"))
-            isValid = false;
-    }
-    else {
+    fld = $get('addl_schools_fee');
+    if(fld.value.trim() != '') {
         if (isNumber(fld.value.trim()) == false) {
-            if(showError(fld, "Number of Students is required"))
+            if(showError(fld, "Please enter a numeric value."))
                 isValid = false;
         }
     }    
 
-    fld = $get('num_years');
-    if(fld.value.trim() == '') {
-        if(showError(fld, "Number of Years is required"))
-            isValid = false;
-    }
-    else {
+    fld = $get('num_pd_days');
+    if(fld.value.trim() != '') {
         if (isNumber(fld.value.trim()) == false) {
-            if(showError(fld, "Number of Students is required"))
+            if(showError(fld, "Please enter a numeric value."))
                 isValid = false;
         }
-    }
+    }    
 
     return isValid;
 }
