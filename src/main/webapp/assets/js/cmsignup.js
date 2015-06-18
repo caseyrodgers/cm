@@ -449,24 +449,24 @@ function verifyNumericFldsPO() {
 
     var fld = $get('license_fee');
     if(fld.value.trim() != '') {
-        if (isNumber(fld.value.trim()) == false) {
-            if(showError(fld, "Please enter a numeric value."))
+        if (isNumber(fld.value.trim(), 1) == false) {
+            if(showError(fld, "Please enter a numeric value >= 1."))
                 isValid = false;
         }
     }    
 
     fld = $get('addl_schools_fee');
     if(fld.value.trim() != '') {
-        if (isNumber(fld.value.trim()) == false) {
-            if(showError(fld, "Please enter a numeric value."))
+        if (isNumber(fld.value.trim(), 0) == false) {
+            if(showError(fld, "Please enter a numeric value >= 0."))
                 isValid = false;
         }
     }    
 
     fld = $get('pd_days_fee');
     if(fld.value.trim() != '') {
-        if (isNumber(fld.value.trim()) == false) {
-            if(showError(fld, "Please enter a numeric value."))
+        if (isNumber(fld.value.trim(), 0) == false) {
+            if(showError(fld, "Please enter a numeric value >= 0."))
                 isValid = false;
         }
     }    
@@ -474,9 +474,9 @@ function verifyNumericFldsPO() {
     return isValid;
 }
 
-function isNumber(v) {
+function isNumber(v, min) {
 	var val = 1 * v;
-    return (val >= 1);
+    return (val >= min);
 }
 
 function checkCreditCardData() {
