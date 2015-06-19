@@ -45,7 +45,7 @@ public class CmPurchaseOrderDao extends SimpleJdbcDaoSupport {
             public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, purchaseOrder.getSchool().name);
-                ps.setString(2, purchaseOrder.getSchool().address.street);
+                ps.setString(2, purchaseOrder.getSchool().address.street1);
                 ps.setString(3, purchaseOrder.getSchool().address.city);
                 ps.setString(4, purchaseOrder.getSchool().address.state);
                 ps.setString(5, purchaseOrder.getSchool().address.zipCode);
@@ -58,7 +58,7 @@ public class CmPurchaseOrderDao extends SimpleJdbcDaoSupport {
                 ps.setString(11, purchaseOrder.getPayment().transactionIdCC);
                 ps.setInt(12, purchaseOrder.getPayment().isSuccess?1:0);
 
-                ps.setString(13, purchaseOrder.getPayment().address.street);
+                ps.setString(13, purchaseOrder.getPayment().address.street1);
                 ps.setString(14, purchaseOrder.getPayment().address.city);
                 ps.setString(15, purchaseOrder.getPayment().address.state);
                 ps.setString(16, purchaseOrder.getPayment().address.zipCode);
@@ -78,13 +78,13 @@ public class CmPurchaseOrderDao extends SimpleJdbcDaoSupport {
 
                 ps.setInt(27,  purchaseOrder.getAddlSchools().numSchools);
                 ps.setInt(28,  purchaseOrder.getAddlSchools().feePerSchool);
-                ps.setInt(29,  purchaseOrder.getAddlSchools().total);
+                ps.setDouble(29,  purchaseOrder.getAddlSchools().total);
 
                 ps.setInt(30,  purchaseOrder.getProfDevl().numDays);
                 ps.setInt(31,  purchaseOrder.getProfDevl().feePerDay);
-                ps.setInt(32,  purchaseOrder.getProfDevl().total);
+                ps.setDouble(32,  purchaseOrder.getProfDevl().total);
 
-                ps.setInt(33, purchaseOrder.getTotal());
+                ps.setDouble(33, purchaseOrder.getTotal());
                 ps.setString(34, purchaseOrder.getSalesZone());
                 return ps;
             }

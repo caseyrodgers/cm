@@ -63,7 +63,7 @@ public class PaymentService {
             result = doPayment(ipAddress, amount, ccNum, ccType, ccv2, expMonth, expYear, ccZip, ccState,
             		ccAddress1, ccAddress2, ccCity, ccFirstName, ccLastName, userId);
         } catch (Throwable t) {
-        	__logger.error("Error during purchase", t);
+        	__logger.error("Error submitting purchase order payment", t);
         	result = new PaymentResult(repEmail, false);
         }
 
@@ -74,10 +74,15 @@ public class PaymentService {
             		repName, repEmail, amount); 
 
         } catch (Throwable t) {
-        	__logger.error("Error during purchase", t);
-                // low level error -- give general error
-            throw new HotMathException(t,
+        	__logger.error("Error creating purchase order", t);
+            // low level error -- give general error
+        	if (result.isSuccess() == false)
+                throw new HotMathException(t,
                         "Sorry, we seem to be having difficulties completing this transaction.  Please try again.");
+        	else
+                throw new HotMathException(t,
+                        "Sorry, we seem to be having difficulties completing this transaction.\n" +
+                        "Please contact your Sales Rep: " + repName + ", email: " + repEmail);
         }
     }
 
@@ -125,7 +130,6 @@ public class PaymentService {
 	static private void purchaseComplete(final PaymentResult result, final String email, final String loginName,
 			final String password, final String groupName, final double amount, final String serviceType) throws Exception {
         try {
-
             // send email in separate thread
             // to ensure user thread does not lock
             new Thread(new Runnable() {
@@ -221,21 +225,21 @@ public class PaymentService {
 			String orderNumber, double amount, String contactName, String contactEmail, String contactPhone,
 			boolean isPurchaseSuccessful) {
 		StringBuilder sb = new StringBuilder();
-    	if (isPurchaseSuccessful == true) {
+
+		if (isPurchaseSuccessful == true) {
         	sb.append("Thank You for your Catchup Math purchase for ").append(institutionName).append(".\n\n");
         	sb.append("We will contact you to ");
+            sb.append("setup your Catchup Math account.\n\n");
+        	sb.append("Order Number: ").append(orderNumber).append("\n");
+        	sb.append(String.format(" Amount Charged: $ %.2f\n\n", amount));
     	}
     	else {
         	sb.append("Thank You for your Catchup Math order for ").append(institutionName).append(".\n\n");
     		sb.append("We will contact you to complete your purchase and ");
+            sb.append("setup your Catchup Math account.\n\n");
         }
-        sb.append("setup your Catchup Math account.\n\n");
     	
-    	sb.append("Order Number: ").append(orderNumber).append("\n");
-    	sb.append(String.format(" Amount Charged: $ %.2f\n\n", amount));
-
     	sb.append("Please retain this email for your records.\n\n");
-    	
     	sb.append("We wish you every success with Catchup Math!\n\n");
     	sb.append("CM Support");
     	return sb.toString();

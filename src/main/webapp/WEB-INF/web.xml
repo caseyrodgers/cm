@@ -200,6 +200,18 @@
     </url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>PurchaseOrderService</servlet-name>
+    <servlet-class>
+      hotmath.cm.signup.PurchaseOrderServlet
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PurchaseOrderService</servlet-name>
+    <url-pattern>
+      /purchase
+    </url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>LoginCodeService</servlet-name>
     <servlet-class>
       hotmath.cm.signup.LoginCodeCheckServlet

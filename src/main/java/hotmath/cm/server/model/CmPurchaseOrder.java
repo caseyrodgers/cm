@@ -11,7 +11,8 @@ public class CmPurchaseOrder {
 	private CmAddlSchools addlSchools = new CmAddlSchools();
 	private CmProfDevl profDevl = new CmProfDevl();
 	private String salesZone;
-	private int total;
+	private double total;
+	private String errMsg;
 
 	public CmPurchaseOrder() {
 	}
@@ -72,24 +73,40 @@ public class CmPurchaseOrder {
 		this.salesZone = salesZone;
 	}
 
-	public int getTotal() {
+	public double getTotal() {
 		return total;
 	}
 
-	public void setTotal(int total) {
+	public void setTotal(double total) {
 		this.total = total;
 	}
 
+	public String getErrMsg() {
+		return errMsg;
+	}
+
+	public void setErrMsg(String errMsg) {
+		this.errMsg = errMsg;
+	}
+
 	public class Address {
-		String street;
+		String street1;
+		String street2;
 		String city;
 		String state;
 		String zipCode;
-		public String getStreet() {
-			return street;
+
+		public String getStreet1() {
+			return street1;
 		}
-		public void setStreet(String street) {
-			this.street = street;
+		public void setStreet1(String street) {
+			this.street1 = street;
+		}
+		public String getStreet2() {
+			return street2;
+		}
+		public void setStreet2(String street2) {
+			this.street2 = street2;
 		}
 		public String getCity() {
 			return city;
@@ -138,6 +155,7 @@ public class CmPurchaseOrder {
 	public class Payment {
 		String type;
 		String lastFourCC;
+		String ccv2;
 		String checkNumber;
 		String poNumber;
 		String expirationMonthCC;
@@ -145,7 +163,9 @@ public class CmPurchaseOrder {
 		String transactionIdCC;
 		boolean isSuccess;
 		Address address = new Address();
+		Contact contact = new Contact();
 		String cardholder;
+		private String cardNumber;
 		public String getType() {
 			return type;
 		}
@@ -157,6 +177,12 @@ public class CmPurchaseOrder {
 		}
 		public void setLastFourCC(String lastFourCC) {
 			this.lastFourCC = lastFourCC;
+		}
+		public String getCcv2() {
+			return ccv2;
+		}
+		public void setCcv2(String ccv2) {
+			this.ccv2 = ccv2;
 		}
 		public String getCheckNumber() {
 			return checkNumber;
@@ -200,16 +226,30 @@ public class CmPurchaseOrder {
 		public void setAddress(Address address) {
 			this.address = address;
 		}
+		public Contact getContact() {
+			return contact;
+		}
+		public void setContact(Contact contact) {
+			this.contact = contact;
+		}
 		public String getCardholder() {
 			return cardholder;
 		}
 		public void setCardholder(String cardholder) {
 			this.cardholder = cardholder;
 		}
+		public String getCardNumber() {
+			return cardNumber;
+		}
+		public void setCcNumber(String cardNumber) {
+			this.cardNumber = cardNumber;
+		}
 	}
 	
 	public class Contact {
 		String name;
+		String firstName;
+		String lastName;
 		String title;
 		String phone;
 		String email;
@@ -219,6 +259,18 @@ public class CmPurchaseOrder {
 		}
 		public void setName(String name) {
 			this.name = name;
+		}
+		public String getFirstName() {
+			return firstName;
+		}
+		public void setFirstName(String firstName) {
+			this.firstName = firstName;
+		}
+		public String getLastName() {
+			return lastName;
+		}
+		public void setLastName(String lastName) {
+			this.lastName = lastName;
 		}
 		public String getTitle() {
 			return title;
@@ -280,7 +332,7 @@ public class CmPurchaseOrder {
 	public class CmAddlSchools {
 		int numSchools;
 		int feePerSchool;
-		int total;
+		double total;
 		public int getNumSchools() {
 			return numSchools;
 		}
@@ -293,10 +345,10 @@ public class CmPurchaseOrder {
 		public void setFeePerSchool(int feePerSchool) {
 			this.feePerSchool = feePerSchool;
 		}
-		public int getTotal() {
+		public double getTotal() {
 			return total;
 		}
-		public void setTotal(int total) {
+		public void setTotal(double total) {
 			this.total = total;
 		}
 	}
@@ -304,7 +356,8 @@ public class CmPurchaseOrder {
 	public class CmProfDevl {
 		int numDays;
 		int feePerDay;
-		int total;
+		double total;
+
 		public int getNumDays() {
 			return numDays;
 		}
@@ -317,10 +370,10 @@ public class CmPurchaseOrder {
 		public void setFeePerDay(int feePerDay) {
 			this.feePerDay = feePerDay;
 		}
-		public int getTotal() {
+		public double getTotal() {
 			return total;
 		}
-		public void setTotal(int total) {
+		public void setTotal(double total) {
 			this.total = total;
 		}
 	}
