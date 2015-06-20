@@ -483,7 +483,7 @@ function checkCreditCardData() {
 	var isValid = true;
 
 	fld = $get('first_name');
-    if(fld.value == '') {
+    if(fld != null && fld.value == '') {
         showError(fld, "What is cardholder's first name?");
         isValid = false;
     }
@@ -1134,10 +1134,11 @@ function updateProfDevCost() {
 }
 
 function calcProfDevFee() {
-    var numPdDays = $get('num_pd_days');
-    if (numPdDays.value != "")
-        return numPdDays.value * 1500;
-    return 0;
+    //var numPdDays = $get('num_pd_days');
+    //if (numPdDays.value != "")
+    //    return numPdDays.value * 1500;
+    var fee = 1 * $get('pd_days_fee').value;
+    return fee;
 }
 
 function updateAddlSchoolsCost() {
