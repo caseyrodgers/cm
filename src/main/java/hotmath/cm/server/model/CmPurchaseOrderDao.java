@@ -45,7 +45,7 @@ public class CmPurchaseOrderDao extends SimpleJdbcDaoSupport {
             public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, purchaseOrder.getSchool().name);
-                ps.setString(2, purchaseOrder.getSchool().address.street1);
+                ps.setString(2, purchaseOrder.getSchool().address.department);
                 ps.setString(3, purchaseOrder.getSchool().address.city);
                 ps.setString(4, purchaseOrder.getSchool().address.state);
                 ps.setString(5, purchaseOrder.getSchool().address.zipCode);
@@ -74,7 +74,7 @@ public class CmPurchaseOrderDao extends SimpleJdbcDaoSupport {
                 ps.setInt(23, purchaseOrder.getLicense().numStudents);
                 ps.setInt(24, purchaseOrder.getLicense().numYears);
                 ps.setDouble(25, purchaseOrder.getLicense().total);
-                ps.setTimestamp(26, new Timestamp(purchaseOrder.getLicense().startDate.getTime()));
+                ps.setTimestamp(26, new Timestamp(purchaseOrder.getLicense().orderDate.getTime()));
 
                 ps.setInt(27,  purchaseOrder.getAddlSchools().numSchools);
                 ps.setInt(28,  purchaseOrder.getAddlSchools().feePerSchool);

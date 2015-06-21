@@ -90,12 +90,19 @@ public class CmPurchaseOrder {
 	}
 
 	public class Address {
+		String department;
 		String street1;
 		String street2;
 		String city;
 		String state;
 		String zipCode;
 
+		public String getDepartment() {
+			return department;
+		}
+		public void setDepartment(String department) {
+			this.department = department;
+		}
 		public String getStreet1() {
 			return street1;
 		}
@@ -175,9 +182,6 @@ public class CmPurchaseOrder {
 		public String getLastFourCC() {
 			return lastFourCC;
 		}
-		public void setLastFourCC(String lastFourCC) {
-			this.lastFourCC = lastFourCC;
-		}
 		public String getCcv2() {
 			return ccv2;
 		}
@@ -241,8 +245,14 @@ public class CmPurchaseOrder {
 		public String getCardNumber() {
 			return cardNumber;
 		}
-		public void setCcNumber(String cardNumber) {
+		public void setCardNumber(String cardNumber) {
 			this.cardNumber = cardNumber;
+			if (cardNumber != null && cardNumber.length()>4) {
+				lastFourCC = cardNumber.substring(cardNumber.length()-4); 
+			}
+			else {
+				lastFourCC = cardNumber;
+			}
 		}
 	}
 	
@@ -301,7 +311,7 @@ public class CmPurchaseOrder {
 	public class CmLicense {
 		int numStudents;
 		int numYears;
-		Date startDate;
+		Date orderDate;
 		double total;
 		public int getNumStudents() {
 			return numStudents;
@@ -315,11 +325,11 @@ public class CmPurchaseOrder {
 		public void setNumYears(int numYears) {
 			this.numYears = numYears;
 		}
-		public Date getStartDate() {
-			return startDate;
+		public Date getOrderDate() {
+			return orderDate;
 		}
-		public void setStartDate(Date startDate) {
-			this.startDate = startDate;
+		public void setOrderDate(Date orderDate) {
+			this.orderDate = orderDate;
 		}
 		public double getTotal() {
 			return total;

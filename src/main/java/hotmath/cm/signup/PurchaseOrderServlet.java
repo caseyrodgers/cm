@@ -94,16 +94,14 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
         po.getContact().setAlternateContact(getFData(formData.get("primary_alternate")));
 
         po.getSchool().setName(getFData(formData.get("institution_name")));
-        po.getSchool().getAddress().setStreet1(getFData(formData.get("intitution_address")));
+        po.getSchool().getAddress().setDepartment(getFData(formData.get("intitution_department")));
         po.getSchool().getAddress().setCity(getFData(formData.get("intitution_city")));
         po.getSchool().getAddress().setState(getFData(formData.get("intitution_state_sel")));
         po.getSchool().getAddress().setZipCode(getFData(formData.get("intitution_zip")));
 
         po.getLicense().setNumStudents(Integer.parseInt(getFData(formData.get("num_students"))));
         po.getLicense().setNumYears(Integer.parseInt(getFData(formData.get("num_years"))));
-        String startDate = getFData(formData.get("start_date"));
-        //TODO: parse Date
-        po.getLicense().setStartDate(new Date());
+        po.getLicense().setOrderDate(new Date());
         String totalOrder = getFData(formData.get("totalOrder"));
         // null check shouldn't be needed, but just in case...
         totalOrder = (totalOrder != null)?totalOrder.replaceAll("\\$", ""):"0";
@@ -140,7 +138,7 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
         String cardNumber = getFData(formData.get("card_number"));
         // remove any spaces in card number
         cardNumber = cardNumber.replaceAll(" ", "");
-        po.getPayment().setCcNumber(cardNumber);
+        po.getPayment().setCardNumber(cardNumber);
         po.getPayment().setType(getFData(formData.get("sel_cardtype")));
         po.getPayment().setExpirationMonthCC(getFData(formData.get("sel_card_expire_month")));
         po.getPayment().setExpirationYearCC(getFData(formData.get("sel_card_expire_year")));
