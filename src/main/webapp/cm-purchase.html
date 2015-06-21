@@ -167,7 +167,7 @@ pageTracker._trackPageview();
                   </div>
                   <div id='primaryalternate_div'>
                     Alternate Contact<br/>
-                    <textarea  name='primary_alternate' id='primary_alternate' class='input_field' tabindex="10" rows="2" cols="30"></textarea>
+                    <textarea  name='primary_alternate' id='primary_alternate' class='input_field' tabindex="10"  maxlength="100" rows="2" cols="30"></textarea>
                     <div class='input_error'> &nbsp; </div>  
                   </div>
                 </div>
@@ -176,8 +176,8 @@ pageTracker._trackPageview();
                     <input type='text'  name='institution_name' id='institution_name' class='input_field' required tabindex="1"/>
                     <div class='input_error'> &nbsp; </div>          
                   </div>
-                  <div id='intitutionaddress_div'>Address<br/>
-                    <input type='text'  name='institution_address' id='institution_address' class='input_field' required tabindex="2"/>
+                  <div id='intitutionaddress_div'>Department (optional)<br/>
+                    <input type='text'  name='institution_department' id='institution_address' class='input_field' tabindex="2"/>
                     <div class='input_error'> &nbsp; </div>
                   </div>  
                   <div id='institutioncity_div'>City<br/>
@@ -262,13 +262,13 @@ pageTracker._trackPageview();
                       <div id='addlschoolsfee_div' class='form_field'>
                           Fee for Addtional Schools<br/>
                           <input type='text' name='addl_schools_fee' id='addl_schools_fee' class='input_field' tabindex="16" 
-                                 onchange='calcOrderTotal()'/>
+                                 value='0' onchange='calcOrderTotal()'/>
                           <div class='input_error'> &nbsp; </div> 
                       </div>
                       <div id='pddaysfee_div' class='form_field'>
                           Fee for Professional Development<br/>
                           <input type='text' name='pd_days_fee' id='pd_days_fee' class='input_field' tabindex="18" 
-                                 onchange='calcOrderTotal()'/>
+                                 value='0' onchange='calcOrderTotal()'/>
                           <div class='input_error'> &nbsp; </div> 
                       </div>
                       <div id='pddaysfee_div' class='form_field' style='font-size:smaller'>
@@ -456,11 +456,11 @@ pageTracker._trackPageview();
                     <button type="submit" class="sexybutton sexyred sexylarge" tabindex="31" id='signup_submit' 
                             name='signup_submit'><span><span><span class="ok">Place Order</span></span></span>
                     </button>
-                <div>
+                <div style='display:none'>
                   Buying indicates agreement to our 
                   <a href='#' onclick='return false' id='po_terms_info'>Terms of Service</a>.  
-                  </div>
-                  <div id='error_div' style='display: none;'>
+                </div>
+                <div id='error_div' style='display: none;'>
                   <div class='error_title'>There is a problem ..</div>
                   <p id='error_text' class='error_msg'> We have a problem  </p>
                 </div>
