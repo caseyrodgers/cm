@@ -378,12 +378,6 @@ function verifyPurchaseOrder() {
             isValid = false;
     }
 
-    fld = $get('institution_address');
-    if(fld.value == '') {
-        if(showError(fld, "Address is required"))
-            isValid = false;
-    }
-
     fld = $get('institution_city');
     if(fld.value.trim() == '') {
         if(showError(fld, "City is required"))
