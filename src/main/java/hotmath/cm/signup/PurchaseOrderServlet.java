@@ -14,7 +14,6 @@ import com.cedarsoftware.util.io.JsonWriter;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -26,9 +25,9 @@ import org.apache.log4j.Logger;
 
 public class PurchaseOrderServlet extends CatchupSignupServlet {
     
-	static Logger _logger = Logger.getLogger(PurchaseOrderServlet.class.getName());
+	private static final long serialVersionUID = 3381316087339267095L;
 
-	private static final SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	static Logger _logger = Logger.getLogger(PurchaseOrderServlet.class.getName());
 
     public PurchaseOrderServlet() {
     	/* empty */
@@ -105,7 +104,7 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
         po.getLicense().setTotal(Double.parseDouble(licenseFee));
 
         // null check shouldn't be needed, but just in case...
-        String totalOrder = getFData(formData.get("totalOrder"));
+        String totalOrder = getFData(formData.get("total_order"));
         totalOrder = (totalOrder != null)?totalOrder.replaceAll("\\$", ""):"0";
         po.setTotal(Double.parseDouble(getFData(totalOrder)));
         po.setOrderDate(new Date());
