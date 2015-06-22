@@ -94,6 +94,7 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
         po.getContact().setAlternateContact(getFData(formData.get("primary_alternate")));
 
         po.getSchool().setName(getFData(formData.get("institution_name")));
+        po.getSchool().setLoginName(getFData(formData.get("login_name")));
         po.getSchool().getAddress().setDepartment(getFData(formData.get("intitution_department")));
         po.getSchool().getAddress().setCity(getFData(formData.get("intitution_city")));
         po.getSchool().getAddress().setState(getFData(formData.get("intitution_state_sel")));
@@ -101,11 +102,16 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
 
         po.getLicense().setNumStudents(Integer.parseInt(getFData(formData.get("num_students"))));
         po.getLicense().setNumYears(Integer.parseInt(getFData(formData.get("num_years"))));
-        po.getLicense().setOrderDate(new Date());
-        String totalOrder = getFData(formData.get("totalOrder"));
+        String licenseFee   = getFData(formData.get("license_fee"));
         // null check shouldn't be needed, but just in case...
+        licenseFee = (licenseFee != null)?licenseFee.replaceAll("\\$",""):"0";
+        po.getLicense().setTotal(Double.parseDouble(licenseFee));
+
+        // null check shouldn't be needed, but just in case...
+        String totalOrder = getFData(formData.get("totalOrder"));
         totalOrder = (totalOrder != null)?totalOrder.replaceAll("\\$", ""):"0";
-        po.getLicense().setTotal(Double.parseDouble(getFData(totalOrder)));
+        po.setTotal(Double.parseDouble(getFData(totalOrder)));
+        po.setOrderDate(new Date());
 
         String addlSchools = getFData(formData.get("num_schools"));
         int addlSchoolsNum = (addlSchools != null && addlSchools.isEmpty() == false) ?
@@ -115,8 +121,6 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
         double addlSchoolsFee = (addlSchools != null && addlSchools.isEmpty() == false) ?
         		Double.parseDouble(addlSchools.trim()) : 0;
         po.getAddlSchools().setTotal(addlSchoolsFee);
-
-        //String licenseFee   = getFData(formData.get("license_fee"));
 
         String profDev = getFData(formData.get("num_pd_days"));
         int profDevDays = (profDev != null && profDev.isEmpty() == false) ?

@@ -12,6 +12,7 @@ public class CmPurchaseOrder {
 	private CmProfDevl profDevl = new CmProfDevl();
 	private String salesZone;
 	private double total;
+	Date orderDate;
 	private String errMsg;
 
 	public CmPurchaseOrder() {
@@ -81,6 +82,14 @@ public class CmPurchaseOrder {
 		this.total = total;
 	}
 
+	public Date getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(Date orderDate) {
+		this.orderDate = orderDate;
+	}
+
 	public String getErrMsg() {
 		return errMsg;
 	}
@@ -137,6 +146,7 @@ public class CmPurchaseOrder {
 	
 	public class School {
 		String name;
+		String loginName;
 		boolean isCollege;
 		Address address = new Address();
 		public String getName() {
@@ -144,6 +154,12 @@ public class CmPurchaseOrder {
 		}
 		public void setName(String name) {
 			this.name = name;
+		}
+		public String getLoginName() {
+			return loginName;
+		}
+		public void setLoginName(String loginName) {
+			this.loginName = loginName;
 		}
 		public boolean isCollege() {
 			return isCollege;
@@ -311,7 +327,6 @@ public class CmPurchaseOrder {
 	public class CmLicense {
 		int numStudents;
 		int numYears;
-		Date orderDate;
 		double total;
 		public int getNumStudents() {
 			return numStudents;
@@ -324,12 +339,6 @@ public class CmPurchaseOrder {
 		}
 		public void setNumYears(int numYears) {
 			this.numYears = numYears;
-		}
-		public Date getOrderDate() {
-			return orderDate;
-		}
-		public void setOrderDate(Date orderDate) {
-			this.orderDate = orderDate;
 		}
 		public double getTotal() {
 			return total;
