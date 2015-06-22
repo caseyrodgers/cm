@@ -1066,8 +1066,8 @@ function cmPurchaseComplete(data) {
         if (isSuccess == true) {
 		    html = "<h1>Catchup Math Purchase Success</h1>" 
 			    + "<p>Thank you for your Catchup Math purchase for " + school + "!</p>"
-				+ "<p>Your account manager will contact you shortly " 
-				+ "or you may contact " + repName ", "
+				+ "<p>Your account manager will contact you shortly "
+				+ "or you may contact " + repName + ", "
 				+ "<a href='mailto:" + repEmail + "'>" + repEmail + "</a> now.</p>";
 		}
 		else {
