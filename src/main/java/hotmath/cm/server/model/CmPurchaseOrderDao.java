@@ -82,7 +82,7 @@ public class CmPurchaseOrderDao extends SimpleJdbcDaoSupport {
                 ps.setInt(31, purchaseOrder.getAddlSchools().feePerSchool);
                 ps.setDouble(32, purchaseOrder.getAddlSchools().total);
 
-                ps.setInt(34, purchaseOrder.getProfDevl().numDays);
+                ps.setInt(33, purchaseOrder.getProfDevl().numDays);
                 ps.setInt(34, purchaseOrder.getProfDevl().feePerDay);
                 ps.setDouble(35, purchaseOrder.getProfDevl().total);
 
