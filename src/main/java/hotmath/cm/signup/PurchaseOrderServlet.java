@@ -1,20 +1,19 @@
 package hotmath.cm.signup;
 
-import hotmath.cm.dao.SubscriberDao;
 import hotmath.cm.server.model.CmPurchaseOrder;
 import hotmath.cm.server.model.CmPurchaseOrderDao;
 import hotmath.cm.util.service.PaymentService;
-import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.payment.PaymentResult;
 import hotmath.subscriber.HotMathExceptionPurcaseException;
-import hotmath.subscriber.HotMathSubscriber;
-import hotmath.subscriber.HotMathSubscriberManager;
-import hotmath.subscriber.HotMathSubscriberSignupInfo;
-import hotmath.subscriber.PurchasePlan;
+import hotmath.subscriber.SalesZone;
 import hotmath.subscriber.SalesZone.Representative;
-import hotmath.subscriber.service.HotMathSubscriberServiceFactory;
-import hotmath.testset.ha.HaAdmin;
+import hotmath.util.HMConnectionPool;
+import hotmath.util.sql.SqlUtilities;
+
+import com.cedarsoftware.util.io.JsonWriter;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -25,14 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import sb.mail.SbMailManager;
-import sb.util.SbUtilities;
-
 public class PurchaseOrderServlet extends CatchupSignupServlet {
     
 	static Logger _logger = Logger.getLogger(PurchaseOrderServlet.class.getName());
-
-	private static int ONE_TEACHER_MAX_STUDENTS = 49;
 
 	private static final SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -55,24 +49,27 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
             /** Extract the data from the request 
              */
             CmPurchaseOrder po = createPurchaseOrder(req);
-            
+
+            PurchaseOrderResult poRes = setSalesRep(po);
+
             // persist purchase order
             CmPurchaseOrderDao dao = CmPurchaseOrderDao.getInstance();
             dao.create(po);
 
             // perform purchase option
-            PaymentService.doPurchaseOrder(ipOfCaller, po.getTotal(), po.getPayment().getLastFourCC(), po.getPayment().getType(),
-            		
-            		po.getPayment().getCcv2(), po.getPayment().getExpirationMonthCC(), po.getPayment().getExpirationYearCC(),
+            PaymentResult result = PaymentService.doPurchaseOrder(ipOfCaller, po.getTotal(), po.getPayment().getCardNumber(),
+            		po.getPayment().getType(), po.getPayment().getCcv2(), po.getPayment().getExpirationMonthCC(), po.getPayment().getExpirationYearCC(),
             		po.getPayment().getAddress().getZipCode(), po.getPayment().getAddress().getState(),
             		po.getPayment().getAddress().getStreet1(), po.getPayment().getAddress().getStreet2(),
             		po.getPayment().getAddress().getCity(),
             		po.getPayment().getContact().getFirstName(), po.getPayment().getContact().getLastName(),
             		-1, po.getContact().getEmail(),
             		po.getContact().getName(), po.getContact().getPhone(), po.getSchool().getName(),
-            		"test", "rfhall3@yahnoo.com");
+            		poRes.repName, poRes.repEmail);
+            po.getPayment().setTransactionIdCC(result.getOrderNumber());
             
-            String json = "create JSON from CmPurchaseOrder";
+            poRes.isSuccess = result.isSuccess();
+            String json = JsonWriter.objectToJson(poRes);
             resp.getWriter().write(json);
 
         } catch (Exception e) {
@@ -154,50 +151,28 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
 		return po;
 	}
 
-	private void sendEmail(final HotMathSubscriber sub) throws Exception{
-
+    private PurchaseOrderResult setSalesRep(CmPurchaseOrder po) throws Exception {
+    	Connection conn = null;
+    	PurchaseOrderResult poRes = new PurchaseOrderResult();
     	try {
-    		// send email in separate thread
-    		// to ensure user thread does not lock
-    		new Thread(new Runnable() {
-    			public void run() {
-
-    				/** send a tracking email to subscriber and sales rep
-    				 * 
-    				 */
-    				try {
-    					String emailTemplate = "CM-One-Teacher License";
-    					sub.sendEmailConfirmation(emailTemplate, null);
-    				}
-    				catch(Exception e) {
-    					_logger.error(String.format("*** problem sennding tracking email for one-teacher purchase for ID: %s", sub.getId()), e);
-    				}
-
-    				String txt = "A Catchup Math One-Teacher purchase was made by:"
-    						+ "\nSubscriber ID: " + sub.getId()
-    						+ "\nName: " + sub.getResponsibleEmail() 
-    						+ "\nEmail: " + sub.getEmail() 
-    						+ "\nSalesZone: " + sub.getSalesZone();
-    				try { 
-    					Representative rep = SubscriberDao.getInstance().getSalesRepresentativeByName(sub.getSalesZone());
-
-    					String sendTo[];
-    					sendTo = new String[2];
-    					sendTo[0] = rep.getEmail();
-    					sendTo[1] = "cgrant.hotmath@gmail.com";
-    					SbMailManager.getInstance().
-    					sendMessage("Catchup Math One-Teacher Purchase", txt, sendTo, "registration@catchupmath.com", "text/plain");
-    				} catch (Exception e) {
-    					_logger.error(String.format("*** problem sending one-teacher purchase email: %s", txt), e);
-    				}
-    			}
-
-    		}).start();
-
-    	} catch (Exception e) {
-    		throw new Exception("Error sending email confirmation.", e);
+    		conn = HMConnectionPool.getConnection();
+    		String zip = po.getSchool().getAddress().getZipCode();
+    		Representative salesPerson = SalesZone.getSalesRepresentativeByZip(conn, zip);
+    		po.setSalesZone(salesPerson.getRepId());
+    		poRes.repName = salesPerson.getLabel();
+    		poRes.repEmail = salesPerson.getEmail();
+    		return poRes;
     	}
+    	
+    	finally {
+    		SqlUtilities.releaseResources(null, null, conn);
+    	}
+    }
 
-    }    
+    class PurchaseOrderResult {
+    	boolean isSuccess;
+    	String repName;
+    	String repEmail;
+    }
 
 }

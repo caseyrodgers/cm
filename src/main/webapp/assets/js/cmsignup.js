@@ -780,8 +780,8 @@ function doOneTeacherSignup() {
 }
 
 function doPurchaseOrder() {
-    alert("submitting purchase order with payment (not yet)");
-    return;
+    alert("submitting purchase order with payment...");
+    //return;
 
 	var formObject = document.getElementById('sub_form'); 
 	YAHOO.util.Connect.setForm(formObject); 
@@ -1031,6 +1031,52 @@ function oneTeacherComplete(data) {
 				+ "<p>We wish you and your students the very best success with our service!</p>"
 				+ "<p>Thank you!<br/>The team from Catchupmath.com</p>"
 				+ "<p>Making Math Education Easier!</p>"
+	} else {
+		html = "<h1>Catchup Math Signup Error</h1><p><b>Unfortunately, there was a problem processing your request.</b><br/></p>"
+				+ "<p>Error message: <br/>" + errorMsg + "</p>";
+	}
+
+	var e1 = document.getElementById('signup_page');
+	e1.setAttribute('style', 'display:none');
+	var result = document.getElementById('signup_success');
+	result.innerHTML = html;
+	result.setAttribute('style', 'display:block');
+	window.scrollTo(0, 0);
+}
+
+function cmPurchaseComplete(data) {
+
+	if (data.indexOf("error") == 0) {
+		showAlert('Purchase Problem', 'Error while purchasing Catchup Math: '
+				+ data.substring(6));
+		return;
+	}
+
+	var obj = eval('(' + data + ')');
+
+	var html;
+	var errorMsg = obj.error;
+	if (errorMsg == null) {
+
+		var repName = obj.repName;
+		var repEmail = obj.repEmail;
+		var isSucess = obj.isSuccess;
+		var school = obj.schoolName;
+
+        if (isSuccess == true) {
+		    html = "<h1>Catchup Math Purchase Success</h1>" 
+			    + "<p>Thank you for your Catchup Math purchase for " + school + "!</p>"
+				+ "<p>Your account manager will contact you shortly " 
+				+ "or you may contact " + repName ", "
+				+ "<a href='mailto:" + repEmail + "'>" + repEmail + "</a> now.</p>";
+		}
+		else {
+		    html = "<h1>Catchup Math Purchase</h1>" 
+			    + "<p>Thank you for your Catchup Math order for " + school + "</p>"
+			    + "<p>Unfortunately, the credit card was not approved.</p>"
+				+ "<p>Please try again or contact your account manager " + repName + ", " 
+				+ "<a href='mailto:" + repEmail + "'>" + repEmail + "</a> to discuss.";
+		}
 	} else {
 		html = "<h1>Catchup Math Signup Error</h1><p><b>Unfortunately, there was a problem processing your request.</b><br/></p>"
 				+ "<p>Error message: <br/>" + errorMsg + "</p>";

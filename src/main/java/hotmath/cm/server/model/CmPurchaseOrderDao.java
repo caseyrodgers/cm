@@ -39,7 +39,7 @@ public class CmPurchaseOrderDao extends SimpleJdbcDaoSupport {
 
     public void create(final CmPurchaseOrder purchaseOrder)  throws Exception {
         final String sql = CmMultiLinePropertyReader.getInstance().getProperty("PURCHASE_ORDER_CREATE");
-        getJdbcTemplate().update(new PreparedStatementCreator() {
+        int count = getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
                 PreparedStatement ps = conn.prepareStatement(sql);

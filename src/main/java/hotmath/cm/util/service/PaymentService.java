@@ -53,7 +53,7 @@ public class PaymentService {
         }
     }
 
-    static public void doPurchaseOrder(String ipAddress, double amount, String ccNum, String ccType, String ccv2,
+    static public PaymentResult doPurchaseOrder(String ipAddress, double amount, String ccNum, String ccType, String ccv2,
             String expMonth, String expYear, String ccZip, String ccState, String ccAddress1, String ccAddress2,
             String ccCity, String ccFirstName, String ccLastName, int userId, String contactEmail,
             String contactName, String contactPhone, String institutionName, String repName, String repEmail) throws HotMathException {
@@ -71,7 +71,8 @@ public class PaymentService {
             addPurchaseResult(result, userId, amount);
 
             purchaseOrderComplete(result, contactEmail, contactName, contactPhone, institutionName, 
-            		repName, repEmail, amount); 
+            		repName, repEmail, amount);
+            return result;
 
         } catch (Throwable t) {
         	__logger.error("Error creating purchase order", t);
