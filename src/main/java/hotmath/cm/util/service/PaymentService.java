@@ -106,7 +106,8 @@ public class PaymentService {
 		            ccAddress1, ccAddress2, ccCity, ccFirstName, ccLastName, String.valueOf(userId), ipAddress, amount);
 		    result = PayPalManager.getInstance().doDirectPayment(pay);
 		} else {
-		    result = new PaymentResult(String.valueOf(userId), true);
+			// simulate payment transaction failure with CCV2 of "999"
+		    result = new PaymentResult(String.valueOf(userId), (ccv2.equals("999") == false));
 		}
 		return result;
 	}
