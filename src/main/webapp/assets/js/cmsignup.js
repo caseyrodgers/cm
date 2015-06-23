@@ -1072,8 +1072,8 @@ alert("repName: " + repName + ", repEmail: " + repEmail + ", isSuccess: " + isSu
         html = "<h1>Catchup Math Purchase</h1>"
              + "<p>Thank you for your Catchup Math order for " + school + "</p>"
              + "<p>Unfortunately, the credit card was not approved.</p>"
-             + "<p>Please <a href='#' onclick='showSignupPage();return false'>try again</a>"
-             + "or contact your account manager <a href='mailto:" + repEmail + "'>" + repName + "</a> to discuss.";
+             + "<p>Please <a href='#' onclick='showSignupPage();return false'>try again</a> "
+             + "or contact your account manager <a href='mailto:" + repEmail + "'>" + repName + "</a> to discuss.</p>";
     }
 
     showSignupSuccess(html);
