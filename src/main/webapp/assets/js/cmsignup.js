@@ -940,12 +940,7 @@ function signupComplete(data) {
               "If not there, please email <a href='mailto:support@catchupmath.com'>support@catchupmath.com</a></p><br/>" +
               "<p><a href='/loginService?uid=" + userId + "'>Begin Using Catchup Math</a></p>"; 
 
-   var e1 = document.getElementById('signup_page');
-   e1.setAttribute('style', 'display:none');
-   var success = document.getElementById('signup_success');
-   success.innerHTML = html;
-   success.setAttribute('style', 'display:block');
-   window.scrollTo(0,0); 
+   showSignupSuccess(html);
 }
    
 function selfpayComplete(data) {
@@ -986,12 +981,7 @@ function selfpayComplete(data) {
        "<p>Error message: <br/>" + errorMsg + "</p>";
    }
 
-   var e1 = document.getElementById('signup_page');
-   e1.setAttribute('style', 'display:none');
-   var result = document.getElementById('signup_success');
-   result.innerHTML = html;
-   result.setAttribute('style', 'display:block');
-   window.scrollTo(0,0); 
+   showSignupSuccess(html);
 }
 
 function oneTeacherComplete(data) {
@@ -1037,12 +1027,7 @@ function oneTeacherComplete(data) {
 				+ "<p>Error message: <br/>" + errorMsg + "</p>";
 	}
 
-	var e1 = document.getElementById('signup_page');
-	e1.setAttribute('style', 'display:none');
-	var result = document.getElementById('signup_success');
-	result.innerHTML = html;
-	result.setAttribute('style', 'display:block');
-	window.scrollTo(0, 0);
+    showSignupSuccess(html);
 }
 
 function cmPurchaseComplete(data) {
@@ -1072,8 +1057,8 @@ alert("repName: " + repName + ", repEmail: " + repEmail + ", isSuccess: " + isSu
         html = "<h1>Catchup Math Purchase</h1>"
              + "<p>Thank you for your Catchup Math order for " + school + "</p>"
              + "<p>Unfortunately, the credit card was not approved.</p>"
-             + "<p>Please <a href='#' onclick='showSignupPage();return false'>try again</a> "
-             + "or contact your account manager <a href='mailto:" + repEmail + "'>" + repName + "</a> to discuss.</p>";
+             + "<p>Please <a href='#' onclick='showSignupPage();return false;'>try again</a> "
+             + "or contact your account manager, <a href='mailto:" + repEmail + "'>" + repName + "</a>, to discuss.</p>";
     }
 
     showSignupSuccess(html);
