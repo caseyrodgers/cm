@@ -1043,7 +1043,7 @@ function cmPurchaseComplete(data) {
     var repName = obj.repName;
     var repEmail = obj.repEmail;
     var isSuccess = obj.isSuccess;
-    var school = obj.schoolName;
+    var school = obj.school;
 
     if (isSuccess == 'true') {
         html = "<h1>Catchup Math Purchase Success</h1>"
