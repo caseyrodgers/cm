@@ -69,8 +69,12 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
             po.getPayment().setTransactionIdCC(result.getOrderNumber());
             
             poRes.isSuccess = result.isSuccess();
-            String json = JsonWriter.objectToJson(poRes);
-            resp.getWriter().write(json);
+            //String json = JsonWriter.objectToJson(poRes);
+            StringBuilder sb = new StringBuilder();
+            sb.append("{repEmail:'").append(poRes.repEmail).append("', isSuccess:'").append(poRes.isSuccess);
+            String repName = (poRes.repName.equals("lincoln") == true)?"David Lincoln":"Tina Hamilton";
+            sb.append("', school:'").append(poRes.school).append("', repName:'").append(repName).append("'}");
+            resp.getWriter().write(sb.toString());
 
         } catch (Exception e) {
             _logger.error("*** Error creating Purchase Order", e);
