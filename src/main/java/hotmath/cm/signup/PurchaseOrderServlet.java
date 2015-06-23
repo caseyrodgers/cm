@@ -50,6 +50,7 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
             CmPurchaseOrder po = createPurchaseOrder(req);
 
             PurchaseOrderResult poRes = setSalesRep(po);
+            poRes.school = po.getSchool().getName();
 
             // persist purchase order
             CmPurchaseOrderDao dao = CmPurchaseOrderDao.getInstance();
@@ -158,7 +159,7 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
     		String zip = po.getSchool().getAddress().getZipCode();
     		Representative salesPerson = SalesZone.getSalesRepresentativeByZip(conn, zip);
     		po.setSalesZone(salesPerson.getRepId());
-    		poRes.repName = salesPerson.getLabel();
+    		poRes.repName = salesPerson.getRepId();
     		poRes.repEmail = salesPerson.getEmail();
     		return poRes;
     	}
@@ -172,6 +173,7 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
     	boolean isSuccess;
     	String repName;
     	String repEmail;
+    	String school;
     }
 
 }
