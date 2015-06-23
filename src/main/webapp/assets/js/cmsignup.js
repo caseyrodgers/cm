@@ -1043,14 +1043,12 @@ function cmPurchaseComplete(data) {
     var repName = obj.repName;
     var repEmail = obj.repEmail;
     var isSuccess = obj.isSuccess;
-    var school = 'test'; //obj.schoolName;
-alert("repName: " + repName + ", repEmail: " + repEmail + ", isSuccess: " + isSuccess);
+    var school = obj.schoolName;
 
     if (isSuccess == 'true') {
         html = "<h1>Catchup Math Purchase Success</h1>"
              + "<p>Thank you for your Catchup Math purchase for " + school + "!</p>"
-             + "<p>Your account manager will contact you shortly "
-             + "or you may contact " + 
+             + "<p>Your account manager will contact you shortly or you may contact "
              + "<a href='mailto:" + repEmail + "'>" + repName + "</a> now.</p>";
     }
     else {
