@@ -135,6 +135,8 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
         // extract credit card info
         po.getPayment().getContact().setFirstName(getFData(formData.get("first_name")));
         po.getPayment().getContact().setLastName(getFData(formData.get("last_name")));
+        po.getPayment().setCardholder(getFData(formData.get("last_name")));
+        po.getPayment().setCardholder(getFData(formData.get("last_name")));
         po.getPayment().getAddress().setStreet1(getFData(formData.get("address1")));
         po.getPayment().getAddress().setCity(getFData(formData.get("city")));
         po.getPayment().getAddress().setState(getFData(formData.get("sel_state")));

@@ -38,8 +38,7 @@ public class CmPurchaseOrderDao extends SimpleJdbcDaoSupport {
 
 
     public void create(final CmPurchaseOrder purchaseOrder)  throws Exception {
-    	//TODO create CM_PURCHASE_ORDER table in hotmath_live
-    	if (purchaseOrder != null) return;
+    	//if (purchaseOrder != null) return;
         final String sql = CmMultiLinePropertyReader.getInstance().getProperty("PURCHASE_ORDER_CREATE");
         int count = getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
