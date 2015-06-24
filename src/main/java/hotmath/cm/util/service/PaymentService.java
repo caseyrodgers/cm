@@ -243,14 +243,15 @@ public class PaymentService {
             sb.append("setup your Catchup Math account.\n\n");
         	sb.append("Order Number: ").append(orderNumber).append("\n");
         	sb.append(String.format(" Amount Charged: $ %.2f\n\n", amount));
+        	sb.append("Please retain this email as a receipt for your purchase.\n\n");
     	}
     	else {
-        	sb.append("Thank You for your Catchup Math order for ").append(institutionName).append(".\n\n");
+        	sb.append("Thank You for attempting to order Catchup Math for ").append(institutionName).append(".\n\n");
     		sb.append("We will contact you to complete your purchase and ");
             sb.append("setup your Catchup Math account.\n\n");
+        	sb.append("Please retain this email for your records.\n\n");
         }
     	
-    	sb.append("Please retain this email for your records.\n\n");
     	sb.append("We wish you every success with Catchup Math!\n\n");
     	sb.append("CM Support");
     	return sb.toString();
