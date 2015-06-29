@@ -10,6 +10,7 @@ import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsForUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
@@ -40,7 +41,10 @@ import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2QuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2CheckedResult;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2HtmlResult;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
+import hotmath.gwt.cm_rpc_assignments.client.rpc.GetStudentAssignmentAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
@@ -56,6 +60,8 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONWriter;
 
 import com.cedarsoftware.util.io.JsonWriter;
 
@@ -276,38 +282,25 @@ public class Cm2ActionManager {
         return JsonWriter.objectToJson(assignments);
     }
 
+    public static String getCm2AssignmentProblem(int uid, int assignKey, String pid) throws Exception {
+        AssignmentProblem result = ActionDispatcher.getInstance().execute(new GetAssignmentSolutionAction(uid, assignKey, pid));
+        result.getInfo().setHtml(GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/help/solutions/", result.getInfo().getHtml()));
+        return JsonWriter.objectToJson(result);
+    }
+    
+
     public static String getCm2Assignment(int uid, int assignKey) throws Exception {
-        Assignment assignment = AssignmentDao.getInstance().getAssignment(assignKey);
-         List<PrescriptionSessionDataResource> cm2Resources = AssignmentDao.getInstance().getAssigmentResources(assignment);
+
+        GetStudentAssignmentAction action = new GetStudentAssignmentAction(uid,  assignKey);
+        StudentAssignment studentAssignment = ActionDispatcher.getInstance().execute(action);
+ 
+    	
+    	
+       // Assignment assignment = AssignmentDao.getInstance().getAssignment(assignKey);
+       // List<PrescriptionSessionDataResource> cm2Resources = AssignmentDao.getInstance().getAssigmentResources(assignment);
          
-         /** get the text for each review 
-          * 
-          */
-         int REVIEW_INDEX = 1;
-         if(cm2Resources.size() > 0 &&  cm2Resources.get(REVIEW_INDEX).getType() == CmResourceType.REVIEW) {
-             
-             Connection conn=null;
-             try {
-                 conn = HMConnectionPool.getConnection();
-                 PrescriptionSessionDataResource reviews = cm2Resources.get(REVIEW_INDEX);
-                 for(InmhItemData ri : reviews.getItems()) {
-                     String topicHtml = new GetReviewHtmlCommand().execute(conn,new GetReviewHtmlAction(ri.getFile())).getLesson();
-                     topicHtml = GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/hotmath_help", topicHtml);
-                     
-                     /** hijack jsonArgs
-                      * 
-                      *  TODO: create a new type to hold results
-                      *  */
-                     ri.setWidgetJsonArgs(topicHtml);
-                 }
-             }
-             finally {
-                 SqlUtilities.releaseResources(null, null,  conn);
-             }
-         }
-         
-        Cm2Assignment cm2Ass = new Cm2Assignment(assignment, cm2Resources); 
-        return JsonWriter.objectToJson(cm2Ass);
+        //Cm2Assignment cm2Ass = new Cm2Assignment(assignment, cm2Resources); 
+        return JsonWriter.objectToJson(studentAssignment);
     }
 
 }

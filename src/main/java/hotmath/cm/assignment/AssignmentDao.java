@@ -1932,7 +1932,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 							public StudentProblemDto mapRow(ResultSet rs,
 									int rowNum) throws SQLException {
 								ProblemDto prob = null;
-								String pid = rs.getString("pid");
+								String pid = rs.getString("pid");	
 								for (ProblemDto p : assignment.getPids()) {
 									if (p.getPid().equals(pid)) {
 										prob = p;
