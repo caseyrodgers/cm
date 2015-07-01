@@ -174,4 +174,14 @@ public class ActionDispatcherRest {
     public String getAssignmentProblem(@PathParam("uid") int uid, @PathParam("assignKey") int assignKey, @PathParam("pid") String pid) throws Exception {
         return Cm2ActionManager.getCm2AssignmentProblem(uid, assignKey, pid);
     }
+    
+    @POST
+    @Path("user/{uid}/assignment/{assignKey}/{pid}/widget")
+    public String saveAssignmentProblemWidgetValue(@PathParam("uid") int uid, @PathParam("assignKey") int assKey ,@PathParam("pid") String pid, String jsonData) throws Exception {
+    	JSONObject jo = new JSONObject(jsonData);
+    	String value = jo.getString("value");
+    	boolean correct = jo.getBoolean("correct");
+    	
+    	return Cm2ActionManager.saveAssignmentProblemWidgetValue(uid, assKey, pid, value, correct);
+    }
 }

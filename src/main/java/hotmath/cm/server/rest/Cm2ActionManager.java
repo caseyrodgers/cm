@@ -1,8 +1,14 @@
 package hotmath.cm.server.rest;
 
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONWriter;
+
+import com.cedarsoftware.util.io.JsonWriter;
+
 import hotmath.ProblemID;
-import hotmath.cm.assignment.AssignmentDao;
-import hotmath.cm.assignment.Cm2Assignment;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
@@ -18,12 +24,11 @@ import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
-import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
-import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
@@ -40,7 +45,6 @@ import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2MobileLoginAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2QuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2CheckedResult;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2HtmlResult;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
@@ -48,7 +52,6 @@ import hotmath.gwt.cm_rpc_assignments.client.rpc.GetStudentAssignmentAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
-import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
 import hotmath.testset.ha.HaTestDao;
@@ -56,14 +59,6 @@ import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
-
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONWriter;
-
-import com.cedarsoftware.util.io.JsonWriter;
 
 /**
  * Central place to request a CM2 request with any specialized formatting
@@ -302,5 +297,12 @@ public class Cm2ActionManager {
         //Cm2Assignment cm2Ass = new Cm2Assignment(assignment, cm2Resources); 
         return JsonWriter.objectToJson(studentAssignment);
     }
+
+	public static String saveAssignmentProblemWidgetValue(int uid, int assKey, String pid, String value,
+			boolean correct) throws Exception {
+		
+		RpcData saveInfo = ActionDispatcher.getInstance().execute(new SaveAssignmentTutorInputWidgetAnswerAction(uid,assKey, pid, value, correct ));
+		return JsonWriter.objectToJson(saveInfo);
+	}
 
 }
