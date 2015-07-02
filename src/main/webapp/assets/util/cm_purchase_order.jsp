@@ -22,7 +22,7 @@
 	String today = sdf.format(new java.util.Date());
 
 	String header =
-		String.format("%-40s\t%-10s\t%-30s\t%-30s\t%-10s\t%-6s\t%-8s\t%-5s\t%-7s\t%-9s\t%10s\t%-12s\n\n", 
+		String.format("%-40s\t%-10s\t%-30s\t%-30s\t%-10s\t%-6s\t%-8s\t%-5s\t%-7s\t%-9s\t%-10s\t%-12s\n\n", 
 				"School Name", "login", "Contact Name", "Contact email", "Rep", "#Student", "#Year", "Success", "Last 4 CC", "Trans ID", "Total", "Submitted");
 
 	StringBuilder sb = new StringBuilder();
@@ -37,7 +37,7 @@
 			java.util.Date orderDate = po.getOrderDate();
 			String orderDateStr = sdf.format(orderDate);
 			String loginName = (po.getSchool().getLoginName().length() > 10)?
-					po.getSchool().getLoginName().substring(0,10):po.getSchool().getLoginName()
+					po.getSchool().getLoginName().substring(0,10):po.getSchool().getLoginName();
 
 			sb.append(
 			String.format("%-40s\t%-10s\t%-30s\t%-30s\t%-10s\t%6s\t%8s\t%5s\t%7s\t%9s\t%7.2f\t%12s\n", 
