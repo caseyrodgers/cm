@@ -5205,3 +5205,7 @@ insert into CM_PURCHASE_ORDER
    ?, ?, ?,
    ?, ?, ?,
    ?, ?)
+
+.key=GET_ALL_PURCHASE_ORDERS
+
+select * from CM_PURCHASE_ORDERS
