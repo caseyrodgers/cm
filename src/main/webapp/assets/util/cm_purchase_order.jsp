@@ -36,10 +36,12 @@
 			CmPurchaseOrder po = list.get(i);
 			java.util.Date orderDate = po.getOrderDate();
 			String orderDateStr = sdf.format(orderDate);
+			String loginName = (po.getSchool().getLoginName().length() > 10)?
+					po.getSchool().getLoginName().substring(0,10):po.getSchool().getLoginName()
 
 			sb.append(
 			String.format("%-40s\t%-10s\t%-30s\t%-30s\t%-10s\t%6s\t%8s\t%5s\t%7s\t%9s\t%7.2f\t%12s\n", 
-					po.getSchool().getName(), po.getSchool().getLoginName().substring(0,10), po.getContact().getName(), po.getContact().getEmail(), po.getSalesZone(), 
+					po.getSchool().getName(), loginName, po.getContact().getName(), po.getContact().getEmail(), po.getSalesZone(), 
 					po.getLicense().getNumStudents(), po.getLicense().getNumYears(), po.getPayment().isSuccess()?"Yes":"No",
 					po.getPayment().getLastFourCC(), po.getPayment().getTransactionIdCC(), po.getTotal(), orderDateStr));
 		}
