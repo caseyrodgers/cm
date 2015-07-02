@@ -350,7 +350,7 @@ public class CmPurchaseOrder {
 
 	public class CmAddlSchools {
 		int numSchools;
-		int feePerSchool;
+		double feePerSchool;
 		double total;
 		public int getNumSchools() {
 			return numSchools;
@@ -358,10 +358,10 @@ public class CmPurchaseOrder {
 		public void setNumSchools(int numSchools) {
 			this.numSchools = numSchools;
 		}
-		public int getFeePerSchool() {
+		public double getFeePerSchool() {
 			return feePerSchool;
 		}
-		public void setFeePerSchool(int feePerSchool) {
+		public void setFeePerSchool(double feePerSchool) {
 			this.feePerSchool = feePerSchool;
 		}
 		public double getTotal() {
@@ -374,7 +374,7 @@ public class CmPurchaseOrder {
 
 	public class CmProfDevl {
 		int numDays;
-		int feePerDay;
+		double feePerDay;
 		double total;
 
 		public int getNumDays() {
@@ -383,10 +383,10 @@ public class CmPurchaseOrder {
 		public void setNumDays(int numDays) {
 			this.numDays = numDays;
 		}
-		public int getFeePerDay() {
+		public double getFeePerDay() {
 			return feePerDay;
 		}
-		public void setFeePerDay(int feePerDay) {
+		public void setFeePerDay(double feePerDay) {
 			this.feePerDay = feePerDay;
 		}
 		public double getTotal() {

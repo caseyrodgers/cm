@@ -5,11 +5,14 @@ import hotmath.spring.SpringManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 /**
@@ -36,9 +39,7 @@ public class CmPurchaseOrderDao extends SimpleJdbcDaoSupport {
         /** empty */
     }
 
-
     public void create(final CmPurchaseOrder purchaseOrder)  throws Exception {
-    	//if (purchaseOrder != null) return;
         final String sql = CmMultiLinePropertyReader.getInstance().getProperty("PURCHASE_ORDER_CREATE");
         int count = getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
@@ -80,11 +81,11 @@ public class CmPurchaseOrderDao extends SimpleJdbcDaoSupport {
                 ps.setDouble(29, purchaseOrder.getLicense().total);
 
                 ps.setInt(30, purchaseOrder.getAddlSchools().numSchools);
-                ps.setInt(31, purchaseOrder.getAddlSchools().feePerSchool);
+                ps.setDouble(31, purchaseOrder.getAddlSchools().feePerSchool);
                 ps.setDouble(32, purchaseOrder.getAddlSchools().total);
 
                 ps.setInt(33, purchaseOrder.getProfDevl().numDays);
-                ps.setInt(34, purchaseOrder.getProfDevl().feePerDay);
+                ps.setDouble(34, purchaseOrder.getProfDevl().feePerDay);
                 ps.setDouble(35, purchaseOrder.getProfDevl().total);
 
                 ps.setDouble(36, purchaseOrder.getTotal());
@@ -92,6 +93,62 @@ public class CmPurchaseOrderDao extends SimpleJdbcDaoSupport {
                 return ps;
             }
         });
+    }
+
+    public List<CmPurchaseOrder> getAll() throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ALL_PURCHASE_ORDERS");
+    	List<CmPurchaseOrder> ppList = null;
+    	try {
+    		ppList = this.getJdbcTemplate().query(
+    				sql,
+    				new RowMapper<CmPurchaseOrder>() {
+    					public CmPurchaseOrder mapRow(ResultSet rs, int rowNum) throws SQLException {
+    						CmPurchaseOrder po = new CmPurchaseOrder();
+    		                po.getSchool().name = rs.getString("school_name");
+    		                po.getSchool().loginName = rs.getString("login_name");
+    		                po.getSchool().address.department = rs.getString("school_department");
+    		                po.getSchool().address.city = rs.getString("school_city");
+    		                po.getSchool().address.state = rs.getString("school_state");
+    		                po.getSchool().address.zipCode = rs.getString("school_zip");
+    		                po.getPayment().cardholder = rs.getString("cc_last_name");
+    		                po.getPayment().type = rs.getString("cc_type");
+    		                po.getPayment().lastFourCC = rs.getString("cc_last_four");
+    		                po.getPayment().expirationMonthCC = rs.getString("cc_expire_month");
+    		                po.getPayment().expirationYearCC = rs.getString("cc_expire_year");
+    		                po.getPayment().transactionIdCC = rs.getString("cc_transaction_id");
+    		                po.getPayment().address.street1 = rs.getString("cc_street");
+    		                po.getPayment().address.city = rs.getString("cc_city");
+    		                po.getPayment().address.state = rs.getString("cc_state");
+    		                po.getPayment().address.zipCode = rs.getString("cc_zip");
+    		                po.getPayment().checkNumber = rs.getString("check_number");
+    		                po.getPayment().poNumber = rs.getString("po_number");
+    		                po.setSalesZone(rs.getString("sales_zone"));
+    		                po.getContact().name = rs.getString("instructor_name");
+    		                po.getContact().title = rs.getString("instructor_title");
+    		                po.getContact().email = rs.getString("instructor_email");
+    		                po.getContact().phone = rs.getString("instructor_phone");
+    		                po.getContact().alternateContact = (rs.getString("instructor_alt_contact"));
+    		                po.getLicense().numStudents = rs.getInt("number_students");
+    		                po.getLicense().numYears = rs.getInt("number_years");
+    		                po.getLicense().total = rs.getDouble("license_total");
+    		                po.getAddlSchools().numSchools = rs.getInt("number_addl_schools");
+    		                po.getAddlSchools().feePerSchool = rs.getDouble("fee_per_addl_school");
+    		                po.getAddlSchools().total = rs.getDouble("addl_school_fee_total");
+    		                po.getProfDevl().numDays = rs.getInt("number_prof_dev_days");
+    		                po.getProfDevl().feePerDay = rs.getDouble("fee_per_prof_dev_day");
+    		                po.getProfDevl().total = rs.getDouble("prof_dev_fee_total");
+    		                po.setTotal(rs.getDouble("order_total"));
+    		                po.setOrderDate(rs.getDate("order_date"));
+
+    						return po;
+    					}
+    				});
+    	}
+    	catch(Exception e) {
+    		__logger.error("Error getting Purchase Orders", e);
+    		throw new Exception(e.getMessage());
+    	}
+    	return ppList;
     }
 
 }
