@@ -143,6 +143,8 @@ public class ActionDispatcherLoggerGui extends JFrame {
      * 
      * Return false if this action should not be cached.
      * 
+     * Check for ! as first char to indicate negate search.
+     * 
      * @param actionName
      * @return
      */
@@ -151,7 +153,7 @@ public class ActionDispatcherLoggerGui extends JFrame {
         if(cacheFilter.length() > 0) {
             String filters[] = cacheFilter.split(",");
             for(String f: filters) {
-                if(actionName.contains(f.trim())) {
+            	if(actionName.contains(f.trim())) {
                     return false;
                 }
             }

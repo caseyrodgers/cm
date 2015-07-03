@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONWriter;
-
 import com.cedarsoftware.util.io.JsonWriter;
 
 import hotmath.ProblemID;
@@ -17,6 +15,7 @@ import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsForUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
@@ -29,6 +28,7 @@ import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
@@ -46,6 +46,7 @@ import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2QuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2CheckedResult;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2HtmlResult;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetStudentAssignmentAction;
@@ -303,6 +304,16 @@ public class Cm2ActionManager {
 		
 		RpcData saveInfo = ActionDispatcher.getInstance().execute(new SaveAssignmentTutorInputWidgetAnswerAction(uid,assKey, pid, value, correct ));
 		return JsonWriter.objectToJson(saveInfo);
+	}
+
+	public static String getWhiteboardForAssignmentProblem(int uid, int assKey, String pid) throws Exception  {
+		AssignmentWhiteboardData results = ActionDispatcher.getInstance().execute(new GetAssignmentWhiteboardDataAction(uid,pid, assKey));
+		return JsonWriter.objectToJson(results);
+	}
+
+	public static String saveWhiteboardForAssignmentProblem(int uid, int assKey, String pid, String commandData) throws Exception {
+		RpcData results = ActionDispatcher.getInstance().execute(new SaveAssignmentWhiteboardDataAction(uid, assKey, pid, CommandType.DRAW, commandData, false));
+		return JsonWriter.objectToJson(results);
 	}
 
 }

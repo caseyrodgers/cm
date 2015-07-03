@@ -184,4 +184,19 @@ public class ActionDispatcherRest {
     	
     	return Cm2ActionManager.saveAssignmentProblemWidgetValue(uid, assKey, pid, value, correct);
     }
+    
+    @GET
+    @POST
+    @Path("user/{uid}/assignment/{assignKey}/{pid}/whiteboard")
+    public String getWhiteboardForAssignmentProblem(@PathParam("uid") int uid, @PathParam("assignKey") int assKey ,@PathParam("pid") String pid) throws Exception {
+    	return Cm2ActionManager.getWhiteboardForAssignmentProblem(uid, assKey, pid);
+    }
+    
+    @POST
+    @Path("user/{uid}/assignment/{assignKey}/{pid}/whiteboard/save")
+    public String saveWhiteboardForAssignmentProblem(@PathParam("uid") int uid, @PathParam("assignKey") int assKey ,@PathParam("pid") String pid, String json) throws Exception {
+    	JSONObject jo = new JSONObject(json);
+    	String data = jo.getString("data");
+    	return Cm2ActionManager.saveWhiteboardForAssignmentProblem(uid, assKey, pid, data);
+    }
 }
