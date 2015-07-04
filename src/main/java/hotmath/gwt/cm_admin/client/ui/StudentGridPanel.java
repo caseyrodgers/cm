@@ -470,7 +470,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
     }
     
-    private MenuItem createCustomMenuItem() {
+    private MenuItem createCustomProgramsMenuItem() {
         final MenuItem customMi = new MenuItem("Custom Program");
         customMi.setToolTip("Create and manage custom programs and quizzes");
         customMi.addSelectionHandler(new SelectionHandler<Item>() {
@@ -488,10 +488,10 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
        pop.setModal(true);
        
        Menu menu = new Menu();
-       menu.add(createCustomMenuItem());
+       menu.add(createCustomProgramsMenuItem());
        menu.add(createParallelPrograms());
-       menu.add(createManageCustomProblems());
-       menu.add(createWebLinksButton());
+       menu.add(createManageCustomProblemsItem());
+       menu.add(createWebLinksItem());
        
        pop.setWidget(menu);
        pop.showRelativeTo(customButton);
@@ -902,7 +902,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         return createEdit;
     }
     
-    private Widget createWebLinksButton() {
+    private Widget createWebLinksItem() {
         MenuItem btn = new MyMenuItem("Web Links",  "Create and manage Web Links",  new SelectionHandler<MenuItem>() {
             
             @Override
@@ -915,7 +915,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     }
 
     
-    private Widget createManageCustomProblems() {
+    private Widget createManageCustomProblemsItem() {
         MenuItem mi = new MenuItem("Custom Problems", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
