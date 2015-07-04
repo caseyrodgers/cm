@@ -446,7 +446,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
     private TextButton createCustomButton() {
         final TextButton customButton = new TextButton("Custom Program");
-        customButton.setToolTip("Create and manage custom programs and quizzes");
+        customButton.setToolTip("Create and manage custom programs");
         customButton.addSelectHandler(new SelectHandler() {
             
             @Override
@@ -472,7 +472,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     
     private MenuItem createCustomProgramsMenuItem() {
         final MenuItem customMi = new MenuItem("Custom Program");
-        customMi.setToolTip("Create and manage custom programs and quizzes");
+        customMi.setToolTip("Create and manage custom programs");
         customMi.addSelectionHandler(new SelectionHandler<Item>() {
             public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<Item> event) {
                 new CustomProgramDialog(_cmAdminMdl);
