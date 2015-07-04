@@ -73,12 +73,12 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             }
         });
 
-        /** 
+        
         if(CatchupMathAdminTests.runTest()) {
             CmBusyManager.setBusy(false);
             return;
         }
-        */
+       
         
         BorderLayoutContainer borderMain = new BorderLayoutContainer();
 

@@ -1,9 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_admin.client.ui.CustomProgramAddQuizDialog.Callback;
 import hotmath.gwt.cm_admin.client.ui.list.ListCustomProgram;
 import hotmath.gwt.cm_admin.client.ui.list.ListCustomProgram.CallbackOnDoubleClick;
-import hotmath.gwt.cm_admin.client.ui.list.ListCustomQuiz;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_core.client.util.CmBusyManager;
@@ -12,13 +10,11 @@ import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForCustomProgramWindow;
-import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForCustomQuizWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -27,13 +23,10 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.IntValueHolder;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.ArchiveCustomQuizAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction.ActionType;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramUsageCountAction;
-import hotmath.gwt.shared.client.rpc.action.CustomQuizUsageCountAction;
-import hotmath.gwt.shared.client.rpc.action.DeleteCustomQuizAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +36,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.widget.core.client.ListView;
-import com.sencha.gxt.widget.core.client.TabItemConfig;
-import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -73,9 +62,7 @@ public class CustomProgramDialog extends GWindow {
     ListView<CustomProgramModel, String> _listViewCp;
     ListView<CustomQuizDef, String> _listViewCq;
     boolean _isDebug;
-    TabPanel tabPanelType = new TabPanel();
-    boolean _includeArchivedPrograms = true;
-    boolean _includeArchivedQuizzes = true;
+    boolean _includeArchivedPrograms = false;
 
     CheckBox _includeArchivedChkBox;
 
@@ -114,7 +101,6 @@ public class CustomProgramDialog extends GWindow {
             }
         });
 
-        TabItemConfig tabCustomProgram = new TabItemConfig("Custom Programs", false);
 
         if (CmCore.isDebug() == true) {
             Menu contextMenu = new Menu();
@@ -128,46 +114,9 @@ public class CustomProgramDialog extends GWindow {
         }
 
         // tabCustomProgram.add(_listViewCp);
-        tabPanelType.add(_listViewCp, tabCustomProgram);
-
-        _listViewCq = new ListCustomQuiz(new ListCustomQuiz.CallbackOnDoubleClick() {
-            @Override
-            public void doubleClicked(CustomQuizDef modelClicked) {
-                editCustomQuiz(false);
-            }
-        });
-        //
-        _listViewCq.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        // _listViewCq.aaddListener(Events.DoubleClick, new
-        // Listener<BaseEvent>() {
-        // public void handleEvent(BaseEvent be) {
-        // editCustomQuiz(false);
-        // }
-        // });
-
-        TabItemConfig tabCustomQuizzes = new TabItemConfig("Custom Quizzes", false);
-
-        tabCustomQuizzes.setEnabled(true);
-
-        // tabCustomQuizzes.add(_listViewCq);
-        tabPanelType.add(_listViewCq, tabCustomQuizzes);
-
-        /** lazy load the custom quizzes */
-        tabPanelType.addSelectionHandler(new SelectionHandler<Widget>() {
-            @Override
-            public void onSelection(SelectionEvent<Widget> event) {
-                if (tabPanelType.getActiveWidget() == _listViewCq) {
-                    if (_listViewCq.getStore().size() == 0) {
-                        loadCustomQuizDefinitions();
-                    }
-                    _includeArchivedChkBox.setValue(_includeArchivedQuizzes);
-                } else {
-                    _includeArchivedChkBox.setValue(_includeArchivedPrograms);
-                }
-            }
-        });
-
-        _main.setCenterWidget(tabPanelType);
+        _main.setCenterWidget(_listViewCp);
+        
+        // _includeArchivedChkBox.setValue(_includeArchivedPrograms);
 
         ToolBar tb = new ToolBar();
 
@@ -179,14 +128,9 @@ public class CustomProgramDialog extends GWindow {
         }, "Create a new blank custom item."));
 
         tb.add(new MyButtonWithTooltip("Copy", new SelectHandler() {
-
             @Override
-            public void onSelect(SelectEvent event) {
-                if (!isCpTabSelected()) {
-                    editCustomQuiz(true);
-                } else {
+            public void onSelect(SelectEvent event) {     
                     editCustomProgram(true);
-                }
             }
         }, "Create new custom item by copying an existing one."));
 
@@ -210,22 +154,14 @@ public class CustomProgramDialog extends GWindow {
 
             @Override
             public void onSelect(SelectEvent event) {
-                if (!isCpTabSelected()) {
-                    infoForQuiz();
-                } else {
-                    infoForProgram();
-                }
+                infoForProgram();
             }
         }, "Get information about selected custom item."));
 
         tb.add(new MyButtonWithTooltip("CCSS", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                if (!isCpTabSelected()) {
-                    displayCCSSForQuiz();
-                } else {
-                    displayCCSSForProgram();
-                }
+                displayCCSSForProgram();
             }
         }, "Display CCSS coverage information for selected custom item."));
 
@@ -260,13 +196,7 @@ public class CustomProgramDialog extends GWindow {
     }
 
     protected void archivedButtonChecked() {
-        if (isCpTabSelected()) {
-            _includeArchivedPrograms = !_includeArchivedChkBox.getValue();
-            getCustomProgramDefinitions();
-        } else {
-            _includeArchivedQuizzes = !_includeArchivedChkBox.getValue();
-            loadCustomQuizDefinitions();
-        }
+        getCustomProgramDefinitions();
     }
 
     protected void doExportSelectedCustomProgram() {
@@ -302,49 +232,12 @@ public class CustomProgramDialog extends GWindow {
 
     }
 
-    /**
-     * Return true if the Custom Programs tab is selected
-     * 
-     * @return
-     */
-    private boolean isCpTabSelected() {
-        return tabPanelType.getActiveWidget() == _listViewCp;
-    }
-
     private void addNewCustom() {
-        if (isCpTabSelected()) {
-            addNewCustomProgram();
-        } else {
-            addNewCustomQuiz();
-        }
+        addNewCustomProgram();
     }
 
     private void editCustom() {
-        if (isCpTabSelected()) {
-            editCustomProgram(false);
-        } else {
-            editCustomQuiz(false);
-        }
-    }
-
-    private void editCustomQuiz(boolean asCopy) {
-        CustomQuizDef sel1 = null;
-        if (asCopy) {
-            sel1 = _listViewCq.getSelectionModel().getSelectedItem();
-            if (sel1 == null) {
-                CmMessageBox.showAlert("Select a custom quiz first");
-                return;
-            }
-        }
-
-        CustomQuizDef quiz = _listViewCq.getSelectionModel().getSelectedItem();
-        CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuizName(), adminModel.getUid(), quiz.isAnswersViewable(), quiz.isInUse(), quiz.isArchived(), quiz.getArchiveDate());
-        new CustomProgramAddQuizDialog(adminModel.getUid(), new Callback() {
-            @Override
-            public void quizCreated() {
-                loadCustomQuizDefinitions();
-            }
-        }, def, asCopy);
+        editCustomProgram(false);
     }
 
     public void addNewCustomProgram() {
@@ -357,14 +250,6 @@ public class CustomProgramDialog extends GWindow {
         });
     }
 
-    public void addNewCustomQuiz() {
-        new CustomProgramAddQuizDialog(adminModel.getUid(), new Callback() {
-            @Override
-            public void quizCreated() {
-                loadCustomQuizDefinitions();
-            }
-        }, null, false);
-    }
 
     private void infoForProgram() {
         final CustomProgramModel sel = _listViewCp.getSelectionModel().getSelectedItem();
@@ -376,15 +261,6 @@ public class CustomProgramDialog extends GWindow {
         new CustomProgramInfoSubDialog(sel).setVisible(true);
     }
 
-    private void infoForQuiz() {
-        final CustomQuizDef sel = _listViewCq.getSelectionModel().getSelectedItem();
-        if (sel == null) {
-            CmMessageBox.showAlert("Select a custom program quiz");
-            return;
-        }
-        new CustomQuizInfoSubDialog(sel).setVisible(true);
-    }
-
     private void displayCCSSForProgram() {
         final CustomProgramModel sel = _listViewCp.getSelectionModel().getSelectedItem();
         if (sel == null) {
@@ -393,21 +269,6 @@ public class CustomProgramDialog extends GWindow {
         }
         this.hide();
         new CCSSCoverageForCustomProgramWindow(sel, new CallbackOnComplete() {
-            @Override
-            public void isComplete() {
-                _instance.setVisible(true);
-            }
-        });
-    }
-
-    private void displayCCSSForQuiz() {
-        final CustomQuizDef sel = _listViewCq.getSelectionModel().getSelectedItem();
-        if (sel == null) {
-            CmMessageBox.showAlert("Select a custom program quiz");
-            return;
-        }
-        this.hide();
-        new CCSSCoverageForCustomQuizWindow(sel, new CallbackOnComplete() {
             @Override
             public void isComplete() {
                 _instance.setVisible(true);
@@ -438,111 +299,10 @@ public class CustomProgramDialog extends GWindow {
     }
 
     private void deleteProgram() {
-        if (isCpTabSelected()) {
-            deleteCustomProgram();
-        } else {
-            deleteCustomQuiz();
-        }
+        deleteCustomProgram();
     }
 
-    private void deleteCustomQuiz() {
-        CustomQuizDef quiz = _listViewCq.getSelectionModel().getSelectedItem();
 
-        if (quiz.isArchived() == true) {
-            CmMessageBox.showAlert("Custom Quiz is archived and cannot be deleted.");
-            return;
-        }
-        deleteCustomQuiz(quiz);
-    }
-
-    private void deleteCustomQuiz(final CustomQuizDef def) {
-
-        new RetryAction<IntValueHolder>() {
-            @Override
-            public void attempt() {
-                CmBusyManager.setBusy(true, false);
-                CustomQuizDef quiz = _listViewCq.getSelectionModel().getSelectedItem();
-                CustomQuizUsageCountAction action = new CustomQuizUsageCountAction(quiz.getQuizId());
-                setAction(action);
-                CmRpcCore.getCmService().execute(action, this);
-            }
-
-            @Override
-            public void oncapture(IntValueHolder count) {
-                CmBusyManager.setBusy(false);
-
-                if (count.getValue() > 0) {
-                    archiveCustomQuizDo(def);
-                } else {
-                    deleteCustomQuizDo(def);
-                }
-            }
-        }.register();
-    }
-
-    private void deleteCustomQuizDo(final CustomQuizDef def) {
-
-        CmMessageBox.confirm("Delete Custom Quiz?", "Are you sure you want to delete custom quiz '" + def.getQuizName()
-                + "'?", new ConfirmCallback() {
-            @Override
-            public void confirmed(boolean yesNo) {
-                if (yesNo) {
-                    new RetryAction<RpcData>() {
-                        @Override
-                        public void attempt() {
-                            CmBusyManager.setBusy(true);
-                            DeleteCustomQuizAction action = new DeleteCustomQuizAction(adminModel.getUid(), def
-                                    .getQuizId());
-                            setAction(action);
-                            CmRpcCore.getCmService().execute(action, this);
-                        }
-
-                        @Override
-                        public void oncapture(RpcData result) {
-                            CmBusyManager.setBusy(false);
-
-                            if (result.getDataAsString("status").equals("OK")) {
-                                loadCustomQuizDefinitions();
-                            }
-                        }
-                    }.register();
-                }
-            }
-        });
-
-    }
-
-    private void archiveCustomQuizDo(final CustomQuizDef def) {
-
-        CmMessageBox.confirm("Archive Custom Quiz?",
-                "Are you sure you want to archive custom quiz '" + def.getQuizName() + "'?", new ConfirmCallback() {
-                    @Override
-                    public void confirmed(boolean yesNo) {
-                        if (yesNo) {
-                            new RetryAction<RpcData>() {
-                                @Override
-                                public void attempt() {
-                                    CmBusyManager.setBusy(true);
-                                    ArchiveCustomQuizAction action = new ArchiveCustomQuizAction(adminModel.getUid(),
-                                            def.getQuizId());
-                                    setAction(action);
-                                    CmRpcCore.getCmService().execute(action, this);
-                                }
-
-                                @Override
-                                public void oncapture(RpcData result) {
-                                    CmBusyManager.setBusy(false);
-
-                                    if (result.getDataAsString("status").equals("OK")) {
-                                        loadCustomQuizDefinitions();
-                                    }
-                                }
-                            }.register();
-                        }
-                    }
-                });
-
-    }
 
     private void deleteCustomProgram() {
         final CustomProgramModel sel = _listViewCp.getSelectionModel().getSelectedItem();
@@ -661,34 +421,7 @@ public class CustomProgramDialog extends GWindow {
         }.register();
     }
 
-    private void loadCustomQuizDefinitions() {
-
-        new RetryAction<CmList<CustomQuizDef>>() {
-            @Override
-            public void attempt() {
-                CmBusyManager.setBusy(true);
-                GetCustProgQuizDefsAction action = new GetCustProgQuizDefsAction(adminModel.getUid());
-                setAction(action);
-                CmRpcCore.getCmService().execute(action, this);
-            }
-
-            @Override
-            public void oncapture(CmList<CustomQuizDef> defs) {
-                CmBusyManager.setBusy(false);
-
-                List<CustomQuizDef> gmodels = new ArrayList<CustomQuizDef>();
-                for (int i = 0, t = defs.size(); i < t; i++) {
-                    CustomQuizDef def = defs.get(i);
-                    if (def.isArchived() == true && _includeArchivedQuizzes == false)
-                        continue;
-                    gmodels.add(def);
-                }
-                _listViewCq.getStore().clear();
-                _listViewCq.getStore().addAll(gmodels);
-            }
-        }.register();
-    }
-
+  
     private void getCustomProgramDefinitions() {
         new RetryAction<CmList<CustomProgramModel>>() {
             @Override
@@ -713,7 +446,7 @@ public class CustomProgramDialog extends GWindow {
                 List<CustomProgramModel> selected = new ArrayList<CustomProgramModel>();
                 for (int i = 0, t = programs.size(); i < t; i++) {
                     CustomProgramModel program = programs.get(i);
-                    if (program.getIsArchived() == true && _includeArchivedPrograms == false) {
+                    if (program.getIsArchived() == true && _includeArchivedChkBox.getValue() == false) {
                         continue;
                     }
                     if (program.getIsTemplate())

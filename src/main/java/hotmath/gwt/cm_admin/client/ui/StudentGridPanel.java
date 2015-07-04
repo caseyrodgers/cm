@@ -4,8 +4,8 @@ import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
 import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
-import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.model.StringHolder;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -36,10 +36,10 @@ import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
-import hotmath.gwt.shared.client.rpc.action.ResetUserAction.ResetType;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageExtendedAction;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
+import hotmath.gwt.shared.client.rpc.action.ResetUserAction.ResetType;
 import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
@@ -52,6 +52,8 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -61,6 +63,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
@@ -85,7 +88,6 @@ import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.menu.Item;
 import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.menu.MenuItem;
-import com.sencha.gxt.widget.core.client.toolbar.FillToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
@@ -411,65 +413,89 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         ToolBar toolbar = new ToolBar();
         toolbar.setSpacing(5);
         toolbar.addStyleName("student-grid-panel-toolbar");
-        toolbar.add(createRegistrationButton());
-        toolbar.add(editStudentToolItem(_grid, _cmAdminMdl));
-        toolbar.add(studentDetailsToolItem(_grid));
-        toolbar.add(trendingReportButton());
-
-        toolbar.add(highlightsButton());
-
-        TextButton customButton = new TextButton("Custom");
-        Menu customMenu = new Menu();
-        customMenu.add(createManageCustomProblemsButton());
+        toolbar.add(createRegistrationItem());
+        toolbar.add(createManageGroupsMenuButton());
+        toolbar.add(createReportingMenuButton());
         
-        MenuItem mi = new MenuItem("Custom Programs and Quizzes",new SelectionHandler<MenuItem>() {
+        toolbar.add(createEditAssignmentButton());
+        
+        toolbar.add(createProgramDetailsMenuButton());
+
+        TextButton btn = createCustomButton();
+        setupKeyModifierWatcher(btn);
+        toolbar.add(btn);
+        
+        
+
+        toolbar.add(displayPrintableReportToolItem(_grid));
+        
+        return toolbar;
+    }
+    
+    boolean _keyModifierPressed;
+    private void setupKeyModifierWatcher(TextButton btn) {
+        btn.addHandler(new MouseDownHandler() {
             @Override
-            public void onSelection(SelectionEvent<MenuItem> event) {
+            public void onMouseDown(MouseDownEvent event) {
+                _keyModifierPressed= (event.isAltKeyDown() || event.isControlKeyDown());
+            }
+            
+        }, MouseDownEvent.getType());
+
+    }
+
+    private TextButton createCustomButton() {
+        final TextButton customButton = new TextButton("Custom Program");
+        customButton.setToolTip("Create and manage custom programs and quizzes");
+        customButton.addSelectHandler(new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
                 if(UserInfoBase.getInstance().isMobile()) {
                     new FeatureNotAvailableToMobile();
                     return;
                 }
                 
-                GWT.runAsync(new CmRunAsyncCallback() {
-                    @Override
-                    public void onSuccess() {
-                        new CustomProgramDialog(_cmAdminMdl);
-                    }
-                });
+                
+                if(_keyModifierPressed) {
+                    showAdvancedOptions(customButton);
+                }
+                else {
+                    new CustomProgramDialog(_cmAdminMdl);
+                }
+            }
+        }); 
+        
+        return customButton;
+
+    }
+    
+    private MenuItem createCustomMenuItem() {
+        final MenuItem customMi = new MenuItem("Custom Program");
+        customMi.setToolTip("Create and manage custom programs and quizzes");
+        customMi.addSelectionHandler(new SelectionHandler<Item>() {
+            public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<Item> event) {
+                new CustomProgramDialog(_cmAdminMdl);
             }
         });
-        mi.setToolTip("Create and manage custom programs and quizzes");
-        customMenu.add(mi);
+        return customMi;
+    }
+
+
+    protected void showAdvancedOptions(TextButton customButton) {
+       PopupPanel pop =  new PopupPanel();
+       pop.setAutoHideEnabled(true);;
+       pop.setModal(true);
+       
+       Menu menu = new Menu();
+       menu.add(createCustomMenuItem());
+       menu.add(createParallelPrograms());
+       menu.add(createManageCustomProblems());
+       menu.add(createWebLinksButton());
+       
+       pop.setWidget(menu);
+       pop.showRelativeTo(customButton);
         
-        customButton.setMenu(customMenu);
-        toolbar.add(customButton);
-
-        TextButton lessonsButton = new TextButton("Lessons");
-        Menu lessonsMenu = new Menu();
-        lessonsMenu.add(createExploreLessonsButton());
-        lessonsMenu.add(createProgramDetailsButton());
-        lessonsButton.setMenu(lessonsMenu);
-        toolbar.add(lessonsButton);
-//        toolbar.add(new TextButton("Program Details", new SelectHandler() {
-//            @Override
-//            public void onSelect(SelectEvent event) {
-//                showProgramDetails();
-//            }
-//        }));
-
-        toolbar.add(exportStudentsToolItem(_grid));
-
-        toolbar.add(createRefreshButton());
-        
-        toolbar.add(createEditAssignmentButton());
-        
-        toolbar.add(createWebLinksButton());
-
-        toolbar.add(new FillToolItem());
-
-        toolbar.add(displayPrintableReportToolItem(_grid));
-        
-        return toolbar;
     }
 
     private Widget createProgramDetailsButton() {
@@ -480,6 +506,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
             }
         });
         mi.setToolTip("View Program Details");
+
 		return mi;
 	}
 
@@ -518,21 +545,62 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 		return mi;
 	}
 
-	private TextButton createRegistrationButton() {
+	private TextButton createRegistrationItem() {
         TextButton btn = new StudentPanelButton("Student Registration");
 
         Menu menu = new Menu();
-        menu.add(defineRegisterItem());
-        menu.add(defineUnregisterItem());
-        menu.add(defineBulkRegItem());
-        menu.add(defineSelfRegItem());
-        menu.add(defineManageGroupsItem());
-        menu.add(defineParallelProgramsItem());
+        menu.add(createDefineRegisterItem());
+        menu.add(createDefineUnregisterItem());
+        menu.add(createEditStudentToolItem(_grid, _cmAdminMdl));
+        //menu.add(defineBulkRegItem());
+        //menu.add(defineSelfRegItem());
+        //menu.add(defineManageGroupsItem());
+        //menu.add(defineParallelProgramsItem());
         btn.setMenu(menu);
         return btn;
     }
 
-    private MyMenuItem defineRegisterItem() {
+	private TextButton createReportingMenuButton() {
+        TextButton btn = new StudentPanelButton("Reporting");
+
+        Menu menu = new Menu();
+        menu.add(studentDetailsToolItem(_grid));
+        menu.add(highlightsItem());
+        menu.add(trendingReportItem());
+        menu.add(exportStudentsToolItem(_grid));
+       
+        btn.setMenu(menu);
+        return btn;
+    }
+	
+	   private TextButton createProgramDetailsMenuButton() {
+	        TextButton btn = new StudentPanelButton("Program Details");
+
+	        Menu menu = new Menu();
+	        menu.add(createProgramDetailsButton());
+	        menu.add(createExploreLessonsButton());
+   
+	        btn.setMenu(menu);
+	        return btn;
+	    }
+	   
+	
+     
+	private TextButton createManageGroupsMenuButton() {
+	        TextButton btn = new StudentPanelButton("Manage Groups");
+
+	        Menu menu = new Menu();
+	        menu.add(defineManageGroupsItem());
+	        menu.add(defineBulkRegItem());
+	        menu.add(defineSelfRegItem());
+	        //
+	        //menu.add(defineParallelProgramsItem());
+	        btn.setMenu(menu);
+	        return btn;
+    }
+	
+	
+    private MyMenuItem createDefineRegisterItem() {
         return new MyMenuItem("Register One Student", "Create a new single student registration.", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
@@ -546,7 +614,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         });
     }
 
-    private MyMenuItem defineUnregisterItem() {
+    private MyMenuItem createDefineUnregisterItem() {
         return new MyMenuItem("Unregister Student", "Unregister the selected student.", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
@@ -620,7 +688,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         });
     }
 
-    private MyMenuItem defineParallelProgramsItem() {
+    private MyMenuItem createParallelPrograms() {
         return new MyMenuItem("Parallel Programs", "Manage Parallel Programs.", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
@@ -647,13 +715,13 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         return btn;
     }
 
-    private TextButton trendingReportButton() {
-        TextButton btn = new StudentPanelButton("Assessment");
-        btn.setToolTip("Display lessons being assigned the most.");
-        btn.addSelectHandler(new SelectHandler() {
-
-            @Override
-            public void onSelect(SelectEvent event) {
+    private MenuItem trendingReportItem() {
+        MenuItem mi = new MyMenuItem("Assessment","Display lessons being assigned the most.",
+                new SelectionHandler<MenuItem>() {
+                    
+                    @Override
+                    public void onSelection(SelectionEvent<MenuItem> event) {
+                        
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
@@ -662,16 +730,15 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                 });
             }
         });
-        return btn;
+        return mi;
     }
 
-    private TextButton highlightsButton() {
-        TextButton btn = new StudentPanelButton("Highlights");
-        btn.setToolTip("Display statistical student highlights");
-        btn.addSelectHandler(new SelectHandler() {
+    private MenuItem highlightsItem() {
 
+        MyMenuItem my= new MyMenuItem("Highlights","Display statistical student highlights",
+                new SelectionHandler<MenuItem>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void onSelection(SelectionEvent<MenuItem> event) {
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
@@ -680,7 +747,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                 });
             }
         });
-        return btn;
+        return my;
     }
 
     private Grid<StudentModelI> defineGrid(final ListStore<StudentModelI> store, ColumnModel<StudentModelI> cm) {
@@ -741,14 +808,13 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         return grid;
     }
 
-    private TextButton editStudentToolItem(final Grid<StudentModelI> grid, final CmAdminModel cmAdminMdl) {
-        TextButton ti = new StudentPanelButton("Edit Student");
+    private MenuItem createEditStudentToolItem(final Grid<StudentModelI> grid, final CmAdminModel cmAdminMdl) {
+        MenuItem ti = new MenuItem("Edit Student");
         ti.setToolTip("Edit the profile for the selected student.");
 
-        ti.addSelectHandler(new SelectHandler() {
-
+        ti.addSelectionHandler(new SelectionHandler<Item>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void onSelection(SelectionEvent<Item> event) {
                 editStudent();
                 if (grid.getStore().size() > 0) {
                     // ce.getComponent().enable();
@@ -775,24 +841,21 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         }
     }
 
-    private TextButton studentDetailsToolItem(final Grid<StudentModelI> grid) {
-        TextButton ti = new StudentPanelButton("Student Detail History");
-        ti.setToolTip("View details for the selected student.");
+    private MenuItem studentDetailsToolItem(final Grid<StudentModelI> grid) {
+        MenuItem ti = new MenuItem("Student Detail History");
 
-        ti.addSelectHandler(new SelectHandler() {
-
-            @Override
-            public void onSelect(SelectEvent event) {
-                GridSelectionModel<StudentModelI> sel = grid.getSelectionModel();
-                final List<StudentModelI> l = sel.getSelection();
-                if (l.size() == 0) {
+        MyMenuItem my = new MyMenuItem("Student Detail History", "View details for the selected student.", 
+                new SelectionHandler<MenuItem>() {
+            public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<MenuItem> event) {
+                StudentModelI st = _grid.getSelectionModel().getSelectedItem();
+                if (st == null) {
                     CmMessageBox.showAlert("Please select a student.");
                 } else {
-                    showStudentDetails(l.get(0));
+                    showStudentDetails(st);
                 }
             }
         });
-        return ti;
+        return my;
     }
 
     private void showStudentDetails(final StudentModelI sm) {
@@ -804,13 +867,10 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         });
     }
 
-    private TextButton exportStudentsToolItem(final Grid<StudentModelI> grid) {
-        TextButton ti = new StudentPanelButton("Export");
-        ti.setToolTip("Export student data to an Excel spreadsheet.");
-
-        ti.addSelectHandler(new SelectHandler() {
+    private MenuItem exportStudentsToolItem(final Grid<StudentModelI> grid) {
+        MenuItem my = new MyMenuItem("Export", "Export student data to an Excel spreadsheet.",new SelectionHandler<MenuItem>() {            
             @Override
-            public void onSelect(SelectEvent event) {
+            public void onSelection(SelectionEvent<MenuItem> event) {
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
@@ -819,7 +879,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                 });
             }
         });
-        return ti;
+        return my;
     }
 
     private Widget createEditAssignmentButton() {
@@ -843,16 +903,19 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     }
     
     private Widget createWebLinksButton() {
-        TextButton btn = new TextButton("Web Links",new SelectHandler() {
+        MenuItem btn = new MyMenuItem("Web Links",  "Create and manage Web Links",  new SelectionHandler<MenuItem>() {
+            
             @Override
-            public void onSelect(SelectEvent event) {
-                new WebLinksManager(_cmAdminMdl.getUid());
-            }});
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                new WebLinksManager(_cmAdminMdl.getUid());   
+            }
+        });
+        
         return btn;
     }
 
     
-    private Widget createManageCustomProblemsButton() {
+    private Widget createManageCustomProblems() {
         MenuItem mi = new MenuItem("Custom Problems", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
