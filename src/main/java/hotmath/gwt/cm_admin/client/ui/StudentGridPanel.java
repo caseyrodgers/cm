@@ -484,6 +484,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
     protected void showAdvancedOptions(TextButton customButton) {
        PopupPanel pop =  new PopupPanel();
+       pop.getElement().setAttribute("style", "z-index:2"); // keep tooltips above.
        pop.setAutoHideEnabled(true);;
        pop.setModal(true);
        
