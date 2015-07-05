@@ -77,7 +77,7 @@ public class CmPurchaseOrderDao extends SimpleJdbcDaoSupport {
                 ps.setString(26, purchaseOrder.getContact().alternateContact);
 
                 ps.setInt(27, purchaseOrder.getLicense().numStudents);
-                ps.setInt(28, purchaseOrder.getLicense().numYears);
+                ps.setDouble(28, purchaseOrder.getLicense().numYears);
                 ps.setDouble(29, purchaseOrder.getLicense().total);
 
                 ps.setInt(30, purchaseOrder.getAddlSchools().numSchools);
@@ -129,7 +129,7 @@ public class CmPurchaseOrderDao extends SimpleJdbcDaoSupport {
     		                po.getContact().phone = rs.getString("instructor_phone");
     		                po.getContact().alternateContact = (rs.getString("instructor_alt_contact"));
     		                po.getLicense().numStudents = rs.getInt("number_students");
-    		                po.getLicense().numYears = rs.getInt("number_years");
+    		                po.getLicense().numYears = rs.getDouble("number_years");
     		                po.getLicense().total = rs.getDouble("license_total");
     		                po.getAddlSchools().numSchools = rs.getInt("number_addl_schools");
     		                po.getAddlSchools().feePerSchool = rs.getDouble("fee_per_addl_school");

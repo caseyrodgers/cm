@@ -326,7 +326,7 @@ public class CmPurchaseOrder {
 
 	public class CmLicense {
 		int numStudents;
-		int numYears;
+		double numYears;
 		double total;
 		public int getNumStudents() {
 			return numStudents;
@@ -334,10 +334,10 @@ public class CmPurchaseOrder {
 		public void setNumStudents(int numStudents) {
 			this.numStudents = numStudents;
 		}
-		public int getNumYears() {
+		public double getNumYears() {
 			return numYears;
 		}
-		public void setNumYears(int numYears) {
+		public void setNumYears(double numYears) {
 			this.numYears = numYears;
 		}
 		public double getTotal() {

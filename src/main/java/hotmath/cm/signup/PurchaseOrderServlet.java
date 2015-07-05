@@ -102,7 +102,7 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
         po.getSchool().getAddress().setZipCode(getFData(formData.get("institution_zip")));
 
         po.getLicense().setNumStudents(Integer.parseInt(getFData(formData.get("num_students"))));
-        po.getLicense().setNumYears(Integer.parseInt(getFData(formData.get("num_years"))));
+        po.getLicense().setNumYears(Double.parseDouble(getFData(formData.get("num_years"))));
         String licenseFee   = getFData(formData.get("license_fee"));
         // null check shouldn't be needed, but just in case...
         licenseFee = (licenseFee != null)?licenseFee.replaceAll("\\$",""):"0";
