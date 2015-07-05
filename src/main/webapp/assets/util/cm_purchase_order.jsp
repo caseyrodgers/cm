@@ -22,8 +22,8 @@
 	String today = sdf.format(new java.util.Date());
 
 	String header =
-		String.format("%-40s\t%-10s\t%-30s\t%-30s\t%-10s\t%-6s\t%-8s\t%-5s\t%-7s\t%-9s\t%-10s\t%-12s\n\n", 
-				"School Name", "login", "Contact Name", "Contact email", "Rep", "#Student", "#Year", "Success", "Last 4 CC", "Trans ID", "Total", "Submitted");
+		String.format("%-30s\t%-10s\t%-25s\t%-30s\t%-10s\t%-8s\t%-5s\t%-7s\t%-7s\t%-7s\t%10s\t%-10s\n\n", 
+				"School Name", "login", "Contact Name", "Contact email", "Rep", "#Student", "#Year", "Success", "Last4CC", "TransID", "Total", "Submitted");
 
 	StringBuilder sb = new StringBuilder();
 
@@ -38,12 +38,13 @@
 			String orderDateStr = sdf.format(orderDate);
 			String loginName = (po.getSchool().getLoginName().length() > 10)?
 					po.getSchool().getLoginName().substring(0,10):po.getSchool().getLoginName();
+			String transId = (po.getPayment().getTransactionIdCC() == null) ? "NONE" : po.getPayment().getTransactionIdCC();
 
 			sb.append(
-			String.format("%-40s\t%-10s\t%-30s\t%-30s\t%-10s\t%6s\t%8s\t%5s\t%7s\t%9s\t%7.2f\t%12s\n", 
+			String.format("%-30s\t%-10s\t%-25s\t%-30s\t%-10s\t%8s\t%5s\t%7s\t%7s\t%7s\t%10.2f\t%10s\n", 
 					po.getSchool().getName(), loginName, po.getContact().getName(), po.getContact().getEmail(), po.getSalesZone(), 
 					po.getLicense().getNumStudents(), po.getLicense().getNumYears(), po.getPayment().isSuccess()?"Yes":"No",
-					po.getPayment().getLastFourCC(), po.getPayment().getTransactionIdCC(), po.getTotal(), orderDateStr));
+					po.getPayment().getLastFourCC(), transId, po.getTotal(), orderDateStr));
 		}
 	}
 	catch (Exception e){
