@@ -164,6 +164,7 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
     		conn = HMConnectionPool.getConnection();
     		String zip = po.getSchool().getAddress().getZipCode();
     		Representative salesPerson = SalesZone.getSalesRepresentativeByZip(conn, zip);
+    		_logger.info("getSalesRep(): ZIP: " + zip + ", repId: " + salesPerson.getRepId());
     		po.setSalesZone(salesPerson.getRepId());
     		poRes.repName = salesPerson.getRepId();
     		poRes.repEmail = salesPerson.getEmail();

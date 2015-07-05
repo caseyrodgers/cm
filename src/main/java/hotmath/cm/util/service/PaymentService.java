@@ -185,7 +185,7 @@ public class PaymentService {
 
                     	String subject = (result.isSuccess() == true)?"Catchup Math Purchase":"Catchup Math Order";
 
-                    	SbMailManager.getInstance().sendMessage(subject, msg, contactEmail,
+                    	SbMailManager.getInstance().sendMessage(subject, msg, repEmail,
                                 "support@catchupmath.com", "text/plain", null);
                     	
                     } catch (SbException e) {
@@ -238,23 +238,19 @@ public class PaymentService {
 		StringBuilder sb = new StringBuilder();
 
 		if (isPurchaseSuccessful == true) {
-        	sb.append("Thank You for your Catchup Math purchase for ").append(institutionName).append(".\n\n");
-        	sb.append("We will contact you to ");
-            sb.append("setup your Catchup Math account.\n\n");
-        	sb.append("Order Number: ").append(orderNumber).append("\n");
+        	sb.append("Catchup Math purchase for ").append(institutionName).append(".\n\n");
+        	sb.append("Contact Name: ").append(contactName).append("\n");
+        	sb.append("Contact Phone: ").append(contactPhone).append("\n");
+        	sb.append("Contact Email: ").append(contactEmail).append("\n");
         	sb.append(String.format(" Amount Charged: $ %.2f\n\n", amount));
-        	sb.append("Please retain this email as a receipt for your purchase.\n\n");
     	}
     	else {
-        	sb.append("Thank You for attempting to order Catchup Math for ").append(institutionName).append(".\n\n");
-    		sb.append("We will contact you to complete your purchase and ");
-            sb.append("setup your Catchup Math account.\n\n");
-        	sb.append("Please retain this email for your records.\n\n");
+        	sb.append("Catchup Math purchase attempt for ").append(institutionName).append(".\n\n");
+        	sb.append("Contact Name: ").append(contactName).append("\n");
+        	sb.append("Contact Phone: ").append(contactPhone).append("\n");
+        	sb.append("Contact Email: ").append(contactEmail);
         }
-    	
-    	sb.append("We wish you every success with Catchup Math!\n\n");
-    	sb.append("CM Support");
-    	return sb.toString();
+       	return sb.toString();
 	}
 
 }
