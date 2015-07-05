@@ -12,10 +12,10 @@ function setupSignupPage() {
    setCmSelection();
 
    var e1 = document.getElementById('TYPE_SERVICE_CATCHUP');
-   e1.onclick = function() {setCmSelection()};
+   if (e1) e1.onclick = function() {setCmSelection()};
 
    var e2 = document.getElementById('TYPE_SERVICE_CATCHUP_YEAR');
-   e2.onclick = function() {setCmSelection();};
+   if (e2) e2.onclick = function() {setCmSelection();};
 }
 
 
@@ -58,11 +58,11 @@ function setCmSelection() {
    var e2 = document.getElementById('TYPE_SERVICE_CATCHUP_YEAR');
 
    var ew = null;
-   if(e1.checked) {
+   if(e1 && e1.checked) {
 	   e2.checked = false;
        ew = e1;
    }
-   else if (e2.checked) {
+   else if (e2 && e2.checked) {
 	   e1.checked = false;
 	   ew = e2;
    }
@@ -85,7 +85,8 @@ function setCmSelection() {
    else {
        _plan = null;
        setTotalCost("0");
-       document.getElementById('selected_services').value = null;
+       var e = document.getElementById('selected_services');
+       if (e) e.value = null;
    }
 }
 
@@ -780,13 +781,11 @@ function doOneTeacherSignup() {
 }
 
 function doPurchaseOrder() {
-    //alert("submitting purchase order with payment...");
-    //return;
 
 	var formObject = document.getElementById('sub_form'); 
 	YAHOO.util.Connect.setForm(formObject); 
 
-	    var requestCallback = {
+	var requestCallback = {
 	    success: function(o) {
 	       YAHOO.cm.signup_progress.destroy();
 	       //alert("ret: " + o.responseText);
@@ -1048,15 +1047,15 @@ function cmPurchaseComplete(data) {
     if (isSuccess == 'true') {
         html = "<h1>Catchup Math Purchase Success</h1>"
              + "<p>Thank you for your Catchup Math purchase for " + school + "!</p>"
-             + "<p>Your account manager will contact you shortly or you may contact "
-             + "<a href='mailto:" + repEmail + "'>" + repName + "</a> now.</p>";
+             + "<p>Your account manager will contact you shortly or you may <a href='/contact.html'>contact</a> "
+             + "them now.</p>";
     }
     else {
         html = "<h1>Catchup Math Purchase</h1>"
              + "<p>Thank you for attempting to order Catchup Math for " + school + "</p>"
              + "<p>Unfortunately, the credit card was not approved.</p>"
              + "<p>Please <a href='#' onclick='showSignupPage();return false;'>try again</a> "
-             + "or contact your account manager, <a href='mailto:" + repEmail + "'>" + repName + "</a>, to discuss.</p>";
+             + "or <a href='/contact.html'>contact</a> your account manager, to discuss.</p>";
     }
 
     showSignupSuccess(html);
@@ -1081,7 +1080,8 @@ function showSignupSuccess(html) {
 
 function setTotalCost(cost) {
    _totalCost = cost;
-   $get('service-total').innerHTML = 'Total: $' + _totalCost + '.00';
+   var e = $get('service-total');
+   if (e) e.innerHTML = 'Total: $' + _totalCost + '.00';
 }
 
 function payNowToggle(chkbox) {
