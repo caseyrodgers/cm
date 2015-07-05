@@ -96,10 +96,10 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
 
         po.getSchool().setName(getFData(formData.get("institution_name")));
         po.getSchool().setLoginName(getFData(formData.get("login_name")));
-        po.getSchool().getAddress().setDepartment(getFData(formData.get("intitution_department")));
-        po.getSchool().getAddress().setCity(getFData(formData.get("intitution_city")));
-        po.getSchool().getAddress().setState(getFData(formData.get("intitution_state_sel")));
-        po.getSchool().getAddress().setZipCode(getFData(formData.get("intitution_zip")));
+        po.getSchool().getAddress().setDepartment(getFData(formData.get("institution_department")));
+        po.getSchool().getAddress().setCity(getFData(formData.get("institution_city")));
+        po.getSchool().getAddress().setState(getFData(formData.get("institution_state_sel")));
+        po.getSchool().getAddress().setZipCode(getFData(formData.get("institution_zip")));
 
         po.getLicense().setNumStudents(Integer.parseInt(getFData(formData.get("num_students"))));
         po.getLicense().setNumYears(Integer.parseInt(getFData(formData.get("num_years"))));
