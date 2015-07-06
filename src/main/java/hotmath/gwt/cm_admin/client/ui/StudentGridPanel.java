@@ -588,7 +588,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 	
      
 	private TextButton createManageGroupsMenuButton() {
-	        TextButton btn = new StudentPanelButton("Manage Groups");
+	        TextButton btn = new StudentPanelButton("Groups");
 
 	        Menu menu = new Menu();
 	        menu.add(defineManageGroupsItem());
