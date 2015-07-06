@@ -80,6 +80,23 @@ public class WebLinkDao extends SimpleJdbcDaoSupport {
                 }
             }
         }
+        
+        links = getAllWebLinksDefinedForAdminPublic(adminId);
+        for (WebLinkModel l : links) {
+            if (l.isAllLessons() && l.isAllGroups() || isWebLinkActive(l, topic, groupId)) {
+                AvailableOn device = l.getAvailableWhen();
+                if (device != AvailableOn.DESKTOP_AND_MOBILE)
+                    if (isMobile && device != AvailableOn.MOBILE_ONLY) {
+                        continue; // skip it
+                    } else if (!isMobile && device != AvailableOn.DESKTOP_ONLY) {
+                        continue; // skip it
+                    }
+
+                if (!l.isOffline()) {
+                    activeLinks.add(l);
+                }
+            }
+        }
         return activeLinks;
     }
 
