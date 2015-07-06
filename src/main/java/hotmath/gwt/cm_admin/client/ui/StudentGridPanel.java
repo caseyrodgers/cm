@@ -547,7 +547,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 	}
 
 	private TextButton createRegistrationItem() {
-        TextButton btn = new StudentPanelButton("Student Registration");
+        TextButton btn = new StudentPanelButton("Register Student");
 
         Menu menu = new Menu();
         menu.add(createDefineRegisterItem());
