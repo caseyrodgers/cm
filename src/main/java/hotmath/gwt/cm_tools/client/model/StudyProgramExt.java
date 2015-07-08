@@ -52,10 +52,8 @@ public class StudyProgramExt implements Response {
         String pre = "";
         if (program.isCustomProgram()) {
             this.styleIsCustomProgram = "isCustom";
-            pre = "CP:";
         } else if (program.isCustomQuiz()) {
             styleIsCustomProgram = "isCustom";
-            pre = "CQ:";
         }
 
         if (program.isTemplate()) {

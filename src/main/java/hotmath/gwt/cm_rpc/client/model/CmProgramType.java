@@ -19,7 +19,7 @@ public enum CmProgramType {
     ASSIGNMENTSONLY("Assignments Only"),
     UNKNOWN("UnknownType"),
     AUTOENROLLCOLLEGE("Auto-Enroll, College"),
-    NONE("none");
+    NONE("none"), CUSTOM_BUILT_IN("Custom");
 
     
     private final String type;

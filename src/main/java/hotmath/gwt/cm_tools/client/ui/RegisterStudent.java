@@ -112,9 +112,9 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
 
     private CardLayoutContainer cardPanel;
 
-    private ListStore<StudyProgramExt> progStore;
-    private ListStore<StudyProgramExt> customProgStore;
-    protected ComboBox<StudyProgramExt> progCombo;
+    private ListStore<StudyProgramExt> _progStore;
+    private ListStore<StudyProgramExt> _customProgStore;
+    protected ComboBox<StudyProgramExt> _progTypeCombo;
     protected ComboBox<StudyProgramExt> cstmCombo;
 
     protected ListStore<SubjectModel> subjStore;
@@ -132,7 +132,8 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
 
     static final int FIELD_WIDTH = 295;
     static final int LABEL_WIDTH = 100;
-    static final int CUSTOM_ID = 9999;
+    static final int CUSTOM_PROG_ID = 9999;
+    static final int CUSTOM_BUILT_IN_PROG_ID = 9998;
 
     private int formHeight = 485;
     protected int formWidth = 475;
@@ -314,8 +315,8 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             _fsProfile.addThing(new MyFieldLabel(groupCombo, "Group", LABEL_WIDTH, FIELD_WIDTH));
         }
 
-        progStore = new ListStore<StudyProgramExt>(__propsStudyProgram.id());
-        customProgStore = new ListStore<StudyProgramExt>(__propsStudyProgram.id());
+        _progStore = new ListStore<StudyProgramExt>(__propsStudyProgram.id());
+        _customProgStore = new ListStore<StudyProgramExt>(__propsStudyProgram.id());
         getStudyProgramListRPC();
 
         stdAdvOptionsBtn = stdAdvancedOptionsBtn();
@@ -329,8 +330,8 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         _fsProgram = new MyFieldSet("Assign Program", FIELDSET_WIDTH);
         _fsProgram.addStyleName("register-student-outer-fieldset");
 
-        progCombo = createProgramCombo(progStore);
-        _fsProgram.addThing(new MyFieldLabel(progCombo, "Program type", LABEL_WIDTH, FIELD_WIDTH));
+        _progTypeCombo = createProgramCombo(_progStore);
+        _fsProgram.addThing(new MyFieldLabel(_progTypeCombo, "Program type", LABEL_WIDTH, FIELD_WIDTH));
 
         getAccountInfoRPC(cmAdminMdl.getUid());
         
@@ -402,8 +403,8 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         // fl.setLabelWidth(_formPanel.getLabelWidth());
         // fl.setDefaultWidth(LAYOUT_WIDTH);
 
-        cstmCombo = createCustomCombo(customProgStore, "Select a Custom Program|Quiz");
-        _fsCustomProg.addThing(new MyFieldLabel(cstmCombo, "Program or Quiz", LABEL_WIDTH, FIELD_WIDTH));
+        cstmCombo = createCustomCombo(_customProgStore, "Select a Custom Program|Quiz");
+        _fsCustomProg.addThing(new MyFieldLabel(cstmCombo, "Program", LABEL_WIDTH, FIELD_WIDTH));
         _fsCustomProg.addThing(new MyFieldLabel(customAdvOptionsBtn, "Options", LABEL_WIDTH, FIELD_WIDTH));
     }
 
@@ -527,27 +528,27 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             }
         };
         // getProgramTemplate()
-        ComboBox<StudyProgramExt> combo = new ComboBox<StudyProgramExt>(new ComboBoxCell<StudyProgramExt>(store,
+        ComboBox<StudyProgramExt> programTypeCombo = new ComboBox<StudyProgramExt>(new ComboBoxCell<StudyProgramExt>(store,
                 __propsStudyProgram.title(), renderer));
 
         // combo.setFieldLabel("Program type");
-        combo.setForceSelection(true);
+        programTypeCombo.setForceSelection(true);
 
-        combo.setEditable(false);
+        programTypeCombo.setEditable(false);
         // combo.setMaxLength(45);
-        combo.setAllowBlank(false);
-        combo.setTriggerAction(TriggerAction.ALL);
-        combo.setStore(store);
+        programTypeCombo.setAllowBlank(false);
+        programTypeCombo.setTriggerAction(TriggerAction.ALL);
+        programTypeCombo.setStore(store);
 
         // combo.setTemplate(getProgramTemplate());
-        combo.setTitle("Select a program type");
-        combo.setId("prog-combo");
-        combo.setTypeAhead(true);
-        combo.setSelectOnFocus(true);
-        combo.setEmptyText("-- select a program type --");
-        combo.setWidth(280);
+        programTypeCombo.setTitle("Select a program type");
+        programTypeCombo.setId("prog-combo");
+        programTypeCombo.setTypeAhead(true);
+        programTypeCombo.setSelectOnFocus(true);
+        programTypeCombo.setEmptyText("-- select a program type --");
+        programTypeCombo.setWidth(280);
 
-        combo.addSelectionHandler(new SelectionHandler<StudyProgramExt>() {
+        programTypeCombo.addSelectionHandler(new SelectionHandler<StudyProgramExt>() {
             public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<StudyProgramExt> se) {
 
                 if (loading)
@@ -559,7 +560,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 passPercentReqd = sp.isNeedsPassPercent();
                 CmProgramType progType = sp.getProgramType();
 
-                if (CmProgramType.CUSTOM != progType) {
+                if (CmProgramType.CUSTOM != progType && CmProgramType.CUSTOM_BUILT_IN != progType) {
 
                     if (!cardPanel.getActiveWidget().equals(_fsStdProg)) {
                         cardPanel.setActiveWidget(_fsStdProg);
@@ -603,28 +604,35 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                         chapCombo.setForceSelection(false);
                     }
                 } else {
+                   
+
+                    
+                    
+                    setCustomProgramComboList(progType);
+                    
+                   
                     cardPanel.setActiveWidget(_fsCustomProg);
                     skipComboSet = true;
                     subjectId = null;
                     activeSection = 0;
+                    
                 }
 
             }
         });
 
-        return combo;
+        return programTypeCombo;
+    }
+
+    protected void setCustomProgramComboList(CmProgramType progType) {
+        _customProgStore.replaceAll(progType == CmProgramType.CUSTOM_BUILT_IN?_sequentialProgList:_sequentialCustomProgList);
     }
 
     private String _addSubjectValueTags(StudyProgramExt value, String textIn) {
         String text = textIn;
-        if (value.getStyleIsTemplate() != null) {
-            text += " [built-in]";
-        }
-
         if (value.getStyleIsArchived() != null) {
             text += " [archived]";
         }
-
         text = _addIfFree(text, value.getStyleIsFree());
 
         return text;
@@ -744,7 +752,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                     try {
                         skipComboSet = true;
                         subjectId = sm.getAbbrev();
-                        ComboBox<StudyProgramExt> cb = progCombo;
+                        ComboBox<StudyProgramExt> cb = _progTypeCombo;
                         StudyProgramExt sp = cb.getValue();
                         String progId = sp.getShortTitle();
                         chapStore.clear();
@@ -811,6 +819,12 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         return saveBtn;
     }
 
+    
+    List<StudyProgramExt> _sequentialProgList = new ArrayList<StudyProgramExt>();
+    List<StudyProgramExt> _sequentialCustomProgList = new ArrayList<StudyProgramExt>();
+    List<StudyProgramExt> _allCustomProgram = new ArrayList<StudyProgramExt>();
+    
+    
     private void getStudyProgramListRPC() {
 
         inProcessCount++;
@@ -825,7 +839,8 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
 
             public void oncapture(CmList<StudyProgramModel> spmList) {
                 List<StudyProgramExt> progList = new ArrayList<StudyProgramExt>();
-                List<StudyProgramExt> customProgList = new ArrayList<StudyProgramExt>();
+
+                
 
                 int stuCustomProgramId = (isNew == false && stuMdl.getProgram().getCustom().getCustomProgramId() != 0) ? stuMdl
                         .getProgram().getCustom().getCustomProgramId()
@@ -850,30 +865,57 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                                 .isNeedsSubject(), spm.isNeedsChapters(), spm.isNeedsPassPercent(), spm
                                 .getCustomProgramId(), spm.getCustomProgramName()));
                     } else {
-                        customProgList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(),
-                                spm.getDescr(), spm.isNeedsSubject(), spm.isNeedsChapters(), spm.isNeedsPassPercent(),
-                                spm.getCustomProgramId(), spm.getCustomProgramName()));
+                        
+                        if (spm.isTemplate()) { 
+                            
+                            /** is sequential (build-in) program */
+                            _sequentialProgList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(),
+                                    spm.getDescr(), spm.isNeedsSubject(), spm.isNeedsChapters(), spm.isNeedsPassPercent(),
+                                    spm.getCustomProgramId(), spm.getCustomProgramName()));
+                        }
+                        else {
+                            /** is a custom sequential program */
+                            _sequentialCustomProgList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(),
+                                    spm.getDescr(), spm.isNeedsSubject(), spm.isNeedsChapters(), spm.isNeedsPassPercent(),
+                                    spm.getCustomProgramId(), spm.getCustomProgramName()));
+                        }
                     }
-
                 }
+                
+                _allCustomProgram.addAll(_sequentialCustomProgList);
+                _allCustomProgram.addAll(_sequentialProgList);
 
                 /**
                  * When set, the student will only have access to the
                  * assignments.
                  * 
                  */
+
+
+                StudyProgramModel spm1 = new StudyProgramModel(CUSTOM_BUILT_IN_PROG_ID, "Sequential", "CUSTOM_BUILT_IN",
+                        "Prebuilt sequential custom programs", 0, " ", 0, " ", false, false, false, false, 0);
+                spm1.setProgramType(CmProgramType.CUSTOM_BUILT_IN);
+                spm1.setIsArchived(false);
+                progList.add(new StudyProgramExt(spm1, spm1.getTitle(),spm1.getShortTitle(), spm1.getDescr(), false, false,
+                        false, 0, null));
+                
+                
+                StudyProgramModel spm = new StudyProgramModel(CUSTOM_PROG_ID, "Sequential (custom)", "CUSTOM",
+                        "Custom sequential programs", 0, " ", 0, " ", false, false, false, false, 0);
+                spm.setProgramType(CmProgramType.CUSTOM);
+                spm.setIsArchived(false);
+                progList.add(new StudyProgramExt(spm, spm.getTitle(),spm.getShortTitle(), spm.getDescr(), false, false,
+                        false, 0, null));
+                
+                
+                
                 StudyProgramModel spma = new StudyProgramModel(-1, CmProgramType.ASSIGNMENTSONLY.getType(),
                         CmProgramType.ASSIGNMENTSONLY.getType(), CmProgramType.ASSIGNMENTSONLY.getType(), 0, " ", 0,
                         " ", false, false, false, false, 0);
                 progList.add(new StudyProgramExt(spma, spma.getTitle(), spma.getShortTitle(), spma.getDescr(), false,
                         false, false, 0, null));
-
-                StudyProgramModel spm = new StudyProgramModel(CUSTOM_ID, "Custom", "Custom",
-                        "Custom Programs and Quizzes", 0, " ", 0, " ", false, false, false, false, 0);
-                spm.setProgramType(CmProgramType.CUSTOM);
-                spm.setIsArchived(false);
-                progList.add(new StudyProgramExt(spm, "Custom", "Custom", "Custom Programs and Quizzes", false, false,
-                        false, 0, null));
+                
+                
 
                 /** If is free, then shown only Prof and Custom as available */
                 for (StudyProgramExt md : progList) {
@@ -885,23 +927,30 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                     }
                 }
 
-                /** If is free, then show only Essentials as available. */
-                for (StudyProgramExt md : customProgList) {
-                    if (acctInfoMdl != null && acctInfoMdl.getIsFreeAccount()) {
-                        String pn = md.getTitle();
-                        if (!pn.contains("Essentials")) {
-                            md.setStyleIsFree("is-free-account-label");
-                        }
-                    }
-                }
+                setupForFree(_sequentialProgList);
+                setupForFree(_sequentialCustomProgList);
+     
+                _progStore.addAll(progList);
 
-                progStore.addAll(progList);
-                customProgStore.addAll(customProgList);
 
                 inProcessCount--;
                 setComboBoxSelections();
             }
         }.register();
+    }
+
+    protected void setupForFree(List<StudyProgramExt> progList) {
+        
+        /** If is free, then show only Essentials as available. */
+        for (StudyProgramExt md : progList) {
+            if (acctInfoMdl != null && acctInfoMdl.getIsFreeAccount()) {
+                String pn = md.getTitle();
+                if (!pn.contains("Essentials")) {
+                    md.setStyleIsFree("is-free-account-label");
+                }
+            }
+        }
+   
     }
 
     private Map<String, List<SubjectModel>> programSubjectMap = new HashMap<String, List<SubjectModel>>();
@@ -1083,7 +1132,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             }
 
             CmProgramType progType = (CmProgramType) sp.getProgramType();
-            if (CmProgramType.CUSTOM != progType) {
+            if (CmProgramType.CUSTOM != progType && CmProgramType.CUSTOM_BUILT_IN != progType) {
                 cardPanel.setActiveWidget(_fsStdProg);
 
                 boolean needsSubject = sp.isNeedsSubject();
@@ -1094,6 +1143,8 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 if (needsChapters)
                     setChapterSelection();
             } else {
+                // insert correct custom list
+                
                 cardPanel.setActiveWidget(_fsCustomProg);
                 setCustomProgramSelection();
             }
@@ -1113,6 +1164,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 customAdvOptionsBtn.enable();
             }
 
+            
             loading = false;
         }
         skipComboSet = isNew;
@@ -1158,13 +1210,15 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         StudentProgramModel program = stuMdl.getProgram();
         String shortName = program.getProgramType().getType();
 
+        String customType = determineCustomType(program);
+        
         if (program.isCustom()) {
-            List<StudyProgramExt> list = progStore.getAll();
-
+            List<StudyProgramExt> list = _progTypeCombo.getStore().getAll();
+           
             for (StudyProgramExt sp : list) {
-                if (sp.getShortTitle().equals("Custom")) {
-                    progCombo.setOriginalValue(sp);
-                    progCombo.setValue(sp);
+                if (sp.getShortTitle().equals(customType)) {
+                    _progTypeCombo.setOriginalValue(sp);
+                    _progTypeCombo.setValue(sp);
                     return sp;
                 }
             }
@@ -1172,12 +1226,12 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         }
 
         if (shortName != null) {
-            List<StudyProgramExt> list = progStore.getAll();
+            List<StudyProgramExt> list = _progStore.getAll();
             for (StudyProgramExt sp : list) {
 
                 if (progNameCheckHack(shortName, sp)) {
-                    progCombo.setOriginalValue(sp);
-                    progCombo.setValue(sp);
+                    _progTypeCombo.setOriginalValue(sp);
+                    _progTypeCombo.setValue(sp);
                     return sp;
                 }
             }
@@ -1185,19 +1239,32 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         return null;
     }
 
+    private String determineCustomType(StudentProgramModel program) {
+        for(StudyProgramExt s: _sequentialProgList) {
+            if(s.getCustomProgramId() == program.getCustom().getCustomProgramId()) {
+                return "CUSTOM_BUILT_IN";
+            }
+        }
+
+        return "CUSTOM";
+    }
+
     private StudyProgramExt setCustomProgramSelection() {
         StudentProgramModel program = stuMdl.getProgram();
 
-        List<StudyProgramExt> list = customProgStore.getAll();
+        List<StudyProgramExt> list = _allCustomProgram;
 
         for (StudyProgramExt sp : list) {
 
-            if ((program.getCustom().getCustomProgramId() != 0 && program.getCustom().getCustomProgramId() == sp
-                    .getCustomProgramId())
-                    || (program.getCustom().getCustomQuizId() != 0 && program.getCustom().getCustomQuizId() == sp
-                            .getCustomQuizId())) {
+            if ((program.getCustom().getCustomProgramId() != 0 && program.getCustom().getCustomProgramId() == sp.getCustomProgramId())
+                    || (program.getCustom().getCustomQuizId() != 0 && program.getCustom().getCustomQuizId() == sp.getCustomQuizId())) {
                 cstmCombo.setOriginalValue(sp);
                 cstmCombo.setValue(sp);
+                
+                
+                // make sure the proper custom combo box list is set
+                setCustomProgramComboList(sp.getProgram().isTemplate()?CmProgramType.CUSTOM_BUILT_IN:CmProgramType.CUSTOM);
+                
                 return sp;
             }
         }
@@ -1354,8 +1421,8 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 if (groupCombo.isVisible()) {
                     checkValid(groupCombo);
                 }
-                if (progCombo.isVisible()) {
-                    checkValid(progCombo);
+                if (_progTypeCombo.isVisible()) {
+                    checkValid(_progTypeCombo);
                 }
             }
         } catch (Exception e) {
@@ -1439,7 +1506,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         String prog = null;
 
         if (fsId.equals("std-prog-fs")) {
-            ComboBox<StudyProgramExt> cb = progCombo;
+            ComboBox<StudyProgramExt> cb = _progTypeCombo;
             studyProgExt = cb.getValue();
             cb.clearInvalid();
 
