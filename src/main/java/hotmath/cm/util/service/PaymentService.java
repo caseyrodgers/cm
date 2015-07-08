@@ -185,9 +185,13 @@ public class PaymentService {
 
                     	String subject = (result.isSuccess() == true)?"Catchup Math Purchase":"Catchup Math Order";
 
-                    	SbMailManager.getInstance().sendMessage(subject, msg, repEmail,
+                    	String[] repEmails = new String[2];
+                    	repEmails[0] = "thamilton@catchupmath.com";
+                    	repEmails[1] = "lincoln@catchupmath.com";
+                    	SbMailManager.getInstance().sendMessage(subject, msg, repEmails[0],
                                 "support@catchupmath.com", "text/plain", null);
-                    	
+                    	SbMailManager.getInstance().sendMessage(subject, msg, repEmails[1],
+                                "support@catchupmath.com", "text/plain", null);
                     } catch (SbException e) {
                         __logger.error("error sending email to: " + contactEmail, e);
                     }
