@@ -221,4 +221,19 @@ public class StudentActivityModel  implements Response {
     public void setLessonsCompleted(int lessonsCompleted) {
         this.lessonsCompleted = lessonsCompleted;
     }
+    
+   
+    /** return true if named model is a custom problem.
+     * 
+     * @param sam
+     * @return
+     */
+    static public boolean isCustomProblem(StudentActivityModel sam) {
+        String name = sam.getProgram().trim().toLowerCase();
+        if(name.startsWith("cp") || name.startsWith("sp")) {
+            return true;
+        }
+        return false;
+    }
+    
 }

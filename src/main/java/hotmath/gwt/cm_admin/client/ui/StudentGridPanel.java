@@ -49,6 +49,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.openqa.selenium.support.ui.Select;
+
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -446,7 +448,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     }
 
     private TextButton createCustomButton() {
-        final TextButton customButton = new TextButton("Custom Program");
+        final TextButton customButton = new TextButton("Custom Programs");
         customButton.setToolTip("Create and manage custom programs");
         customButton.addSelectHandler(new SelectHandler() {
             
@@ -595,8 +597,8 @@ Individual
         
         Menu menuIndividal = new Menu();
         subMenuIndividual.setSubMenu(menuIndividal);
-        menuIndividal.add(defineReportCardItem(_grid));
-        menuIndividal.add(defineAssignmentReportItem(_grid));
+        menuIndividal.add(defineIndividualReportCardItem(_grid));
+        menuIndividal.add(defineIndividualAssignmentReportItem());
         menuIndividal.add(studentDetailsToolItem(_grid));
         menuIndividal.add(createTimeLogItem());
     
@@ -606,8 +608,58 @@ Individual
     }
 	
 	
+    private MenuItem defineIndividualAssignmentReportItem() {
+
+        MenuItem mi = new MyMenuItem("Assignment Report", "Display a printable assignment report", new SelectionHandler<MenuItem>() {
+            
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                
+                StudentModelI student = getSelectedStudent();
+                if(student == null) {
+                    CmMessageBox.showAlert("Please select a student first");
+                    return;
+                }
+                
+                DateRangePanel dateRange = DateRangePanel.getInstance();
+                Date fromDate = null, toDate = null;
+                if (dateRange != null) {
+                    fromDate = dateRange.getFromDate();
+                    toDate = dateRange.getToDate();
+                }
+                new PdfWindow(student.getAdminUid(), "Catchup Math Assignment Report for: " + student.getName(), new GeneratePdfAction(PdfType.ASSIGNMENT_REPORT,
+                        student.getAdminUid(), Arrays.asList(student.getUid()), fromDate, toDate));
+            }
+        });
+        
+        return mi;
+    }
+    
 	 
-	private TextButton createReportingMenuButtonOld() {
+	private Widget defineIndividualReportCardItem(Grid<StudentModelI> _grid2) {
+	  
+	    MenuItem mi = new MyMenuItem("Report Card", "Display a printable student detail report", new SelectionHandler<MenuItem>() {
+            
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+               StudentModelI student = getSelectedStudent();            
+               if(student == null) {
+                   CmMessageBox.showAlert("Please select a student first");
+                   return;
+               }
+                DateRangePanel dateRange = DateRangePanel.getInstance();
+                Date fromDate = dateRange != null ? dateRange.getFromDate() : null;
+                Date toDate = dateRange != null ? dateRange.getToDate() : null;
+                
+                new PdfWindow(student.getAdminUid(), "Catchup Math Details Report for: " + student.getName(), new GeneratePdfAction(PdfType.STUDENT_DETAIL,
+                        student.getAdminUid(), Arrays.asList(student.getUid()), fromDate, toDate));
+	            }
+	        });
+	    
+	    return mi;
+    }
+
+    private TextButton createReportingMenuButtonOld() {
         TextButton btn = new StudentPanelButton("Reporting");
 
         Menu menu = new Menu();

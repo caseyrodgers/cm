@@ -60,7 +60,7 @@ public class StudentLessonTopicsStatusWindow extends GWindow {
         setModal(true);
 
         programName = activityModel.getProgramDescr();
-        isCustomProgram = programName.trim().startsWith("CP:");
+        isCustomProgram = StudentActivityModel.isCustomProblem(activityModel);
 
         StringBuffer sb = new StringBuffer();
         sb.append("For ").append(student.getName());

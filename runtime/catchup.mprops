@@ -432,7 +432,7 @@ from (
    date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time,
    date_format(iu.run_time,'%Y-%m-%d') as run_date,
    0 as answered_correct, 0 as answered_incorrect, 0 as not_answered, 0 as is_passing,
-   concat('CP: ', if (cp.is_archived=0, cp.name, concat(cp.name, concat(' (', concat(date_format(cp.archive_date,'%Y-%m-%d'), ')'))))) as program,
+   concat(   if(cp.is_template,'SP:', 'CP: '), if (cp.is_archived=0, cp.name, concat(cp.name, concat(' (', concat(date_format(cp.archive_date,'%Y-%m-%d'), ')'))))) as program,
    cp.is_archived as is_archived, td.prog_id, td.subj_id, p.test_config_json,
    l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, td.segment_count,
    r.run_id as test_run_id, r.total_sessions as total_sessions,

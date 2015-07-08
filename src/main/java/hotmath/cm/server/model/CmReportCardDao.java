@@ -201,7 +201,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 	private String getTestName(StudentUserProgramModel pm) {
 	     String name=null;
 	     if(pm.getCustomProgramId() > 0) {
-	         name = "CP: " + pm.getCustomProgramName();	     
+	         name = pm.getCustom().getLabelTag() + ": " + pm.getCustomProgramName();	     
 	     }
 	     else if(pm.getCustomQuizId() > 0) {
 	         name = "CQ: " + pm.getCustomQuizName();

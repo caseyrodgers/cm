@@ -1613,7 +1613,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         program.setSubjectId(subjId);
 
         if (studyProgExt != null) {
-            program.setCustom(new CustomProgramComposite(studyProgExt.getCustomProgramId(), studyProgExt
+            program.setCustom(new CustomProgramComposite(false, studyProgExt.getCustomProgramId(), studyProgExt
                     .getCustomProgramName(), studyProgExt.getCustomQuizId(), studyProgExt.getCustomQuizName()));
         }
 

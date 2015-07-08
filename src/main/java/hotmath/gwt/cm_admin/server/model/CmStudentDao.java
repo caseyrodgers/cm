@@ -1805,7 +1805,11 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                     sprm.setProgramId(rs.getInt("user_prog_id"));
                     sprm.setProgramType(rs.getString("prog_id"));
                     sprm.setSubjectId(rs.getString("subj_id"));
-                    sprm.setCustom(new CustomProgramComposite(rs.getInt("custom_program_id"), rs.getString("custom_program_name"), rs.getInt("custom_quiz_id"),
+                    
+                    int cpi = rs.getInt("custom_program_id");
+                    boolean isTemplate = CmCustomProgramDao.getInstance().isCustomTemplate(cpi);
+                    
+                    sprm.setCustom(new CustomProgramComposite(isTemplate, cpi, rs.getString("custom_program_name"), rs.getInt("custom_quiz_id"),
                             rs.getString("custom_quiz_name")));
                     sprm.setIsParallelProgram(rs.getInt("main_user_prog_id") != rs.getInt("user_prog_id"));
 
@@ -2111,7 +2115,11 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             sprm.setProgramType(progType);
 
             sprm.setSubjectId(rs.getString("subj_id"));
-            sprm.setCustom(new CustomProgramComposite(rs.getInt("custom_program_id"), rs.getString("custom_program_name"), rs.getInt("custom_quiz_id"), rs
+            
+            int cpi = rs.getInt("custom_program_id");
+            boolean isTemplate = CmCustomProgramDao.getInstance().isCustomTemplate(cpi);
+            
+            sprm.setCustom(new CustomProgramComposite(isTemplate, cpi, rs.getString("custom_program_name"), rs.getInt("custom_quiz_id"), rs
                     .getString("custom_quiz_name")));
 
             StudentSettingsModel mdl = sm.getSettings();
@@ -2164,7 +2172,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             program.setProgramDescription(programName);
             student.setStatus(getStatus(program.getProgramId(), student.getSectionNum(), student.getSectionCount()));
         } else if (program.getCustom().getType() == Type.LESSONS) {
-            program.setProgramDescription("CP: " + program.getCustom().getCustomProgramName());
+            program.setProgramDescription(program.getCustom().getLabelTag() + ": " + program.getCustom().getCustomProgramName());
             student.setStatus(getStatusCustomProgram(countLessonsCompleted, currentLesson, lessonCount));
         } else if (program.getCustom().getType() == Type.QUIZ) {
             program.setProgramDescription("CQ: " + program.getCustom().getCustomQuizName());
@@ -2210,7 +2218,10 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             program.setSubjectId(rs.getString("subj_id"));
             program.setProgramType(rs.getString("prog_id"));
 
-            program.setCustom(new CustomProgramComposite(rs.getInt("custom_program_id"), rs.getString("custom_program_name"), rs.getInt("custom_quiz_id"), rs
+            int cpi = rs.getInt("custom_program_id");
+            boolean isTemplate = CmCustomProgramDao.getInstance().isCustomTemplate(cpi);
+            
+            program.setCustom(new CustomProgramComposite(isTemplate, rs.getInt("custom_program_id"), rs.getString("custom_program_name"), rs.getInt("custom_quiz_id"), rs
                     .getString("custom_quiz_name")));
 
             sm.setProgram(program);
