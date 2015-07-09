@@ -24,6 +24,7 @@ import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentPanelButton;
+import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorerManager;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
@@ -47,6 +48,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import org.openqa.selenium.support.ui.Select;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
@@ -445,7 +448,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     }
 
     private TextButton createCustomButton() {
-        final TextButton customButton = new TextButton("Custom Program");
+        final TextButton customButton = new TextButton("Custom Programs");
         customButton.setToolTip("Create and manage custom programs");
         customButton.addSelectHandler(new SelectHandler() {
             
@@ -471,8 +474,8 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     }
     
     private MenuItem createCustomProgramsMenuItem() {
-        final MenuItem customMi = new MenuItem("Custom Program");
-        customMi.setToolTip("Create and manage custom programs");
+        final MenuItem customMi = new MenuItem("Custom Sequential Programs");
+        customMi.setToolTip("Create and manage custom sequential programs");
         customMi.addSelectionHandler(new SelectionHandler<Item>() {
             public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<Item> event) {
                 new CustomProgramDialog(_cmAdminMdl);
@@ -561,7 +564,102 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         return btn;
     }
 
+	/* 
+	 * 2) The Reporting menu will have this sub menu (can we have titles to distinguish the catergories?)
+Groups:
+ Highlights
+ Assessments
+ Export 
+Individual
+ Report Card
+ Assignments
+ Detail History
+ Time Log
+	 */
 	private TextButton createReportingMenuButton() {
+        TextButton btn = new StudentPanelButton("Reporting");
+
+        
+        Menu mainMenu = new Menu();
+        
+        MenuItem groupsSubMenu = new MenuItem("Groups");
+        mainMenu.add(groupsSubMenu);
+        
+        Menu groupsMenu = new Menu();
+        groupsSubMenu.setSubMenu(groupsMenu);
+        groupsMenu.add(highlightsItem());
+        groupsMenu.add(trendingReportItem());
+        groupsMenu.add(exportStudentsToolItem(_grid));
+        
+        
+        MenuItem subMenuIndividual = new MenuItem("Individual");
+        mainMenu.add(subMenuIndividual);
+        
+        Menu menuIndividal = new Menu();
+        subMenuIndividual.setSubMenu(menuIndividal);
+        menuIndividal.add(defineIndividualReportCardItem(_grid));
+        menuIndividal.add(defineIndividualAssignmentReportItem());
+        menuIndividal.add(studentDetailsToolItem(_grid));
+        menuIndividal.add(createTimeLogItem());
+    
+       
+        btn.setMenu(mainMenu);
+        return btn;
+    }
+	
+	
+    private MenuItem defineIndividualAssignmentReportItem() {
+
+        MenuItem mi = new MyMenuItem("Assignment Report", "Display a printable assignment report", new SelectionHandler<MenuItem>() {
+            
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                
+                StudentModelI student = getSelectedStudent();
+                if(student == null) {
+                    CmMessageBox.showAlert("Please select a student first");
+                    return;
+                }
+                
+                DateRangePanel dateRange = DateRangePanel.getInstance();
+                Date fromDate = null, toDate = null;
+                if (dateRange != null) {
+                    fromDate = dateRange.getFromDate();
+                    toDate = dateRange.getToDate();
+                }
+                new PdfWindow(student.getAdminUid(), "Catchup Math Assignment Report for: " + student.getName(), new GeneratePdfAction(PdfType.ASSIGNMENT_REPORT,
+                        student.getAdminUid(), Arrays.asList(student.getUid()), fromDate, toDate));
+            }
+        });
+        
+        return mi;
+    }
+    
+	 
+	private Widget defineIndividualReportCardItem(Grid<StudentModelI> _grid2) {
+	  
+	    MenuItem mi = new MyMenuItem("Report Card", "Display a printable student detail report", new SelectionHandler<MenuItem>() {
+            
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+               StudentModelI student = getSelectedStudent();            
+               if(student == null) {
+                   CmMessageBox.showAlert("Please select a student first");
+                   return;
+               }
+                DateRangePanel dateRange = DateRangePanel.getInstance();
+                Date fromDate = dateRange != null ? dateRange.getFromDate() : null;
+                Date toDate = dateRange != null ? dateRange.getToDate() : null;
+                
+                new PdfWindow(student.getAdminUid(), "Catchup Math Details Report for: " + student.getName(), new GeneratePdfAction(PdfType.STUDENT_DETAIL,
+                        student.getAdminUid(), Arrays.asList(student.getUid()), fromDate, toDate));
+	            }
+	        });
+	    
+	    return mi;
+    }
+
+    private TextButton createReportingMenuButtonOld() {
         TextButton btn = new StudentPanelButton("Reporting");
 
         Menu menu = new Menu();
@@ -842,10 +940,24 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         }
     }
 
+    private MenuItem createTimeLogItem() {
+        MenuItem txt = new MyMenuItem("Time Log", "Show student active time log", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                StudentModelI student = getSelectedStudent();
+                if(student == null) {
+                    CmMessageBox.showAlert("Select a student first");
+                }
+                new UserActivityLogDialog(student);
+            }
+        });
+        return txt;
+    }
+    
     private MenuItem studentDetailsToolItem(final Grid<StudentModelI> grid) {
         MenuItem ti = new MenuItem("Student Detail History");
 
-        MyMenuItem my = new MyMenuItem("Student Detail History", "View details for the selected student.", 
+        MyMenuItem my = new MyMenuItem("Detail History", "View details for the selected student.", 
                 new SelectionHandler<MenuItem>() {
             public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<MenuItem> event) {
                 StudentModelI st = _grid.getSelectionModel().getSelectedItem();

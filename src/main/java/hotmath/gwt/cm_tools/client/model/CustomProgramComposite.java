@@ -21,13 +21,15 @@ public class CustomProgramComposite implements Response {
     String customProgramName;
     int customQuizId;
     String customQuizName;
+    boolean template;
     Type type;
     
     public CustomProgramComposite(){}
     
-    public CustomProgramComposite(int custProgId, String custProgName, int custQuizId, String custQuizName) {
+    public CustomProgramComposite(boolean isTemplate, int custProgId, String custProgName, int custQuizId, String custQuizName) {
         assert(customProgramId == 0 || customQuizId == 0);
         
+        template = isTemplate;
         if(custProgId > 0) {
             customProgramId = custProgId;
             customProgramName = custProgName;
@@ -39,7 +41,17 @@ public class CustomProgramComposite implements Response {
             type = Type.QUIZ;
         }
     }
+
     
+    
+    public boolean isTemplate() {
+        return template;
+    }
+
+    public void setTemplate(boolean template) {
+        this.template = template;
+    }
+
     /** Return the correct name of this custom object.
      * 
      * If a quiz, the quiz name, if lessons then the custom program name
@@ -155,5 +167,9 @@ public class CustomProgramComposite implements Response {
     public String toString() {
         return "CustomProgramComposite [customProgramId=" + customProgramId + ", customProgramName=" + customProgramName
                 + ", customQuizId=" + customQuizId + ", customQuizName=" + customQuizName + ", type=" + type + "]";
+    }
+
+    public String getLabelTag() {
+        return template?"SP":"CP";
     };
 }

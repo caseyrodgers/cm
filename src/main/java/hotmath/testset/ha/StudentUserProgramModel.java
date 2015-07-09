@@ -2,6 +2,8 @@ package hotmath.testset.ha;
 
 
 
+import hotmath.gwt.cm_tools.client.model.CustomProgramComposite;
+
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +31,10 @@ public class StudentUserProgramModel {
     String customProgramName;
     int customQuizId;
     String customQuizName;
+
     boolean isComplete;
+    
+    CustomProgramComposite custom;
     
     public StudentUserProgramModel() {}
 
@@ -144,6 +149,13 @@ public class StudentUserProgramModel {
 
     public void setCustomProgramId(int customProgramId) {
         this.customProgramId = customProgramId;
+    }
+
+    public CustomProgramComposite getCustom() {
+        return custom;
+    }
+    public void setCustom(CustomProgramComposite custom) {
+        this.custom = custom;
     }
     @Override
     public String toString() {

@@ -387,7 +387,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 if (LOGGER.isDebugEnabled())
                     LOGGER.debug("+++ progName: " + progName);
 
-                if (progName.startsWith("CP")) {
+                if (StudentActivityModel.isCustomProblem(sam)) {
                     model.setSectionNum(sam.getLessonsCompleted());
                     if (LOGGER.isDebugEnabled())
                         LOGGER.debug(String.format("+++ lessonsCompleted: %d, lessonCount: %d", sam.getLessonsCompleted(), sam.getLessonCount()));

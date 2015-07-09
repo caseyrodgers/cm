@@ -74,7 +74,7 @@ public class CustomProgramDialog extends GWindow {
         _instance = this;
         this.adminModel = adminModel;
         setStyleName("custom-prescription-dialog");
-        setHeadingText("Custom Program Definitions");
+        setHeadingText("Custom Sequential Program Definitions");
 
         setModal(true);
         setPixelSize(400, 420);

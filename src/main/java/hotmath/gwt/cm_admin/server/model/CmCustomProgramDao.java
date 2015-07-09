@@ -1056,4 +1056,35 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
     }
 
     
+    List<Integer> _cpTemplates=null;
+    /** Is the named custom program id a template?  Aka: custom program [build-in], sequential program, SP
+     * 
+     * @param cpi
+     * @return
+     */
+    public boolean isCustomTemplate(int cpi) throws Exception {
+        if(cpi == 0) {
+            return false;
+        }
+        
+        if(_cpTemplates == null) {
+            _cpTemplates = new ArrayList<Integer>();
+            Connection conn=null;
+            try {
+                conn = HMConnectionPool.getConnection();
+                String sql = "select * from HA_CUSTOM_PROGRAM where admin_id = 13 and is_template = 1 and is_archived = 0";
+                ResultSet rs = conn.createStatement().executeQuery(sql);
+                while(rs.next()) {
+                    _cpTemplates.add(rs.getInt("id"));  
+                }
+            }
+            finally {
+                SqlUtilities.releaseResources(null, null, conn);
+            }
+        }
+        
+        return _cpTemplates.contains(cpi);
+    }
+
+    
 }

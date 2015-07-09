@@ -413,7 +413,10 @@ public class HaUserFactory {
                     		int cpId = Integer.parseInt(subject.split(":")[1]);
                     		__logger.debug("using custom program: " + cpId);
                     		 CustomProgramModel custProg = CmCustomProgramDao.getInstance().getCustomProgram(cpId);
-                         	student.getProgram().setCustom(new CustomProgramComposite(custProg.getProgramId(), custProg.getProgramName(),0,null));
+                    		 
+                             boolean isTemplate = CmCustomProgramDao.getInstance().isCustomTemplate(cpId);
+                    		 
+                         	student.getProgram().setCustom(new CustomProgramComposite(isTemplate, custProg.getProgramId(), custProg.getProgramName(),0,null));
                          	student.getProgram().setProgramType(CmProgramType.CUSTOM);
                         	student.getProgram().setSubjectId("");
                     	}
@@ -734,7 +737,10 @@ public class HaUserFactory {
             CustomProgramModel customProg = CmCustomProgramDao.getInstance().getAnonymousCustomProgram(conn,  ANON_AID, progName, lessons);
             
             StudentProgramModel program = sm.getProgram();
-            program.setCustom(new CustomProgramComposite(customProg.getProgramId(), customProg.getProgramName(),0,null));
+
+            boolean isTemplate = CmCustomProgramDao.getInstance().isCustomTemplate(customProg.getProgramId());
+            
+            program.setCustom(new CustomProgramComposite(isTemplate, customProg.getProgramId(), customProg.getProgramName(),0,null));
             program.setProgramType(CmProgramType.CUSTOM);
             
             dao.assignProgramToStudent(conn, user.getUid(), program,null,null);
