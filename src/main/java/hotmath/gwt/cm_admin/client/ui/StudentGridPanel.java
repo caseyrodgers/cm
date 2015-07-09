@@ -597,7 +597,7 @@ Individual
         
         Menu menuIndividal = new Menu();
         subMenuIndividual.setSubMenu(menuIndividal);
-        menuIndividal.add(defineIndividualReportCardItem(_grid));
+        menuIndividal.add(defineIndividualReportCardItem());
         menuIndividal.add(defineIndividualAssignmentReportItem());
         menuIndividal.add(studentDetailsToolItem(_grid));
         menuIndividal.add(createTimeLogItem());
@@ -636,26 +636,26 @@ Individual
     }
     
 	 
-	private Widget defineIndividualReportCardItem(Grid<StudentModelI> _grid2) {
-	  
-	    MenuItem mi = new MyMenuItem("Report Card", "Display a printable student detail report", new SelectionHandler<MenuItem>() {
-            
-            @Override
-            public void onSelection(SelectionEvent<MenuItem> event) {
-               StudentModelI student = getSelectedStudent();            
-               if(student == null) {
-                   CmMessageBox.showAlert("Please select a student first");
-                   return;
-               }
+	private Widget defineIndividualReportCardItem() {
+
+	    MenuItem mi = new MyMenuItem("Report Card", "Display a printable report card", new SelectionHandler<MenuItem>() {
+	        @Override
+	        public void onSelection(SelectionEvent<MenuItem> event) {
+                
+                StudentModelI student = getSelectedStudent();
+                if(student == null) {
+                    CmMessageBox.showAlert("Please select a student first");
+                    return;
+                }
+                
                 DateRangePanel dateRange = DateRangePanel.getInstance();
                 Date fromDate = dateRange != null ? dateRange.getFromDate() : null;
                 Date toDate = dateRange != null ? dateRange.getToDate() : null;
-                
-                new PdfWindow(student.getAdminUid(), "Catchup Math Details Report for: " + student.getName(), new GeneratePdfAction(PdfType.STUDENT_DETAIL,
-                        student.getAdminUid(), Arrays.asList(student.getUid()), fromDate, toDate));
-	            }
-	        });
-	    
+                new PdfWindow(student.getAdminUid(), "Catchup Math Report Card for: " + student.getName(), new GeneratePdfAction(PdfType.REPORT_CARD, student.getAdminUid(),
+                        Arrays.asList(student.getUid()), fromDate, toDate));
+            }
+        });
+       
 	    return mi;
     }
 
