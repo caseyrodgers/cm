@@ -1050,10 +1050,7 @@ Individual
         Menu menu = new Menu();
         menu.add(defineSummaryItem(grid));
         menu.add(defineReportCardItem(grid));
-        
-        if(CmCore.isDebug() == true) {
-            menu.add(defineAssignmentReportItem(grid));
-        }
+        menu.add(defineAssignmentReportItem(grid));
 
         btn.setMenu(menu);
         return btn;
