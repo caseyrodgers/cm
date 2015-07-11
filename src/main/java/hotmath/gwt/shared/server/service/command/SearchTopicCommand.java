@@ -1,6 +1,8 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.HotMathProperties;
 import hotmath.ProblemID;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_core.client.model.SearchSuggestion;
@@ -91,6 +93,8 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction,Topic
     @Override
     public TopicSearchResults execute(Connection conn, SearchTopicAction action) throws Exception {
         
+        
+        HotMathProperties.getInstance().getPropertiesObject().put("textindex.directory", CatchupMathProperties.getInstance().getCatchupRuntime() + "/indexes");
         
         if(__suggestionSearcher == null) {
             try {
