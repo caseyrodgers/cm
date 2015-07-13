@@ -229,6 +229,10 @@ public class StudentActivityModel  implements Response {
      * @return
      */
     static public boolean isCustomProblem(StudentActivityModel sam) {
+    	// avoid NPE
+    	if (sam == null || sam.getProgram() == null) {
+    		return false;
+    	}
         String name = sam.getProgram().trim().toLowerCase();
         if(name.startsWith("cp") || name.startsWith("sp")) {
             return true;
