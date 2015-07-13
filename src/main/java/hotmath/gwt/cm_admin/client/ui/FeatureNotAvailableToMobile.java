@@ -5,7 +5,7 @@ import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 public class FeatureNotAvailableToMobile extends AlertMessageBox {
     
     public FeatureNotAvailableToMobile() {
-        super("Feature Not Available", "This feature is not available on mobile devices.  Please visit catchupmath.com from your desktop.");
+        super("Feature Not Yet Available", "This feature is not available yet on mobile devices.  Please visit catchupmath.com from your desktop.");
         setVisible(true);
     }
 
