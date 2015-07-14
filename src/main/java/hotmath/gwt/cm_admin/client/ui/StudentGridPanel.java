@@ -539,7 +539,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     }
 
     private Widget createExploreLessonsButton() {
-        MenuItem mi = new MenuItem("Search", new SelectionHandler<MenuItem>() {
+        MenuItem mi = new MenuItem("Lesson Search", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
                 if(UserInfoBase.getInstance().isMobile()) {
