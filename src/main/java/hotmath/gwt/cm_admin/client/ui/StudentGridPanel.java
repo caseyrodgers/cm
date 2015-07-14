@@ -484,7 +484,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     
     private MenuItem createCustomQuizMenuItem() {
         final MenuItem customMi = new MenuItem("Custom Quizzes");
-        customMi.setToolTip("Create and manage custom quizzes");
         customMi.addSelectionHandler(new SelectionHandler<Item>() {
             public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<Item> event) {
                 new CustomQuizDialog(_cmAdminMdl);
