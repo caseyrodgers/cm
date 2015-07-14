@@ -49,8 +49,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.openqa.selenium.support.ui.Select;
-
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -483,6 +481,17 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         });
         return customMi;
     }
+    
+    private MenuItem createCustomQuizMenuItem() {
+        final MenuItem customMi = new MenuItem("Custom Quizzes");
+        customMi.setToolTip("Create and manage custom quizzes");
+        customMi.addSelectionHandler(new SelectionHandler<Item>() {
+            public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<Item> event) {
+                new CustomQuizDialog(_cmAdminMdl);
+            }
+        });
+        return customMi;
+    }
 
 
     protected void showAdvancedOptions(TextButton customButton) {
@@ -492,6 +501,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
        pop.setModal(true);
        
        Menu menu = new Menu();
+       menu.add(createCustomQuizMenuItem());
        menu.add(createCustomProgramsMenuItem());
        menu.add(createParallelPrograms());
        menu.add(createManageCustomProblemsItem());

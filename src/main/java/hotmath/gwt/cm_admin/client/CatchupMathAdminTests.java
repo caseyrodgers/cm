@@ -10,6 +10,7 @@ import hotmath.gwt.cm_admin.client.ui.AssignmentManagerDialog2;
 import hotmath.gwt.cm_admin.client.ui.AssignmentStatusDialog;
 import hotmath.gwt.cm_admin.client.ui.CustomProgramAddQuizDialog;
 import hotmath.gwt.cm_admin.client.ui.CustomProgramDialog;
+import hotmath.gwt.cm_admin.client.ui.CustomQuizDialog;
 import hotmath.gwt.cm_admin.client.ui.ManageGroupsWindow;
 import hotmath.gwt.cm_admin.client.ui.ProgramDetailsPanel;
 import hotmath.gwt.cm_admin.client.ui.TrendingDataWindow;
@@ -49,7 +50,10 @@ public class CatchupMathAdminTests extends CatchupMathSharedTests {
             }
             else if(test.equals("CustomProgramDialog")) {
                 CustomProgramDialog.startTest();
-            }            
+            }       
+            else if(test.equals("CustomQuizDialog")) {
+                CustomQuizDialog.startTest();
+            }  
             else if(test.equals("TrendingDataWindow")) {
                 TrendingDataWindow.startTest();
             }
