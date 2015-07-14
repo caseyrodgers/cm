@@ -1,8 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.CustomProgramAddQuizDialog.Callback;
-import hotmath.gwt.cm_admin.client.ui.list.ListCustomProgram;
-import hotmath.gwt.cm_admin.client.ui.list.ListCustomProgram.CallbackOnDoubleClick;
 import hotmath.gwt.cm_admin.client.ui.list.ListCustomQuiz;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
@@ -14,24 +12,14 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForCustomProgramWindow;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageForCustomQuizWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
-import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.IntValueHolder;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.ArchiveCustomQuizAction;
-import hotmath.gwt.shared.client.rpc.action.CustomProgramAction;
-import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction;
-import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction.ActionType;
-import hotmath.gwt.shared.client.rpc.action.CustomProgramUsageCountAction;
 import hotmath.gwt.shared.client.rpc.action.CustomQuizUsageCountAction;
 import hotmath.gwt.shared.client.rpc.action.DeleteCustomQuizAction;
 
@@ -40,21 +28,16 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
-
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
-import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.menu.MenuItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
@@ -73,7 +56,7 @@ public class CustomQuizDialog extends GWindow {
     ListView<CustomQuizDef, String> _listViewCq;
     boolean _isDebug;
 
-    boolean _includeArchivedQuizzes = true;
+    boolean _includeArchivedQuizzes = false;
 
     CheckBox _includeArchivedChkBox;
 
