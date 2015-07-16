@@ -25,6 +25,9 @@ import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentPanelButton;
 import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageByStrandWindow;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageChartWindow;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.ui.search.TopicExplorerManager;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
@@ -396,7 +399,11 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
      * @return
      */
     private StudentModelI getSelectedStudent() {
-        return _grid.getSelectionModel().getSelectedItem();
+        StudentModelI st = _grid.getSelectionModel().getSelectedItem();
+        if(st == null) {
+            CmMessageBox.showAlert("Select a student first");
+        }
+        return st;
     }
 
     public List<StudentModelI> getStudentsInGrid() {
@@ -405,9 +412,9 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
     private void showDebugInfo() {
         StudentModelI sm = getSelectedStudent();
-        if (sm == null)
-            return;
-        CmMessageBox.showAlert("UID: " + sm.getUid());
+        if (sm != null) {
+           CmMessageBox.showAlert("UID: " + sm.getUid());
+        }
     }
 
     private ToolBar createToolbar() {
@@ -610,6 +617,7 @@ Individual
         menuIndividal.add(defineIndividualAssignmentReportItem());
         menuIndividal.add(studentDetailsToolItem(_grid));
         menuIndividal.add(createTimeLogItem());
+        menuIndividal.add(createCCSSItem());
     
        
         btn.setMenu(mainMenu);
@@ -626,7 +634,6 @@ Individual
                 
                 StudentModelI student = getSelectedStudent();
                 if(student == null) {
-                    CmMessageBox.showAlert("Please select a student first");
                     return;
                 }
                 
@@ -653,7 +660,6 @@ Individual
                 
                 StudentModelI student = getSelectedStudent();
                 if(student == null) {
-                    CmMessageBox.showAlert("Please select a student first");
                     return;
                 }
                 
@@ -953,13 +959,70 @@ Individual
         MenuItem txt = new MyMenuItem("Time Log", "Show student active time log", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
-                StudentModelI student = getSelectedStudent();
-                if(student == null) {
-                    CmMessageBox.showAlert("Select a student first");
+                StudentModelI sm = getSelectedStudent();
+                if(sm == null) {
+                    return;
                 }
-                new UserActivityLogDialog(student);
+                new UserActivityLogDialog(sm);
             }
         });
+        return txt;
+    }
+    
+    private MenuItem createCCSSItem() {
+        Menu menu = new Menu();
+        
+        MenuItem mi = new MyMenuItem("Coverage Table", "View a CCSS coverage table.", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                StudentModelI sm = getSelectedStudent();
+                if(sm == null) {
+                    return;
+                }              
+                new CCSSCoverageWindow(sm, null);
+            }
+        });
+        menu.add(mi);
+        
+
+        
+        mi = new MyMenuItem("Coverage Charts", "View CCSS coverage charts.", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                StudentModelI student = getSelectedStudent();
+                if(student == null) {
+                    return;
+                }                  
+                new CCSSCoverageChartWindow(student.getAdminUid(), student.getUid(), false, student.getName());
+            }
+        });
+        menu.add(mi);
+
+        
+        mi = new MyMenuItem("Strand Coverage Table", "View CCSS Strand coverage tables.", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                StudentModelI sm = getSelectedStudent();
+                if(sm == null) {
+                    return;
+                }  
+                new CCSSCoverageByStrandWindow(sm, null);
+            }
+        });
+        menu.add(mi);
+        
+        
+        MenuItem txt = new MyMenuItem("CCSS", "View CCSS Coverage table and charts", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                StudentModelI sm = getSelectedStudent();
+                if(sm == null) {
+                    return;
+                }
+                new CCSSCoverageChartWindow(sm.getAdminUid(), sm.getUid(), false, sm.getName());
+            }
+        });
+        txt.setSubMenu(menu);
         return txt;
     }
     

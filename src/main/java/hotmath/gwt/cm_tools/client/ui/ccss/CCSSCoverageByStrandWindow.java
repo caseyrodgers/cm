@@ -73,7 +73,6 @@ public class CCSSCoverageByStrandWindow extends GWindow {
 
         _westData = new BorderLayoutData();
         _westData.setSize(253);
-        _westData.setCollapsible(true);
         _westData.setFloatable(true);
 
         _centerData = new BorderLayoutData();

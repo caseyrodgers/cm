@@ -73,7 +73,7 @@ public class CCSSCoverageWindow extends GWindow {
 
         _westData = new BorderLayoutData();
         _westData.setSize(250);
-        _westData.setCollapsible(true);
+        //_westData.setCollapsible(true);
         _westData.setFloatable(true);
 
         _centerData = new BorderLayoutData();
