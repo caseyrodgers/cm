@@ -103,7 +103,9 @@ public class CCSSCoverageWindow extends GWindow {
             }
         }));
 
-        getButtonBar().add(_dateRange);
+        HTML html = new HTML(_dateRange.getText());
+        html.getElement().setAttribute("style",  "position: absolute;left: 0");
+        getButtonBar().add(html);
         super.addCloseButton();
 
         showDefaultMsg();
