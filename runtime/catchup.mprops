@@ -1156,7 +1156,7 @@ and      d.id in (select prog_id
 UNION
                             
 select   'Custom Quiz' as id,
-         q.name as title,
+         concat('CQ:', q.name) as title,
          'Custom Quiz (no prescribed lessons)' as description,
          0 as needs_subject,
          0 as needs_chapter,

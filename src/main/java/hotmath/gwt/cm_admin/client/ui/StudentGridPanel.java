@@ -507,8 +507,8 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
        pop.setModal(true);
        
        Menu menu = new Menu();
-       menu.add(createCustomQuizMenuItem());
        menu.add(createCustomProgramsMenuItem());
+       menu.add(createCustomQuizMenuItem());
        menu.add(createParallelPrograms());
        menu.add(createManageCustomProblemsItem());
        menu.add(createWebLinksItem());
