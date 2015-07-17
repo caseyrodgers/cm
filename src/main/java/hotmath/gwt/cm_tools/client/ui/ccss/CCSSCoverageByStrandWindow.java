@@ -73,7 +73,6 @@ public class CCSSCoverageByStrandWindow extends GWindow {
 
         _westData = new BorderLayoutData();
         _westData.setSize(253);
-        _westData.setCollapsible(true);
         _westData.setFloatable(true);
 
         _centerData = new BorderLayoutData();
@@ -103,7 +102,10 @@ public class CCSSCoverageByStrandWindow extends GWindow {
             }
         }));
 */
-        getButtonBar().add(_dateRange);
+
+        HTML html = new HTML(_dateRange.getText());
+        html.getElement().setAttribute("style",  "position: absolute;left: 0");
+        getButtonBar().add(html);
         super.addCloseButton();
 
         showDefaultMsg();
@@ -179,6 +181,7 @@ public class CCSSCoverageByStrandWindow extends GWindow {
         int uid=390;
         StudentModelBase stuModel = new StudentModelBase();
         stuModel.setUid(uid);
+        stuModel.setAdminUid(2);
         new CCSSCoverageByStrandWindow(stuModel, null);
     }
 }
