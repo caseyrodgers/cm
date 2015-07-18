@@ -320,7 +320,7 @@ pageTracker._trackPageview();
                   <div id='cardnum_div' class='form_field'>
                     <!--  this pattern seems to be causing valid values to fail -->
                     Card Number
-                    <input value='' type='text' name='card_number' id='card_number' Xpattern='[0-9]{4}' maxlength='16' required class='input_field' tabindex="27"/>
+                    <input value='' type='text' name='card_number' id='card_number' pattern='[0-9]{4,16}' maxlength='16' required class='input_field' tabindex="27"/>
                       <div class='input_error'> &nbsp; </div>
                   </div>
                   <div id='cardvernum_div' class='form_field'>
