@@ -199,4 +199,13 @@ public class ActionDispatcherRest {
     	String data = jo.getString("data");
     	return Cm2ActionManager.saveWhiteboardForAssignmentProblem(uid, assKey, pid, data);
     }
+    
+    
+    @POST
+    @Path("user/{uid}/assignment/{assignKey}/{pid}/status")
+    public String updateAssignmentProblemStatus(@PathParam("uid") int uid, @PathParam("assignKey") int akey, @PathParam("pid") String pid, String json) throws Exception {
+         JSONObject jo = new JSONObject(json);
+         String status = jo.getString("status");
+         return Cm2ActionManager.updateAssignmentProblemStatus(uid, akey, pid, status);
+    }
 }

@@ -1,11 +1,5 @@
 package hotmath.cm.server.rest;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.cedarsoftware.util.io.JsonWriter;
-
 import hotmath.ProblemID;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_core.client.model.TopicSearchResults;
@@ -27,6 +21,7 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
@@ -60,6 +55,12 @@ import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.cedarsoftware.util.io.JsonWriter;
 
 /**
  * Central place to request a CM2 request with any specialized formatting
@@ -315,5 +316,10 @@ public class Cm2ActionManager {
 		RpcData results = ActionDispatcher.getInstance().execute(new SaveAssignmentWhiteboardDataAction(uid, assKey, pid, CommandType.DRAW, commandData, false));
 		return JsonWriter.objectToJson(results);
 	}
+
+    public static String updateAssignmentProblemStatus(int uid, int akey, String pid, String status) throws Exception {       
+        RpcData res = ActionDispatcher.getInstance().execute(new SaveAssignmentProblemStatusAction(uid,akey, pid, status));
+        return JsonWriter.objectToJson(res);
+    }
 
 }

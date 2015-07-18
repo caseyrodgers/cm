@@ -123,6 +123,11 @@ public class CustomQuizQuestionManager {
         }
     }
     
+    /** replace the page with wild, which will return the latest (active)
+     * 
+     * @param pid
+     * @return
+     */
     private String getActivePid(String pid) {
         String p[] = pid.split("\\_");
         p[5] = "%";
