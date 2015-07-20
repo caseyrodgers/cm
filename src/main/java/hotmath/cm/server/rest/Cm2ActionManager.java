@@ -18,6 +18,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
+import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
@@ -319,6 +320,11 @@ public class Cm2ActionManager {
 
     public static String updateAssignmentProblemStatus(int uid, int akey, String pid, String status) throws Exception {       
         RpcData res = ActionDispatcher.getInstance().execute(new SaveAssignmentProblemStatusAction(uid,akey, pid, status));
+        return JsonWriter.objectToJson(res);
+    }
+
+    public static String getTopicReviewText(String file, boolean spanish) throws Exception  {
+        LessonResult res = ActionDispatcher.getInstance().execute(new GetReviewHtmlAction(file,  spanish));
         return JsonWriter.objectToJson(res);
     }
 

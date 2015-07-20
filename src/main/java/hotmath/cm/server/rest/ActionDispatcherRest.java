@@ -208,4 +208,14 @@ public class ActionDispatcherRest {
          String status = jo.getString("status");
          return Cm2ActionManager.updateAssignmentProblemStatus(uid, akey, pid, status);
     }
+    
+    @POST
+    @Path("review")
+    public String getTopicReviewText(String jsonData) throws Exception {
+        JSONObject jo = new JSONObject(jsonData);
+        String file= jo.getString("file");
+        String language = jo.getString("language");
+        return Cm2ActionManager.getTopicReviewText(file, language.equals("spanish"));
+    }
+    
 }
