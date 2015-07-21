@@ -322,10 +322,10 @@ var Videos =
          type:       'mp4'
      },
 	 {
-		 key:        'available-content',
-		 title:      'Available Content',
+		 key:        'available-content-overview',
+		 title:      'Available Content Overview',
 		 firstFrame: ' ',
-		 videoURI:   'assets/teacher_videos/mp4/available-content-480.mp4', 
+		 videoURI:   'assets/teacher_videos/AvailableContent/AvailableContent-Overview.mp4', 
 	     type:       'mp4'
  	 },
 	 {
@@ -448,17 +448,31 @@ var Videos =
 	     type:       'mp4'
 	 },
 	 {
-		 key:        'student-registration-groups',
-		 title:      'Registering Groups and Classes',
+		 key:        'student-registration-bulk',
+		 title:      'Bulk Registration',
 		 firstFrame: '',
-		 videoURI:   'assets/teacher_videos/student_registration-groups.mp4',
+		 videoURI:   'assets/teacher_videos/StudentRegistration/StudentReg-Bulk.mp4',
 	     type:       'mp4'
  	 },
 	 {
-		 key:        'student-registration-quick',
-		 title:      'Registering Students - Quick Start',
+		 key:        'student-registration-individual',
+		 title:      'Registering One Student',
 		 firstFrame: '',
-		 videoURI:   'assets/teacher_videos/StudentRegistrationQuick/student_registration-quick.mp4',
+		 videoURI:   'assets/teacher_videos/StudentRegistration/StudentReg-Individual.mp4',
+	     type:       'mp4'
+ 	 },
+	 {
+		 key:        'student-registration-overview',
+		 title:      'Registering Students - Overview',
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/StudentRegistration/StudentReg-Overview.mp4',
+	     type:       'mp4'
+ 	 },
+	 {
+		 key:        'student-registration-selfreg',
+		 title:      'Self Registration',
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/StudentRegistration/StudentReg-SelfReg.mp4',
 	     type:       'mp4'
  	 },
 	 {
