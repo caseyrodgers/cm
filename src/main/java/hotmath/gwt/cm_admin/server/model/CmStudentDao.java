@@ -6,7 +6,9 @@ import static hotmath.gwt.cm_rpc.client.model.StudentModelI.HAS_PASSING_COUNT_KE
 import static hotmath.gwt.cm_rpc.client.model.StudentModelI.HAS_TUTORING_USE_KEY;
 import hotmath.assessment.InmhItemData;
 import hotmath.cm.server.model.CmUserProgramDao;
+import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_core.client.model.SearchAllowMode;
 import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
@@ -1784,6 +1786,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      */
     public StudentModelI getStudentModel(final Connection conn, final Integer uid, Boolean includeSelfRegTemplate) throws Exception {
 
+        
+        StudentModelI sm = (StudentModelI)CmCacheManager.getInstance().retrieveFromCache(CacheName.STUDENT_MODEL, uid);
+        if(sm != null) {
+            return sm;
+        }
+        
         String sql = getStudentSql(StudentSqlType.SINGLE_STUDENT, includeSelfRegTemplate);
         StudentModelI studentModel = this.getJdbcTemplate().queryForObject(sql, new Object[] { uid, uid, 1 }, new RowMapper<StudentModelI>() {
             public StudentModelI mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -1859,6 +1867,10 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
              */
             studentModel.getSettings().setTutoringAvailable(isTutoringEnabledForAdmin(conn, studentModel.getAdminUid()));
         }
+        
+        CmCacheManager.getInstance().addToCache(CacheName.STUDENT_MODEL,uid,studentModel);
+        
+        
         return studentModel;
     }
 

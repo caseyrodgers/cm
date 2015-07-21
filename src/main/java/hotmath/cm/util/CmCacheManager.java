@@ -115,7 +115,13 @@ public class CmCacheManager  {
 		/** Subject Proficiency Sections for each Proficiency
 		 *  subject
 		 */
-	    SUBJECT_PROF_SECTIONS
+	    SUBJECT_PROF_SECTIONS, 
+	    
+	    
+	    /** Individiual Student Model objects
+	     * 
+	     */
+	    STUDENT_MODEL
 
 	};
 
