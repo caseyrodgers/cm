@@ -131,6 +131,10 @@
 	</cache>
 
     <cache name="SUBJECT_PROF_SECTIONS" maxElementsInMemory="15"
+		overflowToDisk="false" >
+	</cache>
+	
+    <cache name="STUDENT_MODEL" maxElementsInMemory="50" timeToLiveSeconds="30"
 		overflowToDisk="false">
 	</cache>
 

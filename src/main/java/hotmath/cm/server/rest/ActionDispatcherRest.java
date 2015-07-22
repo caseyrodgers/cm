@@ -170,6 +170,13 @@ public class ActionDispatcherRest {
     }
     
     @POST
+    @Path("/assignments/{uid}/{assignKey}/turn_in")
+    public String turnInAssignment(@PathParam("uid") int uid, @PathParam("assignKey") int assignKey) throws Exception {
+        return Cm2ActionManager.turnInAssignment(uid, assignKey);
+    }
+    
+    
+    @POST
     @Path("/user/{uid}/assignment/{assignKey}/{pid}")
     public String getAssignmentProblem(@PathParam("uid") int uid, @PathParam("assignKey") int assignKey, @PathParam("pid") String pid) throws Exception {
         return Cm2ActionManager.getCm2AssignmentProblem(uid, assignKey, pid);

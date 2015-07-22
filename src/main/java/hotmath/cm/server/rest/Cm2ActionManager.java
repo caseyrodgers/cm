@@ -33,6 +33,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchApp;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.CheckCm2QuizAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2Assignments;
@@ -326,6 +327,11 @@ public class Cm2ActionManager {
     public static String getTopicReviewText(String file, boolean spanish) throws Exception  {
         LessonResult res = ActionDispatcher.getInstance().execute(new GetReviewHtmlAction(file,  spanish));
         res.setLesson(GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/hotmath_help", res.getLesson()));      
+        return JsonWriter.objectToJson(res);
+    }
+
+    public static String turnInAssignment(int uid, int assignKey) throws Exception {
+        RpcData res = ActionDispatcher.getInstance().execute(new TurnInAssignmentAction(uid,  assignKey));
         return JsonWriter.objectToJson(res);
     }
 
