@@ -329,7 +329,7 @@ var Videos =
 	     type:       'mp4'
  	 },
 	 {
-		 key:        'available-content-subjChap',
+		 key:        'available-content-subjchap',
 		 title:      'Subject and Chapter Programs',
 		 firstFrame: ' ',
 		 videoURI:   'assets/teacher_videos/AvailableContent/AvailableContent-SubjectChapterPrograms.mp4', 
