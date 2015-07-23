@@ -329,6 +329,20 @@ var Videos =
 	     type:       'mp4'
  	 },
 	 {
+		 key:        'available-content-subjChap',
+		 title:      'Subject and Chapter Programs',
+		 firstFrame: ' ',
+		 videoURI:   'assets/teacher_videos/AvailableContent/AvailableContent-SubjectChapterPrograms.mp4', 
+	     type:       'mp4'
+ 	 },
+	 {
+		 key:        'available-content-subjprof',
+		 title:      'Subject Proficiency Programs',
+		 firstFrame: ' ',
+		 videoURI:   'assets/teacher_videos/AvailableContent/AvailableContent-ProficiencyPrograms.mp4', 
+	     type:       'mp4'
+ 	 },
+	 {
 		 key:        'ccss-reports',
 		 title:      'Common Core Reports',
 		 firstFrame: '',
