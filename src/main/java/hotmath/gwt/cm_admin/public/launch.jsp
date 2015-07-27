@@ -15,12 +15,6 @@
 %>
 <html>
   <head>
-
-    <script type="text/javascript"
-      src="/assets/mathjax/2.3/MathJax.js?config=MML_HTMLorMML">
-    </script>
-
-
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>Catchup Math Admin</title>
 
@@ -59,6 +53,17 @@
    <script type="text/javascript" language="javascript" src="/cm_admin/cm_admin.nocache.js"></script>
     
    <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main.nocache"></script>
+       <!--  Math Jax Configuration  -->
+    <!--  CODE IS DUPLICATED (Copy/paste) -->
+    <!-- ------------------------ -->
+    <script src='/gwt-resources/js/mathjax_setup.js'></script>
+    <script type='text/x-mathjax-config'>      
+         setupMathJax();
+    </script>
+    <script src="/assets/mathjax/2.5/MathJax.js?config=MML_HTMLorMML"></script>
+    <!-- -------------------------- -->
+    <!--  End MathJax Configuration -->
+    
    
    <script src='/gwt-resources/jlibs/ckeditor-4.4.1/ckeditor.js'></script>
    <script src="/gwt-resources/jlibs/ckeditor-4.4.1/plugins/ckeditor_wiris/core/WIRISplugins.js?viewer=image"></script>    

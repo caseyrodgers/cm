@@ -14,12 +14,7 @@
 <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-        <title>Catchup Math</title>  
-        <script type="text/javascript"
-             src="/assets/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-        </script>
-
-        
+        <title>Catchup Math</title>          
         <!--[if gt IE 5.5000]>
             <link rel="stylesheet" href="gwt-resources/css/CatchupMath-resource_container-IE.css">
         <![endif]-->
@@ -56,6 +51,17 @@
 
         <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main.nocache"></script>
         
+    <!--  Math Jax Configuration  -->
+    <!--  CODE IS DUPLICATED (Copy/paste) -->
+    <!-- ------------------------ -->
+    <script src='/gwt-resources/js/mathjax_setup.js'></script>
+    <script type='text/x-mathjax-config'>      
+         setupMathJax();
+    </script>
+    <script src="/assets/mathjax/2.5/MathJax.js?config=MML_HTMLorMML"></script>
+    <!-- -------------------------- -->
+    <!--  End MathJax Configuration -->
+            
         
         <!-- 
         <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>

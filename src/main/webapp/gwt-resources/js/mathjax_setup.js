@@ -1,15 +1,10 @@
 
-console.log('setting up font configuration dialog');
-$(document).dblclick(function(e) {
-    showFontConfigurationDialog();
-});
-
 function showFontConfigurationDialog() {
 
 	var currMjFont = MathJax.Hub.config['HTML-CSS'].webFont;
 	
-	var form = "<h3>Choose MathJax Font</h3>" +
-	           "<h3>Current font: " + currMjFont + "</h3>" +
+	var form = "<div>Choose MathJax Font</div>" +
+	           "<div>Current font: " + currMjFont + "</div>" +
 	           "<select id='font-choose'>" +
 	           "<option></option>" +
 	           "<option>Asana-Math</option>" +
@@ -20,9 +15,9 @@ function showFontConfigurationDialog() {
 	           "<option>STIX-Web</option>" +
 	           "<option>TeX</option>" +
 	           "</select>";
-    form += "<div style='margin-top: 25px'><button>Close</button></div>";
+    form += "<div style='margin-top: 15px'><button>Close</button></div>";
 
-	var html = "<div id='font-config' style='padding: 10px; position: absolute;top: 10px;left:10px;width: 300px;height: 200px;border: 1px solid blue;background: orange;'>" + form + "</div>";
+	var html = "<div id='font-config' style='padding: 10px; position: absolute;top: 10px;left:10px;width: 250px;height: 100px;border: 1px solid blue;background: orange;'>" + form + "</div>";
 	
 	var el = document.createElement("div");
 	el.innerHTML = html;
@@ -50,9 +45,9 @@ function showFontConfigurationDialog() {
 }
 
 
-/** run after MathJax has been loaded
+/**  MathJax runs after MathJax has been loaded
  *  
- *  called from index in text/mathjax js block
+ *  called from index.html (or startup) in text/mathjax js block
  */
 function setupMathJax() {
 	
@@ -60,10 +55,18 @@ function setupMathJax() {
 	var ind = url.indexOf('&mj_font');
     var mjFont=null;
 	if(ind > -1) {
-		mjFont = url.substring(ind+1);
+		mjFont = url.substring(ind+9);
+		console.log('requestiong MathJax font: ' + mjFont);
+	}
+	else {
+		// default 
+		// possible fonts:
+		// Asana-Math,Gyre-Pagella,Gyre-Termes,Latin-Modern,Neo-Euler,STIX-Web,TeX
+		mjFont = 'STIX-Web';
 	}
     if(mjFont) {  
         MathJax.Hub.Config({
+            "showMathMenu": true,
             "HTML-CSS": { webFont: mjFont }
         });
     }	

@@ -3,14 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
-<script
-	src="/assets/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    
-</script>
-
 <title>Solution Editor</title>
-
-
 <link rel="stylesheet" type="text/css"
 	href="/gwt-resources/css/CatchupMath_combined.min.css" />
 
@@ -51,6 +44,17 @@
 		style="position: absolute; width: 0; height: 0; border: 0"></iframe>
 
 	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	
+    <!--  Math Jax Configuration  -->
+    <!--  CODE IS DUPLICATED (Copy/paste) -->
+    <!-- ------------------------ -->
+    <script src='/gwt-resources/js/mathjax_setup.js'></script>
+    <script type='text/x-mathjax-config'>      
+         setupMathJax();
+    </script>
+    <script src="/assets/mathjax/2.5/MathJax.js?config=MML_HTMLorMML"></script>
+    <!-- -------------------------- -->
+    <!--  End MathJax Configuration -->
 
 	<script src='/gwt-resources/js/CatchupMathMobile3_combined.js'></script>
 	<script src='/gwt-resources/js/whiteboard_v3.js'></script>
