@@ -3,11 +3,17 @@ package hotmath.gwt.solution_editor.client;
 import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.CmAlertify.PromptCallback;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.solution_editor.client.list.ListSolutionSearch;
+import hotmath.gwt.solution_editor.client.rpc.ReplaceTextSolutionsAction;
 import hotmath.gwt.solution_editor.client.rpc.SearchForSolutionsAction;
 
 import java.util.ArrayList;
@@ -39,7 +45,6 @@ import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
-import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 
@@ -53,6 +58,7 @@ public class SolutionSearcherDialog {
     TextField _searchField = new TextField();
     TextField _searchFieldFull = new TextField();
     CheckBox _includeInActive = new CheckBox();
+    TextButton replaceButton = new TextButton("Replace");
 
 
     private SolutionSearcherDialog() {
@@ -139,6 +145,26 @@ public class SolutionSearcherDialog {
 
         searchTab.setSouthWidget(_matches, new BorderLayoutData(20));
         
+        replaceButton.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) { 
+                
+                String searchText = _searchFieldFull.getCurrentValue();
+                if(searchText == null || searchText.length() == 0) {
+                    CmMessageBox.showAlert("You must enter search text before doing a replace.  This will be the text that is replaced.");
+                    return;
+                }
+                
+                List<SolutionSearchModel> res = _listResults.getStore().getAll();
+                if(res.size() == 0) {
+                    CmMessageBox.showAlert("No search results to replace");
+                }
+                else {
+                    doSearchReplace(res, searchText);
+                }
+            }
+        });
+        _window.addButton(replaceButton);
 
         _window.addButton(new TextButton("View", new SelectHandler() {
 			
@@ -194,6 +220,48 @@ public class SolutionSearcherDialog {
             }
         });
     }
+    
+    String _lastValue;
+    protected void doSearchReplace(final List<SolutionSearchModel> res, final String searchFor) {
+        CmMessageBox.prompt("Replace '" + searchFor + "' in " + res.size() + " solution(s)", null,_lastValue, new PromptCallback() {           
+            @Override
+            public void promptValue(final String replaceWith) { 
+                if(replaceWith == null || replaceWith.length() == 0) {
+                    return;
+                }
+                
+                _lastValue = replaceWith;
+                
+                CmMessageBox.confirm("Search/Replace",  "Are you sure you want to replace '" + searchFor + "' with '" + replaceWith + "' in all " + res.size() + " solution(s)?", new ConfirmCallback() {
+                    
+                    @Override
+                    public void confirmed(boolean yesNo) {
+                        if(yesNo) {
+                            CmList<SolutionSearchModel> probs = new CmArrayList<SolutionSearchModel>();
+                            probs.addAll(res);
+                            ReplaceTextSolutionsAction action = new ReplaceTextSolutionsAction(probs, searchFor, replaceWith);
+                            SolutionEditor.getCmService().execute(action, new AsyncCallback<RpcData>() {
+                                @Override
+                                public void onSuccess(RpcData result) {
+                                    CmMessageBox.showAlert("Replace was succesful");
+                                    SolutionEditor.__instance._stepEditorViewer.loadSolution(SolutionEditor.__pidToLoad);
+                                }
+
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    com.google.gwt.user.client.Window.alert("Error: " + caught);
+                                }
+
+                            });
+                        }
+                    }
+                });
+            }
+        });
+        
+    }
+
+
     private void setCallback(Callback callBack) {
         this.callBack = callBack;
     }

@@ -1,23 +1,27 @@
 package hotmath.gwt.solution_editor.server;
 
 import hotmath.HotMathDatabaseLoader;
-import hotmath.HotMathException;
-import hotmath.HotMathLogger;
 import hotmath.HotMathProperties;
+import hotmath.ProblemID;
+import hotmath.SolutionManager;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.solution_editor.client.SolutionSearchModel;
 import hotmath.gwt.solution_editor.server.solution.TutorSolution;
+import hotmath.solution.Solution;
 import hotmath.solution.StaticWriter;
 import hotmath.solution.writer.SolutionHTMLCreatorIimplVelocity;
 import hotmath.solution.writer.TutorProperties;
 import hotmath.util.sql.SqlUtilities;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -58,6 +62,9 @@ public class CmSolutionManagerDao {
     }
 
     public void saveSolutionXml(final Connection conn, String pid, String xml, String tutorDefine, boolean isActive) throws Exception {
+        
+        makeSequentialBackup(conn,  pid);
+        
         PreparedStatement ps=null;
         try {
 
@@ -221,6 +228,69 @@ public class CmSolutionManagerDao {
 
     public String formatXml(String xml) throws Exception {
         return new XmlFormatter().format(xml);
+    }
+
+    public void replaceTextInSolutions(Connection conn, List<SolutionSearchModel> pidsToReplace, String searchFor,
+            String replaceWith) throws Exception {
+        
+        for(SolutionSearchModel pm: pidsToReplace) {
+            String pid = pm.getPid();
+            __logger.info("Replacing text in solution: " + pid);
+            makeSequentialBackup(conn,  pid);
+            doReplace(conn, pid, searchFor, replaceWith);
+        }
+    }
+
+    private void doReplace(Connection conn, String pid, String searchFor, String replaceWith) throws Exception {
+        
+        String solutionXml = getSolutionXml(conn,  pid);
+        
+        String newSolutionXml = solutionXml.replaceAll("(?i)" + searchFor, replaceWith);
+        String sql = "update SOLUTIONS set solutionxml = ? where problemindex = ?";
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, newSolutionXml);
+            ps.setString(2, pid);
+            if(ps.executeUpdate()!=1) {
+                __logger.warn("did not update record: " + pid);
+            };
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+        
+    }
+
+    /** Create a backup of the current solutionXML
+     * 
+     * @param conn
+     * @param pid
+     */
+    private void makeSequentialBackup(Connection conn, String pid) throws Exception {
+        
+        ProblemID pidO = new ProblemID(pid);
+
+        String solutionDir = HotMathProperties.getInstance().getSoulutionImageDir() + "/" + pidO.getSolutionPath() + "/" + pid;
+        
+        String xml = getSolutionXml(conn, pid);
+        
+        File backupDir = new File(solutionDir, "backup");
+        if(!backupDir.exists()) {
+            backupDir.mkdirs();
+        }
+        File backupFile = new File(backupDir, System.currentTimeMillis() + ".xml");
+        
+        __logger.debug("Writing solution xml backup file: " + backupFile);
+        FileWriter fileOut = null;
+        try {
+            fileOut = new FileWriter(backupFile);
+            fileOut.write(xml);
+            fileOut.close();
+        }
+        finally {
+            fileOut.close();
+        }
     }
 
 }
