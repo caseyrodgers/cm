@@ -3,11 +3,11 @@ div[name=tutor_embedded] {
 }
 
 div[tutoroutput] {
-        font: 12pt "Times New Roman", Times, serif;
+        font: 12pt STIXGeneral, "Times New Roman", Times, serif;
 }
 
 div[tutoroutput] p {
-	font: 12pt "Times New Roman", Times, serif;
+	font: 12pt STIXGeneral, "Times New Roman", Times, serif;
 	text-align: left;
 	color: black;
 }

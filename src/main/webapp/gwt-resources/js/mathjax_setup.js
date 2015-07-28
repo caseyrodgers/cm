@@ -64,11 +64,14 @@ function setupMathJax() {
 		// Asana-Math,Gyre-Pagella,Gyre-Termes,Latin-Modern,Neo-Euler,STIX-Web,TeX
 		mjFont = 'STIX-Web';
 	}
-    if(mjFont) {  
-        MathJax.Hub.Config({
-            "showMathMenu": true,
-            "HTML-CSS": { webFont: mjFont }
-        });
-    }	
+    MathJax.Hub.Config({
+        "showMathMenu": true,
+        "HTML-CSS": { 
+        	webFont: mjFont, 
+        	preferredFont: "STIX-Web",
+        	mtextFontInherit: true,
+        	matchFontHeight: true}
+    });
+  
 }
 
