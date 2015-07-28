@@ -236,10 +236,8 @@ function showWebinar() {
 function showAlert(message) {
 	if (typeof alertify == 'undefined')
     	alert(message);
-	else {
-		alert(message);
-		//alertify.alert(message);
-    }
+	else
+		alertify.alert(message);
 }
 
 var Videos =
