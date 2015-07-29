@@ -236,12 +236,14 @@ public class CmSolutionManagerDao {
         for(SolutionSearchModel pm: pidsToReplace) {
             String pid = pm.getPid();
             __logger.info("Replacing text in solution: " + pid);
-            makeSequentialBackup(conn,  pid);
             doReplace(conn, pid, searchFor, replaceWith);
         }
     }
 
     private void doReplace(Connection conn, String pid, String searchFor, String replaceWith) throws Exception {
+        
+        
+        makeSequentialBackup(conn,  pid);
         
         String solutionXml = getSolutionXml(conn,  pid);
         
@@ -255,6 +257,13 @@ public class CmSolutionManagerDao {
             if(ps.executeUpdate()!=1) {
                 __logger.warn("did not update record: " + pid);
             };
+            
+
+            String outputBase = CatchupMathProperties.getInstance().getSolutionBase() + HotMathProperties.getInstance().getStaticSolutionsDir();
+            
+            __logger.debug("Writing solution: " + pid + ", to: " + outputBase);
+
+            StaticWriter.writeSolutionFile(conn,__creator, pid, __tutorProps, outputBase, false, null);      
         }
         finally {
             SqlUtilities.releaseResources(null, ps, null);
