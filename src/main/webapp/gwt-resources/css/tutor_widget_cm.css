@@ -10,20 +10,20 @@
 
 
 [name=tutoroutput] p {
-	font: 12pt "Times New Roman", Times, serif;
+	font: 12pt STIXGeneral, "Times New Roman", Times, serif;
 	text-align: left;
 	color: black;
 }
 
 [name=hm_widget_form] input[type='text']{
-font-family: Times New Roman,Times,serif;
+font-family: STIXGeneral, "Times New Roman",Times,serif;
 font-size: 17pt;
 font-weight:bold;
 border:1px inset;
 }
 
 [name=hm_widget_form] .input_units{
-font-family: Times New Roman,Times,serif;
+font-family: STIXGeneral, "Times New Roman",Times,serif;
 font-size: 17pt;
 font-weight:bold;
 }
