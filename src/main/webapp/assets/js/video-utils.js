@@ -397,6 +397,13 @@ var Videos =
 	     type:       'mp4'
  	 },
 	 {
+		 key:        'new-school-year-tips',
+		 title:      'New SchoolYear Tips',
+		 firstFrame: '',
+		 videoURI:   'assets/teacher_videos/NewSchoolYearTips/NewSchoolYearTips.mp4', 
+	     type:       'mp4'
+ 	 },
+	 {
 		 key:        'overview',
 		 title:      'Overview of Teacher Resources',
 		 firstFrame: '',
