@@ -14,8 +14,23 @@ public class ReplaceTextSolutionsCommand implements ActionHandler<ReplaceTextSol
     @Override
     public RpcData execute(Connection conn, ReplaceTextSolutionsAction action) throws Exception {
         //return new CmSolutionManagerDao().searchForSolutions(conn,action.getSearchFor(), action.getSearchText(),action.isIncludeInActive());
-        new CmSolutionManagerDao().replaceTextInSolutions(conn, action.getPidsToReplace(), action.getSearchFor(), action.getReplaceWith());
-        return new RpcData("status=OK");
+        String messages = "";
+        CmSolutionManagerDao.SearchResult sr = new CmSolutionManagerDao().replaceTextInSolutions(conn, action.getPidsToReplace(), action.getSearchFor(), action.getReplaceWith());
+        int replaced = sr.getReplaced();
+        if(sr.getErrors().size() > 0) {
+           
+            for(String e: sr.getErrors()) {
+                if(messages.length() > 0) {
+                   messages += "<br/>";
+                }
+                messages += e;
+            }
+            messages = "<br/>" + messages;
+        }
+        RpcData rpcData = new RpcData("status=OK");
+        rpcData.putData("errors",  messages);
+        rpcData.putData("replaced", replaced);
+        return rpcData;
     }
 
     @Override

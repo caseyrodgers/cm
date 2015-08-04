@@ -19,6 +19,7 @@ import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.rpc.RetryActionManager;
 import hotmath.gwt.solution_editor.client.SolutionSearcherDialog.Callback;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -146,6 +147,14 @@ public class SolutionEditor implements EntryPoint {
         CmBusyManager.showLoading(false);
         
         Login.getInstance().makeSureLoggedIn();
+        
+        
+        
+//        List<SolutionSearchModel> ss = new ArrayList<SolutionSearchModel>();
+//        ss.add(new SolutionSearchModel("test_casey_1_1_1_2",true));
+//        ss.add(new SolutionSearchModel("notexist",true));
+//        ss.add(new SolutionSearchModel("notexist2",true));
+//        new SearchReplaceDialog().showDialog(ss);
     }
 
     private Widget createToolbar() {
