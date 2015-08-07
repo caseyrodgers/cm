@@ -276,7 +276,7 @@ public class SolutionSearcherDialog {
     }
     
     
-    protected void doExtractText(List<SolutionSearchModel> res) {
+    protected void doExtractText(final List<SolutionSearchModel> res) {
 
         CmBusyManager.showLoading(true);
         GetSolutionsExtractAction action = new GetSolutionsExtractAction(res);
@@ -286,8 +286,11 @@ public class SolutionSearcherDialog {
                 
                 
                 GWindow window = new GWindow(true);
+                window.setHeadingText("Solution Text Extract for " + res.size() + " solution(s)");
                 window.setPixelSize(500, 300);
                 window.setMaximizable(true);
+                window.setMinimizable(true);
+                window.setModal(false);
                 TextArea ta = new TextArea();
                 ta.setValue(extract.getText());
                 FramedPanel fp = new FramedPanel();
@@ -336,7 +339,7 @@ public class SolutionSearcherDialog {
             SpellCheckResults r = result.getResults().get(i);  
             String label = "";
 
-            label = r.getMessage() != null?r.getMessage() :"[" + r.getCmList().size() + "]";
+            label = r.getMessage() != null?r.getMessage() :"[possible misspelt words: " + r.getCmList().size() + "]";
 
             _listResults.getStore().get(i).setLabel(label);
         }
