@@ -4,16 +4,19 @@ import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
-import hotmath.gwt.cm_core.client.util.CmAlertify.PromptCallback;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc.client.model.SolutionExtractResults;
+import hotmath.gwt.cm_rpc.client.model.SpellCheckResults;
+import hotmath.gwt.cm_rpc.client.model.SpellCheckSolutionsResults;
+import hotmath.gwt.cm_rpc.client.rpc.GetSolutionsExtractAction;
+import hotmath.gwt.cm_rpc.client.rpc.SpellCheckSolutionsAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.solution_editor.client.list.ListSolutionSearch;
-import hotmath.gwt.solution_editor.client.rpc.ReplaceTextSolutionsAction;
 import hotmath.gwt.solution_editor.client.rpc.SearchForSolutionsAction;
 
 import java.util.ArrayList;
@@ -45,6 +48,7 @@ import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
+import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 
@@ -59,6 +63,8 @@ public class SolutionSearcherDialog {
     TextField _searchFieldFull = new TextField();
     CheckBox _includeInActive = new CheckBox();
     TextButton replaceButton = new TextButton("Replace");
+    TextButton spellCheckButton = new TextButton("Spell Check");
+    TextButton createExtractButton = new TextButton("Extract Text");
 
 
     private SolutionSearcherDialog() {
@@ -145,22 +151,70 @@ public class SolutionSearcherDialog {
 
         searchTab.setSouthWidget(_matches, new BorderLayoutData(20));
         
+        
+        createExtractButton.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) { 
+                
+                String searchText = _searchFieldFull.getCurrentValue();
+                List<SolutionSearchModel> res = _listResults.getStore().getAll();
+                if(res.size() == 0) {
+                    CmMessageBox.showAlert("No search results to extract text from.");
+                }
+                else if(res.size() > 500) {
+                    CmMessageBox.showAlert("Too many solutions.   Only 500 allowed at once as a safe-guard.");
+                }
+                
+                else {
+                    doExtractText(res);
+                }
+            }
+        });
+        _window.addButton(createExtractButton);
+        
+        
+        
+        spellCheckButton.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) { 
+                
+                String searchText = _searchFieldFull.getCurrentValue();
+                final List<SolutionSearchModel> res = _listResults.getStore().getAll();
+                if(res.size() == 0) {
+                    CmMessageBox.showAlert("No search results to spell check");
+                }
+                else if(res.size() > 50) {
+                    CmMessageBox.showAlert("Too many potential replacements.   Only 50 allowed at once as a safe-guard.");
+                }
+                
+                else {
+                    CmMessageBox.confirm("Spell Check Solution", "Are you sure you want to spell check all documents in your current set of problems?", new ConfirmCallback() {
+                        
+                        @Override
+                        public void confirmed(boolean yesNo) {
+                            doSpellCheck(res);
+                        }
+                    });
+
+                }
+            }
+        });
+        _window.addButton(spellCheckButton);
+        
         replaceButton.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) { 
                 
                 String searchText = _searchFieldFull.getCurrentValue();
-                if(searchText == null || searchText.length() == 0) {
-                    CmMessageBox.showAlert("You must enter search text before doing a replace.  This will be the text that is replaced.");
-                    return;
-                }
-                
                 List<SolutionSearchModel> res = _listResults.getStore().getAll();
                 if(res.size() == 0) {
                     CmMessageBox.showAlert("No search results to replace");
                 }
+                else if(res.size() > 50) {
+                    CmMessageBox.showAlert("Too many potential replacements.   Only 50 allowed at once as a safe-guard.");
+                }
                 else {
-                    doSearchReplace(res, searchText);
+                    doSearchReplace(res);
                 }
             }
         });
@@ -221,44 +275,86 @@ public class SolutionSearcherDialog {
         });
     }
     
-    String _lastValue;
-    protected void doSearchReplace(final List<SolutionSearchModel> res, final String searchFor) {
-        CmMessageBox.prompt("Replace '" + searchFor + "' in " + res.size() + " solution(s)", null,_lastValue, new PromptCallback() {           
+    
+    protected void doExtractText(final List<SolutionSearchModel> res) {
+
+        CmBusyManager.showLoading(true);
+        GetSolutionsExtractAction action = new GetSolutionsExtractAction(res);
+        SolutionEditor.getCmService().execute(action,  new AsyncCallback<SolutionExtractResults>() {
+            public void onSuccess(SolutionExtractResults extract) {
+                CmBusyManager.showLoading(false);
+                
+                
+                GWindow window = new GWindow(true);
+                window.setHeadingText("Solution Text Extract for " + res.size() + " solution(s)");
+                window.setPixelSize(500, 300);
+                window.setMaximizable(true);
+                window.setMinimizable(true);
+                window.setModal(false);
+                TextArea ta = new TextArea();
+                ta.setValue(extract.getText());
+                FramedPanel fp = new FramedPanel();
+                fp.setHeaderVisible(false);
+                fp.setWidget(ta);
+                
+                window.setWidget(fp);
+                window.setVisible(true);
+                
+            };
+            
             @Override
-            public void promptValue(final String replaceWith) { 
-                if(replaceWith == null || replaceWith.length() == 0) {
-                    return;
-                }
-                
-                _lastValue = replaceWith;
-                
-                CmMessageBox.confirm("Search/Replace",  "Are you sure you want to replace '" + searchFor + "' with '" + replaceWith + "' in all " + res.size() + " solution(s)?", new ConfirmCallback() {
-                    
-                    @Override
-                    public void confirmed(boolean yesNo) {
-                        if(yesNo) {
-                            CmList<SolutionSearchModel> probs = new CmArrayList<SolutionSearchModel>();
-                            probs.addAll(res);
-                            ReplaceTextSolutionsAction action = new ReplaceTextSolutionsAction(probs, searchFor, replaceWith);
-                            SolutionEditor.getCmService().execute(action, new AsyncCallback<RpcData>() {
-                                @Override
-                                public void onSuccess(RpcData result) {
-                                    CmMessageBox.showAlert("Replace was succesful");
-                                    SolutionEditor.__instance._stepEditorViewer.loadSolution(SolutionEditor.__pidToLoad);
-                                }
-
-                                @Override
-                                public void onFailure(Throwable caught) {
-                                    com.google.gwt.user.client.Window.alert("Error: " + caught);
-                                }
-
-                            });
-                        }
-                    }
-                });
+            public void onFailure(Throwable caught) {
+                CmBusyManager.showLoading(false);
+                CmMessageBox.showAlert("Error: " + caught);           
             }
         });
         
+    }
+
+
+    protected void doSpellCheck(List<SolutionSearchModel> res) {
+
+        CmBusyManager.showLoading(true);
+        SpellCheckSolutionsAction action = new SpellCheckSolutionsAction(res);
+        SolutionEditor.getCmService().execute(action,  new AsyncCallback<SpellCheckSolutionsResults>() {
+            public void onSuccess(SpellCheckSolutionsResults result) {
+                CmBusyManager.showLoading(false);
+                updateListOfPids(result);
+                CmMessageBox.showAlert("Spell check complete");
+            };
+            
+            @Override
+            public void onFailure(Throwable caught) {
+                CmBusyManager.showLoading(false);
+                CmMessageBox.showAlert("Error: " + caught);
+                
+            }
+        });
+        
+    }
+
+    protected void updateListOfPids(SpellCheckSolutionsResults result) {
+        
+        for(int i=0;i<result.getResults().size();i++) {
+            SpellCheckResults r = result.getResults().get(i);  
+            String label = "";
+
+            label = r.getMessage() != null?r.getMessage() :"[errors: " + r.getCmList().size() + "]";
+
+            _listResults.getStore().get(i).setLabel(label);
+        }
+        
+        _listResults.setStore(_listResults.getStore());
+    }
+
+    SearchReplaceDialog _searchDialog;
+    String _lastValue;
+    protected void doSearchReplace(final List<SolutionSearchModel> res) {
+        if(_searchDialog == null) {
+            _searchDialog = new SearchReplaceDialog();
+        }
+        _searchDialog.showDialog(res);
+
     }
 
 
@@ -266,6 +362,9 @@ public class SolutionSearcherDialog {
         this.callBack = callBack;
     }
 
+
+    
+    
     ListView<SolutionSearchModel, String> _listResults;
     public void doSelect(String pid) {
         this.callBack.solutionSelected(pid);

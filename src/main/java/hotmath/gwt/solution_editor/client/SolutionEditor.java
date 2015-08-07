@@ -4,13 +4,16 @@ import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
+import hotmath.gwt.cm_core.client.model.SearchSuggestion;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
+import hotmath.gwt.cm_rpc.client.model.SpellCheckResults;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAdminAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAdminAction.Type;
+import hotmath.gwt.cm_rpc.client.rpc.SpellCheckAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -146,6 +149,14 @@ public class SolutionEditor implements EntryPoint {
         CmBusyManager.showLoading(false);
         
         Login.getInstance().makeSureLoggedIn();
+        
+        
+        
+//        List<SolutionSearchModel> ss = new ArrayList<SolutionSearchModel>();
+//        ss.add(new SolutionSearchModel("test_casey_1_1_1_2",true));
+//        ss.add(new SolutionSearchModel("notexist",true));
+//        ss.add(new SolutionSearchModel("notexist2",true));
+//        new SearchReplaceDialog().showDialog(ss);
     }
 
     private Widget createToolbar() {
@@ -211,6 +222,15 @@ public class SolutionEditor implements EntryPoint {
         }));
 
         tb.add(createGenerateContextButton());
+        
+        
+        tb.add(new TextButton("Spell Check", new SelectHandler() {         
+            @Override
+            public void onSelect(SelectEvent event) {
+                spellCheckCurrentView();
+            }
+        }));
+        
 
         Menu viewMenu = new Menu();
         MenuItem mi = new MenuItem("Tutor",new SelectionHandler<MenuItem>() {
@@ -265,6 +285,37 @@ public class SolutionEditor implements EntryPoint {
         return tb;
     }
 
+
+    protected void spellCheckCurrentView() {
+
+        CmBusyManager.showLoading(true);
+        String stepText = _stepEditorViewer.getSolutionStepsText();
+        SpellCheckAction action = new SpellCheckAction(stepText);
+        SolutionEditor.getCmService().execute(action, new AsyncCallback<SpellCheckResults>() {
+            public void onSuccess(SpellCheckResults result) {
+                CmBusyManager.showLoading(false);
+                String words = "";
+                for(SearchSuggestion w: result.getCmList()) {
+                    words += " " + w.getWord();
+                }
+                
+                String message="";
+                if(words.length() == 0) {
+                    message = "No spelling errors found";
+                }
+                else {
+                    message = "Possible misspelled words: <br/><br/>" + words;
+                }
+                CmMessageBox.showAlert(message);
+            }
+            @Override
+            public void onFailure(Throwable arg0) {
+                CmBusyManager.showLoading(false);
+                Log.error("Error deleting solution: " + arg0);
+                CmMessageBox.showAlert(arg0.getLocalizedMessage());
+            }
+        });
+    }
 
     protected void deleteThisSolution() {
         if(__pidToLoad == null) {

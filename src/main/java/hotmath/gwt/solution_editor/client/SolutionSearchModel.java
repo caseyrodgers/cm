@@ -6,6 +6,8 @@ import hotmath.gwt.cm_tools.client.model.BaseModel;
 public class SolutionSearchModel implements Response {
 
     private String pid;
+    private String label;
+    
     private boolean isActive;
 
     public SolutionSearchModel() {
@@ -31,6 +33,14 @@ public class SolutionSearchModel implements Response {
 
     public void setActive(boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public String getLabel() {
+        return getPid() + (label!=null?(" " + label):"");
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
 }

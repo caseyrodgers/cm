@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -230,17 +231,50 @@ public class CmSolutionManagerDao {
         return new XmlFormatter().format(xml);
     }
 
-    public void replaceTextInSolutions(Connection conn, List<SolutionSearchModel> pidsToReplace, String searchFor,
+    static public class SearchResult {
+        public List<String> getErrors() {
+            return errors;
+        }
+        public void setErrors(List<String> errors) {
+            this.errors = errors;
+        }
+        public int getReplaced() {
+            return replaced;
+        }
+        public void setReplaced(int replaced) {
+            this.replaced = replaced;
+        }
+        public SearchResult(List<String> errors, int replaced) {
+            this.errors = errors;
+            this.replaced = replaced;
+        }
+        List<String> errors;
+        int replaced;
+    }
+    public SearchResult replaceTextInSolutions(Connection conn, List<SolutionSearchModel> pidsToReplace, String searchFor,
             String replaceWith) throws Exception {
         
+        int replaced=0;
+        List<String> errors = new ArrayList<String>();
         for(SolutionSearchModel pm: pidsToReplace) {
             String pid = pm.getPid();
             __logger.info("Replacing text in solution: " + pid);
-            doReplace(conn, pid, searchFor, replaceWith);
+            
+            try {
+                if(doReplace(conn, pid, searchFor, replaceWith)) {
+                    replaced++;
+                };
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+                errors.add(e.getMessage());
+            }
         }
+        
+        return new SearchResult(errors, replaced);
     }
 
-    private void doReplace(Connection conn, String pid, String searchFor, String replaceWith) throws Exception {
+    private boolean doReplace(Connection conn, String pid, String searchFor, String replaceWith) throws Exception {
         
         
         makeSequentialBackup(conn,  pid);
@@ -248,6 +282,11 @@ public class CmSolutionManagerDao {
         String solutionXml = getSolutionXml(conn,  pid);
         
         String newSolutionXml = solutionXml.replaceAll("(?i)" + searchFor, replaceWith);
+        
+        if(solutionXml.equals(newSolutionXml)) {
+            return false;
+        }
+        
         String sql = "update SOLUTIONS set solutionxml = ? where problemindex = ?";
         PreparedStatement ps = null;
         try {
@@ -264,6 +303,8 @@ public class CmSolutionManagerDao {
             __logger.debug("Writing solution: " + pid + ", to: " + outputBase);
 
             StaticWriter.writeSolutionFile(conn,__creator, pid, __tutorProps, outputBase, false, null);      
+            
+            return true;
         }
         finally {
             SqlUtilities.releaseResources(null, ps, null);

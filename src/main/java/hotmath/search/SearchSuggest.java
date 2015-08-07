@@ -52,7 +52,7 @@ public class SearchSuggest {
         String[] suggestions = _spellChecker.suggestSimilar(suggestFor, MAX_SUGGETIONS);
         List<SearchSuggestion> suggestList = new ArrayList<SearchSuggestion>();
         for(int i=0;i<suggestions.length;i++) {
-            suggestList.add(  new SearchSuggestion(suggestions[i]));
+            suggestList.add(  new SearchSuggestion(suggestions[i],null));
         }
         return suggestList;
     }

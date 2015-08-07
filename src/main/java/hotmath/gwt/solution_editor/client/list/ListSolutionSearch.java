@@ -17,11 +17,12 @@ public class ListSolutionSearch extends ListView<SolutionSearchModel, String> {
 		@Path("pid")
 		ModelKeyProvider<SolutionSearchModel> key();
 		ValueProvider<SolutionSearchModel, String> pid();
+        ValueProvider<SolutionSearchModel, String> label();
 	}
 	
 	static Props props = GWT.create(Props.class);
 	public ListSolutionSearch() {
-		super(new ListStore<SolutionSearchModel>(props.key()),props.pid());
+		super(new ListStore<SolutionSearchModel>(props.key()),props.label());
 	}
 	
 //    static public native String getTemplate() /*-{ 
