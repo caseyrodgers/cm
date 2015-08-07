@@ -339,7 +339,7 @@ public class SolutionSearcherDialog {
             SpellCheckResults r = result.getResults().get(i);  
             String label = "";
 
-            label = r.getMessage() != null?r.getMessage() :"[possible misspelt words: " + r.getCmList().size() + "]";
+            label = r.getMessage() != null?r.getMessage() :"[errors: " + r.getCmList().size() + "]";
 
             _listResults.getStore().get(i).setLabel(label);
         }
