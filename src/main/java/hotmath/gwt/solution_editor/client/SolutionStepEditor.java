@@ -133,8 +133,8 @@ public class SolutionStepEditor extends ContentPanel {
        new ShowValueWindow("Loaded Problem",_meta.getPid());
     }
     
-    public List<StepUnitPair> getSteps() {
-        return null;
+    public List<SolutionMetaStep> getSteps() {
+        return _meta.getSteps();
     }
     
     private void addNewStep() {
@@ -383,6 +383,27 @@ public class SolutionStepEditor extends ContentPanel {
         public Spacer() {
             super("<div style='width: 40px;'>&nbsp;</div>");
         }
+    }
+
+
+    /** Return just text portion of all steps
+     * 
+     * @return
+     */
+    public String getSolutionStepsText() {
+        String text="";
+        for(int i=0,t=_mainFlow.getWidgetCount();i<t;i++) {
+            Widget comp = _mainFlow.getWidget(i);
+            if(comp instanceof StatementContainer) {
+                text += ((StatementContainer)comp).getStepUnitWrapper().getItem().getEditorText();            
+            }
+            else if(comp instanceof StepContainer) {
+                StepContainer sc = (StepContainer)comp;
+                StepUnitPair  su = new StepUnitPair(sc.getHintText(), sc.getStepText(), sc.getFigure());
+                text += su.toString();
+            }
+        }
+        return text;
     }
  
 }

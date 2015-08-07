@@ -44,4 +44,9 @@ public class StepUnitPair implements Response {
     public void setFigure(String figure) {
         this.figure = figure;
     }
+    
+    @Override
+    public String toString() {
+        return hint + " " + text + " ";
+    }
 }
