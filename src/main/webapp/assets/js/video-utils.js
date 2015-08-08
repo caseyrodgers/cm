@@ -244,7 +244,7 @@ var Videos =
   [
      {
 	     key:        'advanced-options',
-	     title:      'Advnanced Options',
+	     title:      'Advanced Options',
 	     firstFrame: '',
 	     videoURI:   'assets/teacher_videos/AdvancedOptions/AdvancedOptions.mp4',
          type:       'mp4'
