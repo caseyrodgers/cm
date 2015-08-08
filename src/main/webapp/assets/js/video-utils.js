@@ -243,6 +243,13 @@ function showAlert(message) {
 var Videos =
   [
      {
+	     key:        'advanced-options',
+	     title:      'Advnanced Options',
+	     firstFrame: '',
+	     videoURI:   'assets/teacher_videos/AdvancedOptions/AdvancedOptions.mp4',
+         type:       'mp4'
+     },
+     {
 	     key:        'assessment-reporting',
 	     title:      'Assessment Reporting Tool',
 	     firstFrame: '',
