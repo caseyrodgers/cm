@@ -15,7 +15,7 @@ public class SearchTopicCommand_Test extends TestCase {
 
     public void testItSug() throws Exception {
         TopicSearchResults results = new SearchTopicCommand().execute(HMConnectionPool.getConnection(),
-                new SearchTopicAction(SearchType.LESSON_LIKE, SearchApp.TEST, "Integer", 0));
+                new SearchTopicAction(SearchType.LESSON_LIKE, SearchApp.TEST, "Length", 0));
         assertTrue(results.getTopics().size() > 0);
         assertTrue(results.getSuggestions() != null);
     }
