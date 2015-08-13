@@ -514,13 +514,6 @@ var Videos =
 		 firstFrame: '',
 		 videoURI:   'assets/webinar_weblinks/WebLinksQuick.mp4',
 	     type:       'mp4'
-	 },
-	 {
-		 key:        'student-registration-quick',
-		 title:      'Student Registration Quick Overview',
-		 firstFrame: '',
-		 videoURI:   'assets/teacher_videos/StudentRegistrationQuick/student_registration-quick.mp4',
-	     type:       'mp4'
 	 }	 
 	 
   ];
