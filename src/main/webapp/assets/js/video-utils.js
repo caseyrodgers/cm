@@ -327,6 +327,13 @@ var Videos =
          type:       'mp4'
      },
 	 {
+		 key:        'available-content-gradprep',
+		 title:      'Graduation Prep Programs',
+		 firstFrame: ' ',
+		 videoURI:   'assets/teacher_videos/AvailableContent/AvailableContent-GradPrepPrograms.mp4', 
+	     type:       'mp4'
+ 	 },
+	 {
 		 key:        'available-content-overview',
 		 title:      'Available Content Overview',
 		 firstFrame: ' ',
@@ -435,7 +442,7 @@ var Videos =
 		 key:        'reports-overview',
 		 title:      'Overview of Reports',
 		 firstFrame: '',
-		 videoURI:   'assets/teacher_videos/v2/ReportsOverview-Final2.mp4',
+		 videoURI:   'assets/teacher_videos/Reports/ReportsOverview.mp4',
 	     type:       'mp4'
  	 },
  	 {
