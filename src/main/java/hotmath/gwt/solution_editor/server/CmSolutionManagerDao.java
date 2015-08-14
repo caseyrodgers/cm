@@ -64,13 +64,17 @@ public class CmSolutionManagerDao {
 
     public void saveSolutionXml(final Connection conn, String pid, String xml, String tutorDefine, boolean isActive) throws Exception {
         
-        makeSequentialBackup(conn,  pid);
+     
+        pid = pid.toLowerCase();
         
         PreparedStatement ps=null;
         try {
 
             if(!solutionExists(conn, pid)) {
                 createNewSolution(conn, pid, null);
+            }
+            else {
+                makeSequentialBackup(conn,  pid);
             }
 
             String sql = "update SOLUTIONS set local_edit = 1, solutionxml = ?, active = ?  where problemindex = ?";
@@ -128,6 +132,9 @@ public class CmSolutionManagerDao {
     }
 
     public String createNewSolution(final Connection conn, String newSolutionPid, String problemStatement) throws Exception {
+        
+        newSolutionPid = newSolutionPid.toLowerCase();
+        
         PreparedStatement ps=null;
         try {
             String createdBy="auto";
@@ -184,7 +191,7 @@ public class CmSolutionManagerDao {
         
         PreparedStatement ps=null;
         try {
-            String sql = "select problemindex,active from SOLUTIONS where problemindex like ? and solutionXML like '%" + searchFullText + "%' ";
+            String sql = "select lower(problemindex),active from SOLUTIONS where problemindex like ? and solutionXML like '%" + searchFullText + "%' ";
 
             if(!includeInactive) {
                 sql += " and active = 1 ";

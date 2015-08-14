@@ -124,9 +124,11 @@ public class SolutionEditor implements EntryPoint {
         _mainPanel.setWidget(borderMain);
 
         __pidToLoad = SolutionEditor.getQueryParameter("pid");
-        if(__pidToLoad == null)
+        if(__pidToLoad == null) {
             __pidToLoad = Cookies.getCookie("last_pid");
-
+        }
+        
+        __pidToLoad = __pidToLoad != null?__pidToLoad.toLowerCase():null;
 
         EventBus.getInstance().addEventListener(new CmEventListener() {
             @Override

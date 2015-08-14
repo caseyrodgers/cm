@@ -482,6 +482,7 @@ class RecentTab extends SimplePanel {
         List<SolutionSearchModel> models = new ArrayList<SolutionSearchModel>();
         String recentList = Storage.getLocalStorage().getItem("recent");
         if (recentList != null) {
+            recent = recent.toLowerCase();
             String list[] = recentList.split("\\|");
             for (int i = 0; i < list.length; i++) {
                 if (list[i] != null && list[i].length() > 0) {
@@ -511,12 +512,16 @@ class RecentPidStack {
         if (recentList == null)
             recentList = "";
 
+        recentList = recentList.toLowerCase();
+        
         String list[] = recentList.split("\\|");
         recentList = "";
         for (int i = 0; i < list.length; i++) {
             if (i > 20)
                 break;
-            pids.add(list[i]);
+            if(!pids.contains(list[i])) {
+                pids.add(list[i]);
+            }
         }
     }
 
