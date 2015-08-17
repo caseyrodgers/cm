@@ -64,7 +64,7 @@ public class TutorSolution implements SbTestImpl {
         Identification id = new Identification(def.getBook(), def.getChapter(), 
                 def.getSection(), def.getSet(), def.getProblemNumber(), def.getPage());
         
-        problem = new TutorProblem(createdBy, id, statement, statementFigure);
+        problem = new TutorProblem(def.getGUID(), createdBy, id, statement, statementFigure);
         
         this.date = _dateFormat.format(new Date());
     }
@@ -117,7 +117,7 @@ public class TutorSolution implements SbTestImpl {
     
   
     
-    static public TutorSolution parse(String xml) throws Exception  {
+    static public TutorSolution parse(String pid, String xml) throws Exception  {
         try {
             /** Use the JDOM parser until we can work out details with 
              * SimpleXML dealing with elements containing text+child-elements.
@@ -125,7 +125,9 @@ public class TutorSolution implements SbTestImpl {
              */
             
             if(true) {
-                return TutorSolutionParser.parseXML(xml);
+                TutorSolution ts = TutorSolutionParser.parseXML(xml);
+                ts.getProblem().setPid(pid);
+                return ts;
             }
             else {
                 Serializer serializer = new Persister();

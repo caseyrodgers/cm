@@ -63,10 +63,6 @@ public class CmSolutionManagerDao {
     }
 
     public void saveSolutionXml(final Connection conn, String pid, String xml, String tutorDefine, boolean isActive) throws Exception {
-        
-     
-        pid = pid.toLowerCase();
-        
         PreparedStatement ps=null;
         try {
 
@@ -132,9 +128,6 @@ public class CmSolutionManagerDao {
     }
 
     public String createNewSolution(final Connection conn, String newSolutionPid, String problemStatement) throws Exception {
-        
-        newSolutionPid = newSolutionPid.toLowerCase();
-        
         PreparedStatement ps=null;
         try {
             String createdBy="auto";
@@ -223,7 +216,7 @@ public class CmSolutionManagerDao {
             if(!rs.first()) {
                 throw new Exception("No such solution: " + pid);
             }
-            TutorSolution ts = TutorSolution.parse(rs.getString("solutionxml"));
+            TutorSolution ts = TutorSolution.parse(rs.getString("problemindex"), rs.getString("solutionxml"));
             ts.setActive(rs.getInt("active")==1?true:false);
             ts.setTutorDefine(rs.getString("tutor_define"));
 

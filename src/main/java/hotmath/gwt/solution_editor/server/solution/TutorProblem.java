@@ -6,10 +6,13 @@ import java.util.List;
 public class TutorProblem {
     
     String statementFigure;
+
+    private String pid;
     
     public TutorProblem(){}
     
-    public TutorProblem(String createdBy, Identification id, String statement, String statementFigure) {
+    public TutorProblem(String pid, String createdBy, Identification id, String statement, String statementFigure) {
+        this.pid = pid;
         this.identification = id;
         this.statement = statement;
         this.createdBy = createdBy;
@@ -32,6 +35,14 @@ public class TutorProblem {
     
     public String getCreatedBy() {
         return createdBy;
+    }
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 
     public void setCreatedBy(String createdBy) {

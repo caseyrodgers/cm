@@ -128,7 +128,7 @@ public class SolutionEditor implements EntryPoint {
             __pidToLoad = Cookies.getCookie("last_pid");
         }
         
-        __pidToLoad = __pidToLoad != null?__pidToLoad.toLowerCase():null;
+        __pidToLoad = __pidToLoad != null?__pidToLoad:null;
 
         EventBus.getInstance().addEventListener(new CmEventListener() {
             @Override

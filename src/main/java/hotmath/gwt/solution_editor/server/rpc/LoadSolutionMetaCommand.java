@@ -50,7 +50,8 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
         String solutionBase = CatchupMathProperties.getInstance().getSolutionBase();
         ProblemID pid = new ProblemID(action.getPid());
         TutorSolution tutorSolution = new CmSolutionManagerDao().getTutorSolution(conn, _pid);
-        SolutionMeta meta = new SolutionMeta(action.getPid());
+
+        SolutionMeta meta = new SolutionMeta(tutorSolution.getProblem().getPid());  // use the actual pid stored in db
         meta.setActive(tutorSolution.isActive());
         meta.setTutorDefine(tutorSolution.getTutorDefine());
         

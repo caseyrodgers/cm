@@ -482,7 +482,6 @@ class RecentTab extends SimplePanel {
         List<SolutionSearchModel> models = new ArrayList<SolutionSearchModel>();
         String recentList = Storage.getLocalStorage().getItem("recent");
         if (recentList != null) {
-            recent = recent.toLowerCase();
             String list[] = recentList.split("\\|");
             for (int i = 0; i < list.length; i++) {
                 if (list[i] != null && list[i].length() > 0) {
