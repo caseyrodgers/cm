@@ -511,12 +511,16 @@ class RecentPidStack {
         if (recentList == null)
             recentList = "";
 
+        recentList = recentList.toLowerCase();
+        
         String list[] = recentList.split("\\|");
         recentList = "";
         for (int i = 0; i < list.length; i++) {
             if (i > 20)
                 break;
-            pids.add(list[i]);
+            if(!pids.contains(list[i])) {
+                pids.add(list[i]);
+            }
         }
     }
 

@@ -336,6 +336,10 @@ public class SolutionStepEditor extends ContentPanel {
             public void onSuccess(SolutionMeta meta) {
                 SolutionEditor.__status.setText("");
                 buildSolutionEditor(meta);
+                
+                
+                
+                EventBus.getInstance().fireEvent(new CmEvent(EventTypes.SOLUTION_LOAD_COMPLETE, meta.getPid()));
             }
             @Override
             public void onFailure(Throwable arg0) {
@@ -344,9 +348,7 @@ public class SolutionStepEditor extends ContentPanel {
                 Window.alert(arg0.getMessage());
             }
         });
-        
-        
-        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.SOLUTION_LOAD_COMPLETE, pid));
+
     }
     
 
