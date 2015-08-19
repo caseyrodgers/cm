@@ -33,7 +33,13 @@ public class FindBug_SkippedQuizzes {
         String sqlAids = "select aid from HA_ADMIN";
         
         if(adminId < 0) {
-            sqlAids += " WHERE aid in (select aid from HA_ADMIN where create_date > date_add(now(), INTERVAL " + adminId + " month)) ";
+            
+            sqlAids = "select a.aid, count(*) " +
+                    "from HA_ADMIN a " +
+                    "  JOIN HA_USER u on u.admin_id = a.aid " +
+                    "  JOIN HA_TEST t on t.user_id = u.uid " +
+                    "where t.create_time > date_add(now(), INTERVAL " + adminId + " month)  " +
+                    "group by a.aid ";
         }
         else if(adminId > 0) {
             sqlAids += " WHERE aid = " + adminId;
@@ -98,6 +104,7 @@ public class FindBug_SkippedQuizzes {
     
 
     private void performCheckMoved(List<QuizInfo> qs) throws Exception {
+        __logger.info("Checking: " + qs.size());
         for(int qi=0;qi<qs.size()-1;qi++) {
             QuizInfo q1 = qs.get(qi);
             
@@ -162,7 +169,7 @@ public class FindBug_SkippedQuizzes {
         }
     }
 
-    class QuizInfo {
+    public class QuizInfo {
         int adminId;
         int userId;
         int progId;
@@ -248,7 +255,7 @@ public class FindBug_SkippedQuizzes {
     static public void main(String as[]) {
         
         SbUtilities.addOptions(as);
-        int adminId = SbUtilities.getInt(SbUtilities.getOption(null, "aid"));
+        final int adminId = SbUtilities.getInt(SbUtilities.getOption(null, "aid"));
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
