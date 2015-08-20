@@ -4,6 +4,7 @@ import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
+import hotmath.gwt.cm_core.client.model.CmPartner;
 import hotmath.gwt.cm_core.client.model.SearchSuggestion;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_core.client.util.CmBusyManager;
@@ -65,7 +66,6 @@ public class SolutionEditor implements EntryPoint {
     
     @Override
     public void onModuleLoad() {
-
         GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
             @Override
             public void onUncaughtException(Throwable e) {

@@ -47,8 +47,9 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 
 public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLoginAction, Cm2MobileUser> {
 
@@ -202,8 +203,11 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
     }
 
     static public List<PrescriptionResource> getResources(PrescriptionData prescriptionData) {
-        List<PrescriptionResource> resources = new ArrayList<PrescriptionResource>();
         
+        
+        CmResourceType order[] = {CmResourceType.REVIEW,CmResourceType.VIDEO,CmResourceType.PRACTICE,CmResourceType.ACTIVITY,CmResourceType.WEBLINK}; 
+        
+        List<PrescriptionResource> allResources = new ArrayList<PrescriptionResource>();
         for(PrescriptionSessionDataResource r: prescriptionData.getCurrSession().getInmhResources()) {
             PrescriptionResource pr = new PrescriptionResource(r.getType().name()); 
             // only types included in Cm2Mobile
@@ -213,9 +217,29 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
                 for(InmhItemData item: r.getItems()) {
                     pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle(), item.isViewed()));
                 }
-                resources.add(pr);
+                allResources.add(pr);
+            }
+            
+            else if(t.equals(CmResourceType.ACTIVITY.name()) || t.equals(CmResourceType.WEBLINK.name())) {
+                if(r.getItems().size() > 0) {
+                    for(InmhItemData item: r.getItems()) {
+                        pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle(), item.isViewed()));
+                    }
+                   allResources.add(pr); 
+                }
             }
         }
+        
+        List<PrescriptionResource> resources = new ArrayList<PrescriptionResource>();
+        for(CmResourceType rt: order) {
+            for(PrescriptionResource ar: allResources) {
+                if(rt.name().equals(ar.getType())) {
+                    resources.add(ar);
+                    break;
+                }
+            }
+        }
+        
         return resources;
     }
 
