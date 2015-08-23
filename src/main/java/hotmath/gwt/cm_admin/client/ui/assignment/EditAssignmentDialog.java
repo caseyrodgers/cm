@@ -377,7 +377,7 @@ public class EditAssignmentDialog {
      */
     private boolean saveAssignment(boolean asDraft) {
 
-        if(_comments.getValue() == null) {
+        if(_comments.getCurrentValue() == null) {
             CmMessageBox.showAlert("Not Saved", "You must enter a comment before saving.");
             return false;
         }
