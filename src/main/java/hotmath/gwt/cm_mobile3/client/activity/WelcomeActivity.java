@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.ClientFactory;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
@@ -79,14 +80,6 @@ public class WelcomeActivity implements WelcomeView.Presenter{
     
     @Override
     public void beingCatchupMathAssignments() {
-        AssignmentData.clear();
-        AssignmentData.readAssData(new CallbackWhenDataReady() {
-            
-            @Override
-            public void isReady() {
-                History.newItem("assignment_list|" + SharedData.getMobileUser().getUserId() + "|" + System.currentTimeMillis());
-            }
-        });
-
+        CatchupMathMobile3.__instance.showAssignments();
     }
 }
