@@ -62,7 +62,7 @@ public class CatchupSignupServlet extends HttpServlet {
 
     
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        _logger.info("Attempting to create a new Subscriber account for: " + req.getRemoteAddr());
+        _logger.info("Attempting to create or renew a Subscriber account for: " + req.getRemoteAddr());
         
         HotMathSubscriber sub=null;
         try {
@@ -149,6 +149,12 @@ public class CatchupSignupServlet extends HttpServlet {
                  
                  user = new HaUser();
                  user.setUid(student.getUid());
+             }
+             else {
+            	 // If a Retail account, then use HA_USER password if not null
+            	 if (selectedService.toUpperCase().indexOf("RETAIL") > -1 &&
+            		 user.getPassword() != null)
+                	 uniquePassword = user.getPassword();
              }
             
              
