@@ -40,10 +40,12 @@ import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
+import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.LoadingDialog;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
+import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
 import hotmath.gwt.cm_mobile_shared.client.view.AutoCreateView;
 import hotmath.gwt.cm_mobile_shared.client.view.AutoCreateViewImpl;
@@ -565,6 +567,17 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 }
             }
         }
+    }
+
+    public void showAssignments() {
+        AssignmentData.clear();
+        AssignmentData.readAssData(new CallbackWhenDataReady() {
+            
+            @Override
+            public void isReady() {
+                History.newItem("assignment_list|" + SharedData.getMobileUser().getUserId() + "|" + System.currentTimeMillis());
+            }
+        });        
     }
 
     // private native void registerExternalJs() /*-{

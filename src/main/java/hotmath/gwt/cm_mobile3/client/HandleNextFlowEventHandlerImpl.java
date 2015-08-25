@@ -8,12 +8,15 @@ import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewEvent;
+import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
+import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.History;
 
 
 
@@ -73,6 +76,10 @@ public class HandleNextFlowEventHandlerImpl implements HandleNextFlowEventHandle
             eventBus.fireEvent(new ShowFlashRequiredEvent());
             break;
 
+        case ASSIGNMENTS_ONLY:
+            CatchupMathMobile3.__instance.showAssignments();
+            break;
+            
         default:
             PopupMessageBox.showError("Unknown place: " + nextAction.getPlace());
             break;

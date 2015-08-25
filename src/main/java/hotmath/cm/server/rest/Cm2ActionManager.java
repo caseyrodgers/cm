@@ -20,6 +20,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
+import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
@@ -48,6 +49,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetStudentAssignmentAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
@@ -304,9 +306,17 @@ public class Cm2ActionManager {
 
 	public static String saveAssignmentProblemWidgetValue(int uid, int assKey, String pid, String value,
 			boolean correct) throws Exception {
-		
-		RpcData saveInfo = ActionDispatcher.getInstance().execute(new SaveAssignmentTutorInputWidgetAnswerAction(uid,assKey, pid, value, correct ));
-		return JsonWriter.objectToJson(saveInfo);
+	    
+	    
+	    /** update the tutor widget value and the assignment problem status in one request 
+	     * 
+	     */
+        MultiActionRequestAction multiRequest = new MultiActionRequestAction();
+        multiRequest.getActions().add(new SaveAssignmentTutorInputWidgetAnswerAction(uid,assKey,pid,value,correct));
+        multiRequest.getActions().add(new SaveAssignmentProblemStatusAction(uid,assKey,pid, correct?"Correct":"Incorrect"));
+        
+		CmList<Response> retVal = ActionDispatcher.getInstance().execute(multiRequest);
+		return JsonWriter.objectToJson(new RpcData("status=OK"));
 	}
 
 	public static String getWhiteboardForAssignmentProblem(int uid, int assKey, String pid) throws Exception  {

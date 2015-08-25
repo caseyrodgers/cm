@@ -1,6 +1,6 @@
-package hotmath.gwt.shared.client.model;
+package hotmath.gwt.cm_core.client.model;
 
-/** represents a CM Parnter.  
+/** represents a CM Partner.  
  *  
  *  Defines various pieces of information that allow for 
  *  third-party branding of CM.

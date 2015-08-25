@@ -32,8 +32,16 @@ public class FindBug_SkippedQuizzes {
         
         String sqlAids = "select aid from HA_ADMIN";
         
+        int monthsBack=-1;
         if(adminId < 0) {
-            sqlAids += " WHERE aid in (select aid from HA_ADMIN where create_date > date_add(now(), INTERVAL " + adminId + " month)) ";
+            monthsBack = adminId;
+            sqlAids = "select a.aid, count(*) " +
+                    "from HA_ADMIN a " +
+                    "  JOIN HA_USER u on u.admin_id = a.aid " +
+                    "  JOIN HA_TEST t on t.user_id = u.uid " +
+                    "where t.create_time > date_add(now(), INTERVAL " + adminId + " month)  " +
+                    " and a.aid not in (2, 5, 216) " +
+                    "group by a.aid ";
         }
         else if(adminId > 0) {
             sqlAids += " WHERE aid = " + adminId;
@@ -43,25 +51,27 @@ public class FindBug_SkippedQuizzes {
         while(rsAids.next()) {
             int aid = rsAids.getInt("aid");
 
-            testAdminId(conn, aid);
+            testAdminId(conn, aid, monthsBack);
         }
         
         
-        System.out.println("Checks complete!");
+        __logger.info("Checks complete!");
 
     }
 
-    private void testAdminId(final Connection conn, int adminId) throws Exception {
+    private void testAdminId(final Connection conn, int adminId, int monthsBack) throws Exception {
         __logger.debug("Testing admin_id: " + adminId);
         
         PreparedStatement ps=null;
         try {
-            String sql = " select u.uid, p.id as program_id,date(t.create_time) as create_time,t.test_id,t.test_segment,r.run_id " +
+            String sql = " select u.uid, u.user_name, p.id as program_id,date(t.create_time) as create_time,t.test_id,t.test_segment,r.run_id " +
                       " from  HA_USER u " +
                       " join HA_TEST t on t.user_id = u.uid " +
                       " join CM_USER_PROGRAM p on p.id = t.user_prog_id " +
                       " left join HA_TEST_RUN r on r.test_id = t.test_id " +
                       " where u.admin_id = ? " +
+                      " and u.is_active = 1 " +
+                      " and t.create_time > date_add(now(), INTERVAL " + monthsBack + " month)  " +
                       " order by u.uid, p.id,t.test_id,t.test_segment ";
             
             ps = conn.prepareStatement(sql);
@@ -76,8 +86,9 @@ public class FindBug_SkippedQuizzes {
                 int testId = rs.getInt("test_id");
                 int testSegment = rs.getInt("test_segment");
                 int runId = rs.getInt("run_id");
+                String userName = rs.getString("user_name"); 
             
-                quizInfos.add(new QuizInfo(adminId,userId, progId, testId, testSegment, runId, rs.getDate("create_time")));
+                quizInfos.add(new QuizInfo(adminId,userId, userName, progId, testId, testSegment, runId, rs.getDate("create_time")));
             }
             performChecks(quizInfos);
         }
@@ -98,6 +109,7 @@ public class FindBug_SkippedQuizzes {
     
 
     private void performCheckMoved(List<QuizInfo> qs) throws Exception {
+        __logger.debug("Test count: " + qs.size());
         for(int qi=0;qi<qs.size()-1;qi++) {
             QuizInfo q1 = qs.get(qi);
             
@@ -162,7 +174,7 @@ public class FindBug_SkippedQuizzes {
         }
     }
 
-    class QuizInfo {
+    public class QuizInfo {
         int adminId;
         int userId;
         int progId;
@@ -170,15 +182,25 @@ public class FindBug_SkippedQuizzes {
         int testSegment;
         int runId;
         Date date;
+        private String userName;
         
-        public QuizInfo(int adminId, int userId, int progId, int testId, int testSegment, int runId, Date date) {
+        public QuizInfo(int adminId, int userId, String userName, int progId, int testId, int testSegment, int runId, Date date) {
             this.adminId = adminId;
             this.userId = userId;
+            this.userName = userName;
             this.progId = progId;
             this.testId = testId;
             this.testSegment = testSegment;
             this.runId = runId;
             this.date = date;
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
         }
 
         public int getUserId() {
@@ -232,7 +254,8 @@ public class FindBug_SkippedQuizzes {
         @Override
         public String toString() {
             return "QuizInfo [adminId=" + adminId + ", userId=" + userId + ", progId=" + progId + ", testId=" + testId
-                    + ", testSegment=" + testSegment + ", runId=" + runId + ", date=" + date + "]";
+                    + ", testSegment=" + testSegment + ", runId=" + runId + ", date=" + date + ", userName=" + userName
+                    + "]";
         }
 
         public Date getDate() {
@@ -248,7 +271,7 @@ public class FindBug_SkippedQuizzes {
     static public void main(String as[]) {
         
         SbUtilities.addOptions(as);
-        int adminId = SbUtilities.getInt(SbUtilities.getOption(null, "aid"));
+        final int adminId = SbUtilities.getInt(SbUtilities.getOption(null, "aid"));
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
