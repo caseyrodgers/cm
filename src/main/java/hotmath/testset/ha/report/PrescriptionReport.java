@@ -84,7 +84,7 @@ public class PrescriptionReport {
             _fileOut = new FileWriter(logFile);
         }
 
-        programToTest = CmProgram.ALG2_PROF;
+        //programToTest = CmProgram.ALG2_PROF;
         _uid = CmTestUtils.setupDemoAccount(CmProgram.PREALG_PROF);
 
         try {
@@ -176,7 +176,7 @@ public class PrescriptionReport {
         if (altTests == 0)
             altTests = 1;
 
-        for (int altTest = 1; altTest < altTests; altTest++) {
+        for (int altTest = 0; altTest < altTests; altTest++) {
             logMessage(-1, "Testing alternate test: " + testDef + " " + altTest);
             StudentActiveInfo activeInfo = sda.loadActiveInfo(userProgram.getUserId());
             activeInfo.setActiveSegmentSlot(altTest);
