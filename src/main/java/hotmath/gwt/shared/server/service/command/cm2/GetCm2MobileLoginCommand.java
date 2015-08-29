@@ -141,11 +141,13 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             
             CmProgramFlowAction nextAction = programFlow.getActiveFlowAction(conn);
             
+            mobileUser.setPlace(nextAction.getPlace());
+            
             mobileUser.setPrescriptionTopics(extractPrescriptionTopics(conn, nextAction));
             
             //mobileUser.setFlowAction(nextAction);
             
-            if(mobileUser.getTestId() > 0) {
+            if(nextAction.getPlace() != CmPlace.ASSIGNMENTS_ONLY &&  mobileUser.getTestId() > 0) {
                 // is quiz
                 GetCm2QuizHtmlAction actionQuiz = new GetCm2QuizHtmlAction(active.getActiveTestId());
                 QuizCm2HtmlResult quizResponse = new GetCm2QuizHtmlCommand().execute(conn, actionQuiz);
@@ -205,7 +207,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
     static public List<PrescriptionResource> getResources(PrescriptionData prescriptionData) {
         
         
-        CmResourceType order[] = {CmResourceType.REVIEW,CmResourceType.VIDEO,CmResourceType.PRACTICE,CmResourceType.ACTIVITY,CmResourceType.WEBLINK}; 
+        CmResourceType order[] = {CmResourceType.REVIEW,CmResourceType.VIDEO,CmResourceType.PRACTICE,CmResourceType.WEBLINK}; 
         
         List<PrescriptionResource> allResources = new ArrayList<PrescriptionResource>();
         for(PrescriptionSessionDataResource r: prescriptionData.getCurrSession().getInmhResources()) {
@@ -219,8 +221,8 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
                 }
                 allResources.add(pr);
             }
-            
-            else if(t.equals(CmResourceType.ACTIVITY.name()) || t.equals(CmResourceType.WEBLINK.name())) {
+            // t.equals(CmResourceType.ACTIVITY.name()) || 
+            else if(t.equals(CmResourceType.WEBLINK.name())) {
                 if(r.getItems().size() > 0) {
                     for(InmhItemData item: r.getItems()) {
                         pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle(), item.isViewed()));

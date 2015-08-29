@@ -4,6 +4,7 @@ package hotmath.gwt.cm_rpc.client.rpc.cm2;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
@@ -21,6 +22,7 @@ public class Cm2MobileUser implements Response {
     int testSlot;
     int runId;
     String securityKey;
+    CmPlace place;
 
     /** composite with normal CM login */
     UserLoginResponse baseLoginResponse;
@@ -49,6 +51,14 @@ public class Cm2MobileUser implements Response {
         this.assignmentInfo = assignmentInfo;
     }
     
+    public CmPlace getPlace() {
+        return place;
+    }
+
+    public void setPlace(CmPlace place) {
+        this.place = place;
+    }
+
     public boolean isPassedTest() {
         return passedTest;
     }
@@ -157,5 +167,5 @@ public class Cm2MobileUser implements Response {
     public void setCm2QuizResponse(QuizCm2HtmlResult quizResponse) {
         this.quizResponse = quizResponse;
     }
-    
+
 }

@@ -84,6 +84,7 @@ public class PrescriptionReport {
             _fileOut = new FileWriter(logFile);
         }
 
+        //programToTest = CmProgram.ALG2_PROF;
         _uid = CmTestUtils.setupDemoAccount(CmProgram.PREALG_PROF);
 
         try {
