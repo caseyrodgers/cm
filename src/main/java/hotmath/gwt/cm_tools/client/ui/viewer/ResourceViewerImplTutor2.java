@@ -2,8 +2,8 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.event.RppHasBeenViewedEvent;
-import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
@@ -44,10 +44,7 @@ import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard {
@@ -55,6 +52,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
     static public final String STYLE_NAME="resource-viewer-impl-tutor";
     SolutionInfo _solutionInfo;
     private TutorViewerProperties _tutorViewerProperties;
+    private String _whiteboardText;
 
     public ResourceViewerImplTutor2() {
         _instance = this;
@@ -178,9 +176,14 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
             		 FlowLayoutContainer flc = (FlowLayoutContainer)parent;
             		 flc.getScrollSupport().scrollToBottom();
             	 }
-            	 
             }
-     
+             
+             
+             @Override
+            public String getWhiteboardText() {
+                 // reutrn either the passed in whiteboard text, or default
+                 return (_whiteboardText != null)?_whiteboardText:super.getWhiteboardText();
+            }
         });
         tutorPanel.addStyleName("tutor_solution_wrapper");
         addResource(tutorPanel, getResourceItem().getTitle());
@@ -609,5 +612,8 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
                 }
             }
         });
+    }
+    public void setWhiteboardText(String whiteboardText) {
+        _whiteboardText = whiteboardText;
     }
 }

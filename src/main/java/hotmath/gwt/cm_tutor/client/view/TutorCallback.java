@@ -148,7 +148,6 @@ public interface TutorCallback {
 	 */
     String getWhiteboardText();
 
-    
     /** How to handle the tutor back button
      *  
      * if null the default action of History.back is performed.
