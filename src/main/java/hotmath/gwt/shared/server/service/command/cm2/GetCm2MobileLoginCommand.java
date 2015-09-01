@@ -225,6 +225,10 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             else if(t.equals(CmResourceType.WEBLINK.name())) {
                 if(r.getItems().size() > 0) {
                     for(InmhItemData item: r.getItems()) {
+                        
+                        if(item.getType() == CmResourceType.WEBLINK_EXTERNAL) {
+                            continue; // skip external
+                        }
                         pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle(), item.isViewed()));
                     }
                    allResources.add(pr); 
