@@ -102,7 +102,6 @@ public class AccContentPanel extends ContentPanel {
                             if(viewer instanceof ResourceViewerImplTutor2) {
                                 ((ResourceViewerImplTutor2)viewer).setWhiteboardCallback(whiteboardTutorCallback);
                                 ((ResourceViewerImplTutor2)viewer).setTutorViewerProperties(tutorViewerProperties);
-                                ((ResourceViewerImplTutor2)viewer).setWhiteboardText("Work out your answer on our whiteboard; Then, click the buttons below to see the step-by-step answer.");
                             }
                             showResource(viewer, itemToShow.getTitle(), true);
                         }

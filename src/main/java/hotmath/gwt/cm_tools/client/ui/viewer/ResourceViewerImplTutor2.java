@@ -613,7 +613,4 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
             }
         });
     }
-    public void setWhiteboardText(String whiteboardText) {
-        _whiteboardText = whiteboardText;
-    }
 }
