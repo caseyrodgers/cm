@@ -91,46 +91,51 @@ public class AssignmentLessonPidSelector {
          * combine both custom quiz questions and normal quiz questions
          * 
          */
-        CmList<QuizQuestion> cqQuestions = CustomQuizQuestionManager.getInstance().getQuestionsFor(conn, lessonFile, 999);
-        __logger.debug("Read Custom Quiz MC: " + cqQuestions.size());
-
-        Collection<ProblemDto> quizQuestions = new ArrayList<ProblemDto>();
-        for (QuizQuestion qq : cqQuestions) {
-            quizQuestions.add(new ProblemDto(0, 0, "", qq.getPid(), 0));
+        if(CatchupMathProperties.getInstance().getProperty("allow.custom_problems.assignments", null) == null) {
+            __logger.info("SKIPPING CUSTOM PROBLEMS");
         }
-        if (quizQuestions.size() <= MAX_MULTI_CHOICE) {
-            // only if needed
-            quizQuestions.addAll(getQuizProblems(MAX_MULTI_CHOICE, subject, lessonName));
-            __logger.debug("Read Quiz MC: " + quizQuestions.size());
-        }
-
-        int numMcProbs = 0;
-        for (ProblemDto qq : quizQuestions) {
-
-            /**
-             * if already have enough
-             * 
-             */
-            if (problemsAll.size() >= MAX_PIDS) {
-                break;
+        else {
+            CmList<QuizQuestion> cqQuestions = CustomQuizQuestionManager.getInstance().getQuestionsFor(conn, lessonFile, 999);
+            __logger.debug("Read Custom Quiz MC: " + cqQuestions.size());
+    
+            Collection<ProblemDto> quizQuestions = new ArrayList<ProblemDto>();
+            for (QuizQuestion qq : cqQuestions) {
+                quizQuestions.add(new ProblemDto(0, 0, "", qq.getPid(), 0));
+            }
+            if (quizQuestions.size() <= MAX_MULTI_CHOICE) {
+                // only if needed
+                quizQuestions.addAll(getQuizProblems(MAX_MULTI_CHOICE, subject, lessonName));
+                __logger.debug("Read Quiz MC: " + quizQuestions.size());
             }
 
-            /**
-             * Dummy problems are used to link up custom programs and should not
-             * be included.
-             */
-            if (qq.getPid().startsWith("dummy")) {
-                continue;
-            }
-
-            /**
-             * If this pid does not already exist add it only take
-             * MAX_MULTI_CHOICE
-             */
-            if (!alreadyContains(problemsAll, qq.getPid())) {
-                problemsAll.add(qq);
-                if ((++numMcProbs) + 1 > MAX_MULTI_CHOICE) {
+            int numMcProbs = 0;
+            for (ProblemDto qq : quizQuestions) {
+    
+                /**
+                 * if already have enough
+                 * 
+                 */
+                if (problemsAll.size() >= MAX_PIDS) {
                     break;
+                }
+    
+                /**
+                 * Dummy problems are used to link up custom programs and should not
+                 * be included.
+                 */
+                if (qq.getPid().startsWith("dummy")) {
+                    continue;
+                }
+    
+                /**
+                 * If this pid does not already exist add it only take
+                 * MAX_MULTI_CHOICE
+                 */
+                if (!alreadyContains(problemsAll, qq.getPid())) {
+                    problemsAll.add(qq);
+                    if ((++numMcProbs) + 1 > MAX_MULTI_CHOICE) {
+                        break;
+                    }
                 }
             }
         }
