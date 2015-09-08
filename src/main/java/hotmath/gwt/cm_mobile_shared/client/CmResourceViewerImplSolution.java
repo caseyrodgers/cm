@@ -19,7 +19,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
-public class CmResourceViewerImplSolution extends Composite implements CmMobileResourceViewer {
+class CmResourceViewerImplSolution extends Composite implements CmMobileResourceViewer {
     
     interface SolutionPanelBinder extends UiBinder<Widget, CmResourceViewerImplSolution> {}
     private static SolutionPanelBinder uiBinder = GWT.create(SolutionPanelBinder.class);

@@ -212,8 +212,8 @@ public class TutorWrapperPanel extends Composite {
         }
     }
 
-    native public void showTutorMessage(String message) /*-{
-        $wnd.TutorManager.showMessage(message);
+    static native public void showTutorMessage(String message) /*-{
+        $wnd.TutorManager.showMessage("<b style='color: black'>" + message + "</b>");
     }-*/;
 
 
@@ -791,7 +791,15 @@ public class TutorWrapperPanel extends Composite {
                 __lastInstance.showTutorWidgetCompleteInfo();
             }
         });
+        
+        
+        __installGwtStaticHooks();
     }
+    
+
+    native static private void __installGwtStaticHooks() /*-{
+        $wnd.gwt_showMessage = @hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::showTutorMessage(Ljava/lang/String;);
+    }-*/;
 
 
     protected void showTutorWidgetCompleteInfo() {
