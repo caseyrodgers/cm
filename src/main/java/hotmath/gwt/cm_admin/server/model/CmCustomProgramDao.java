@@ -777,9 +777,12 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         return CUSTOM_QUIZ_TEMPLATE + (max+1);
     }
 
-    public CmList<CustomLessonModel> saveChanges(final Connection conn, int adminId, Integer progId, String name,
-            List<CustomLessonModel> lessons) throws Exception {
-        makeSureNameIsValid(conn, name);
+    public CmList<CustomLessonModel> updateCustomProgram(final Connection conn, int adminId, Integer progId, String name,
+            List<CustomLessonModel> lessons, boolean verifyNameValid) throws Exception {
+        
+        if(verifyNameValid) {
+            makeSureNameIsValid(conn, name);
+        }
 
         makeSureAutoCustomQuizzesCreated(conn, adminId, lessons);
 
@@ -839,8 +842,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         }
     }
 
-    public CustomProgramModel createNewCustomProgram(final Connection conn, Integer adminId, String name,
-            List<CustomLessonModel> lessons) throws Exception {
+    public CustomProgramModel createNewCustomProgram(final Connection conn, Integer adminId, String name, List<CustomLessonModel> lessons, int loadOrder, int gradeLevel) throws Exception {
         PreparedStatement stmt = null;
         
         logger.debug("Creating new anonymous Custom Program");
@@ -848,10 +850,13 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         makeSureNameIsValid(conn, name);
 
         try {
-            String sql = "insert into HA_CUSTOM_PROGRAM(admin_id,name)values(?,?)";
+            String sql = "insert into HA_CUSTOM_PROGRAM(admin_id,name,load_order,grade_level)values(?,?,?,?)";
             stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setInt(1, adminId);
             stmt.setString(2, name);
+            stmt.setInt(3, loadOrder);
+            stmt.setInt(4, gradeLevel);
+            
             if (stmt.executeUpdate() != 1) {
                 throw new CmException("Could not save new custom program lesson: " + adminId + ", " + name);
             }
@@ -861,7 +866,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
                         + lessons);
             int newProgId = rs.getInt(1);
 
-            saveChanges(conn, adminId, newProgId, name, lessons);
+            updateCustomProgram(conn, adminId, newProgId, name, lessons, true);
 
             return new CustomProgramModel(name, newProgId, 0, 0, false, false);
         } catch (Exception e) {
@@ -983,7 +988,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         	throw new Exception("A custom program already exists with that name");
         }
 
-        createNewCustomProgram(conn, destAdminId,existingCp.getProgramName(),getCustomProgramLessons(conn,  existingCp.getProgramId(), 1) );
+        createNewCustomProgram(conn, destAdminId,existingCp.getProgramName(),getCustomProgramLessons(conn,  existingCp.getProgramId(), 1),0,0 );
     }
     
     
@@ -1046,7 +1051,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         try {
             CustomProgramModel cp = getCustomProgram(conn, adminId, progName);
             if(cp == null) {
-                cp = createNewCustomProgram(conn, adminId, progName, lessons);
+                cp = createNewCustomProgram(conn, adminId, progName, lessons, 0,0);
             }
             return cp;
         }
@@ -1085,6 +1090,5 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         
         return _cpTemplates.contains(cpi);
     }
-
     
 }

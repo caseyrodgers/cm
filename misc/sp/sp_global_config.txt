@@ -1,0 +1,10 @@
+#All Standard/Global Sequential Programs (Custom Programs)
+
+misc/foundations.txt,Foundations Topics,Ess,13,3,7
+misc/ess.txt,Essentials Topics, Ess,  13, 4, 8
+misc/pre-alg.txt,Pre-Algebra Topics,Pre-Alg,13, 5, 9
+misc/alg1.txt, Algebra 1 Topics, Alg 1,  13, 6, 10
+misc/geom.txt,  Geometry Topics, Geom,  13, 7, 11
+misc/alg2.txt,  Algebra 2 Topics, Alg 2,  13, 8, 12
+misc/college_basic_math.txt,  College Basic Math Topics, BasicMath, 13, 8, 7
+misc/college_alg.txt,  College Elementary Algebra Topics, ElemAlg,  13, 7, 0

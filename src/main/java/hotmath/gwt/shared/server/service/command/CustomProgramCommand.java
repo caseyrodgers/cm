@@ -31,10 +31,10 @@ public class CustomProgramCommand implements ActionHandler<CustomProgramAction, 
                 return CmCustomProgramDao.getInstance().getCustomProgramLessonsAllSegments(conn, action.getProgramId());
                 
             case SAVE:
-                return CmCustomProgramDao.getInstance().saveChanges(conn, action.getAdminId(),action.getProgramId(), action.getProgramName(), action.getLessons());
+                return CmCustomProgramDao.getInstance().updateCustomProgram(conn, action.getAdminId(),action.getProgramId(), action.getProgramName(), action.getLessons(), true);
                   
             case CREATE:                
-                CustomProgramModel newProgram = CmCustomProgramDao.getInstance().createNewCustomProgram(conn, action.getAdminId(), action.getProgramName(), action.getLessons());
+                CustomProgramModel newProgram = CmCustomProgramDao.getInstance().createNewCustomProgram(conn, action.getAdminId(), action.getProgramName(), action.getLessons(), 0, 0);
                 return new CmArrayList<CustomLessonModel>();
                 
             case COPY:
