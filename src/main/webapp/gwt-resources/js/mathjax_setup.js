@@ -79,13 +79,18 @@ function setupMathJax() {
 /** overriden from hotmath2/web/js/hm_mathjax.js */
 function processMathJax() {
 	var el = $get('tutor_raw_steps_wrapper');
-    console.log("processing mathjax");
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub], el);
-    MathJax.Hub.Queue(function () {
-        el.style.visibility = '';
-        $(el).addClass('animated fadeInDown');
-        console.log('MathJax Complete');
-    });
+	if(!el) {
+		MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+	}
+	else {
+	    console.log("processing mathjax");
+	    MathJax.Hub.Queue(["Typeset",MathJax.Hub], el);
+	    MathJax.Hub.Queue(function () {
+	        el.style.visibility = '';
+	        $(el).addClass('animated fadeInDown');
+	        console.log('MathJax Complete');
+	    });
+	}
     
 }
 
