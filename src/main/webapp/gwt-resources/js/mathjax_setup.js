@@ -70,7 +70,8 @@ function setupMathJax() {
         	webFont: mjFont, 
         	preferredFont: "STIX-Web",
         	mtextFontInherit: true,
-        	matchFontHeight: true}
+        	matchFontHeight: false
+            }
     });
   
 }
