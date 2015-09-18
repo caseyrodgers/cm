@@ -3,8 +3,6 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Catchup Math Assignment Print</title>
-    <script src="/assets/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    </script>
 
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/tutor_layout_tablet.css" />
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/animate.css" />
@@ -42,6 +40,17 @@
     <script src="/gwt-resources/js/whiteboard_v3.js"></script>
     <script src="/gwt-resources/js/AssignmentPrint.js"></script>
     <script src="/js/debug.js"></script>
+    
+    <!--  Math Jax Configuration  -->
+    <!--  CODE IS DUPLICATED (Copy/paste) -->
+    <!-- ------------------------ -->
+    <script src='/gwt-resources/js/mathjax_setup.js'></script>
+    <script type='text/x-mathjax-config'>      
+         setupMathJax();
+    </script>
+    <script src="/assets/mathjax/2.5/MathJax.js?config=MML_HTMLorMML"></script>
+    <!-- -------------------------- -->
+    <!--  End MathJax Configuration -->
 
     <!--[if lt IE 9]><script type="text/javascript" src='/gwt-resources/js/excanvas.js'></script><![endif]-->
     <div id='work_area'></div>
