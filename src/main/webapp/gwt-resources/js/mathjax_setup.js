@@ -86,8 +86,6 @@ function processMathJax() {
 	    console.log("processing mathjax");
 	    MathJax.Hub.Queue(["Typeset",MathJax.Hub], el);
 	    MathJax.Hub.Queue(function () {
-	        el.style.visibility = '';
-	        $(el).addClass('animated fadeInDown');
 	        console.log('MathJax Complete');
 	    });
 	}

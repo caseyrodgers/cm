@@ -51,7 +51,7 @@
             </div>
             <div ui:field="problemStatus" class='tutor-prob-status'></div>
             <div class='problem-title' ui:field="title"></div>
-            <div name='tutor_raw_steps_wrapper' style='visibility: hidden'>
+            <div name='tutor_raw_steps_wrapper'>
                   <span style='font-type: italic;color: #666'>Loading ...</span>
             </div>
             <span ui:field='buttonBar'>
