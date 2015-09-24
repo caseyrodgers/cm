@@ -64,7 +64,7 @@ function setupMathJax() {
 		mjFont = 'STIX-Web';
 	}
     MathJax.Hub.Config({
-        "showMathMenu": false,
+        "showMathMenu": true,
         "HTML-CSS": { 
         	webFont: mjFont, 
         	preferredFont: "STIX-Web",
