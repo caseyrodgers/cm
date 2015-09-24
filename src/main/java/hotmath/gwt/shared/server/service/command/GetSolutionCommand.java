@@ -25,6 +25,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import org.apache.log4j.Logger;
+import org.htmlparser.Node;
+import org.htmlparser.Parser;
+import org.htmlparser.util.NodeList;
+import org.htmlparser.visitors.NodeVisitor;
 
 import sb.util.SbFile;
 
@@ -50,12 +54,18 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
         }
     }
 
+
+
+
+
+
+    protected Node root;
+
     @Override
     public SolutionInfo execute(final Connection connNotNused, GetSolutionAction action) throws Exception {
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
-            long startTime = System.currentTimeMillis();
             String pid = action.getPid();
             int uid = action.getUid();
             
@@ -73,24 +83,13 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             
             String path = ppid.getSolutionPath_DirOnly("solutions");
             solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
-
-            if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): solution_html done in: %d msec",	System.currentTimeMillis()-startTime));
             
-            startTime = System.currentTimeMillis();
-
-            if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): solutionHtml (Velocity) done in: %d msec",System.currentTimeMillis()-startTime));
+            solutionHtml = processMathMlTransformations(solutionHtml);
             
-            startTime = System.currentTimeMillis();
             boolean hasShowWork = getHasShowWork(conn, uid, pid);
-            if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): getHasShowWork() done in: %d msec",
-                    	System.currentTimeMillis()-startTime));
 
-            startTime = System.currentTimeMillis();
             SolutionInfo solutionInfo = new SolutionInfo(pid,solutionHtml,sp.getData(),hasShowWork);
-            if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): SolutionInfo() done in: %d msec",
-                    	System.currentTimeMillis()-startTime));
-            
-            
+
             /** read the context stored for this solution view instance or return null allowing new context to be 
              *  created on client.
              */
@@ -114,6 +113,77 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
         }
     }
 
+    
+    enum MathMlTransform{NONE, MAKE_TEXT_SMALLER, MAKE_FRACTIONS_LARGER}
+    
+    /** process any mathml with named math-process directive.  
+     * 
+     *  These directives, if specified, will modifing the return 
+     *  MathML with attributes+values.  Such as mathsize.
+     *  
+     *  
+     * @param solutionHtml
+     * @return
+     * @throws Exception
+     */
+    private String processMathMlTransformations(String solutionHtml) throws Exception {
+        
+        Parser parser = new Parser();
+        try {
+            NodeVisitor visitor = new NodeVisitor() {
+                MathMlTransform transform = MathMlTransform.NONE;
+                public void visitTag(org.htmlparser.Tag tag) {
+                    
+                    if (root == null)
+                        root = tag;
+
+                    if(tag.getTagName().equalsIgnoreCase("math")) {
+                        transform = MathMlTransform.NONE;
+                        
+                        String mathProcess = tag.getAttribute("math-process");
+                        if(mathProcess != null) {
+                            mathProcess = mathProcess.toLowerCase();
+                            if(mathProcess.contains("textsmaller")) {
+                                transform = MathMlTransform.MAKE_TEXT_SMALLER;
+                            }
+                            else if(mathProcess.contains("fractionslarger")) {
+                                transform = MathMlTransform.MAKE_FRACTIONS_LARGER;
+                            }
+                        }
+                    }
+                    else if(tag.getTagName().equalsIgnoreCase("mtext")) {
+                        if(transform == MathMlTransform.MAKE_TEXT_SMALLER) {
+                            tag.setAttribute("mathsize",  ".7em");
+                        }
+                    }
+                    else if(tag.getTagName().equalsIgnoreCase("mfrac")) {
+                        if(transform == MathMlTransform.MAKE_FRACTIONS_LARGER) {
+                            tag.setAttribute("mathsize",  "1.5em");
+                        }
+                    }
+
+                }
+            };
+            parser.setInputHTML(solutionHtml);
+            parser.visitAllNodesWith(visitor);
+            solutionHtml = getDocumentNode(root).toHtml();
+            
+        }
+        catch(Exception e) {
+            throw e;
+        }
+        
+        return solutionHtml;
+    }
+
+
+    private Node getDocumentNode(Node nl) {
+        Node parent = nl;
+        while (parent.getParent() != null)
+            parent = parent.getParent();
+
+        return parent;
+    }
     private SolutionParts createDefaultSolutionParts() throws Exception {
     	SolutionParts sp = new SolutionParts();
     	sp.setMainHtml("Problem was not found");
