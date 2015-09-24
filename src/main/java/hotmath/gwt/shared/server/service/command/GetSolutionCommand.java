@@ -128,6 +128,11 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
      */
     private String processMathMlTransformations(String solutionHtml) throws Exception {
         
+        int start=0;
+        int end=0;
+
+        solutionHtml = solutionHtml.replace("<MFRAC",  "<MSTYLE><MFRAC");
+        solutionHtml = solutionHtml.replace("</MFRAC>",  "</MFRAC></MSTYLE>");
         Parser parser = new Parser();
         try {
             NodeVisitor visitor = new NodeVisitor() {
@@ -138,8 +143,11 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
                         root = tag;
 
                     if(tag.getTagName().equalsIgnoreCase("math")) {
-                        transform = MathMlTransform.NONE;
                         
+                        /** check to see if there is a transform present
+                         * 
+                         */
+                        transform = MathMlTransform.NONE;
                         String mathProcess = tag.getAttribute("math-process");
                         if(mathProcess != null) {
                             mathProcess = mathProcess.toLowerCase();
@@ -156,9 +164,9 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
                             tag.setAttribute("mathsize",  ".7em");
                         }
                     }
-                    else if(tag.getTagName().equalsIgnoreCase("mfrac")) {
+                    else if(tag.getTagName().equalsIgnoreCase("mstyle")) {
                         if(transform == MathMlTransform.MAKE_FRACTIONS_LARGER) {
-                            tag.setAttribute("mathsize",  "1.5em");
+                            tag.setAttribute("mathsize",  "6em");
                         }
                     }
 
