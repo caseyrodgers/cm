@@ -84,7 +84,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             String path = ppid.getSolutionPath_DirOnly("solutions");
             solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
             
-            solutionHtml = processMathMlTransformations(solutionHtml);
+            //solutionHtml = processMathMlTransformations(solutionHtml);
             
             boolean hasShowWork = getHasShowWork(conn, uid, pid);
 
