@@ -51,7 +51,7 @@ public class GetCorrelatedTopicsPrescriptionCommand implements ActionHandler<Get
     		    prescriptions.add(pres);
     		}
     		catch(Exception e) {
-    		    __logger.warn("Error getting prescription for '" + getTopic + "'");
+    		    __logger.warn("Error getting prescription for '" + getTopic + "'", e);
     		}
     	}
     	return prescriptions;
