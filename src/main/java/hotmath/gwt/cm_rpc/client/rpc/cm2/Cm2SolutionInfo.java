@@ -1,10 +1,12 @@
 package hotmath.gwt.cm_rpc.client.rpc.cm2;
 
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionWidgetResult;
 
 public class Cm2SolutionInfo  {
     private String probStatement;
     private SolutionResponse solutionResponse;
+    private SolutionWidgetResult widgetResult;
 
     public Cm2SolutionInfo(){}
     
@@ -13,6 +15,14 @@ public class Cm2SolutionInfo  {
         this.solutionResponse = solutionResponse;
     }
 
+    public void setWidgetResult(SolutionWidgetResult widgetResult) {
+        this.widgetResult = widgetResult;
+    }
+    
+    public SolutionWidgetResult getWidgetResult() {
+        return widgetResult;
+    }
+    
 
     public SolutionResponse getSolutionResponse() {
         return solutionResponse;

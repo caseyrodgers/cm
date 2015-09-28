@@ -331,10 +331,9 @@ public class TutorWrapperPanel extends Composite {
             return;
         }
         else {
-                if(!correct  && tutorCallback.moveFirstHintOnWidgetIncorrect()) {
-                    jsni_moveToFirstStep();
-                }
-
+            if(!correct  && tutorCallback.moveFirstHintOnWidgetIncorrect()) {
+                jsni_moveToFirstStep();
+            }
             if (this.tutorCallback != null) {
 
                 /** Only save first widget value

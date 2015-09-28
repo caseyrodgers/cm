@@ -1,61 +1,491 @@
-<div name="raw_tutor_steps">
-	<div name="steps_head">
-		<div name="steps_head_title">
-			<span class='prob_id_column'>Problem: </span>12&nbsp;&nbsp;
-			<span class='prob_id_column'>Set: </span>1&nbsp;&nbsp;
-			<span class='prob_id_column'>Page: </span>
-			1
+<ul style='list-style-type: upper-roman'>
+	<li>
+		<p>parentheses with css equation1 and a math-wrapper :
+		</p>
+		<div class='equation math-wrapper'>
+			<math>
+				<mrow>
+					<mrow>
+						<mo>(</mo>
+						<mrow>
+							<mfrac>
+								<mn>2</mn>
+								<mn>3</mn>
+							</mfrac>
+						</mrow>
+						<mo>)</mo>
+					</mrow>
+				</mrow>
+			</math>
 		</div>
-	</div>        <!-- PROBLEM STATEMENT: always displayed -->
-	<div class="problemIndex" name="problem_statement">
-		<P>
-		</P>
-		<DIV class="cm_problem_text">
-			<DIV class="step_part">
-				<P>Which of the following algebraic expressions matches the phrase,
-					&quot;the quotient of eight and a number&quot;?</P>
-			</DIV>
-		</DIV>
-		<DIV></DIV>
-		<DIV name="hm_flash_widget">
-			<DIV name="hm_flash_widget_def" style="display: none">{type:'mChoice', useBase64:
-				true,value:'PGRpdiBjbGFzcz0nc3RlcF9wYXJ0Jz48cD48aW1nIGFsaWduPSJtaWRkbGUiIGFsdD0iOCBvdmVyIHgiIGNsYXNzPSJXaXJpc2Zvcm11bGEiIGRhdGEtbWF0aG1sPSLDgsKrbWF0aCB4bWxucz3DgsKoaHR0cDovL3d3dy53My5vcmcvMTk5OC9NYXRoL01hdGhNTMOCwqjDgsK7w4LCq21mcmFjw4LCu8OCwqttbsOCwrs4w4LCqy9tbsOCwrvDgsKrbWnDgsK7eMOCwqsvbWnDgsK7w4LCqy9tZnJhY8OCwrvDgsKrL21hdGjDgsK7IiBzcmM9Ii9hcHAvc2hvd2ltYWdlP2Zvcm11bGE9MmE2MjdjOGQwMGY2M2E2NjYwNGYwN2VkZDZlMmNhNDkiIC8+PC9wPgo8L2Rpdj4=|PGRpdiBjbGFzcz0nc3RlcF9wYXJ0Jz48cD48aW1nIGFsaWduPSJtaWRkbGUiIGFsdD0ieCBvdmVyIDgiIGNsYXNzPSJXaXJpc2Zvcm11bGEiIGRhdGEtbWF0aG1sPSLDgsKrbWF0aCB4bWxucz3DgsKoaHR0cDovL3d3dy53My5vcmcvMTk5OC9NYXRoL01hdGhNTMOCwqjDgsK7w4LCq21mcmFjw4LCu8OCwqttacOCwrt4w4LCqy9tacOCwrvDgsKrbW7DgsK7OMOCwqsvbW7DgsK7w4LCqy9tZnJhY8OCwrvDgsKrL21hdGjDgsK7IiBzcmM9Ii9hcHAvc2hvd2ltYWdlP2Zvcm11bGE9MzE5OTkxNDg1ZGUzNDFjMjUwZTk4NDk0NDE5Y2U0NGQiIC8+PC9wPgoKPHA+Jm5ic3A7PC9wPgo8L2Rpdj4=|PGRpdiBjbGFzcz0nc3RlcF9wYXJ0Jz48cD48aW1nIGFsaWduPSJtaWRkbGUiIGFsdD0iOCB4IiBjbGFzcz0iV2lyaXNmb3JtdWxhIiBkYXRhLW1hdGhtbD0iw4LCq21hdGggeG1sbnM9w4LCqGh0dHA6Ly93d3cudzMub3JnLzE5OTgvTWF0aC9NYXRoTUzDgsKow4LCu8OCwqttbsOCwrs4w4LCqy9tbsOCwrvDgsKrbWnDgsK7eMOCwqsvbWnDgsK7w4LCqy9tYXRow4LCuyIgc3JjPSIvYXBwL3Nob3dpbWFnZT9mb3JtdWxhPTc5MGI3Yzc3ZDZhZWI1MjE3MDdkYmUwNDUwM2RkN2RkIiAvPjwvcD4KPC9kaXY+|PGRpdiBjbGFzcz0nc3RlcF9wYXJ0Jz48cD48aW1nIGFsaWduPSJtaWRkbGUiIGFsdD0ieCBwbHVzIDgiIGNsYXNzPSJXaXJpc2Zvcm11bGEiIGRhdGEtbWF0aG1sPSLDgsKrbWF0aCB4bWxucz3DgsKoaHR0cDovL3d3dy53My5vcmcvMTk5OC9NYXRoL01hdGhNTMOCwqjDgsK7w4LCq21pw4LCu3jDgsKrL21pw4LCu8OCwqttb8OCwrsrw4LCqy9tb8OCwrvDgsKrbW7DgsK7OMOCwqsvbW7DgsK7w4LCqy9tYXRow4LCuyIgc3JjPSIvYXBwL3Nob3dpbWFnZT9mb3JtdWxhPTI5NTY2OTVlZmVmZTZmMDAyNDZhODQ5NTdhY2I4ZWI0IiAvPjwvcD4KPC9kaXY+|1',
-				format:'', ans_format: '', allowMixed: false, width:0, height:0}
-			</DIV>
-		</DIV>
-		<P></P>
-	</div>
-	<div class='hint-step' hint_step_num="0">
-		<div style="display:none;" realstep="0" steprole="hint" class="hint"
-			steptype="hint" name="stepunit-0">
-			<div name="step_title-0"></div>
-			<div class="step_content">
-				<DIV class="step_part">
-					<P>The word &quot;quotient&quot; indicates division.</P>
-				</DIV>
-			</div>
-		</div>
-		<div style="display:none;" realstep="0" steprole="step" class="step"
-			steptype="step" name="stepunit-1">
-			<div name="step_title-1"></div>
-			<div class="step_content">
-				<DIV class="step_part">
-					<P>The
-						word &quot;quotient&quot; indicates division. You can use any
-						variable, say&nbsp;
-						<EM>x</EM>,
-						to stand for &quot;a number&quot;.
-					</P>
-					<P>The
-						phrase is &quot;the quotient of 8 and a number&quot;, not &quot;a
-						number and 8.&quot;&nbsp;So,
-						the matching expression is&nbsp;
-						<IMG alt="8 over x" class="Wirisformula"
-							data-mathml="Â«math xmlns=Â¨http://www.w3.org/1998/Math/MathMLÂ¨Â»Â«mfracÂ»Â«mnÂ»8Â«/mnÂ»Â«miÂ»xÂ«/miÂ»Â«/mfracÂ»Â«/mathÂ»"
-							src="/app/showimage?formula=2a627c8d00f63a66604f07edd6e2ca49">.
-					</P>
-				</DIV>
-			</div>
-		</div>
-	</div>
-</div>
+	</li>
+	<li>
+		<p>
+			Exponent:
+			<math>
+				<msup>
+					<mn mathsize='1em'>3</mn>
+					<mn mathsize='1.1em'>2</mn>
+				</msup>
+				<mo>&#x22C5;</mo>
+				<msup>
+					<mn mathsize='1em'>3</mn>
+					<mn mathsize='1.1em'>1</mn>
+				</msup>
+				<mo>=</mo>
+				<msup>
+					<mn mathsize='1em'>3</mn>
+					<mn mathsize='1.1em'>3</mn>
+				</msup>
+		</p>
+	</li>
+	<li>
+		<p>
+			<mtext> Fractions </mtext>
+			<math>
+				<mrow>
+					<mfrac>
+						<mn mathsize='1.3em'>2</mn>
+						<mn mathsize='1.3em'>3</mn>
+					</mfrac>
+				</mrow>
+			</math>
+		</p>
+		<br />
+	</li>
+	<li>
+		<p>
+			Mixed number :
+			<math>
+				<mn mathsize='1em'>3</mn>
+				<mfrac>
+					<mn mathsize='1.3em'>2</mn>
+					<mn mathsize='1.3em'>5</mn>
+				</mfrac>
+			</math>
+		</p>
+		<br />
+
+
+	</li>
+	<li>
+		<p>
+			Parentheses:
+			<math>
+				<mrow>
+					<mrow>
+						<mo>(</mo>
+						<mrow>
+							<mfrac>
+								<mn mathsize='1.3em'>2</mn>
+								<mn mathsize='1.3em'>3</mn>
+							</mfrac>
+						</mrow>
+						<mo>)</mo>
+					</mrow>
+				</mrow>
+			</math>
+		</p>
+		<br />
+
+	</li>
+	<li>
+		<p class=MsoNormal>
+			Using pi in mathml:
+			<math>
+				<mrow>
+					<mn>2</mn>
+					<mi>&#x03C0;</mi>
+					<mi>r</mi>
+					<mi>h</mi>
+				</mrow>
+			</math>
+
+		</p>
+	</li>
+	<li>
+		<p class=MsoNormal>
+			<math>
+				<mrow>
+					<mn mathsize='.8em'>
+						Using pi in mathml:
+						<mn>&nbsp;
+						</mn>
+					</mn>
+					<mn> 2</mn>
+					<mi>&#x03C0;</mi>
+					<mi>r</mi>
+					<mi>h</mi>
+				</mrow>
+			</math>
+		</p>
+	</li>
+	<li>
+		<br />
+		<p>
+			Approximation:
+			<math>
+				<mrow>
+					<mi>x</mi>
+					<mo>&#x2248;</mo>
+					<mn>60.8</mn>
+				</mrow>
+			</math>
+		</p>
+		<br />
+
+	</li>
+	<li>
+		<p>
+			Angle and Degree:
+			<math>
+				<mrow>
+					<mi>m</mi>
+					<mo>&#x2220;</mo>
+					<mi>A</mi>
+					<mo>=</mo>
+					<mn>90</mn>
+					<mo>&#x00B0;</mo>
+				</mrow>
+			</math>
+		</p>
+		<br />
+
+	</li>
+	<li>
+		<p>
+			Square root:
+			<math>
+				<msqrt>
+					<mi>x</mi>
+				</msqrt>
+				<mo>=</mo>
+				<mn>9</mn>
+			</math>
+			<math>
+				<msqrt>
+					<mn>4</mn>
+				</msqrt>
+				<mo>=</mo>
+				<mn>2</mn>
+			</math>
+
+		</p>
+		<br />
+	</li>
+	<li>
+		<p>
+			Basic Operations:
+			<math>
+				<mrow>
+					<mo stretchy='false'>(</mo>
+					<mn>2</mn>
+					<mo>&#x22C5;</mo>
+					<mn>3</mn>
+					<mo stretchy='false'>)</mo>
+					<mo>+</mo>
+					<mn>5</mn>
+					<mo>&#x2212;</mo>
+					<mn>1</mn>
+					<mo>&#x00F7;</mo>
+					<mn>4</mn>
+					<mo>&#x00D7;</mo>
+					<mn>2</mn>
+				</mrow>
+			</math>
+		</p>
+	</li>
+	<li>
+		<p>
+			Equation:
+			<math>
+				<mrow>
+					<mn>2</mn>
+					<mi>x</mi>
+					<mo>+</mo>
+					<mn>3</mn>
+					<mi>y</mi>
+					<mo>=</mo>
+					<mn>6</mn>
+				</mrow>
+			</math>
+		</p>
+	</li>
+	<li>
+		<p>
+			Theta:
+			<math>
+				<mrow>
+					<mi>cos</mi>
+					<mi>&#x03B8;</mi>
+					<mo>=</mo>
+					<mn>45</mn>
+					<mo>&#x00B0;</mo>
+				</mrow>
+			</math>
+		</p>
+	</li>
+	<li>
+		<p>
+			Square bracket:
+			<math>
+				<mrow>
+					<mrow>
+						<mo>[</mo>
+						<mrow>
+							<mn>3</mn>
+							<mo>+</mo>
+							<mn>4</mn>
+							<mo>&#x00D7;</mo>
+							<mo stretchy='false'>(</mo>
+							<mn>5</mn>
+							<mo>&#x00D7;</mo>
+							<mn>6</mn>
+							<mo stretchy='false'>)</mo>
+						</mrow>
+						<mo>]</mo>
+					</mrow>
+					<mo>/</mo>
+					<mn>7</mn>
+				</mrow>
+			</math>
+
+		</p>
+	</li>
+	<li>
+		<p>
+			Brackets:
+			<math>
+				<mrow>
+					<mn>2</mn>
+					<mo>+</mo>
+					<mrow>
+						<mo>{</mo>
+						<mrow>
+							<mn>1</mn>
+							<mo>+</mo>
+							<mrow>
+								<mo>[</mo>
+								<mrow>
+									<mn>3</mn>
+									<mo>+</mo>
+									<mn>2</mn>
+									<mo>&#x00D7;</mo>
+									<mo stretchy='false'>(</mo>
+									<mn>4</mn>
+									<mo>+</mo>
+									<mn>5</mn>
+									<mo stretchy='false'>)</mo>
+								</mrow>
+								<mo>]</mo>
+							</mrow>
+						</mrow>
+						<mo>}</mo>
+					</mrow>
+				</mrow>
+			</math>
+		</p>
+	</li>
+	<li>
+		<p>
+			Subscripts with variables:
+			<math>
+				<msub>
+					<mi>S</mi>
+					<mi>n</mi>
+				</msub>
+				<mo>=</mo>
+				<msub>
+					<mi>S</mi>
+					<mrow>
+						<mi>n</mi>
+						<mo>&#x2212;</mo>
+						<mn>1</mn>
+					</mrow>
+				</msub>
+				<mo>+</mo>
+				<msub>
+					<mi>S</mi>
+					<mrow>
+						<mi>n</mi>
+						<mo>&#x2212;</mo>
+						<mn>2</mn>
+					</mrow>
+				</msub>
+
+			</math>
+		</p>
+	</li>
+	<li>
+		<p>
+			Subscripts with variables: mathsize:
+			<math>
+				<msub>
+					<mi>S</mi>
+					<mi mathsize='1.2em'>n</mi>
+				</msub>
+				<mo>=</mo>
+				<msub>
+					<mi>S</mi>
+					<mrow>
+						<mi mathsize='1.2em'>n</mi>
+						<mo mathsize='1.2em'>&#x2212;</mo>
+						<mn mathsize='1.2em'>1</mn>
+					</mrow>
+				</msub>
+				<mo>+</mo>
+				<msub>
+					<mi>S</mi>
+					<mrow>
+						<mi mathsize='1.2em'>n</mi>
+						<mo mathsize='1.2em'>&#x2212;</mo>
+						<mn mathsize='1.2em'>2</mn>
+					</mrow>
+				</msub>
+
+			</math>
+		</p>
+
+	</li>
+	<li>
+		<p>
+			Subscripts with numbers:
+			<math>
+				<msub>
+					<mi>S</mi>
+					<mn>0</mn>
+				</msub>
+				<mo>=</mo>
+				<msub>
+					<mi>S</mi>
+					<mn>1</mn>
+				</msub>
+				<mo>+</mo>
+				<msub>
+					<mi>S</mi>
+					<mn>2</mn>
+				</msub>
+
+			</math>
+		</p>
+
+	</li>
+	<li>
+		<p>
+			Subscripts with numbers: mathsize:
+			<math>
+				<msub>
+					<mi>S</mi>
+					<mn mathsize='1.2em'>0</mn>
+				</msub>
+				<mo>=</mo>
+				<msub>
+					<mi>S</mi>
+					<mn mathsize='1.2em'>1</mn>
+				</msub>
+				<mo>+</mo>
+				<msub>
+					<mi>S</mi>
+					<mn mathsize='1.2em'>2</mn>
+				</msub>
+
+			</math>
+		</p>
+	</li>
+	<li>
+		<p>
+			nth root: with numbers:
+			<math>
+				<mrow>
+					<mroot>
+						<mrow>
+							<mn mathsize='1em'>625</mn>
+						</mrow>
+						<mn mathsize='1.3em'>4</mn>
+					</mroot>
+					<mo>=</mo>
+					<mn mathsize='1em'>5</mn>
+				</mrow>
+			</math>
+		</p>
+	</li>
+	<li>
+		<p>
+			nth root: with variables:
+			<math>
+				<mrow>
+					<mroot>
+						<mrow>
+							<msup>
+								<mi mathsize='1.2em'>a</mi>
+								<mi mathsize='1.2em'>n</mi>
+							</msup>
+						</mrow>
+						<mi mathsize='1.3em'>n</mi>
+					</mroot>
+					<mo>=</mo>
+					<mi mathsize='1.2em'>a</mi>
+				</mrow>
+			</math>
+
+		</p>
+	</li>
+	<li>
+		<p>
+			Arc:
+			<math>
+				<mrow>
+					<mover accent='true'>
+						<mrow>
+							<mi>A</mi>
+							<mi>B</mi>
+							<mi>C</mi>
+						</mrow>
+						<mo>&OverParenthesis;
+						</mo>
+					</mover>
+					<mo>=</mo>
+					<mover accent='true'>
+						<mrow>
+							<mi>a</mi>
+							<mi>b</mi>
+							<mi>c</mi>
+						</mrow>
+						<mo>&OverParenthesis;
+						</mo>
+					</mover>
+				</mrow>
+			</math>
+		</p>
+	</li>
+	<li>
+		<p>
+			Inequalities:
+			<math>
+				<mtable columnalign='left'>
+					<mtr>
+						<mtd>
+							<mi>x</mi>
+							<mo>&#x2265;</mo>
+							<mn>5</mn>
+						</mtd>
+					</mtr>
+					<mtr>
+						<mtd>
+							<mi>y</mi>
+							<mo>&#x2264;</mo>
+							<mn>2</mn>
+						</mtd>
+					</mtr>
+					<mtr>
+						<mtd>
+							<mi>z</mi>
+							<mo>&#x2260;</mo>
+							<mn>1</mn>
+						</mtd>
+					</mtr>
+				</mtable>
+			</math>
+		</p>
+	</li>
+</ul>
