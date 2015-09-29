@@ -112,6 +112,8 @@ public class Cm2ActionManager {
 
         HaTestDao.resetTest(testId);
 
+        HaTestDao.getInstance().setAllToCorrectExcept(testId, 2);
+        
         CheckCm2QuizAction action = new CheckCm2QuizAction(testId);
 
         QuizCm2CheckedResult results = ActionDispatcher.getInstance().execute(action);

@@ -9,7 +9,7 @@ public class GetPrescriptionAction implements Action<PrescriptionSessionResponse
     int runId;
     int sessionNumber;
     boolean updateActiveInfo;
-
+    
     public GetPrescriptionAction() {}
 
     /** Return the Prescription data for this runid and session

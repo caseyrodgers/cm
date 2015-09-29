@@ -77,9 +77,9 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
            basicUser = HaUserFactory.loginToCatchup(conn, action.getName(), action.getPassword());
        }
        
-       if (basicUser.getUserType() != UserType.STUDENT)
+       if (basicUser.getUserType() != UserType.STUDENT) {
             throw new CmException("Invalid user type: " + basicUser.getUserType());
-        
+       }
         
 
         CmProgramFlow programFlow = new CmProgramFlow(conn, basicUser.getUserKey());
