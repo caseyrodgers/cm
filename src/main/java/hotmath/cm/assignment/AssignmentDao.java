@@ -628,7 +628,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		 */
 		final Map<Integer, String> nameMap = new HashMap<Integer, String>();
 		List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql,
-				new Object[] { assignKey, assignKey, assignKey },
+				new Object[] { assignKey, assignKey, assignKey, assignKey, assignKey },
 				new RowMapper<StudentProblemDto>() {
 					@Override
 					public StudentProblemDto mapRow(ResultSet rs, int rowNum)
