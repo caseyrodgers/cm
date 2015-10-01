@@ -1,19 +1,17 @@
 package hotmath.gwt.solution_editor.client;
 
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
-import hotmath.gwt.cm_core.client.util.CmAlertify.PromptCallback;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-
-
 import hotmath.gwt.solution_editor.client.rpc.ReplaceTextSolutionsAction;
 
 import java.util.List;
 
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -54,7 +52,19 @@ public class SearchReplaceDialog extends GWindow {
             return;
         }
         
-        CmMessageBox.confirm("Search/Replace",  "Are you sure you want to replace '" + searchFor + "' with '" + replaceWith + "' in all " + resultSet.size() + " solution(s)?", new ConfirmCallback() {
+        
+        SafeHtmlBuilder builder = new SafeHtmlBuilder();
+        builder.appendEscaped(_searchFor.getCurrentValue());
+        String forLab = builder.toSafeHtml().asString();
+                
+        
+        
+        builder = new SafeHtmlBuilder();
+        builder.appendEscaped(_replaceWith.getCurrentValue());
+        String repLab = builder.toSafeHtml().asString();
+
+        
+        CmMessageBox.confirm("Search/Replace",  "Are you sure you want to replace '" + forLab + "' with '" + repLab + "' in all " + resultSet.size() + " solution(s)?", new ConfirmCallback() {
             
             @Override
             public void confirmed(boolean yesNo) {

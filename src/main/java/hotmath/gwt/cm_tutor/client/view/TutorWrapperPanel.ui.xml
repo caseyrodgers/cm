@@ -54,9 +54,6 @@
             <div name='tutor_raw_steps_wrapper'>
                   <span style='font-type: italic;color: #666'>Loading ...</span>
             </div>
-            
-            
-
             <span ui:field='buttonBar'>
             <div name='steps_tail'>
                 

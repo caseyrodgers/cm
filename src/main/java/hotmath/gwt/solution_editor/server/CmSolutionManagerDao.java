@@ -184,13 +184,14 @@ public class CmSolutionManagerDao {
         
         PreparedStatement ps=null;
         try {
-            String sql = "select lower(problemindex),active from SOLUTIONS where problemindex like ? and solutionXML like '%" + searchFullText + "%' ";
+            String sql = "select lower(problemindex),active from SOLUTIONS where problemindex like ? and solutionXML like ?";
 
             if(!includeInactive) {
                 sql += " and active = 1 ";
             }
             ps = conn.prepareStatement(sql);
             ps.setString(1, searchFor + "%");
+            ps.setString(2, "%" + searchFullText + "%");
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 list.add(new SolutionSearchModel(rs.getString(1), rs.getInt("active")==1?true:false));

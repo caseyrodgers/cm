@@ -407,7 +407,7 @@ var Videos =
 		 key:        'mobile-webinar',
 		 title:      'Student Interface on the iPad',
 		 firstFrame: '',
-		 videoURI:   'assets/webinar/mp4/mobile-webinar.mp4', 
+		 videoURI:   'teacher_videos/v2/StudentVideo-iPAD-Final.mp4', 
 	     type:       'mp4'
  	 },
 	 {

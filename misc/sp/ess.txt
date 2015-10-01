@@ -1,0 +1,52 @@
+#subject=Ess
+#name=Essentials Topics
+#load_order=4
+#grade_level=8
+#
+#
+ topics/least-common-denominators.html
+ topics/integers.html
+ topics/word-problems-involving-integers.html
+ topics/equivalent-fractions.html
+ topics/simplest-form.html
+ topics/converting-fractions-to-decimals.html
+ topics/adding-and-subtracting-negatives.html
+ topics/mean-median-mode.html
+ topics/mode.html
+ topics/adding-and-subtracting-fractions.html
+ topics/basic-operations.html
+ topics/adding-and-subtracting-decimals.html
+ topics/evaluating-expressions.html
+ topics/area.html
+ topics/rectangle.html
+ topics/prime-composite.html
+ topics/rational-numbers.html
+ topics/percent.html
+ topics/percents-and-decimals.html
+ topics/order-of-operations.html
+ topics/mixed-numbers.html
+ topics/converting-non-repeating-decimals-to-fractions.html
+ topics/square-roots.html
+ topics/square.html
+ topics/exponents.html
+ topics/greatest-common-factors.html
+ topics/comparing-fractions.html
+ topics/improper-fractions.html
+ topics/multiplying-and-dividing-negatives.html
+ topics/prime-factorization.html
+ topics/word-problems.html
+ topics/variables.html
+ topics/distributive-property.html
+ topics/range-of-data.html
+ topics/multiplying-a-fraction-by-a-fraction.html
+ topics/reciprocals.html
+ topics/quadrants.html
+ topics/dividing-by-a-fraction.html
+ topics/multiplying-a-fraction-by-an-integer.html
+ topics/multiplying-decimals.html
+ topics/divisibility-tests.html
+ topics/cartesian-plane.html
+ topics/multiplying-and-dividing-with-decimals.html
+ topics/rates-ratios.html
+ topics/unit-rates.html
+ topics/simple-interest.html

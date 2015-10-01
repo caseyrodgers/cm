@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -36,6 +37,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+
+
 
 /**
  * defines data access methods for HaTest
@@ -832,6 +835,22 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
         finally {
             SqlUtilities.releaseResources(null, ps, conn);
         }        
+    }
+
+    public  void setAllToCorrectExcept(int testId, int countCorrect) throws Exception {
+        Connection conn=null;
+        try {
+            HaTest test = loadTest(testId);
+            conn = HMConnectionPool.getConnection();
+            
+            for(int i=countCorrect;i<test.getPids().size();i++) {
+                String p = test.getPids().get(i);
+                saveTestQuestionChange(conn,testId,p,0,true); 
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null, null, conn);
+        }    
     }    
 
 }

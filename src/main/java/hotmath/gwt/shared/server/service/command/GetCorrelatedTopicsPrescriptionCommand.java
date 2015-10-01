@@ -45,8 +45,14 @@ public class GetCorrelatedTopicsPrescriptionCommand implements ActionHandler<Get
     	CmList<PrescriptionSessionResponse> prescriptions = new CmArrayList<PrescriptionSessionResponse>();
     	for(LessonModel lesson: associatedLessons) {
     		GetTopicPrescriptionAction getTopic = new GetTopicPrescriptionAction(lesson.getLessonFile());
-    		PrescriptionSessionResponse pres = new GetTopicPrescriptionCommand().execute(conn, getTopic);
-    		prescriptions.add(pres);
+    		
+    		try {
+    		    PrescriptionSessionResponse pres = new GetTopicPrescriptionCommand().execute(conn, getTopic);
+    		    prescriptions.add(pres);
+    		}
+    		catch(Exception e) {
+    		    __logger.warn("Error getting prescription for '" + getTopic + "'", e);
+    		}
     	}
     	return prescriptions;
     }

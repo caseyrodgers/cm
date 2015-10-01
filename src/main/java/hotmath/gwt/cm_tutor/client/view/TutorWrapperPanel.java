@@ -212,7 +212,7 @@ public class TutorWrapperPanel extends Composite {
         }
     }
 
-    native public void showTutorMessage(String message) /*-{
+    static native public void showTutorMessage(String message) /*-{
         $wnd.TutorManager.showMessage(message);
     }-*/;
 
@@ -331,10 +331,9 @@ public class TutorWrapperPanel extends Composite {
             return;
         }
         else {
-                if(!correct  && tutorCallback.moveFirstHintOnWidgetIncorrect()) {
-                    jsni_moveToFirstStep();
-                }
-
+            if(!correct  && tutorCallback.moveFirstHintOnWidgetIncorrect()) {
+                jsni_moveToFirstStep();
+            }
             if (this.tutorCallback != null) {
 
                 /** Only save first widget value
@@ -791,7 +790,18 @@ public class TutorWrapperPanel extends Composite {
                 __lastInstance.showTutorWidgetCompleteInfo();
             }
         });
+        
+        
+        __installGwtStaticHooks();
     }
+    
+
+    
+    native static private void __installGwtStaticHooks() /*-{
+        $wnd.gwt_showMessage = function(msg) {
+             @hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::showTutorMessage(Ljava/lang/String;)("<span style='color: black'>" + msg + "</span>");
+        }
+    }-*/;
 
 
     protected void showTutorWidgetCompleteInfo() {

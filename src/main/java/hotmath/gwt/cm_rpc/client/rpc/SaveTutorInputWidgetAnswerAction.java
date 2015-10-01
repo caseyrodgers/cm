@@ -19,20 +19,14 @@ public class SaveTutorInputWidgetAnswerAction implements Action<UserTutorWidgetS
         this.value = value;        
         this.correct = correct;
     }
-    
-
 
     public String getValue() {
         return value;
     }
 
-
-
     public void setValue(String value) {
         this.value = value;
     }
-
-
 
     public boolean isCorrect() {
         return correct;
@@ -63,13 +57,9 @@ public class SaveTutorInputWidgetAnswerAction implements Action<UserTutorWidgetS
         return userId;
     }
 
-
-
     public void setUserId(int userId) {
         this.userId = userId;
     }
-
-
 
     @Override
     public String toString() {

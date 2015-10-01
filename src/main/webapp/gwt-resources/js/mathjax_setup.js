@@ -50,7 +50,6 @@ function showFontConfigurationDialog() {
  *  called from index.html (or startup) in text/mathjax js block
  */
 function setupMathJax() {
-	
     var url = window.location.href;
 	var ind = url.indexOf('&mj_font');
     var mjFont=null;
@@ -70,8 +69,26 @@ function setupMathJax() {
         	webFont: mjFont, 
         	preferredFont: "STIX-Web",
         	mtextFontInherit: true,
-        	matchFontHeight: true}
+        	matchFontHeight: false
+            }
     });
   
+}
+
+
+/** overriden from hotmath2/web/js/hm_mathjax.js */
+function processMathJax() {
+	var el = $get('tutor_raw_steps_wrapper');
+	if(!el) {
+		MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+	}
+	else {
+	    console.log("processing mathjax");
+	    MathJax.Hub.Queue(["Typeset",MathJax.Hub], el);
+	    MathJax.Hub.Queue(function () {
+	        console.log('MathJax Complete');
+	    });
+	}
+    
 }
 

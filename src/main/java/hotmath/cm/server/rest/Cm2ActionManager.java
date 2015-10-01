@@ -28,6 +28,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
@@ -35,6 +36,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchApp;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
+import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.CheckCm2QuizAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2Assignments;
@@ -55,6 +57,7 @@ import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
 import hotmath.testset.ha.HaTestDao;
+import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
@@ -109,6 +112,8 @@ public class Cm2ActionManager {
 
         HaTestDao.resetTest(testId);
 
+        HaTestDao.getInstance().setAllToCorrectExcept(testId, 2);
+        
         CheckCm2QuizAction action = new CheckCm2QuizAction(testId);
 
         QuizCm2CheckedResult results = ActionDispatcher.getInstance().execute(action);
@@ -167,6 +172,11 @@ public class Cm2ActionManager {
             solutionInfo2.setSolutionVariableContext(context!=null?context.getContextJson():null);
 
             Cm2SolutionInfo solutionInfo = new Cm2SolutionInfo(solutionSteps.getProblemStatement(), solutionInfo2);
+            
+            
+            if(rid > 0) {
+                solutionInfo.setWidgetResult(HaTestRunDao.getInstance().getRunTutorWidgetValue(rid, pid));
+            }
             return JsonWriter.objectToJson(solutionInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -343,6 +353,11 @@ public class Cm2ActionManager {
     public static String turnInAssignment(int uid, int assignKey) throws Exception {
         RpcData res = ActionDispatcher.getInstance().execute(new TurnInAssignmentAction(uid,  assignKey));
         return JsonWriter.objectToJson(res);
+    }
+
+    public static String saveTutorInputWidgetAnswer(int uid, int rid, String pid, String value, boolean isCorrect) throws Exception {
+        UserTutorWidgetStats data = ActionDispatcher.getInstance().execute(new SaveTutorInputWidgetAnswerAction(uid, rid, pid, value, isCorrect));
+        return JsonWriter.objectToJson(data);
     }
 
 }

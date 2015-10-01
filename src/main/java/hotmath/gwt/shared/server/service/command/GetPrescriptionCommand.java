@@ -7,6 +7,7 @@ import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.Range;
 import hotmath.cm.dao.WebLinkDao;
 import hotmath.cm.program.CmProgramFlow;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel;
 import hotmath.gwt.cm_rpc.client.model.WebLinkModel.LinkViewer;
@@ -33,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import sb.util.SbUtilities;
 
 /**
  * Read an existing prescription based on a test run
@@ -249,21 +252,25 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         
         /** are there any external web resources setup for this admin?
          * 
+         * allow override to bypass during dev
          */
         
-        List<WebLinkModel> webLinks = WebLinkDao.getInstance().getWebLinksFor(cmProgram.getStudent().getUid(),cmProgram.getStudent().getAdminUid(),cmProgram.getStudent().getGroupId(), presData.getCurrSession().getTopic());
-        if(webLinks.size() > 0) {
-            PrescriptionSessionDataResource customResource = new PrescriptionSessionDataResource();
-            customResource.setType(CmResourceType.WEBLINK);
-            customResource.setLabel("External Web Links");
-            for(WebLinkModel wl: webLinks) {
-                InmhItemData wlItem = new InmhItemData(customResource.getType(),wl.getUrl(), wl.getName());
-                if(wl.getLinkViewer() == LinkViewer.EXTERNAL_WINDOW) {
-                    wlItem.setType(CmResourceType.WEBLINK_EXTERNAL);
+        if(!SbUtilities.getBoolean(CatchupMathProperties.getInstance().getProperty("no.weblinks", "false"))) {
+            // allow disable at server.
+            List<WebLinkModel> webLinks = WebLinkDao.getInstance().getWebLinksFor(cmProgram.getStudent().getUid(),cmProgram.getStudent().getAdminUid(),cmProgram.getStudent().getGroupId(), presData.getCurrSession().getTopic());
+            if(webLinks.size() > 0) {
+                PrescriptionSessionDataResource customResource = new PrescriptionSessionDataResource();
+                customResource.setType(CmResourceType.WEBLINK);
+                customResource.setLabel("External Web Links");
+                for(WebLinkModel wl: webLinks) {
+                    InmhItemData wlItem = new InmhItemData(customResource.getType(),wl.getUrl(), wl.getName());
+                    if(wl.getLinkViewer() == LinkViewer.EXTERNAL_WINDOW) {
+                        wlItem.setType(CmResourceType.WEBLINK_EXTERNAL);
+                    }
+                    customResource.getItems().add(wlItem);
                 }
-                customResource.getItems().add(wlItem);
+                sessionData.getInmhResources().add(customResource);            
             }
-            sessionData.getInmhResources().add(customResource);            
         }
         
         

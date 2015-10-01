@@ -107,6 +107,18 @@ public class ActionDispatcherRest {
 
 
     @POST
+    @Path("/prescription/{rid}/solution/{pid}/widget")
+    public String saveTutorInputWidgetAnswer(@PathParam("rid") int rid, @PathParam("pid") String pid,String jsonData) throws Exception {
+        JSONObject jo = new JSONObject(jsonData);
+        
+        int uid = jo.getInt("uid");
+        String value = jo.getString("value");
+        boolean isCorrect = jo.getBoolean("isCorrect");
+        
+        return Cm2ActionManager.saveTutorInputWidgetAnswer(uid, rid, pid, value, isCorrect);
+    }
+
+    @POST
     @Path("/prescription/{rid}/solution/{pid}/whiteboard/{uid}")
     public String getPrescriptionSolutionWhiteboard(@PathParam("rid") int rid, @PathParam("pid") String pid, @PathParam("uid") int uid) throws Exception {
         return Cm2ActionManager.getPrescriptionSolutionWhiteboard(uid, rid, pid);

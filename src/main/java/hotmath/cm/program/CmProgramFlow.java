@@ -152,8 +152,8 @@ public class CmProgramFlow {
     		else {
         		if (activeInfo.getActiveRunId() > 0) {
         			// is in a prescription
-        			return new CmProgramFlowAction(new GetPrescriptionCommand().execute(conn, new GetPrescriptionAction(
-        					activeInfo.getActiveRunId(), activeInfo.getActiveRunSession(), true)));
+        		    GetPrescriptionAction action = new GetPrescriptionAction(activeInfo.getActiveRunId(), activeInfo.getActiveRunSession(), true);
+        			return new CmProgramFlowAction(new GetPrescriptionCommand().execute(conn, action));
         		} else {
         			/**
         			 * If no quiz for current segment, then create a new one
