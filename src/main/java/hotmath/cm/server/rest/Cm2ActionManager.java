@@ -1,6 +1,7 @@
 package hotmath.cm.server.rest;
 
 import hotmath.ProblemID;
+import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
@@ -57,7 +58,9 @@ import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
 import hotmath.testset.ha.HaTestDao;
+import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
+import hotmath.testset.ha.HaUser;
 import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
@@ -106,13 +109,15 @@ public class Cm2ActionManager {
     }
 
     // static int TEST_ID=2610241; // debug
-    static int USER_ID = 678549;
+    // static int USER_ID = 678549;
 
-    public static String checkQuiz(int testId) throws Exception {
+    public static String checkQuiz(int testId, boolean forceRandomPass) throws Exception {
 
         HaTestDao.resetTest(testId);
 
-        //HaTestDao.getInstance().setAllToCorrectExcept(testId, 2);
+        if(forceRandomPass) {
+            HaTestDao.getInstance().setAllToCorrectExcept(testId, 2);
+        }
         
         CheckCm2QuizAction action = new CheckCm2QuizAction(testId);
 
@@ -273,7 +278,14 @@ public class Cm2ActionManager {
 
     public static String advanceUserProgram(int uid, boolean advanceToNextSegment) throws Exception {
         
-        FlowType flowType = advanceToNextSegment?FlowType.NEXT:FlowType.RETAKE_SEGMENT;
+        
+        FlowType flowType = FlowType.RETAKE_SEGMENT;
+   
+        HaUser user = HaUserDao.getInstance().lookUser(uid, false);
+        HaTestRun run = HaTestRunDao.getInstance().lookupTestRun(user.getActiveTestRunId());
+        if(run.isPassing()) {
+            flowType = FlowType.NEXT;
+        }
         
         GetCmProgramFlowAction action = new GetCmProgramFlowAction(uid, flowType);
         CmProgramFlowAction result = ActionDispatcher.getInstance().execute(action);

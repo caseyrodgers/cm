@@ -40,8 +40,14 @@ public class ActionDispatcherRest {
     @POST
     @GET
     @Path("/quiz/{testId}/check")
-    public String checkQuiz(@PathParam("testId") int testId) throws Exception {
-        return Cm2ActionManager.checkQuiz(testId);
+    public String checkQuiz(@PathParam("testId")  int testId, String params) throws Exception {
+        
+        boolean isAutoTestMode = false;
+        if(params != null && params.length() > 0) {
+            JSONObject jo = new JSONObject(params);
+            isAutoTestMode = jo.getBoolean("testMode");
+        }
+        return Cm2ActionManager.checkQuiz(testId,isAutoTestMode);
     }
 
     @POST

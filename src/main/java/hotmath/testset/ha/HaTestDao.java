@@ -837,13 +837,20 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
         }        
     }
 
-    public  void setAllToCorrectExcept(int testId, int countCorrect) throws Exception {
+    /** Mark test with responses that are interpreted as a passing grade
+     * 
+     *  
+     * @param testId
+     * @param countIncorrect this many will be marked incorrect
+     * @throws Exception
+     */
+    public  void setAllToCorrectExcept(int testId, int countIncorrect) throws Exception {
         Connection conn=null;
         try {
             HaTest test = loadTest(testId);
             conn = HMConnectionPool.getConnection();
             
-            for(int i=countCorrect;i<test.getPids().size();i++) {
+            for(int i=countIncorrect;i<test.getPids().size();i++) {
                 String p = test.getPids().get(i);
                 saveTestQuestionChange(conn,testId,p,0,true); 
             }
