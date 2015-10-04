@@ -1,11 +1,13 @@
 package hotmath.cm.server.rest;
 
 import hotmath.ProblemID;
-import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_core.client.model.TopicSearchResults;
+import hotmath.gwt.cm_core.client.model.UserSyncInfo;
+import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
@@ -17,6 +19,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
@@ -369,6 +372,17 @@ public class Cm2ActionManager {
 
     public static String saveTutorInputWidgetAnswer(int uid, int rid, String pid, String value, boolean isCorrect) throws Exception {
         UserTutorWidgetStats data = ActionDispatcher.getInstance().execute(new SaveTutorInputWidgetAnswerAction(uid, rid, pid, value, isCorrect));
+        return JsonWriter.objectToJson(data);
+    }
+
+    public static String getUserInfo(int uid) throws Exception {
+        UserLoginResponse data = ActionDispatcher.getInstance().execute(new GetUserInfoAction(uid, null));
+        return JsonWriter.objectToJson(data);
+    }
+
+    public static String getUserSyncEvents(int uid) throws Exception {
+        GetUserSyncAction action = new GetUserSyncAction(uid);
+        UserSyncInfo data = ActionDispatcher.getInstance().execute(action);
         return JsonWriter.objectToJson(data);
     }
 

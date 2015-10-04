@@ -200,6 +200,21 @@ public class ActionDispatcherRest {
         return Cm2ActionManager.getCm2AssignmentProblem(uid, assignKey, pid);
     }
     
+    @GET
+    @POST
+    @Path("/user/{uid}/info")
+    public String getAssignmentProblem(@PathParam("uid") int uid) throws Exception {
+        return Cm2ActionManager.getUserInfo(uid);
+    }
+    
+    @GET
+    @POST
+    @Path("/user/{uid}/events")
+    public String getUserSyncEvents(@PathParam("uid") int uid) throws Exception {
+        return Cm2ActionManager.getUserSyncEvents(uid);
+    }
+
+    
     @POST
     @Path("user/{uid}/assignment/{assignKey}/{pid}/widget")
     public String saveAssignmentProblemWidgetValue(@PathParam("uid") int uid, @PathParam("assignKey") int assKey ,@PathParam("pid") String pid, String jsonData) throws Exception {

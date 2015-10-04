@@ -9,6 +9,7 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.DateUtils;
 import hotmath.cm.util.PropertyLoadFileException;
 import hotmath.cm.util.QueryHelper;
+import hotmath.gwt.cm_core.client.model.CmStudentEvent;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -477,6 +478,42 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
             return testId;
         } finally {
             SqlUtilities.releaseResources(null, null, conn);
+        }
+    }
+
+    /** Return event data for named user
+     * 
+     *  remove after extraction
+     *  
+     * 
+     * @param conn
+     * @param uid
+     * @return
+     * @throws Exception
+     */
+    public CmStudentEvent getStudentEvent(int uid) throws Exception {
+        Connection conn=null;
+        
+        String sql = "select * from HA_USER_EVENTS where uid = ?";
+        PreparedStatement ps =null;
+        String eventData=null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, uid);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                eventData = rs.getString("event_data");
+                sql = "delete from HA_USER_EVENTS where uid = " + uid;
+                conn.createStatement().executeUpdate(sql);
+            }
+            
+            CmStudentEvent studentEvent = new CmStudentEvent(eventData);
+            
+            return studentEvent;
+            
+        } finally {
+            SqlUtilities.releaseResources(null, ps,conn);
         }
     }
 
