@@ -81,6 +81,11 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             throw new CmException("Invalid user type: " + basicUser.getUserType());
        }
         
+       
+       
+       if(action.getDeviceToken() != null && action.getDeviceToken().length() > 0) {
+           HaLoginInfoDao.getInstance().addUserDevice(basicUser.getUserKey(), action.getDeviceToken());
+       }
 
         CmProgramFlow programFlow = new CmProgramFlow(conn, basicUser.getUserKey());
         

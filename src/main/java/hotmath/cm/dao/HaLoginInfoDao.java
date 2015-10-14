@@ -10,6 +10,7 @@ import hotmath.gwt.shared.client.util.CmExceptionLoginAlreadyConsumed;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaUserExtendedDao;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.security.SecureRandom;
@@ -201,6 +202,31 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
         } finally {
             SqlUtilities.releaseResources(null, pstat, null);
         }
+    }
+
+
+    public void addUserDevice(int uid, String deviceToken) throws Exception {
+        
+        Connection conn=null;
+        PreparedStatement ps=null;
+        try {
+            conn = HMConnectionPool.getConnection();
+            
+            conn.createStatement().executeUpdate("delete from HA_USER_DEVICE where uid = " + uid);
+            String sql = "insert into HA_USER_DEVICE(uid, device_token,register_time)values(?,?, now())";
+            ps = conn.prepareStatement(sql);
+            
+            ps.setInt(1,  uid);
+            ps.setString(2,  deviceToken);
+            if(ps.executeUpdate() != 1) {
+                __logger.warn("Could not add user device record: " + uid + ", " + deviceToken);
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null, null, conn);
+        }
+        
+        
     }
     
     

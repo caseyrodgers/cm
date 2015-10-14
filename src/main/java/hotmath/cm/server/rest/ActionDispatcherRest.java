@@ -33,8 +33,9 @@ public class ActionDispatcherRest {
         String pwd = jo.getString("pass");
         int uid = jo.getInt("uid");
         String subject = jo.getString("subject");
+        String token = jo.has("device")?jo.getString("device"):null;
 
-        return Cm2ActionManager.loginUser(uid, un, pwd, subject);
+        return Cm2ActionManager.loginUser(uid, un, pwd, subject, token);
     }
 
     @POST

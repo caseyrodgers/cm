@@ -6,6 +6,7 @@ public class GetCm2MobileLoginAction implements Action<Cm2MobileUser> {
     String name,password;
     int uid;
     String subject;
+    String deviceToken;
     
     public GetCm2MobileLoginAction(){}
     
@@ -13,6 +14,15 @@ public class GetCm2MobileLoginAction implements Action<Cm2MobileUser> {
         this.name = user;
         this.password = pass;
         this.subject = subject;
+    }
+    
+    
+    public String getDeviceToken() {
+        return deviceToken;
+    }
+    
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
     
     
