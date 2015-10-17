@@ -1,6 +1,6 @@
 package hotmath.cm;
 
-import hotmath.cm.serverr.HaUserCommandService;
+import hotmath.cm.server.HaUserCommandService;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.testset.ha.InmhAssessmentLookupBuilder;
