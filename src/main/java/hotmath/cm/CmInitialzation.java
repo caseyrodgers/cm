@@ -1,5 +1,6 @@
 package hotmath.cm;
 
+import hotmath.cm.serverr.HaUserCommandService;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.testset.ha.InmhAssessmentLookupBuilder;
@@ -80,6 +81,10 @@ public class CmInitialzation extends HttpServlet {
         catch(Exception e) {
             logger.error("Error starting Catchup Math", e);
         }
+        
+        
+        
+        HaUserCommandService.getInstance().startQueueWatcher();
     }
 
     /**
