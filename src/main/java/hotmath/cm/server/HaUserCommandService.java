@@ -83,7 +83,7 @@ public class HaUserCommandService {
      */
     private void checkQueue() throws Exception {
         
-        __logger.info("Checking student message queue");
+        __logger.debug("Checking student message queue");
         Connection conn = null;
         PreparedStatement ps = null;
         PreparedStatement psUpdate = null;
@@ -122,7 +122,9 @@ public class HaUserCommandService {
                 tokens.add(token);
             }
             
-            notifyUsers(tokens);
+            if(tokens.size()>0) {
+                notifyUsers(tokens);
+            }
         }
         finally {
             SqlUtilities.releaseResources(null, ps, conn);
