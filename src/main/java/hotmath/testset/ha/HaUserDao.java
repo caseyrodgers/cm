@@ -538,7 +538,7 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
         jo.put("type", type.getTag());
         jo.put("data", data);
 
-        String sql = "insert into HA_USER_EVENTS(uid, event_data) values(?, ?)";
+        String sql = "insert into HA_USER_EVENTS(uid, event_data, create_time) values(?, ?, now())";
         PreparedStatement ps =null;
         Connection conn=null;
         try {
