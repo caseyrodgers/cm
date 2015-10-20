@@ -1,7 +1,6 @@
 package hotmath.cm.server.rest;
 
 import hotmath.gwt.cm_core.client.model.TopicResource;
-import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -206,6 +205,12 @@ public class ActionDispatcherRest {
     @Path("/user/{uid}/info")
     public String getAssignmentProblem(@PathParam("uid") int uid) throws Exception {
         return Cm2ActionManager.getUserInfo(uid);
+    }
+    
+    @POST
+    @Path("/user/{uid}/messages")
+    public String getUserMessages(@PathParam("uid") int uid) throws Exception {
+        return Cm2ActionManager.getUserMessages(uid);
     }
     
     @GET

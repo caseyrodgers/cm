@@ -1,6 +1,6 @@
 package hotmath.cm;
 
-import hotmath.cm.server.HaUserCommandService;
+import hotmath.cm.server.StudentEventService;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.testset.ha.InmhAssessmentLookupBuilder;
@@ -84,7 +84,7 @@ public class CmInitialzation extends HttpServlet {
         
         
         
-        HaUserCommandService.getInstance().startQueueWatcher();
+        StudentEventService.getInstance().startQueueWatcher();
     }
 
     /**

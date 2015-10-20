@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.server.model.StudentEventsDao;
+import hotmath.cm.server.model.StudentEventsDao.EventType;
 import hotmath.gwt.cm_rpc.client.rpc.SendMessageToStudentAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -7,7 +9,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_rpc_core.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.testset.ha.HaUserDao;
-import hotmath.testset.ha.HaUserDao.EventType;
 
 import java.sql.Connection;
 
@@ -28,7 +29,7 @@ public class SendMessageToStudentCommand implements ActionHandler<SendMessageToS
 
     @Override
     public RpcData execute(Connection conn, SendMessageToStudentAction action) throws Exception {
-        HaUserDao.getInstance().addStudentEvent(action.getUid(), EventType.MESSAGE, action.getMessage());
+        StudentEventsDao.getInstance().addStudentEvent(action.getUid(), EventType.MESSAGE, action.getMessage());
         return new RpcData("status=ok");
     }
 }

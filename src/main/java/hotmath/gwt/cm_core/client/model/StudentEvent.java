@@ -7,17 +7,31 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
  * @author casey
  *
  */
-public class CmStudentEvent implements Response {
+public class StudentEvent implements Response {
     
     private String eventJson;
+    private int uid;
     
-    public CmStudentEvent() {}
+    public StudentEvent() {}
     
-    public CmStudentEvent(String eventJson) {
+    public StudentEvent(String eventJson) {
         this.eventJson = eventJson;
     }
     
     
+    public StudentEvent(int uid, String eventJson) {
+        this.uid = uid;
+        this.eventJson = eventJson;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
     public String getEventJson() {
         return eventJson;
     }

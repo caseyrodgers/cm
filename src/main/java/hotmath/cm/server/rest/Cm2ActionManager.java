@@ -1,6 +1,7 @@
 package hotmath.cm.server.rest;
 
 import hotmath.ProblemID;
+import hotmath.cm.server.model.StudentEventsDao;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_core.client.model.UserSyncInfo;
@@ -386,6 +387,10 @@ public class Cm2ActionManager {
         GetUserSyncAction action = new GetUserSyncAction(uid);
         UserSyncInfo data = ActionDispatcher.getInstance().execute(action);
         return JsonWriter.objectToJson(data);
+    }
+
+    public static String getUserMessages(int uid) throws Exception {
+        return JsonWriter.objectToJson(StudentEventsDao.getInstance().getEventHistoryFor(uid));
     }
 
 }

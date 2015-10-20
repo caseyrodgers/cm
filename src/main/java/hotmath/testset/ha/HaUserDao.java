@@ -9,7 +9,7 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.DateUtils;
 import hotmath.cm.util.PropertyLoadFileException;
 import hotmath.cm.util.QueryHelper;
-import hotmath.gwt.cm_core.client.model.CmStudentEvent;
+import hotmath.gwt.cm_core.client.model.StudentEvent;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -482,77 +482,6 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
         }
     }
 
-    /** Return event data for named user
-     * 
-     *  remove after extraction
-     *  
-     *   Only one event per request
-     *  
-     * 
-     * @param conn
-     * @param uid
-     * @return
-     * @throws Exception
-     */
-    public CmStudentEvent getStudentEvent(int uid) throws Exception {
-        Connection conn=null;
-        
-        String sql = "select * from HA_USER_EVENTS where uid = ? order by id limit 1";
-        PreparedStatement ps =null;
-        String eventData=null;
-        try {
-            conn = HMConnectionPool.getConnection();
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1, uid);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                int id = rs.getInt("id");
-                eventData = rs.getString("event_data");
-                sql = "delete from HA_USER_EVENTS where id = " + id;
-                conn.createStatement().executeUpdate(sql);
-            }
-            
-            CmStudentEvent studentEvent = new CmStudentEvent(eventData);
-            
-            return studentEvent;
-            
-        } finally {
-            SqlUtilities.releaseResources(null, ps,conn);
-        }
-    }
-    
-    
-    public enum EventType{MESSAGE("message");
-        private String tag;
-        private EventType(String tag) {
-            this.tag = tag;
-        }
-        public String getTag() {
-            return tag;
-        }
-    };
-    
-    public void addStudentEvent(int uid, EventType type, String data) throws Exception {
-        
-        JSONObject jo = new JSONObject();
-        jo.put("type", type.getTag());
-        jo.put("data", data);
 
-        String sql = "insert into HA_USER_EVENTS(uid, event_data, create_time) values(?, ?, now())";
-        PreparedStatement ps =null;
-        Connection conn=null;
-        try {
-            conn = HMConnectionPool.getConnection();
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1, uid);
-            ps.setString(2, jo.toString());
-            if(ps.executeUpdate() != 1) {
-                __logger.warn("message not added: " + uid + ", " + jo);
-            }
-            
-        } finally {
-            SqlUtilities.releaseResources(null, ps,conn);
-        }
-    }
 
 }

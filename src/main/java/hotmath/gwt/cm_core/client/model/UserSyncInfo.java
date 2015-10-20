@@ -20,7 +20,7 @@ public class UserSyncInfo implements Response{
     String currentUserLoginKey;
     AssignmentUserInfo assignmentInfo;
     
-    CmList<CmStudentEvent> events = new CmArrayList<CmStudentEvent>();
+    CmList<StudentEvent> events = new CmArrayList<StudentEvent>();
 
     
     //CmList<Assignment> assignments;
@@ -33,7 +33,7 @@ public class UserSyncInfo implements Response{
         this.assignmentInfo = assignmentInfo;
     }
  
-    public CmList<CmStudentEvent> getEvents() {
+    public CmList<StudentEvent> getEvents() {
         return events;
     }
     
