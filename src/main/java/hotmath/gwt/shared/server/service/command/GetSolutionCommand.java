@@ -27,8 +27,11 @@ import java.sql.ResultSet;
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
-import org.htmlparser.util.NodeList;
 import org.htmlparser.visitors.NodeVisitor;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import sb.util.SbFile;
 
@@ -40,9 +43,10 @@ import sb.util.SbFile;
  * Return RpcData with the following members: solutionHtml, hasShowWork
  * 
  */
-public class GetSolutionCommand implements ActionHandler<GetSolutionAction, SolutionInfo>, ActionHandlerManualConnectionManagement {
-	
-	private static final Logger logger = Logger.getLogger(GetSolutionCommand.class);
+public class GetSolutionCommand implements ActionHandler<GetSolutionAction, SolutionInfo>,
+        ActionHandlerManualConnectionManagement {
+
+    private static final Logger logger = Logger.getLogger(GetSolutionCommand.class);
 
     public static SolutionHTMLCreator __creator;
     static TutorProperties __tutorProps = new TutorProperties();
@@ -54,136 +58,92 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
         }
     }
 
-
-
-
-
-
     protected Node root;
 
     @Override
     public SolutionInfo execute(final Connection connNotNused, GetSolutionAction action) throws Exception {
-        Connection conn=null;
+        Connection conn = null;
         try {
             conn = HMConnectionPool.getConnection();
             String pid = action.getPid();
             int uid = action.getUid();
-            
+
             ProblemID ppid = new ProblemID(pid);
-            
+
             SolutionParts sp = null;
             try {
-            	sp = __creator.getSolutionHTML(null,null, pid);
+                sp = __creator.getSolutionHTML(null, null, pid);
+            } catch (Exception e) {
+                logger.debug("Error getting solution (using default)", e);
+                sp = createDefaultSolutionParts();
             }
-            catch(Exception e) {
-            	logger.debug("Error getting solution (using default)", e);
-            	sp = createDefaultSolutionParts();
-            }
-            String solutionHtml= sp.getMainHtml();
-            
+            String solutionHtml = sp.getMainHtml();
+
             String path = ppid.getSolutionPath_DirOnly("solutions");
             solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
-            
+
             solutionHtml = processMathMlTransformations(solutionHtml);
-            
+
             boolean hasShowWork = getHasShowWork(conn, uid, pid);
 
-            SolutionInfo solutionInfo = new SolutionInfo(pid,solutionHtml,sp.getData(),hasShowWork);
+            SolutionInfo solutionInfo = new SolutionInfo(pid, solutionHtml, sp.getData(), hasShowWork);
 
-            /** read the context stored for this solution view instance or return null allowing new context to be 
-             *  created on client.
+            /**
+             * read the context stored for this solution view instance or return
+             * null allowing new context to be created on client.
              */
             solutionInfo.setContext(SolutionDao.getInstance().getSolutionContext(action.getRunId(), action.getPid()));
-            
-            
-            /** If there is a runid, get the widget result for this runid/pid
+
+            /**
+             * If there is a runid, get the widget result for this runid/pid
              * 
              */
-            if(action.getRunId() > 0) {
-                solutionInfo.setWidgetResult(HaTestRunDao.getInstance().getRunTutorWidgetValue(action.getRunId(), action.getPid()));
+            if (action.getRunId() > 0) {
+                solutionInfo.setWidgetResult(HaTestRunDao.getInstance().getRunTutorWidgetValue(action.getRunId(),
+                        action.getPid()));
             }
-            
+
             return solutionInfo;
         } catch (Exception e) {
-        	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
+            logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
             throw new CmRpcException(e);
-        }
-        finally {
+        } finally {
             SqlUtilities.releaseResources(null, null, conn);
         }
     }
 
-    
-    enum MathMlTransform{NONE, MAKE_TEXT_SMALLER, MAKE_FRACTIONS_LARGER}
-    
-    /** process any mathml with named math-process directive.  
+    enum MathMlTransform {
+        NONE, MAKE_TEXT_SMALLER, MAKE_FRACTIONS_LARGER
+    }
+
+    /**
+     * process any mathml with customize styles
+     *
      * 
-     *  These directives, if specified, will modifing the return 
-     *  MathML with attributes+values.  Such as mathsize.
-     *  
-     *  
+     * 
+     * 
      * @param solutionHtml
      * @return
      * @throws Exception
      */
     private String processMathMlTransformations(String solutionHtml) throws Exception {
-        
-        int start=0;
-        int end=0;
-
-        solutionHtml = solutionHtml.replace("<MFRAC",  "<MSTYLE><MFRAC");
-        solutionHtml = solutionHtml.replace("</MFRAC>",  "</MFRAC></MSTYLE>");
-        Parser parser = new Parser();
         try {
-            NodeVisitor visitor = new NodeVisitor() {
-                MathMlTransform transform = MathMlTransform.NONE;
-                public void visitTag(org.htmlparser.Tag tag) {
-                    
-                    if (root == null)
-                        root = tag;
-
-                    if(tag.getTagName().equalsIgnoreCase("math")) {
-                        
-                        /** check to see if there is a transform present
-                         * 
-                         */
-                        transform = MathMlTransform.NONE;
-                        String mathProcess = tag.getAttribute("math-process");
-                        if(mathProcess != null) {
-                            mathProcess = mathProcess.toLowerCase();
-                            if(mathProcess.contains("textsmaller")) {
-                                transform = MathMlTransform.MAKE_TEXT_SMALLER;
-                            }
-                            else if(mathProcess.contains("fractionslarger")) {
-                                transform = MathMlTransform.MAKE_FRACTIONS_LARGER;
-                            }
-                        }
-                    }
-                    else if(tag.getTagName().equalsIgnoreCase("mtext")) {
-                        if(transform == MathMlTransform.MAKE_TEXT_SMALLER) {
-                            tag.setAttribute("mathsize",  ".7em");
-                        }
-                    }
-                    else if(tag.getTagName().equalsIgnoreCase("mstyle")) {
-                        if(transform == MathMlTransform.MAKE_FRACTIONS_LARGER) {
-                            tag.setAttribute("mathsize",  "6em");
-                        }
-                    }
-
-                }
-            };
-            parser.setInputHTML(solutionHtml);
-            parser.visitAllNodesWith(visitor);
-            solutionHtml = getDocumentNode(root).toHtml();
+            Document doc = Jsoup.parse(solutionHtml);
             
-        }
-        catch(Exception e) {
+            
+            /** add mathsize to each mfrac number
+             * 
+             */
+            Elements els = doc.select("math mfrac mn");
+            for (Element e : els) {
+                e.attr("mathsize", "1.1em");
+            }
+            String html = doc.toString();
+            return html;
+        } catch (Exception e) {
             throw e;
         }
-        
-        return solutionHtml;
     }
-
 
     private Node getDocumentNode(Node nl) {
         Node parent = nl;
@@ -192,26 +152,22 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
 
         return parent;
     }
-    private SolutionParts createDefaultSolutionParts() throws Exception {
-    	SolutionParts sp = new SolutionParts();
-    	sp.setMainHtml("Problem was not found");
-    	
-    	File file = new File(CatchupMathProperties.getInstance().getCatchupRuntime(), "empty_tutor.json");
-    	String data = new SbFile(file).getFileContents().toString("\n");
-    	sp.setData(data);
-    	
-    	return sp;
-	}
 
-	@Override
+    private SolutionParts createDefaultSolutionParts() throws Exception {
+        SolutionParts sp = new SolutionParts();
+        sp.setMainHtml("Problem was not found");
+
+        File file = new File(CatchupMathProperties.getInstance().getCatchupRuntime(), "empty_tutor.json");
+        String data = new SbFile(file).getFileContents().toString("\n");
+        sp.setData(data);
+
+        return sp;
+    }
+
+    @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetSolutionAction.class;
     }
-    
-    
-
-    
-
 
     /**
      * Return true if this solution has any Show Work activity for this user.
@@ -239,6 +195,6 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
         } finally {
             SqlUtilities.releaseResources(rs, pstat, null);
         }
-    }    
+    }
 
 }
