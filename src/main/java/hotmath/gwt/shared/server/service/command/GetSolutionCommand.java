@@ -23,6 +23,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
@@ -34,6 +35,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import sb.util.SbFile;
+import sb.util.SbProperties;
 
 /**
  * Return the raw HTML that makes up the solution
@@ -131,12 +133,16 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             Document doc = Jsoup.parse(solutionHtml);
             
             
+            CatchupMathProperties p = CatchupMathProperties.getInstance();
+            
+            
             /** add mathsize to each mfrac number
              * 
              */
             Elements els = doc.select("math mfrac mn");
+            String mnProp = p.getProperty("mathml.mfrac.mn", "1.1em");
             for (Element e : els) {
-                e.attr("mathsize", "1.1em");
+                e.attr("mathsize", mnProp);
             }
             String html = doc.toString();
             return html;
