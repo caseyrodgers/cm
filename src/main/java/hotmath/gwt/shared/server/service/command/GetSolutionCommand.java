@@ -23,19 +23,15 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
-import org.htmlparser.Parser;
-import org.htmlparser.visitors.NodeVisitor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import sb.util.SbFile;
-import sb.util.SbProperties;
 
 /**
  * Return the raw HTML that makes up the solution
@@ -131,11 +127,9 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
     private String processMathMlTransformations(String solutionHtml) throws Exception {
         try {
             Document doc = Jsoup.parse(solutionHtml);
-            
-            
+
             CatchupMathProperties p = CatchupMathProperties.getInstance();
-            
-            
+
             /** add mathsize to each mfrac number
              * 
              */
@@ -144,6 +138,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             for (Element e : els) {
                 e.attr("mathsize", mnProp);
             }
+            doc.outputSettings().prettyPrint(false);
             String html = doc.toString();
             return html;
         } catch (Exception e) {
