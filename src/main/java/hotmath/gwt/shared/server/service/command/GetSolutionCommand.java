@@ -131,13 +131,23 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             CatchupMathProperties p = CatchupMathProperties.getInstance();
 
             /** add mathsize to each mfrac number
-             * 
+             *
+             *  add to mn
              */
             Elements els = doc.select("math mfrac mn");
-            String mnProp = p.getProperty("mathml.mfrac.mn", "1.1em");
+            String prop = p.getProperty("mathml.mfrac.mn", "1.1em");
             for (Element e : els) {
-                e.attr("mathsize", mnProp);
+                e.attr("mathsize", prop);
             }
+            /** add to mo 
+             * 
+             */
+            els = doc.select("math mo");
+            prop = p.getProperty("mathml.mo", "1.2em");
+            for (Element e : els) {
+                e.attr("mathsize", prop);
+            }
+
             doc.outputSettings().prettyPrint(false);
             String html = doc.toString();
             return html;
