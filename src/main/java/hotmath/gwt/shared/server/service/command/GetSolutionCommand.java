@@ -142,10 +142,29 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             /** add to mo 
              * 
              */
-            els = doc.select("math mo");
-            prop = p.getProperty("mathml.mo", "1.2em");
+            //            els = doc.select("math mo");
+            //            prop = p.getProperty("mathml.mo", "1.1em");
+            //            for (Element e : els) {
+            //                e.attr("mathsize", prop);
+            //            }
+
+            els = doc.select("math mi");
+            prop = p.getProperty("mathml.mi", "1em");
             for (Element e : els) {
                 e.attr("mathsize", prop);
+            }
+
+            /** second mn in a msup 
+             * 
+             */
+            els = doc.select("math msup");
+            prop = p.getProperty("mathml.msup", "1.1em");
+            for (Element e : els) {
+
+                Elements mns = e.getElementsByTag("mn");
+                if (mns.size() == 2) {
+                    mns.get(1).attr("mathsize", prop);
+                }
             }
 
             doc.outputSettings().prettyPrint(false);
