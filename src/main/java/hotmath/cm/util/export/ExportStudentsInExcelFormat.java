@@ -148,7 +148,7 @@ public class ExportStudentsInExcelFormat {
 
 	private static String[] headings = {
 		"Student", "Password", "Group", "Current Program", "Status", "% Complete", "Quizzes",
-		"Last Quiz", "Last Login", "Total Lessons", "Quizzes Attempted", "Quizzes Passed",
+		"Last Quiz", "Last Login", "Total Lessons", "Total Standards", "Quizzes Attempted", "Quizzes Passed",
 		"Passed Quiz Avg Score", "Total Time", "Total Logins", "First Login", "First Program"
 	};
 	
@@ -284,7 +284,15 @@ public class ExportStudentsInExcelFormat {
 	        cell.setCellValue(Integer.parseInt(lessonCount));
 	        cell.setCellStyle(styles.get("data"));
 	        if (charCount[col] < lessonCount.length()) charCount[col] = lessonCount.length();
-	        
+
+		    cell = row.createCell(++col);
+		    List<String> stdList = standardsMap.get(sm.getUid());
+    		int stdCount = (stdList != null) ? stdList.size() : 0;
+		    String standardCount = String.valueOf(stdCount);
+	        cell.setCellValue(stdCount);
+	        cell.setCellStyle(styles.get("data"));
+	        if (charCount[col] < standardCount.length()) charCount[col] = standardCount.length();
+
 		    cell = row.createCell(++col);
 		    String quizAtmpt = String.valueOf(rc.getQuizCount());
 	        cell.setCellValue(rc.getQuizCount());
