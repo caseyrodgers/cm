@@ -9,8 +9,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
-import hotmath.testset.ha.HaTest;
-import hotmath.testset.ha.HaTestDao;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;

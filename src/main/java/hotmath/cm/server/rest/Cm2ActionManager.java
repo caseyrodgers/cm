@@ -1,10 +1,14 @@
 package hotmath.cm.server.rest;
 
 import hotmath.ProblemID;
+import hotmath.cm.server.model.StudentEventsDao;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_core.client.model.TopicSearchResults;
+import hotmath.gwt.cm_core.client.model.UserSyncInfo;
+import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
@@ -16,6 +20,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
@@ -57,7 +62,9 @@ import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
 import hotmath.testset.ha.HaTestDao;
+import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
+import hotmath.testset.ha.HaUser;
 import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
@@ -106,13 +113,15 @@ public class Cm2ActionManager {
     }
 
     // static int TEST_ID=2610241; // debug
-    static int USER_ID = 678549;
+    // static int USER_ID = 678549;
 
-    public static String checkQuiz(int testId) throws Exception {
+    public static String checkQuiz(int testId, boolean forceRandomPass) throws Exception {
 
         HaTestDao.resetTest(testId);
 
-        HaTestDao.getInstance().setAllToCorrectExcept(testId, 2);
+        if(forceRandomPass) {
+            HaTestDao.getInstance().setAllToCorrectExcept(testId, 2);
+        }
         
         CheckCm2QuizAction action = new CheckCm2QuizAction(testId);
 
@@ -130,9 +139,11 @@ public class Cm2ActionManager {
         return json;
     }
 
-    public static String loginUser(int uid, String un, String pwd, String subject) throws Exception {
+    public static String loginUser(int uid, String un, String pwd, String subject, String token) throws Exception {
         // int randomUserId = HaUserDao.getRandomUserId();
         GetCm2MobileLoginAction action = uid != 0 ? new GetCm2MobileLoginAction(uid) : new GetCm2MobileLoginAction(un,pwd, subject);
+        action.setDeviceToken(token);
+        
         String jsonResponse = new ActionDispacherWrapper().execute(action);
         return jsonResponse;
     }
@@ -273,7 +284,14 @@ public class Cm2ActionManager {
 
     public static String advanceUserProgram(int uid, boolean advanceToNextSegment) throws Exception {
         
-        FlowType flowType = advanceToNextSegment?FlowType.NEXT:FlowType.RETAKE_SEGMENT;
+        
+        FlowType flowType = FlowType.RETAKE_SEGMENT;
+   
+        HaUser user = HaUserDao.getInstance().lookUser(uid, false);
+        HaTestRun run = HaTestRunDao.getInstance().lookupTestRun(user.getActiveTestRunId());
+        if(run.isPassing()) {
+            flowType = FlowType.NEXT;
+        }
         
         GetCmProgramFlowAction action = new GetCmProgramFlowAction(uid, flowType);
         CmProgramFlowAction result = ActionDispatcher.getInstance().execute(action);
@@ -358,6 +376,21 @@ public class Cm2ActionManager {
     public static String saveTutorInputWidgetAnswer(int uid, int rid, String pid, String value, boolean isCorrect) throws Exception {
         UserTutorWidgetStats data = ActionDispatcher.getInstance().execute(new SaveTutorInputWidgetAnswerAction(uid, rid, pid, value, isCorrect));
         return JsonWriter.objectToJson(data);
+    }
+
+    public static String getUserInfo(int uid) throws Exception {
+        UserLoginResponse data = ActionDispatcher.getInstance().execute(new GetUserInfoAction(uid, null));
+        return JsonWriter.objectToJson(data);
+    }
+
+    public static String getUserSyncEvents(int uid) throws Exception {
+        GetUserSyncAction action = new GetUserSyncAction(uid);
+        UserSyncInfo data = ActionDispatcher.getInstance().execute(action);
+        return JsonWriter.objectToJson(data);
+    }
+
+    public static String getUserMessages(int uid) throws Exception {
+        return JsonWriter.objectToJson(StudentEventsDao.getInstance().getEventHistoryFor(uid));
     }
 
 }

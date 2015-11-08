@@ -2,8 +2,10 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.dao.HaLoginInfoDao;
+import hotmath.cm.server.model.StudentEventsDao;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_core.client.model.CatchupMathVersion;
+import hotmath.gwt.cm_core.client.model.StudentEvent;
 import hotmath.gwt.cm_core.client.model.UserSyncInfo;
 import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
@@ -41,8 +43,13 @@ public class GetUserSyncCommand implements ActionHandler<GetUserSyncAction, User
         if(action.isFullSyncCheck()) {
             AssignmentUserInfo assignmentInfo = AssignmentDao.getInstance().getStudentAssignmentMetaInfo(action.getUid());
     
-            return new UserSyncInfo(new CatchupMathVersion(CatchupMathProperties.getInstance().getClientVersionNumber()), HaLoginInfoDao.getInstance()
+            UserSyncInfo userSyncInfo = new UserSyncInfo(new CatchupMathVersion(CatchupMathProperties.getInstance().getClientVersionNumber()), HaLoginInfoDao.getInstance()
                     .getLatestLoginKey(action.getUid()), assignmentInfo);
+            
+            StudentEvent studentEvent = StudentEventsDao.getInstance().getStudentEventCurrent(action.getUid());
+            userSyncInfo.getEvents().add(studentEvent);
+            
+            return userSyncInfo;
         }
         else {
             return new UserSyncInfo();

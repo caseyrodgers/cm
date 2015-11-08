@@ -33,15 +33,13 @@ public class TutorSolutionParser {
 
         TutorSolution solution = new TutorSolution();
         solution.setProblem(new TutorProblem());
-        
 
         // first get a list of problems
         List eleList = rootElement.getChildren("problem");
         int iTotalProblems = eleList.size();
-        
-        
+
         String hsmlVersion = rootElement.getAttributeValue("version");
-        
+
         if (iTotalProblems == 0) {
             throw new Exception("No <problem> elements defined in XML");
         }
@@ -49,13 +47,13 @@ public class TutorSolutionParser {
         for (int iProblem = 0; iProblem < iTotalProblems; iProblem++) {
             Element eleProblem = (Element) eleList.get(iProblem);
 
-            if(hsmlVersion == null) {
+            if (hsmlVersion == null) {
                 // the compiler version is a comment in the XML ... it should
                 // an attribute that can be retrieved. We just yank it out
                 //  of the XML. This is done here to not hide this shit.
                 String compilerVersion = SbUtilities.getToken(sXML, 2, "\n"); // first
-                                                                          // comment
-                if(compilerVersion != null) {
+                // comment
+                if (compilerVersion != null) {
                     String p[] = compilerVersion.split("version");
                     if (p.length > 1) {
                         compilerVersion = p[1];
@@ -91,16 +89,14 @@ public class TutorSolutionParser {
             Element eleStat = eleProblem.getChild("statement");
             if (eleStat != null) {
                 sProblemStatement = eleStat.getText().trim();
-                
+
                 Element question = eleStat.getChild("question");
-                if(question != null) {
+                if (question != null) {
                     sProblemStatement += convertOldTestQuestionFormatToNew(question);
                 }
-                
+
                 sProblemStatement = applyTransformations(sProblemStatement);
-                
-                
-                
+
                 sProblemStatementFigure = eleStat.getAttributeValue("figure");
                 solution.getProblem().setStatement(sProblemStatement);
                 solution.getProblem().setStatementFigure(sProblemStatementFigure);
@@ -140,13 +136,13 @@ public class TutorSolutionParser {
      * @return
      */
     private static String applyTransformations(String sProblemStatement) {
-    	if(sProblemStatement.contains("id='hm_flash_widget'")) {
-    		sProblemStatement = sProblemStatement.replace("id='hm_flash_widget", "name='hm_flash_widget");
-    	}
-    	return sProblemStatement;
-	}
+        if (sProblemStatement.contains("id='hm_flash_widget'")) {
+            sProblemStatement = sProblemStatement.replace("id='hm_flash_widget", "name='hm_flash_widget");
+        }
+        return sProblemStatement;
+    }
 
-	static public String trimIfNotNull(String s) {
+    static public String trimIfNotNull(String s) {
         if (s != null)
             return s.trim();
         return null;
@@ -183,10 +179,11 @@ public class TutorSolutionParser {
             String sStepText = sStepUnitText;
             stepUnit = new TutorStepUnitImplStep(sStepText);
         } else if (sType.equals("proofstep")) {
-            
-            if(true) {
+
+            if (false) {
                 throw new CmException("'proof' stepunits not supported yet!");
             }
+
             // should be proofset/stepunit/justification
             // get this elements next sibling (which must be a
             // stepunit/justification)
@@ -197,7 +194,7 @@ public class TutorSolutionParser {
             if (eleChildStep == null) {
                 throw new HotMathException("No stepunit/justification found under proofstep");
             }
-            
+
             stepUnit = new TutorStepUnitImplProof(eleUnit.getValue());
             return stepUnit;
 
@@ -217,7 +214,6 @@ public class TutorSolutionParser {
 
     }
 
-    
     /** old:
      * <div class="question">QUESTION</div>
        <div class="question_guess">
@@ -227,98 +223,95 @@ public class TutorSolutionParser {
            <img onmouseover="doQuestionResponse('rid_40','yes');" onmouseout="doQuestionResponseEnd();" src="/images/tutor5/hint_question-16x16.gif" name="question_1" class="text-bottom">&nbsp;<p>35 and 37</p>
       </div>
      */
-     static private String convertOldQuestionFormatToNew(String pid, Element oldQuesEl) throws Exception {
-        
+    static private String convertOldQuestionFormatToNew(String pid, Element oldQuesEl) throws Exception {
+
         List<QuestionPiece> questionPieces = new ArrayList<QuestionPiece>();
 
         String questionText = HtmlCleanser.getInstance().cleanseHtml(oldQuesEl.getTextNormalize());
         List children = oldQuesEl.getChildren();
-        for(Object og: children) {
-            Element guess = (Element)og;
+        for (Object og : children) {
+            Element guess = (Element) og;
             String correct = guess.getAttributeValue("correct");
             String guessText = HtmlCleanser.getInstance().cleanseHtml(replaceHotmathTokens(guess.getTextNormalize()));
-            Element response = (Element)guess.getChild("response");
-            String responseText = HtmlCleanser.getInstance().cleanseHtml(replaceHotmathTokens(response.getTextNormalize()));
-            
+            Element response = (Element) guess.getChild("response");
+            String responseText = HtmlCleanser.getInstance().cleanseHtml(
+                    replaceHotmathTokens(response.getTextNormalize()));
+
             questionPieces.add(new QuestionPiece(correct, guessText, responseText));
         }
-        
-        
-        String newHtml = 
-            "<div class='hm_question_def'>\n" +
-            "    <div>" + questionText + "</div>\n" +
-            "    <ul>\n";
-        
-        for(QuestionPiece p: questionPieces) {
-            newHtml += 
-            "        <li correct='" + p.correct + "'>\n" +
-            "            <div>" + p.guess + "</div>\n" +
-            "            <div>" + p.response + "</div>\n" +
-            "        </li>\n";
+
+        String newHtml =
+                "<div class='hm_question_def'>\n" +
+                        "    <div>" + questionText + "</div>\n" +
+                        "    <ul>\n";
+
+        for (QuestionPiece p : questionPieces) {
+            newHtml +=
+                    "        <li correct='" + p.correct + "'>\n" +
+                            "            <div>" + p.guess + "</div>\n" +
+                            "            <div>" + p.response + "</div>\n" +
+                            "        </li>\n";
         }
-                
-        newHtml += 
-            "    </ul>\n" +
-            "</div>\n";
+
+        newHtml +=
+                "    </ul>\n" +
+                        "</div>\n";
 
         return newHtml;
     }
-     
-     
-     static private String replaceHotmathTokens(String html) throws Exception {
-         SolutionResources resources = new SolutionResources();
-         html = HotMathTokenReplacements.doReplacements(resources, html);
-         return html;
-     }
-    
-     static private String convertOldTestQuestionFormatToNew(Element oldQuesEl) throws Exception {
-         List<QuestionPiece> questionPieces = new ArrayList<QuestionPiece>();
 
-         String questionText = oldQuesEl.getTextNormalize();
-         List children = oldQuesEl.getChildren();
-         for(Object og: children) {
-             Element guess = (Element)og;
-             String correct = guess.getAttributeValue("correct");
-             String guessText = guess.getTextNormalize();
-             
-             questionPieces.add(new QuestionPiece(correct, guessText, null));
-         }
-         
-         
-         String newHtml = 
-             "\n<div class='hm_question_def'>\n" +
-             "    <div>" + questionText + "</div>\n" +
-             "    <ul>\n";
-         
-         for(QuestionPiece p: questionPieces) {
-             newHtml += 
-             "        <li correct='" + p.correct + "'>\n" +
-             "            <div>" + p.guess + "</div>\n" +
-             "            <div>&nbsp;</div>\n" +
-             "        </li>\n";
-         }
-                 
-         newHtml += 
-             "    </ul>\n" +
-             "</div>\n";
+    static private String replaceHotmathTokens(String html) throws Exception {
+        SolutionResources resources = new SolutionResources();
+        html = HotMathTokenReplacements.doReplacements(resources, html);
+        return html;
+    }
 
-         return newHtml;
+    static private String convertOldTestQuestionFormatToNew(Element oldQuesEl) throws Exception {
+        List<QuestionPiece> questionPieces = new ArrayList<QuestionPiece>();
 
-     }
-     
-     static class QuestionPiece {
-         String correct;
-         String guess;
-         String response;
-         
-         public QuestionPiece(String correct, String guess, String response) {
-             this.correct = correct;
-             this.guess = guess;
-             this.response = response;
-         }
-     }
-    
-    
+        String questionText = oldQuesEl.getTextNormalize();
+        List children = oldQuesEl.getChildren();
+        for (Object og : children) {
+            Element guess = (Element) og;
+            String correct = guess.getAttributeValue("correct");
+            String guessText = guess.getTextNormalize();
+
+            questionPieces.add(new QuestionPiece(correct, guessText, null));
+        }
+
+        String newHtml =
+                "\n<div class='hm_question_def'>\n" +
+                        "    <div>" + questionText + "</div>\n" +
+                        "    <ul>\n";
+
+        for (QuestionPiece p : questionPieces) {
+            newHtml +=
+                    "        <li correct='" + p.correct + "'>\n" +
+                            "            <div>" + p.guess + "</div>\n" +
+                            "            <div>&nbsp;</div>\n" +
+                            "        </li>\n";
+        }
+
+        newHtml +=
+                "    </ul>\n" +
+                        "</div>\n";
+
+        return newHtml;
+
+    }
+
+    static class QuestionPiece {
+        String correct;
+        String guess;
+        String response;
+
+        public QuestionPiece(String correct, String guess, String response) {
+            this.correct = correct;
+            this.guess = guess;
+            this.response = response;
+        }
+    }
+
     /**
      * Clean up text by removing white space. This includes newlines
      * 
@@ -326,7 +319,8 @@ public class TutorSolutionParser {
      * @return string stripped of leading/trailing whitespace
      */
     static public String cleanUpText(String s) {
-       if (s == null)            return s;
+        if (s == null)
+            return s;
 
         s = s.trim();
 

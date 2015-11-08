@@ -81,6 +81,11 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             throw new CmException("Invalid user type: " + basicUser.getUserType());
        }
         
+       
+       
+       if(action.getDeviceToken() != null && action.getDeviceToken().length() > 0) {
+           HaLoginInfoDao.getInstance().addUserDevice(basicUser.getUserKey(), action.getDeviceToken());
+       }
 
         CmProgramFlow programFlow = new CmProgramFlow(conn, basicUser.getUserKey());
         
@@ -146,6 +151,15 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             mobileUser.setPrescriptionTopics(extractPrescriptionTopics(conn, nextAction));
             
             //mobileUser.setFlowAction(nextAction);
+
+            // quiz not created yet, must create it.
+            
+            if(nextAction.getPlace() == CmPlace.QUIZ && mobileUser.getTestId() == 0) {
+                // create it
+                CmProgramFlow cp = new CmProgramFlow(conn, mobileUser.getUserId());
+                cp.moveToNextFlowItem(conn);
+                mobileUser.setTestId(cp.getActiveInfo().getActiveTestId());
+            }
             
             if(nextAction.getPlace() != CmPlace.ASSIGNMENTS_ONLY &&  mobileUser.getTestId() > 0) {
                 // is quiz

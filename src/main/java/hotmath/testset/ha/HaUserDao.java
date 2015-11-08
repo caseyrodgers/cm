@@ -9,6 +9,7 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.DateUtils;
 import hotmath.cm.util.PropertyLoadFileException;
 import hotmath.cm.util.QueryHelper;
+import hotmath.gwt.cm_core.client.model.StudentEvent;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -29,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
@@ -479,5 +481,7 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(null, null, conn);
         }
     }
+
+
 
 }

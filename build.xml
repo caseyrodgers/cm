@@ -16,8 +16,11 @@
 
     <!-- Minifiy all JS Code -->
     <target name="javascript-minify">
-        <taskdef resource="net/sf/antcontrib/antlib.xml" />
-
+        <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="libs/ant-contrib-1.0b3.jar"/>
+         </classpath>
+        </taskdef>
         <!-- Process all JS files.
              The minifyJavaScript task minifies JS files as needed -
              new/modified JS file or no matching -min.js file

@@ -1,7 +1,6 @@
 package hotmath.cm.server.rest;
 
 import hotmath.gwt.cm_core.client.model.TopicResource;
-import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -33,15 +32,22 @@ public class ActionDispatcherRest {
         String pwd = jo.getString("pass");
         int uid = jo.getInt("uid");
         String subject = jo.getString("subject");
+        String token = jo.has("device")?jo.getString("device"):null;
 
-        return Cm2ActionManager.loginUser(uid, un, pwd, subject);
+        return Cm2ActionManager.loginUser(uid, un, pwd, subject, token);
     }
 
     @POST
     @GET
     @Path("/quiz/{testId}/check")
-    public String checkQuiz(@PathParam("testId") int testId) throws Exception {
-        return Cm2ActionManager.checkQuiz(testId);
+    public String checkQuiz(@PathParam("testId")  int testId, String params) throws Exception {
+        
+        boolean isAutoTestMode = false;
+        if(params != null && params.length() > 0) {
+            JSONObject jo = new JSONObject(params);
+            isAutoTestMode = jo.getBoolean("testMode");
+        }
+        return Cm2ActionManager.checkQuiz(testId,isAutoTestMode);
     }
 
     @POST
@@ -193,6 +199,27 @@ public class ActionDispatcherRest {
     public String getAssignmentProblem(@PathParam("uid") int uid, @PathParam("assignKey") int assignKey, @PathParam("pid") String pid) throws Exception {
         return Cm2ActionManager.getCm2AssignmentProblem(uid, assignKey, pid);
     }
+    
+    @GET
+    @POST
+    @Path("/user/{uid}/info")
+    public String getAssignmentProblem(@PathParam("uid") int uid) throws Exception {
+        return Cm2ActionManager.getUserInfo(uid);
+    }
+    
+    @POST
+    @Path("/user/{uid}/messages")
+    public String getUserMessages(@PathParam("uid") int uid) throws Exception {
+        return Cm2ActionManager.getUserMessages(uid);
+    }
+    
+    @GET
+    @POST
+    @Path("/user/{uid}/events")
+    public String getUserSyncEvents(@PathParam("uid") int uid) throws Exception {
+        return Cm2ActionManager.getUserSyncEvents(uid);
+    }
+
     
     @POST
     @Path("user/{uid}/assignment/{assignKey}/{pid}/widget")

@@ -95,7 +95,7 @@ public class TutorCallbackDefault implements TutorCallback {
     
     @Override
     public String getWhiteboardText() {
-        String defaultWhiteboardLabel = "Work out your answer on our whiteboard; Then, click the buttons below to see the step-by-step answer.";
+        String defaultWhiteboardLabel = "Work out your answer on our whiteboard. Then, click the buttons below to see the step-by-step solution.";
         return defaultWhiteboardLabel;
     }
 

@@ -4,10 +4,12 @@ import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
 import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.UserInfoBase;
+import hotmath.gwt.cm_core.client.util.CmAlertify;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
 import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_rpc.client.model.StringHolder;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc.client.rpc.SendMessageToStudentAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
@@ -249,6 +251,40 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                 }
             });
             contextMenu.add(resetUser);
+            
+            
+            MenuItem sendMessageToUser = new MenuItem("Send Message");
+            sendMessageToUser.addSelectionHandler(new SelectionHandler<Item>() {
+                @Override
+                public void onSelection(SelectionEvent<Item> event) {
+                    CmMessageBox.prompt("Message",  "Enter message to send", "", new CmAlertify.PromptCallback() {
+                        @Override
+                        public void promptValue(String message) {
+                            int uid = _grid.getSelectionModel().getSelectedItem().getUid();
+                            sendMessageToStudent(uid, message);
+                        }
+
+                        private void sendMessageToStudent(final int uid, final String message) {
+                            new RetryAction<RpcData>() {
+                                @Override
+                                public void attempt() {
+                                    CmBusyManager.setBusy(true);
+                                    SendMessageToStudentAction action = new SendMessageToStudentAction(uid, message);
+                                    setAction(action);
+                                    CmRpcCore.getCmService().execute(action, this);
+                                }
+
+                                @Override
+                                public void oncapture(RpcData result) {
+                                    CmBusyManager.setBusy(false);
+                                    Info.display("Ok", "Message queued");
+                                }
+                            }.register();
+                        }
+                    });
+                }
+            });
+            contextMenu.add(sendMessageToUser);
         }
 
         _grid.setContextMenu(contextMenu);

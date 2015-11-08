@@ -24,7 +24,7 @@ public class Cm2ActionManager_Test extends TestCase {
     }
 
     public void testLogin1() throws Exception {
-        String userInfo = Cm2ActionManager.loginUser(USER_ID,null,null,null);
+        String userInfo = Cm2ActionManager.loginUser(USER_ID,null,null,null,null);
         assertTrue(userInfo != null);
     }
     
@@ -36,7 +36,7 @@ public class Cm2ActionManager_Test extends TestCase {
     public void testCheckQuiz() throws Exception {
         HaTestDao.resetTest(TEST_ID);
         
-        String result = Cm2ActionManager.checkQuiz(TEST_ID);
+        String result = Cm2ActionManager.checkQuiz(TEST_ID, true);
         assertTrue(result != null);
     }
     

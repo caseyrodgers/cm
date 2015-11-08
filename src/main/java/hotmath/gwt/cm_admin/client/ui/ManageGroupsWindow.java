@@ -1,12 +1,16 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.CmAlertify.PromptCallback;
 import hotmath.gwt.cm_core.client.util.CmBusyManager;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc.client.rpc.SendMessageToGroupAction;
+import hotmath.gwt.cm_rpc.client.rpc.SendMessageToStudentAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -15,6 +19,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.GroupManagerRegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.GroupWindow;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldSet;
 import hotmath.gwt.cm_tools.client.ui.PassPercent;
@@ -43,6 +48,7 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.theme.base.client.info.InfoDefaultAppearance;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
@@ -270,6 +276,54 @@ public class ManageGroupsWindow extends GWindow {
                 }
             }
         }));
+        
+        
+        if(CmCore.getQueryParameter("debug") != null) {
+            vertButtons.add(new MyButton("Send Message", "Send a message to all students in a selected group.", new SelectHandler() {
+
+                @Override
+                public void onSelect(SelectEvent event) {
+                    final GroupInfoModel gim = getGroupInfo();
+                    if (gim != null) {
+
+                        // TODO: adminId == 0 is used to indicate a "global/default"
+                        // group - should use an attribute instead
+                        if (gim.getAdminId() == 0)
+                            gim.setAdminId(adminModel.getUid());
+
+                        
+                        CmMessageBox.prompt("Send Message",  "Enter the message", null, new PromptCallback() {
+                            
+                            @Override
+                            public void promptValue(String value) {
+                                if(value != null && value.length() > 0) {
+                                    sendMessageToGroup(gim, value);
+                                }
+                            }
+
+                            private void sendMessageToGroup(final GroupInfoModel gim, final String message) {
+                                new RetryAction<RpcData>() {
+                                    @Override
+                                    public void attempt() {
+                                        CmBusyManager.setBusy(true);
+                                        SendMessageToGroupAction action = new SendMessageToGroupAction(gim.getId(), message);
+                                        setAction(action);
+                                        CmRpcCore.getCmService().execute(action, this);
+                                    }
+
+                                    @Override
+                                    public void oncapture(RpcData success) {
+                                        CmBusyManager.setBusy(false);
+                                        InfoPopupBox.display("Success", "Message has been queued");
+                                    }
+                                }.register();
+                                
+                            }
+                        });
+                    }
+                }
+            }));
+        }
 
         // deactivating for now...
         if (false)
