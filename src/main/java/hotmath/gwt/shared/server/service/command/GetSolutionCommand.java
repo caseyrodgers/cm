@@ -19,7 +19,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_rpc_core.server.service.ActionHandlerManualConnectionManagement;
-import hotmath.mathml.MathMlTransform;
 import hotmath.solution.SolutionParts;
 import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
