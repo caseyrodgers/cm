@@ -1,5 +1,13 @@
 package hotmath.gwt.shared.server.service.command;
 
+import java.io.File;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import org.apache.log4j.Logger;
+import org.htmlparser.Node;
+
 import hotmath.HotMathLogger;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
@@ -11,6 +19,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_rpc_core.server.service.ActionHandlerManualConnectionManagement;
+import hotmath.mathml.MathMlTransform;
 import hotmath.solution.SolutionParts;
 import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
@@ -18,19 +27,6 @@ import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
-
-import java.io.File;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-import org.apache.log4j.Logger;
-import org.htmlparser.Node;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import sb.util.SbFile;
 
 /**
@@ -80,7 +76,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             String path = ppid.getSolutionPath_DirOnly("solutions");
             solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
 
-            solutionHtml = processMathMlTransformations(solutionHtml);
+            solutionHtml = new hotmath.mathml.MathMlTransform().processMathMlTransformations(solutionHtml);
 
             boolean hasShowWork = getHasShowWork(conn, uid, pid);
 
@@ -112,67 +108,6 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
 
     enum MathMlTransform {
         NONE, MAKE_TEXT_SMALLER, MAKE_FRACTIONS_LARGER
-    }
-
-    /**
-     * process any mathml with customize styles
-     *
-     * 
-     * 
-     * 
-     * @param solutionHtml
-     * @return
-     * @throws Exception
-     */
-    private String processMathMlTransformations(String solutionHtml) throws Exception {
-        try {
-            Document doc = Jsoup.parse(solutionHtml);
-
-            CatchupMathProperties p = CatchupMathProperties.getInstance();
-
-            /** add mathsize to each mfrac number
-             *
-             *  add to mn
-             */
-            Elements els = doc.select("math mfrac mn");
-            String prop = p.getProperty("mathml.mfrac.mn", "1.1em");
-            for (Element e : els) {
-                e.attr("mathsize", prop);
-            }
-            /** add to mo 
-             * 
-             */
-            //            els = doc.select("math mo");
-            //            prop = p.getProperty("mathml.mo", "1.1em");
-            //            for (Element e : els) {
-            //                e.attr("mathsize", prop);
-            //            }
-
-            els = doc.select("math mi");
-            prop = p.getProperty("mathml.mi", "1em");
-            for (Element e : els) {
-                e.attr("mathsize", prop);
-            }
-
-            /** second mn in a msup 
-             * 
-             */
-            els = doc.select("math msup");
-            prop = p.getProperty("mathml.msup", "1.1em");
-            for (Element e : els) {
-
-                Elements mns = e.getElementsByTag("mn");
-                if (mns.size() == 2) {
-                    mns.get(1).attr("mathsize", prop);
-                }
-            }
-
-            doc.outputSettings().prettyPrint(false);
-            String html = doc.toString();
-            return html;
-        } catch (Exception e) {
-            throw e;
-        }
     }
 
     private Node getDocumentNode(Node nl) {

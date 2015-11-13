@@ -91,6 +91,15 @@ public class CmInitialzation extends HttpServlet {
      * This method is Unix/Linux specific 
      */
     private void savePid() {
+        
+         // locking up in windows
+        // how to know..?
+        // this is not really used/needed.
+        // TODO: remove.
+        if(true) {   
+            return;
+        }
+        
         File pidFile = new File(System.getProperty("user.home"), pidFilename);
         logger.info("Writing PID file: " + pidFile.getAbsolutePath());
 
