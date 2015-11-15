@@ -4551,7 +4551,7 @@ JOIN inmh_standard ins
 WHERE t.user_id in ( $$UID_LIST$$ )
   AND rl.date_completed BETWEEN ? AND ?
 UNION
-SELECT uid as user_id, ap.lesson as lesson_name, ins.standard_name_new, 'ASSIGNMENT' as usage_type
+SELECT DISTINCT uid as user_id, pl.lesson as lesson_name, ins.standard_name_new, 'ASSIGNMENT' as usage_type
 FROM CM_ASSIGNMENT_USER au
 JOIN CM_ASSIGNMENT a
   ON au.assign_key = a.assign_key
@@ -4561,6 +4561,8 @@ JOIN CM_ASSIGNMENT_PIDS ap
   ON ap.assign_key = a.assign_key AND ap.pid = pa.pid
 JOIN inmh_standard ins
   ON standard_state = 'COMMON' AND ap.lesson_file = ins.topic
+JOIN HA_PROGRAM_LESSONS pl
+  ON pl.file = ap.lesson_file
 WHERE au.uid in ( $$UID_LIST$$ )
   AND a.due_date BETWEEN ? AND ?
   ) s
