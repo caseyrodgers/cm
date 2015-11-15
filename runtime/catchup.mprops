@@ -4556,13 +4556,12 @@ FROM CM_ASSIGNMENT_USER au
 JOIN CM_ASSIGNMENT a
   ON au.assign_key = a.assign_key
 JOIN CM_ASSIGNMENT_PID_ANSWERS pa
-  ON pa.assign_key = au.assign_key AND pa.user_id = au.uid AND pa.answer IS NOT null
+  ON pa.assign_key = au.assign_key AND pa.user_id = au.uid AND pa.correct = 1
 JOIN CM_ASSIGNMENT_PIDS ap
   ON ap.assign_key = a.assign_key AND ap.pid = pa.pid
 JOIN inmh_standard ins
   ON standard_state = 'COMMON' AND ap.lesson_file = ins.topic
 WHERE au.uid in ( $$UID_LIST$$ )
-  AND au.is_graded = 1
   AND a.due_date BETWEEN ? AND ?
   ) s
 ORDER BY user_id, lesson_name, standard_name_new, usage_type
