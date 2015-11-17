@@ -59,52 +59,31 @@ public class CustomQuizQuestionManager {
     Map<String, CustomQuizLessonInfo> _dataMap = new HashMap<String,CustomQuizLessonInfo>();
     
     protected CustomQuizQuestionManager() throws Exception {
-        readInFile();
+        readInTable();
     }
-    
-    
-    /** file is absolute matching of lesson and pids (not ranges)
-     * 
-     */
-    private void readInFile() throws Exception{
-        SbFile file = new SbFile(new File(CatchupMathProperties.getInstance().getCatchupRuntime(), "all.custom_quiz"));
-        
-        __logger.debug("Reading in all.custom_quiz file: " + file.getName());
-        
-        String contents = file.getFileContents().toString("\n");
-        String lines[] = contents.split("\n");
-        
-        _dataMap.clear();
-        
-        
-        Connection conn = null;
-        PreparedStatement ps=null;
-        try {
-            String sql = "select problemindex from SOLUTIONS where problemindex like ? and active = 1";
-            conn = HMConnectionPool.getConnection();
+
+    private void readInTable() throws Exception {
+    	Connection conn=null;
+    	PreparedStatement ps=null;
+    	try {
+    		conn = HMConnectionPool.getConnection();
+    		
+    		String sql = "select problemindex from SOLUTIONS where problemindex like ? and active = 1";
             ps = conn.prepareStatement(sql);
-            for(String line: lines) {
-                if(line.startsWith("#")) {
-                    continue;
-                }
-                String lesson = SbUtilities.getToken(line, 1, "\t").trim();
-                String pid = SbUtilities.getToken(line, 2, "\t").trim();
-                
-                
-                /** point the active problem
-                 * 
-                 */
-                String activePidSearch = getActivePid(pid);
-                
-                
-                
+            
+    		ResultSet rs = conn.createStatement().executeQuery("select * from CUSTOM_QUIZ_LESSON_PIDS order by lesson, pid");
+    		while(rs.next()) {
+    			String lesson = rs.getString("lesson");
+    			String pid = rs.getString("pid");
+
+    			String activePidSearch = getActivePid(pid);
                 ps.setString(1,  activePidSearch);
-                ResultSet rs = ps.executeQuery();
-                if(rs.next()) {
+                ResultSet  rsPid = ps.executeQuery();
+                if(rsPid.next()) {
                     /** only active problems
                      * 
                      */
-                    String activePid = rs.getString("problemindex");
+                    String activePid = rsPid.getString("problemindex");
                     
                     CustomQuizLessonInfo ci = _dataMap.get(lesson);
                     if(ci == null) {
@@ -116,11 +95,12 @@ public class CustomQuizQuestionManager {
                 else {
                     __logger.warn("could not find active problem for pid: " + pid);
                 }
-            }
-        }
-        finally {
-            SqlUtilities.releaseResources(null,  ps,  conn);
-        }
+    		}
+		} 
+    	finally {
+    		SqlUtilities.releaseResources(null, null, conn);
+    	}
+
     }
     
     /** replace the page with wild, which will return the latest (active)
@@ -232,8 +212,19 @@ public class CustomQuizQuestionManager {
     public boolean isDefined(String lesson) {
         return _dataMap.containsKey(lesson);
     }
+    
+    
+    public static void main(String[] args) {
+		try {
+			CustomQuizQuestionManager.getInstance();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }
+
 
 
 
