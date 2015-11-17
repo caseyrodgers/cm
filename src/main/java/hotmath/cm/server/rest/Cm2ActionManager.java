@@ -7,7 +7,7 @@ import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_core.client.model.UserSyncInfo;
 import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
-import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionForMobileAction;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
@@ -161,7 +161,7 @@ public class Cm2ActionManager {
         try {
             LoadSolutionMetaAction action1 = new LoadSolutionMetaAction(new ProblemID(pid).getGUID());
             SolutionMeta solutionSteps = ActionDispatcher.getInstance().execute(action1);
-            GetSolutionAction action = new GetSolutionAction(pid);
+            GetSolutionForMobileAction action = new GetSolutionForMobileAction(pid);
             SolutionResponse solutionInfo2 = ActionDispatcher.getInstance().execute(action);
 
             Cm2SolutionInfo solutionInfo = new Cm2SolutionInfo(solutionSteps.getProblemStatement(), solutionInfo2);
@@ -177,7 +177,7 @@ public class Cm2ActionManager {
             LoadSolutionMetaAction action1 = new LoadSolutionMetaAction(new ProblemID(pid).getGUID());
             SolutionMeta solutionSteps = ActionDispatcher.getInstance().execute(action1);
 
-            SolutionResponse solutionInfo2 = ActionDispatcher.getInstance().execute(new GetSolutionAction(pid));
+            SolutionResponse solutionInfo2 = ActionDispatcher.getInstance().execute(new GetSolutionForMobileAction(pid));
 
             SolutionContext context = SolutionDao.getInstance().getSolutionContext(rid, pid);
             solutionInfo2.setSolutionVariableContext(context!=null?context.getContextJson():null);

@@ -1,5 +1,35 @@
 package hotmath.testset.ha;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import hotmath.ProblemID;
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.exam.ExamDao;
@@ -16,37 +46,6 @@ import hotmath.gwt.shared.client.util.CmExceptionGlobalContextNotFound;
 import hotmath.spring.SpringManager;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.log4j.Logger;
-import org.jdom.input.SAXBuilder;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * Provide DAO functionality for HaTestDefs
@@ -777,6 +776,86 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 			SqlUtilities.releaseResources(null, ps, null);
 		}
 		return list;
+	}
+	
+
+	private void testIt() throws Exception {
+		try {
+			String contextJson = FileUtils.readFileToString(new File("/temp/test.txt"));
+			
+			contextJson = "Test123456";
+			byte[] inBytes = contextJson.getBytes("UTF-8");
+			
+			byte[] compBytes = CompressHelper.compress(inBytes);
+			String compDecomp = CompressHelper.decompress(compBytes);
+			
+			if(compDecomp.equals(contextJson)) {
+				System.out.println("Match");;
+			}
+			else {
+				System.out.println("Not Match!");;
+			}
+			
+			Integer i = new Integer(123);
+			
+			Connection conn=null;
+			ResultSet rs;
+			try {
+				conn = HMConnectionPool.getConnection();
+
+				conn.createStatement().executeQuery("drop table if exists junk");
+				conn.createStatement().executeQuery("create table junk (variables text)");
+				
+				byte[] b = contextJson.getBytes();
+				PreparedStatement ps=null;
+				try {
+					ps = conn.prepareStatement("insert into junk(variables)values(?)");
+					ps.setBytes(1, b);
+					
+					ps.executeUpdate();
+				}
+				finally {
+					SqlUtilities.releaseResources(null,  ps, null);
+				}
+				
+				rs = conn.createStatement().executeQuery("select * from junk");
+				rs.next();
+				byte[] v = rs.getBytes("variables");
+				
+				String s2 = new String(v);
+				
+				boolean isSame = v.equals(inBytes);
+				
+				String s = CompressHelper.decompress(v);
+				
+				System.out.println(s);
+			}
+			catch(Exception ee) {
+				ee.printStackTrace();
+			}
+			finally {
+				SqlUtilities.releaseResources(null, null, conn);
+			}
+			
+			
+			
+			System.out.println(compDecomp);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	static public void main(String as[]) {
+		try {
+		
+			new SolutionDao().testIt();
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

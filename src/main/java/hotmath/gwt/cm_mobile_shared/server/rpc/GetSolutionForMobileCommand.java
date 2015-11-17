@@ -4,7 +4,7 @@ import hotmath.HotMathLogger;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
 import hotmath.cm.util.CatchupMathProperties;
-import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionForMobileAction;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
@@ -22,9 +22,9 @@ import java.sql.Connection;
 
 import org.apache.log4j.Logger;
 
-public class GetSolutionCommand implements ActionHandler<GetSolutionAction, SolutionResponse>, ActionHandlerManualConnectionManagement{
+public class GetSolutionForMobileCommand implements ActionHandler<GetSolutionForMobileAction, SolutionResponse>, ActionHandlerManualConnectionManagement{
 
-        private static Logger logger = Logger.getLogger(GetSolutionCommand.class);
+        private static Logger logger = Logger.getLogger(GetSolutionForMobileCommand.class);
     public static SolutionHTMLCreator __creator;
     static TutorProperties __tutorProps = new TutorProperties();
     static {
@@ -37,7 +37,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
 
 
     @Override
-    public SolutionResponse execute(final Connection conn, GetSolutionAction action) throws Exception {
+    public SolutionResponse execute(final Connection conn, GetSolutionForMobileAction action) throws Exception {
         try {
             
             String pid = action.getPid();
@@ -58,7 +58,8 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             solutionHtml = GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/help/solutions/", solutionHtml);
             
             solutionHtml = GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/specialchars/", solutionHtml);
-
+            
+            solutionHtml = new hotmath.mathml.MathMlTransform().processMathMlTransformations(solutionHtml);
             
             ProblemNumber problem = new ProblemNumber(ppid.getProblemNumber(), ppid.getProblemSet(),ppid.getGUID(),ppid.getPage()       );
             SolutionResponse rs = new SolutionResponse(problem, solutionHtml, parts.getData(), false, "");
@@ -71,6 +72,6 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
 
         @Override
     public Class<? extends Action<? extends Response>> getActionType() {
-            return GetSolutionAction.class;
+            return GetSolutionForMobileAction.class;
     }
 }

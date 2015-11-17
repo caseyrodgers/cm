@@ -2,7 +2,7 @@ package hotmath.gwt.cm_search.client.activity;
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionForMobileAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_search.client.ClientFactory;
 import hotmath.gwt.cm_search.client.places.SearchPlace;
@@ -44,7 +44,7 @@ public class TutorActivity extends AbstractActivity implements TutorView.Present
     
     private void loadTutor(String pid, final TutorView view) {
         clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));
-        GetSolutionAction action = new GetSolutionAction(pid);
+        GetSolutionForMobileAction action = new GetSolutionForMobileAction(pid);
         CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<SolutionResponse>() {
             public void onSuccess(SolutionResponse solutionResponse) {
                 clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));

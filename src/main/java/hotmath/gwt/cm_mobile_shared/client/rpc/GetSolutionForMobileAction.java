@@ -4,13 +4,13 @@ import hotmath.gwt.cm_rpc.client.rpc.HmMobileActionBase;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
-public class GetSolutionAction extends HmMobileActionBase implements Action<SolutionResponse> {
+public class GetSolutionForMobileAction extends HmMobileActionBase implements Action<SolutionResponse> {
     
     String pid;
 
-    public GetSolutionAction() {}
+    public GetSolutionForMobileAction() {}
     
-    public GetSolutionAction(String pid) {
+    public GetSolutionForMobileAction(String pid) {
         this.pid = pid;
     }
 
