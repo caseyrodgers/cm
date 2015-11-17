@@ -781,9 +781,9 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 
 	private void testIt() throws Exception {
 		try {
-			String contextJson = FileUtils.readFileToString(new File("/temp/test.txt"));
+			//String contextJson = FileUtils.readFileToString(new File("/temp/test.txt"));
 			
-			contextJson = "Test12345678901234567890";
+			String contextJson = "Test12345678901234567890";
 			byte[] inBytes = contextJson.getBytes("UTF-8");
 			
 			byte[] compBytes = CompressHelper.compress(inBytes);
@@ -801,7 +801,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 				conn = HMConnectionPool.getConnection();
 
 				conn.createStatement().executeQuery("drop table if exists junk");
-				conn.createStatement().executeQuery("create table junk (variables text)");
+				conn.createStatement().executeQuery("create table junk (variables VARBINARY  )");
 				
 				PreparedStatement ps=null;
 				try {
