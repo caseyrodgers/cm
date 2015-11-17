@@ -783,7 +783,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		try {
 			String contextJson = FileUtils.readFileToString(new File("/temp/test.txt"));
 			
-			contextJson = "Test123456";
+			contextJson = "Test12345678901234567890";
 			byte[] inBytes = contextJson.getBytes("UTF-8");
 			
 			byte[] compBytes = CompressHelper.compress(inBytes);
@@ -795,9 +795,6 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 			else {
 				System.out.println("Not Match!");;
 			}
-			
-			Integer i = new Integer(123);
-			
 			Connection conn=null;
 			ResultSet rs;
 			try {
@@ -806,11 +803,10 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 				conn.createStatement().executeQuery("drop table if exists junk");
 				conn.createStatement().executeQuery("create table junk (variables text)");
 				
-				byte[] b = contextJson.getBytes();
 				PreparedStatement ps=null;
 				try {
 					ps = conn.prepareStatement("insert into junk(variables)values(?)");
-					ps.setBytes(1, b);
+					ps.setBytes(1, compBytes);
 					
 					ps.executeUpdate();
 				}
@@ -821,13 +817,12 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 				rs = conn.createStatement().executeQuery("select * from junk");
 				rs.next();
 				byte[] v = rs.getBytes("variables");
+				boolean isSame = v.equals(compBytes);
 				
-				String s2 = new String(v);
 				
-				boolean isSame = v.equals(inBytes);
+				System.out.println("Math: " + (isSame?"Yes!":"No!!"));
 				
 				String s = CompressHelper.decompress(v);
-				
 				System.out.println(s);
 			}
 			catch(Exception ee) {
