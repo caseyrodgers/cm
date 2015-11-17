@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<%@page import="hotmath.testset.ha.SolutionDao"%>
 <%@page import="hotmath.cm.util.CmPilotCreate"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.util.List"%>
@@ -9,15 +10,12 @@
 <html>
 <head>
 <%
-       
-       Object o = hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher.getInstance().execute(new hotmath.gwt.cm_rpc.client.rpc.GetChaptersForProgramSubjectAction("",""));
-       
-       // Object o = hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher.loadCommandClass(new hotmath.gwt.cm_rpc.client.rpc.GetChaptersForProgramSubjectAction());
+  SolutionDao.getInstance().testIt();
 %>
 </head>
 <body>
 <h1>
-	DONE: <%= o.getClass() %>
+	Success!
 </h1>
 </body>
 

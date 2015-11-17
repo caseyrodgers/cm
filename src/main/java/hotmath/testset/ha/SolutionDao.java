@@ -779,7 +779,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	}
 	
 
-	private void testIt() throws Exception {
+	public void testIt() throws Exception {
 		try {
 			//String contextJson = FileUtils.readFileToString(new File("/temp/test.txt"));
 			
@@ -801,7 +801,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 				conn = HMConnectionPool.getConnection();
 
 				conn.createStatement().executeQuery("drop table if exists junk");
-				conn.createStatement().executeQuery("create table junk (variables VARBINARY  )");
+				conn.createStatement().executeQuery("create table junk (variables text  )");
 				
 				PreparedStatement ps=null;
 				try {
@@ -827,6 +827,8 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 			}
 			catch(Exception ee) {
 				ee.printStackTrace();
+				
+				throw ee;
 			}
 			finally {
 				SqlUtilities.releaseResources(null, null, conn);
