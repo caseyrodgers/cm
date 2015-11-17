@@ -790,18 +790,19 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 			String compDecomp = CompressHelper.decompress(compBytes);
 			
 			if(compDecomp.equals(contextJson)) {
-				System.out.println("Match");;
+				System.out.println("Match before db");;
 			}
 			else {
-				System.out.println("Not Match!");;
+				System.out.println("Not Match before db!");;
 			}
+
 			Connection conn=null;
 			ResultSet rs;
 			try {
 				conn = HMConnectionPool.getConnection();
 
-				conn.createStatement().executeQuery("drop table if exists junk");
-				conn.createStatement().executeQuery("create table junk (variables text  )");
+				conn.createStatement().executeUpdate("drop table if exists junk");
+				conn.createStatement().executeUpdate("create table junk (variables text  )");
 				
 				PreparedStatement ps=null;
 				try {
@@ -817,12 +818,11 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 				rs = conn.createStatement().executeQuery("select * from junk");
 				rs.next();
 				byte[] v = rs.getBytes("variables");
-				boolean isSame = v.equals(compBytes);
-				
-				
-				System.out.println("Math: " + (isSame?"Yes!":"No!!"));
-				
 				String s = CompressHelper.decompress(v);
+
+				boolean isSame = contextJson.equals(s);
+				System.out.println("Match after db: " + (isSame?"Yes!":"No!!"));
+
 				System.out.println(s);
 			}
 			catch(Exception ee) {
