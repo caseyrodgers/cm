@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.zip.Inflater;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -778,12 +779,73 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		return list;
 	}
 	
-
 	public void testIt() throws Exception {
 		try {
-			//String contextJson = FileUtils.readFileToString(new File("/temp/test.txt"));
 			
-			String contextJson = "Test12345678901234567890";
+			String originalString = "BillyTest12345678901234567890";
+			byte[] originalStringBytes = originalString.getBytes("UTF-8");
+			
+			byte[] originalStringCompressedBytes = CompressHelper.compress(originalStringBytes);
+
+			Connection conn=null;
+			try {
+				conn = HMConnectionPool.getConnection();
+
+				//conn.createStatement().executeUpdate("drop table if exists junk");
+				//conn.createStatement().executeUpdate("create table junk (id integer auto_increment not null primary key, variables text  )");
+				
+				PreparedStatement ps=null;
+				try {
+					ps = conn.prepareStatement("insert into junk(variables)values(?)");
+					ps.setBytes(1, originalStringCompressedBytes);
+					
+					ps.executeUpdate();
+				}
+				finally {
+					SqlUtilities.releaseResources(null,  ps, null);
+				}
+				
+				ResultSet rs = conn.createStatement().executeQuery("select * from junk order by id desc limit 1");
+				rs.first();
+				
+				byte[] outOfDbBytes = rs.getBytes("variables");
+				
+				int l = outOfDbBytes.length;
+				int l1 = originalStringCompressedBytes.length;
+				
+				if(l != l1) {
+					throw new Exception("Incorrect length");
+				}
+				
+		    	Inflater inflater = new Inflater();
+		    	inflater.setInput(outOfDbBytes);
+		    	
+		    	byte outBytes[] = new byte[5000];
+				int by = inflater.inflate(outBytes, 0, outBytes.length);
+		    	
+				String outOfDbBytesDecompressed = CompressHelper.decompress(outOfDbBytes);
+				
+				boolean isSame = outOfDbBytesDecompressed.equals(originalString);
+				System.out.println("Match after db: " + (isSame?"Yes!":"No!!"));
+			}
+			catch(Exception ee) {
+				throw ee;
+			}
+			finally {
+				SqlUtilities.releaseResources(null, null, conn);
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	public void testIt2() throws Exception {
+		try {
+			String contextJson = FileUtils.readFileToString(new File("/temp/test.txt"));
+			
+			//String contextJson = "Test12345678901234567890";
 			byte[] inBytes = contextJson.getBytes("UTF-8");
 			
 			byte[] compBytes = CompressHelper.compress(inBytes);
