@@ -10,13 +10,3 @@ function showWhiteboardActive(domEl) {
 
 function debug(s) {
 }
-
-function processMathJax() {
-    try {
-        if (typeof MathJax != "undefined") {
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-        }
-    } catch (e) {
-        alert('Error processing MathJax: ' + e);
-    }
-}

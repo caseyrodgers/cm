@@ -80,10 +80,11 @@ function setupMathJax() {
 function processMathJax() {
 	var el = $get('tutor_raw_steps_wrapper');
 	if(!el) {
+		console.log("processing mathjax on page");
 		MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 	}
 	else {
-	    console.log("processing mathjax");
+	    console.log("processing mathjax on tutor");
 	    MathJax.Hub.Queue(["Typeset",MathJax.Hub], el);
 	    MathJax.Hub.Queue(function () {
 	        console.log('MathJax Complete');

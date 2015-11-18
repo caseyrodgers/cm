@@ -17,11 +17,7 @@ var _productionMode = false;
  *
  */
 HmEvents.eventTutorInitialized.subscribe(function(tutorWrapper) {
-    try {
-        //MathJax.Hub.Queue([ "Typeset", MathJax.Hub ]);
-    } catch (e) {
-        alert("MathJAX processing failed: " + e);
-    }
+	processMathJax();
 });
 
 
