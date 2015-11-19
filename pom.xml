@@ -100,12 +100,6 @@
 
 	<dependencies>
 	
-<dependency>
-	<groupId>org.mariadb.jdbc</groupId>
-	<artifactId>mariadb-java-client</artifactId>
-	<version>1.1.7</version>
-</dependency>
-	
 	<dependency>
 	<groupId>org.apache.httpcomponents</groupId>
 	<artifactId>httpclient</artifactId>
@@ -202,11 +196,25 @@
 
 		<!-- <dependency> <groupId>org.projectlombok</groupId> <artifactId>lombok</artifactId> 
 			<version>0.8.2</version> </dependency> -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.12</version>
-		</dependency>
+			
+			
+			
+<!-- Either mariadb jdbc driver or Mysql, not both.  
+    otherwise zip inflater errors occur
+-->
+<!-- 
+<dependency>
+	<groupId>org.mariadb.jdbc</groupId>
+	<artifactId>mariadb-java-client</artifactId>
+	<version>1.1.7</version>
+</dependency>
+-->	
+			
+<dependency>
+	<groupId>mysql</groupId>
+	<artifactId>mysql-connector-java</artifactId>
+	<version>5.1.37</version>
+</dependency>
 
 		<dependency>
 			<groupId>javax.mail</groupId>

@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -62,8 +65,8 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 
 	static public SolutionDao getInstance() throws Exception {
 		if (__instance == null) {
-			__instance = (SolutionDao) SpringManager.getInstance()
-					.getBeanFactory().getBean(SolutionDao.class.getName());
+			__instance = (SolutionDao) SpringManager.getInstance().getBeanFactory()
+					.getBean(SolutionDao.class.getName());
 		}
 		return __instance;
 	}
@@ -81,53 +84,47 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 * @param pid
 	 * @return
 	 */
-	public SolutionContext getSolutionContext(int runId, final String pid)
-			throws CmException {
+	public SolutionContext getSolutionContext(int runId, final String pid) throws CmException {
 
 		if (runId == 0) {
 			return getGlobalSolutionContext(pid);
 		}
-
+		
 		String sql = "select problem_number, variables from HA_SOLUTION_CONTEXT where run_id = ? and pid = ? order by id";
-		List<SolutionContext> matches = getJdbcTemplate().query(sql,
-				new Object[] { runId, pid }, new RowMapper<SolutionContext>() {
+		List<SolutionContext> matches = getJdbcTemplate().query(sql, new Object[] { runId, pid },
+				new RowMapper<SolutionContext>() {
 					@Override
-					public SolutionContext mapRow(ResultSet rs, int rowNum)
-							throws SQLException {
+					public SolutionContext mapRow(ResultSet rs, int rowNum) throws SQLException {
 						String solnCtx;
 						try {
 							solnCtx = loadSolutionContextString(rs);
 						} catch (Exception e) {
 							throw new SQLException(e);
 						}
-						return new SolutionContext(pid, rs
-								.getInt("problem_number"), solnCtx);
+						return new SolutionContext(pid, rs.getInt("problem_number"), solnCtx);
 					}
 				});
 		return matches.size() > 0 ? matches.get(0) : null;
 	}
 
-	public SolutionContext getSolutionContext_Debug(int runId, final String pid)
-			throws CmException {
+	public SolutionContext getSolutionContext_Debug(int runId, final String pid) throws CmException {
 
 		if (runId == 0) {
 			return getGlobalSolutionContext(pid);
 		}
 
 		String sql = "select problem_number, variables from junk where run_id = ? and pid = ? order by id";
-		List<SolutionContext> matches = getJdbcTemplate().query(sql,
-				new Object[] { runId, pid }, new RowMapper<SolutionContext>() {
+		List<SolutionContext> matches = getJdbcTemplate().query(sql, new Object[] { runId, pid },
+				new RowMapper<SolutionContext>() {
 					@Override
-					public SolutionContext mapRow(ResultSet rs, int rowNum)
-							throws SQLException {
+					public SolutionContext mapRow(ResultSet rs, int rowNum) throws SQLException {
 						String solnCtx;
 						try {
 							solnCtx = loadSolutionContextString(rs);
 						} catch (Exception e) {
 							throw new SQLException(e);
 						}
-						return new SolutionContext(pid, rs
-								.getInt("problem_number"), solnCtx);
+						return new SolutionContext(pid, rs.getInt("problem_number"), solnCtx);
 					}
 				});
 		return matches.size() > 0 ? matches.get(0) : null;
@@ -137,13 +134,10 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		final ProblemID pidO = new ProblemID(pid);
 		final String sql = "select variables from HA_SOLUTION_CONTEXT where run_id = ? and pid = ? and problem_number = ?";
 		List<String> matches = getJdbcTemplate().query(sql,
-				new Object[] { runId, pid, pidO.getProblemSetProblemNumber() },
-				new RowMapper<String>() {
+				new Object[] { runId, pid, pidO.getProblemSetProblemNumber() }, new RowMapper<String>() {
 					@Override
-					public String mapRow(ResultSet rs, int rowNum)
-							throws SQLException {
-						__logger.debug("problem_number: "
-								+ pidO.getProblemNumber());
+					public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+						__logger.debug("problem_number: " + pidO.getProblemNumber());
 						try {
 							return loadSolutionContextString(rs);
 						} catch (Exception e) {
@@ -155,24 +149,18 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	}
 
 	public List<LessonModel> getLessonsInInmhMapForPID(String pid) throws Exception {
-		String sql = CmMultiLinePropertyReader.getInstance().getProperty(
-				"GET_LESSON_FOR_PID");
+		String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_LESSON_FOR_PID");
 		List<LessonModel> list = null;
 		try {
-			list = getJdbcTemplate().query(sql, new Object[] { pid },
-					new RowMapper<LessonModel>() {
-						@Override
-						public LessonModel mapRow(ResultSet rs, int rowNum)
-								throws SQLException {
-							LessonModel data = new LessonModel(rs
-									.getString("lesson"), rs
-									.getString("lesson_file"));
-							return data;
-						}
-					});
+			list = getJdbcTemplate().query(sql, new Object[] { pid }, new RowMapper<LessonModel>() {
+				@Override
+				public LessonModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+					LessonModel data = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
+					return data;
+				}
+			});
 		} catch (DataAccessException e) {
-			__logger.error(
-					String.format("getLessonsForPID(): lessonFile: %s", pid), e);
+			__logger.error(String.format("getLessonsForPID(): lessonFile: %s", pid), e);
 			throw e;
 		}
 		if (list == null)
@@ -181,31 +169,26 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	}
 
 	public List<LessonModel> getLessonsInInmhMapForPidList(List<String> pidList) throws Exception {
-		String sqlTemplate = CmMultiLinePropertyReader.getInstance().getProperty(
-				"GET_LESSON_FOR_PID_LIST");
+		String sqlTemplate = CmMultiLinePropertyReader.getInstance().getProperty("GET_LESSON_FOR_PID_LIST");
 		String sql = QueryHelper.createInListSQL(sqlTemplate, "$$PID_LIST$$", pidList);
 		List<LessonModel> list = null;
 		try {
-			list = getJdbcTemplate().query(sql,
-					new RowMapper<LessonModel>() {
-						@Override
-						public LessonModel mapRow(ResultSet rs, int rowNum)
-								throws SQLException {
-							LessonModel data = new LessonModel(rs
-									.getString("lesson"), rs
-									.getString("lesson_file"));
-							return data;
-						}
-					});
+			list = getJdbcTemplate().query(sql, new RowMapper<LessonModel>() {
+				@Override
+				public LessonModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+					LessonModel data = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
+					return data;
+				}
+			});
 		} catch (DataAccessException e) {
-			__logger.error(
-					String.format("getLessonsForPidList(): SQL: %s", sql), e);
+			__logger.error(String.format("getLessonsForPidList(): SQL: %s", sql), e);
 			throw e;
 		}
 		if (list == null)
 			list = new ArrayList<LessonModel>();
 		return list;
 	}
+
 	private String loadSolutionContextString(ResultSet rs) throws Exception {
 		byte[] compressed = rs.getBytes("variables");
 		if (compressed[0] != "{".getBytes("UTF-8")[0]) {
@@ -226,8 +209,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	public void removeSolutionContext(final int runId, final String pid) {
 		getJdbcTemplate().update(new PreparedStatementCreator() {
 			@Override
-			public PreparedStatement createPreparedStatement(Connection con)
-					throws SQLException {
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				PreparedStatement ps = null;
 				String sql = "delete from HA_SOLUTION_CONTEXT where run_id = ? & and pid = ?";
 				ps = con.prepareStatement(sql);
@@ -246,12 +228,11 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 * @param problemNumber
 	 * @param contextJson
 	 */
-	public void saveSolutionContext(final int runId, final String pid,
-			final int problemNumber, final String contextJson) {
+	public void saveSolutionContext(final int runId, final String pid, final int problemNumber,
+			final String contextJson) {
 		getJdbcTemplate().update(new PreparedStatementCreator() {
 			@Override
-			public PreparedStatement createPreparedStatement(Connection con)
-					throws SQLException {
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				PreparedStatement ps = null;
 				String sql = "insert into HA_SOLUTION_CONTEXT(time_viewed, run_id, pid, problem_number, variables)values(?,?,?,?,?)";
 				ps = con.prepareStatement(sql);
@@ -269,13 +250,10 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 					ps.setBytes(5, outBytes);
 
 					if (__logger.isDebugEnabled())
-						__logger.debug("in len: " + inBytes.length
-								+ ", out len: " + outBytes.length);
+						__logger.debug("in len: " + inBytes.length + ", out len: " + outBytes.length);
 				} catch (UnsupportedEncodingException e) {
-					__logger.error(
-							String.format(
-									"*** Error saving solution context for run_id: %d, pid: %s, prob#: %d",
-									runId, pid, problemNumber), e);
+					__logger.error(String.format("*** Error saving solution context for run_id: %d, pid: %s, prob#: %d",
+							runId, pid, problemNumber), e);
 					throw new SQLException(e.getLocalizedMessage());
 				}
 				return ps;
@@ -283,12 +261,11 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		});
 	}
 
-	public void saveSolutionContextCompressed(final int runId,
-			final String pid, final int problemNumber, final String contextJson) {
+	public void saveSolutionContextCompressed(final int runId, final String pid, final int problemNumber,
+			final String contextJson) {
 		getJdbcTemplate().update(new PreparedStatementCreator() {
 			@Override
-			public PreparedStatement createPreparedStatement(Connection con)
-					throws SQLException {
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				PreparedStatement ps = null;
 				String sql = "insert into HA_SOLUTION_CONTEXT_COMPRESSED(time_viewed, run_id, pid, problem_number, variables)values(?,?,?,?,?)";
 				ps = con.prepareStatement(sql);
@@ -306,13 +283,10 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 					ps.setBytes(5, outBytes);
 
 					if (__logger.isDebugEnabled())
-						__logger.debug("in len: " + inBytes.length
-								+ ", out len: " + outBytes.length);
+						__logger.debug("in len: " + inBytes.length + ", out len: " + outBytes.length);
 				} catch (UnsupportedEncodingException e) {
-					__logger.error(
-							String.format(
-									"*** Error saving solution context for run_id: %d, pid: %s, prob#: %d",
-									runId, pid, problemNumber), e);
+					__logger.error(String.format("*** Error saving solution context for run_id: %d, pid: %s, prob#: %d",
+							runId, pid, problemNumber), e);
 					throw new SQLException(e.getLocalizedMessage());
 				}
 				return ps;
@@ -326,11 +300,9 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		pidO.setProblemSetProblemNumber(1);
 		String sql = "select variables from HA_SOLUTION_CONTEXT_COMPRESSED where run_id = ? and pid = ? and problem_number = ? limit 1";
 		List<String> matches = getJdbcTemplate().query(sql,
-				new Object[] { runId, pid, pidO.getProblemSetProblemNumber() },
-				new RowMapper<String>() {
+				new Object[] { runId, pid, pidO.getProblemSetProblemNumber() }, new RowMapper<String>() {
 					@Override
-					public String mapRow(ResultSet rs, int rowNum)
-							throws SQLException {
+					public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 						byte[] compressed = rs.getBytes("variables");
 						try {
 							return CompressHelper.decompress(compressed);
@@ -344,14 +316,12 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 
 	public String getSolutionXML(String pid) {
 		String sql = "select solutionxml from SOLUTIONS where problemindex = ?";
-		return getJdbcTemplate().queryForObject(sql, new Object[] { pid },
-				new RowMapper<String>() {
-					@Override
-					public String mapRow(ResultSet rs, int rowNum)
-							throws SQLException {
-						return rs.getString("solutionxml");
-					}
-				});
+		return getJdbcTemplate().queryForObject(sql, new Object[] { pid }, new RowMapper<String>() {
+			@Override
+			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+				return rs.getString("solutionxml");
+			}
+		});
 	}
 
 	/**
@@ -361,8 +331,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 * @param problemNumber
 	 * @return
 	 */
-	public SolutionContext getGlobalSolutionContext(final String pid)
-			throws CmException {
+	public SolutionContext getGlobalSolutionContext(final String pid) throws CmException {
 
 		String pidParts[] = pid.split("\\$");
 		String pidBase = pidParts[0];
@@ -374,8 +343,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		}
 
 		if (pidContextGuid.length() < 10) {
-			pidContextGuid = getGlobalSolutionContextNewest(pidBase,
-					pidContextGuid);
+			pidContextGuid = getGlobalSolutionContextNewest(pidBase, pidContextGuid);
 		}
 
 		if (pidContextGuid == null) {
@@ -383,17 +351,13 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		}
 
 		String sql = "select * from HA_SOLUTION_GLOBAL_CONTEXT where pid = ? and context_guid = ?";
-		List<SolutionContext> contexts = getJdbcTemplate().query(sql,
-				new Object[] { pidBase, pidContextGuid },
+		List<SolutionContext> contexts = getJdbcTemplate().query(sql, new Object[] { pidBase, pidContextGuid },
 				new RowMapper<SolutionContext>() {
 					@Override
-					public SolutionContext mapRow(ResultSet rs, int rowNum)
-							throws SQLException {
-						String pidFull = rs.getString("pid") + "$"
-								+ rs.getString("context_guid");
-						SolutionContext c = new SolutionContext(pidFull, rs
-								.getInt("problem_number"), rs
-								.getString("variables"));
+					public SolutionContext mapRow(ResultSet rs, int rowNum) throws SQLException {
+						String pidFull = rs.getString("pid") + "$" + rs.getString("context_guid");
+						SolutionContext c = new SolutionContext(pidFull, rs.getInt("problem_number"),
+								rs.getString("variables"));
 						return c;
 					}
 				});
@@ -415,21 +379,19 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 * @return
 	 * @throws CmExceptionGlobalContextNotFound
 	 */
-	public String getGlobalSolutionContextNewest(String pid,
-			String problemNumber) throws CmExceptionGlobalContextNotFound {
+	public String getGlobalSolutionContextNewest(String pid, String problemNumber)
+			throws CmExceptionGlobalContextNotFound {
 		String sql = "select * from HA_SOLUTION_GLOBAL_CONTEXT where pid = ? and problem_number = ? ORDER BY create_time desc limit 1";
-		List<String> contexts = getJdbcTemplate().query(sql,
-				new Object[] { pid, problemNumber }, new RowMapper<String>() {
+		List<String> contexts = getJdbcTemplate().query(sql, new Object[] { pid, problemNumber },
+				new RowMapper<String>() {
 					@Override
-					public String mapRow(ResultSet rs, int rowNum)
-							throws SQLException {
+					public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 						return rs.getString("context_guid");
 					}
 				});
 
 		if (contexts.size() == 0) {
-			throw new CmExceptionGlobalContextNotFound(pid + "$"
-					+ problemNumber);
+			throw new CmExceptionGlobalContextNotFound(pid + "$" + problemNumber);
 		} else {
 			return contexts.get(0);
 		}
@@ -441,17 +403,16 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 * @param pid
 	 * @param contexts
 	 */
-	public void saveGlobalSolutionContexts(final String pid,
-			final CmList<String> contexts) {
+	public void saveGlobalSolutionContexts(final String pid, final CmList<String> contexts) {
 		__logger.debug("saving global solution contexts for: " + pid);
 
-		// getJdbcTemplate().execute("delete from HA_SOLUTION_GLOBAL_CONTEXT where pid = '"
+		// getJdbcTemplate().execute("delete from HA_SOLUTION_GLOBAL_CONTEXT
+		// where pid = '"
 		// + pid + "'");
 		String sql = "INSERT INTO HA_SOLUTION_GLOBAL_CONTEXT(create_time, pid, context_guid, problem_number, variables)values(now(),?,?,?,?)";
 		getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() {
 			@Override
-			public void setValues(PreparedStatement ps, int i)
-					throws SQLException {
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
 				String context = contexts.get(i);
 				ps.setString(1, pid);
 
@@ -474,8 +435,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		 */
 		int updated = getJdbcTemplate().update(new PreparedStatementCreator() {
 			@Override
-			public PreparedStatement createPreparedStatement(Connection con)
-					throws SQLException {
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				PreparedStatement ps = null;
 				String sql = "update SOLUTION_DYNAMIC set global_context_created = now() where pid = ?";
 				ps = con.prepareStatement(sql);
@@ -497,16 +457,13 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 * @return
 	 */
 	public List<String> getDynamicSolutionPidsNotProcessed() throws Exception {
-		String sql = CmMultiLinePropertyReader.getInstance().getProperty(
-				"GLOBAL_CONTEXT_PIDS_TO_PROCESS");
-		List<String> pids = getJdbcTemplate().query(sql, new Object[] {},
-				new RowMapper<String>() {
-					@Override
-					public String mapRow(ResultSet rs, int rowNum)
-							throws SQLException {
-						return rs.getString("pid");
-					}
-				});
+		String sql = CmMultiLinePropertyReader.getInstance().getProperty("GLOBAL_CONTEXT_PIDS_TO_PROCESS");
+		List<String> pids = getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<String>() {
+			@Override
+			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+				return rs.getString("pid");
+			}
+		});
 		return pids;
 	}
 
@@ -518,16 +475,12 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 */
 	public List<SolutionContext> getGlobalSolutionContextAll(String pid) {
 		String sql = "select * from HA_SOLUTION_GLOBAL_CONTEXT where pid = ? order by problem_number";
-		List<SolutionContext> pids = getJdbcTemplate().query(sql,
-				new Object[] { pid }, new RowMapper<SolutionContext>() {
+		List<SolutionContext> pids = getJdbcTemplate().query(sql, new Object[] { pid },
+				new RowMapper<SolutionContext>() {
 					@Override
-					public SolutionContext mapRow(ResultSet rs, int rowNum)
-							throws SQLException {
-						String fullPid = rs.getString("pid") + "$"
-								+ rs.getString("context_guid");
-						return new SolutionContext(fullPid, rs
-								.getInt("problem_number"), rs
-								.getString("variables"));
+					public SolutionContext mapRow(ResultSet rs, int rowNum) throws SQLException {
+						String fullPid = rs.getString("pid") + "$" + rs.getString("context_guid");
+						return new SolutionContext(fullPid, rs.getInt("problem_number"), rs.getString("variables"));
 					}
 				});
 		return pids;
@@ -537,8 +490,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 
 		int deleted = getJdbcTemplate().update(new PreparedStatementCreator() {
 			@Override
-			public PreparedStatement createPreparedStatement(Connection con)
-					throws SQLException {
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				PreparedStatement ps = null;
 				String sql = "delete from SOLUTIONS where problemindex = ?";
 				ps = con.prepareStatement(sql);
@@ -562,15 +514,13 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 */
 	public ProblemType getProblemType(String pid) throws Exception {
 		String sql = "select problemindex, solutionxml from SOLUTIONS where problemindex = ?";
-		return getJdbcTemplate().queryForObject(sql, new Object[] { pid },
-				new RowMapper<ProblemType>() {
-					@Override
-					public ProblemType mapRow(ResultSet rs, int rowNum)
-							throws SQLException {
-						String xml = rs.getString("solutionxml");
-						return determineProblemType(xml);
-					}
-				});
+		return getJdbcTemplate().queryForObject(sql, new Object[] { pid }, new RowMapper<ProblemType>() {
+			@Override
+			public ProblemType mapRow(ResultSet rs, int rowNum) throws SQLException {
+				String xml = rs.getString("solutionxml");
+				return determineProblemType(xml);
+			}
+		});
 	}
 
 	/**
@@ -604,11 +554,9 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 				}
 			}
 
-			if (psHtml.indexOf("hm_flash_widget") > -1
-					&& _isWhiteboardWidget(psHtml)) {
+			if (psHtml.indexOf("hm_flash_widget") > -1 && _isWhiteboardWidget(psHtml)) {
 				return ProblemType.WHITEBOARD;
-			} else if ((psHtml.indexOf("hm_flash_widget") > -1 || psHtml
-					.indexOf("hotmath:flash") > -1)
+			} else if ((psHtml.indexOf("hm_flash_widget") > -1 || psHtml.indexOf("hotmath:flash") > -1)
 					&& psHtml.indexOf("not_used") == -1) {
 				return ProblemType.INPUT_WIDGET;
 			} else if (psHtml.indexOf("<div widget='") > -1) {
@@ -659,29 +607,27 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 * 
 	 * This could either be:
 	 * 
-	 * 1. defined via inmh_assessment range pids ...  (externally in inmh_assignment) 
-	 * 2. HA_PROGRAM_LESSONS_static (used in a program)
-	 * 3. inmh_map 
-	 * 4. Assignment Correlations (manually specified)
-	 * 5. custom quizzes defined externally in custom_quiz.xml
-	 * @param conn 
+	 * 1. defined via inmh_assessment range pids ... (externally in
+	 * inmh_assignment) 2. HA_PROGRAM_LESSONS_static (used in a program) 3.
+	 * inmh_map 4. Assignment Correlations (manually specified) 5. custom
+	 * quizzes defined externally in custom_quiz.xml
+	 * 
+	 * @param conn
 	 * 
 	 * 
 	 * @param pid
 	 * @return
 	 */
-	public List<LessonModel> getLessonsAssociatedForPid(Connection conn, String pid)
-			throws Exception {
+	public List<LessonModel> getLessonsAssociatedForPid(Connection conn, String pid) throws Exception {
 		MyArrayList<LessonModel> lessons = new MyArrayList<LessonModel>();
-		
-		String basePid =  pid.split("\\$")[0];
-		
+
+		String basePid = pid.split("\\$")[0];
+
 		lessons.addAllNoDups(getLessonsInInmhAssessmentForPid(conn, basePid));
 		lessons.addAllNoDups(ExamDao.getInstance().getLessonsInHaProgramLessonsForProblem(basePid));
 		lessons.addAllNoDups(SolutionDao.getInstance().getLessonsInInmhMapForPID(new ProblemID(basePid).getGUID()));
 		lessons.addAllNoDups(AssignmentDao.getInstance().getLessonsCorrelatedToCustomProblem(basePid));
 		lessons.addAllNoDups(CustomQuizQuestionManager.getInstance().getLessonsInCustomQuiz(conn, basePid));
-
 
 		return lessons;
 	}
@@ -694,43 +640,44 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		List<String> guidList = new ArrayList<String>();
 
 		for (String pid : pidList) {
-    		String basePid =  pid.split("\\$")[0];
-    		bpList.add(basePid);
-    		guidList.add(new ProblemID(basePid).getGUID());
+			String basePid = pid.split("\\$")[0];
+			bpList.add(basePid);
+			guidList.add(new ProblemID(basePid).getGUID());
 		}
 
 		Connection localConn = null;
 		if (conn == null) {
 			localConn = HMConnectionPool.getConnection();
 		}
-		lessons.addAllNoDups(getLessonsInInmhAssessmentForPidList((conn==null)?localConn:conn, bpList));
+		lessons.addAllNoDups(getLessonsInInmhAssessmentForPidList((conn == null) ? localConn : conn, bpList));
 		lessons.addAllNoDups(ExamDao.getInstance().getLessonsInHaProgramLessonsForProblemList(bpList));
 		lessons.addAllNoDups(SolutionDao.getInstance().getLessonsInInmhMapForPidList(guidList));
 		lessons.addAllNoDups(AssignmentDao.getInstance().getLessonsCorrelatedToCustomProblemList(bpList));
-		lessons.addAllNoDups(CustomQuizQuestionManager.getInstance().getLessonsInCustomQuizList((conn==null)?localConn:conn, bpList));
+		lessons.addAllNoDups(CustomQuizQuestionManager.getInstance()
+				.getLessonsInCustomQuizList((conn == null) ? localConn : conn, bpList));
 
 		SqlUtilities.releaseResources(null, null, localConn);
-		
+
 		return lessons;
 	}
 
 	class MyArrayList<LessonModel> extends ArrayList<LessonModel> {
 		public void addAllNoDups(List<LessonModel> lessons) {
-			for(LessonModel l:lessons) {
-				if(!contains(l)) {
+			for (LessonModel l : lessons) {
+				if (!contains(l)) {
 					add(l);
 				}
 			}
 		}
 	}
 
-	
-	
 	/**
 	 * Return list of LessonModel objects for each match defined in
 	 * inmh_assessment_lookup.
 	 * 
-	 * NOTE: inmh_assessment_lookup is created during inmh_assessment upload process.
+	 * NOTE: inmh_assessment_lookup is created during inmh_assessment upload
+	 * process.
+	 * 
 	 * @see InmhAssessmentLookupManager.buildLookupTable
 	 * 
 	 * @param pid
@@ -743,14 +690,10 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		return getLessonsInInmhAssessmentForPidList(conn, pidList);
 	}
 
-	private static final String INMH_ASSESSMENT_SQL =
-			"select l.file,pl.lesson as title " +
-	        " from inmh_assessment_lookup l " +
-	        " JOIN ( " +
-	        "     select distinct file, lesson " +
-	        "     from HA_PROGRAM_LESSONS_static pl " +
-	        " ) pl   on pl.file = l.file " +
-	        " where l.pid in ($$PID_LIST$$) order by l.file ";
+	private static final String INMH_ASSESSMENT_SQL = "select l.file,pl.lesson as title "
+			+ " from inmh_assessment_lookup l " + " JOIN ( " + "     select distinct file, lesson "
+			+ "     from HA_PROGRAM_LESSONS_static pl " + " ) pl   on pl.file = l.file "
+			+ " where l.pid in ($$PID_LIST$$) order by l.file ";
 
 	/**
 	 * 
@@ -759,7 +702,8 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<LessonModel> getLessonsInInmhAssessmentForPidList(Connection conn, List<String> pidList) throws Exception {
+	public List<LessonModel> getLessonsInInmhAssessmentForPidList(Connection conn, List<String> pidList)
+			throws Exception {
 		List<LessonModel> list = new ArrayList<LessonModel>();
 
 		String sql = QueryHelper.createInListSQL(INMH_ASSESSMENT_SQL, "$$PID_LIST$$", pidList);
@@ -778,64 +722,57 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		}
 		return list;
 	}
-	
+
 	public void testIt() throws Exception {
 		try {
-			
+
 			String originalString = "BillyTest12345678901234567890";
 			byte[] originalStringBytes = originalString.getBytes("UTF-8");
-			
+
 			byte[] originalStringCompressedBytes = CompressHelper.compress(originalStringBytes);
 
-			Connection conn=null;
+			Connection conn = null;
 			try {
 				conn = HMConnectionPool.getConnection();
 
 				//conn.createStatement().executeUpdate("drop table if exists junk");
 				//conn.createStatement().executeUpdate("create table junk (id integer auto_increment not null primary key, variables text  )");
-				
-				PreparedStatement ps=null;
+				PreparedStatement ps = null;
 				try {
 					ps = conn.prepareStatement("insert into junk(variables)values(?)");
 					ps.setBytes(1, originalStringCompressedBytes);
-					
+
 					ps.executeUpdate();
+				} finally {
+					SqlUtilities.releaseResources(null, ps, null);
 				}
-				finally {
-					SqlUtilities.releaseResources(null,  ps, null);
-				}
-				
-				ResultSet rs = conn.createStatement().executeQuery("select * from junk order by id desc limit 1");
-				rs.first();
-				
+				 ResultSet rs = conn.createStatement().executeQuery("select * from junk order by id desc limit 1");
+				 rs.first();
 				byte[] outOfDbBytes = rs.getBytes("variables");
+				
 				
 				int l = outOfDbBytes.length;
 				int l1 = originalStringCompressedBytes.length;
-				
-				if(l != l1) {
+				if (l != l1) {
 					throw new Exception("Incorrect length");
 				}
-				
-		    	Inflater inflater = new Inflater();
-		    	inflater.setInput(outOfDbBytes);
-		    	
-		    	byte outBytes[] = new byte[5000];
+
+				Inflater inflater = new Inflater();
+				inflater.setInput(outOfDbBytes);
+
+				byte outBytes[] = new byte[5000];
 				int by = inflater.inflate(outBytes, 0, outBytes.length);
-		    	
+
 				String outOfDbBytesDecompressed = CompressHelper.decompress(outOfDbBytes);
-				
+
 				boolean isSame = outOfDbBytesDecompressed.equals(originalString);
-				System.out.println("Match after db: " + (isSame?"Yes!":"No!!"));
-			}
-			catch(Exception ee) {
+				System.out.println("Match after db: " + (isSame ? "Yes!" : "No!!"));
+			} catch (Exception ee) {
 				throw ee;
-			}
-			finally {
+			} finally {
 				SqlUtilities.releaseResources(null, null, conn);
 			}
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
@@ -844,75 +781,69 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	public void testIt2() throws Exception {
 		try {
 			String contextJson = FileUtils.readFileToString(new File("/temp/test.txt"));
-			
-			//String contextJson = "Test12345678901234567890";
+
+			// String contextJson = "Test12345678901234567890";
 			byte[] inBytes = contextJson.getBytes("UTF-8");
-			
+
 			byte[] compBytes = CompressHelper.compress(inBytes);
 			String compDecomp = CompressHelper.decompress(compBytes);
-			
-			if(compDecomp.equals(contextJson)) {
-				System.out.println("Match before db");;
-			}
-			else {
-				System.out.println("Not Match before db!");;
+
+			if (compDecomp.equals(contextJson)) {
+				System.out.println("Match before db");
+				;
+			} else {
+				System.out.println("Not Match before db!");
+				;
 			}
 
-			Connection conn=null;
+			Connection conn = null;
 			ResultSet rs;
 			try {
 				conn = HMConnectionPool.getConnection();
 
 				conn.createStatement().executeUpdate("drop table if exists junk");
 				conn.createStatement().executeUpdate("create table junk (variables text  )");
-				
-				PreparedStatement ps=null;
+
+				PreparedStatement ps = null;
 				try {
 					ps = conn.prepareStatement("insert into junk(variables)values(?)");
 					ps.setBytes(1, compBytes);
-					
+
 					ps.executeUpdate();
+				} finally {
+					SqlUtilities.releaseResources(null, ps, null);
 				}
-				finally {
-					SqlUtilities.releaseResources(null,  ps, null);
-				}
-				
+
 				rs = conn.createStatement().executeQuery("select * from junk");
 				rs.next();
 				byte[] v = rs.getBytes("variables");
 				String s = CompressHelper.decompress(v);
 
 				boolean isSame = contextJson.equals(s);
-				System.out.println("Match after db: " + (isSame?"Yes!":"No!!"));
+				System.out.println("Match after db: " + (isSame ? "Yes!" : "No!!"));
 
 				System.out.println(s);
-			}
-			catch(Exception ee) {
+			} catch (Exception ee) {
 				ee.printStackTrace();
-				
+
 				throw ee;
-			}
-			finally {
+			} finally {
 				SqlUtilities.releaseResources(null, null, conn);
 			}
-			
-			
-			
+
 			System.out.println(compDecomp);
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
-	
+
 	static public void main(String as[]) {
 		try {
-		
+
 			new SolutionDao().testIt();
-			
-		}
-		catch(Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

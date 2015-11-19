@@ -4,11 +4,6 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catchup Math Mobile</title>
-
-
-    <script type="text/javascript"
-             src="/assets/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    </script>
     <link type="text/css" rel="stylesheet" href="http://sexybuttons.googlecode.com/svn/trunk/sexybuttons.css">
     <link type="text/css" rel="stylesheet" href="/gwt-resources/css/CatchupMathMobile3_combined.css">
 
@@ -44,7 +39,7 @@
     </div>
     <script>
         /** completly disable logging */
-        console = {
+        _console = {
             log: function (x) {
                 // empty
             }
@@ -55,8 +50,19 @@
     <script src="/gwt-resources/js/spin-min.js"></script>
 
     <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main_mobile.nocache"></script>
+    <!--  Math Jax Configuration  -->
+    <!--  CODE IS DUPLICATED (Copy/paste) -->
+    <!-- ------------------------ -->
+    <script src='/gwt-resources/js/mathjax_setup.js'></script>
+    <script type='text/x-mathjax-config'>      
+         setupMathJax();
+    </script>
+    <script src="/assets/mathjax/2.5/MathJax.js?config=MML_HTMLorMML"></script>
+    <!-- -------------------------- -->
+    <!--  End MathJax Configuration -->
+    
+    
     <script src="/gwt-resources/js/CatchupMathMobile3_combined.js"></script>
-    <script src="/gwt-resources/js/whiteboard_v3.js"></script>
 
     <script src="/cm_mobile3/cm_mobile3.nocache.js"></script>
     
