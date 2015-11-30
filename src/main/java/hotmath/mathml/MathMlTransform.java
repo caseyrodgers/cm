@@ -3,6 +3,7 @@ package hotmath.mathml;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
 import hotmath.cm.util.CatchupMathProperties;
@@ -32,7 +33,7 @@ public class MathMlTransform {
      */
     public String processMathMlTransformations(String solutionHtml) throws Exception {
         try {
-            Document doc = Jsoup.parse(solutionHtml);
+            Document doc = Jsoup.parse(solutionHtml,"", Parser.xmlParser());
 
             CatchupMathProperties p = CatchupMathProperties.getInstance();
 
@@ -41,7 +42,7 @@ public class MathMlTransform {
              *
              *  add to mn
              */
-            
+            String miProp = p.getProperty("mathml.mi", "1em");            
             String normalFraction = p.getProperty("mathml.mfrac.mn", "1.2em");
             String propMixWhole = p.getProperty("mathml.mixed.mn.mfrac", "1em");
             String propMixFract = p.getProperty("mathml.mixed.mn.mfrac.mn", "1.3em"); 
@@ -51,26 +52,23 @@ public class MathMlTransform {
             String propMrootMi2 = p.getProperty("mathml.mroot.mrow.msup.mi.2", "1.2em");
             String propMrootMiRow = p.getProperty("mathml.mroot.mrow.mi", "1.6em");
             String propMtrMtdMi = p.getProperty("mathml.mtr.mtd.mi", "1em");
+            String propMsup = p.getProperty("mathml.msup", "1.1em");
             
-            Elements els = doc.select("math mfrac mn");
-            for (Element e : els) {
-            	if(previousSiblingIs("mn", e.parent())) {
-            		e.attr("mathsize", propMixFract);
-            	}
-            	else {
-	        		// is normal fraction
-	        		e.attr("mathsize", normalFraction);
-            	}
-            }
 
-            els = doc.select("math mi");
-            String prop = p.getProperty("mathml.mi", "1em");
+            /** Apply broad matches first, then more specific 
+             * 
+             */
+            
+            
+            
+            Elements els = doc.select("mtable");
             for (Element e : els) {
-                e.attr("mathsize", prop);
+            	e.attr("columnalign", "left");
             }
-
-            // look for mn precending a mfrac
-            // for a mixed fraction
+            
+            /** look for mn preceding a mfrac
+            /** for a mixed fraction
+             */
             els = doc.select("math mn");
             for(Element e: els) {
             	if(nextSiblingIs("mfrac", e)) {
@@ -78,15 +76,31 @@ public class MathMlTransform {
             	}
             }
 
+            els = doc.select("math mi");
+            for (Element e : els) {
+                e.attr("mathsize", miProp);
+            }
+            
+            els = doc.select("math mfrac mn");
+            for (Element e : els) {
+	        	e.attr("mathsize", normalFraction);
+            }
+
+
+            els = doc.select("math mn+mfrac mn");
+            for (Element e : els) {
+        		e.attr("mathsize", propMixFract);
+            }
+            
             /** second mn in a msup 
              * 
              */
             els = doc.select("math msup");
-            prop = p.getProperty("mathml.msup", "1.1em");
+            
             for (Element e : els) {
                 Elements mns = e.getElementsByTag("mn");
                 if (mns.size() == 2) {
-                    mns.get(1).attr("mathsize", prop);
+                    mns.get(1).attr("mathsize", propMsup);
                 }
             }
             
@@ -154,12 +168,7 @@ public class MathMlTransform {
             for (Element e : els) {
             	e.attr("mathsize", propMtrMtdMi);
             }
-            
-            els = doc.select("mtable");
-            for (Element e : els) {
-            	e.attr("columnalign", "left");
-            }
-            
+
             doc.outputSettings().prettyPrint(false);
             String html = doc.toString();
             return html;
