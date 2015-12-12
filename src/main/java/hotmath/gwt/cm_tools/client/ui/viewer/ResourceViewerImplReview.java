@@ -4,6 +4,7 @@ import hotmath.gwt.cm_core.client.event.LoadReviewHtmlEvent;
 import hotmath.gwt.cm_core.client.event.LoadReviewHtmlHandler;
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
+import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
@@ -131,6 +132,11 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
 
             public void oncapture(LessonResult result) {
                 _mainHtmlPanel.setHTML(result.getLesson());
+                
+                /** process any mathml on page
+                 * 
+                 */
+                CmRpc.jsni_processMathJax();
                 
                 if (result.getWarning() != null) {
                     CatchupMathTools.showAlert("Lesson Information", result.getWarning());
