@@ -1,491 +1,166 @@
-<ul style='list-style-type: upper-roman'>
-	<li>
-		<p>parentheses with css equation1 and a math-wrapper :
-		</p>
-		<div class='equation math-wrapper'>
-			<math>
-				<mrow>
-					<mrow>
-						<mo>(</mo>
+
+"
+<div>
+	<input id="r1449348618338-0" style="float:left" type="radio"
+		name="widget_value" onclick="setWidgetMessage(null)" value="1" />
+	<label for="r1449348618338-0" style="font-size:0.8em;">
+		<a href="javascript:void(0)" onclick="resetProgram_Gwt();return false;">Reset</a>
+	</label>
+</div>
+<div>
+	<input id="r1449348618338-1" style="float:left" type="radio"
+		name="widget_value" onclick="setWidgetMessage(null)" value="2" />
+	<label for="r1449348618338-1" style="font-size:0.8em;">
+		<a href="javascript:void(0)" onclick="showPrescriptionData_Gwt();return false;">prescription data</a>
+	</label>
+</div>
+<div>
+	<input id="r1449348618338-2" style="float:left" type="radio"
+		name="widget_value" onclick="setWidgetMessage(null)" value="3" />
+	<label for="r1449348618338-2" style="font-size:0.8em;">
+		<a href="javascript:void(0)" onclick="showPrescriptionSession_Gwt();return false;">prescription sessions</a>
+	</label>
+</div>
+<div>
+	<input id="r1449348618338-3" style="float:left" type="radio"
+		name="widget_value" onclick="setWidgetMessage(null)" value="4" />
+	<label for="r1449348618338-3" style="font-size:0.8em;">
+		<a href="javascript:void(0)" onclick="startAutoTest_Gwt();return false;">Auto Test</a>
+	</label>
+</div>
+<div>
+	<input id="r1449348618338-4" style="float:left" type="radio"
+		name="widget_value" onclick="setWidgetMessage(null)" value="5" />
+	<label for="r1449348618338-4" style="font-size:0.8em;">CM_HOME_URL:
+		http://localhost:8083</label>
+</div>
+<div>
+	<input id="r1449348618338-5" style="float:left" type="radio"
+		name="widget_value" onclick="setWidgetMessage(null)" value="6" />
+	<label for="r1449348618338-5" style="font-size:0.8em;">
+		<div>
+			<p>
+				<span class="MathJax_Preview" style="color: inherit;">
+					<span class="MJXc-math" id="MJXc-Span-1">
+						<span class="MJXc-mrow" id="MJXc-Span-2">
+							<span class="MJXc-mfrac" id="MJXc-Span-3" style="vertical-align: 0.25em;">
+								<span class="MJXc-box MJXc-script">
+									<span class="MJXc-mn" id="MJXc-Span-4">1</span>
+								</span>
+								<span class="MJXc-box" style="margin-top: -0.6em;">
+									<span class="MJXc-denom">
+										<span>
+											<span class="MJXc-rule"
+												style="border-top-width: 1px; border-top-style: solid; margin: 0.1em 0px;"></span>
+										</span>
+										<span>
+											<span class="MJXc-box MJXc-script">
+												<span class="MJXc-mn" id="MJXc-Span-5">3</span>
+											</span>
+										</span>
+									</span>
+								</span>
+							</span>
+						</span>
+					</span>
+				</span>
+				<script type="math/mml" id="MathJax-Element-1">
+					<math>
 						<mrow>
 							<mfrac>
-								<mn>2</mn>
-								<mn>3</mn>
+								<mn mathsize="1.1em">1</mn>
+								<mn mathsize="1.1em">3</mn>
 							</mfrac>
 						</mrow>
-						<mo>)</mo>
-					</mrow>
-				</mrow>
-			</math>
+					</math>
+				</script>
+			</p>
 		</div>
-	</li>
-	<li>
-		<p>
-			Exponent:
-			<math>
-				<msup>
-					<mn mathsize='1em'>3</mn>
-					<mn mathsize='1.1em'>2</mn>
-				</msup>
-				<mo>&#x22C5;</mo>
-				<msup>
-					<mn mathsize='1em'>3</mn>
-					<mn mathsize='1.1em'>1</mn>
-				</msup>
-				<mo>=</mo>
-				<msup>
-					<mn mathsize='1em'>3</mn>
-					<mn mathsize='1.1em'>3</mn>
-				</msup>
-		</p>
-	</li>
-	<li>
-		<p>
-			<mtext> Fractions </mtext>
-			<math>
-				<mrow>
-					<mfrac>
-						<mn mathsize='1.3em'>2</mn>
-						<mn mathsize='1.3em'>3</mn>
-					</mfrac>
-				</mrow>
-			</math>
-		</p>
-		<br />
-	</li>
-	<li>
-		<p>
-			Mixed number :
-			<math>
-				<mn mathsize='1em'>3</mn>
-				<mfrac>
-					<mn mathsize='1.3em'>2</mn>
-					<mn mathsize='1.3em'>5</mn>
-				</mfrac>
-			</math>
-		</p>
-		<br />
-
-
-	</li>
-	<li>
-		<p>
-			Parentheses:
-			<math>
-				<mrow>
-					<mrow>
-						<mo>(</mo>
+	</label>
+</div>
+<div>
+	<input id="r1449348618338-6" style="float:left" type="radio"
+		name="widget_value" onclick="setWidgetMessage(null)" value="7" />
+	<label for="r1449348618338-6" style="font-size:0.8em;">
+		<div>
+			<p>
+				<span class="MathJax_Preview" style="color: inherit;">
+					<span class="MJXc-math" id="MJXc-Span-6">
+						<span class="MJXc-mrow" id="MJXc-Span-7">
+							<span class="MJXc-msqrt" id="MJXc-Span-8">
+								<span class="MJXc-surd">
+									<span style="font-size: 134%; margin-top: 0.104em;">√</span>
+								</span>
+								<span class="MJXc-root">
+									<span class="MJXc-rule"
+										style="border-top-width: 0.08em; border-top-style: solid;"></span>
+									<span class="MJXc-box">
+										<span class="MJXc-mn" id="MJXc-Span-9">3</span>
+									</span>
+								</span>
+							</span>
+						</span>
+					</span>
+				</span>
+				<script type="math/mml" id="MathJax-Element-2">
+					<math>
 						<mrow>
-							<mfrac>
-								<mn mathsize='1.3em'>2</mn>
-								<mn mathsize='1.3em'>3</mn>
-							</mfrac>
+							<msqrt>
+								<mn>3</mn>
+							</msqrt>
 						</mrow>
-						<mo>)</mo>
-					</mrow>
-				</mrow>
-			</math>
-		</p>
-		<br />
-
-	</li>
-	<li>
-		<p class=MsoNormal>
-			Using pi in mathml:
-			<math>
-				<mrow>
-					<mn>2</mn>
-					<mi>&#x03C0;</mi>
-					<mi>r</mi>
-					<mi>h</mi>
-				</mrow>
-			</math>
-
-		</p>
-	</li>
-	<li>
-		<p class=MsoNormal>
-			<math>
-				<mrow>
-					<mn mathsize='.8em'>
-						Using pi in mathml:
-						<mn>&nbsp;
-						</mn>
-					</mn>
-					<mn> 2</mn>
-					<mi>&#x03C0;</mi>
-					<mi>r</mi>
-					<mi>h</mi>
-				</mrow>
-			</math>
-		</p>
-	</li>
-	<li>
-		<br />
-		<p>
-			Approximation:
-			<math>
-				<mrow>
-					<mi>x</mi>
-					<mo>&#x2248;</mo>
-					<mn>60.8</mn>
-				</mrow>
-			</math>
-		</p>
-		<br />
-
-	</li>
-	<li>
-		<p>
-			Angle and Degree:
-			<math>
-				<mrow>
-					<mi>m</mi>
-					<mo>&#x2220;</mo>
-					<mi>A</mi>
-					<mo>=</mo>
-					<mn>90</mn>
-					<mo>&#x00B0;</mo>
-				</mrow>
-			</math>
-		</p>
-		<br />
-
-	</li>
-	<li>
-		<p>
-			Square root:
-			<math>
-				<msqrt>
-					<mi>x</mi>
-				</msqrt>
-				<mo>=</mo>
-				<mn>9</mn>
-			</math>
-			<math>
-				<msqrt>
-					<mn>4</mn>
-				</msqrt>
-				<mo>=</mo>
-				<mn>2</mn>
-			</math>
-
-		</p>
-		<br />
-	</li>
-	<li>
-		<p>
-			Basic Operations:
-			<math>
-				<mrow>
-					<mo stretchy='false'>(</mo>
-					<mn>2</mn>
-					<mo>&#x22C5;</mo>
-					<mn>3</mn>
-					<mo stretchy='false'>)</mo>
-					<mo>+</mo>
-					<mn>5</mn>
-					<mo>&#x2212;</mo>
-					<mn>1</mn>
-					<mo>&#x00F7;</mo>
-					<mn>4</mn>
-					<mo>&#x00D7;</mo>
-					<mn>2</mn>
-				</mrow>
-			</math>
-		</p>
-	</li>
-	<li>
-		<p>
-			Equation:
-			<math>
-				<mrow>
-					<mn>2</mn>
-					<mi>x</mi>
-					<mo>+</mo>
-					<mn>3</mn>
-					<mi>y</mi>
-					<mo>=</mo>
-					<mn>6</mn>
-				</mrow>
-			</math>
-		</p>
-	</li>
-	<li>
-		<p>
-			Theta:
-			<math>
-				<mrow>
-					<mi>cos</mi>
-					<mi>&#x03B8;</mi>
-					<mo>=</mo>
-					<mn>45</mn>
-					<mo>&#x00B0;</mo>
-				</mrow>
-			</math>
-		</p>
-	</li>
-	<li>
-		<p>
-			Square bracket:
-			<math>
-				<mrow>
-					<mrow>
-						<mo>[</mo>
+					</math>
+				</script>
+			</p>
+		</div>
+	</label>
+</div>
+<div>
+	<input id="r1449348618338-7" style="float:left" type="radio"
+		name="widget_value" onclick="setWidgetMessage(null)" value="8" />
+	<label for="r1449348618338-7" style="font-size:0.8em;">
+		<div>
+			<p>
+				<span class="MathJax_Preview" style="color: inherit;">
+					<span class="MJXc-math" id="MJXc-Span-10">
+						<span class="MJXc-mrow" id="MJXc-Span-11">
+							<span class="MJXc-mn" id="MJXc-Span-12">2.35</span>
+						</span>
+					</span>
+				</span>
+				<script type="math/mml" id="MathJax-Element-3">
+					<math>
+						<mrow>
+							<mn>2.35</mn>
+						</mrow>
+					</math>
+				</script>
+			</p>
+		</div>
+	</label>
+</div>
+<div>
+	<input id="r1449348618338-8" style="float:left" type="radio"
+		name="widget_value" onclick="setWidgetMessage(null)" value="9" />
+	<label for="r1449348618338-8" style="font-size:0.8em;">
+		<div>
+			<p>
+				<span class="MathJax_Preview" style="color: inherit;">
+					<span class="MJXc-math" id="MJXc-Span-13">
+						<span class="MJXc-mrow" id="MJXc-Span-14">
+							<span class="MJXc-mn" id="MJXc-Span-15">3</span>
+						</span>
+					</span>
+				</span>
+				<script type="math/mml" id="MathJax-Element-4">
+					<math>
 						<mrow>
 							<mn>3</mn>
-							<mo>+</mo>
-							<mn>4</mn>
-							<mo>&#x00D7;</mo>
-							<mo stretchy='false'>(</mo>
-							<mn>5</mn>
-							<mo>&#x00D7;</mo>
-							<mn>6</mn>
-							<mo stretchy='false'>)</mo>
 						</mrow>
-						<mo>]</mo>
-					</mrow>
-					<mo>/</mo>
-					<mn>7</mn>
-				</mrow>
-			</math>
-
-		</p>
-	</li>
-	<li>
-		<p>
-			Brackets:
-			<math>
-				<mrow>
-					<mn>2</mn>
-					<mo>+</mo>
-					<mrow>
-						<mo>{</mo>
-						<mrow>
-							<mn>1</mn>
-							<mo>+</mo>
-							<mrow>
-								<mo>[</mo>
-								<mrow>
-									<mn>3</mn>
-									<mo>+</mo>
-									<mn>2</mn>
-									<mo>&#x00D7;</mo>
-									<mo stretchy='false'>(</mo>
-									<mn>4</mn>
-									<mo>+</mo>
-									<mn>5</mn>
-									<mo stretchy='false'>)</mo>
-								</mrow>
-								<mo>]</mo>
-							</mrow>
-						</mrow>
-						<mo>}</mo>
-					</mrow>
-				</mrow>
-			</math>
-		</p>
-	</li>
-	<li>
-		<p>
-			Subscripts with variables:
-			<math>
-				<msub>
-					<mi>S</mi>
-					<mi>n</mi>
-				</msub>
-				<mo>=</mo>
-				<msub>
-					<mi>S</mi>
-					<mrow>
-						<mi>n</mi>
-						<mo>&#x2212;</mo>
-						<mn>1</mn>
-					</mrow>
-				</msub>
-				<mo>+</mo>
-				<msub>
-					<mi>S</mi>
-					<mrow>
-						<mi>n</mi>
-						<mo>&#x2212;</mo>
-						<mn>2</mn>
-					</mrow>
-				</msub>
-
-			</math>
-		</p>
-	</li>
-	<li>
-		<p>
-			Subscripts with variables: mathsize:
-			<math>
-				<msub>
-					<mi>S</mi>
-					<mi mathsize='1.2em'>n</mi>
-				</msub>
-				<mo>=</mo>
-				<msub>
-					<mi>S</mi>
-					<mrow>
-						<mi mathsize='1.2em'>n</mi>
-						<mo mathsize='1.2em'>&#x2212;</mo>
-						<mn mathsize='1.2em'>1</mn>
-					</mrow>
-				</msub>
-				<mo>+</mo>
-				<msub>
-					<mi>S</mi>
-					<mrow>
-						<mi mathsize='1.2em'>n</mi>
-						<mo mathsize='1.2em'>&#x2212;</mo>
-						<mn mathsize='1.2em'>2</mn>
-					</mrow>
-				</msub>
-
-			</math>
-		</p>
-
-	</li>
-	<li>
-		<p>
-			Subscripts with numbers:
-			<math>
-				<msub>
-					<mi>S</mi>
-					<mn>0</mn>
-				</msub>
-				<mo>=</mo>
-				<msub>
-					<mi>S</mi>
-					<mn>1</mn>
-				</msub>
-				<mo>+</mo>
-				<msub>
-					<mi>S</mi>
-					<mn>2</mn>
-				</msub>
-
-			</math>
-		</p>
-
-	</li>
-	<li>
-		<p>
-			Subscripts with numbers: mathsize:
-			<math>
-				<msub>
-					<mi>S</mi>
-					<mn mathsize='1.2em'>0</mn>
-				</msub>
-				<mo>=</mo>
-				<msub>
-					<mi>S</mi>
-					<mn mathsize='1.2em'>1</mn>
-				</msub>
-				<mo>+</mo>
-				<msub>
-					<mi>S</mi>
-					<mn mathsize='1.2em'>2</mn>
-				</msub>
-
-			</math>
-		</p>
-	</li>
-	<li>
-		<p>
-			nth root: with numbers:
-			<math>
-				<mrow>
-					<mroot>
-						<mrow>
-							<mn mathsize='1em'>625</mn>
-						</mrow>
-						<mn mathsize='1.3em'>4</mn>
-					</mroot>
-					<mo>=</mo>
-					<mn mathsize='1em'>5</mn>
-				</mrow>
-			</math>
-		</p>
-	</li>
-	<li>
-		<p>
-			nth root: with variables:
-			<math>
-				<mrow>
-					<mroot>
-						<mrow>
-							<msup>
-								<mi mathsize='1.2em'>a</mi>
-								<mi mathsize='1.2em'>n</mi>
-							</msup>
-						</mrow>
-						<mi mathsize='1.3em'>n</mi>
-					</mroot>
-					<mo>=</mo>
-					<mi mathsize='1.2em'>a</mi>
-				</mrow>
-			</math>
-
-		</p>
-	</li>
-	<li>
-		<p>
-			Arc:
-			<math>
-				<mrow>
-					<mover accent='true'>
-						<mrow>
-							<mi>A</mi>
-							<mi>B</mi>
-							<mi>C</mi>
-						</mrow>
-						<mo>&OverParenthesis;
-						</mo>
-					</mover>
-					<mo>=</mo>
-					<mover accent='true'>
-						<mrow>
-							<mi>a</mi>
-							<mi>b</mi>
-							<mi>c</mi>
-						</mrow>
-						<mo>&OverParenthesis;
-						</mo>
-					</mover>
-				</mrow>
-			</math>
-		</p>
-	</li>
-	<li>
-		<p>
-			Inequalities:
-			<math>
-				<mtable columnalign='left'>
-					<mtr>
-						<mtd>
-							<mi>x</mi>
-							<mo>&#x2265;</mo>
-							<mn>5</mn>
-						</mtd>
-					</mtr>
-					<mtr>
-						<mtd>
-							<mi>y</mi>
-							<mo>&#x2264;</mo>
-							<mn>2</mn>
-						</mtd>
-					</mtr>
-					<mtr>
-						<mtd>
-							<mi>z</mi>
-							<mo>&#x2260;</mo>
-							<mn>1</mn>
-						</mtd>
-					</mtr>
-				</mtable>
-			</math>
-		</p>
-	</li>
-</ul>
+					</math>
+				</script>
+			</p>
+		</div>
+	</label>
+</div>
+"

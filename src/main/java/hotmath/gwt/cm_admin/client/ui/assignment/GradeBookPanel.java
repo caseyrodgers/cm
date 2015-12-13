@@ -41,6 +41,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.grid.GridSelectionModel;
 
 /** Shows grid of all students in assignment 
  * and the summary of the selected assignment.
@@ -71,6 +72,7 @@ public class GradeBookPanel extends ContentPanel {
         
         if(CmCore.isDebug() == true) {
             addLoadCmStudentButton();
+            addSendMessageButton();
         }
         
         //showDefaultMessage();
@@ -194,6 +196,26 @@ public class GradeBookPanel extends ContentPanel {
         addTool(btn);
     }
     
+    private void addSendMessageButton() {
+
+        TextButton btn = new TextButton("Send Message");
+        btn.setToolTip("Send a personal message this this student");
+        btn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+            	GridSelectionModel<StudentAssignment> m = _gradebookGrid.getSelectionModel();
+            	StudentAssignment item = m.getSelectedItem();
+            	if(item == null) {
+            		CmMessageBox.showAlert("Select a student first");
+            		return;
+            	}
+            	
+            	Window.alert("Send Message: " + item);
+            }
+        });
+
+        addTool(btn);
+    }
     private void addGradeButton() {
     	TextButton grade = new TextButton("Grade");
     	grade.setToolTip("View and Grade the selected student's Assignment");

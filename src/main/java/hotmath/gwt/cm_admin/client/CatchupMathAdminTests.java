@@ -13,6 +13,7 @@ import hotmath.gwt.cm_admin.client.ui.CustomProgramDialog;
 import hotmath.gwt.cm_admin.client.ui.CustomQuizDialog;
 import hotmath.gwt.cm_admin.client.ui.ManageGroupsWindow;
 import hotmath.gwt.cm_admin.client.ui.ProgramDetailsPanel;
+import hotmath.gwt.cm_admin.client.ui.StudentMessageCollectDialog;
 import hotmath.gwt.cm_admin.client.ui.TrendingDataWindow;
 import hotmath.gwt.cm_admin.client.ui.WebLinkEditorDialog;
 import hotmath.gwt.cm_admin.client.ui.WebLinksManager;
@@ -43,10 +44,15 @@ public class CatchupMathAdminTests extends CatchupMathSharedTests {
              * 
              */
             String test =  CmCore.getQueryParameterValue("test");
-            if(test.equals("CCSSCoverageChartWindow")) {
+            
+            
+            if(test.equals("StudentMessageCollectDialog")) {
+            	StudentMessageCollectDialog.startTest();
+            }
+            else if(test.equals("CCSSCoverageChartWindow")) {
                 CCSSCoverageChartWindow.startTest();
             }
-            if(test.equals("CCSSCoverageByStrandWindow")) {
+            else if(test.equals("CCSSCoverageByStrandWindow")) {
                 CCSSCoverageByStrandWindow.startTest();
             }
             else if(test.equals("ManageGroupsWindow")) {

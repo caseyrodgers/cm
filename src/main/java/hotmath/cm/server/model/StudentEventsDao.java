@@ -69,6 +69,11 @@ public class StudentEventsDao extends SimpleJdbcDaoSupport {
         return new StudentEventInfo(list);
     }
 
+    /** Find any devices that have pending events
+     * 
+     * @return
+     * @throws Exception
+     */
     public List<String> getDevicesWithEvents() throws Exception {
 
         Connection conn = null;
@@ -162,10 +167,7 @@ public class StudentEventsDao extends SimpleJdbcDaoSupport {
     
     
 
-    
-    
-    
-    public enum EventType{MESSAGE("message");
+    public enum EventType{MESSAGE("message"), ASSIGNMENT_MESSAGE("assignment_message");
         private String tag;
         private EventType(String tag) {
             this.tag = tag;
@@ -182,7 +184,17 @@ public class StudentEventsDao extends SimpleJdbcDaoSupport {
         
         JSONObject jo = new JSONObject();
         jo.put("type", type.getTag());
-        jo.put("data", data);
+        
+        
+        if(data.startsWith("{")) {
+        	// is json
+        	JSONObject joN = new JSONObject(data);
+        	jo.put("data", joN);
+        }
+        else {
+        	jo.put("data",  data); // not json
+        }
+        
 
         String sql = "insert into HA_USER_EVENTS(uid, event_data, create_time) values(?, ?, now())";
         PreparedStatement ps =null;

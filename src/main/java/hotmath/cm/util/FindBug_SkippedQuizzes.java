@@ -1,5 +1,9 @@
 package hotmath.cm.util;
 
+import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDao;
+import hotmath.testset.ha.HaTestRun;
+import hotmath.testset.ha.HaTestRunDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -100,6 +104,7 @@ public class FindBug_SkippedQuizzes {
     private void performChecks(List<QuizInfo> qs) throws Exception {
         try {
             performCheckMoved(qs);
+            performCheckMoveForward(qs);
         }
         catch(Exception e) {
             __logger.error("Error performing tests", e);
@@ -173,6 +178,59 @@ public class FindBug_SkippedQuizzes {
             }
         }
     }
+    
+    
+    private void performCheckMoveForward(List<QuizInfo> qs) throws Exception {
+        __logger.debug("Test count: " + qs.size());
+        for(int qi=0;qi<qs.size()-1;qi++) {
+            QuizInfo q1 = qs.get(qi);
+            
+            /** only check quizzes that have been taken */
+            if(q1.getRunId() > 0) {
+                
+                for(int qi2=qi+1;qi2<qs.size();qi2++) {
+                    QuizInfo q2 = qs.get(qi2);
+                    if(q2.getRunId() == 0) {
+                        /** unrun test ...
+                         * 
+                         */
+                    }
+                    else if(q2.getUserId() != q1.getUserId()) {
+                        /** different user
+                         * 
+                         */
+                        break;
+                    }
+                    else if(q2.getProgId() != q1.getProgId()) {
+                        /** different program
+                         * 
+                         */
+                        break;
+                    }
+                    else {
+                        /** if segment
+                         * 
+                         */
+                        int distance = (q2.getTestSegment() - q1.getTestSegment());
+                        if(distance == 1) {
+                        	
+                        	
+                        	HaTestRun test1 = HaTestRunDao.getInstance().lookupTestRun(q1.getRunId());
+                        	HaTestRun test2 = HaTestRunDao.getInstance().lookupTestRun(q2.getRunId());
+                        	
+                        	if(test1.isPassing() == true) {
+                        		if(q1.getTestSegment() == q2.getTestSegment()) {
+                        			__logger.warn("Found Non Advanced quiz: " + q1);	
+                        		}
+                        	}
+                            break;  // no error
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     public class QuizInfo {
         int adminId;
