@@ -1,54 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
-import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
-import hotmath.gwt.cm_core.client.CmCore;
-import hotmath.gwt.cm_core.client.UserInfoBase;
-import hotmath.gwt.cm_core.client.util.CmAlertify;
-import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
-import hotmath.gwt.cm_core.client.util.CmBusyManager;
-import hotmath.gwt.cm_rpc.client.model.StringHolder;
-import hotmath.gwt.cm_rpc.client.model.StudentModelI;
-import hotmath.gwt.cm_rpc.client.rpc.SendMessageToStudentAction;
-import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
-import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
-import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
-import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
-import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tools.client.ui.DateRangeCallback;
-import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
-import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
-import hotmath.gwt.cm_tools.client.ui.MyMenuItem;
-import hotmath.gwt.cm_tools.client.ui.PdfWindow;
-import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
-import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
-import hotmath.gwt.cm_tools.client.ui.StudentPanelButton;
-import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
-import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageByStrandWindow;
-import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageChartWindow;
-import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
-import hotmath.gwt.cm_tools.client.ui.search.TopicExplorerManager;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_tools.client.util.ProcessTracker;
-import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
-import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.eventbus.EventType;
-import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
-import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
-import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
-import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
-import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageExtendedAction;
-import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
-import hotmath.gwt.shared.client.rpc.action.ResetUserAction.ResetType;
-import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
-import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -96,6 +47,53 @@ import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.menu.MenuItem;
 import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
+
+import hotmath.gwt.cm_admin.client.custom_content.problem.CustomProblemManager;
+import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
+import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.UserInfoBase;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
+import hotmath.gwt.cm_rpc.client.model.StringHolder;
+import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
+import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
+import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
+import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.DateRangeCallback;
+import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
+import hotmath.gwt.cm_tools.client.ui.MyMenuItem;
+import hotmath.gwt.cm_tools.client.ui.PdfWindow;
+import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
+import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
+import hotmath.gwt.cm_tools.client.ui.StudentPanelButton;
+import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageByStrandWindow;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageChartWindow;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
+import hotmath.gwt.cm_tools.client.ui.search.TopicExplorerManager;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.ProcessTracker;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
+import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
+import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
+import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
+import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageExtendedAction;
+import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
+import hotmath.gwt.shared.client.rpc.action.ResetUserAction.ResetType;
+import hotmath.gwt.shared.client.rpc.action.UnregisterStudentsAction;
+import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDataRefresher, ProcessTracker {
     static public StudentGridPanel instance;
@@ -257,31 +255,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
             sendMessageToUser.addSelectionHandler(new SelectionHandler<Item>() {
                 @Override
                 public void onSelection(SelectionEvent<Item> event) {
-                    CmMessageBox.prompt("Message",  "Enter message to send", "", new CmAlertify.PromptCallback() {
-                        @Override
-                        public void promptValue(String message) {
-                            int uid = _grid.getSelectionModel().getSelectedItem().getUid();
-                            sendMessageToStudent(uid, message);
-                        }
-
-                        private void sendMessageToStudent(final int uid, final String message) {
-                            new RetryAction<RpcData>() {
-                                @Override
-                                public void attempt() {
-                                    CmBusyManager.setBusy(true);
-                                    SendMessageToStudentAction action = new SendMessageToStudentAction(uid, message);
-                                    setAction(action);
-                                    CmRpcCore.getCmService().execute(action, this);
-                                }
-
-                                @Override
-                                public void oncapture(RpcData result) {
-                                    CmBusyManager.setBusy(false);
-                                    Info.display("Ok", "Message queued");
-                                }
-                            }.register();
-                        }
-                    });
+                	new StudentMessageCollectDialog(_grid.getSelectionModel().getSelectedItem().getUid());
                 }
             });
             contextMenu.add(sendMessageToUser);

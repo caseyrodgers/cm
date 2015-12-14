@@ -15,6 +15,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 public class EditAssignmentOptionsDialog extends GWindow {
 
@@ -102,8 +103,9 @@ public class EditAssignmentOptionsDialog extends GWindow {
         _preventLessonAccess.setValue(assignment.isPreventLessonAccess());
 
         fieldSet.addThing(new MyFieldLabel(_preventLessonAccess, "Prevent Lesson Access", 140, 20));
+
         
-        
+        fieldSet.addThing(new MyFieldLabel(new TextField(), "Send Message", 140, 20));
         
         framed.setWidget(fieldSet);
         

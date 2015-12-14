@@ -13,7 +13,7 @@ public class CmRpc implements EntryPoint {
         /** silent */
     }
     
-    static native private void jsni_processMathJax() /*-{
+    static native public void jsni_processMathJax() /*-{
         $wnd.processMathJax();
     }-*/;
     

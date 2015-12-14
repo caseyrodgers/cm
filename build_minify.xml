@@ -25,7 +25,7 @@
         <concat destfile="${web.dir}/gwt-resources/js/CatchupMath_combined.js" append="true">
             <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
 
-                hm_events-min.js
+                hm_events.js
             tutor_tablet.js
                
                 tutor_wrapper_cm.js
@@ -38,9 +38,6 @@
 
         CatchupMath-min.js
         swfobject/swfobject.js
-
-            ../../../../../../hotmath2/web/js/hm_mathjax-min.js
-
 
                 whiteboard_v3.js
                 whiteboard_static.js

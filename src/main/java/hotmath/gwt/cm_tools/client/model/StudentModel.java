@@ -283,4 +283,19 @@ public class StudentModel implements StudentModelI {
 	public boolean getIsCollege() {
 		return isCollege;
 	}
+
+	@Override
+	public String toString() {
+		return "StudentModel [group=" + group + ", groupId=" + groupId + ", sectionCount=" + sectionCount
+				+ ", sectionNum=" + sectionNum + ", chapter=" + chapter + ", lastQuiz=" + lastQuiz + ", lastLogin="
+				+ lastLogin + ", status=" + status + ", uid=" + uid + ", email=" + email + ", adminUid=" + adminUid
+				+ ", totalUsage=" + totalUsage + ", passingCount=" + passingCount + ", notPassingCount="
+				+ notPassingCount + ", tutoringUse=" + tutoringUse + ", name=" + name + ", passcode=" + passcode
+				+ ", backgroundStyle=" + backgroundStyle + ", isDemoUser=" + isDemoUser + ", passPercent=" + passPercent
+				+ ", programChanged=" + programChanged + ", hasExtendedData=" + hasExtendedData + ", selfPay=" + selfPay
+				+ ", isCollege=" + isCollege + ", program=" + program + ", settings=" + settings + ", showWorkState="
+				+ showWorkState + "]";
+	}
+	
+	
 }

@@ -9,6 +9,7 @@ import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.view.SubToolBar;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.CmRpc;
 
 import java.util.List;
 
@@ -101,6 +102,8 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
     public void setReviewHtml(String html) {
         reviewHtml.clear();
         reviewHtml.add(new HTML(html));
+        
+        CmRpc.jsni_processMathJax();
     }
     
     @Override
