@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
@@ -192,6 +193,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			}
         	    Map<Integer,List<String>> topicMap = extractTopics(ccssMap);
         	    Map<Integer,List<String>> stdMap = extractStandards(ccssMap);
+        	    Map<Integer, Map<String, List<String>>> stdByTopicMap = extractStandardsPerTopic(ccssMap);
 
     			HaAdmin haAdmin = CmAdminDao.getInstance().getAdmin(adminUid);
 
@@ -230,6 +232,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			exporter.setTotalTimeMap(activeTimeMap);
     			exporter.setTopicsMap(topicMap);
     			exporter.setStandardsMap(stdMap);
+    			exporter.setStandardsByTopicMap(stdByTopicMap);
     			exporter.setStandardsNotCoveredMap(ccssNotCoveredMap);
     			exporter.setTitle(titleBuff.toString());
     			exporter.setFilterDescr(sb.toString());
@@ -372,6 +375,37 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 				}
 				sortStandards(list);
 				stdMap.put(uid, list);
+			}
+			return stdMap;
+		}
+
+		private Map<Integer, Map<String, List<String>>> extractStandardsPerTopic(
+				Map<Integer, List<CCSSCoverageData>> ccssMap) {
+
+			Map<Integer, Map<String, List<String>>> stdMap = new HashMap<Integer, Map<String, List<String>>>();
+
+			Set<Integer> keys = ccssMap.keySet();
+			Iterator<Integer> iter = keys.iterator();
+			while (iter.hasNext()) {
+				Integer uid = iter.next();
+				Map<String, List<String>> innerMap = new TreeMap<String, List<String>>();
+				stdMap.put(uid, innerMap);
+				List<String> list = null;
+				for (CCSSCoverageData data : ccssMap.get(uid)) {
+					String topicName = data.getLessonName();
+					// skip empty/unmapped topics (these need to be fixed)
+					if (topicName == null || topicName.trim().length() == 0) {
+						LOG.warn("Empty topic/lesson for std: " + data.getName()); 
+						continue;
+					}
+					list = innerMap.get(topicName);
+					if (list == null) {
+						list = new ArrayList<String>();
+						innerMap.put(topicName, list);
+					}
+					list.add(data.getName());
+				}
+				if (list != null) sortStandards(list);
 			}
 			return stdMap;
 		}

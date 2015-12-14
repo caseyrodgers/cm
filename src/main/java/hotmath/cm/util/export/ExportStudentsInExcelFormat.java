@@ -6,6 +6,8 @@ import hotmath.gwt.cm_tools.client.model.CustomProgramComposite.Type;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,7 +27,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 /**
- * Export Student detail and report card data in Excel format
+ * Export Student detail, report card, and ccss coverage data in Excel format
  * 
  * @author bob
  *
@@ -51,6 +53,8 @@ public class ExportStudentsInExcelFormat {
 
 	private Map<Integer, List<String>> standardsMap;
 
+	private Map<Integer, Map<String, List<String>>> standardsByTopicMap;
+
 	private Map<Integer, List<String>> standardsNotCoveredMap;
 
 	private String filterDescr;
@@ -62,7 +66,7 @@ public class ExportStudentsInExcelFormat {
 	private String ccssLevelName;
 
 	private int ccssColumnCount;
-	
+
 	public ExportStudentsInExcelFormat() {
 	}
 
@@ -100,6 +104,10 @@ public class ExportStudentsInExcelFormat {
 
 	public void setStandardsMap(Map<Integer, List<String>> standardsMap) {
 		this.standardsMap = standardsMap;
+	}
+
+	public void setStandardsByTopicMap(Map<Integer, Map<String, List<String>>> stdByTopicMap) {
+		this.standardsByTopicMap = stdByTopicMap;
 	}
 
 	public void setStandardsNotCoveredMap(Map<Integer, List<String>> standardsNotCoveredMap) {
@@ -487,7 +495,7 @@ public class ExportStudentsInExcelFormat {
 	}
 
 	int firstColmWidth;
-	int colmWidth;
+	int colmWidth = 15;
 
 	private void buildStudentStandardsSheet(Workbook wb) {
 		Sheet sheet = wb.createSheet("Standards");
@@ -509,6 +517,7 @@ public class ExportStudentsInExcelFormat {
 	    int idx = 1;
 
 	    ccssColumnCount = calcColumnCount();
+	    LOGGER.info("ccssColumnCount: " + ccssColumnCount);
 
 	    sheet.createRow(0);
 	    Row titleRow = sheet.createRow(idx++);
@@ -546,14 +555,20 @@ public class ExportStudentsInExcelFormat {
     		cell.setCellValue(sm.getGroup());
     		cell.setCellStyle(styles.get("header"));
 
-    		List<String> stdList = standardsMap.get(sm.getUid());
-    		List<String> topicList = topicsMap.get(sm.getUid());
+    		//List<String> stdList = standardsMap.get(sm.getUid());
+    		//List<String> topicList = topicsMap.get(sm.getUid());
+    		Map<String, List<String>> stdByTopicMap = standardsByTopicMap.get(sm.getUid());
+    		Set<String> topicSet = null;
+    		if (stdByTopicMap != null) {
+    			topicSet = stdByTopicMap.keySet();
+    			LOGGER.info("topicSet.size(): " + topicSet.size());
+    		}
 
     		row = sheet.createRow(idx++);
-    		addLessonCoverage(row, topicList, styles);
+    		addLessonCoverage(row, topicSet, styles);
     		
     		row = sheet.createRow(idx++);
-    		addStandardsCoverage(row, stdList, styles);
+    		addStandardsCoverage(row, stdByTopicMap, styles);
 
     		if (ccssLevelName == null) continue;
     		row = sheet.createRow(idx++);
@@ -571,14 +586,24 @@ public class ExportStudentsInExcelFormat {
 	}
 
 	private int calcColumnCount() {
-		int maxCount;
-
-		maxCount = getMaxColumns(topicsMap);
-		int count = getMaxColumns(standardsMap);
+		int maxCount = getMaxColumns();
+		LOGGER.info("topics Coverd #: " + maxCount);
+		int count = getMaxColumns(standardsNotCoveredMap);
+		LOGGER.info("stds not covered #: " + count);
 		if (count > maxCount) maxCount = count;
-		count = getMaxColumns(standardsNotCoveredMap);
-		if (count > maxCount) maxCount = count;
+		if (maxCount > 255) maxCount = 255;
 		return maxCount;
+	}
+
+	private int getMaxColumns() {
+		Set<Integer> keys = standardsByTopicMap.keySet();
+		int count = 0;
+		for (Integer uid : keys) {
+			Map<String, List<String>> items = standardsByTopicMap.get(uid);
+			if (count < items.size())
+				count = items.size();
+		}
+		return count;
 	}
 
 	private int getMaxColumns(Map<Integer, List<String>> map) {
@@ -594,7 +619,7 @@ public class ExportStudentsInExcelFormat {
 		return count;
 	}
 
-	private void addLessonCoverage(Row row, List<String> list, Map<String, CellStyle> styles) {
+	private void addLessonCoverage(Row row, Set<String> list, Map<String, CellStyle> styles) {
         addCells("Covered Topics: ", row, list, styles, false);
 	}
 
@@ -602,11 +627,29 @@ public class ExportStudentsInExcelFormat {
         addCells("Covered Standards: ", row, list, styles, true);
 	}
 
+	private void addStandardsCoverage(Row row, Map<String, List<String>> stdByTopicMap, Map<String, CellStyle> styles) {
+		List<String> list = new ArrayList<String>();
+		if (stdByTopicMap != null) {
+			for (String topic : stdByTopicMap.keySet()) {
+				List<String> stds = stdByTopicMap.get(topic);
+				StringBuilder sb = new StringBuilder();
+				boolean isFirst = true;
+				for (String std : stds) {
+					if (isFirst != true) sb.append(" ");
+					isFirst = false;
+					sb.append(std);
+				}
+				list.add(sb.toString());
+			}
+		}
+		addCells("Covered Standards: ", row, list, styles, false);
+	}
+
 	private void addStandardsNotCovered(Row row, List<String> list, Map<String, CellStyle> styles) {
         addCells("Remaining Standards: ", row, list, styles, true);
 	}
 
-	private void addCells(String title, Row row, List<String> list, Map<String, CellStyle> styles, boolean calcWidth) {
+	private void addCells(String title, Row row, Collection<String> list, Map<String, CellStyle> styles, boolean calcWidth) {
 		Cell cell = row.createCell(0);
 		cell.setCellValue(title);
 		cell.setCellStyle(styles.get("data"));
