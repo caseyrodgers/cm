@@ -24,6 +24,13 @@ public class ActionDispatcherRest {
         return Cm2ActionManager.getUserCurrentProgram(userId);
     }
 
+    
+    @POST
+    @Path("/login/user/mobile")
+    public String loginMobileUser(String deviceId) throws Exception {
+        return Cm2ActionManager.loginUserMobile(deviceId);
+    }
+    
     @POST
     @Path("/login/user")
     public String loginUser(String userInfo) throws Exception {

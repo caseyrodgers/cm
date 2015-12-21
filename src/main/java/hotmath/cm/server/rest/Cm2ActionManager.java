@@ -26,6 +26,7 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
+import hotmath.gwt.cm_rpc.client.rpc.NewMobileUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
@@ -45,6 +46,7 @@ import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.CheckCm2QuizAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2Assignments;
+import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2MobileUser;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2MobileLoginAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2QuizHtmlAction;
@@ -392,5 +394,18 @@ public class Cm2ActionManager {
     public static String getUserMessages(int uid) throws Exception {
         return JsonWriter.objectToJson(StudentEventsDao.getInstance().getEventHistoryFor(uid));
     }
+
+	public static String loginUserMobile(String deviceId) throws Exception {
+		
+		RpcData data = ActionDispatcher.getInstance().execute(new NewMobileUserAction(deviceId));
+		int uid = data.getDataAsInt("uid");
+		
+        GetCm2MobileLoginAction action = new GetCm2MobileLoginAction(uid);
+        action.setDeviceToken(deviceId);
+
+        Cm2MobileUser userInfo = ActionDispatcher.getInstance().execute(action);
+        return JsonWriter.objectToJson(userInfo);
+	}
+	
 
 }
