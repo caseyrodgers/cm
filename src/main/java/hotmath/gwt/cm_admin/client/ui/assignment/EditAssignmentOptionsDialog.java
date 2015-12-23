@@ -103,9 +103,6 @@ public class EditAssignmentOptionsDialog extends GWindow {
         _preventLessonAccess.setValue(assignment.isPreventLessonAccess());
 
         fieldSet.addThing(new MyFieldLabel(_preventLessonAccess, "Prevent Lesson Access", 140, 20));
-
-        
-        fieldSet.addThing(new MyFieldLabel(new TextField(), "Send Message", 140, 20));
         
         framed.setWidget(fieldSet);
         
