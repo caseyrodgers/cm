@@ -12,6 +12,8 @@ mvn install:install-file -DgroupId=com.sencha.gxt -DartifactId=gxt-chart -Dversi
 mvn install:install-file -DgroupId=org.imgscalr -DartifactId=imgscalr-lib -Dversion=4.2 -Dpackaging=jar -Dfile=imgscalr-4.2.jar -DgeneratePom=true
 
 mvn install:install-file -DgroupId=wiriplugin -DartifactId=wiriplugin -Dversion=5.0 -Dpackaging=jar -Dfile=wiriplugin-5.0.jar -DgeneratePom=true
+mvn install:install-file -DgroupId=gwt-html5-storage -DartifactId=gwt-html5-storage -Dversion=1.0.1 -Dpackaging=jar -Dfile=gwt-html5-storage.jar -DgeneratePom=true
+
 
 
 #mvn install:install-file -DgroupId=html.editor -DartifactId=editor -Dversion=0.1 -Dpackaging=jar -Dfile=syntax_jtext-1.0.jar -DgeneratePom=true
