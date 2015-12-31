@@ -473,8 +473,9 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
 			logger.debug("key: + " + key + " size: "
 					+ ((list != null) ? list.size() : 0));
 
-		if (list != null)
+		if (list != null && list.size() > 0) {
 			return list;
+		}
 
 		list = getJdbcTemplate().query(
 				CmMultiLinePropertyReader.getInstance().getProperty(
