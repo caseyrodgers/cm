@@ -1,166 +1,28 @@
-
-"
-<div>
-	<input id="r1449348618338-0" style="float:left" type="radio"
-		name="widget_value" onclick="setWidgetMessage(null)" value="1" />
-	<label for="r1449348618338-0" style="font-size:0.8em;">
-		<a href="javascript:void(0)" onclick="resetProgram_Gwt();return false;">Reset</a>
-	</label>
-</div>
-<div>
-	<input id="r1449348618338-1" style="float:left" type="radio"
-		name="widget_value" onclick="setWidgetMessage(null)" value="2" />
-	<label for="r1449348618338-1" style="font-size:0.8em;">
-		<a href="javascript:void(0)" onclick="showPrescriptionData_Gwt();return false;">prescription data</a>
-	</label>
-</div>
-<div>
-	<input id="r1449348618338-2" style="float:left" type="radio"
-		name="widget_value" onclick="setWidgetMessage(null)" value="3" />
-	<label for="r1449348618338-2" style="font-size:0.8em;">
-		<a href="javascript:void(0)" onclick="showPrescriptionSession_Gwt();return false;">prescription sessions</a>
-	</label>
-</div>
-<div>
-	<input id="r1449348618338-3" style="float:left" type="radio"
-		name="widget_value" onclick="setWidgetMessage(null)" value="4" />
-	<label for="r1449348618338-3" style="font-size:0.8em;">
-		<a href="javascript:void(0)" onclick="startAutoTest_Gwt();return false;">Auto Test</a>
-	</label>
-</div>
-<div>
-	<input id="r1449348618338-4" style="float:left" type="radio"
-		name="widget_value" onclick="setWidgetMessage(null)" value="5" />
-	<label for="r1449348618338-4" style="font-size:0.8em;">CM_HOME_URL:
-		http://localhost:8083</label>
-</div>
-<div>
-	<input id="r1449348618338-5" style="float:left" type="radio"
-		name="widget_value" onclick="setWidgetMessage(null)" value="6" />
-	<label for="r1449348618338-5" style="font-size:0.8em;">
-		<div>
-			<p>
-				<span class="MathJax_Preview" style="color: inherit;">
-					<span class="MJXc-math" id="MJXc-Span-1">
-						<span class="MJXc-mrow" id="MJXc-Span-2">
-							<span class="MJXc-mfrac" id="MJXc-Span-3" style="vertical-align: 0.25em;">
-								<span class="MJXc-box MJXc-script">
-									<span class="MJXc-mn" id="MJXc-Span-4">1</span>
-								</span>
-								<span class="MJXc-box" style="margin-top: -0.6em;">
-									<span class="MJXc-denom">
-										<span>
-											<span class="MJXc-rule"
-												style="border-top-width: 1px; border-top-style: solid; margin: 0.1em 0px;"></span>
-										</span>
-										<span>
-											<span class="MJXc-box MJXc-script">
-												<span class="MJXc-mn" id="MJXc-Span-5">3</span>
-											</span>
-										</span>
-									</span>
-								</span>
-							</span>
-						</span>
-					</span>
-				</span>
-				<script type="math/mml" id="MathJax-Element-1">
-					<math>
-						<mrow>
-							<mfrac>
-								<mn mathsize="1.1em">1</mn>
-								<mn mathsize="1.1em">3</mn>
-							</mfrac>
-						</mrow>
-					</math>
-				</script>
-			</p>
-		</div>
-	</label>
-</div>
-<div>
-	<input id="r1449348618338-6" style="float:left" type="radio"
-		name="widget_value" onclick="setWidgetMessage(null)" value="7" />
-	<label for="r1449348618338-6" style="font-size:0.8em;">
-		<div>
-			<p>
-				<span class="MathJax_Preview" style="color: inherit;">
-					<span class="MJXc-math" id="MJXc-Span-6">
-						<span class="MJXc-mrow" id="MJXc-Span-7">
-							<span class="MJXc-msqrt" id="MJXc-Span-8">
-								<span class="MJXc-surd">
-									<span style="font-size: 134%; margin-top: 0.104em;">√</span>
-								</span>
-								<span class="MJXc-root">
-									<span class="MJXc-rule"
-										style="border-top-width: 0.08em; border-top-style: solid;"></span>
-									<span class="MJXc-box">
-										<span class="MJXc-mn" id="MJXc-Span-9">3</span>
-									</span>
-								</span>
-							</span>
-						</span>
-					</span>
-				</span>
-				<script type="math/mml" id="MathJax-Element-2">
-					<math>
-						<mrow>
-							<msqrt>
-								<mn>3</mn>
-							</msqrt>
-						</mrow>
-					</math>
-				</script>
-			</p>
-		</div>
-	</label>
-</div>
-<div>
-	<input id="r1449348618338-7" style="float:left" type="radio"
-		name="widget_value" onclick="setWidgetMessage(null)" value="8" />
-	<label for="r1449348618338-7" style="font-size:0.8em;">
-		<div>
-			<p>
-				<span class="MathJax_Preview" style="color: inherit;">
-					<span class="MJXc-math" id="MJXc-Span-10">
-						<span class="MJXc-mrow" id="MJXc-Span-11">
-							<span class="MJXc-mn" id="MJXc-Span-12">2.35</span>
-						</span>
-					</span>
-				</span>
-				<script type="math/mml" id="MathJax-Element-3">
-					<math>
-						<mrow>
-							<mn>2.35</mn>
-						</mrow>
-					</math>
-				</script>
-			</p>
-		</div>
-	</label>
-</div>
-<div>
-	<input id="r1449348618338-8" style="float:left" type="radio"
-		name="widget_value" onclick="setWidgetMessage(null)" value="9" />
-	<label for="r1449348618338-8" style="font-size:0.8em;">
-		<div>
-			<p>
-				<span class="MathJax_Preview" style="color: inherit;">
-					<span class="MJXc-math" id="MJXc-Span-13">
-						<span class="MJXc-mrow" id="MJXc-Span-14">
-							<span class="MJXc-mn" id="MJXc-Span-15">3</span>
-						</span>
-					</span>
-				</span>
-				<script type="math/mml" id="MathJax-Element-4">
-					<math>
-						<mrow>
-							<mn>3</mn>
-						</mrow>
-					</math>
-				</script>
-			</p>
-		</div>
-	</label>
-</div>
-"
+<p>
+	Graph the function
+	<math>
+		<mrow>
+			<mi>y</mi>
+			<mo>=</mo>
+			<msub>
+				<mrow>
+					<mi>log</mi>
+					<mo>&#x2061;</mo>
+				</mrow>
+				<mn>2</mn>
+			</msub>
+			<mrow>
+				<mo>(</mo>
+				<mrow>
+					<mi>x</mi>
+					<mo>+</mo>
+					<mn>2</mn>
+				</mrow>
+				<mo>)</mo>
+			</mrow>
+			<mo>&#x2212;</mo>
+			<mn>1.5</mn>
+		</mrow>
+	</math>
+	on a coordinate plane.
+</p>
