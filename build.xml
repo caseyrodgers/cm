@@ -23,7 +23,7 @@
         </taskdef>
         <!-- Process all JS files.
              The minifyJavaScript task minifies JS files as needed -
-             new/modified JS file or no matching -min.js file
+        xX      new/modified JS file or no matching -min.js file
         -->
         <for param="file">
             <path>
