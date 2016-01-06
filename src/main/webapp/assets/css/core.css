@@ -972,3 +972,9 @@ div#postit  a + p {
 .postit-top {
     margin-left: 40px;
 }
+
+
+/** hide until redone for chrome */
+#webinar_link {
+	display: none;
+}	

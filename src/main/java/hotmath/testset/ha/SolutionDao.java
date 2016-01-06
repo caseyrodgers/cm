@@ -723,6 +723,11 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		return list;
 	}
 
+	/** Bug is caused by having both maridb jdbc drives and mysql drivers
+	 *  in class path.
+	 *  
+	 * @throws Exception
+	 */
 	public void testIt() throws Exception {
 		try {
 
