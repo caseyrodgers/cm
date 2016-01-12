@@ -28,8 +28,9 @@ public class NewMobileUserCommand implements ActionHandler<NewMobileUserAction, 
 		
 		String newUserName = UUID.randomUUID().toString();
 		
-		newUserName = action.getDeviceId() + ":" + newUserName;
-		String newPwd = newUserName;
+		newUserName = action.getDeviceId();
+		String newPwd = action.getDeviceId();
+		
         int newUid = HaUserFactory.createUser(conn, mobileAdmin.getUserKey(),"none", newUserName, newPwd);
 
         CmStudentDao.getInstance().assignProgramToStudent(conn, newUid,CmProgram.AUTO_ENROLL,null);

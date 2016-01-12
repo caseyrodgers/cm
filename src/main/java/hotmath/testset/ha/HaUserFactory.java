@@ -59,6 +59,9 @@ public class HaUserFactory {
 			SqlUtilities.releaseResources(null, null, conn);
 		}
 	}
+	
+	
+	
 
 	/**
 	 * Determine the type of user and create the appropriate user object
@@ -361,6 +364,34 @@ public class HaUserFactory {
 
 		}
 	}
+	
+	
+	/**
+	 * Find user's existing uid, or return 0 if not found;
+	 *
+	 * @throws Exception
+	 */
+	static public int lookupUserId(String user, String pass) throws Exception {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			String sql = "select uid from HA_USER where user_name = ? and user_passcode = ?";
+			conn = HMConnectionPool.getConnection();
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, user);
+			ps.setString(2,  pass);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				return rs.getInt("uid");
+			}
+			else {
+				return 0;
+			}
+		} finally {
+			SqlUtilities.releaseResources(null, ps, conn);
+		}
+	}
+
 
 	/**
 	 * Create a unique demo user, created by reading a template record

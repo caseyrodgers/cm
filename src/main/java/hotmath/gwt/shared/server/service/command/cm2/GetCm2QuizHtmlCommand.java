@@ -65,9 +65,7 @@ public class GetCm2QuizHtmlCommand implements ActionHandler<GetCm2QuizHtmlAction
             
             QuizCm2HtmlResult result = new QuizCm2HtmlResult();
             for(HaTestSetQuestion q: testSet.getQuestions()) {
-                
                 // String htmlWithAbsolute = HotMathUtilities.makeAbsolutePaths(absolutePath, q.getQuestionHtml());
-                
                 String htmlWithAbsolute = q.getQuestionHtml().replace("/help/solutions/", "http://catchupmath.com/help/solutions/");
                 htmlWithAbsolute = htmlWithAbsolute.replace("/images/specialchars/", "http://catchupmath.com/images/specialchars/");
                 

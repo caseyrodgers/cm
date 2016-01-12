@@ -1,6 +1,13 @@
 
 package hotmath.gwt.shared.server.service.command.cm2;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.ClientEnvironment;
@@ -21,6 +28,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
+import hotmath.gwt.cm_rpc.client.rpc.NewMobileUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
@@ -32,6 +40,8 @@ import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2HtmlResult;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
@@ -44,14 +54,11 @@ import hotmath.gwt.shared.server.service.command.GetUserInfoCommand.CustomProgra
 import hotmath.testset.ha.HaUserFactory;
 import hotmath.util.sql.SqlUtilities;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLoginAction, Cm2MobileUser> {
+	
+	
+	static Logger __logger = Logger.getLogger(GetCm2MobileLoginCommand.class);
+	
 
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
@@ -61,6 +68,28 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
     @Override
     public Cm2MobileUser execute(Connection conn, GetCm2MobileLoginAction action) throws Exception {
 
+    	
+    	
+    	if(action.getName() != null && action.getName().equals("retail")) {
+    		/** if user does not exist, the create it.  Otherwise, use existing
+    		 * 
+    		 */
+    		int existingUid = HaUserFactory.lookupUserId(action.getPassword(), action.getPassword());
+    		if(existingUid != 0) {
+    			__logger.info("retail user, using existing user for: " + action);
+    			action.setUid(existingUid);
+    		}
+    		else {
+    			__logger.info("retail user, creating new user: " + action);
+
+    			// create new retail user account
+    			RpcData data = ActionDispatcher.getInstance().execute(new NewMobileUserAction(action.getPassword()));
+    			action.setUid(data.getDataAsInt("uid"));
+    		}
+    		
+    	}
+    	
+    	
        int uid = action.getUid();
        
        boolean isDemo=false;
