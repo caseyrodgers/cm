@@ -174,6 +174,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             mobileUser.getBaseLoginResponse().getUserInfo().setProgramName(testTitle);
             
             CmProgramFlowAction nextAction = programFlow.getActiveFlowAction(conn);
+            mobileUser.setTestId(programFlow.getActiveInfo().getActiveTestId());
             
             mobileUser.setPlace(nextAction.getPlace());
             

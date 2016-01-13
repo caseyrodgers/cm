@@ -1,7 +1,5 @@
 package hotmath.cm.server.rest;
 
-import hotmath.gwt.cm_core.client.model.TopicResource;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -12,6 +10,13 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONObject;
 
 import com.cedarsoftware.util.io.JsonReader;
+import com.cedarsoftware.util.io.JsonWriter;
+
+import hotmath.gwt.cm_core.client.model.TopicResource;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
+import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
+import hotmath.gwt.shared.client.rpc.action.ResetUserAction.ResetType;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/")
@@ -270,5 +275,23 @@ public class ActionDispatcherRest {
         String language = jo.getString("language");
         return Cm2ActionManager.getTopicReviewText(file, language.equals("spanish"));
     }
+    
+    
+    @POST
+    @Path("user/{uid}/reset")
+    public String doRetailReset(@PathParam("uid") int uid, String data) throws Exception {
+    	return processDoRetailReset(uid, data);
+    }
+
+
+	private String processDoRetailReset(int uid, String data) throws Exception {
+		JSONObject jo = new JSONObject(data);
+		int testId = jo.getInt("tid");
+		int runId = jo.getInt("rid");
+		ResetUserAction action = new ResetUserAction(ResetType.FULL,uid,0);
+        
+        RpcData res = ActionDispatcher.getInstance().execute(action);
+        return JsonWriter.objectToJson(res);
+	}
     
 }
