@@ -1,0 +1,1 @@
+mvn exec:java -Dexec.mainClass="hotmath.testset.ha.report.SolutionRegExtChecker"  -Dexec.args="$1" -o
