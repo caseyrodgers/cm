@@ -645,6 +645,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 						 */
 						String realPid = rs.getString("pid");
 						String realStatus = rs.getString("status");
+						String gradeStatus = rs.getString("grade_status");
 						if (assignment.isPersonalized()) {
 							realPid = getPersonalizedPid(assignKey, uid,
 									rs.getInt("problem_id"));
@@ -668,7 +669,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 								.getInt("is_student_graded") != 0 ? true
 								: false;
 						StudentProblemDto prob = new StudentProblemDto(uid,
-								probDto, realStatus, hasShowWork,
+								probDto, realStatus, gradeStatus, hasShowWork,
 								hasShowWorkAdmin, isAssignmentClosed,
 								isStudentGraded, isProblemGraded);
 						return prob;
@@ -710,6 +711,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		int completed = 0;
 		int pending = 0;
 		int count = 0;
+		int graded = 0;
 		int viewed = 0;
 		int totGraded = 0;
 		int totCompleted = 0;
@@ -728,8 +730,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			if (probDto.getUid() != uid) {
 				if (lessonStatus != null) {
 
-					lessonStatus.setStatus(getLessonStatus(count, completed,
-							pending, viewed));
+					lessonStatus.setStatus(getAssgnLessonStatus(count, completed,
+							pending, viewed, graded));
 					StudentAssignment sa = stuAssignMap.get(uid);
 					if (sa.isGraded() == false) {
 						sa.setHomeworkStatus(getHomeworkStatus(totCount,
@@ -758,11 +760,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			if (!lessonName.equals(probDto.getProblem().getName())) {
 			    if (lessonName.trim().length() > 0) {
 			        if (lessonStatus != null) {
-			            lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
+			            lessonStatus.setStatus(getAssgnLessonStatus(count, completed, pending, viewed, graded));
 			        }
 			    }
 			    completed = 0;
 			    pending = 0;
+			    graded = 0;
 			    count = 0;
 			    viewed = 0;
 			    lessonName = probDto.getProblem().getName();
@@ -782,8 +785,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 				completed++;
 				totCompleted++;
 				totGraded += (probDto.isGraded()) ? 1 : 0;
-				if (psl.indexOf("correct") > -1 || psl.indexOf("credit") > -1)
+				if (psl.indexOf("correct") > -1 || psl.indexOf("credit") > -1) {
 					probDto.setGraded(true);
+				}
 
 				totCorrect += ("correct".equals(psl)) ? 1 : 0;
 				totIncorrect += ("incorrect".equals(psl)) ? 1 : 0;
@@ -801,8 +805,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		}
 
 		if (lessonStatus != null) {
-			lessonStatus.setStatus(getLessonStatus(count, completed, pending,
-					viewed));
+			lessonStatus.setStatus(getAssgnLessonStatus(count, completed, pending,
+					viewed, graded));
 		}
 		if (stuAssignMap.size() > 0) {
 			StudentAssignment sa = stuAssignMap.get(uid);
@@ -999,6 +1003,21 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 					count, submitted);
 		} else {
 			ret = String.format("%d of %d submitted", completed, count);
+		}
+
+		return ret;
+	}
+
+	private String getAssgnLessonStatus(int count, int completed, int pending,
+			int viewed, int graded) {
+		String ret;
+
+		completed += pending;
+		if (pending != 0) {
+			ret = String.format("%d of %d submitted, %d ungraded", completed,
+					count, pending);
+		} else {
+			ret = String.format("%d of %d submitted, %d graded", completed, count, graded);
 		}
 
 		return ret;
