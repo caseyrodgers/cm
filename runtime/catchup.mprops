@@ -3994,7 +3994,8 @@ order  by a.due_date desc, last_modified desc
 .key=GET_GRADE_BOOK_DATA_3
 
 select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.lesson_file, p.pid, p.ordinal_number,
-       if(q.correct is null, 'Not viewed', (if(q.correct=1,'Correct','Incorrect'))) as status, 
+       if(q.correct is null, 'Not viewed', (if(q.correct=1,'Correct','Incorrect'))) as status,
+       if(s.status is null OR s.status='Submitted', 'Not Graded', s.status) as grade_status,
        w.has_show_work, w2.has_show_work_admin,
        s.is_graded as is_problem_graded, ua.is_graded as is_student_graded
 
