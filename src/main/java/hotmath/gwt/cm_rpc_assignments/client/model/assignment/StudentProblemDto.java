@@ -8,6 +8,7 @@ public class StudentProblemDto implements Response {
     private ProblemDto problem;
     private String basePid;  // pid that points the pid choosen by admin
     private String status;
+	private String gradeStatus;
     private boolean hasShowWork;
     private boolean hasShowWorkAdmin;
     private boolean assignmentClosed;
@@ -30,6 +31,17 @@ public class StudentProblemDto implements Response {
         this.graded = graded;
     }
 
+    public StudentProblemDto(int uid, ProblemDto problem, String status, String gradeStatus, boolean hasShowWork, boolean hasShowWorkAdmin, boolean isAssignmentClosed, boolean isAssignmentGraded, boolean graded) {
+        this.uid = uid;
+        this.problem = problem;
+        this.status = status;
+        this.gradeStatus = gradeStatus;
+        this.hasShowWork = hasShowWork;
+        this.hasShowWorkAdmin = hasShowWorkAdmin;
+        this.assignmentClosed = isAssignmentClosed;
+        this.assignmentGraded = isAssignmentGraded;
+        this.graded = graded;
+    }
 
     public String getBasePid() {
         return basePid;
@@ -82,7 +94,15 @@ public class StudentProblemDto implements Response {
         this.status = status;
     }
     
-    /** Return the label shown as the status
+    public String getGradeStatus() {
+		return gradeStatus;
+	}
+
+	public void setGradeStatus(String gradeStatus) {
+		this.gradeStatus = gradeStatus;
+	}
+
+	/** Return the label shown as the status
      * for this problem to the student.
      * 
      * Viewed/Not viewed is simply unanswered
