@@ -1,5 +1,6 @@
 package hotmath.cm.server.rest;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,11 +18,15 @@ import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
 
 import hotmath.cm.server.model.QuizSelection;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_core.client.model.TopicResource;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction.ResetType;
+import hotmath.util.HMConnectionPool;
+import hotmath.util.sql.SqlUtilities;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/")
@@ -310,10 +315,16 @@ public class ActionDispatcherRest {
 		JSONObject jo = new JSONObject(data);
 		int testId = jo.getInt("tid");
 		int runId = jo.getInt("rid");
-		ResetUserAction action = new ResetUserAction(ResetType.FULL, uid, 0);
-
-		RpcData res = ActionDispatcher.getInstance().execute(action);
-		return JsonWriter.objectToJson(res);
+		
+		Connection conn=null; 
+		try {
+			conn = HMConnectionPool.getConnection();
+			CmStudentDao.getInstance().assignProgramToStudent(conn, uid, CmProgram.AUTO_ENROLL,null);	
+		}
+		finally {
+			SqlUtilities.releaseResources(null, null, conn);
+		}
+		return JsonWriter.objectToJson(new RpcData());
 	}
 
 }
