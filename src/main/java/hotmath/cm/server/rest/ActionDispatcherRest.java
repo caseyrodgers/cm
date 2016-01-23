@@ -81,7 +81,7 @@ public class ActionDispatcherRest {
 				 List<QuizSelection> selections = new ArrayList<QuizSelection>();
 				 for(int i=0;i<sel.length();i++) {
 					 JSONObject o = sel.getJSONObject(i);
-					 QuizSelection selection = new QuizSelection(o.getString("pid"), o.getInt("choice"), o.getBoolean("isCorrect"));
+					 QuizSelection selection = new QuizSelection(o.getString("pid"), o.getInt("choice"), o.has("isCorrect")?o.getBoolean("isCorrect"):false);
 					 
 					 Cm2ActionManager.setQuizAnswer(testId, selection.getPid(), selection.getChoice(), selection.isCorrect());
 				 }

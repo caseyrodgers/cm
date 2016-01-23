@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.UUID;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_core.client.model.SearchAllowMode;
 import hotmath.gwt.cm_rpc.client.rpc.NewMobileUserAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -30,8 +31,9 @@ public class NewMobileUserCommand implements ActionHandler<NewMobileUserAction, 
 		String newPwd = action.getDeviceId();
 		
         int newUid = HaUserFactory.createUser(conn, mobileAdmin.getUserKey(),"none", newUserName, newPwd);
-
+                
         CmStudentDao.getInstance().assignProgramToStudent(conn, newUid,CmProgram.AUTO_ENROLL,null);
+        CmStudentDao.getInstance().updateStudentSettings(conn, newUid, false, false, false, true, 70, true, false, false, SearchAllowMode.ENABLED_EXCEPT_TESTS);
         
         return new RpcData("uid=" + newUid);
 	}

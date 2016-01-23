@@ -84,6 +84,8 @@ public class GetCm2QuizHtmlCommand implements ActionHandler<GetCm2QuizHtmlAction
             result.setCurrentSelections(answers);
             result.setTestId(haTest.getTestId());
             result.setTitle(testTitle);
+            result.setQuizSegment(haTest.getSegment());
+            result.setQuizSegmentCount(haTest.getTotalSegments());
             return result;
             
         } catch (Exception e) {
