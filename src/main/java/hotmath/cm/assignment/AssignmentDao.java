@@ -734,6 +734,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 							pending, viewed, graded));
 					StudentAssignment sa = stuAssignMap.get(uid);
 					if (sa.isGraded() == false) {
+                        sa.setStudentDetailStatus(getAssgnLessonStatus(count, completed,
+							pending, viewed, graded));
 						sa.setHomeworkStatus(getHomeworkStatus(totCount,
 								totCompleted, totPending, totGraded, totViewed));
 					} else {
@@ -753,6 +755,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 				totGraded = 0;
 				totViewed = 0;
 				totHalfCredit = 0;
+			    completed = 0;
+			    pending = 0;
+			    graded = 0;
+			    count = 0;
+			    viewed = 0;
 				uid = probDto.getUid();
 				lessonList = new CmArrayList<StudentLessonDto>();
 			}
@@ -763,11 +770,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			            lessonStatus.setStatus(getAssgnLessonStatus(count, completed, pending, viewed, graded));
 			        }
 			    }
-			    completed = 0;
-			    pending = 0;
-			    graded = 0;
-			    count = 0;
-			    viewed = 0;
 			    lessonName = probDto.getProblem().getName();
 			    lessonStatus = new StudentLessonDto(probDto.getUid(), lessonName, null);
 			    lessonList.add(lessonStatus);
@@ -776,29 +778,27 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			count++;
 			totCount++;
 			String probStatus = probDto.getStatus().trim();
-			if ("not viewed".equalsIgnoreCase(probStatus))
-				continue;
+			String gradeStatus = probDto.getGradeStatus().trim();
 
+			String gsl = gradeStatus.toLowerCase();
+			if ("answered".equals(gsl) || "correct".equals(gsl) ||
+				"incorrect".equals(gsl) || "half credit".equals(gsl)) {
+				graded += (probDto.isGraded()) ? 1 : 0;
+				totGraded += (probDto.isGraded()) ? 1 : 0;
+				totCorrect += ("correct".equals(gsl)) ? 1 : 0;
+				totIncorrect += ("incorrect".equals(gsl)) ? 1 : 0;
+				totHalfCredit += ("half credit".equals(gsl)) ? 1 : 0;
+			}
 			String psl = probStatus.toLowerCase();
-			if ("answered".equals(psl) || "correct".equals(psl)
-					|| "incorrect".equals(psl) || "half credit".equals(psl)) {
+			if ("answered".equals(psl) || "correct".equals(psl) ||
+				"incorrect".equals(psl) || "half credit".equals(psl)) {
 				completed++;
 				totCompleted++;
-				totGraded += (probDto.isGraded()) ? 1 : 0;
-				if (psl.indexOf("correct") > -1 || psl.indexOf("credit") > -1) {
-					probDto.setGraded(true);
-				}
-
-				totCorrect += ("correct".equals(psl)) ? 1 : 0;
-				totIncorrect += ("incorrect".equals(psl)) ? 1 : 0;
-				totHalfCredit += ("half credit".equals(psl)) ? 1 : 0;
-
-				continue;
 			}
-			if ("submitted".equalsIgnoreCase(probStatus)) {
+			else if ("submitted".equals(psl)) {
 				pending++;
 				totPending++;
-			} else if ("viewed".equalsIgnoreCase(probStatus)) {
+			} else if ("viewed".equals(psl)) {
 				viewed++;
 				totViewed++;
 			}
@@ -813,6 +813,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			if (sa.isGraded() == false) {
 				sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted,
 						totPending, totGraded, totViewed));
+				sa.setStudentDetailStatus(getAssgnLessonStatus(count, completed,
+            			pending, viewed, graded));
 			} else {
 				sa.setHomeworkStatus("Graded");
 			}
@@ -834,7 +836,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		 */
 
 		for (StudentAssignment sa : stuAssignments) {
-			setStudentDetailStatus(sa);
+			//setStudentDetailStatus(sa);
 
 			sa.setStudentStatuses(null); // don't need in gradebook, need on
 											// student/assignment at time
@@ -1010,17 +1012,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
 	private String getAssgnLessonStatus(int count, int completed, int pending,
 			int viewed, int graded) {
-		String ret;
-
-		completed += pending;
-		if (pending != 0) {
-			ret = String.format("%d of %d submitted, %d ungraded", completed,
-					count, pending);
-		} else {
-			ret = String.format("%d of %d submitted, %d graded", completed, count, graded);
-		}
-
-		return ret;
+		return String.format("%d of %d submitted, %d graded", completed+pending, count, graded);
 	}
 
 	private String getHomeworkStatus(int totCount, int totCompleted,
