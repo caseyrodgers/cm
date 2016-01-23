@@ -68,8 +68,6 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
     @Override
     public Cm2MobileUser execute(Connection conn, GetCm2MobileLoginAction action) throws Exception {
 
-    	
-    	
     	if(action.getName() != null && action.getName().equals("retail")) {
     		/** if user does not exist, the create it.  Otherwise, use existing
     		 * 
@@ -86,7 +84,6 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
     			RpcData data = ActionDispatcher.getInstance().execute(new NewMobileUserAction(action.getPassword()));
     			action.setUid(data.getDataAsInt("uid"));
     		}
-    		
     	}
     	
     	

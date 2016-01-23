@@ -68,6 +68,7 @@ import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUser;
 import hotmath.testset.ha.HaUserDao;
+import hotmath.testset.ha.HaUserFactory;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -76,6 +77,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.impl.LogImplInterface;
 import com.cedarsoftware.util.io.JsonWriter;
 
 /**
@@ -139,15 +141,6 @@ public class Cm2ActionManager {
         }
         String json = JsonWriter.objectToJson(results);
         return json;
-    }
-
-    public static String loginUser(int uid, String un, String pwd, String subject, String token) throws Exception {
-        // int randomUserId = HaUserDao.getRandomUserId();
-        GetCm2MobileLoginAction action = uid != 0 ? new GetCm2MobileLoginAction(uid) : new GetCm2MobileLoginAction(un,pwd, subject);
-        action.setDeviceToken(token);
-        
-        String jsonResponse = new ActionDispacherWrapper().execute(action);
-        return jsonResponse;
     }
 
     public static String getPrescriptionTopic(int runId, int topicIndex) throws Exception {
@@ -394,13 +387,20 @@ public class Cm2ActionManager {
     public static String getUserMessages(int uid) throws Exception {
         return JsonWriter.objectToJson(StudentEventsDao.getInstance().getEventHistoryFor(uid));
     }
+    
+    public static String loginUser(int uid, String un, String pwd, String subject, String token) throws Exception {
+        // int randomUserId = HaUserDao.getRandomUserId();
+        GetCm2MobileLoginAction action = uid != 0 ? new GetCm2MobileLoginAction(uid) : new GetCm2MobileLoginAction(un,pwd, subject);
+        action.setDeviceToken(token);
+        
+        String jsonResponse = new ActionDispacherWrapper().execute(action);
+        return jsonResponse;
+    }
 
 	public static String loginUserMobile(String deviceId) throws Exception {
-		
-		RpcData data = ActionDispatcher.getInstance().execute(new NewMobileUserAction(deviceId));
-		int uid = data.getDataAsInt("uid");
-		
-        GetCm2MobileLoginAction action = new GetCm2MobileLoginAction(uid);
+        GetCm2MobileLoginAction action = new GetCm2MobileLoginAction();
+        action.setName("retail");
+        action.setPassword(deviceId);
         action.setDeviceToken(deviceId);
 
         Cm2MobileUser userInfo = ActionDispatcher.getInstance().execute(action);

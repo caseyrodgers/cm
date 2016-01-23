@@ -65,6 +65,10 @@ public class AssessmentPrescriptionManager {
 			 * first need to lookup the test for this run
 			 */
 			HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(runId);
+			HaTest haTest = testRun.getHaTest();
+			if(haTest == null) {
+				throw new Exception("Associated test cannot be found.  Please logout and back in. Tell your administrator if problem persists.");
+			}
 
 			if(testRun.getHaTest().getTestDef().getName().indexOf("Auto-Enrollment") > -1)
 			    pres = AssessmentPrescriptionFactory.create(conn, testRun);
