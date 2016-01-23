@@ -1,28 +1,54 @@
-<p>
-	Graph the function
-	<math>
-		<mrow>
-			<mi>y</mi>
-			<mo>=</mo>
-			<msub>
-				<mrow>
-					<mi>log</mi>
-					<mo>&#x2061;</mo>
-				</mrow>
-				<mn>2</mn>
-			</msub>
-			<mrow>
-				<mo>(</mo>
-				<mrow>
-					<mi>x</mi>
-					<mo>+</mo>
-					<mn>2</mn>
-				</mrow>
-				<mo>)</mo>
-			</mrow>
-			<mo>&#x2212;</mo>
-			<mn>1.5</mn>
-		</mrow>
-	</math>
-	on a coordinate plane.
-</p>
+<div class='_question_def' id='hm_question_def'>
+
+	<div>
+		<p class=MsoNormal>Which of the following is not a perfect square?</p>
+	</div>
+	<ul class='no_show'>
+		<li correct='no'>
+			<div>
+				<math>
+					<mn>36</mn>
+				</math>
+
+
+
+			</div>
+			<div>&nbsp;
+			</div>
+		</li>
+		<li correct='no'>
+			<div>
+				<math>
+					<mn>64</mn>
+				</math>
+			</div>
+			<div>&nbsp;
+			</div>
+		</li>
+		<li correct='no'>
+			<div>
+				<math>
+					<mn>121</mn>
+				</math>
+			</div>
+			<div>&nbsp;
+			</div>
+		</li>
+		<li correct='yes'>
+			<div>
+				<math>
+					<mn>222</mn>
+				</math>
+			</div>
+			<div>&nbsp;
+			</div>
+		</li>
+	</ul>
+</div>
+
+<div name='hm_flash_widget'>
+	<div name='hm_flash_widget_def' style='display: none'>
+		{type:'mChoice',value:'use_question_def', format:'', width:300,
+		height:110}
+	</div>
+</div>

@@ -221,7 +221,7 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
     
     private void releaseGradesDirect(final Assignment assignment, int countUngradedStuWhiteboardProbs) {
-        String msg = "Are you sure you want to close and release this assignment's grades?";
+        String msg = "Are you sure you want to release this assignment's grades?";
         String wbMsg = "with submitted whiteboard answers that you have not yet graded.<br/><br/>";
         if(countUngradedStuWhiteboardProbs == 1) {
             wbMsg = "There is 1 student " + wbMsg;

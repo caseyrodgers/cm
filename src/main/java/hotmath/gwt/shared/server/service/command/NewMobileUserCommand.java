@@ -26,9 +26,7 @@ public class NewMobileUserCommand implements ActionHandler<NewMobileUserAction, 
 		// mobile user admin account
 		HaBasicUser mobileAdmin = HaUserFactory.loginToCatchup(conn, "cm_mobile", "cm_mobile");
 		
-		String newUserName = UUID.randomUUID().toString();
-		
-		newUserName = action.getDeviceId();
+		String newUserName = action.getDeviceId();
 		String newPwd = action.getDeviceId();
 		
         int newUid = HaUserFactory.createUser(conn, mobileAdmin.getUserKey(),"none", newUserName, newPwd);
