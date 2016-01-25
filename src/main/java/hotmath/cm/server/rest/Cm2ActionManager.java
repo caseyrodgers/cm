@@ -1,5 +1,11 @@
 package hotmath.cm.server.rest;
 
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.cedarsoftware.util.io.JsonWriter;
+
 import hotmath.ProblemID;
 import hotmath.cm.server.model.StudentEventsDao;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
@@ -26,12 +32,12 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import hotmath.gwt.cm_rpc.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
-import hotmath.gwt.cm_rpc.client.rpc.NewMobileUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveTutorInputWidgetAnswerAction;
@@ -68,17 +74,9 @@ import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUser;
 import hotmath.testset.ha.HaUserDao;
-import hotmath.testset.ha.HaUserFactory;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
-
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.allen_sauer.gwt.log.client.impl.LogImplInterface;
-import com.cedarsoftware.util.io.JsonWriter;
 
 /**
  * Central place to request a CM2 request with any specialized formatting
@@ -405,6 +403,15 @@ public class Cm2ActionManager {
 
         Cm2MobileUser userInfo = ActionDispatcher.getInstance().execute(action);
         return JsonWriter.objectToJson(userInfo);
+	}
+
+	public static RpcData saveFeedback(int uid, String feedbackMessage) throws Exception {
+		
+		SaveFeedbackAction action = new SaveFeedbackAction();
+		action.setComments(feedbackMessage);
+		action.setStateInfo("uid: " + uid);
+		
+		return ActionDispatcher.getInstance().execute(action);
 	}
 	
 

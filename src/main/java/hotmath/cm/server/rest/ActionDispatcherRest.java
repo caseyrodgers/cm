@@ -326,5 +326,12 @@ public class ActionDispatcherRest {
 		}
 		return JsonWriter.objectToJson(new RpcData());
 	}
+	
+	@POST
+	@Path("user/{uid}/feedback")
+	public String saveUserFeedback(@PathParam("uid") int uid, String feedbackMessage) throws Exception {
+		return JsonWriter.objectToJson(Cm2ActionManager.saveFeedback(uid, feedbackMessage));
+	}
+
 
 }
