@@ -683,6 +683,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		CmList<StudentProblemDto> probList = null;
 		Map<Integer, StudentAssignment> stuAssignMap = new HashMap<Integer, StudentAssignment>();
 		Map<String, StudentAssignmentUserInfo> userInfos = new HashMap<String, StudentAssignmentUserInfo>();
+		__logger.info("problemStatuses.size(): " + problemStatuses.size());
 		for (StudentProblemDto probDto : problemStatuses) {
 			if (probDto.getUid() != uid) {
 				probList = new CmArrayList<StudentProblemDto>();
@@ -702,6 +703,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			}
 			probList.add(probDto);
 		}
+		__logger.info("probList.size(): " + probList.size());
 
 		/**
 		 * add lesson status for each user/lesson and add assignment status
@@ -738,6 +740,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 							pending, viewed, graded));
 						sa.setHomeworkStatus(getHomeworkStatus(totCount,
 								totCompleted, totPending, totGraded, totViewed));
+						__logger.info(String.format("studentDetailStatus[%d]: %s", uid, sa.getStudentDetailStatus()));
 					} else {
 						sa.setHomeworkStatus("Graded");
 					}
@@ -815,6 +818,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 						totPending, totGraded, totViewed));
 				sa.setStudentDetailStatus(getAssgnLessonStatus(count, completed,
             			pending, viewed, graded));
+				__logger.info(String.format("studentDetailStatus[%d]: %s", uid, sa.getStudentDetailStatus()));				
 			} else {
 				sa.setHomeworkStatus("Graded");
 			}
@@ -822,6 +826,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 					totCorrect, totIncorrect, totHalfCredit, sa.isGraded()));
 		}
 
+		__logger.info("getAssignmentGradeBook(): stuAssignments.size(): "
+				+ stuAssignments.size());
 		if (__logger.isDebugEnabled())
 			__logger.debug("getAssignmentGradeBook(): stuAssignments.size(): "
 					+ stuAssignments.size());
