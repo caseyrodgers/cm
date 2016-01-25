@@ -676,6 +676,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 					}
 				});
 
+		__logger.info(String.format("assignKey: %d, problemStatuses.size(): %d", assignKey, problemStatuses.size()));
 		/**
 		 * create student assignments for all users
 		 */
@@ -683,7 +684,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		CmList<StudentProblemDto> probList = null;
 		Map<Integer, StudentAssignment> stuAssignMap = new HashMap<Integer, StudentAssignment>();
 		Map<String, StudentAssignmentUserInfo> userInfos = new HashMap<String, StudentAssignmentUserInfo>();
-		__logger.info("problemStatuses.size(): " + problemStatuses.size());
 		for (StudentProblemDto probDto : problemStatuses) {
 			if (probDto.getUid() != uid) {
 				probList = new CmArrayList<StudentProblemDto>();
@@ -703,7 +703,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			}
 			probList.add(probDto);
 		}
-		__logger.info("probList.size(): " + probList.size());
+		__logger.info("probList.size(): " + ((probList != null)?probList.size():"NULL"));
 
 		/**
 		 * add lesson status for each user/lesson and add assignment status
