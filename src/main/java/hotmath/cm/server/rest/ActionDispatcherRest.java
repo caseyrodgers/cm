@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
 
+import hotmath.cm.program.CmProgramFlow;
 import hotmath.cm.server.model.QuizSelection;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_core.client.model.TopicResource;
@@ -315,11 +316,22 @@ public class ActionDispatcherRest {
 		JSONObject jo = new JSONObject(data);
 		int testId = jo.getInt("tid");
 		int runId = jo.getInt("rid");
+		String type = jo.getString("type");
 		
 		Connection conn=null; 
 		try {
 			conn = HMConnectionPool.getConnection();
-			CmStudentDao.getInstance().assignProgramToStudent(conn, uid, CmProgram.AUTO_ENROLL,null);	
+			if(type == null || type.equals("quiz")) {
+				
+                CmProgramFlow programFlow = new CmProgramFlow(conn, uid);
+                programFlow.getActiveInfo().setActiveRunId(0); // 
+                programFlow.getActiveInfo().setActiveTestId(0); // 
+				ActionDispatcher.getInstance().execute(new ResetUserAction(ResetType.RESENT_QUIZ, programFlow.getUserProgram().getId(),0));
+				programFlow.saveActiveInfo(conn);
+			}
+			else {
+				CmStudentDao.getInstance().assignProgramToStudent(conn, uid, CmProgram.AUTO_ENROLL,null);
+			}
 		}
 		finally {
 			SqlUtilities.releaseResources(null, null, conn);
