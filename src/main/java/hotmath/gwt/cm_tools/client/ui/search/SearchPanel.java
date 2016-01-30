@@ -358,7 +358,7 @@ public class SearchPanel extends BorderLayoutContainer {
         FlowLayoutContainer flow = new FlowLayoutContainer();
         flow.add(hl);
         flow.add(_searchMessage);
-        flow.add(_suggestionsContainer);
+        //flow.add(_suggestionsContainer);
         fp.setWidget(flow);
         
         
