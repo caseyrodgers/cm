@@ -60,7 +60,7 @@
     <script type='text/x-mathjax-config'>      
          setupMathJax();
     </script>
-    <script src="/assets/mathjax/2.5/MathJax.js?config=MML_HTMLorMML"></script>
+    <script src="/assets/mathjax/latest/MathJax.js?config=MML_HTMLorMML"></script>
     <!-- -------------------------- -->
     <!--  End MathJax Configuration -->
     

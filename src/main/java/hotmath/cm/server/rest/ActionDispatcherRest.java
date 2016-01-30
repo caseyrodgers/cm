@@ -345,5 +345,9 @@ public class ActionDispatcherRest {
 		return JsonWriter.objectToJson(Cm2ActionManager.saveFeedback(uid, feedbackMessage));
 	}
 
-
+	@POST
+	@Path("quiz/{rid}/results")
+	public String getQuizResults(@PathParam("rid") int rid) throws Exception {
+		return JsonWriter.objectToJson(Cm2ActionManager.getQuizResults(rid));
+	}
 }
