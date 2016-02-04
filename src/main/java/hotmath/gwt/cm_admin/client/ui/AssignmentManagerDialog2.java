@@ -23,7 +23,6 @@ import hotmath.gwt.cm_tools.client.ui.MyMenuItem;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.VideoPlayerWindow;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -220,7 +219,7 @@ public class AssignmentManagerDialog2  {
                 }
                 PrintGradebookAction action = new  PrintGradebookAction(UserInfoBase.getInstance().getUid(),_lastGroup.getGroupId());
                 DateRangePanel dateRange = DateRangePanel.getInstance();
-                if (dateRange != null) {
+                if (dateRange != null && dateRange.isDefault() == false) {
                     action.setFromDate(dateRange.getFromDate());
                     action.setToDate(dateRange.getToDate());
                 }
