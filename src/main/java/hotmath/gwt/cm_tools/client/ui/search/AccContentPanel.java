@@ -1,15 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui.search;
 
-import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
-import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
-import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.WhiteboardResourceCallback;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
-import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2.TutorViewerProperties;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +20,17 @@ import com.sencha.gxt.widget.core.client.container.ResizeContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
+
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
+import hotmath.gwt.cm_tools.client.ui.search.TopicExplorer.TopicExplorerCallback;
+import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.WhiteboardResourceCallback;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2.TutorViewerProperties;
 
 
 public class AccContentPanel extends ContentPanel {
@@ -92,7 +93,7 @@ public class AccContentPanel extends ContentPanel {
                         
                         InmhItemData itemToShow = null;
                         for(InmhItemData i: resource.getItems()) {
-                            if(i == which)    {
+                            if(i.getFile().equals(which.getFile())) {
                                 itemToShow = i;
                                 break;
                             }
@@ -131,7 +132,7 @@ public class AccContentPanel extends ContentPanel {
     }
 
     HorizontalLayoutContainer _toolbar=null;
-    ComboBox<InmhItemData> _combo;
+    ComboBox<MyInmhItemData> _combo;
 
 
     protected void showResource(final CmResourcePanel viewer, String title, boolean b) {
@@ -143,12 +144,29 @@ public class AccContentPanel extends ContentPanel {
             for(Widget t: tools) {
                 addTool(t);
             }
+            
             if(resource.getItems().size() > 1) {
-                _combo = createItemCombo(resource.getItems());
-                _combo.addSelectionHandler(new SelectionHandler<InmhItemData>() {
+            	
+            	
+            	/** Make sure all problems have correct label
+            	 * 
+            	 */
+            	List<MyInmhItemData> myItems = new ArrayList<MyInmhItemData>();
+            	for(int index=0;index < resource.getItems().size();index++) {
+            		InmhItemData item = resource.getItems().get(index);
+                	MyInmhItemData mD = new MyInmhItemData();
+                	mD.setFile(item.getFile());
+                	mD.setTitle( (item.getType() != CmResourceType.PRACTICE)?item.getTitle():"Problem " + " " + (index+1));
+                	mD.setType(item.getType());
+                	myItems.add(mD);
+            	}
+
+            	_combo = createItemCombo(myItems);
+            	
+                _combo.addSelectionHandler(new SelectionHandler<MyInmhItemData>() {
                     @Override
-                    public void onSelection(SelectionEvent<InmhItemData> event) {
-                        InmhItemData item = _combo.getCurrentValue();
+                    public void onSelection(SelectionEvent<MyInmhItemData> event) {
+                        MyInmhItemData item = _combo.getCurrentValue();
                         prepareResource(item);
                     }
                 });
@@ -191,7 +209,7 @@ public class AccContentPanel extends ContentPanel {
 
     protected void moveToItem(int amount) {
         InmhItemData val = _combo.getCurrentValue();
-        List<InmhItemData> items = _combo.getStore().getAll();
+        List<MyInmhItemData> items = _combo.getStore().getAll();
         int which=0;
         for(InmhItemData item: items) {
             if(item == val) {
@@ -218,19 +236,26 @@ public class AccContentPanel extends ContentPanel {
         this.resource = resource;
     }
     
+    
+    class MyInmhItemData extends InmhItemData {
+    	
+    }
+    
     interface ItemComboProps extends PropertyAccess<String> {
         ModelKeyProvider<InmhItemData> file();
         LabelProvider<InmhItemData> title();
     }
+    
+    
     ItemComboProps props = GWT.create(ItemComboProps.class);
-    private ComboBox<InmhItemData> createItemCombo(List<InmhItemData> list) {
-        ListStore<InmhItemData> store = new ListStore<InmhItemData>(props.file());
-        ComboBox<InmhItemData> combo = new ComboBox<InmhItemData>(store, props.title());
+    private ComboBox<MyInmhItemData> createItemCombo(List<MyInmhItemData> list) {
+        ListStore<MyInmhItemData> store = new ListStore<MyInmhItemData>(props.file());
+        ComboBox<MyInmhItemData> combo = new ComboBox<MyInmhItemData>(store, props.title());
         combo.setAllowBlank(false);
         combo.setForceSelection(true);
         combo.setEditable(false);
         combo.setTriggerAction(TriggerAction.ALL);
-        for(InmhItemData i: list) {
+        for(MyInmhItemData i: list) {
             if(!store.getAll().contains(i)) {
                 store.add(i);
             }
