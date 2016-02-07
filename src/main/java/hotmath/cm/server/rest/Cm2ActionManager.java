@@ -417,7 +417,14 @@ public class Cm2ActionManager {
 	}
 
 	public static QuizResultsMetaInfo getQuizResults(int runId) throws Exception {
-		return ActionDispatcher.getInstance().execute(new GetQuizResultsHtmlAction(runId));
+		String token = "quiz_html";
+		QuizResultsMetaInfo results = ActionDispatcher.getInstance().execute(new GetQuizResultsHtmlAction(runId));
+		String html = GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/help/solutions/", results.getRpcData().getDataAsString(token));
+		
+		QuizResultsMetaInfo ret = new QuizResultsMetaInfo();
+		ret.setRpcData(new RpcData());
+		ret.getRpcData().putData(token,  html);
+		return ret;
 	}
 	
 
