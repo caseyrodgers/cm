@@ -42,7 +42,9 @@ public class MathMlTransform {
              *
              *  add to mn
              */
-            String miProp = p.getProperty("mathml.mi", "1em");            
+            String miProp = p.getProperty("mathml.mi", "1em");
+            String miFracProp = p.getProperty("mathml.mfrac.mi", "1.2em");
+            
             String normalFraction = p.getProperty("mathml.mfrac.mn", "1.2em");
             String propMixWhole = p.getProperty("mathml.mixed.mn.mfrac", "1em");
             String propMixFract = p.getProperty("mathml.mixed.mn.mfrac.mn", "1.3em"); 
@@ -116,7 +118,12 @@ public class MathMlTransform {
             for (Element e : els) {
             	e.attr("mathsize", propMsupMi);
             }
+
             
+            els = doc.select("math mtr mtd mi");
+            for (Element e : els) {
+            	e.attr("mathsize", propMtrMtdMi);
+            }            
             
             els = doc.select("math mroot mrow msup");
             for (Element e : els) {
@@ -134,6 +141,14 @@ public class MathMlTransform {
             	}
             }
             
+
+            
+            
+            els = doc.select("math mfrac mi");
+            for (Element e : els) {
+                e.attr("mathsize", miFracProp);
+            }
+                        
             
             /** 
              * 
@@ -163,11 +178,7 @@ public class MathMlTransform {
              * 
              * 
              */
-            
-            els = doc.select("math mtr mtd mi");
-            for (Element e : els) {
-            	e.attr("mathsize", propMtrMtdMi);
-            }
+
 
             doc.outputSettings().prettyPrint(false);
             String html = doc.toString();
