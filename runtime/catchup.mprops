@@ -4338,13 +4338,11 @@ where  a.assign_key = ?
 
 .key=GET_STUDENT_ASSIGNMENT_SCORE
 
-select a.assign_key, p.pid, s.status
-from  CM_ASSIGNMENT a
-  join CM_ASSIGNMENT_PIDS p on p.assign_key = a.assign_key
-  left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key = a.assign_key and s.pid = p.pid
-where s.uid = ?
-and a.assign_key = ?
-
+select p.assign_key, p.pid, ifnull(s.status, 'Unanswered') as status
+from CM_ASSIGNMENT_PIDS p
+  left join CM_ASSIGNMENT_PID_STATUS s 
+    on s.assign_key = p.assign_key and s.pid = p.pid and s.uid = ?
+where p.assign_key = ?
 
 .key=RELEASE_ASSIGNMENT_GRADE
 
