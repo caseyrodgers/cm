@@ -1,5 +1,10 @@
 package hotmath.gwt.shared.server.service.command;
 
+import java.io.File;
+import java.sql.Connection;
+
+import org.apache.log4j.Logger;
+
 import hotmath.HotMathProperties;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -9,14 +14,9 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_rpc_core.server.service.ActionHandlerManualConnectionManagement;
+import hotmath.mathml.MathMlTransform;
 import hotmath.testset.ha.info.CmLessonDao;
 import hotmath.util.HmContentExtractor;
-
-import java.io.File;
-import java.sql.Connection;
-
-import org.apache.log4j.Logger;
-
 import sb.util.SbFile;
 
 public class GetReviewHtmlCommand implements ActionHandler<GetReviewHtmlAction, LessonResult>,
@@ -51,6 +51,8 @@ public class GetReviewHtmlCommand implements ActionHandler<GetReviewHtmlAction, 
 
         
         htmlCooked = fixupForUniqueResourceLoad(htmlCooked, action.getUniqueInstanceKey());
+        
+        htmlCooked = new MathMlTransform().processMathMlTransformations(htmlCooked);
         
         result.setItem(new InmhItemData(CmResourceType.REVIEW,action.getFile(), CmLessonDao.getInstance().getTopicLessonTitle(action.getFile())));
         result.setLesson(htmlCooked);

@@ -1581,7 +1581,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		String sql = CmMultiLinePropertyReader.getInstance().getProperty(
 				"GET_STUDENT_ASSIGNMENTS");
 		List<StudentAssignmentInfo> assInfos = getJdbcTemplate().query(sql,
-				new Object[] { uid }, new RowMapper<StudentAssignmentInfo>() {
+				new Object[] { uid, uid }, new RowMapper<StudentAssignmentInfo>() {
 					@Override
 					public StudentAssignmentInfo mapRow(ResultSet rs, int rowNum)
 							throws SQLException {

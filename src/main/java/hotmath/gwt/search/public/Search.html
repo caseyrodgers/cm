@@ -59,20 +59,5 @@
         <!--[if lt IE 9]><script type="text/javascript" src='/gwt-resources/js/excanvas.js'></script><![endif]-->
 
         <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main.nocache"></script>
-        <script>
-            /** for debugging */
-            // _productionMode=false;
-            // InmhButtons = {};
-            /** setup timer to change loading message to a warning
-              if loading message still shown.
-            */
-            function checkForCompletion() {
-               var d = document.getElementById("working...");
-               if(!__cmInitialized) {
-                   d.innerHTML = "<div id='loading-error'><h2>Catchup Math loading delayed.</h2>Please click <a href='http://hotmath.com/resources/util/loading-error.jsp'>here</a> to proceed.</div>";
-               }
-            }
-            setTimeout(checkForCompletion, 60000);
-        </script>
   </body>
 </html>

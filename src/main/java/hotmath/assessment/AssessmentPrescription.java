@@ -333,6 +333,9 @@ public class AssessmentPrescription {
      * 
      * create list of possible PIDS looking at grade level.
      * 
+     * Return at most 20 problems.
+     * 
+     * 
      * only allow an absolute match.
      * 
      * 
@@ -346,7 +349,6 @@ public class AssessmentPrescription {
                 continue;
 
             if (!filterItems || rpp.isGradeLevel(programGradLevel)) {
-                
                 for(RppWidget rppExpand: expandProblemSetPids(rpp)) {
                     session.add(new SessionData(itemData.getInmhItem(), rppExpand));
                 }

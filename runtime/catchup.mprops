@@ -4120,6 +4120,7 @@ from   HA_USER u join CM_GROUP g on g.id = u.group_id
         select assign_key,  uid,  count(*) as cnt_submitted
         from    CM_ASSIGNMENT_PID_STATUS
         where status not in ('Viewed','Not Viewed')
+        and uid = ?
         group by assign_key, uid
     ) ps on ps.assign_key = a.assign_key and ps.uid = u.uid
     left join CM_ASSIGNMENT_USER au on (au.assign_key = a.assign_key and au.uid = u.uid)
