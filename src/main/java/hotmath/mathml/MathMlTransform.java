@@ -43,7 +43,7 @@ public class MathMlTransform {
              *  add to mn
              */
             String miProp = p.getProperty("mathml.mi", "1em");
-            String miFracProp = p.getProperty("mathml.mfrac.mi", "1.2em");
+            String miFracProp = p.getProperty("mathml.mfrac.mi", "1.3em");
             
             String normalFraction = p.getProperty("mathml.mfrac.mn", "1.2em");
             String propMixWhole = p.getProperty("mathml.mixed.mn.mfrac", "1em");
