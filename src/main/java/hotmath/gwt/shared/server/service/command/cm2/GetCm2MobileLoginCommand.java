@@ -198,6 +198,10 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             SqlUtilities.releaseResources(null, ps, null);
         }
         
+        
+//        for(Cm2PrescriptionTopic p: mobileUser.getPrescriptionTopics()) {
+//        	p.setTopicTextExcerpt("TEST");
+//        }
         return mobileUser;
     }
 

@@ -9,6 +9,12 @@ public class MathMlTransform_Test extends TestCase {
 	}
 	
 	
+	public void test0() throws Exception {
+		  String test="&mdash;test&mdash;";
+		  String result = new MathMlTransform().processMathMlTransformations(test);
+		  assertTrue(result.equals(test));
+	}
+	
 	public void test1() throws Exception {
 	    String test = "<div></div>";
 		String result = new MathMlTransform().processMathMlTransformations(test);

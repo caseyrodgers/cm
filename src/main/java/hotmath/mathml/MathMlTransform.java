@@ -3,7 +3,9 @@ package hotmath.mathml;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.parser.Parser;
+import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
 import hotmath.cm.util.CatchupMathProperties;
@@ -32,7 +34,21 @@ public class MathMlTransform {
      * @throws Exception
      */
     public String processMathMlTransformations(String solutionHtml) throws Exception {
+    	
+    	/** we do not want to process html entitites (ie, turn them into extended chars)
+    	 * 
+    	 * 
+    	 *  The only way I can see to do that is hide them ..
+    	 *  What we want to a JSoup.EscapeMode.noprocess .. but, that is not an option
+    	 *  
+    	 *  hack around .. by replacing all '@' charts before transformatiion, then replace back...
+    	 *  this is important because the processed text is embedded as json and delivered to
+    	 *  client ... 
+    	 *  
+    	 *  
+    	 */
         try {
+        	solutionHtml = solutionHtml.replace("&", "+||+");
             Document doc = Jsoup.parse(solutionHtml,"", Parser.xmlParser());
 
             CatchupMathProperties p = CatchupMathProperties.getInstance();
@@ -180,8 +196,12 @@ public class MathMlTransform {
              */
 
 
+            // do not process exteneded entities or add
+            // chars to pretty print ... leave as was feed.
             doc.outputSettings().prettyPrint(false);
             String html = doc.toString();
+            
+            html = html.replace("+||+", "&");
             return html;
         } catch (Exception e) {
             throw e;
