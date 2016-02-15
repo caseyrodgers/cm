@@ -783,7 +783,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			String probStatus = probDto.getStatus().trim();
 			String gradeStatus = probDto.getGradeStatus().trim();
 
-			String gsl = gradeStatus.toLowerCase();
+			String gsl = probStatus.toLowerCase();
 			if ("answered".equals(gsl) || "correct".equals(gsl) ||
 				"incorrect".equals(gsl) || "half credit".equals(gsl)) {
 				graded += (probDto.isGraded()) ? 1 : 0;
