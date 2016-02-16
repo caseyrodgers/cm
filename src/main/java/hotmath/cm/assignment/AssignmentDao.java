@@ -1163,7 +1163,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			String gsl = gradeStatus.toLowerCase();
 			if ("answered".equals(gsl) || "correct".equals(gsl) ||
 				"incorrect".equals(gsl) || "half credit".equals(gsl)) {
-				//graded += (probDto.isGraded()) ? 1 : 0;
 				totGraded += (probDto.isGraded()) ? 1 : 0;
 				totCorrect += ("correct".equals(gsl)) ? 1 : 0;
 				totIncorrect += ("incorrect".equals(gsl)) ? 1 : 0;
@@ -1384,6 +1383,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 											.getInt("assign_key"));
 									prob.setProblem(probDto);
 									prob.setStatus(rs.getString("status"));
+									prob.setGradeStatus(rs.getString("grade_status"));
 									prob.setGraded(rs.getInt("is_graded") > 0);
 									prob.setCreateDate(rs
 											.getDate("update_datetime"));
