@@ -783,7 +783,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			String probStatus = probDto.getStatus().trim();
 			String gradeStatus = probDto.getGradeStatus().trim();
 
-			String gsl = probStatus.toLowerCase();
+			String gsl = gradeStatus.toLowerCase();
 			if ("answered".equals(gsl) || "correct".equals(gsl) ||
 				"incorrect".equals(gsl) || "half credit".equals(gsl)) {
 				graded += (probDto.isGraded()) ? 1 : 0;
@@ -1156,32 +1156,33 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
 			count++;
 			totCount++;
-			String probStatus = probDto.getStatus().trim().toLowerCase();
-			if ("not viewed".equalsIgnoreCase(probStatus))
-				continue;
-			if ("answered".equalsIgnoreCase(probStatus)
-					|| "submitted".equalsIgnoreCase(probStatus)
-					|| "correct".equalsIgnoreCase(probStatus)
-					|| "incorrect".equalsIgnoreCase(probStatus)
-					|| "half credit".equalsIgnoreCase(probStatus)) {
+			
+			String probStatus = probDto.getStatus().trim();
+			String gradeStatus = probDto.getGradeStatus().trim();
+
+			String gsl = gradeStatus.toLowerCase();
+			if ("answered".equals(gsl) || "correct".equals(gsl) ||
+				"incorrect".equals(gsl) || "half credit".equals(gsl)) {
+				//graded += (probDto.isGraded()) ? 1 : 0;
+				totGraded += (probDto.isGraded()) ? 1 : 0;
+				totCorrect += ("correct".equals(gsl)) ? 1 : 0;
+				totIncorrect += ("incorrect".equals(gsl)) ? 1 : 0;
+				totHalfCredit += ("half credit".equals(gsl)) ? 1 : 0;
+			}
+			String psl = probStatus.toLowerCase();
+			if ("answered".equals(psl) || "correct".equals(psl) ||
+				"incorrect".equals(psl) || "half credit".equals(psl)) {
 				completed++;
 				totCompleted++;
-				totGraded += (probDto.isGraded()) ? 1 : 0;
-
-				totCorrect += ("correct".equalsIgnoreCase(probStatus)) ? 1 : 0;
-				totIncorrect += ("incorrect".equalsIgnoreCase(probStatus)) ? 1
-						: 0;
-				totHalfCredit += ("half credit".equalsIgnoreCase(probStatus)) ? 1
-						: 0;
-				continue;
 			}
-			if ("pending".equalsIgnoreCase(probStatus)) {
+			else if ("submitted".equals(psl)) {
 				pending++;
 				totPending++;
-			} else if ("viewed".equalsIgnoreCase(probStatus)) {
+			} else if ("viewed".equals(psl)) {
 				viewed++;
 				totViewed++;
 			}
+			
 		}
 
 		if (lessonStatus != null) {
