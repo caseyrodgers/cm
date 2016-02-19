@@ -9,6 +9,13 @@ public class MathMlTransform_Test extends TestCase {
 	}
 	
 	
+	public void test01() throws Exception {
+		  String test="<math><mrow><mn>999</mn><mfrac>";
+		  String result = new MathMlTransform().processMathMlTransformations(test);
+		  String check = "<math><mrow><mn mathsize=\"1.2em\">999</mn><mfrac></mfrac></mrow></math>";
+		  assertTrue(check.equals(result));
+	}
+	
 	public void test0() throws Exception {
 		  String test="&mdash;test&mdash;";
 		  String result = new MathMlTransform().processMathMlTransformations(test);
@@ -38,7 +45,7 @@ public class MathMlTransform_Test extends TestCase {
 	
 	public void testMixNumber() throws Exception {
 	    String test = "<math><mn>100</mn><mfrac><mn mathsize=\"FIRST_MN\">1</mn><mrow><mn mathsize=\"SECOND_MN\">2</mn></mrow></mfrac></math>";
-	    String testRes = "<math><mn mathsize=\"1em\">100</mn><mfrac><mn mathsize=\"1.3em\">1</mn><mrow><mn mathsize=\"1.3em\">2</mn></mrow></mfrac></math>";
+	    String testRes = "<math><mn mathsize=\"1.2em\">100</mn><mfrac><mn mathsize=\"1.3em\">1</mn><mrow><mn mathsize=\"1.3em\">2</mn></mrow></mfrac></math>";
 	    
 		String result = new MathMlTransform().processMathMlTransformations(test);
 		assertTrue(result.equals(testRes));

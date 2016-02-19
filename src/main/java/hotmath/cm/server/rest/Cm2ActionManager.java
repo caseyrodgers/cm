@@ -424,6 +424,5 @@ public class Cm2ActionManager {
 		results.getRpcData().putData(token, html);
 		return results;
 	}
-	
 
 }

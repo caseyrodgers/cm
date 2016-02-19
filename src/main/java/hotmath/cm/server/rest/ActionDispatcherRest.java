@@ -2,6 +2,7 @@ package hotmath.cm.server.rest;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -18,6 +19,7 @@ import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
 
 import hotmath.cm.program.CmProgramFlow;
+import hotmath.cm.server.model.DeviceStorage;
 import hotmath.cm.server.model.QuizSelection;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_core.client.model.TopicResource;
@@ -350,4 +352,39 @@ public class ActionDispatcherRest {
 	public String getQuizResults(@PathParam("rid") int rid) throws Exception {
 		return JsonWriter.objectToJson(Cm2ActionManager.getQuizResults(rid));
 	}
+	
+	
+	@POST
+	@Path("storage/{deviceId}/save")
+	public String saveDeviceStorage(@PathParam("deviceId") String deviceId, String json) throws Exception {
+		saveDeviceStorageAux(deviceId, json);
+		return JsonWriter.objectToJson(new RpcData("status=ok"));
+	}
+	
+	private void saveDeviceStorageAux(String deviceId, String json) throws Exception {
+		DeviceStorage storage = new DeviceStorage();
+		JSONObject jo = new JSONObject(json);
+		String storageJson = jo.getString("data");
+		
+		JSONObject joData = new JSONObject(storageJson);
+		Iterator iter = joData.keys();
+		while(iter.hasNext()) {
+			String k = (String)iter.next();
+			storage.getStorage().put(k, joData.getString(k));
+		}
+		DeviceStorageDao.saveStorage(deviceId, storage);
+	}
+
+	@POST
+	@Path("storage/{deviceId}")
+	public String getDeviceStorage(@PathParam("deviceId") String deviceId) throws Exception {
+		return JsonWriter.objectToJson(DeviceStorageDao.getStorage(deviceId));
+	}
+	
+	@POST
+	@Path("storage/{deviceId}/delete")
+	public String deleteDeviceStorage(@PathParam("deviceId") String deviceId) throws Exception {
+		DeviceStorageDao.deleteStorage(deviceId);
+		return JsonWriter.objectToJson(new RpcData("status=ok"));
+	}	
 }

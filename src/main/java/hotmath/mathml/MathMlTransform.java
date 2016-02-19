@@ -63,7 +63,7 @@ public class MathMlTransform {
             
             String normalFraction = p.getProperty("mathml.mfrac.mn", "1.2em");
             String propMixWhole = p.getProperty("mathml.mixed.mn.mfrac", "1em");
-            String propMixFract = p.getProperty("mathml.mixed.mn.mfrac.mn", "1.3em"); 
+            String propMixFract = p.getProperty("mathml.mixed.mn.mfrac.mn", "1.2em"); 
             String propSqrtMi = p.getProperty("mathml.sqrt.mi", "1em");
             String propMsupMi = p.getProperty("mathml.msup.mi", "1em");
             String propMrootMi1 = p.getProperty("mathml.mroot.mrow.msup.mi.1", "1em");
@@ -71,18 +71,32 @@ public class MathMlTransform {
             String propMrootMiRow = p.getProperty("mathml.mroot.mrow.mi", "1.6em");
             String propMtrMtdMi = p.getProperty("mathml.mtr.mtd.mi", "1em");
             String propMsup = p.getProperty("mathml.msup", "1.1em");
+
+            
+            String propMrowMnFrac = p.getProperty("mathml.mrow.mn.mfrac", "1.2em");
             
 
             /** Apply broad matches first, then more specific 
              * 
              */
             
-            
-            
             Elements els = doc.select("mtable");
             for (Element e : els) {
             	e.attr("columnalign", "left");
             }
+            
+            
+            
+            
+            
+            /** search for mixed numbers .. alter the number 
+             *  before the mfrac
+             */
+            els = doc.select("math mrow mn mfrac");
+            for (Element e : els) {
+            	replaceIfNoExist(e.parent(), propMrowMnFrac);
+            }
+
             
             /** look for mn preceding a mfrac
             /** for a mixed fraction
@@ -90,7 +104,7 @@ public class MathMlTransform {
             els = doc.select("math mn");
             for(Element e: els) {
             	if(nextSiblingIs("mfrac", e)) {
-            		e.attr("mathsize", propMixWhole);
+            		replaceIfNoExist(e, propMixWhole);
             	}
             }
 
@@ -101,13 +115,13 @@ public class MathMlTransform {
             
             els = doc.select("math mfrac mn");
             for (Element e : els) {
-	        	e.attr("mathsize", normalFraction);
+            	replaceIfNoExist(e,  normalFraction);
             }
 
 
             els = doc.select("math mn+mfrac mn");
             for (Element e : els) {
-        		e.attr("mathsize", propMixFract);
+            	replaceIfNoExist(e, propMixFract);
             }
             
             /** second mn in a msup 
@@ -118,7 +132,7 @@ public class MathMlTransform {
             for (Element e : els) {
                 Elements mns = e.getElementsByTag("mn");
                 if (mns.size() == 2) {
-                    mns.get(1).attr("mathsize", propMsup);
+                	replaceIfNoExist(mns.get(1), propMsup);
                 }
             }
             
@@ -127,26 +141,26 @@ public class MathMlTransform {
              */
             els = doc.select("math msqtr mi");
             for (Element e : els) {
-            	e.attr("mathsize", propSqrtMi);
+            	replaceIfNoExist(e, propSqrtMi);
             }
             
             els = doc.select("math msup mi");
             for (Element e : els) {
-            	e.attr("mathsize", propMsupMi);
+            	replaceIfNoExist(e, propMsupMi);
             }
 
             
             els = doc.select("math mtr mtd mi");
             for (Element e : els) {
-            	e.attr("mathsize", propMtrMtdMi);
+            	replaceIfNoExist(e, propMtrMtdMi);
             }            
             
             els = doc.select("math mroot mrow msup");
             for (Element e : els) {
             	Elements mns = e.getElementsByTag("mi");
             	if(mns.size() == 2) {
-            		mns.get(0).attr("mathsize", propMrootMi1);
-            		mns.get(1).attr("mathsize", propMrootMi2);
+            		replaceIfNoExist(mns.get(0), propMrootMi1);
+            		replaceIfNoExist(mns.get(1), propMrootMi2);
             		
             		Element par = e.parent();
             		if(nextSiblingIs("mi", par)) {
@@ -157,56 +171,41 @@ public class MathMlTransform {
             	}
             }
             
-
-            
-            
             els = doc.select("math mfrac mi");
             for (Element e : els) {
                 e.attr("mathsize", miFracProp);
             }
-                        
             
-            /** 
-             * 
-             *  <mtable columnalign="left">
-				    <mtr>
-				      <mtd>
-				        <mi mathsize="1em">x</mi>
-				        <mo>&#x2265;</mo>
-				        <mn>5</mn>
-				      </mtd>
-				    </mtr>
-				    <mtr>
-				      <mtd>
-				        <mi mathsize="1em">y</mi>
-				        <mo>&#x2264;</mo>
-				        <mn>2</mn>
-				      </mtd>
-				    </mtr>
-				    <mtr>
-				      <mtd>
-				        <mi mathsize="1em">z</mi>
-				        <mo>&#x2260;</mo>
-				        <mn>1</mn>
-				      </mtd>
-				    </mtr>
-				  </mtable>
-             * 
-             * 
-             */
+            
+            
+            
 
-
-            // do not process exteneded entities or add
-            // chars to pretty print ... leave as was feed.
+            
+            // no pretty print ... leave unaltered.
             doc.outputSettings().prettyPrint(false);
             String html = doc.toString();
+
             
+            /** replace back tokens used to make sure 
+             *  html entities are not replaced in JSoup
+             */
             html = html.replace("+||+", "&");
             return html;
         } catch (Exception e) {
             throw e;
         }
     }
+
+    /** Replace mathsize, only if it is not already set
+     * @param ex 
+     * 
+     * @param prop
+     */
+	private void replaceIfNoExist(Element ex, String prop) {
+    	if(!ex.hasAttr("mathsize")) {
+    		ex.attr("mathsize", prop);
+    	}		
+	}
 
 
 	private boolean nextSiblingIs(String tagName, Element e) {
