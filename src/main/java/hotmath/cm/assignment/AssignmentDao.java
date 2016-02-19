@@ -814,10 +814,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		if (stuAssignMap.size() > 0) {
 			StudentAssignment sa = stuAssignMap.get(uid);
 			if (sa.isGraded() == false) {
-				sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted,
-						totPending, totGraded, totViewed));
 				sa.setStudentDetailStatus(getAssgnLessonStatus(count, completed,
             			pending, viewed, graded));
+				sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted,
+						totPending, totGraded, totViewed));
 				__logger.info(String.format("studentDetailStatus[%d]: %s", uid, sa.getStudentDetailStatus()));				
 			} else {
 				sa.setHomeworkStatus("Graded");
@@ -1195,9 +1195,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			sa.setProblemCompletedCount(totCompleted);
 			sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted,
 					totPending, totGraded, totViewed));
+			setStudentDetailStatus(sa);
 			sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount,
 					totCorrect, totIncorrect, totHalfCredit, sa.isGraded()));
-			setStudentDetailStatus(sa);
 			if (__logger.isDebugEnabled())
 				__logger.debug(String
 						.format("getAssignmentWorkForStudent(): totCount: %d, totCompleted: %d, totPending: %d, totGraded: %d, totViewed: %d",
