@@ -2,20 +2,20 @@ var _card_what_msg='<p class="tooltip_2" >The Card Verification Number is a 3-di
 
 var _terms_msg = '<p class="tooltip_2">Please review our sample session before buying, as the purchase price (as well as any live tutoring purchased) is non-refundable.  Subscription is for use by one person, and may be suspended if abused. We provide our service as-is and when-available. Compensation for claims you may have (including consequential and punitive damages) shall be limited to the amount you have paid for Catchup Math services.</p>';
 
-var _po_terms_msg = '<p class="tooltip_2">Please review our sample session before buying, as the purchase price is non-refundable.  Subscription is for use by the specified institution, and may be suspended if abused. We provide our service as-is and when-available. Compensation for claims you may have (including consequential and punitive damages) shall be limited to the amount you have paid for Catchup Math services.</p>';
-
 var _one_teacher_terms_msg = '<p class="tooltip_2">Please note that the purchase price is non-refundable.  Subscription is for use by one teacher with up to forty-nine students, and may be suspended if abused. We provide our service as-is and when-available. Compensation for claims you may have (including consequential and punitive damages) shall be limited to the amount you have paid for Catchup Math services.</p>';
 
 function setupSignupPage() {
    setupToolTips();   
    
    setCmSelection();
-
+   
+   
    var e1 = document.getElementById('TYPE_SERVICE_CATCHUP');
-   if (e1) e1.onclick = function() {setCmSelection()};
+   e1.onclick = function() {setCmSelection()};
+
 
    var e2 = document.getElementById('TYPE_SERVICE_CATCHUP_YEAR');
-   if (e2) e2.onclick = function() {setCmSelection();};
+   e2.onclick = function() {setCmSelection();};
 }
 
 
@@ -35,16 +35,10 @@ function setupToolTips() {
         text:_terms_msg,
         autodismissdelay:15000,
         showDelay:400 }
-   );
+   );     
    new YAHOO.widget.Tooltip("one_teacher_terms_inf", {
        context:"one_teacher_terms_info",  
        text:_one_teacher_terms_msg,
-       autodismissdelay:15000,
-       showDelay:400 }
-  );     
-   new YAHOO.widget.Tooltip("po_terms_inf", {
-       context:"po_terms_info",  
-       text:_po_terms_msg,
        autodismissdelay:15000,
        showDelay:400 }
   );     
@@ -56,66 +50,25 @@ var _plan;
 function setCmSelection() {
    var e1 = document.getElementById('TYPE_SERVICE_CATCHUP');
    var e2 = document.getElementById('TYPE_SERVICE_CATCHUP_YEAR');
-
-   var ew = null;
-   if(e1 && e1.checked) {
+   
+   var ew;
+   if(e1.checked) {
 	   e2.checked = false;
        ew = e1;
    }
-   else if (e2 && e2.checked) {
+   else {
 	   e1.checked = false;
 	   ew = e2;
    }
-
-   if (ew != null) { 
    
-       _plan = ew.id;
-       var cost = ew.getAttribute("cost");
-       if (cost == "10") {
-           _plan = "TYPE_SERVICE_CATCHUP_GOODMATH15_3MON";
-       }
-       else if (cost == "30") {
-           _plan = "TYPE_SERVICE_CATCHUP_GOODMATH15_YEAR";
-       }
+   _plan = ew.id;
    
-       setTotalCost(ew.getAttribute("cost"));
+   setTotalCost(ew.getAttribute("cost"));
    
-       document.getElementById('selected_services').value = _plan;
-   }
-   else {
-       _plan = null;
-       setTotalCost("0");
-       var e = document.getElementById('selected_services');
-       if (e) e.value = null;
-   }
+   document.getElementById('selected_services').value = _plan;
 }
 
-function applyCode() {
-	var code = document.getElementById('catchup_code');
-	var e1 = document.getElementById('TYPE_SERVICE_CATCHUP');
-	var e2 = document.getElementById('TYPE_SERVICE_CATCHUP_YEAR');
-	var e3 = document.getElementById('3_months');
-	var e4 = document.getElementById('12_months');
-	var e5 = document.getElementById('code_msg');
-	if (code.value.toUpperCase() == getCode()) {
-		e1.setAttribute("cost", "10");
-		e2.setAttribute("cost", "30");
-		e3.innerHTML = "$10";
-		e4.innerHTML = "$30";
-		e5.innerHTML = "Thank you, prices are updated";
-		e5.setAttribute("style", "color:green; display:block;");
-		
-	}
-	else {
-		e1.setAttribute("cost", "99");
-		e2.setAttribute("cost", "199");
-		e3.innerHTML = "$99";
-		e4.innerHTML = "$199";
-		e5.innerHTML = "Sorry, code is invalid";
-		e5.setAttribute("style", "color:red; display:block;");
-	}
-	setCmSelection();
-}
+
 
 var _validationErrorCount=0;
 var _totalCost=99;
@@ -350,135 +303,11 @@ function checkOneTeacherPayForm() {
 	return false;   // always return false;
 }
 
-var payNowEnabled=true;
-
-function checkPurchaseOrderForm() {
-
-	_totalCost=0;
-    clearErrorMessages();
-    var isValid = true;
-    
-    isValid = verifyPurchaseOrder();
-
-    if (payNowEnabled == true && checkCreditCardData() == false)
-    	isValid = false;
-
-    if (isValid == true)
-    	doPurchaseOrder();
-
-    return false;   // always return false;
-}
-
-function verifyPurchaseOrder() {
-
-    var isValid = true;
-
-    fld = $get('institution_name');
-    if(fld.value.trim() == '') {
-        if(showError(fld, "Instituion name is required"))
-            isValid = false;
-    }
-
-    fld = $get('institution_city');
-    if(fld.value.trim() == '') {
-        if(showError(fld, "City is required"))
-            isValid = false;
-    }
-
-    fld = $get('institution_state_sel');
-    if(fld.selectedIndex < 1) {
-        if(showError(fld, "State is required"))
-            isValid = false;
-    }
-
-    fld = $get('institution_zip');
-    if(fld.value.trim() == '') {
-        if(showError(fld, "Zip code is required"))
-            isValid = false;
-    }
-
-    fld = $get('primary_name');
-    if(fld.value.trim() == "") {
-        if(showError(fld, "Name is required")) {
-            isValid = false;
-        }
-    }
-
-    fld = $get('primary_title');
-    if(fld.value.trim() == "") {
-        if(showError(fld, "Title is required")) {
-            isValid = false;
-        }
-    }
-
-    fld = $get('primary_email');
-    if(fld.value.trim() == "") {
-        if(showError(fld, "Email address is required")) {
-            isValid = false;
-        }
-    }
-
-    var errMsg = null;
-    if (isValid == true)
-    	errMsg = validateEmail(fld.value.trim());
-    if (errMsg != null) {
-        if(showError(fld, errMsg))
-            isValid = false;
-    }
-
-    fld = $get('primary_phone');
-    if(fld.value.trim() == '') {
-        if(showError(fld, "Phone number is required"))
-            isValid = false;
-    }
-
-    if (verifyNumericFldsPO() == false) {
-        isValid = false;
-    }
-
-    return isValid;
-}
-
-function verifyNumericFldsPO() {
-    var isValid = true;
-
-    var fld = $get('license_fee');
-    if(fld.value.trim() != '') {
-        if (isNumber(fld.value.trim(), 1) == false) {
-            if(showError(fld, "Please enter a numeric value >= 1."))
-                isValid = false;
-        }
-    }    
-
-    fld = $get('addl_schools_fee');
-    if(fld.value.trim() != '') {
-        if (isNumber(fld.value.trim(), 0) == false) {
-            if(showError(fld, "Please enter a numeric value >= 0."))
-                isValid = false;
-        }
-    }    
-
-    fld = $get('pd_days_fee');
-    if(fld.value.trim() != '') {
-        if (isNumber(fld.value.trim(), 0) == false) {
-            if(showError(fld, "Please enter a numeric value >= 0."))
-                isValid = false;
-        }
-    }    
-
-    return isValid;
-}
-
-function isNumber(v, min) {
-	var val = 1 * v;
-    return (val >= min);
-}
-
 function checkCreditCardData() {
 	var isValid = true;
 
 	fld = $get('first_name');
-    if(fld != null && fld.value == '') {
+    if(fld.value == '') {
         showError(fld, "What is cardholder's first name?");
         isValid = false;
     }
@@ -639,9 +468,7 @@ function clearErrorMessages() {
  }
 }
 
-function getCode() {
-    return 'GOODMATH15';
-}
+
 
 // Standardized method to check a field is null, show message
 // and return true or false
@@ -759,11 +586,11 @@ function doSignup() {
 function doOneTeacherSignup() {
 	document.getElementById('selected_services').value = 'TYPE_CATCHUP_MATH_ONE_TEACHER';
 
-	var formObject = document.getElementById('sub_form'); 
-	YAHOO.util.Connect.setForm(formObject); 
+	   var formObject = document.getElementById('sub_form'); 
+	   YAHOO.util.Connect.setForm(formObject); 
 
-	   var requestCallback = {
-	   success: function(o) {
+	        var requestCallback = {
+	        success: function(o) {
 	           YAHOO.cm.signup_progress.destroy();
 	           oneTeacherComplete(o.responseText);
 	        },
@@ -777,30 +604,6 @@ function doOneTeacherSignup() {
 	   var cObj = YAHOO.util.Connect.asyncRequest('POST', '/oneteacher', requestCallback);
 	   
 	   showProcessingMessage();
-
-}
-
-function doPurchaseOrder() {
-
-	var formObject = document.getElementById('sub_form'); 
-	YAHOO.util.Connect.setForm(formObject); 
-
-	var requestCallback = {
-	    success: function(o) {
-	       YAHOO.cm.signup_progress.destroy();
-	       //alert("ret: " + o.responseText);
-	       cmPurchaseComplete(o.responseText);
-	    },
-	    failure: function(o) {
-	        YAHOO.cm.signup_progress.destroy();
-	        alert('Error performing purchase: ' + o.status);
-	    },
-	    argument: null
-	};
-
-	var cObj = YAHOO.util.Connect.asyncRequest('POST', '/purchase', requestCallback);
-	   
-	showProcessingMessage();
 
 }
 
@@ -939,7 +742,12 @@ function signupComplete(data) {
               "If not there, please email <a href='mailto:support@catchupmath.com'>support@catchupmath.com</a></p><br/>" +
               "<p><a href='/loginService?uid=" + userId + "'>Begin Using Catchup Math</a></p>"; 
 
-   showSignupSuccess(html);
+   var e1 = document.getElementById('signup_page');
+   e1.setAttribute('style', 'display:none');
+   var success = document.getElementById('signup_success');
+   success.innerHTML = html;
+   success.setAttribute('style', 'display:block');
+   window.scrollTo(0,0); 
 }
    
 function selfpayComplete(data) {
@@ -980,7 +788,12 @@ function selfpayComplete(data) {
        "<p>Error message: <br/>" + errorMsg + "</p>";
    }
 
-   showSignupSuccess(html);
+   var e1 = document.getElementById('signup_page');
+   e1.setAttribute('style', 'display:none');
+   var result = document.getElementById('signup_success');
+   result.innerHTML = html;
+   result.setAttribute('style', 'display:block');
+   window.scrollTo(0,0); 
 }
 
 function oneTeacherComplete(data) {
@@ -1026,247 +839,15 @@ function oneTeacherComplete(data) {
 				+ "<p>Error message: <br/>" + errorMsg + "</p>";
 	}
 
-    showSignupSuccess(html);
-}
-
-function cmPurchaseComplete(data) {
-
-    if (data.indexOf("error") == 0) {
-        showAlert('Purchase Problem', 'Error while purchasing Catchup Math: ' + data.substring(6));
-        return;
-    }
-
-    var obj = eval('(' + data + ')');
-    var html;
-
-    var repName = obj.repName;
-    var repEmail = obj.repEmail;
-    var isSuccess = obj.isSuccess;
-    var school = obj.school;
-
-    if (isSuccess == 'true') {
-        html = "<h1>Catchup Math Purchase Success</h1>"
-             + "<p>Thank you for your Catchup Math purchase for " + school + "!</p>"
-             + "<p>Your account manager will contact you shortly or you may <a href='/contact.html'>contact</a> "
-             + "them now.</p>";
-    }
-    else {
-        html = "<h1>Catchup Math Purchase</h1>"
-             + "<p>Thank you for attempting to order Catchup Math for " + school + "</p>"
-             + "<p>Unfortunately, the credit card was not approved.</p>"
-             + "<p>Please <a href='#' onclick='showSignupPage();return false;'>try again</a> "
-             + "or <a href='/contact.html'>contact</a> your account manager, to discuss.</p>";
-    }
-
-    showSignupSuccess(html);
-}
-
-function showSignupPage() {
-     var e1 = document.getElementById('signup_page');
-     e1.setAttribute('style', 'display:block');
-     var e2 = document.getElementById('signup_success');
-     e2.setAttribute('style', 'display:none');
-     window.scrollTo(0, 0);
-}
-
-function showSignupSuccess(html) {
-     var e1 = document.getElementById('signup_page');
-     e1.setAttribute('style', 'display:none');
-     var result = document.getElementById('signup_success');
-     result.innerHTML = html;
-     result.setAttribute('style', 'display:block');
-     window.scrollTo(0, 0);
+	var e1 = document.getElementById('signup_page');
+	e1.setAttribute('style', 'display:none');
+	var result = document.getElementById('signup_success');
+	result.innerHTML = html;
+	result.setAttribute('style', 'display:block');
+	window.scrollTo(0, 0);
 }
 
 function setTotalCost(cost) {
    _totalCost = cost;
-   var e = $get('service-total');
-   if (e) e.innerHTML = 'Total: $' + _totalCost + '.00';
-}
-
-function payNowToggle(chkbox) {
-    if (chkbox.checked) {
-        enablePayNow(true);
-    }
-    else {
-        enablePayNow(false);
-    }
-}
-
-function enablePayNow(enable) {
-	var e1 = document.getElementById('payNow_div');
-	var e2 = document.getElementById('card_number');
-	var e3 = document.getElementById('card_ccv2');
-	var e4 = document.getElementById('first_name');
-	var e5 = document.getElementById('last_name');
-	var e6 = document.getElementById('address1');
-	var e7 = document.getElementById('city');
-	var e8 = document.getElementById('zip');
-	var e9 = document.getElementById('paynow_ckbx');
-	payNowEnabled = enable;
-	if (enable == true) {
-    	e1.setAttribute('style', 'display:block');
-    	e2.attributes.required = "required";
-    	e3.attributes.required = "required";
-    	e4.attributes.required = "required";
-    	e5.attributes.required = "required";
-    	e6.attributes.required = "required";
-    	e7.attributes.required = "required";
-    	e8.attributes.required = "required";
-    	e9.setAttribute('title', 'Uncheck to pay later');
-    }
-    else {
-     	e1.setAttribute('style', 'display:none');
-    	e2.attributes.required = "not-required";
-    	e3.attributes.required = "not-required";
-    	e4.attributes.required = "not-required";
-    	e5.attributes.required = "not-required";
-    	e6.attributes.required = "not-required";
-    	e7.attributes.required = "not-required";
-    	e8.attributes.required = "not-required";
-    	e9.setAttribute('title', 'Click to pay now');
-    }
-}
-
-function calcOrderTotal() {
-    var totalOrder = $get('total_order');
-    totalOrder.value = '';
-    clearErrorMessages();
-
-    if (verifyNumericFldsPO() == false)
-        return;
-
-	var fld = $get('license_fee');
-    var licenseFee = 1 * fld.value;
-    var addlSchlFee = calcAddlSchFee();
-    var profDevFee = 1 * $get('pd_days_fee').value;
-    var total = 0;
-    total = licenseFee + profDevFee + addlSchlFee;
-    //alert('total: ' + total);
-    totalOrder.value = '$' + total;
-}
-
-function updateLicenseCost() {
-    var fee = calculateFee();
-    var licenseFee = $get('license_fee');
-    if (fee != 0) licenseFee.value = '$' + fee;
-    else licenseFee.value = '$0';
-    updateTotalOrder();   
-}
-
-function updateProfDevCost() {
-    var fee = calcProfDevFee();
-    var profDevFee = $get('pd_days_fee');
-    if (fee != 0) profDevFee.value = "$" + fee;
-    else profDevFee.value = '';
-    updateTotalOrder();   
-}
-
-function calcProfDevFee() {
-    //var numPdDays = $get('num_pd_days');
-    //if (numPdDays.value != "")
-    //    return numPdDays.value * 1500;
-    var fee = 1 * $get('pd_days_fee').value;
-    return fee;
-}
-
-function updateAddlSchoolsCost() {
-    var fee = calcAddlSchFee();
-    var addlSchFee = document.getElementById('addl_schools_fee');
-    if (fee != 0) addlSchFee.value = "$" + fee;
-    else addlSchFee.value = '';
-    updateTotalOrder();   
-}
-
-function calcAddlSchFee() {
-    //var numSchools = $get('num_schools');
-    //if (numSchools.value != "")
-    //    return numSchools.value * 250;
-	var addlSchlFee = 1 * $get('addl_schools_fee').value;
-    return addlSchlFee;
-}
-
-function updateTotalOrder() {
-    var fee = calculateFee() + calcAddlSchFee() + calcProfDevFee();
-    var totalOrder = $get('total_order');
-    if (fee != 0) totalOrder.value = '$' + fee;
-    else totalOrder.value = '$0';
-}
-
-function calculateFee() {
-    var numStudents = $get('num_students');
-    var numYears = $get('num_years');
-    if (numStudents.value == "" || numYears.value == "") {
-        return 0;
-    }
-    return calcFee(numStudents.value, numYears.value);
-}
-
-function calcFee(nStudents, nYears) {
-    var fee;
-    if (nStudents <= 50) {
-        if (nYears == 1) {
-            fee = nStudents * 15;
-        }
-        else if (nYears == 2) {
-            fee = 599;
-        }
-        else if (nYears == 3) {
-            fee = 849;
-        }
-        return fee;
-    }
-
-    else if (nStudents <= 100) {
-        if (nYears == 1) {
-            fee = 599;
-        }
-        else if (nYears == 2) {
-            fee = 1099;
-        }
-        else if (nYears == 3) {
-            fee = 1599;
-        }
-        return fee;
-    }
-
-    else if (nStudents < 1000) {
-        if (nYears == 1) {
-            fee = 4.99;
-        }
-        if (nYears == 2) {
-            fee = 4.75;
-        }
-        if (nYears == 3) {
-            fee = 4.49;
-        }
-        return fee * nStudents;
-    }
-    else if (nStudents < 5000) {
-        if (nYears == 1) {
-            fee = 4.75;
-        }
-        if (nYears == 2) {
-            fee = 4.49;
-        }
-        if (nYears == 3) {
-            fee = 4.25;
-        }
-        return fee * nStudents;
-    }
-
-    else {
-        if (nYears == 1) {
-            fee = 4.49;
-        }
-        if (nYears == 2) {
-            fee = 4.25;
-        }
-        if (nYears == 3) {
-            fee = 3.99;
-        }
-        return fee * nStudents;
-    
-    }
-
+   $get('service-total').innerHTML = 'Total: $' + _totalCost + '.00';
 }
