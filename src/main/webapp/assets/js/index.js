@@ -59,8 +59,7 @@ function showSampleSession(o) {
 }
 
 function showSearchPage() {
-	// document.location.href = 'http://search.catchupmath.com';
-	document.location.href = '/search/Search.html';
+	document.location.href = 'http://search.catchupmath.com';
 }
 function showSampleSessionDialog(msg, title, indexVal) {
 	if(!indexVal) {

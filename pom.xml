@@ -24,7 +24,7 @@
 	<!-- <scm> <connection>scm:cvs:pserver:casey@hotmath.kattare.com:/home/cvsroot/CVSBASE:cm</connection> 
 		<developerConnection>scm:cvs:pserver:casey@hotmath.kattare.com:/home/cvsroot/CVSBASE:cm</developerConnection> 
 		<tag>cm</tag> </scm> <distributionManagement> <repository> <id>repo</id> 
-        <name>The CVS Repository</name> <url>scp://hotmath@hotmath.kattare.com:/home/hotmath/temp</url> 
+		<name>The CVS Repository</name> <url>scp://hotmath@hotmath.kattare.com:/home/hotmath/temp</url> 
 		</repository> </distributionManagement> -->
 	<repositories>
 
@@ -505,11 +505,11 @@
 		<!-- <dependency> <groupId>org.apache.httpcomponents</groupId> <artifactId>httpcomponents-client</artifactId> 
 			<version>4.1.0</version> </dependency> -->
 
-		<dependency>
-			<groupId>com.google.code.gwt-mobile-webkit</groupId>
-			<artifactId>gwt-html5-storage</artifactId>
-			<version>1.0.1</version>
-		</dependency>
+                <dependency>
+                        <groupId>gwt-html5-storage</groupId>
+                        <artifactId>gwt-html5-storage</artifactId>
+                        <version>1.0.1</version>
+                </dependency>
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
