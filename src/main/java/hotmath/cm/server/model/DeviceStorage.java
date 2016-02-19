@@ -7,7 +7,7 @@ public class DeviceStorage {
 	
 	Map<String, String> storage = new HashMap<String,String>();
 	
-	public void DeviceStorage() {
+	public DeviceStorage() {
 	}
 	
 	public Map<String, String> getStorage() {
