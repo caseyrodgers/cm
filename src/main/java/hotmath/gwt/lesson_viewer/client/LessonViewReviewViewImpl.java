@@ -1,6 +1,9 @@
 package hotmath.gwt.lesson_viewer.client;
 
 
+import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_rpc.client.CmRpc;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -33,6 +36,9 @@ public class LessonViewReviewViewImpl extends Composite {
 	    public void loadLesson(String title, String lesson) {
 	        lessonTitle.setInnerHTML(title);
 	        lessonText.add(new HTML(lesson));
+	        
+	        CmRpc.jsni_processMathJax();
+	
 	    }
 	    
 	    public void showError(String title, String error) {
