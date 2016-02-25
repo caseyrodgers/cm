@@ -33,7 +33,7 @@ public class LessonViewerPanelSimple extends Composite {
 				@Override
 				public void onFailure(Throwable caught) {
 					caught.printStackTrace();
-					Window.alert("Error: " + caught);
+					_lessonPanel.showError(file, "Could not load: " + caught.getMessage());
 				}
 
 				@Override

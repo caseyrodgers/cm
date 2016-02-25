@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.RootPanel;
         	Window.alert("'file' must be specified");
         }
      
-        RootPanel.get().add(new LessonViewerPanelSimple(lesson));
+        RootPanel.get("review-div").add(new LessonViewerPanelSimple(lesson));
 
        
         Window.addResizeHandler(new ResizeHandler() {

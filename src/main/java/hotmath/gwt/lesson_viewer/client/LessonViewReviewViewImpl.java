@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class LessonViewReviewViewImpl extends Composite {
 
 	    @UiField HTMLPanel lessonText;
+	    @UiField HTMLPanel errorText;
 	    @UiField HeadingElement lessonTitle;
 
 	    
@@ -30,8 +31,12 @@ public class LessonViewReviewViewImpl extends Composite {
 
 
 	    public void loadLesson(String title, String lesson) {
-	        //lessonTitle.setInnerHTML(title);
+	        lessonTitle.setInnerHTML(title);
 	        lessonText.add(new HTML(lesson));
+	    }
+	    
+	    public void showError(String title, String error) {
+	    	errorText.add(new HTML(error));
 	    }
 
 	    

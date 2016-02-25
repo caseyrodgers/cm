@@ -3,6 +3,11 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width,height=device-height,initial-scale = 1" />
+    
+    <link rel="stylesheet" type="text/css" href="/gwt-resources/css/gxt-reset.css" />
+    <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/SexyButtons/sexybuttons.css" />
+        
     <title>Catchup Math Lesson Viewer</title>
   </head>
   <body>
@@ -14,9 +19,13 @@
             }
         };
     </script>
+<script type="text/javascript" src="lesson_viewer.nocache.js"></script>
 
-    <script type="text/javascript" language="javascript" src="lesson_viewer.nocache.js"></script>
-
+    <div class="resource-container main-resource-panel">
+        <div id='review-div' class="resource-viewer-container resource-viewer-impl-review">
+            <!--  review text goes here -->
+        </div>
+    </div>
 
     <!--  Math Jax Configuration  -->
     <!--  CODE IS DUPLICATED (Copy/paste) -->
