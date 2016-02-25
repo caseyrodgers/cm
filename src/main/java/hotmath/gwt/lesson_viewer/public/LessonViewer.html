@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale = 1" />
+    <title>Catchup Math Lesson Viewer</title>
+  </head>
+  <body>
+    <script>
+        /** completly disable logging */
+        __console = {
+            log: function (x) {
+                // empty
+            }
+        };
+    </script>
+
+    <script type="text/javascript" language="javascript" src="lesson_viewer.nocache.js"></script>
+
+
+    <!--  Math Jax Configuration  -->
+    <!--  CODE IS DUPLICATED (Copy/paste) -->
+    <!-- ------------------------ -->
+    <script src='/gwt-resources/js/mathjax_setup.js'></script>
+    <script type='text/x-mathjax-config'>      
+         setupMathJax();
+    </script>
+    <script src="/assets/mathjax/latest/MathJax.js?config=MML_HTMLorMML"></script>
+    <!-- -------------------------- -->
+    <!--  End MathJax Configuration -->
+
+  </body>
+</html>
