@@ -3,9 +3,7 @@ package hotmath.mathml;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.parser.Parser;
-import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
 import hotmath.cm.util.CatchupMathProperties;
@@ -36,7 +34,6 @@ public class MathMlTransform {
     public String processMathMlTransformations(String solutionHtml) throws Exception {
     	
     	/** we do not want to process html entitites (ie, turn them into extended chars)
-    	 * 
     	 * 
     	 *  The only way I can see to do that is hide them ..
     	 *  What we want to a JSoup.EscapeMode.noprocess .. but, that is not an option
@@ -171,15 +168,19 @@ public class MathMlTransform {
             	}
             }
             
-            els = doc.select("math mfrac mi");
+            
+            /** modify both mn and mo inside mfrac 
+             * 
+             */
+            els = doc.select("math mfrac mn");
             for (Element e : els) {
-                e.attr("mathsize", miFracProp);
+            	replaceIfNoExist(e, miFracProp);
+            }
+            els = doc.select("math mfrac mo");
+            for (Element e : els) {
+            	replaceIfNoExist(e, miFracProp);
             }
             
-            
-            
-            
-
             
             // no pretty print ... leave unaltered.
             doc.outputSettings().prettyPrint(false);
