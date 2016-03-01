@@ -8,6 +8,13 @@ public class MathMlTransform_Test extends TestCase {
 		super(name);
 	}
 	
+
+	public void test00() throws Exception {
+		String test = "<math>  <mfrac> <mrow>  <mn>3</mn> <mo>×</mo> <mi>m</mi> </mrow> </mfrac> </math>";
+		String result = new MathMlTransform().processMathMlTransformations(test);
+		String check = "<math>  <mfrac> <mrow>  <mn mathsize=\"1.3\">3</mn> <mo mathsize=\"1.3\">×</mo> <mi mathsize=\"1.3\">m</mi> </mrow> </mfrac> </math>";
+		assertTrue(check.equals(result));
+	}
 	
 	public void test01() throws Exception {
 		  String test="<math><mrow><mn>999</mn><mfrac>";

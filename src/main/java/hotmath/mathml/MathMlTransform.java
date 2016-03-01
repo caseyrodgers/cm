@@ -105,11 +105,6 @@ public class MathMlTransform {
             	}
             }
 
-            els = doc.select("math mi");
-            for (Element e : els) {
-                e.attr("mathsize", miProp);
-            }
-            
             els = doc.select("math mfrac mn");
             for (Element e : els) {
             	replaceIfNoExist(e,  normalFraction);
@@ -180,6 +175,19 @@ public class MathMlTransform {
             for (Element e : els) {
             	replaceIfNoExist(e, miFracProp);
             }
+            els = doc.select("math mfrac mi");
+            for (Element e : els) {
+            	replaceIfNoExist(e, miFracProp);
+            }            
+            
+            
+            
+
+            els = doc.select("math mi");
+            for (Element e : els) {
+                replaceIfNoExist(e, miProp);
+            }
+            
             
             
             // no pretty print ... leave unaltered.
