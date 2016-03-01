@@ -363,9 +363,9 @@ var Videos =
  	 },
 	 {
 		 key:        'custom-programs',
-		 title:      'Custom Programs and Quizzes',
+		 title:      'Custom Programs',
 		 firstFrame: '',
-		 videoURI:   'assets/teacher_videos/mp4/custom-programs-quizzes.mp4', 
+		 videoURI:   'assets/teacher_videos/mp4/custom-programs.mp4', 
 	     type:       'mp4'
  	 },
 	 {
