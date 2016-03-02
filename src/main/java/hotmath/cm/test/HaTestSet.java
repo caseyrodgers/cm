@@ -24,6 +24,8 @@ public class HaTestSet implements Serializable {
     String textCode;
     String _server;
 
+	private List<String> pidList;
+
     /**
      * Create a HaTestSet that contains the HTML for each question in pidList
      * 
@@ -33,6 +35,7 @@ public class HaTestSet implements Serializable {
      */
     public HaTestSet(final Connection conn, List<String> pidList) throws Exception {
         Statement stmt = null;
+        this.pidList = pidList;
         try {
             SolutionPostProcess postProcessor = new SolutionPostProcess();
             // get all solutions for this textcode and
@@ -47,6 +50,25 @@ public class HaTestSet implements Serializable {
         } finally {
             SqlUtilities.releaseResources(null, stmt, null);
         }
+    }
+    
+    /** Return true or false if choice is the correct one
+     *  
+     *  if pid not found, return false;
+     *  
+     *  
+     * @param pid
+     * @param choice
+     * @return
+     */
+    public boolean isCorrect(String pid, int choice) {
+    	 for (HaTestSetQuestion q : questions) {
+             if(pid.equals(q.getProblemIndex())) {
+            	 return q.getCorrectAnswer() == choice;
+             }
+         }
+    	 
+    	 return false;
     }
 
     /**

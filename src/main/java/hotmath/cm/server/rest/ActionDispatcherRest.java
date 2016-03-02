@@ -21,6 +21,7 @@ import com.cedarsoftware.util.io.JsonWriter;
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.cm.server.model.DeviceStorage;
 import hotmath.cm.server.model.QuizSelection;
+import hotmath.cm.test.HaTestSet;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_core.client.model.TopicResource;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -28,6 +29,8 @@ import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction.ResetType;
+import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -72,7 +75,12 @@ public class ActionDispatcherRest {
 
 		boolean isAutoTestMode = false;
 
+		Connection conn=null;
 		try {
+			conn = HMConnectionPool.getConnection();
+			
+			HaTest test =  HaTestDao.getInstance().loadTest(testId);
+			HaTestSet testSet = new HaTestSet(conn,test.getPids());
 			JSONObject dataO = null;
 			if (json != null && json.length() > 0) {
 				JSONObject jo = new JSONObject(json);
@@ -84,7 +92,10 @@ public class ActionDispatcherRest {
 				 List<QuizSelection> selections = new ArrayList<QuizSelection>();
 				 for(int i=0;i<sel.length();i++) {
 					 JSONObject o = sel.getJSONObject(i);
-					 QuizSelection selection = new QuizSelection(o.getString("pid"), o.getInt("choice"), o.has("isCorrect")?o.getBoolean("isCorrect"):false);
+					 String pid = o.getString("pid");
+					 int choice = o.getInt("choice");
+					 boolean isCorrect = testSet.isCorrect(pid, choice);
+					 QuizSelection selection = new QuizSelection(pid, choice,isCorrect);
 					 
 					 Cm2ActionManager.setQuizAnswer(testId, selection.getPid(), selection.getChoice(), selection.isCorrect());
 				 }
@@ -93,8 +104,13 @@ public class ActionDispatcherRest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		finally {
+			SqlUtilities.releaseResources(null, null, conn);
+		}
+		
 		return Cm2ActionManager.checkQuiz(testId, isAutoTestMode);
 	}
+
 
 	@POST
 	@GET
