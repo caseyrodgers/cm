@@ -154,6 +154,9 @@ function checkForm() {
 
 	  $get('signup_panel').style.display = 'none';
 	  $get('success_panel').style.display = 'block';
+
+	  // Track Pilot page success
+	  fbq('track', 'PilotYes');
 	  window.scroll(0,0);
   }
 
