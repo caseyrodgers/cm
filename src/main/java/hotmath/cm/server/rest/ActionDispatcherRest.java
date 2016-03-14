@@ -321,7 +321,7 @@ public class ActionDispatcherRest {
 		JSONObject jo = new JSONObject(jsonData);
 		String file = jo.getString("file");
 		String language = jo.getString("language");
-		return Cm2ActionManager.getTopicReviewText(file, language.equals("spanish"));
+		return Cm2ActionManager.getTopicReviewText(file, language.equalsIgnoreCase("spanish"));
 	}
 
 	@POST
