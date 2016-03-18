@@ -67,7 +67,8 @@ public class MathMlTransform {
             String propMrootMi2 = p.getProperty("mathml.mroot.mrow.msup.mi.2", "1.2em");
             String propMrootMiRow = p.getProperty("mathml.mroot.mrow.mi", "1.6em");
             String propMtrMtdMi = p.getProperty("mathml.mtr.mtd.mi", "1em");
-            String propMsup = p.getProperty("mathml.msup", "1.1em");
+            String propMsupFirst = p.getProperty("mathml.msup", "1em");
+            String propMsupSecond = p.getProperty("mathml.msup", "1.1em");
 
             
             String propMrowMnFrac = p.getProperty("mathml.mrow.mn.mfrac", "1.2em");
@@ -76,94 +77,22 @@ public class MathMlTransform {
             /** Apply broad matches first, then more specific 
              * 
              */
-            
+
+            /** specific/absolute styles first (no calculations)
+             * 
+             */
             Elements els = doc.select("mtable");
             for (Element e : els) {
             	e.attr("columnalign", "left");
             }
-            
-            
-            
-            
-            
-            /** search for mixed numbers .. alter the number 
-             *  before the mfrac
-             */
-            els = doc.select("math mrow mn mfrac");
+            els = doc.select("math mi");
             for (Element e : els) {
-            	replaceIfNoExist(e.parent(), propMrowMnFrac);
+                replaceIfNoExist(e, miProp);
             }
-
-            
-            /** look for mn preceding a mfrac
-            /** for a mixed fraction
-             */
-            els = doc.select("math mn");
-            for(Element e: els) {
-            	if(nextSiblingIs("mfrac", e)) {
-            		replaceIfNoExist(e, propMixWhole);
-            	}
-            }
-
             els = doc.select("math mfrac mn");
             for (Element e : els) {
             	replaceIfNoExist(e,  normalFraction);
             }
-
-
-            els = doc.select("math mn+mfrac mn");
-            for (Element e : els) {
-            	replaceIfNoExist(e, propMixFract);
-            }
-            
-            /** second mn in a msup 
-             * 
-             */
-            els = doc.select("math msup");
-            
-            for (Element e : els) {
-                Elements mns = e.getElementsByTag("mn");
-                if (mns.size() == 2) {
-                	replaceIfNoExist(mns.get(1), propMsup);
-                }
-            }
-            
-            /** Square root
-             * 
-             */
-            els = doc.select("math msqtr mi");
-            for (Element e : els) {
-            	replaceIfNoExist(e, propSqrtMi);
-            }
-            
-            els = doc.select("math msup mi");
-            for (Element e : els) {
-            	replaceIfNoExist(e, propMsupMi);
-            }
-
-            
-            els = doc.select("math mtr mtd mi");
-            for (Element e : els) {
-            	replaceIfNoExist(e, propMtrMtdMi);
-            }            
-            
-            els = doc.select("math mroot mrow msup");
-            for (Element e : els) {
-            	Elements mns = e.getElementsByTag("mi");
-            	if(mns.size() == 2) {
-            		replaceIfNoExist(mns.get(0), propMrootMi1);
-            		replaceIfNoExist(mns.get(1), propMrootMi2);
-            		
-            		Element par = e.parent();
-            		if(nextSiblingIs("mi", par)) {
-            			Element a = getNextSibling(par);
-            			
-            			a.attr("mathsize", propMrootMiRow);
-            		}
-            	}
-            }
-            
-            
             /** modify both mn and mo inside mfrac 
              * 
              */
@@ -179,18 +108,82 @@ public class MathMlTransform {
             for (Element e : els) {
             	replaceIfNoExist(e, miFracProp);
             }            
-            
-            
-            
-
-            els = doc.select("math mi");
+            /** search for mixed numbers .. alter the number 
+             *  before the mfrac
+             */
+            els = doc.select("math mrow mn mfrac");
             for (Element e : els) {
-                replaceIfNoExist(e, miProp);
+            	replaceIfNoExist(e.parent(), propMrowMnFrac);
             }
+            /** Square root
+             * 
+             */
+            els = doc.select("math msqtr mi");
+            for (Element e : els) {
+            	replaceIfNoExist(e, propSqrtMi);
+            }
+            els = doc.select("math msup mi");
+            for (Element e : els) {
+            	replaceIfNoExist(e, propMsupMi);
+            }
+            els = doc.select("math mtr mtd mi");
+            for (Element e : els) {
+            	replaceIfNoExist(e, propMtrMtdMi);
+            }            
+            els = doc.select("math mroot mrow msup");
+            for (Element e : els) {
+            	Elements mns = e.getElementsByTag("mi");
+            	if(mns.size() == 2) {
+            		replaceIfNoExist(mns.get(0), propMrootMi1);
+            		replaceIfNoExist(mns.get(1), propMrootMi2);
+            		
+            		Element par = e.parent();
+            		if(nextSiblingIs("mi", par)) {
+            			Element a = getNextSibling(par);
+            			
+            			a.attr("mathsize", propMrootMiRow);
+            		}
+            	}
+            }
+
             
             
+            /** Styles that require some calculation
+             * 
+             */
             
-            // no pretty print ... leave unaltered.
+            /** first mfrac man as a sibling of mn
+             * 
+             */
+            els = doc.select("math mn+mfrac mn");
+            for (Element e : els) {
+            	replaceIfNoExist(e, propMixFract);
+            }
+            /** second mn in a msup 
+             * 
+             */
+            els = doc.select("math msup");
+            for (Element e : els) {
+                Elements mns = e.getElementsByTag("mn");
+                if (mns.size() == 2) {
+                	replaceIfNoExist(mns.get(0), propMsupFirst);
+                	replaceIfNoExist(mns.get(1), propMsupSecond);
+                }
+            }
+            /** look for mn preceding a mfrac
+            /** for a mixed fraction
+             */
+            els = doc.select("math mn");
+            for(Element e: els) {
+            	if(nextSiblingIs("mfrac", e)) {
+            		replaceIfNoExist(e, propMixWhole);
+            	}
+            }
+
+            
+            /** 
+             *  OUTPUT -- no pretty print ... leave unaltered.
+             */
             doc.outputSettings().prettyPrint(false);
             String html = doc.toString();
 

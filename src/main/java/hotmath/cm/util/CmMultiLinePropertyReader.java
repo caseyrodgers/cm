@@ -84,7 +84,7 @@ public class CmMultiLinePropertyReader extends AbstractCmMultiLinePropertyReader
 
     static Logger __logger = Logger.getLogger(CmMultiLinePropertyReader.class);
 
-    private CmMultiLinePropertyReader(String propFile) {
+    public CmMultiLinePropertyReader(String propFile) {
 
         __logger.info("Reading multi-line problem file: " + propFile);
 
