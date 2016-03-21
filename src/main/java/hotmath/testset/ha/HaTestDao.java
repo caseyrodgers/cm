@@ -558,8 +558,14 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
 	            CmUserProgramDao dao = CmUserProgramDao.getInstance();
 	            StudentUserProgramModel pinfo = dao.loadProgramInfoCurrent(studentUid);
 	            int passPercentRequired = pinfo.getConfig().getPassPercent();
-	            int testCorrectPercent = GetPrescriptionCommand.getTestPassPercent(answeredCorrect + answeredIncorrect
-	                    + notAnswered, answeredCorrect);
+	            
+	            
+	            if(passPercentRequired == 0) {
+	            	__logger.warn("User has zero passPercent: " + studentUid);
+	            	passPercentRequired = 70; // default
+	            }
+	            
+	            int testCorrectPercent = GetPrescriptionCommand.getTestPassPercent(answeredCorrect + answeredIncorrect + notAnswered, answeredCorrect);
 	
 	            ClientEnvironment clientEnv = HaUserDao.getInstance().getLatestClientEnvironment(studentUid);
 	            /**
