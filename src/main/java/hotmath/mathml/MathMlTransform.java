@@ -81,15 +81,7 @@ public class MathMlTransform {
             /** specific/absolute styles first (no calculations)
              * 
              */
-            Elements els = doc.select("mtable");
-            for (Element e : els) {
-            	e.attr("columnalign", "left");
-            }
-            els = doc.select("math mi");
-            for (Element e : els) {
-                replaceIfNoExist(e, miProp);
-            }
-            els = doc.select("math mfrac mn");
+            Elements els = doc.select("math mfrac mn");
             for (Element e : els) {
             	replaceIfNoExist(e,  normalFraction);
             }
@@ -180,6 +172,20 @@ public class MathMlTransform {
             	}
             }
 
+            
+            
+            /** The very generic styles that will get applied when no previous 
+             *  match was found
+             */
+            els = doc.select("mtable");
+            for (Element e : els) {
+            	e.attr("columnalign", "left");
+            }
+            els = doc.select("math mi");
+            for (Element e : els) {
+                replaceIfNoExist(e, miProp);
+            }            
+            
             
             /** 
              *  OUTPUT -- no pretty print ... leave unaltered.
