@@ -86,7 +86,7 @@ public class CmMultiLinePropertyReader extends AbstractCmMultiLinePropertyReader
 
     public CmMultiLinePropertyReader(String propFile) {
 
-        __logger.info("Reading multi-line problem file: " + propFile);
+        __logger.debug("Reading multi-line problem file: " + propFile);
 
         loadProps(propFile);
 

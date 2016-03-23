@@ -1,5 +1,7 @@
 package hotmath.mathml;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -69,6 +71,7 @@ public class MathMlTransform {
             String propMtrMtdMi = p.getProperty("mathml.mtr.mtd.mi", "1em");
             String propMsupFirst = p.getProperty("mathml.msup", "1em");
             String propMsupSecond = p.getProperty("mathml.msup", "1.1em");
+            String propMfracMnVariable = p.getProperty("mathml.mfrac.mn.variable", "1.4em");
 
             
             String propMrowMnFrac = p.getProperty("mathml.mrow.mn.mfrac", "1.2em");
@@ -78,13 +81,30 @@ public class MathMlTransform {
              * 
              */
 
-            /** specific/absolute styles first (no calculations)
+            
+            
+            
+
+            
+            /** mfrac with variable in mn
              * 
              */
             Elements els = doc.select("math mfrac mn");
             for (Element e : els) {
+            	if(!contentIsNumber(e)) {  
+            		replaceIfNoExist(e, propMfracMnVariable);	
+            	}
+            }
+            
+            
+            /** specific/absolute styles first (no calculations)
+             * 
+             */
+            els = doc.select("math mfrac mn");
+            for (Element e : els) {
             	replaceIfNoExist(e,  normalFraction);
             }
+            
             /** modify both mn and mo inside mfrac 
              * 
              */
@@ -138,7 +158,6 @@ public class MathMlTransform {
             	}
             }
 
-            
             
             /** Styles that require some calculation
              * 
@@ -204,7 +223,13 @@ public class MathMlTransform {
         }
     }
 
-    /** Replace mathsize, only if it is not already set
+    private boolean contentIsNumber(Element e) {
+    	String val = e.text();
+    	return NumberUtils.isNumber(val);
+	}
+
+
+	/** Replace mathsize, only if it is not already set
      * @param ex 
      * 
      * @param prop

@@ -9,6 +9,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
+import hotmath.mathml.MathMlTransform;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaTestRunResult;
@@ -73,7 +74,9 @@ public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHt
              * 
              */
             String key = "quiz_html";
-            quizRpc.putData(key, markUserSelections(quizRpc.getDataAsString(key), results));
+            String html = quizRpc.getDataAsString(key);
+            html = new MathMlTransform().processMathMlTransformations(html);
+            quizRpc.putData(key, markUserSelections(html, results));
 
             quizRpc.putData("quiz_result_json", resultJson);
             quizRpc.putData("quiz_question_count", testRun.getHaTest().getTestQuestionCount());
