@@ -133,8 +133,7 @@ public class Cm2ActionManager {
         Connection conn = null;
         try {
             conn = HMConnectionPool.getConnection();
-            List<Cm2PrescriptionTopic> topics = GetCm2MobileLoginCommand.extractPrescriptionTopics(conn, results
-                    .getTestRunResults().getNextAction());
+            List<Cm2PrescriptionTopic> topics = GetCm2MobileLoginCommand.extractPrescriptionTopics(conn, results.getTestRunResults().getNextAction());
             results.setPrescriptionTopics(topics);
         } finally {
             SqlUtilities.releaseResources(null, null, conn);

@@ -1,15 +1,16 @@
 package hotmath.cm.test;
 
-import hotmath.SolutionManager;
-import hotmath.solution.Solution;
-import hotmath.solution.SolutionPostProcess;
-import hotmath.util.sql.SqlUtilities;
-
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import hotmath.SolutionManager;
+import hotmath.mathml.MathMlTransform;
+import hotmath.solution.Solution;
+import hotmath.solution.SolutionPostProcess;
+import hotmath.util.sql.SqlUtilities;
 
 /**
  * Creates HTML for each question identified by PID
@@ -36,14 +37,20 @@ public class HaTestSet implements Serializable {
     public HaTestSet(final Connection conn, List<String> pidList) throws Exception {
         Statement stmt = null;
         this.pidList = pidList;
+        
+        
+        MathMlTransform mathmlTransformer = new MathMlTransform();
+        
         try {
             SolutionPostProcess postProcessor = new SolutionPostProcess();
             // get all solutions for this textcode and
             // extract the problem statement for each
             for (String pid : pidList) {
                 Solution sol = SolutionManager.getSolution(conn, pid, true);
-                String statement = postProcessor.processHTML_SolutionImagesAbsolute(sol.getStatement(),
-                        sol.getSolutionImagesURI(), null);
+                String statement = postProcessor.processHTML_SolutionImagesAbsolute(sol.getStatement(), sol.getSolutionImagesURI(), null);
+                
+                statement = mathmlTransformer.processMathMlTransformations(statement);
+                
                 questions.add(new HaTestSetQuestion(sol.getGUID(), statement));
             }
 

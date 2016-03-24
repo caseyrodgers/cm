@@ -175,7 +175,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             
             mobileUser.setPlace(nextAction.getPlace());
             
-            mobileUser.setPrescriptionTopics(extractPrescriptionTopics(conn, nextAction));
+            //mobileUser.setPrescriptionTopics(extractPrescriptionTopics(conn, nextAction));
             
             //mobileUser.setFlowAction(nextAction);
 
@@ -223,7 +223,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
                     PrescriptionSessionResponse data = new GetPrescriptionCommand().execute(conn, pa);
                     
                     PrescriptionSessionData currSess = data.getPrescriptionData().getCurrSession();
-                    String topicHtml = new GetReviewHtmlCommand().execute(conn,new GetReviewHtmlAction(currSess.getFile())).getLesson();
+                    String topicHtml = null; // "Review Text Not Loaded"; // new GetReviewHtmlCommand().execute(conn,new GetReviewHtmlAction(currSess.getFile())).getLesson();
                     
                     
                     // point all solution images to image server
@@ -244,6 +244,10 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
     }
 
     public static String replaceImagesWithSolutionServer(String searchFor, String html) throws Exception {
+    	if(html == null) {
+    		return html;
+    	}
+    	
         String solutionServer = "http://" + CatchupMathProperties.getInstance().getProperty("cm2.solution.server",  "catchupmath.com");
         html = html.replaceAll(searchFor, solutionServer + searchFor);
         return html;
