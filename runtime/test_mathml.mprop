@@ -170,3 +170,42 @@
 #
 #
 #
+.key=fractions_with_mn
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>2</mn>
+      <mn>3</mn>
+    </mfrac>
+  </mrow>
+</math>
+.key=fractions_with_mn_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn mathsize="1.2em">2</mn>
+      <mn mathsize="1.2em">3</mn>
+    </mfrac>
+  </mrow>
+</math>
+#
+#
+.key=fractions_with_mo
+# template #22
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mo>2</mo>
+      <mo>3</mo>
+    </mfrac>
+  </mrow>
+</math>
+.key=fractions_with_mo_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mo mathsize="1.2em">2</mo>
+      <mo mathsize="1.2em">3</mo>
+    </mfrac>
+  </mrow>
+</math>

@@ -175,7 +175,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             
             mobileUser.setPlace(nextAction.getPlace());
             
-            //mobileUser.setPrescriptionTopics(extractPrescriptionTopics(conn, nextAction));
+            mobileUser.setPrescriptionTopics(extractPrescriptionTopics(conn, nextAction));
             
             //mobileUser.setFlowAction(nextAction);
 
