@@ -1,176 +1,6 @@
-.key=test_exponent
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <msup>
-    <mn>3</mn>
-    <mn>2</mn>
-  </msup>
-  <mo>&#x22C5;</mo>
-  <msup>
-    <mn>3</mn>
-    <mn>1</mn>
-  </msup>
-  <mo>=</mo>
-  <msup>
-    <mn>3</mn>
-    <mn>3</mn>
-  </msup>
-</math>
-#
-#
-.key=test_exponent_check
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <msup>
-    <mn mathsize="1em">3</mn>
-    <mn mathsize="1.1em">2</mn>
-  </msup>
-  <mo>&#x22C5;</mo>
-  <msup>
-    <mn mathsize="1em">3</mn>
-    <mn mathsize="1.1em">1</mn>
-  </msup>
-  <mo>=</mo>
-  <msup>
-    <mn mathsize="1em">3</mn>
-    <mn mathsize="1.1em">3</mn>
-  </msup>
-</math>
+## 1
 ##
-##
-##
-.key=test_fraction
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mfrac>
-    <mrow>
-      <mn>3</mn>
-      <mo>&#xD7;</mo>
-      <mi>m</mi>
-      <mo>&#xD7;</mo>
-      <mi>m</mi>
-    </mrow>
-    <mi>m</mi>
-  </mfrac>
-</math>
-.key=test_fraction_check
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mfrac>
-    <mrow>
-      <mn mathsize="1.2em">3</mn>
-      <mo mathsize="1.3em">&#xD7;</mo>
-      <mi mathsize="1.3em">m</mi>
-      <mo mathsize="1.3em">&#xD7;</mo>
-      <mi mathsize="1.3em">m</mi>
-    </mrow>
-    <mi mathsize="1.3em">m</mi>
-  </mfrac>
-</math>
-#
-##
-
-.key=mixed_number
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mn>3</mn>
-  <mfrac>
-    <mn>2</mn>
-    <mn>5</mn>
-  </mfrac>
-</math>
-.key=mixed_number_check
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mn mathsize="1em">3</mn>
-  <mfrac>
-    <mn mathsize="1.2em">2</mn>
-    <mn mathsize="1.2em">5</mn>
-  </mfrac>
-</math>
-#
-#
-#
-#
-.key=parentheses
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <mrow>
-      <mo>(</mo>
-      <mrow>
-        <mfrac>
-          <mn>2</mn>
-          <mn>3</mn>
-        </mfrac>
-      </mrow>
-      <mo>)</mo>
-    </mrow>
-  </mrow>
-</math>
-.key=parentheses_check
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <mrow>
-      <mo>(</mo>
-      <mrow>
-        <mfrac>
-          <mn mathsize="1.2em">2</mn>
-          <mn mathsize="1.2em">3</mn>
-        </mfrac>
-      </mrow>
-      <mo>)</mo>
-    </mrow>
-  </mrow>
-</math>
-##
-#
-#
-#
-#
-.key=using_pi
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <mn>2</mn>
-    <mi>&#x3C0;</mi>
-    <mi>r</mi>
-    <mi>h</mi>
-  </mrow>
-</math>
-.key=using_pi_check
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <mn>2</mn>
-    <mi mathsize="1em">&#x3C0;</mi>
-    <mi mathsize="1em">r</mi>
-    <mi mathsize="1em">h</mi>
-  </mrow>
-</math>
-#
-#
-#
-.key=fractions_with_variables
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mo>=</mo>
-  <mfrac>
-    <mrow>
-      <mn>a</mn>
-      <mo>+</mo>
-      <mn>3</mn>
-    </mrow>
-    <mn>9</mn>
-  </mfrac>
-</math>
-.key=fractions_with_variables_check
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mo>=</mo>
-  <mfrac>
-    <mrow>
-      <mn mathsize="1.4em">a</mn>
-      <mo mathsize="1.3em">+</mo>
-      <mn mathsize="1.2em">3</mn>
-    </mrow>
-    <mn mathsize="1.2em">9</mn>
-  </mfrac>
-</math>
-##
-#
-#
-#
-.key=fractions_with_mn
+.key=test_fractions
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mfrac>
@@ -179,7 +9,9 @@
     </mfrac>
   </mrow>
 </math>
-.key=fractions_with_mn_check
+##
+##
+.key=test_fractions_check
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mfrac>
@@ -188,24 +20,393 @@
     </mfrac>
   </mrow>
 </math>
-#
-#
-.key=fractions_with_mo
-# template #22
+################
+################
+
+
+
+## 2
+##
+.key=factions_with_mo_variables_and_numbers
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mfrac>
-      <mo>2</mo>
-      <mo>3</mo>
+      <mrow>
+        <mn>3</mn>
+        <mo>&#xA0;x&#xA0;</mo>
+        <mi>m</mi>
+        <mo>&#xA0;x&#xA0;</mo>
+        <mi>m</mi>
+      </mrow>
+      <mi>m</mi>
     </mfrac>
   </mrow>
 </math>
-.key=fractions_with_mo_check
+##
+##
+##
+##
+.key=factions_with_mo_variables_and_numbers_check 
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mfrac>
-      <mo mathsize="1.2em">2</mo>
-      <mo mathsize="1.2em">3</mo>
+      <mrow>
+        <mn mathsize="1.2em">3</mn>
+        <mo mathsize="1.3em">&#xA0;x&#xA0;</mo>
+        <mi mathsize="1.3em">m</mi>
+        <mo mathsize="1.3em">&#xA0;x&#xA0;</mo>
+        <mi mathsize="1.3em">m</mi>
+      </mrow>
+      <mi mathsize="1.3em">m</mi>
     </mfrac>
   </mrow>
+</math>
+###########
+###########
+
+
+
+
+
+#3
+#
+.key=factions_with_ml_mo_variables_and_numbers 
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mn>3</mn>
+        <mo>&#xA0;&#xD7;&#xA0;</mo>
+        <mi>m</mi>
+        <mo>&#xA0;&#xD7;&#xA0;</mo>
+        <mi>m</mi>
+      </mrow>
+      <mi>m</mi>
+    </mfrac>
+  </mrow>
+</math>
+##
+##
+.key=factions_with_ml_mo_variables_and_numbers_check 
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mn mathsize="1.2em">3</mn>
+        <mo mathsize="1.3em">&#xA0;&#xD7;&#xA0;</mo>
+        <mi mathsize="1.3em">m</mi>
+        <mo mathsize="1.3em">&#xA0;&#xD7;&#xA0;</mo>
+        <mi mathsize="1.3em">m</mi>
+      </mrow>
+      <mi mathsize="1.3em">m</mi>
+    </mfrac>
+  </mrow>
+</math>
+
+
+
+
+#
+# 4
+.key=mixed_number
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>3</mn>
+  <mfrac>
+    <mn>2</mn>
+    <mn>5</mn>
+  </mfrac>
+</math>
+#
+.key=mixed_number_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn mathsize="1em">3</mn>
+  <mfrac>
+    <mn mathsize="1.2em">2</mn>
+    <mn mathsize="1.2em">5</mn>
+  </mfrac>
+</math>
+
+
+
+
+# 5
+.key=square_roots
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msqrt>
+    <mi>x</mi>
+  </msqrt>
+</math>
+#
+.key=square_roots_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msqrt>
+    <mi mathsize="1.1em">x</mi>
+  </msqrt>
+</math>
+
+
+
+
+# 6
+#
+.key=equation
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mn>3</mn>
+    <mi>y</mi>
+    <mo>=</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+#
+#
+.key=equation_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mi mathsize="1.1em">x</mi>
+    <mo>+</mo>
+    <mn>3</mn>
+    <mi mathsize="1.1em">y</mi>
+    <mo>=</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+
+
+
+# 7
+#
+.key=subscript_with_var
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msub>
+    <mi>S</mi>
+    <mrow>
+      <mi>n</mi>
+      <mo>&#x2212;</mo>
+      <mn>1</mn>
+    </mrow>
+  </msub>
+</math>
+#
+.key=subscript_with_var_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msub>
+    <mi>S</mi>
+    <mrow>
+      <mi mathsize="1.2em">n</mi>
+      <mo mathsize="1.2em">&#x2212;</mo>
+      <mn mathsize="1.2em">1</mn>
+    </mrow>
+  </msub>
+</math>
+
+
+
+
+
+# 8
+.key=nth_root_with_numbers
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mroot>
+      <mrow>
+        <mn>625</mn>
+      </mrow>
+      <mn>4</mn>
+    </mroot>
+  </mrow>
+</math>
+#
+.key=nth_root_with_numbers_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mroot>
+      <mrow>
+        <mn mathsize=".9em">625</mn>
+      </mrow>
+      <mn mathsize="1.3em">4</mn>
+    </mroot>
+  </mrow>
+</math>
+
+
+
+
+
+# 9
+.key=nth_root_with_variables
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mroot>
+      <mrow>
+        <msup>
+          <mi>a</mi>
+          <mi>n</mi>
+        </msup>
+      </mrow>
+      <mi>n</mi>
+    </mroot>
+  </mrow>
+</math>
+#
+.key=nth_root_with_variables_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mroot>
+      <mrow>
+        <msup>
+          <mi mathsize="1em">a</mi>
+          <mi mathsize="1.2em">n</mi>
+        </msup>
+      </mrow>
+      <mi mathsize="1.3em">n</mi>
+    </mroot>
+  </mrow>
+</math>
+#
+
+
+# 10
+.key=exponent_with_variable_numeric_base_variable_exponent
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msup>
+    <mn>3</mn>
+    <mi>a</mi>
+  </msup>
+</math>
+#
+.key=exponent_with_variable_numeric_base_variable_exponent_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msup>
+    <mn mathsize="1em">3</mn>
+    <mi mathsize="1.4em">a</mi>
+  </msup>
+</math>
+
+
+
+
+# 11
+.key=exponent_with_variable_numeric_base_numeric_exponent
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msup>
+    <mi>a</mi>
+    <mn>1</mn>
+  </msup>
+</math>
+#
+.key=exponent_with_variable_numeric_base_numeric_exponent_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msup>
+    <mi mathsize="1.1em">a</mi>
+    <mn mathsize="1.1em">1</mn>
+  </msup>
+</math>
+
+
+# 12
+.key=exponent_with_variable_number_to_a_number
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msup>
+    <mn>3</mn>
+    <mn>3</mn>
+  </msup>
+</math>
+#
+.key=exponent_with_variable_number_to_a_number_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msup>
+    <mn mathsize="1em">3</mn>
+    <mn mathsize="1.1em">3</mn>
+  </msup>
+</math>
+
+
+
+# 13
+.key=exponent_with_variable_variable_to_a_variable
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msup>
+    <mi>a</mi>
+    <mi>a</mi>
+  </msup>
+</math>
+#
+#
+.key=exponent_with_variable_variable_to_a_variable_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msup>
+    <mi mathsize="1.1em">a</mi>
+    <mi mathsize="1.4em">a</mi>
+  </msup>
+</math>
+
+
+
+#14
+.key=fractions_with_variables
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mo>=</mo>
+  <mfrac>
+    <mrow>
+      <mi>a</mi>
+      <mo>&#xA0;+&#xA0;</mo>
+      <mn>3</mn>
+    </mrow>
+    <mn>9</mn>
+  </mfrac>
+</math>
+#
+.key=fractions_with_variables_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mo>=</mo>
+  <mfrac>
+    <mrow>
+      <mi mathsize="1.4em">a</mi>
+      <mo mathsize="1.3em">&#xA0;+&#xA0;</mo>
+      <mn mathsize="1.2em">3</mn>
+    </mrow>
+    <mn mathsize="1.2em">9</mn>
+  </mfrac>
+</math>
+
+
+#15
+.key=fractions_with_mtext
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mo>=</mo>
+  <mn>50</mn>
+  <mo>(</mo>
+  <mn>8</mn>
+  <mo>)</mo>
+  <mfrac>
+    <mrow>
+      <mtext>meters</mtext>
+    </mrow>
+    <mrow>
+      <mtext>day</mtext>
+    </mrow>
+  </mfrac>
+</math>
+#
+.key=fractions_with_mtext_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mo>=</mo>
+  <mn>50</mn>
+  <mo stretchy="false">(</mo>
+  <mn>8</mn>
+  <mo stretchy="false">)</mo>
+  <mfrac>
+    <mrow>
+      <mtext mathsize="1.3em">meters</mtext>
+    </mrow>
+    <mrow>
+      <mtext mathsize="1.3em">day</mtext>
+    </mrow>
+  </mfrac>
 </math>

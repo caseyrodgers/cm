@@ -1,6 +1,7 @@
 package hotmath.mathml;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.Enumeration;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,6 +10,10 @@ import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
 import hotmath.cm.util.CatchupMathProperties;
+import hotmath.cm.util.CmMultiLinePropertyReader;
+import sb.client.SbTesterFrameGeneric;
+import sb.util.SbException;
+import sb.util.SbTestImpl;
 
 /**
  * 
@@ -20,10 +25,80 @@ import hotmath.cm.util.CatchupMathProperties;
 public class MathMlTransform {
 	
 	
-	public MathMlTransform() {}
+	private CmMultiLinePropertyReader _mprops;
+	MathTemplate[] _mathTemplates = {
+			MathTemplates.Fractions,
+			MathTemplates.FactionsWithMoVariablesAndNumbers,
+			MathTemplates.FactionsWithMlMoVariablesAndNumbers,
+			MathTemplates.MixedNumber,
+			MathTemplates.SquareRoots,
+			MathTemplates.Equation,
+			MathTemplates.SubscriptWithVarCheck,
+			MathTemplates.NthRootWithNumbers,
+			MathTemplates.NthRootWithVariables,
+			MathTemplates.ExponentWithVariableNumericBaseVariableExponent,
+			MathTemplates.ExponentWithVariableNumericBaseNumericExponent,
+			MathTemplates.ExponentWithVariableNumberToANumberCheck,
+			MathTemplates.ExponentWithVariableVariableToVariableCheck,
+			MathTemplates.FractionsWithVariables,
+			MathTemplates.FractionsWithMtext
+	};
+
+
+	/** we do not want to process html entitites (ie, turn them into extended chars)
+	 * 
+	 *  The only way I can see to do that is hide them ..
+	 *  What we want to a JSoup.EscapeMode.noprocess .. but, that is not an option
+	 *  
+	 *  hack around .. by replacing all '@' charts before transformation, then replace back...
+	 *  this is important because the processed text is embedded as json and delivered to
+	 *  client ... 
+	 *  
+	 *  
+	 */
+	public String processMathMlTransformations(String solutionHtml) throws Exception {
+        try {
+        	solutionHtml = solutionHtml.replace("&", "+||+");
+            Document doc = Jsoup.parse(solutionHtml,"", Parser.xmlParser());
+
+            
+            for(MathTemplate t: _mathTemplates) {
+            	t.processDocument(doc);
+            }
+            
+            
+            doc.outputSettings().prettyPrint(false);
+            String html = doc.toString();
+
+            
+            /** replace back tokens used to make sure 
+             *  html entities are not replaced in JSoup
+             */
+            html = html.replace("+||+", "&");
+            return html;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 	
 	
-    /**
+	
+	
+    private void processTemplate(String template, Document doc) {
+    	Document docTemplate = Jsoup.parse(template,"", Parser.xmlParser());
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+	}
+
+
+
+
+	/**
      * process any mathml with customize styles
      *
      * 
@@ -33,7 +108,7 @@ public class MathMlTransform {
      * @return
      * @throws Exception
      */
-    public String processMathMlTransformations(String solutionHtml) throws Exception {
+    public String processMathMlTransformations2(String solutionHtml) throws Exception {
     	
     	/** we do not want to process html entitites (ie, turn them into extended chars)
     	 * 
@@ -63,15 +138,16 @@ public class MathMlTransform {
             String normalFraction = p.getProperty("mathml.mfrac.mn", "1.2em");
             String propMixWhole = p.getProperty("mathml.mixed.mn.mfrac", "1em");
             String propMixFract = p.getProperty("mathml.mixed.mn.mfrac.mn", "1.2em"); 
-            String propSqrtMi = p.getProperty("mathml.sqrt.mi", "1em");
+            String propSqrtMi = p.getProperty("mathml.sqrt.mi", "1.1em");
             String propMsupMi = p.getProperty("mathml.msup.mi", "1em");
             String propMrootMi1 = p.getProperty("mathml.mroot.mrow.msup.mi.1", "1em");
             String propMrootMi2 = p.getProperty("mathml.mroot.mrow.msup.mi.2", "1.2em");
             String propMrootMiRow = p.getProperty("mathml.mroot.mrow.mi", "1.6em");
             String propMtrMtdMi = p.getProperty("mathml.mtr.mtd.mi", "1em");
-            String propMsupFirst = p.getProperty("mathml.msup", "1em");
-            String propMsupSecond = p.getProperty("mathml.msup", "1.1em");
+            String propMsupFirst = p.getProperty("mathml.msup", null);
+            String propMsupSecond = p.getProperty("mathml.msup", "1.2em");
             String propMfracMnVariable = p.getProperty("mathml.mfrac.mn.variable", "1.4em");
+            String mrowMiProp = p.getProperty("mathml.mrow.mi", "1.2em");
 
             
             String propMrowMnFrac = p.getProperty("mathml.mrow.mn.mfrac", "1.2em");
@@ -84,12 +160,20 @@ public class MathMlTransform {
             
             
             
+            
+            String patternEquation="mn:,mi:1.1,mo:,mn:,mi:1.1,mo:,mn:";
+            Elements els = doc.select("math mrow");
+            for (Element e : els) {
+            	if(MathTemplate_Base.matchesPattern(patternEquation, e.children())) {
+            		setMathSizes(patternEquation, e.children());
+            	}
+            }
 
             
             /** mfrac with variable in mn
              * 
              */
-            Elements els = doc.select("math mfrac mn");
+            els = doc.select("math mfrac mn");
             for (Element e : els) {
             	if(!contentIsNumber(e)) {  
             		replaceIfNoExist(e, propMfracMnVariable);	
@@ -130,7 +214,7 @@ public class MathMlTransform {
             /** Square root
              * 
              */
-            els = doc.select("math msqtr mi");
+            els = doc.select("math msqrt mi");
             for (Element e : els) {
             	replaceIfNoExist(e, propSqrtMi);
             }
@@ -173,13 +257,19 @@ public class MathMlTransform {
             /** second mn in a msup 
              * 
              */
-            els = doc.select("math msup");
+            els = doc.select("math msub");
             for (Element e : els) {
                 Elements mns = e.getElementsByTag("mn");
                 if (mns.size() == 2) {
                 	replaceIfNoExist(mns.get(0), propMsupFirst);
                 	replaceIfNoExist(mns.get(1), propMsupSecond);
                 }
+                mns = e.getElementsByTag("mi");
+                if (mns.size() == 2) {
+                	replaceIfNoExist(mns.get(0), propMsupFirst);
+                	replaceIfNoExist(mns.get(1), propMsupSecond);
+                }
+                
             }
             /** look for mn preceding a mfrac
             /** for a mixed fraction
@@ -190,8 +280,6 @@ public class MathMlTransform {
             		replaceIfNoExist(e, propMixWhole);
             	}
             }
-
-            
             
             /** The very generic styles that will get applied when no previous 
              *  match was found
@@ -200,12 +288,20 @@ public class MathMlTransform {
             for (Element e : els) {
             	e.attr("columnalign", "left");
             }
-            els = doc.select("math mi");
+            els = doc.select("math mrow mi");
             for (Element e : els) {
-                replaceIfNoExist(e, miProp);
-            }            
-            
-            
+                replaceIfNoExist(e, mrowMiProp);
+            }
+//            els = doc.select("math mrow mn");
+//            for (Element e : els) {
+//                replaceIfNoExist(e, mrowMiProp);
+//            }            
+//            els = doc.select("math mrow mo");
+//            for (Element e : els) {
+//                replaceIfNoExist(e, mrowMiProp);
+//            }            
+
+
             /** 
              *  OUTPUT -- no pretty print ... leave unaltered.
              */
@@ -223,7 +319,25 @@ public class MathMlTransform {
         }
     }
 
-    private boolean contentIsNumber(Element e) {
+    private void setMathSizes(String pattern, Elements children) {
+    	String ptn[] = pattern.split(",");
+    	if(ptn.length != children.size()) {
+    		return;
+    	}
+    	for(int i=0;i<children.size();i++) {
+    		String p[] = ptn[i].split(":");
+    		String patSize=null;
+    		if(p.length > 1) {
+    			patSize = ptn[i].split(":")[1] + "em";
+    		}
+    		replaceIfNoExist(children.get(i),patSize);
+    	}
+	}
+
+
+
+
+	private boolean contentIsNumber(Element e) {
     	String val = e.text();
     	return NumberUtils.isNumber(val);
 	}
@@ -236,7 +350,12 @@ public class MathMlTransform {
      */
 	private void replaceIfNoExist(Element ex, String prop) {
     	if(!ex.hasAttr("mathsize")) {
-    		ex.attr("mathsize", prop);
+    		if(prop == null) {
+    			ex.removeAttr("mathsize");
+    		}
+    		else {
+    			ex.attr("mathsize", prop);
+    		}
     	}		
 	}
 
@@ -279,4 +398,80 @@ public class MathMlTransform {
 		return false;
 	}
 
+	
+	
+
+	public void doTestSetup() throws Exception {
+		
+		if(false) {
+			doTest("test_fractions");
+			return;
+		}
+		_mprops = new CmMultiLinePropertyReader(CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml.mprop");
+		Enumeration<Object> iter = _mprops.keys();
+
+		try {
+			while (iter.hasMoreElements()) {
+				Object o = iter.nextElement();
+				String k = o.toString();
+				if (k.contains("_check")) {
+					continue;
+				}
+				try {
+					doTest(o.toString());
+				}
+				catch(Throwable e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		catch(Exception e) {
+			System.out.println("Error testing mathml transform: " + e);
+		}
+		
+		System.out.println("MathML Transform tests complete!");
+	}
+
+	private void doTest(String key) throws Exception {
+
+		System.out.println("Testing key: " + key);
+
+		_mprops = new CmMultiLinePropertyReader(
+				CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml.mprop");
+
+		String mathMl = _mprops.getProperty(key);
+		String result = new MathMlTransform().processMathMlTransformations(mathMl);
+		String check = _mprops.getProperty(key + "_check");
+		try {
+			if(!check.trim().equals(result.trim())) {
+				System.out.println("Does not match!");
+				System.out.println(result);
+			}
+		}
+		catch(Throwable e) {
+			e.printStackTrace();
+			System.out.println(result);
+		}
+	}
+	
+	static public void main(String as[]) {
+		
+		try {
+			
+			new SbTesterFrameGeneric(new SbTestImpl() {
+				@Override
+				public void doTest(Object arg0, String arg1) throws SbException {
+					try {
+						new MathMlTransform().doTestSetup();
+					}
+					catch(Exception e) {
+						throw new SbException(e);
+					}
+				}
+			});
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
