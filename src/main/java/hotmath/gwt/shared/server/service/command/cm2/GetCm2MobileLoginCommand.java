@@ -248,7 +248,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
     		return html;
     	}
     	
-        String solutionServer = "http://" + CatchupMathProperties.getInstance().getProperty("cm2.solution.server",  "catchupmath.com");
+        String solutionServer = "http://" + CatchupMathProperties.getInstance().getProperty("solution.server",  "catchupmath.com");
         html = html.replaceAll(searchFor, solutionServer + searchFor);
         return html;
     }

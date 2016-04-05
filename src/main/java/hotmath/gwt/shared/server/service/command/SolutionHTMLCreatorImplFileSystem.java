@@ -73,6 +73,10 @@ public class SolutionHTMLCreatorImplFileSystem implements SolutionHTMLCreator {
             __logger.info("Reading solution from external solution server: " + solutionServer);
     
             String url = solutionServer + "/solution_service?pid=" + pid;
+            
+            if(!url.startsWith("http")) {
+            	url = "http://" + url;
+            }
             InputStream in = new URL(url).openStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
     

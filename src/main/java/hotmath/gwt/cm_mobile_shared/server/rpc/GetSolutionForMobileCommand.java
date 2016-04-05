@@ -57,7 +57,7 @@ public class GetSolutionForMobileCommand implements ActionHandler<GetSolutionFor
             // point all solution images to image server
             solutionHtml = GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/help/solutions/", solutionHtml);
             
-            solutionHtml = GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/specialchars/", solutionHtml);
+            solutionHtml = GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/images/specialchars/", solutionHtml);
             
             solutionHtml = new hotmath.mathml.MathMlTransform().processMathMlTransformations(solutionHtml);
             
