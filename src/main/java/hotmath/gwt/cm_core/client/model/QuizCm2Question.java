@@ -12,16 +12,18 @@ public class QuizCm2Question implements Response {
     private int quizId;
     private String html;
     String pid;
+	private int correctAnswer;
 
     public QuizCm2Question() {}
     
-    public QuizCm2Question(int quizId, String pid, String html) {
+    public QuizCm2Question(int quizId, String pid, String html, int correctAnswer) {
         this.quizId = quizId;
         this.pid = pid;
         this.html = html;
+        this.correctAnswer = correctAnswer;
     }
 
-    public String getPid() {
+	public String getPid() {
         return pid;
     }
 
@@ -44,4 +46,13 @@ public class QuizCm2Question implements Response {
     public void setHtml(String html) {
         this.html = html;
     }
+
+
+    public int getCorrectAnswer() {
+		return correctAnswer;
+	}
+
+	public void setCorrectAnswer(int correctAnswer) {
+		this.correctAnswer = correctAnswer;
+	}
 }

@@ -17,13 +17,17 @@ import org.json.JSONObject;
 
 import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
+import com.google.gson.Gson;
 
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.cm.server.model.DeviceStorage;
 import hotmath.cm.server.model.QuizSelection;
 import hotmath.cm.test.HaTestSet;
+import hotmath.cm.test.HaTestSetQuestion;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_core.client.model.QuizCm2Question;
 import hotmath.gwt.cm_core.client.model.TopicResource;
+import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2HtmlResult;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.CmProgram;
@@ -64,6 +68,34 @@ public class ActionDispatcherRest {
 		return Cm2ActionManager.loginUser(uid, un, pwd, subject, token);
 	}
 
+	
+	@POST
+	@GET
+	@Path("/quiz/{testId}/set_all_correct")
+	public String setAllQuizQuestionsCorrect(@PathParam("testId") int testId) throws Exception {
+		return doAllQuizQuestionsCorrect(testId);
+	}
+
+	
+	private String doAllQuizQuestionsCorrect(int testId) throws Exception {
+		Connection conn=null;
+		try {
+			conn = HMConnectionPool.getConnection();
+			HaTest test =  HaTestDao.getInstance().loadTest(testId);
+			HaTestSet testSet = new HaTestSet(conn,test.getPids());
+            for(HaTestSetQuestion q: testSet.getQuestions()) {
+            	int correctAnswer = q.getCorrectAnswer();
+            	
+            	Cm2ActionManager.setQuizAnswer(testId, q.getProblemIndex(), correctAnswer, true);
+            }			
+		} 
+		finally {
+			SqlUtilities.releaseResources(null, null, conn);
+		}
+		
+		return new Gson().toJson(new RpcData("status=OK"));
+	}
+	
 	@POST
 	@GET
 	@Path("/quiz/{testId}/check")
