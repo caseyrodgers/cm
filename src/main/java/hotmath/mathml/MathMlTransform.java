@@ -27,25 +27,20 @@ public class MathMlTransform {
 	
 	private CmMultiLinePropertyReader _mprops;
 	MathTemplate[] _mathTemplates = {
-			MathTemplates.Fractions,
-			MathTemplates.FactionsWithMoVariablesAndNumbers,
-			MathTemplates.FactionsWithMlMoVariablesAndNumbers,
-			MathTemplates.MixedNumber,
-			MathTemplates.SquareRoots,
-			MathTemplates.Equation,
-			MathTemplates.SubscriptWithVarCheck,
-			MathTemplates.NthRootWithNumbers,
-			MathTemplates.NthRootWithVariables,
-			MathTemplates.ExponentWithVariableNumericBaseVariableExponent,
-			MathTemplates.ExponentWithVariableNumericBaseNumericExponent,
-			MathTemplates.ExponentWithVariableNumberToANumberCheck,
-			MathTemplates.ExponentWithVariableVariableToVariableCheck,
-			MathTemplates.FractionsWithVariables,
-			MathTemplates.FractionsWithMtext
+			MathTemplates.MnMfracMn,
+			MathTemplates.MfracWithVariableInMn,
+			MathTemplates.MfracWithNumberInMn,
+			MathTemplates.MrootMrowMsup,
+			MathTemplates.MfracWithMo,
+			MathTemplates.MfracWithMi,
+			MathTemplates.MixedNumbers,
+			MathTemplates.SquareRoot,
+			MathTemplates.MsupMi,
+			MathTemplates.MtrMtdMi
 	};
 
 
-	/** we do not want to process html entitites (ie, turn them into extended chars)
+	/** we do not want to process html entities (ie, turn them into extended chars)
 	 * 
 	 *  The only way I can see to do that is hide them ..
 	 *  What we want to a JSoup.EscapeMode.noprocess .. but, that is not an option

@@ -1,5 +1,6 @@
 package hotmath.mathml;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -86,5 +87,32 @@ public abstract class MathTemplate_Base implements MathTemplate {
 		return false;
 	}
 
+	
+
+
+	public boolean contentIsNumber(Element e) {
+    	String val = e.text();
+    	return NumberUtils.isNumber(val);
+	}
+	
+	
+
+	public boolean nextSiblingIs(String tagName, Element e) {
+		Element p = e.parent();
+		for(int i=0;i<p.children().size();i++) {
+			Element c = p.children().get(i);
+			if(e == c) {
+				if(p.children().size() > i+1 && p.children().get(i+1).tagName().equals(tagName)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
 
 }
+
+
+
