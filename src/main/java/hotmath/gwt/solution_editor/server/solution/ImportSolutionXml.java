@@ -47,9 +47,9 @@ public class ImportSolutionXml {
     }
  
     static public void main(String as[]) {
-    	
-    	String pid = as[1];
-    	String file = as[2];
+    	System.out.println("Args: " + as);
+    	String pid = as[0];
+    	String file = as[1];
         
         Connection conn=null;
         try {
