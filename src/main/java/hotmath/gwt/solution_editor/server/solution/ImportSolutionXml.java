@@ -1,16 +1,13 @@
 package hotmath.gwt.solution_editor.server.solution;
 
-import hotmath.ProblemID;
-import hotmath.util.HMConnectionPool;
-import hotmath.util.sql.SqlUtilities;
-
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
-import sb.util.SbFile;
-import sb.util.SbStringList;
+import org.apache.commons.io.FileUtils;
+
+import hotmath.util.HMConnectionPool;
+import hotmath.util.sql.SqlUtilities;
 
 /** Convert old style Hotmath XML to new style
  * 
@@ -23,23 +20,16 @@ public class ImportSolutionXml {
         this.conn = conn;
     }
 
-    private void input(String dir, String pid) {
+    private void input(String pid, String file) {
         try {
-            System.out.println("Importing: " + pid);
+        	System.out.println("Importing solution '" + pid + "' from '" + file);
             
-            ProblemID p = new ProblemID(pid);
-            
-            File dirFile = new File(dir + "/" + p.getBook());
-            
-            SbFile file = new SbFile(new File(dirFile, pid + ".xml"));
-            SbStringList sbl = file.getFileContents();
-            String xml = sbl.toString("\n");
-            
+            String solutionXml = FileUtils.readFileToString(new File(file));
             String sql = "update SOLUTIONS set solutionxml = ? where problemindex = ?";
             PreparedStatement ps=null;
             try {
                 ps = conn.prepareStatement(sql);
-                ps.setString(1, xml);
+                ps.setString(1, solutionXml);
                 ps.setString(2, pid);   
                 
                 if(ps.executeUpdate() != 1) {
@@ -57,20 +47,15 @@ public class ImportSolutionXml {
     }
  
     static public void main(String as[]) {
-        System.out.println("Importing ... ");
-        
-        String dir = "/temp/solution_input";
+    	
+    	String pid = as[1];
+    	String file = as[2];
         
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
             ImportSolutionXml converter = new ImportSolutionXml(conn);
-            
-            //ResultSet rs = conn.createStatement().executeQuery("select problemindex from SOLUTIONS where booktitle in (select distinct textcode from HA_TEST_DEF)");
-            ResultSet rs = conn.createStatement().executeQuery("select problemindex from SOLUTIONS where booktitle = 'placement'");
-            while(rs.next()) {
-                converter.input(dir, rs.getString("problemindex"));
-            }
+            converter.input(pid, file);
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -78,7 +63,6 @@ public class ImportSolutionXml {
         finally {
             SqlUtilities.releaseResources(null, null, conn);
         }
-        
         System.out.println("Import complete");
     }
 }
