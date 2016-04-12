@@ -221,3 +221,32 @@
     </mfrac>
 </math>
 #
+
+
+
+#11
+.key=MfracMtext
+<math>
+    <mrow>
+         <mfrac>
+             <mtext>1</mtext>
+             <mtext>2</mtext>
+             <mtext>3</mtext>
+         </mfrac>
+    </mrow>
+</math>
+#
+#
+#11
+.key=MfracMtext_check
+<math>
+    <mrow>
+         <mfrac>
+             <mtext mathsize="1.3em">1</mtext>
+             <mtext mathsize="1.3em">2</mtext>
+             <mtext mathsize="1.3em">3</mtext>
+         </mfrac>
+    </mrow>
+</math>
+#
+#

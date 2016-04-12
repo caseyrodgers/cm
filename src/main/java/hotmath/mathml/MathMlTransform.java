@@ -36,7 +36,8 @@ public class MathMlTransform {
 			MathTemplates.MixedNumbers,
 			MathTemplates.SquareRoot,
 			MathTemplates.MsupMi,
-			MathTemplates.MtrMtdMi
+			MathTemplates.MtrMtdMi,
+			MathTemplates.MfracMtext
 	};
 
 
@@ -435,10 +436,10 @@ public class MathMlTransform {
 				CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml.mprop");
 
 		String mathMl = _mprops.getProperty(key);
-		String result = new MathMlTransform().processMathMlTransformations(mathMl);
-		String check = _mprops.getProperty(key + "_check");
+		String result = new MathMlTransform().processMathMlTransformations(mathMl).trim();
+		String check = _mprops.getProperty(key + "_check").trim();
 		try {
-			if(!check.trim().equals(result.trim())) {
+			if(!check.equals(result)) {
 				System.out.println("Does not match!");
 				System.out.println(result);
 			}
