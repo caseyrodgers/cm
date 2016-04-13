@@ -1572,7 +1572,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		return inList;
 	}
 
-	public List<StudentAssignmentInfo> getAssignmentsForUser(final int uid)
+	public List<StudentAssignmentInfo> getAssignmentsForUser(final int uid, boolean checkIfAssignmentChanged)
 			throws Exception {
 
 		/**
@@ -1630,8 +1630,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 							}
 						}
 
-						boolean assignmentHasChanged = determineIfAssignmentHasChanged(
-								assignKey, uid);
+						boolean assignmentHasChanged=false;
+						if(checkIfAssignmentChanged) {
+							assignmentHasChanged = determineIfAssignmentHasChanged(assignKey, uid);
+						}
 
 						StudentAssignmentInfo info = new StudentAssignmentInfo(
 								assignKey, uid, isGraded, turnInDate, status,
