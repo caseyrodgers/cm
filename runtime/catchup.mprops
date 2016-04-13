@@ -4217,15 +4217,17 @@ SELECT a.pid, a.correct, min(a.answer_time) as answer_time
   
 .key=TUTOR_WIDGET_ANSWER_PERCENT_FOR_DATE_RANGE
 
-SELECT a.pid, a.correct, min(a.answer_time) as answer_time
+SELECT m.pid, m.correct, m.min_answer_time as answer_time
+FROM
+(SELECT a.pid, a.correct, min(a.answer_time) as min_answer_time
   FROM   HA_TEST t
   JOIN   HA_TEST_RUN r ON r.test_id = t.test_id
   JOIN   HA_TEST_RUN_WIDGET_INPUT_ANSWERS a
     ON   a.run_id = r.run_id
   WHERE  t.user_id = ?
-    AND a.answer_time BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)
   GROUP  BY a.pid
-  ORDER  BY a.pid
+  ORDER  BY a.pid) m
+WHERE m.min_answer_time BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)
   
 .key=GLOBAL_CONTEXT_PIDS_TO_PROCESS
   
