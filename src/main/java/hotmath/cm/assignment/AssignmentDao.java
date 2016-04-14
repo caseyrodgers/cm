@@ -1572,7 +1572,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		return inList;
 	}
 
-	public List<StudentAssignmentInfo> getAssignmentsForUser(final int uid, boolean checkIfAssignmentChanged)
+	public List<StudentAssignmentInfo> getAssignmentsForUser(final int uid, final boolean checkIfAssignmentChanged)
 			throws Exception {
 
 		/**
