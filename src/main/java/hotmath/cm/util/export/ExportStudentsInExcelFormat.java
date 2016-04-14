@@ -449,10 +449,10 @@ public class ExportStudentsInExcelFormat {
 	    			charCount[col] = String.valueOf(model.getPassedQuizzes()).length();
 
 	    		cell = row.createCell(++col);
-	    		cell.setCellValue(model.getSectionNum());
+	    		cell.setCellValue(model.getSectionCount());
 	    		cell.setCellStyle(styles.get("data"));
-	    		if (charCount[col] < String.valueOf(model.getSectionNum()).length())
-	    			charCount[col] = String.valueOf(model.getSectionNum()).length();
+	    		if (charCount[col] < String.valueOf(model.getSectionCount()).length())
+	    			charCount[col] = String.valueOf(model.getSectionCount()).length();
 
 	    		cell = row.createCell(++col);
 	    		String percent = getPercent(model.getPassedQuizAvg());
