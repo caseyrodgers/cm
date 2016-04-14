@@ -25,7 +25,7 @@ public class GetAssignmentUserInfoCommand implements ActionHandler<GetAssignment
     public CmMobileAssignmentUser execute(Connection conn, GetAssignmentUserInfoAction action) throws Exception {
         
         HaUser userInfo = HaUserDao.getInstance().lookUser(action.getUid(),  false);
-        List<StudentAssignmentInfo> assignments = AssignmentDao.getInstance().getAssignmentsForUser(action.getUid(), true);
+        List<StudentAssignmentInfo> assignments = AssignmentDao.getInstance().getAssignmentsForUser(action.getUid());
 
         AssignmentUserInfo assignmentUserInfo = AssignmentDao.getInstance().getStudentAssignmentMetaInfo(action.getUid());
         

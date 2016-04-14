@@ -651,6 +651,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 									rs.getInt("problem_id"));
 							realStatus = getPersonalizedPidStatus(assignKey,
 									uid, realPid);
+							
+							
+							gradeStatus = realStatus;
 						}
 						ProblemDto probDto = new ProblemDto(rs
 								.getInt("ordinal_number"), rs
@@ -672,6 +675,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 								probDto, realStatus, gradeStatus, hasShowWork,
 								hasShowWorkAdmin, isAssignmentClosed,
 								isStudentGraded, isProblemGraded);
+						
 						return prob;
 					}
 				});
@@ -728,7 +732,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		StudentLessonDto lessonStatus = null;
 
 		for (StudentProblemDto probDto : problemStatuses) {
-
 			if (probDto.getUid() != uid) {
 				if (lessonStatus != null) {
 
@@ -784,6 +787,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			String gradeStatus = probDto.getGradeStatus().trim();
 
 			String gsl = gradeStatus.toLowerCase();
+			
+			boolean assGraded = assignment.isGraded();
 			if ("answered".equals(gsl) || "correct".equals(gsl) ||
 				"incorrect".equals(gsl) || "half credit".equals(gsl)) {
 				graded += (probDto.isGraded()) ? 1 : 0;
@@ -804,6 +809,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			} else if ("viewed".equals(psl)) {
 				viewed++;
 				totViewed++;
+			}
+			else {
+				// System.out.println("Unknown type: " + psl);
 			}
 		}
 
@@ -1572,7 +1580,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		return inList;
 	}
 
-	public List<StudentAssignmentInfo> getAssignmentsForUser(final int uid, final boolean checkIfAssignmentChanged)
+	public List<StudentAssignmentInfo> getAssignmentsForUser(final int uid)
 			throws Exception {
 
 		/**
@@ -1630,10 +1638,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 							}
 						}
 
-						boolean assignmentHasChanged=false;
-						if(checkIfAssignmentChanged) {
-							assignmentHasChanged = determineIfAssignmentHasChanged(assignKey, uid);
-						}
+						boolean assignmentHasChanged=determineIfAssignmentHasChanged(assignKey, uid);
 
 						StudentAssignmentInfo info = new StudentAssignmentInfo(
 								assignKey, uid, isGraded, turnInDate, status,
@@ -1863,12 +1868,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		return list;
 	}
 
-	protected String getUserScore(int uid, int assignKey) throws Exception {
+	public String getUserScore(int uid, int assignKey) throws Exception {
 		final double counts[] = new double[4];
 		final int TOTAL = 0, CORRECT = 1, HALFCREDIT = 2, INCORRECT = 3;
-		String sql = CmMultiLinePropertyReader.getInstance().getProperty(
-				"GET_STUDENT_ASSIGNMENT_SCORE");
-		getJdbcTemplate().query(sql, new Object[] { uid, assignKey },
+		String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_ASSIGNMENT_SCORE");
+		getJdbcTemplate().query(sql, new Object[] { assignKey, uid, assignKey, uid },
 				new RowMapper<Integer>() {
 					@Override
 					public Integer mapRow(ResultSet rs, int rowNum)
