@@ -16,7 +16,7 @@ public class GetAssignmentsForUserCommand implements ActionHandler<GetAssignment
     @Override
     public CmList<StudentAssignmentInfo> execute(Connection conn, GetAssignmentsForUserAction action) throws Exception {
         CmList<StudentAssignmentInfo> cmList = new CmArrayList<StudentAssignmentInfo>();
-        cmList.addAll(AssignmentDao.getInstance().getAssignmentsForUser(action.getUid()));
+        cmList.addAll(AssignmentDao.getInstance().getAssignmentsForUser(action.getUid(),false));
         return cmList;
     }
 
