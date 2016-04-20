@@ -250,3 +250,143 @@
 </math>
 #
 #
+
+
+
+#12
+.key=MFracMtextBalance
+<math>
+    <mfrac>
+        <mrow>
+            <mn>80</mn>
+            <mtext>&#x2009;</mtext>
+            <mtext>&#x2009;</mtext>
+            <mtext>mi</mtext>
+        </mrow>
+        <mrow>
+            <mi>$</mi>
+            <mn>6</mn>
+        </mrow>
+    </mfrac>
+</math>
+#
+#
+.key=MFracMtextBalance_check
+<math>
+    <mfrac>
+        <mrow>
+            <mn mathsize="1.2em">80</mn>
+            <mtext mathsize="1.3em">&#x2009;</mtext>
+            <mtext mathsize="1.3em">&#x2009;</mtext>
+            <mtext mathsize="1.3em">mi</mtext>
+        </mrow>
+        <mrow>
+            <mi mathsize="1.3em">$</mi>
+            <mn mathsize="1.2em">6</mn>
+        <mtext>&nbsp;</mtext></mrow>
+    </mfrac>
+</math>
+#
+#   
+
+
+
+#13
+.key=MsupLastMnWithPrevSiblingMrow
+<math>
+    <msup>
+      <mrow>
+      </mrow>
+      <mn>3</mn>
+    </msup>
+  </math>
+#
+.key=MsupLastMnWithPrevSiblingMrow_check
+<math>
+    <msup>
+      <mrow>
+      </mrow>
+      <mn mathsize="1.2em">3</mn>
+    </msup>
+  </math>
+#
+#
+
+
+
+#14
+.key=MsupWithExactlyTwoMi
+<math>
+    <msup>
+        <mi>3</mi>
+        <mi>3</mi>
+    </msup>    
+</math>
+##
+.key=MsupWithExactlyTwoMi_check
+<math>
+    <msup>
+        <mi mathsize="1.1em">3</mi>
+        <mi mathsize="1.4em">3</mi>
+    </msup>    
+</math>
+#  
+
+
+#15
+.key=MsupWithExactlyTwoMn
+<math>
+    <msup>
+        <mn>3</mn>
+        <mn>3</mn>
+	</msup>
+</math>
+#
+.key=MsupWithExactlyTwoMn_check
+<math>
+    <msup>
+        <mn mathsize="1em">3</mn>
+        <mn mathsize="1.1em">3</mn>
+	</msup>
+</math>
+#
+
+#16
+.key=MsupWithExactlyMiMn
+<math>
+    <msup>
+         <mi>a</mi>
+         <mn>1</mn>
+    </msup>
+</math>
+#
+#
+.key=MsupWithExactlyMiMn_check
+<math>
+    <msup>
+         <mi mathsize="1.1em">a</mi>
+         <mn mathsize="1.1em">1</mn>
+    </msup>
+</math>
+#
+#
+#
+
+.key=MsupWithExactlyMnMi
+<math>
+    <msup>
+        <mn>3</mn>
+        <mi>a</mi>
+    </msup>
+</math>
+#
+#
+.key=MsupWithExactlyMnMi_check
+<math>
+    <msup>
+        <mn mathsize="1em">3</mn>
+        <mi mathsize="1.4em">a</mi>
+    </msup>
+</math>
+#
+#
