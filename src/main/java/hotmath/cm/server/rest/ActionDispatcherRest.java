@@ -28,13 +28,18 @@ import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_core.client.model.QuizCm2Question;
 import hotmath.gwt.cm_core.client.model.TopicResource;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2HtmlResult;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction.ResetType;
+import hotmath.gwt.solution_editor.client.SolutionSearchModel;
+import hotmath.gwt.solution_editor.client.rpc.SearchForSolutionsAction;
+import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
+import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -435,4 +440,18 @@ public class ActionDispatcherRest {
 		DeviceStorageDao.deleteStorage(deviceId);
 		return JsonWriter.objectToJson(new RpcData("status=ok"));
 	}	
+	
+	
+	@POST
+	@Path("pid_search")
+	public String searchForPids(String json) throws Exception {
+		JSONObject jo = new JSONObject(json);
+		String searchFor = jo.getString("data");
+		int limit = jo.getInt("limit");
+		return new Gson().toJson(doPidSearch(searchFor, limit));
+	}	
+	
+	private List<String> doPidSearch(String searchFor, int limit) throws Exception {
+		return new CmSolutionManagerDao().searchForPids(searchFor, limit);
+	}
 }
