@@ -2,13 +2,10 @@ package hotmath.mathml;
 
 import java.util.Enumeration;
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
-import org.jsoup.select.Elements;
 
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmMultiLinePropertyReader;
@@ -29,6 +26,8 @@ public class MathMlTransform {
 	
 	private CmMultiLinePropertyReader _mprops;
 	MathTemplate[] _mathTemplates = {
+			MathTemplates.EveryMnMi
+			/* ,
 			MathTemplates.MnMfracMn,
 			MathTemplates.MfracWithVariableInMn,
 			MathTemplates.MfracWithNumberInMn,
@@ -46,6 +45,7 @@ public class MathMlTransform {
 			MathTemplates.MsupWithExactlyMiMn,
 			MathTemplates.MsupWithExactlyMnMi,
 			MathTemplates.MsupMi
+			*/
 	};
 
 
@@ -108,7 +108,7 @@ public class MathMlTransform {
 			doTest("MsupWithExactlyMiMn");
 			return;
 		}
-		_mprops = new CmMultiLinePropertyReader(CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml.mprop");
+		_mprops = new CmMultiLinePropertyReader(CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml_2.mprop");
 		Enumeration<Object> iter = _mprops.keys();
 
 		try {
@@ -138,7 +138,7 @@ public class MathMlTransform {
 		System.out.println("Testing key: " + key);
 
 		_mprops = new CmMultiLinePropertyReader(
-				CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml.mprop");
+				CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml_2.mprop");
 
 		String mathMl = _mprops.getProperty(key);
 		String result = new MathMlTransform().processMathMlTransformations(mathMl).trim();

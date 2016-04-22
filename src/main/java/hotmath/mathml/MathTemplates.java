@@ -2,12 +2,39 @@ package hotmath.mathml;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 
 public class MathTemplates {
 
+	/** 
+	 * rule: every mi, every mn
+     * set: 1.2em
+	 */
+	 public static final MathTemplate EveryMnMi = new MathTemplate_Base() {
+			@Override
+			public void processDocument(Document doc) {
+				/** todo: how to do select with 'or'
+				 * 
+				 */
+				Elements els = doc.select("math mn");
+		        for (Element e : els) {
+		        	replaceIfNoExist(e, "1.2em");
+		        }
+		        
+				els = doc.select("math mi");
+		        for (Element e : els) {
+		        	replaceIfNoExist(e, "1.2em");
+		        }
+
+			}
+
+			@Override
+			public String getRuleName() {
+				return "EveryMnMi";
+			}
+	};
+	
 	
 	 public static final MathTemplate MfracWithVariableInMn = new MathTemplate_Base() {
 			@Override

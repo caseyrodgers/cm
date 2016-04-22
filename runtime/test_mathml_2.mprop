@@ -1,0 +1,22 @@
+## 1
+##
+.key=EveryMnMi
+<math>
+   <mfrac>
+     <mn>abc</mn>
+     <mi>123</mi>
+   </mfrac>
+   <mn>abc</mn>
+   <mi>123</mi>
+</math>
+##
+##
+.key=EveryMnMi_check
+<math>
+   <mfrac>
+     <mn mathsize="1.2em">abc</mn>
+     <mi mathsize="1.2em">123</mi>
+   </mfrac>
+   <mn mathsize="1.2em">abc</mn>
+   <mi mathsize="1.2em">123</mi>
+</math>
