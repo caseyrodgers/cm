@@ -4341,12 +4341,38 @@ where  a.assign_key = ?
 
 
 .key=GET_STUDENT_ASSIGNMENT_SCORE
+# 
+# different source table depending on is_personalized
+# normal assignments are static for each user, personalized
+# ones 'might' be different for each user.
+#
 
-select p.assign_key, p.pid, ifnull(s.status, 'Unanswered') as status
-from CM_ASSIGNMENT_PIDS p
+select  a.is_personalized, p.assign_key,  p.pid, ifnull(s.status, 'Unanswered') as status
+from CM_ASSIGNMENT a
+  join CM_ASSIGNMENT_PIDS p on (p.assign_key = a.assign_key and a.is_personalized = 0)
   left join CM_ASSIGNMENT_PID_STATUS s 
-    on s.assign_key = p.assign_key and s.pid = p.pid and s.uid = ?
+    on ( s.assign_key = p.assign_key  and s.pid = p.pid)
 where p.assign_key = ?
+and s.uid = ?
+
+
+union 
+
+select a.is_personalized, p.assign_key, p.pid, ifnull(s.status, 'Unanswered') as status
+from CM_ASSIGNMENT a
+  join CM_ASSIGNMENT_PIDS_USER p on (p.assign_key = a.assign_key and a.is_personalized = 1)
+  left join CM_ASSIGNMENT_PID_STATUS s 
+    on ( s.assign_key = p.assign_key  and s.pid = p.pid and s.uid = p.uid)
+where p.assign_key = ?
+and p.uid = ?
+
+
+#select p.assign_key, p.pid, ifnull(s.status, 'Unanswered') as status
+#from CM_ASSIGNMENT_PIDS p
+#  left join CM_ASSIGNMENT_PID_STATUS s 
+#    on s.assign_key = p.assign_key and s.pid = p.pid and s.uid = ?
+# where p.assign_key = ?
+
 
 .key=RELEASE_ASSIGNMENT_GRADE
 

@@ -9,6 +9,7 @@ public abstract class MathTemplate_Base implements MathTemplate {
 
 	@Override
 	abstract public void processDocument(Document doc);
+	abstract public String getRuleName();
 	
 	
 
@@ -68,7 +69,12 @@ public abstract class MathTemplate_Base implements MathTemplate {
 		for(int i=0;i<p.children().size();i++) {
 			Element c = p.children().get(i);
 			if(e == c) {
-				return p.children().get(i-1);
+				if(i > 0) {
+				    return p.children().get(i-1);
+				}
+				else {
+					break;
+				}
 			}
 		}
 		return null;

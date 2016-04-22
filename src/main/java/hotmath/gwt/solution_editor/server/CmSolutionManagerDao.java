@@ -14,6 +14,7 @@ import hotmath.solution.Solution;
 import hotmath.solution.StaticWriter;
 import hotmath.solution.writer.SolutionHTMLCreatorIimplVelocity;
 import hotmath.solution.writer.TutorProperties;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.io.File;
@@ -200,6 +201,26 @@ public class CmSolutionManagerDao {
         }
         finally {
             SqlUtilities.releaseResources(null, ps, null);
+        }
+    }
+    
+    public List<String> searchForPids(String searchFor, int limit) throws Exception {
+        List<String> list = new ArrayList<String>();
+        PreparedStatement ps=null;
+        Connection conn=null;
+        try {
+        	conn = HMConnectionPool.getConnection();
+            String sql = "select problemindex as pid from SOLUTIONS where problemindex like ? order by problemindex limit " + limit;
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, searchFor + "%");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                list.add(rs.getString("pid"));
+            }
+            return list;
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps, conn);
         }
     }
 
