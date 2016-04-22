@@ -210,7 +210,7 @@ public class CmSolutionManagerDao {
         Connection conn=null;
         try {
         	conn = HMConnectionPool.getConnection();
-            String sql = "select lower(problemindex) as pid from SOLUTIONS where problemindex like ? order by problemindex limit " + limit;
+            String sql = "select problemindex as pid from SOLUTIONS where problemindex like ? order by problemindex limit " + limit;
             ps = conn.prepareStatement(sql);
             ps.setString(1, searchFor + "%");
             ResultSet rs = ps.executeQuery();
