@@ -40,7 +40,7 @@ public class MathMlTransform {
 			MathTemplates.MsupWithExactlyMiMn,
 			MathTemplates.MsupWithExactlyMnMi,
 			MathTemplates.MsupMi,
-			MathTemplates.EveryMnMi
+			MathTemplates.EveryMnMiNotInMfrac
 	};
 
 

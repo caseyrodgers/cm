@@ -34,7 +34,39 @@ public class MathTemplates {
 				return "EveryMnMi";
 			}
 	};
+
 	
+	/** Add: all mn and mi not in mfrac or msup are 1.1 em 
+	 * */
+	 public static final MathTemplate EveryMnMiNotInMfrac = new MathTemplate_Base() {
+			@Override
+			public void processDocument(Document doc) {
+				/** todo: how to do select with 'or'
+				 * 
+				 */
+				Elements els = doc.select("math mn");
+		        for (Element e : els) {
+		        	
+		        	if(e.parent() != null && !e.parent().tagName().equals("mfrac")) {
+		        		replaceIfNoExist(e, "1.1em");	
+		        	}
+		        	
+		        }
+		        
+				els = doc.select("math mi");
+		        for (Element e : els) {
+		        	if(e.parent() != null && !e.parent().tagName().equals("mfrac")) {
+		        		replaceIfNoExist(e, "1.1em");	
+		        	}
+		        }
+
+			}
+
+			@Override
+			public String getRuleName() {
+				return "EveryMnMi";
+			}
+	};
 	
 	 public static final MathTemplate MfracWithVariableInMn = new MathTemplate_Base() {
 			@Override

@@ -91,7 +91,7 @@
 #
 <math>
     <mrow>
-        <mn mathsize="1.2em">1</mn>
+        <mn mathsize="1.1em">1</mn>
         <mfrac>
         </mfrac>
      </mrow>
@@ -114,7 +114,7 @@
 #
 <math>
     <msqtr>
-        <mi mathsize="1em">test</mi>
+        <mi mathsize="1.1em">test</mi>
     </msqtr>
 </math>
 #
@@ -163,7 +163,7 @@
 <math>
     <mtr>
         <mtd>
-            <mi mathsize="1em">test</mi>
+            <mi mathsize="1.1em">test</mi>
         </mtd>
     </mtr>
 </math>
@@ -215,7 +215,7 @@
 #
 .key=MnMFracMn_check
 <math>
-    <mn>1</mn>
+    <mn mathsize="1.1em">1</mn>
     <mfrac>
         <mn mathsize="1.2em">test</mn>
     </mfrac>
