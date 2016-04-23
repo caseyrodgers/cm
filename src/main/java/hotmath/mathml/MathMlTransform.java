@@ -26,17 +26,12 @@ public class MathMlTransform {
 	
 	private CmMultiLinePropertyReader _mprops;
 	MathTemplate[] _mathTemplates = {
-			MathTemplates.EveryMnMi
-			/* ,
 			MathTemplates.MnMfracMn,
 			MathTemplates.MfracWithVariableInMn,
 			MathTemplates.MfracWithNumberInMn,
 			MathTemplates.MrootMrowMsup,
 			MathTemplates.MfracWithMo,
 			MathTemplates.MfracWithMi,
-			MathTemplates.MixedNumbers,
-			MathTemplates.SquareRoot,
-			MathTemplates.MtrMtdMi,
 			MathTemplates.MfracMtext,
 			MathTemplates.MFracMtextBalance,
 			MathTemplates.MsupLastMnWithPrevSiblingMrow,
@@ -44,8 +39,8 @@ public class MathMlTransform {
 			MathTemplates.MsupWithExactlyTwoMn,
 			MathTemplates.MsupWithExactlyMiMn,
 			MathTemplates.MsupWithExactlyMnMi,
-			MathTemplates.MsupMi
-			*/
+			MathTemplates.MsupMi,
+			MathTemplates.EveryMnMi
 	};
 
 
@@ -108,7 +103,7 @@ public class MathMlTransform {
 			doTest("MsupWithExactlyMiMn");
 			return;
 		}
-		_mprops = new CmMultiLinePropertyReader(CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml_2.mprop");
+		_mprops = new CmMultiLinePropertyReader(CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml.mprop");
 		Enumeration<Object> iter = _mprops.keys();
 
 		try {
@@ -138,7 +133,7 @@ public class MathMlTransform {
 		System.out.println("Testing key: " + key);
 
 		_mprops = new CmMultiLinePropertyReader(
-				CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml_2.mprop");
+				CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml.mprop");
 
 		String mathMl = _mprops.getProperty(key);
 		String result = new MathMlTransform().processMathMlTransformations(mathMl).trim();
