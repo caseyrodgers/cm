@@ -1373,8 +1373,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		try {
 			problemStatuses = getJdbcTemplate()
 					.query(sql,
-							new Object[] { dates[0], dates[1], userId, userId,
-									userId },
+							new Object[] { dates[0], dates[1], userId, userId, userId,
+									dates[0], dates[1], userId, userId, userId },
 							new RowMapper<StudentProblemExtended>() {
 								@Override
 								public StudentProblemExtended mapRow(

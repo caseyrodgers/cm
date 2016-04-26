@@ -4043,15 +4043,12 @@ and   (u.is_active = 1 and u.is_auto_create_template = 0)
 
 order by concat(u.user_name, u.uid), problem_id
 
-
-
-
-
   
 ##
 .key=GET_ASSIGNMENT_WORK_FOR_STUDENT
 
-select distinct u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.lesson_file, p.pid, p.ordinal_number,
+select xx.* from
+(select distinct u.uid, a.is_personalized, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label as label, p.lesson, p.lesson_file, p.pid, p.ordinal_number,
        if(q.correct is null, 'Not viewed', (if(q.correct=1,'Correct','Incorrect'))) as status, q.correct, q.id, q.answer,
        ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
        if(s.status is null, 'Not Graded', s.status) as grade_status,
@@ -4059,7 +4056,7 @@ select distinct u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.
 from HA_USER u
 join  CM_ASSIGNMENT a on a.assign_key in
    (select distinct x.assign_key from CM_ASSIGNMENT x
-    where ((au.assign_key is not null and x.assign_Key = au.assign_key) or x.group_id = u.group_id) and a.due_date between ? and ?)
+    where ((au.assign_key is not null and x.assign_Key = au.assign_key) or x.group_id = u.group_id) and x.due_date between ? and ? and x.is_personalized=0)
 join CM_ASSIGNMENT_PIDS p on p.assign_key=a.assign_key
 left join CM_ASSIGNMENT_USER au on au.uid = u.uid
 left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pid and s.uid=u.uid
@@ -4075,10 +4072,39 @@ left join (
     where pa.user_id = ?) q
     on q.id=l.max_id
 left join CM_ASSIGNMENT_USER xu on xu.uid = u.uid and xu.assign_key = a.assign_key
+where u.uid =?
+
+UNION
+
+select distinct u.uid, a.is_personalized, u.user_name, a.assign_key, a.name, p.id as problem_id, rp.label, rp.lesson, rp.lesson_file, p.pid, rp.ordinal_number,
+       if(q.correct is null, 'Not viewed', (if(q.correct=1,'Correct','Incorrect'))) as status, q.correct, q.id, q.answer,
+       ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
+       if(s.status is null, 'Not Graded', s.status) as grade_status,
+       ifnull(s.is_graded, 0) as is_graded, ifnull(xu.is_graded, 0) assignment_graded
+from HA_USER u
+join  CM_ASSIGNMENT a on a.assign_key in
+   (select distinct x.assign_key from CM_ASSIGNMENT x
+    where ((au.assign_key is not null and x.assign_Key = au.assign_key) or x.group_id = u.group_id) and x.due_date between ? and ? and x.is_personalized=1)
+join CM_ASSIGNMENT_PIDS_USER p on p.assign_key=a.assign_key and p.uid = u.uid
+join CM_ASSIGNMENT_PIDS rp on rp.assign_key=a.assign_key and rp.pid = p.pid
+left join CM_ASSIGNMENT_USER au on au.uid = u.uid
+left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pid and s.uid=u.uid
+left join (
+    select pa.assign_key, pa.pid, pa.user_id, max(pa.id) as max_id
+    from CM_ASSIGNMENT_PID_ANSWERS pa
+    where pa.user_id = ?
+    group by pa.user_id, pa.assign_key, pa.pid ) l
+    on l.assign_key=a.assign_key and l.pid=p.pid and l.user_id=u.uid
+left join (
+    select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer
+    from CM_ASSIGNMENT_PID_ANSWERS pa
+    where pa.user_id = ?) q
+    on q.id=l.max_id
+left join CM_ASSIGNMENT_USER xu on xu.uid = u.uid and xu.assign_key = a.assign_key
 where u.uid = ?
-order by a.assign_key, problem_id
-  
-  
+) xx
+order by xx.assign_key, xx.problem_id
+
 .key=GET_STUDENT_ASSIGNMENT_PROBLEM_STATUSES
 
 select p.*, w.has_show_work, w2.has_show_work_admin, au.is_graded as assignment_is_graded
