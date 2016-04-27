@@ -26,21 +26,23 @@ public class MathMlTransform {
 	
 	private CmMultiLinePropertyReader _mprops;
 	MathTemplate[] _mathTemplates = {
-			MathTemplates.MnMfracMn,
-			MathTemplates.MfracWithVariableInMn,
-			MathTemplates.MfracWithNumberInMn,
-			MathTemplates.MrootMrowMsup,
-			MathTemplates.MfracWithMo,
-			MathTemplates.MfracWithMi,
-			MathTemplates.MfracMtext,
-			MathTemplates.MFracMtextBalance,
-			MathTemplates.MsupLastMnWithPrevSiblingMrow,
-			MathTemplates.MsupWithExactlyTwoMi,
-			MathTemplates.MsupWithExactlyTwoMn,
-			MathTemplates.MsupWithExactlyMiMn,
-			MathTemplates.MsupWithExactlyMnMi,
-			MathTemplates.MsupMi,
-			MathTemplates.EveryMnMiNotInMfrac
+			  MathTemplates.MnMfracMn,
+			   MathTemplates.MfracWithVariableInMn,
+			   MathTemplates.MfracWithNumberInMn,
+			   MathTemplates.MrootMrowMsup,
+			   MathTemplates.MfracWithMo,
+			   MathTemplates.MfracWithMi,
+			   MathTemplates.MixedNumbers,
+			   MathTemplates.SquareRoot,
+			   MathTemplates.MtrMtdMi,
+			   MathTemplates.MfracMtext,
+			   MathTemplates.MFracMtextBalance,
+			   MathTemplates.MsupLastMnWithPrevSiblingMrow,
+			   MathTemplates.MsupWithExactlyTwoMi,
+			   MathTemplates.MsupWithExactlyTwoMn,
+			   MathTemplates.MsupWithExactlyMiMn,
+			   MathTemplates.MsupWithExactlyMnMi,
+			   MathTemplates.MsupMi
 	};
 
 
