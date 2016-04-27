@@ -26,7 +26,7 @@ public class MathMlTransform {
 	
 	private CmMultiLinePropertyReader _mprops;
 	MathTemplate[] _mathTemplates = {
-			  MathTemplates.MnMfracMn,
+			MathTemplates.MnMfracMn,
 			   MathTemplates.MfracWithVariableInMn,
 			   MathTemplates.MfracWithNumberInMn,
 			   MathTemplates.MrootMrowMsup,
