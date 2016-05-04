@@ -74,7 +74,7 @@ public class MathTemplates {
 				Elements els = doc.select("math mfrac mn");
 		        for (Element e : els) {
 		        	if(!contentIsNumber(e)) {  
-		            		replaceIfNoExist(e, "1.4em");	
+		            		replaceIfNoExist(e, "1.2em");	
 		            	}
 		            }
 			}
@@ -162,7 +162,7 @@ public class MathTemplates {
 			    /** search for mixed numbers .. alter the number 
 			     *  before the mfrac
 			     */
-			    Elements els = doc.select("math msqtr mi");
+			    Elements els = doc.select("math msqrt mi");
 			    for (Element e : els) {
 			    	replaceIfNoExist(e, "1em");
 			    }		
@@ -179,7 +179,7 @@ public class MathTemplates {
 			public void processDocument(Document doc) {
 			    Elements els = doc.select("math msup mi");
 			    for (Element e : els) {
-			    	replaceIfNoExist(e, "1em");
+			    	replaceIfNoExist(e, ".9em");
 			    }
 			}
 
@@ -257,7 +257,7 @@ public class MathTemplates {
 			public void processDocument(Document doc) {
 			    Elements els = doc.select("math mfrac mtext");
 			    for (Element e : els) {
-			    	replaceIfNoExist(e, "1.3em");
+			    	replaceIfNoExist(e, "1.2em");
 			    }
 			}
 			
@@ -313,7 +313,15 @@ public class MathTemplates {
 			    	if(lastNode.tagName().equals("mn") || lastNode.tagName().equals("mi")) {
 			    		Element ps = getPreviousSibling(lastNode);
 			    		if(ps != null && ps.tagName().equals("mrow")) {
-			    			replaceIfNoExist(lastNode,"1.2em");
+			    			
+			    			if(lastNode.tagName().equals("mn")) {
+			    				replaceIfNoExist(lastNode, "1.1em");
+			    			}
+			    			else {
+			    				// must be mi
+				    			replaceIfNoExist(lastNode,"1.2em");
+			    			}
+
 			    		}
 			    	}
 			    }
@@ -337,8 +345,8 @@ public class MathTemplates {
 			    for (Element e : els) {
 			    	
 			    	if(matchesPattern("mi,mi", e.children())) {
-			    		replaceIfNoExist(e.child(0), "1.1em");
-			    		replaceIfNoExist(e.child(1), "1.4em");
+			    		replaceIfNoExist(e.child(0), ".9em");
+			    		replaceIfNoExist(e.child(1), "1.2em");
 			    	}
 			    }
 			}
@@ -410,8 +418,8 @@ public class MathTemplates {
 			    for (Element e : els) {
 			    	
 			    	if(matchesPattern("mn,mi", e.children())) {
-			    		replaceIfNoExist(e.child(0), "1em");
-			    		replaceIfNoExist(e.child(1), "1.4em");
+			    		replaceIfNoExist(e.child(0), ".9em");
+			    		replaceIfNoExist(e.child(1), "1.3øem");
 			    	}
 			    }
 			}
