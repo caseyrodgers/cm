@@ -75,20 +75,22 @@ public class CustomQuizQuestionManager {
     		while(rs.next()) {
     			String lesson = rs.getString("lesson");
     			String pid = rs.getString("pid");
-
-    			String activePidSearch = getActivePid(pid);
-                ps.setString(1,  activePidSearch);
-                ResultSet  rsPid = ps.executeQuery();
-                if(rsPid.next()) {
+    			//String activePidSearch = getActivePid(pid);
+                //ps.setString(1,  activePidSearch);
+                //ResultSet  rsPid = ps.executeQuery();
+                if(pid != null) {
                     /** only active problems
                      * 
                      */
-                    String activePid = rsPid.getString("problemindex");
+                    String activePid = pid; // rsPid.getString("problemindex");
                     
                     CustomQuizLessonInfo ci = _dataMap.get(lesson);
                     if(ci == null) {
                         ci = new CustomQuizLessonInfo();
                         _dataMap.put(lesson,ci);
+                        
+                        System.out.println("adding pid: " + lesson + ". " + activePid);
+                       
                     }
                     ci.pids.add(activePid);
                 }
@@ -215,11 +217,20 @@ public class CustomQuizQuestionManager {
     
     
     public static void main(String[] args) {
+    	Connection conn=null;
 		try {
-			CustomQuizQuestionManager.getInstance();
+			conn = HMConnectionPool.getConnection();
+			CmList<QuizQuestion> pids = CustomQuizQuestionManager.getInstance().getQuestionsFor(conn,  "topics/adding-and-subtracting-fractions.html",1);
+			for(QuizQuestion p: pids) {
+				System.out.println(p.getPid());
+			}
 		}
 		catch(Exception e) {
 			e.printStackTrace();
+		}
+		finally {
+			SqlUtilities.releaseResources(null, null, conn);
+			System.exit(0);
 		}
 	}
 

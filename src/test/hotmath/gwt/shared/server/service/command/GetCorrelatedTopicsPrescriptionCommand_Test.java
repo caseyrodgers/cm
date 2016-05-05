@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 
 public class GetCorrelatedTopicsPrescriptionCommand_Test extends TestCase {
 	
-	private static final String _PID = 	"custom_82_140827_set1_24_1";
+	private static final String _PID = 	"cmextras_2_7-addlike_1_5_1";
 
 	public GetCorrelatedTopicsPrescriptionCommand_Test(String name) {
 		super(name);

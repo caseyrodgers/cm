@@ -148,6 +148,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		return matches.size() > 0 ? matches.get(0) : null;
 	}
 
+
 	public List<LessonModel> getLessonsInInmhMapForPID(String pid) throws Exception {
 		String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_LESSON_FOR_PID");
 		List<LessonModel> list = null;
