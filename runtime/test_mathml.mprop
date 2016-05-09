@@ -169,7 +169,7 @@
 #
 <math>
     <msup>
-        <mi mathsize=".9em">test</mi>
+        <mi mathsize="1.1em">test</mi>
     </msup>
 </math>
 #
@@ -358,8 +358,8 @@
 .key=MsupWithExactlyTwoMi_check
 <math>
     <msup>
-        <mi mathsize=".9em">3</mi>
-        <mi mathsize="1.2em">3</mi>
+        <mi mathsize="1.1em">3</mi>
+        <mi mathsize="1.3em">3</mi>
     </msup>    
 </math>
 #  

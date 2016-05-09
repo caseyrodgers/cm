@@ -347,9 +347,13 @@ public class MathTemplates {
 				return "MsupLastMnWithPrevSiblingMrow";
 			}
 	};
+	
+	
+	
 
-	/** rule: msup with exactly two mi
-	 *  set: first mi 1.1em, second mi 1.4em
+	/** 
+	 *  rule: math is followed by msup and followed by 2 mi, 
+	 *  set: : first mi to 1.1 em, and set second mi to 1.3 em
 	 * 
 	 */
 	 public static final MathTemplate MsupWithExactlyTwoMi = new MathTemplate_Base() {
@@ -359,8 +363,9 @@ public class MathTemplates {
 			    for (Element e : els) {
 			    	
 			    	if(matchesPattern("mi,mi", e.children())) {
-			    		replaceIfNoExist(e.child(0), ".9em");
-			    		replaceIfNoExist(e.child(1), "1.2em");
+			    		
+			    		replaceIfNoExist(e.child(0), "1.1em");
+			    		replaceIfNoExist(e.child(1), "1.3em");
 			    	}
 			    }
 			}

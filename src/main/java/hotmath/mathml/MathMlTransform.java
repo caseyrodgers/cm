@@ -101,7 +101,7 @@ public class MathMlTransform {
 
 	public void doTestSetup() throws Exception {
 		
-		if(true) {
+		if(false) {
 			doTest("MSupMiDebug");
 			return;
 		}
