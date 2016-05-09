@@ -68,6 +68,9 @@ public class MathTemplates {
 			}
 	};
 	
+	/**rule: mfrac mn
+	 * set: mn 1.2em 
+	 */
 	 public static final MathTemplate MfracWithVariableInMn = new MathTemplate_Base() {
 			@Override
 			public void processDocument(Document doc) {
@@ -156,6 +159,10 @@ public class MathTemplates {
 	};
 	
 	
+	/** 
+	 * rule: msqrt mi
+	 * set: mi 1em
+	 */
 	 public static final MathTemplate SquareRoot = new MathTemplate_Base() {
 			@Override
 			public void processDocument(Document doc) {
@@ -174,12 +181,15 @@ public class MathTemplates {
 	};
   
 
+	/** rule: msup mi
+	 *  set: mi .9em
+	 */
 	 public static final MathTemplate MsupMi = new MathTemplate_Base() {
 			@Override
 			public void processDocument(Document doc) {
 			    Elements els = doc.select("math msup mi");
 			    for (Element e : els) {
-			    	replaceIfNoExist(e, ".9em");
+			    	replaceIfNoExist(e, "1.1em");
 			    }
 			}
 
@@ -191,6 +201,10 @@ public class MathTemplates {
 	};
 	
 	
+	/** 
+	 * rule: mtr mtd mi
+	 * set: mi 1em
+	 */
 	 public static final MathTemplate MtrMtdMi = new MathTemplate_Base() {
 			@Override
 			public void processDocument(Document doc) {
@@ -299,7 +313,7 @@ public class MathTemplates {
 	
 	/** 
 	 * 	rule: inside msup last mn or mi with previous sibling mrow
-	 * set:  mathsiz=1.2em
+	 * set:  mathsiz=1.1em
 	 */
 	 public static final MathTemplate MsupLastMnWithPrevSiblingMrow = new MathTemplate_Base() {
 			@Override
@@ -409,7 +423,7 @@ public class MathTemplates {
 	/** 
 	 * 	
 	     rule: msup with excactly two elements mn, mi in that order
-	     set: mn 1em, mi 1.4em
+	     set: mn .9em, mi 1.3em
 	 */
 	 public static final MathTemplate MsupWithExactlyMnMi = new MathTemplate_Base() {
 			@Override
@@ -419,7 +433,7 @@ public class MathTemplates {
 			    	
 			    	if(matchesPattern("mn,mi", e.children())) {
 			    		replaceIfNoExist(e.child(0), ".9em");
-			    		replaceIfNoExist(e.child(1), "1.3øem");
+			    		replaceIfNoExist(e.child(1), "1.3em");
 			    	}
 			    }
 			}

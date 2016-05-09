@@ -1,3 +1,35 @@
+## 0 test
+.key=MSupMiDebug
+<math>
+    <msup>
+        <mn>7</mn>
+        <mn>2</mn>
+    </msup>
+    <mo>&#xD7;</mo>
+    <msup>
+        <mn>7</mn>
+        <mn>6</mn>
+    </msup>
+</math>
+#
+#
+#
+.key=MSupMiDebug_check
+<math>
+    <msup>
+        <mn mathsize="1em">7</mn>
+        <mn mathsize="1.1em">2</mn>
+    </msup>
+    <mo>&#xD7;</mo>
+    <msup>
+        <mn mathsize="1em">7</mn>
+        <mn mathsize="1.1em">6</mn>
+    </msup>
+</math>
+#
+#
+#
+#
 ## 1
 ##
 .key=MfracWithVariableInMn
@@ -11,7 +43,7 @@
 .key=MfracWithVariableInMn_check
 <math>
    <mfrac>
-     <mn mathsize="1.4em">abc</mn>
+     <mn mathsize="1.2em">abc</mn>
    </mfrac>
 </math>
 ################
@@ -91,7 +123,7 @@
 #
 <math>
     <mrow>
-        <mn mathsize="1.1em">1</mn>
+        <mn mathsize="1.2em">1</mn>
         <mfrac>
         </mfrac>
      </mrow>
@@ -103,9 +135,9 @@
 .key=SquareRoot
 #
 <math>
-    <msqtr>
+    <msqrt>
         <mi>test</mi>
-    </msqtr>
+    </msqrt>
 </math>
 #
 #
@@ -113,9 +145,9 @@
 #
 #
 <math>
-    <msqtr>
-        <mi mathsize="1.1em">test</mi>
-    </msqtr>
+    <msqrt>
+        <mi mathsize="1em">test</mi>
+    </msqrt>
 </math>
 #
 
@@ -137,7 +169,7 @@
 #
 <math>
     <msup>
-        <mi mathsize="1em">test</mi>
+        <mi mathsize=".9em">test</mi>
     </msup>
 </math>
 #
@@ -163,7 +195,7 @@
 <math>
     <mtr>
         <mtd>
-            <mi mathsize="1.1em">test</mi>
+            <mi mathsize="1em">test</mi>
         </mtd>
     </mtr>
 </math>
@@ -215,7 +247,7 @@
 #
 .key=MnMFracMn_check
 <math>
-    <mn mathsize="1.1em">1</mn>
+    <mn>1</mn>
     <mfrac>
         <mn mathsize="1.2em">test</mn>
     </mfrac>
@@ -242,9 +274,9 @@
 <math>
     <mrow>
          <mfrac>
-             <mtext mathsize="1.3em">1</mtext>
-             <mtext mathsize="1.3em">2</mtext>
-             <mtext mathsize="1.3em">3</mtext>
+             <mtext mathsize="1.2em">1</mtext>
+             <mtext mathsize="1.2em">2</mtext>
+             <mtext mathsize="1.2em">3</mtext>
          </mfrac>
     </mrow>
 </math>
@@ -276,9 +308,9 @@
     <mfrac>
         <mrow>
             <mn mathsize="1.2em">80</mn>
-            <mtext mathsize="1.3em">&#x2009;</mtext>
-            <mtext mathsize="1.3em">&#x2009;</mtext>
-            <mtext mathsize="1.3em">mi</mtext>
+            <mtext mathsize="1.2em">&#x2009;</mtext>
+            <mtext mathsize="1.2em">&#x2009;</mtext>
+            <mtext mathsize="1.2em">mi</mtext>
         </mrow>
         <mrow>
             <mi mathsize="1.3em">$</mi>
@@ -306,7 +338,7 @@
     <msup>
       <mrow>
       </mrow>
-      <mn mathsize="1.2em">3</mn>
+      <mn mathsize="1.1em">3</mn>
     </msup>
   </math>
 #
@@ -326,13 +358,11 @@
 .key=MsupWithExactlyTwoMi_check
 <math>
     <msup>
-        <mi mathsize="1.1em">3</mi>
-        <mi mathsize="1.4em">3</mi>
+        <mi mathsize=".9em">3</mi>
+        <mi mathsize="1.2em">3</mi>
     </msup>    
 </math>
 #  
-
-
 #15
 .key=MsupWithExactlyTwoMn
 <math>
@@ -350,7 +380,6 @@
 	</msup>
 </math>
 #
-
 #16
 .key=MsupWithExactlyMiMn
 <math>
@@ -384,8 +413,8 @@
 .key=MsupWithExactlyMnMi_check
 <math>
     <msup>
-        <mn mathsize="1em">3</mn>
-        <mi mathsize="1.4em">a</mi>
+        <mn mathsize=".9em">3</mn>
+        <mi mathsize="1.3em">a</mi>
     </msup>
 </math>
 #

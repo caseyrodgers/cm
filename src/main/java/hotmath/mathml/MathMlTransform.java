@@ -101,8 +101,8 @@ public class MathMlTransform {
 
 	public void doTestSetup() throws Exception {
 		
-		if(false) {
-			doTest("MsupWithExactlyMiMn");
+		if(true) {
+			doTest("MSupMiDebug");
 			return;
 		}
 		_mprops = new CmMultiLinePropertyReader(CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml.mprop");
