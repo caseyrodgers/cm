@@ -1,30 +1,58 @@
 ## 0 test
-.key=MSupMiDebug
+.key=TestDebug
 <math>
-    <msup>
-        <mn>7</mn>
-        <mn>2</mn>
-    </msup>
-    <mo>&#xD7;</mo>
-    <msup>
-        <mn>7</mn>
-        <mn>6</mn>
-    </msup>
+  <mfrac>
+    <mrow>
+      <msup>
+        <mi>a</mi>
+        <mi>b</mi>
+      </msup>
+    </mrow>
+    <mrow>
+      <msup>
+        <mi>a</mi>
+        <mi>c</mi>
+      </msup>
+    </mrow>
+  </mfrac>
+  <mo>=</mo>
+  <msup>
+    <mi>a</mi>
+    <mrow>
+      <mi>b</mi>
+      <mo>&#x2212;</mo>
+      <mi>c</mi>
+    </mrow>
+  </msup>
 </math>
 #
 #
 #
-.key=MSupMiDebug_check
+.key=TestDebug_check
 <math>
-    <msup>
-        <mn mathsize="1em">7</mn>
-        <mn mathsize="1.1em">2</mn>
-    </msup>
-    <mo>&#xD7;</mo>
-    <msup>
-        <mn mathsize="1em">7</mn>
-        <mn mathsize="1.1em">6</mn>
-    </msup>
+  <mfrac>
+    <mrow>
+      <msup>
+        <mi mathsize="1.1em">a</mi>
+        <mi mathsize="1.3em">b</mi>
+      </msup>
+    </mrow>
+    <mrow>
+      <msup>
+        <mi mathsize="1.1em">a</mi>
+        <mi mathsize="1.3em">c</mi>
+      </msup>
+    </mrow>
+  </mfrac>
+  <mo>=</mo>
+  <msup>
+    <mi mathsize="1.1em">a</mi>
+    <mrow>
+      <mi mathsize="1.1em">b</mi>
+      <mo>&#x2212;</mo>
+      <mi mathsize="1.1em">c</mi>
+    </mrow>
+  </msup>
 </math>
 #
 #
