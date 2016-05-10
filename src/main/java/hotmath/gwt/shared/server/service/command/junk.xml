@@ -1,54 +1,10 @@
-<div class='_question_def' id='hm_question_def'>
-
-	<div>
-		<p class=MsoNormal>Which of the following is not a perfect square?</p>
-	</div>
-	<ul class='no_show'>
-		<li correct='no'>
-			<div>
-				<math>
-					<mn>36</mn>
-				</math>
-
-
-
-			</div>
-			<div>&nbsp;
-			</div>
-		</li>
-		<li correct='no'>
-			<div>
-				<math>
-					<mn>64</mn>
-				</math>
-			</div>
-			<div>&nbsp;
-			</div>
-		</li>
-		<li correct='no'>
-			<div>
-				<math>
-					<mn>121</mn>
-				</math>
-			</div>
-			<div>&nbsp;
-			</div>
-		</li>
-		<li correct='yes'>
-			<div>
-				<math>
-					<mn>222</mn>
-				</math>
-			</div>
-			<div>&nbsp;
-			</div>
-		</li>
-	</ul>
-</div>
-
-<div name='hm_flash_widget'>
-	<div name='hm_flash_widget_def' style='display: none'>
-		{type:'mChoice',value:'use_question_def', format:'', width:300,
-		height:110}
-	</div>
-</div>
+<math>
+	<msub>
+		<mi>S</mi>
+		<mrow>
+			<mi mathsize="1.2em">n</mi>
+			<mo mathsize="1.2em">&#x2212;</mo>
+			<mn mathsize="1.2em">1</mn>
+		</mrow>
+	</msub>
+</math>
