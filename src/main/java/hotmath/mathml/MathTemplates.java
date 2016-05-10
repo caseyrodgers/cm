@@ -201,6 +201,26 @@ public class MathTemplates {
 	};
 	
 	
+	/** rule: mi
+	 *  set: mi 1.1em
+	 */
+	 public static final MathTemplate AllMi = new MathTemplate_Base() {
+			@Override
+			public void processDocument(Document doc) {
+			    Elements els = doc.select("math mi");
+			    for (Element e : els) {
+			    	replaceIfNoExist(e, "1.1em");
+			    }
+			}
+
+			@Override
+			public String getRuleName() {
+				// TODO Auto-generated method stub
+				return "AllMi";
+			}
+	};
+	
+	
 	/** 
 	 * rule: mtr mtd mi
 	 * set: mi 1em

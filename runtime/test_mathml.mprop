@@ -419,3 +419,16 @@
 </math>
 #
 #
+
+.key=AllMi
+<math>
+    <mi>a</mi>
+</math>
+#
+#
+.key=AllMi_check
+<math>
+    <mi mathsize="1.1em">a</mi>
+</math>
+#
+#
