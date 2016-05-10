@@ -9,7 +9,7 @@ public class MathTemplates {
 
 	/** 
 	 * rule: every mi, every mn
-     * set: 1.2em
+     * set: 1em
 	 */
 	 public static final MathTemplate EveryMnMi = new MathTemplate_Base() {
 			@Override
@@ -19,12 +19,12 @@ public class MathTemplates {
 				 */
 				Elements els = doc.select("math mn");
 		        for (Element e : els) {
-		        	replaceIfNoExist(e, "1.2em");
+		        	replaceIfNoExist(e, "1em");
 		        }
 		        
 				els = doc.select("math mi");
 		        for (Element e : els) {
-		        	replaceIfNoExist(e, "1.2em");
+		        	replaceIfNoExist(e, "1em");
 		        }
 
 			}

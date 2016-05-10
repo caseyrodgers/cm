@@ -478,11 +478,11 @@
 .key=AllMi2_check
 <math>
     <msub>
-        <mi mathsize="1.1em">S</mi>
+        <mi mathsize="1em">S</mi>
         <mrow>
-            <mi mathsize="1.2em">n</mi>
-            <mo mathsize="1.2em">&#x2212;</mo>
-            <mn mathsize="1.2em">1</mn>
+            <mi mathsize="1em">n</mi>
+            <mo>&#x2212;</mo>
+            <mn mathsize="1em">1</mn>
         </mrow>
     </msub>
 </math>
