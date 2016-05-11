@@ -103,7 +103,7 @@ public class MathMlTransform {
 	public void doTestSetup() throws Exception {
 		
 		if(true) {
-			doTest("AllMi2");
+			doTest("MFracMtextBalance");
 			return;
 		}
 		_mprops = new CmMultiLinePropertyReader(CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml.mprop");

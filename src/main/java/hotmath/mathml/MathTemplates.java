@@ -130,7 +130,7 @@ public class MathTemplates {
 	 public static final MathTemplate MfracWithMi = new MathTemplate_Base() {
 			@Override
 			public void processDocument(Document doc) {
-				Elements els = doc.select("math mfrac+mi");
+				Elements els = doc.select("math mfrac>mi");
 		        for (Element e : els) {
 		        	replaceIfNoExist(e, "1.3em");
 		        }

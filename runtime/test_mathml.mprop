@@ -341,7 +341,7 @@
             <mtext mathsize="1.2em">mi</mtext>
         </mrow>
         <mrow>
-            <mi mathsize="1.3em">$</mi>
+            <mi mathsize="1.1em">$</mi>
             <mn mathsize="1.2em">6</mn>
         <mtext>&nbsp;</mtext></mrow>
     </mfrac>
@@ -488,3 +488,21 @@
 </math>
 #
 #
+
+.key=MfracWithMi2
+<math>
+<mfrac>
+  <mi>a</mi>
+  <mi>b</mi>
+</mfrac>
+</math>
+.key=MfracWithMi2_check
+#
+<math>
+<mfrac>
+  <mi mathsize="1.3em">a</mi>
+  <mi mathsize="1.3em">b</mi>
+</mfrac>
+</math>
+#
+

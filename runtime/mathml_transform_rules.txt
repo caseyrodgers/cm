@@ -1,0 +1,88 @@
+MnMfracMn
+rule: if math is followed by mn and mfrac
+set: mn to 1.2 em
+ 
+ 
+MfracWithVariableInMn
+rule: mfrac followed by mn that contains a letter
+set: mn to 1.4em
+ 
+ 
+MfracWithNumberInMn
+rule: mfrac followed by mn that contains a number, 
+set: to 1.2em
+ 
+ 
+MrootMrowMsup
+rule: mroot followed by mrow (with a sibling mi) is followed by msup followed by exactly two mi
+set:  first mi to 1em the second mi to 1.2em and the mrow sibling mi to 1.6em
+(this is probably too complicated and should be dropped)
+ 
+MfracWithMo
+rule: math is followed by mfrac is followed by mo
+set: mo to 1.3 em
+ 
+ 
+MfracWithMi
+rule: math is followed by mfrac is followed by mi, 
+set:  mi to 1.3 em
+ 
+MixedNumbers
+math is followed by mrow is followed by mn and mfrac 
+set: mn to 1.2 em
+ 
+ 
+SquareRoot
+rule: math is followed by msqtr is followed by mi
+set: mi to 1 em
+ 
+ 
+MtrMtdMi
+rule: math is followed by mtr is followed by mtd is followed by mi
+set:  mi to 1 em
+ 
+ 
+MfracMtext
+rule: math is followed by mfrac is followed by mtext
+set: mtext to 1.3 em
+ 
+ 
+MFracMtextBalance
+rule: in mfrac, if one mrow has mtext, 
+set: all the mrows must have mtext
+ 
+ 
+MsupLastMnWithPrevSiblingMrow
+rule: math is followed by msup, if last element is mn or mi
+set:  that mn or mi to 1.2 em
+ 
+ 
+MsupWithExactlyTwoMi
+rule: math is followed by msup and followed by 2 mi, 
+set: first mi to 1.1 em, and set second mi to 1.3 em
+ 
+ 
+MsupWithExactlyTwoMn
+rule: math is followed by msup and followed by 2 mn
+set:  first mn to 1 em, and set second mn to 1.1 em
+ 
+ 
+MsupWithExactlyMiMn
+rule: math is followed by msup and followed by mi and then mn
+set: mi to 1 em, and set mn to 1 em
+ 
+MsupWithExactlyMnMi
+rule: math is followed by msup and followed by mn and then mi
+set: mn to 1 em, and set mi to 1.4 em
+ 
+MsupMi
+rule: math is followed by msup is followed by mi
+set: set mi to 1.1 em
+ 
+MSub
+rule: in msub 
+set: all mn, mi, mo to mathsize = 1.2 em
+ 
+AllMi
+rule: all mi that are not yet set by above rules
+set: mi 1.1em
