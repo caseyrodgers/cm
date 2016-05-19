@@ -205,6 +205,31 @@ public class MathTemplates {
 	};
 	
 	
+	/** 
+	 *  MSub
+     *   rule: in msub 
+     *   set: all mn, mi, mo to mathsize = 1.2 em
+	 */
+	 public static final MathTemplate MsubMiMnMo = new MathTemplate_Base() {
+			@Override
+			public void processDocument(Document doc) {
+			    Elements els = doc.select("math msub");
+			    for (Element e : els) {
+			    	String tg = e.tagName();
+			    	if(tg.equals("mn") || tg.equals("mi") || tg.equals("mo")) {
+			    		replaceIfNoExist(e, "1.2em");
+			    	}
+			    }
+			}
+
+			@Override
+			public String getRuleName() {
+				// TODO Auto-generated method stub
+				return "AllMi";
+			}
+	};
+	
+	
 	/** rule: mi
 	 *  set: mi 1.1em
 	 */

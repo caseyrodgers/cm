@@ -1,3 +1,60 @@
+.key=test1
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtable columnalign="left">
+    <mtr>
+      <mtd>
+        <mfrac>
+          <mrow>
+            <mn>2</mn>
+            <mi>x</mi>
+          </mrow>
+          <mn>2</mn>
+        </mfrac>
+        <mo>&lt;</mo>
+        <mfrac>
+          <mn>6</mn>
+          <mn>2</mn>
+        </mfrac>
+      </mtd>
+    </mtr>
+    <mtr>
+      <mtd>
+        <mi>x</mi>
+        <mo>&lt;</mo>
+        <mn>3</mn>
+      </mtd>
+    </mtr>
+  </mtable>
+</math>
+.key=test1_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtable columnalign="left">
+    <mtr>
+      <mtd>
+        <mfrac>
+          <mrow>
+            <mn mathsize="1.2em">2</mn>
+            <mi mathsize="1em">x</mi>
+          </mrow>
+          <mn mathsize="1.2em">2</mn>
+        </mfrac>
+        <mo>&lt;</mo>
+        <mfrac>
+          <mn mathsize="1.2em">6</mn>
+          <mn mathsize="1.2em">2</mn>
+        </mfrac>
+      </mtd>
+    </mtr>
+    <mtr>
+      <mtd>
+        <mi mathsize="1em">x</mi>
+        <mo>&lt;</mo>
+        <mn>3</mn>
+      </mtd>
+    </mtr>
+  </mtable>
+</math>
+#
 #
 #
 #

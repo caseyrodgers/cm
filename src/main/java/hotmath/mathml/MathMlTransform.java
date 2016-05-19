@@ -18,7 +18,7 @@ import sb.util.SbTestImpl;
  * Process MathML transformations to add customized
  * mathml attributes.
  * 
- * 
+ * MsupMi before MsupWithExactlyMiMn 
  */
 public class MathMlTransform {
 
@@ -27,23 +27,24 @@ public class MathMlTransform {
 	private CmMultiLinePropertyReader _mprops;
 	MathTemplate[] _mathTemplates = {
 			MathTemplates.MnMfracMn,
-			   MathTemplates.MfracWithVariableInMn,
-			   MathTemplates.MfracWithNumberInMn,
-			   MathTemplates.MrootMrowMsup,
-			   MathTemplates.MfracWithMo,
-			   MathTemplates.MfracWithMi,
-			   MathTemplates.MixedNumbers,
-			   MathTemplates.SquareRoot,
-			   MathTemplates.MtrMtdMi,
-			   MathTemplates.MfracMtext,
-			   MathTemplates.MFracMtextBalance,
-			   MathTemplates.MsupLastMnWithPrevSiblingMrow,
-			   MathTemplates.MsupWithExactlyTwoMi,
-			   MathTemplates.MsupWithExactlyTwoMn,
-			   MathTemplates.MsupWithExactlyMiMn,
-			   MathTemplates.MsupWithExactlyMnMi,
-			   MathTemplates.MsupMi,
-			   MathTemplates.AllMi
+			MathTemplates.MfracWithVariableInMn,
+			MathTemplates.MfracWithNumberInMn,
+			MathTemplates.MrootMrowMsup,
+			MathTemplates.MfracWithMo,
+			MathTemplates.MfracWithMi,
+			MathTemplates.MixedNumbers,
+			MathTemplates.SquareRoot,
+			MathTemplates.MtrMtdMi,
+			MathTemplates.MfracMtext,
+			MathTemplates.MFracMtextBalance,
+			MathTemplates.MsupLastMnWithPrevSiblingMrow,
+			MathTemplates.MsupWithExactlyTwoMi,
+			MathTemplates.MsupWithExactlyTwoMn,
+			MathTemplates.MsupWithExactlyMnMi,
+			MathTemplates.MsupWithExactlyMiMn,
+			MathTemplates.MsupMi,
+			MathTemplates.MsubMiMnMo,
+			MathTemplates.AllMi
 	};
 
 
@@ -100,10 +101,10 @@ public class MathMlTransform {
     }
 	
 
-	public void doTestSetup() throws Exception {
+	public void doTestSetup(String test) throws Exception {
 		
-		if(false) {
-			doTest("MFracMtextBalance");
+		if(test != null && test.length() > 0) {
+			doTest(test);
 			return;
 		}
 		_mprops = new CmMultiLinePropertyReader(CatchupMathProperties.getInstance().getCatchupRuntime() + "/test_mathml.mprop");
@@ -162,7 +163,7 @@ public class MathMlTransform {
 				@Override
 				public void doTest(Object arg0, String arg1) throws SbException {
 					try {
-						new MathMlTransform().doTestSetup();
+						new MathMlTransform().doTestSetup(arg1);
 					}
 					catch(Exception e) {
 						throw new SbException(e);
