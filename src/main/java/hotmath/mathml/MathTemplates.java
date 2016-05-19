@@ -213,7 +213,7 @@ public class MathTemplates {
 			public void processDocument(Document doc) {
 			    Elements els = doc.select("math mi");
 			    for (Element e : els) {
-			    	replaceIfNoExist(e, "1.1em");
+			    	replaceIfNoExist(e, "1em");
 			    }
 			}
 
@@ -281,6 +281,8 @@ public class MathTemplates {
 			    for (Element e : els) {
 			    	replaceIfNoExist(e, "1.2em");
 			    }
+			    
+			    
 			}
 
 			@Override
