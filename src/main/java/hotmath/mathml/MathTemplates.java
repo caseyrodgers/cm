@@ -193,7 +193,7 @@ public class MathTemplates {
 			public void processDocument(Document doc) {
 			    Elements els = doc.select("math msup mi");
 			    for (Element e : els) {
-			    	replaceIfNoExist(e, "1.1em");
+			    	replaceIfNoExist(e, "1em");
 			    }
 			}
 
