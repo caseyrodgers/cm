@@ -462,8 +462,8 @@ public class MathTemplates {
 			    for (Element e : els) {
 			    	
 			    	if(matchesPattern("mi,mn", e.children())) {
-			    		replaceIfNoExist(e.child(0), "1.1em");
-			    		replaceIfNoExist(e.child(1), "1.1em");
+			    		replaceIfNoExist(e.child(0), "1em");
+			    		replaceIfNoExist(e.child(1), "1em");
 			    	}
 			    }
 			}
