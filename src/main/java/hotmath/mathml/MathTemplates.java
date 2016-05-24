@@ -197,7 +197,7 @@ public class MathTemplates {
 	/**
 	 * rule: msqrt mi set: mi 1em
 	 */
-	public static final MathTemplate SquareRoot = new MathTemplate_Base() {
+	public static final MathTemplate MsqrtMi = new MathTemplate_Base() {
 		@Override
 		public boolean processDocument(Document doc) {
 			boolean fired = false;

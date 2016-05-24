@@ -33,7 +33,7 @@ public class MathMlTransform {
 			MathTemplates.MfracWithMo,
 			MathTemplates.MfracWithMi,
 			MathTemplates.MixedNumbers,
-			MathTemplates.SquareRoot,
+			MathTemplates.MsqrtMi,
 			MathTemplates.MtrMtdMi,
 			MathTemplates.MfracMtext,
 			MathTemplates.MFracMtextBalance,
@@ -83,7 +83,9 @@ public class MathMlTransform {
             	String before = doc.toString();
             	if( t.processDocument(doc) ) {
             		// template did match
-            		callback.ruleFired(t);
+            		if(callback != null) {
+            		    callback.ruleFired(t);
+            		}
             	}
             	String after = doc.toString();
             	
