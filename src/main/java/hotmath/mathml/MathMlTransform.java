@@ -59,7 +59,17 @@ public class MathMlTransform {
 	 *  
 	 *  
 	 */
+	public interface CallbackInfo {
+		void ruleActivated(MathTemplate fired);  // actually changed text
+		void ruleFired(MathTemplate fired);
+	}
+	
+
 	public String processMathMlTransformations(String solutionHtml) throws Exception {
+		return processMathMlTransformations(solutionHtml, null);
+	}
+	
+	public String processMathMlTransformations(String solutionHtml, CallbackInfo callback) throws Exception {
         try {
         	solutionHtml = solutionHtml.replace("&", "+||+");
             Document doc = Jsoup.parse(solutionHtml,"", Parser.xmlParser());
@@ -71,13 +81,20 @@ public class MathMlTransform {
             for(MathTemplate t: _mathTemplates) {
 
             	String before = doc.toString();
-            	t.processDocument(doc);
+            	if( t.processDocument(doc) ) {
+            		// template did match
+            		callback.ruleFired(t);
+            	}
             	String after = doc.toString();
             	
             	if(!before.equals(after)) {
             		atLeastOnMatch=true;
             		//__logger.debug("Rule activated: " + t.getRuleName());
             		System.out.println("-> Rule activated: " + t.getRuleName());
+            		
+            		if(callback != null) {
+            			callback.ruleActivated(t);
+            		}
             	}
             }
             if(atLeastOnMatch) {

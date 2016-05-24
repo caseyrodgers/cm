@@ -8,10 +8,8 @@ import org.jsoup.select.Elements;
 public abstract class MathTemplate_Base implements MathTemplate {
 
 	@Override
-	abstract public void processDocument(Document doc);
+	abstract public boolean processDocument(Document doc);
 	abstract public String getRuleName();
-	
-	
 
     /** pattern is token containing the pattern tag, and the mathsize 
      *  to use if pattern matched.

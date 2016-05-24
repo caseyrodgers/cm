@@ -1,12 +1,6 @@
 package hotmath.gwt.solution_editor.client;
 
 
-import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
-import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.solution_editor.client.rpc.FormatXmlAdminAction;
-import hotmath.gwt.solution_editor.client.rpc.MathMlResource;
-import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -14,6 +8,14 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+
+import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.solution_editor.client.model.MathMlTransformationInfo;
+import hotmath.gwt.solution_editor.client.rpc.FormatXmlAdminAction;
+import hotmath.gwt.solution_editor.client.rpc.GetMathMlTransformationAction;
+import hotmath.gwt.solution_editor.client.rpc.MathMlResource;
+import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 
 /**
  * Encapsulates the Java Plugin editor used to allowing plain editing.
@@ -83,6 +85,15 @@ public class StepEditorPlainTextDialog extends GWindow {
 				hide();
 			}
 		}));
+
+        
+        getHeader().addTool(new TextButton("Test Transformation", new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
+                showMathMLTransformation();
+            }
+        }));
 
 
         getHeader().addTool(new TextButton("MathML Editor", new SelectHandler() {
@@ -187,5 +198,27 @@ public class StepEditorPlainTextDialog extends GWindow {
             }
         });
     }
+
+    
+    private void showMathMLTransformation() {
+    	GetMathMlTransformationAction action = new GetMathMlTransformationAction(getTextEditorValue());
+        SolutionEditor.__status.setBusy("Getting MathML transformation  ...");
+        SolutionEditor.getCmService().execute(action, new AsyncCallback<MathMlTransformationInfo>() {
+            public void onSuccess(MathMlTransformationInfo response) {
+            	new MathMlTransformationDialog(response.getResults(), response.getLogMessages());
+            	
+                SolutionEditor.__status.clearStatus("");
+            }
+
+            @Override
+            public void onFailure(Throwable arg0) {
+                SolutionEditor.__status.clearStatus("");
+                arg0.printStackTrace();
+                com.google.gwt.user.client.Window.alert(arg0.getLocalizedMessage());
+            }
+        });
+    }    
+    
+
 
 }

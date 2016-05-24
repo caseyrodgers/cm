@@ -4,7 +4,7 @@ import org.jsoup.nodes.Document;
 
 public interface MathTemplate {
 
-	void processDocument(Document doc);
+	boolean processDocument(Document doc);
 	String getRuleName();
 
 }
