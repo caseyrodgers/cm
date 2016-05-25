@@ -34,6 +34,9 @@ public class MathMlTransform {
 			MathTemplates.MfracWithMi,
 			MathTemplates.MixedNumbers,
 			MathTemplates.MsqrtMi,
+			MathTemplates.MrootMn,
+			MathTemplates.MrootMi,
+			MathTemplates.MrootOther,
 			MathTemplates.MtrMtdMi,
 			MathTemplates.MfracMtext,
 			MathTemplates.MFracMtextBalance,
@@ -83,6 +86,7 @@ public class MathMlTransform {
             	String before = doc.toString();
             	if( t.processDocument(doc) ) {
             		// template did match
+            		System.out.println("-> Rule fired: " + t.getRuleName());
             		if(callback != null) {
             		    callback.ruleFired(t);
             		}

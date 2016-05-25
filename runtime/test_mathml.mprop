@@ -486,3 +486,54 @@
 </math>
 #
 
+
+.key=MrootMn
+<math>
+    <mroot>
+        <mn>a</mn>
+        <mn>b</mn>
+        <mi>c</mi>
+        <mn>d</mn>
+    </mroot>
+</math>
+#
+.key=MrootMn_check
+<math>
+    <mroot>
+        <mn mathsize="1em">a</mn>
+        <mn mathsize="1em">b</mn>
+        <mi mathsize="1.2em">c</mi>
+        <mn mathsize="1.3em">d</mn>
+    </mroot>
+</math>
+#
+
+
+.key=MrootMnTest1
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mroot>
+      <mrow>
+        <msup>
+          <mi>a</mi>
+          <mi>n</mi>
+        </msup>
+      </mrow>
+      <mi>n</mi>
+    </mroot>
+  </mrow>
+</math>
+.key=MrootMnTest1_check
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mroot>
+      <mrow>
+        <msup>
+          <mi mathsize="1em">a</mi>
+          <mi mathsize="1.2em">n</mi>
+        </msup>
+      </mrow>
+      <mi mathsize="1.6em">n</mi>
+    </mroot>
+  </mrow>
+</math>

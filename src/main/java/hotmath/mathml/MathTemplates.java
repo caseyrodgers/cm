@@ -99,7 +99,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MfracWithVariableInMn";
 		}
 	};
@@ -120,7 +119,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MfracWithNumberInMn";
 		}
 	};
@@ -141,7 +139,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MfracWithMo";
 		}
 	};
@@ -165,7 +162,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MfracWithMi";
 		}
 	};
@@ -189,7 +185,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MixedNumbers";
 		}
 	};
@@ -238,7 +233,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MsupMi";
 		}
 	};
@@ -264,7 +258,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MsubMiMnMo";
 		}
 	};
@@ -287,7 +280,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "AllMi";
 		}
 	};
@@ -310,7 +302,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MtrMtdMi";
 		}
 	};
@@ -323,16 +314,15 @@ public class MathTemplates {
 			for (Element e : els) {
 				Elements mns = e.getElementsByTag("mi");
 				if (mns.size() == 2) {
-
 					fired = true;
+					
 					replaceIfNoExist(mns.get(0), "1em");
-					fired = true;
 					replaceIfNoExist(mns.get(1), "1.2em");
 
 					Element par = e.parent();
 					if (nextSiblingIs("mi", par)) {
 						Element a = getNextSibling(par);
-						a.attr("mathsize", "1.6em");
+						replaceIfNoExist(a, "1.6em");
 					}
 				}
 			}
@@ -342,7 +332,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MrootMrowMsup";
 		}
 	};
@@ -364,7 +353,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MnMfracMn";
 		}
 	};
@@ -416,7 +404,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MFracMtextBalance";
 		}
 	};
@@ -457,7 +444,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MsupLastMnWithPrevSiblingMrow";
 		}
 	};
@@ -488,7 +474,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MsupWithExactlyTwoMi";
 		}
 	};
@@ -516,7 +501,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MsupWithExactlyTwoMn";
 		}
 	};
@@ -543,7 +527,6 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MsupWithExactlyMiMn";
 		}
 	};
@@ -573,8 +556,121 @@ public class MathTemplates {
 
 		@Override
 		public String getRuleName() {
-			// TODO Auto-generated method stub
 			return "MsupWithExactlyMnMi";
+		}
+	};
+	
+	
+	
+
+	/**
+	 *  	
+
+	MrootMn
+	rule: mroot with last direct decendant mn
+	set: that mn to 1.3em
+
+	 */
+
+	public static final MathTemplate MrootMn = new MathTemplate_Base() {
+		@Override
+		public boolean processDocument(Document doc) {
+			boolean fired = false;
+			Elements els = doc.select("math mroot");
+			for (Element e : els) {
+
+				if (hasAtLeast(e, 2, "mn")) {
+					
+					Elements mis = e.select("mn");
+					for(Element k2: mis) {
+						if(k2.parent().tagName().equals("mroot") && getNextSibling(k2) == null) {
+							fired = true;
+							replaceIfNoExist(k2, "1.3em");
+						}
+					}
+				}
+			}
+
+			return fired;
+		}
+
+		@Override
+		public String getRuleName() {
+			return "MrootMn";
+		}
+	};
+	
+	
+	/** 
+	MrootMi
+	rule: mroot with last direct descendant mi
+	set: that mi to 1.4em
+    */
+	public static final MathTemplate MrootMi = new MathTemplate_Base() {
+		@Override
+		public boolean processDocument(Document doc) {
+			boolean fired = false;
+			Elements els = doc.select("math mroot");
+			for (Element e : els) {
+
+				if (hasAtLeast(e, 2, "mn")) {
+					
+					Elements mis = e.select("mi");
+					for(Element k2: mis) {
+						if(k2.parent().tagName().equals("mroot") && getNextSibling(k2) == null) {
+							fired = true;
+							replaceIfNoExist(k2, "1.4em");
+						}
+					}
+				}
+			}
+
+			return fired;
+		}
+
+		@Override
+		public String getRuleName() {
+			return "MrootMi";
+		}
+	};
+
+	
+	/** 
+	MrootOther 
+	rule: mroot with mn or mi
+	set: mn to 1em, mi 1.2em
+	*/
+	
+	public static final MathTemplate MrootOther = new MathTemplate_Base() {
+		@Override
+		public boolean processDocument(Document doc) {
+			boolean fired = false;
+			Elements els = doc.select("math mroot");
+			for (Element e : els) {
+
+				if (hasAtLeast(e, 2, "mn")) {
+					
+					Elements mis = e.select("mi");
+					for(Element k2: mis) {
+						fired = true;
+						replaceIfNoExist(k2, "1.2em");
+					}					
+
+					
+					Elements mns = e.select("mn");
+					for(Element k2: mns) {
+						fired = true;						
+						replaceIfNoExist(k2, "1em");
+					}
+				}
+			}
+
+			return fired;
+		}
+
+		@Override
+		public String getRuleName() {
+			return "MrootOther";
 		}
 	};
 
@@ -598,7 +694,7 @@ public class MathTemplates {
 		Element[] elems = new Element[] { e1, e2 };
 		for (Element e : elems) {
 			boolean foundMtext = false;
-			for (Element c : e.children()) {
+		for (Element c : e.children()) {
 				if (c.tagName().equals("mtext")) {
 					foundMtext = true;
 					break;

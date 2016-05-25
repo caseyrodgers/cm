@@ -1,3 +1,28 @@
+MathTemplates.MathTemplates.MnMfracMn
+MathTemplates.MfracWithVariableInMn
+MathTemplates.MfracWithNumberInMn
+MathTemplates.MrootMrowMsup
+MathTemplates.MfracWithMo
+MathTemplates.MfracWithMi
+MathTemplates.MixedNumbers
+MathTemplates.SquareRoot
+MathTemplates.mRootmn
+MathTemplates.mRootmi
+MathTemplates.MtrMtdMi
+MathTemplates.MfracMtext
+MathTemplates.MFracMtextBalance
+MathTemplates.MsupLastMnWithPrevSiblingMrow
+MathTemplates.MsupWithExactlyTwoMi
+MathTemplates.MsupWithExactlyTwoMn
+MathTemplates.MsupWithExactlyMnMi
+MathTemplates.MsupWithExactlyMiMn
+MathTemplates.MsupMi
+MathTemplates. MsubMiMnMo
+MathTemplates.AllMi
+ 
+ 
+Rule Definitions:
+ 
 MnMfracMn
 rule: if math is followed by mn and mfrac
 set: mn to 1.2 em
@@ -25,16 +50,24 @@ set: mo to 1.3 em
  
 MfracWithMi
 rule: math is followed by mfrac is followed by mi, 
-set:  mi to 1.3 em
+set:  every mi to 1.3 em from <mfrac> until next </mfrac>
  
 MixedNumbers
-math is followed by mrow is followed by mn and mfrac 
+rule: math is followed by mrow is followed by mn and mfrac 
 set: mn to 1.2 em
  
  
 SquareRoot
 rule: math is followed by msqtr is followed by mi
 set: mi to 1 em
+ 
+mRootmn
+rule: math is followed by at least two mn in mroot
+set: if mn is last term before </mroot>, set that last mn to 1.3, set all other mn to 1, all mi to 1.2
+ 
+mRootmi
+rule: math is followed by at least two mn in mroot
+set: if mi is last term before </mroot>, set that last mi to 1.4, set all other mn to 1, all other mi to 1.2
  
  
 MtrMtdMi
@@ -67,22 +100,24 @@ rule: math is followed by msup and followed by 2 mn
 set:  first mn to 1 em, and set second mn to 1.1 em
  
  
-MsupWithExactlyMiMn
-rule: math is followed by msup and followed by mi and then mn
-set: mi to 1 em, and set mn to 1 em
- 
 MsupWithExactlyMnMi
 rule: math is followed by msup and followed by mn and then mi
 set: mn to 1 em, and set mi to 1.4 em
  
+MsupWithExactlyMiMn
+rule: math is followed by msup and followed by mi and then mn
+set: mi to 1 em, and set mn to 1 em
+ 
+ 
 MsupMi
 rule: math is followed by msup is followed by mi
-set: set mi to 1.1 em
+set: set mi to 1.0 em
  
-MSub
+ 
+MsubMiMnMo
 rule: in msub 
 set: all mn, mi, mo to mathsize = 1.2 em
  
 AllMi
 rule: all mi that are not yet set by above rules
-set: mi 1.1em
+set: mi to mathsize = 1 em

@@ -14,6 +14,8 @@ public abstract class MathTemplate_Base implements MathTemplate {
     /** pattern is token containing the pattern tag, and the mathsize 
      *  to use if pattern matched.
      *  
+     *  The matching pattern must be absolute.
+     *  
      * @param pattern
      * @param children
      * @return
@@ -33,6 +35,22 @@ public abstract class MathTemplate_Base implements MathTemplate {
     	}
     	return true;
 	}	
+     
+     
+     
+
+ 	protected static boolean hasAtLeast(Element e, int cnt, String tag) {
+ 		int count=0;
+ 		for(Element kid: e.children()) {
+ 			if(kid.tagName().equals(tag)) {
+ 				if(count++ >= cnt-1) {
+ 					return true;
+ 				}
+ 			}
+ 		}
+ 		return false;
+ 	}
+
 
  	/** Replace mathsize, only if it is not already set
       * @param ex 
@@ -55,7 +73,7 @@ public abstract class MathTemplate_Base implements MathTemplate {
 		Element p = e.parent();
 		for(int i=0;i<p.children().size();i++) {
 			Element c = p.children().get(i);
-			if(e == c) {
+			if(e == c && (i+1 < p.children().size())) {
 				return p.children().get(i+1);
 			}
 		}
