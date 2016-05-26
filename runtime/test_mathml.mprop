@@ -537,3 +537,24 @@
     </mroot>
   </mrow>
 </math>
+
+
+
+.key=MrootTest3
+<math>
+    <mroot>
+        <mrow>
+            <mn>-32</mn>
+        </mrow>
+        <mn>5</mn>
+     </mroot>
+</math>
+.key=MrootTest3_check
+<math>
+    <mroot>
+        <mrow>
+            <mn mathsize="1em">-32</mn>
+        </mrow>
+        <mn mathsize="1.3em">5</mn>
+     </mroot>
+</math>
