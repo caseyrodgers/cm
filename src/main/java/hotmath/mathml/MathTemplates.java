@@ -612,15 +612,11 @@ public class MathTemplates {
 			boolean fired = false;
 			Elements els = doc.select("math mroot");
 			for (Element e : els) {
-
-				if (hasAtLeast(e, 2, "mn")) {
-					
-					Elements mis = e.select("mi");
-					for(Element k2: mis) {
-						if(k2.parent().tagName().equals("mroot") && getNextSibling(k2) == null) {
-							fired = true;
-							replaceIfNoExist(k2, "1.4em");
-						}
+				Elements mis = e.select("mi");
+				for(Element k2: mis) {
+					if(k2.parent().tagName().equals("mroot") && getNextSibling(k2) == null) {
+						fired = true;
+						replaceIfNoExist(k2, "1.4em");
 					}
 				}
 			}
@@ -648,8 +644,6 @@ public class MathTemplates {
 			Elements els = doc.select("math mroot");
 			for (Element e : els) {
 
-				if (hasAtLeast(e, 2, "mn")) {
-					
 					Elements mis = e.select("mi");
 					for(Element k2: mis) {
 						fired = true;
@@ -662,7 +656,6 @@ public class MathTemplates {
 						fired = true;						
 						replaceIfNoExist(k2, "1em");
 					}
-				}
 			}
 
 			return fired;
