@@ -303,7 +303,8 @@ public class CmSolutionManagerDao {
         
         String solutionXml = getSolutionXml(conn,  pid);
         
-        String newSolutionXml = solutionXml.replaceAll("(?i)" + searchFor, replaceWith);
+        String newSolutionXml = solutionXml.replace(searchFor, replaceWith);
+        // String newSolutionXml = solutionXml.replaceAll("(?i)" + searchFor, replaceWith);
         
         if(solutionXml.equals(newSolutionXml)) {
             return false;

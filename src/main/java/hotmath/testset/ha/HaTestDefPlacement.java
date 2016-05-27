@@ -177,7 +177,7 @@ public class HaTestDefPlacement extends HaTestDef {
                  * assign to National as default
                  * 
                  */
-                program = CmProgram.NATIONAL;
+                program = CmProgram.ALG2_PROF;
             }
             
             return program;
