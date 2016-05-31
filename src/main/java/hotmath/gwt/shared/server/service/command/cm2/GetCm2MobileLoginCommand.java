@@ -12,6 +12,7 @@ import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.program.CmProgramFlow;
+import hotmath.cm.server.model.CmPaymentDao;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
@@ -24,7 +25,6 @@ import hotmath.gwt.cm_rpc.client.model.StudentModelI;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
-import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
@@ -48,7 +48,6 @@ import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
-import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand.CustomProgramInfo;
 import hotmath.testset.ha.HaUserFactory;
@@ -198,6 +197,9 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
             SqlUtilities.releaseResources(null, ps, null);
         }
         
+        
+        
+        mobileUser.setPurchases(CmPaymentDao.getInstance().getPurchases(mobileUser.getUserId()));
         
 //        for(Cm2PrescriptionTopic p: mobileUser.getPrescriptionTopics()) {
 //        	p.setTopicTextExcerpt("TEST");

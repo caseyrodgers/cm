@@ -53,6 +53,22 @@ public class ActionDispatcherRest {
 	public String getUserProgram(@PathParam("userId") int userId) throws Exception {
 		return Cm2ActionManager.getUserCurrentProgram(userId);
 	}
+	
+	@POST
+	@GET
+	@Path("/user/{userId}/program/load")
+	public String loadUserProgram(@PathParam("userId") int userId, String subject) throws Exception {
+		return Cm2ActionManager.loadUserProgram(userId, subject);
+	}
+	
+	@POST
+	@GET
+	@Path("/user/{userId}/program/purchase")
+	public String purchaseProgram(@PathParam("userId") int userId, String subject) throws Exception {
+		return Cm2ActionManager.purchaseAndloadUserProgram(userId, subject);
+	}
+
+	
 
 	@POST
 	@Path("/login/user/mobile")

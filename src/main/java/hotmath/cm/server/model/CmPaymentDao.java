@@ -1,16 +1,18 @@
 package hotmath.cm.server.model;
 
-import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.payment.PaymentResult;
-import hotmath.spring.SpringManager;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+
+import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.payment.PaymentResult;
+import hotmath.spring.SpringManager;
 
 /**
  * 
@@ -52,5 +54,31 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
             }
         });
     }
+    
+    
+    public CmPurchases getPurchases(int uid) throws Exception {
+        final String sql = "select * from CM_RETAIL_PURCHASES where uid = " + uid;
+        List<CmPurchase> res = getJdbcTemplate().query(sql, new RowMapper<CmPurchase>() {
+        	public CmPurchase mapRow(java.sql.ResultSet rs, int rowNum) throws SQLException {
+        		return new CmPurchase(rs.getString("purchase"));
+        	};
+        });
+        CmPurchases purchases = new CmPurchases(res);
+        return purchases; 
+    }
+
+	public void addPurchase(final int userId, final String subject) {
+        final String sql = "insert into CM_RETAIL_PURCHASES(uid, purchase)values(?,?)";
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setInt(1, userId);
+                ps.setString(2, subject);
+                return ps;
+            }
+        });
+	}
+    
 
 }

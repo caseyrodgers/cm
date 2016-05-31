@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cedarsoftware.util.io.JsonWriter;
+import com.google.gson.Gson;
 
 import hotmath.ProblemID;
+import hotmath.cm.server.model.CmPaymentDao;
 import hotmath.cm.server.model.StudentEventsDao;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_core.client.model.UserSyncInfo;
@@ -69,6 +72,8 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
+import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
+import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
 import hotmath.testset.ha.HaTestDao;
@@ -424,4 +429,43 @@ public class Cm2ActionManager {
 		return results;
 	}
 
+	public static String loadUserProgram(int userId, String subject) throws Exception {
+		
+		Connection conn=null;
+		try {
+			conn = HMConnectionPool.getConnection();
+            CmProgram program = null;
+            if(subject.equals("Foundations")) {
+            	program = CmProgram.FOUNDATIONS;
+            }
+            else if(subject.equals("Essentials")) {
+            	program = CmProgram.ESSENTIALS;
+            }            
+            else if(subject.equals("Algebra 1")) {
+            	program = CmProgram.ALG1_PROF;
+            }
+            else if(subject.equals("Algebra 2")) {
+            	program = CmProgram.ALG2_PROF;
+            }
+            else if(subject.equals("Geometry")) {
+            	program = CmProgram.GEOM_PROF;
+            }            
+            else if(subject.equals("Pre-Algebra")) {
+            	program = CmProgram.PREALG_PROF;
+            }            
+
+			CmStudentDao.getInstance().assignProgramToStudent(conn, userId,program,null);
+			
+			return new Gson().toJson(new RpcData("status=OK"));
+		}
+	    finally {
+	    	SqlUtilities.releaseResources(null, null, conn);
+	    }
+	}
+
+	
+	public static String purchaseAndloadUserProgram(int userId, String subject) throws Exception {
+		CmPaymentDao.getInstance().addPurchase(userId, subject);
+		return loadUserProgram(userId, subject);
+	}
 }

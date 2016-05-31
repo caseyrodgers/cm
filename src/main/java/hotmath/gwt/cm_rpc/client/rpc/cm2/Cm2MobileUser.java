@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_rpc.client.rpc.cm2;
 
 
+import hotmath.cm.server.model.CmPurchases;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
@@ -96,6 +97,7 @@ public class Cm2MobileUser implements Response {
     
     PrescriptionData prescripion;
     private QuizCm2HtmlResult quizResponse;
+	private CmPurchases purchases;
 
 
     public PrescriptionData getPrescripion() {
@@ -168,4 +170,11 @@ public class Cm2MobileUser implements Response {
         this.quizResponse = quizResponse;
     }
 
+	public void setPurchases(CmPurchases purchases) {
+		this.purchases = purchases;
+	}
+	
+	public CmPurchases getPurchases() {
+		return purchases;
+	}
 }
