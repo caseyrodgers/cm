@@ -28,6 +28,7 @@ import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_core.client.model.QuizCm2Question;
 import hotmath.gwt.cm_core.client.model.TopicResource;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2HtmlResult;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
@@ -401,7 +402,8 @@ public class ActionDispatcherRest {
 				programFlow.saveActiveInfo(conn);
 			}
 			else {
-				CmStudentDao.getInstance().assignProgramToStudent(conn, uid, CmProgram.AUTO_ENROLL,null);
+			   ResetUserAction action = new ResetUserAction(ResetType.FULL,uid, 0);
+			   ActionDispatcher.getInstance().execute(action);
 			}
 		}
 		finally {

@@ -449,8 +449,8 @@ public class MathTemplates {
 	};
 
 	/**
-	 * rule: math is followed by msup and followed by 2 mi, set: : first mi to
-	 * 1.1 em, and set second mi to 1.3 em
+	 * rule: math is followed by msup and followed by 2 mi, 
+	 * set: first mi to 1 em, and set second mi to 1.3 em
 	 * 
 	 */
 	public static final MathTemplate MsupWithExactlyTwoMi = new MathTemplate_Base() {
@@ -463,7 +463,7 @@ public class MathTemplates {
 				if (matchesPattern("mi,mi", e.children())) {
 
 					fired = true;
-					replaceIfNoExist(e.child(0), "1.1em");
+					replaceIfNoExist(e.child(0), "1em");
 					fired = true;
 					replaceIfNoExist(e.child(1), "1.3em");
 				}
