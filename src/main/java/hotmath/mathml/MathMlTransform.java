@@ -86,7 +86,7 @@ public class MathMlTransform {
             	String before = doc.toString();
             	if( t.processDocument(doc) ) {
             		// template did match
-            		System.out.println("-> Rule fired: " + t.getRuleName());
+            		__logger.debug("-> Rule fired: " + t.getRuleName());
             		if(callback != null) {
             		    callback.ruleFired(t);
             		}
@@ -96,7 +96,7 @@ public class MathMlTransform {
             	if(!before.equals(after)) {
             		atLeastOnMatch=true;
             		//__logger.debug("Rule activated: " + t.getRuleName());
-            		System.out.println("-> Rule activated: " + t.getRuleName());
+            		__logger.debug("-> Rule activated: " + t.getRuleName());
             		
             		if(callback != null) {
             			callback.ruleActivated(t);
@@ -149,10 +149,10 @@ public class MathMlTransform {
 			}
 		}
 		catch(Exception e) {
-			System.out.println("Error testing mathml transform: " + e);
+			__logger.error("Error testing mathml transform: " + e, e);
 		}
 		
-		System.out.println("MathML Transform tests complete!");
+		__logger.info("MathML Transform tests complete!");
 	}
 
 	private void doTest(String key) throws Exception {

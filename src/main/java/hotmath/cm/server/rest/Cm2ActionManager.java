@@ -76,6 +76,7 @@ import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
+import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
@@ -133,6 +134,7 @@ public class Cm2ActionManager {
         }
         
         CheckCm2QuizAction action = new CheckCm2QuizAction(testId);
+        
 
         QuizCm2CheckedResult results = ActionDispatcher.getInstance().execute(action);
         Connection conn = null;
@@ -143,6 +145,18 @@ public class Cm2ActionManager {
         } finally {
             SqlUtilities.releaseResources(null, null, conn);
         }
+        
+
+		/** first program assigned in auto-enrollment is free
+		 * 
+		 */
+        if(results.getTestRunResults().getRunId() > 0) {
+            HaTest test = HaTestDao.getInstance().loadTest(action.getTestId());
+            if(test.getTestDef().getTestDefId() == CmProgram.AUTO_ENROLL.getDefId()) {
+	    		CmPaymentDao.getInstance().addPurchase(test.getUser().getUid(), results.getTestRunResults().getNextAction().getAssignedTest());
+            }
+        }
+        
         String json = JsonWriter.objectToJson(results);
         return json;
     }
