@@ -68,16 +68,22 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
     }
 
 	public void addPurchase(final int userId, final String subject) {
-        final String sql = "insert into CM_RETAIL_PURCHASES(uid, purchase, purchase_time)values(?,?,now())";
-        getJdbcTemplate().update(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setInt(1, userId);
-                ps.setString(2, subject);
-                return ps;
-            }
-        });
+		__logger.info("Adding purchase: " + userId + ", " + subject);
+		try {
+	        final String sql = "insert into CM_RETAIL_PURCHASES(uid, purchase, purchase_time)values(?,?,now())";
+	        getJdbcTemplate().update(new PreparedStatementCreator() {
+	            @Override
+	            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+	                PreparedStatement ps = conn.prepareStatement(sql);
+	                ps.setInt(1, userId);
+	                ps.setString(2, subject);
+	                return ps;
+	            }
+	        });
+		}
+		catch(Exception e) {
+			__logger.error("Error adding purchase", e);
+		}
 	}
     
 
