@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cedarsoftware.util.io.JsonWriter;
 import com.google.gson.Gson;
 
 import hotmath.ProblemID;
@@ -72,7 +71,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
-import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
@@ -157,7 +155,7 @@ public class Cm2ActionManager {
             }
         }
         
-        String json = JsonWriter.objectToJson(results);
+        String json = new Gson().toJson(results);
         return json;
     }
 
@@ -178,7 +176,7 @@ public class Cm2ActionManager {
             SolutionResponse solutionInfo2 = ActionDispatcher.getInstance().execute(action);
 
             Cm2SolutionInfo solutionInfo = new Cm2SolutionInfo(solutionSteps.getProblemStatement(), solutionInfo2);
-            return JsonWriter.objectToJson(solutionInfo);
+            return new Gson().toJson(solutionInfo);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -201,7 +199,7 @@ public class Cm2ActionManager {
             if(rid > 0) {
                 solutionInfo.setWidgetResult(HaTestRunDao.getInstance().getRunTutorWidgetValue(rid, pid));
             }
-            return JsonWriter.objectToJson(solutionInfo);
+            return new Gson().toJson(solutionInfo);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -222,7 +220,7 @@ public class Cm2ActionManager {
     public static String setPrescriptionSolutionContext(int rid, String pid, String context) {
         try {
             RpcData results = ActionDispatcher.getInstance().execute(new SaveSolutionContextAction(0, rid, pid, 0, context));
-            return JsonWriter.objectToJson(results);
+            return new Gson().toJson(results);
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -234,7 +232,7 @@ public class Cm2ActionManager {
         try {
             GetWhiteboardDataAction action = new GetWhiteboardDataAction(uid, pid, rid);
             CmList<WhiteboardCommand> result = ActionDispatcher.getInstance().execute(action);
-            return JsonWriter.objectToJson(result);
+            return new Gson().toJson(result);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -245,7 +243,7 @@ public class Cm2ActionManager {
         try {
             SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(uid, tid, rid, pid, CommandType.valueOf(cmdType.toUpperCase()), jsonData);
             RpcData result = ActionDispatcher.getInstance().execute(action);
-            return JsonWriter.objectToJson(result);
+            return new Gson().toJson(result);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -256,7 +254,7 @@ public class Cm2ActionManager {
         try {
             SearchTopicAction action = new SearchTopicAction(searchFor, SearchApp.CM_MOBILE2, uid);
             TopicSearchResults result = ActionDispatcher.getInstance().execute(action);
-            return JsonWriter.objectToJson(result);
+            return new Gson().toJson(result);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -288,7 +286,7 @@ public class Cm2ActionManager {
             
             Cm2PrescriptionTopic topicObject = new Cm2PrescriptionTopic(currSess.getTopic(), topicHtml, GetCm2MobileLoginCommand.getResources(response.getPrescriptionData()));
             
-            return JsonWriter.objectToJson(topicObject);
+            return new Gson().toJson(topicObject);
         }
         catch(Exception e) {
             throw e;
@@ -312,7 +310,7 @@ public class Cm2ActionManager {
         GetCm2QuizHtmlAction actionQuiz = new GetCm2QuizHtmlAction(result.getQuizResult().getTestId());
         QuizCm2HtmlResult quizResponse = ActionDispatcher.getInstance().execute(actionQuiz);
         
-        return JsonWriter.objectToJson(quizResponse);
+        return new Gson().toJson(quizResponse);
     }
 
     public static String getAssignmentsListing(int uid) throws Exception  {
@@ -321,13 +319,13 @@ public class Cm2ActionManager {
         assignList.addAll(results);
         Cm2Assignments assignments = new Cm2Assignments(assignList);
         
-        return JsonWriter.objectToJson(assignments);
+        return new Gson().toJson(assignments);
     }
 
     public static String getCm2AssignmentProblem(int uid, int assignKey, String pid) throws Exception {
         AssignmentProblem result = ActionDispatcher.getInstance().execute(new GetAssignmentSolutionAction(uid, assignKey, pid));
         result.getInfo().setHtml(GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/help/solutions/", result.getInfo().getHtml()));
-        return JsonWriter.objectToJson(result);
+        return new Gson().toJson(result);
     }
     
 
@@ -342,7 +340,7 @@ public class Cm2ActionManager {
        // List<PrescriptionSessionDataResource> cm2Resources = AssignmentDao.getInstance().getAssigmentResources(assignment);
          
         //Cm2Assignment cm2Ass = new Cm2Assignment(assignment, cm2Resources); 
-        return JsonWriter.objectToJson(studentAssignment);
+        return new Gson().toJson(studentAssignment);
     }
 
 	public static String saveAssignmentProblemWidgetValue(int uid, int assKey, String pid, String value,
@@ -357,53 +355,54 @@ public class Cm2ActionManager {
         multiRequest.getActions().add(new SaveAssignmentProblemStatusAction(uid,assKey,pid, correct?"Correct":"Incorrect"));
         
 		CmList<Response> retVal = ActionDispatcher.getInstance().execute(multiRequest);
-		return JsonWriter.objectToJson(new RpcData("status=OK"));
+		return new Gson().toJson(new RpcData("status=OK"));
 	}
 
 	public static String getWhiteboardForAssignmentProblem(int uid, int assKey, String pid) throws Exception  {
 		AssignmentWhiteboardData results = ActionDispatcher.getInstance().execute(new GetAssignmentWhiteboardDataAction(uid,pid, assKey));
-		return JsonWriter.objectToJson(results);
+		return new Gson().toJson(results);
 	}
 
 	public static String saveWhiteboardForAssignmentProblem(int uid, int assKey, String pid, String commandData) throws Exception {
 		RpcData results = ActionDispatcher.getInstance().execute(new SaveAssignmentWhiteboardDataAction(uid, assKey, pid, CommandType.DRAW, commandData, false));
-		return JsonWriter.objectToJson(results);
+		return new Gson().toJson(results);
 	}
 
     public static String updateAssignmentProblemStatus(int uid, int akey, String pid, String status) throws Exception {       
         RpcData res = ActionDispatcher.getInstance().execute(new SaveAssignmentProblemStatusAction(uid,akey, pid, status));
-        return JsonWriter.objectToJson(res);
+        return new Gson().toJson(res);
     }
 
     public static String getTopicReviewText(String file, boolean spanish) throws Exception  {
         LessonResult res = ActionDispatcher.getInstance().execute(new GetReviewHtmlAction(file,  spanish));
         res.setLesson(GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/hotmath_help", res.getLesson()));      
-        return JsonWriter.objectToJson(res);
+        return new Gson().toJson(res);
     }
 
     public static String turnInAssignment(int uid, int assignKey) throws Exception {
         RpcData res = ActionDispatcher.getInstance().execute(new TurnInAssignmentAction(uid,  assignKey));
-        return JsonWriter.objectToJson(res);
+        return new Gson().toJson(res);
     }
 
     public static String saveTutorInputWidgetAnswer(int uid, int rid, String pid, String value, boolean isCorrect) throws Exception {
         UserTutorWidgetStats data = ActionDispatcher.getInstance().execute(new SaveTutorInputWidgetAnswerAction(uid, rid, pid, value, isCorrect));
-        return JsonWriter.objectToJson(data);
+        return new Gson().toJson(data);
     }
 
     public static String getUserInfo(int uid) throws Exception {
         UserLoginResponse data = ActionDispatcher.getInstance().execute(new GetUserInfoAction(uid, null));
-        return JsonWriter.objectToJson(data);
+        return new Gson().toJson(data);
+        //return new Gson().toJson(data);
     }
 
     public static String getUserSyncEvents(int uid) throws Exception {
         GetUserSyncAction action = new GetUserSyncAction(uid);
         UserSyncInfo data = ActionDispatcher.getInstance().execute(action);
-        return JsonWriter.objectToJson(data);
+        return new Gson().toJson(data);
     }
 
     public static String getUserMessages(int uid) throws Exception {
-        return JsonWriter.objectToJson(StudentEventsDao.getInstance().getEventHistoryFor(uid));
+        return new Gson().toJson(StudentEventsDao.getInstance().getEventHistoryFor(uid));
     }
     
     public static String loginUser(int uid, String un, String pwd, String subject, String token) throws Exception {
@@ -422,7 +421,8 @@ public class Cm2ActionManager {
         action.setDeviceToken(deviceId);
 
         Cm2MobileUser userInfo = ActionDispatcher.getInstance().execute(action);
-        return JsonWriter.objectToJson(userInfo);
+        return new Gson().toJson(userInfo);
+        // return new Gson().toJson(userInfo);
 	}
 
 	public static RpcData saveFeedback(int uid, String feedbackMessage) throws Exception {
