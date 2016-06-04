@@ -1,39 +1,4 @@
-.key=test1
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <msup>
-      <mi>x</mi>
-      <mn>3</mn>
-    </msup>
-    <mo>+</mo>
-    <mn>10</mn>
-    <msup>
-      <mi>x</mi>
-      <mn>2</mn>
-    </msup>
-    <mo>+</mo>
-    <mn>169</mn>
-    <mi>x</mi>
-  </mrow>
-</math>
-.key=test1_check
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <msup>
-      <mi mathsize="1em">x</mi>
-      <mn mathsize="1em">3</mn>
-    </msup>
-    <mo>+</mo>
-    <mn>10</mn>
-    <msup>
-      <mi mathsize="1em">x</mi>
-      <mn mathsize="1em">2</mn>
-    </msup>
-    <mo>+</mo>
-    <mn>169</mn>
-    <mi mathsize="1em">x</mi>
-  </mrow>
-</math>
+
 #
 #
 #
@@ -255,7 +220,7 @@
 #
 .key=MnMFracMn_check
 <math>
-    <mn>1</mn>
+    <mn mathsize="1em">1</mn>
     <mfrac>
         <mn mathsize="1.2em">test</mn>
     </mfrac>
@@ -462,7 +427,7 @@
         <mrow>
             <mi mathsize="1em">n</mi>
             <mo>&#x2212;</mo>
-            <mn>1</mn>
+            <mn mathsize="1em">1</mn>
         </mrow>
     </msub>
 </math>

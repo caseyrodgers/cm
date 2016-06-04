@@ -283,6 +283,31 @@ public class MathTemplates {
 			return "AllMi";
 		}
 	};
+	
+
+	/**
+	 * 	AllMn
+	    rule: all mn that are not yet set by above rules
+	    set: mn to mathsize = 1 em
+	 */
+	public static final MathTemplate AllMn = new MathTemplate_Base() {
+		@Override
+		public boolean processDocument(Document doc) {
+			boolean fired = false;
+			Elements els = doc.select("math mn");
+			for (Element e : els) {
+				fired = true;
+				replaceIfNoExist(e, "1em");
+			}
+			return fired;
+		}
+
+		@Override
+		public String getRuleName() {
+			return "AllMn";
+		}
+	};
+	
 
 	/**
 	 * rule: mtr mtd mi set: mi 1em
