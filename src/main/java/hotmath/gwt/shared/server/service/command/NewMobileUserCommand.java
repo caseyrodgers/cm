@@ -1,7 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
 import java.sql.Connection;
-import java.util.UUID;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_core.client.model.SearchAllowMode;

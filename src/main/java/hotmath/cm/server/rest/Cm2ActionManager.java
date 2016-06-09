@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import hotmath.ProblemID;
 import hotmath.cm.server.model.CmPaymentDao;
@@ -72,6 +73,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.CmProgram;
+import hotmath.gwt.shared.client.util.UserInfoDao;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
 import hotmath.testset.ha.HaTest;
@@ -80,6 +82,7 @@ import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUser;
 import hotmath.testset.ha.HaUserDao;
+import hotmath.testset.ha.HaUserFactory;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -481,5 +484,12 @@ public class Cm2ActionManager {
 	public static String purchaseAndloadUserProgram(int userId, String subject) throws Exception {
 		CmPaymentDao.getInstance().addPurchase(userId, subject);
 		return loadUserProgram(userId, subject);
+	}
+
+	public static void deleteUserByDeviceId(String deviceId) throws Exception {
+		int existingUid = HaUserFactory.lookupUserId(deviceId, deviceId);
+		if(existingUid > 0) {
+			CmStudentDao.getInstance().removeUser(existingUid);
+		}
 	}
 }

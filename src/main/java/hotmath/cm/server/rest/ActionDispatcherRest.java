@@ -378,6 +378,15 @@ public class ActionDispatcherRest {
 		return Cm2ActionManager.getTopicReviewText(file, language.equalsIgnoreCase("spanish"));
 	}
 
+	
+	@POST
+	@Path("device/{deviceId}/new_user")
+	public String createNewUserForDeviceID(@PathParam("deviceId") String deviceId) throws Exception {
+		Cm2ActionManager.deleteUserByDeviceId(deviceId);
+		return new Gson().toJson(new RpcData("status=OK"));
+	}
+	
+	
 	@POST
 	@Path("user/{uid}/reset")
 	public String doRetailReset(@PathParam("uid") int uid, String data) throws Exception {
