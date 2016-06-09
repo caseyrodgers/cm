@@ -154,7 +154,7 @@ public class Cm2ActionManager {
         if(results.getTestRunResults().getRunId() > 0) {
             HaTest test = HaTestDao.getInstance().loadTest(action.getTestId());
             if(test.getTestDef().getTestDefId() == CmProgram.AUTO_ENROLL.getDefId()) {
-	    		CmPaymentDao.getInstance().addPurchase(test.getUser().getUid(), results.getTestRunResults().getNextAction().getAssignedTest());
+	    		CmPaymentDao.getInstance().addPurchase(test.getUser().getUid(), results.getTestRunResults().getAssignedTest());
             }
         }
         
