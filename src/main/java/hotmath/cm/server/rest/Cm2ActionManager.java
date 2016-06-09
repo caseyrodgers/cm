@@ -469,7 +469,13 @@ public class Cm2ActionManager {
             }            
             else if(subject.equals("Pre-Algebra")) {
             	program = CmProgram.PREALG_PROF;
-            }            
+            }    
+            else if(subject.equals("College Basic Math")) {
+            	program = CmProgram.BASICMATH;
+            }
+            else if(subject.equals("College Elementary Algebra")) {
+            	program = CmProgram.ELEMALG;
+            }
 
 			CmStudentDao.getInstance().assignProgramToStudent(conn, userId,program,null);
 			
