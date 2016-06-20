@@ -32,7 +32,6 @@ public class MathMlTransform {
 			MathTemplates.MrootMrowMsup,
 			MathTemplates.MfracWithMo,
 			MathTemplates.MfracWithMi,
-			MathTemplates.MixedNumbers,
 			MathTemplates.MsqrtMi,
 			MathTemplates.MrootMn,
 			MathTemplates.MrootMi,
