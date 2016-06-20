@@ -31,10 +31,14 @@ public class NewMobileUserCommand implements ActionHandler<NewMobileUserAction, 
 		
         int newUid = HaUserFactory.createUser(conn, mobileAdmin.getUserKey(),"none", newUserName, newPwd);
                 
-        CmStudentDao.getInstance().assignProgramToStudent(conn, newUid,CmProgram.AUTO_ENROLL,null);
-        CmStudentDao.getInstance().updateStudentSettings(conn, newUid, false, false, false, true, 70, true, false, false, SearchAllowMode.ENABLED_EXCEPT_TESTS);
+        setupNewMobileUserProgram(conn, newUid);
         
         return new RpcData("uid=" + newUid);
 	}
 
+	
+	public void setupNewMobileUserProgram(Connection conn, int uid) throws Exception {
+        CmStudentDao.getInstance().assignProgramToStudent(conn, uid,CmProgram.AUTO_ENROLL,null);
+        CmStudentDao.getInstance().updateStudentSettings(conn, uid, false, false, false, true, 70, true, false, false, SearchAllowMode.ENABLED_EXCEPT_TESTS);		
+	}
 }

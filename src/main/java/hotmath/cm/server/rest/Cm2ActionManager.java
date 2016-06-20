@@ -75,6 +75,7 @@ import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.util.UserInfoDao;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
+import hotmath.gwt.shared.server.service.command.NewMobileUserCommand;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
@@ -447,7 +448,6 @@ public class Cm2ActionManager {
 	}
 
 	public static String loadUserProgram(int userId, String subject) throws Exception {
-		
 		Connection conn=null;
 		try {
 			conn = HMConnectionPool.getConnection();
@@ -496,6 +496,17 @@ public class Cm2ActionManager {
 		int existingUid = HaUserFactory.lookupUserId(deviceId, deviceId);
 		if(existingUid > 0) {
 			CmStudentDao.getInstance().removeUser(existingUid);
+		}
+	}
+
+	public static void resetCurrentUser(int userId) throws Exception {
+		Connection conn=null;
+		try {
+			conn = HMConnectionPool.getConnection();
+		    new NewMobileUserCommand().setupNewMobileUserProgram(conn, userId);
+		}
+		finally {
+			SqlUtilities.releaseResources(null, null, conn);
 		}
 	}
 }
