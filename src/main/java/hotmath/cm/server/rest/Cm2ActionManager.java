@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import hotmath.ProblemID;
 import hotmath.cm.server.model.CmPaymentDao;
@@ -72,7 +73,9 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.CmProgram;
+import hotmath.gwt.shared.client.util.UserInfoDao;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
+import hotmath.gwt.shared.server.service.command.NewMobileUserCommand;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
@@ -80,6 +83,7 @@ import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUser;
 import hotmath.testset.ha.HaUserDao;
+import hotmath.testset.ha.HaUserFactory;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -151,7 +155,7 @@ public class Cm2ActionManager {
         if(results.getTestRunResults().getRunId() > 0) {
             HaTest test = HaTestDao.getInstance().loadTest(action.getTestId());
             if(test.getTestDef().getTestDefId() == CmProgram.AUTO_ENROLL.getDefId()) {
-	    		CmPaymentDao.getInstance().addPurchase(test.getUser().getUid(), results.getTestRunResults().getNextAction().getAssignedTest());
+	    		CmPaymentDao.getInstance().addPurchase(test.getUser().getUid(), results.getTestRunResults().getAssignedTest());
             }
         }
         
@@ -444,7 +448,6 @@ public class Cm2ActionManager {
 	}
 
 	public static String loadUserProgram(int userId, String subject) throws Exception {
-		
 		Connection conn=null;
 		try {
 			conn = HMConnectionPool.getConnection();
@@ -466,7 +469,13 @@ public class Cm2ActionManager {
             }            
             else if(subject.equals("Pre-Algebra")) {
             	program = CmProgram.PREALG_PROF;
-            }            
+            }    
+            else if(subject.equals("College Basic Math")) {
+            	program = CmProgram.BASICMATH;
+            }
+            else if(subject.equals("College Elementary Algebra")) {
+            	program = CmProgram.ELEMALG;
+            }
 
 			CmStudentDao.getInstance().assignProgramToStudent(conn, userId,program,null);
 			
@@ -481,5 +490,23 @@ public class Cm2ActionManager {
 	public static String purchaseAndloadUserProgram(int userId, String subject) throws Exception {
 		CmPaymentDao.getInstance().addPurchase(userId, subject);
 		return loadUserProgram(userId, subject);
+	}
+
+	public static void deleteUserByDeviceId(String deviceId) throws Exception {
+		int existingUid = HaUserFactory.lookupUserId(deviceId, deviceId);
+		if(existingUid > 0) {
+			CmStudentDao.getInstance().removeUser(existingUid);
+		}
+	}
+
+	public static void resetCurrentUser(int userId) throws Exception {
+		Connection conn=null;
+		try {
+			conn = HMConnectionPool.getConnection();
+		    new NewMobileUserCommand().setupNewMobileUserProgram(conn, userId);
+		}
+		finally {
+			SqlUtilities.releaseResources(null, null, conn);
+		}
 	}
 }

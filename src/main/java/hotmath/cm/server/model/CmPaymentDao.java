@@ -57,13 +57,18 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
     
     
     public CmPurchases getPurchases(int uid) throws Exception {
-        final String sql = "select * from CM_RETAIL_PURCHASES where uid = " + uid;
+        final String sql = "select * from CM_RETAIL_PURCHASES where uid = " + uid + " order by purchase_time";
+        
         List<CmPurchase> res = getJdbcTemplate().query(sql, new RowMapper<CmPurchase>() {
         	public CmPurchase mapRow(java.sql.ResultSet rs, int rowNum) throws SQLException {
         		return new CmPurchase(rs.getString("purchase"));
         	};
         });
+        if(res.size() > 0) {
+        	res.get(0).setFirst(true);
+        }
         CmPurchases purchases = new CmPurchases(res);
+
         return purchases; 
     }
 

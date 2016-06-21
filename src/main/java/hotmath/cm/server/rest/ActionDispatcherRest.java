@@ -24,23 +24,14 @@ import hotmath.cm.server.model.DeviceStorage;
 import hotmath.cm.server.model.QuizSelection;
 import hotmath.cm.test.HaTestSet;
 import hotmath.cm.test.HaTestSetQuestion;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_core.client.model.QuizCm2Question;
 import hotmath.gwt.cm_core.client.model.TopicResource;
-import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2HtmlResult;
-import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
-import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction.ResetType;
-import hotmath.gwt.solution_editor.client.SolutionSearchModel;
-import hotmath.gwt.solution_editor.client.rpc.SearchForSolutionsAction;
 import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
-import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -68,6 +59,17 @@ public class ActionDispatcherRest {
 	public String purchaseProgram(@PathParam("userId") int userId, String subject) throws Exception {
 		return Cm2ActionManager.purchaseAndloadUserProgram(userId, subject);
 	}
+	
+	
+	
+	@POST
+	@GET
+	@Path("/user/{userId}/reset")
+	public String resetCurrentUser(@PathParam("userId") int userId) throws Exception {
+		Cm2ActionManager.resetCurrentUser(userId);
+		return new Gson().toJson(new RpcData("status=OK"));
+	}
+
 
 	
 
@@ -378,6 +380,15 @@ public class ActionDispatcherRest {
 		return Cm2ActionManager.getTopicReviewText(file, language.equalsIgnoreCase("spanish"));
 	}
 
+	
+	@POST
+	@Path("device/{deviceId}/new_user")
+	public String createNewUserForDeviceID(@PathParam("deviceId") String deviceId) throws Exception {
+		Cm2ActionManager.deleteUserByDeviceId(deviceId);
+		return new Gson().toJson(new RpcData("status=OK"));
+	}
+	
+	
 	@POST
 	@Path("user/{uid}/reset")
 	public String doRetailReset(@PathParam("uid") int uid, String data) throws Exception {
