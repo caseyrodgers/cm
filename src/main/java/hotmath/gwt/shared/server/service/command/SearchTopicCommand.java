@@ -21,6 +21,7 @@ import org.apache.lucene.util.Bits;
 import hotmath.HotMathProperties;
 import hotmath.ProblemID;
 import hotmath.cm.util.CatchupMathProperties;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_core.client.model.SearchSuggestion;
@@ -104,7 +105,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction,Topic
                 __logger.error("error setting up SearchSuggest",  e);
             }
         }
-
+        
         PreparedStatement ps=null; 
         try {
             String sql = "insert into CM_SEARCH_TERMS(search_term, search_app, uid, search_date)values(?,?,?,now())";

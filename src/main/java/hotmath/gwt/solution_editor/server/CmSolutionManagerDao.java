@@ -227,7 +227,7 @@ public class CmSolutionManagerDao {
             	ResultSet rs = conn.createStatement().executeQuery(CmMultiLinePropertyReader.getInstance().getProperty("CM_SEARCH_DEBUG"));
             	while(rs.next()) {
                 	String pid = rs.getString("pid");
-					orderedTopics.add(pid);	
+					orderedTopics.add(pid + " " + rs.getString("type"));	
             	}
             	return orderedTopics;
         	}
