@@ -1,8 +1,27 @@
 package hotmath.gwt.shared.server.service.command;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.MultiFields;
+import org.apache.lucene.util.Bits;
+
 import hotmath.HotMathProperties;
 import hotmath.ProblemID;
 import hotmath.cm.util.CatchupMathProperties;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_core.client.model.SearchSuggestion;
@@ -23,24 +42,6 @@ import hotmath.search.Hit;
 import hotmath.search.HitImplBase;
 import hotmath.search.SearchSuggest;
 import hotmath.util.sql.SqlUtilities;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.MultiFields;
-import org.apache.lucene.util.Bits;
 
 /**
  *
@@ -103,6 +104,25 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction,Topic
             catch(Exception e) {
                 __logger.error("error setting up SearchSuggest",  e);
             }
+        }
+        
+        
+        if(action.getSearch().equals("[test]")) {
+        	
+			/** handle special case testing/debugging
+			 * 
+			 * see CM_SEARCH_DEBUG in catchup.mprops
+        	 * 
+        	 */
+        	CmList<TopicMatch> orderedTopics = new CmArrayList<TopicMatch>();
+        	ResultSet rs = conn.createStatement().executeQuery(CmMultiLinePropertyReader.getInstance().getProperty("CM_SEARCH_DEBUG"));
+        	while(rs.next()) {
+        		Topic topic = new Topic(rs.getString("type"),rs.getString("pid"),"");
+				orderedTopics.add(new TopicMatch(topic,MatchWeight.CONTENT_MATCH_ALL));	
+        	}
+			CmList<SearchSuggestion> suggestions = new CmArrayList<SearchSuggestion>();
+        	TopicSearchResults tsr = new TopicSearchResults(orderedTopics, suggestions);        
+        	return tsr;
         }
         
         PreparedStatement ps=null; 
