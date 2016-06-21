@@ -21,7 +21,6 @@ import org.apache.lucene.util.Bits;
 import hotmath.HotMathProperties;
 import hotmath.ProblemID;
 import hotmath.cm.util.CatchupMathProperties;
-import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_core.client.model.SearchSuggestion;
@@ -105,26 +104,7 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction,Topic
                 __logger.error("error setting up SearchSuggest",  e);
             }
         }
-        
-        
-        if(action.getSearch().equals("[test]")) {
-        	
-			/** handle special case testing/debugging
-			 * 
-			 * see CM_SEARCH_DEBUG in catchup.mprops
-        	 * 
-        	 */
-        	CmList<TopicMatch> orderedTopics = new CmArrayList<TopicMatch>();
-        	ResultSet rs = conn.createStatement().executeQuery(CmMultiLinePropertyReader.getInstance().getProperty("CM_SEARCH_DEBUG"));
-        	while(rs.next()) {
-        		Topic topic = new Topic(rs.getString("type"),rs.getString("pid"),"");
-				orderedTopics.add(new TopicMatch(topic,MatchWeight.CONTENT_MATCH_ALL));	
-        	}
-			CmList<SearchSuggestion> suggestions = new CmArrayList<SearchSuggestion>();
-        	TopicSearchResults tsr = new TopicSearchResults(orderedTopics, suggestions);        
-        	return tsr;
-        }
-        
+
         PreparedStatement ps=null; 
         try {
             String sql = "insert into CM_SEARCH_TERMS(search_term, search_app, uid, search_date)values(?,?,?,now())";
