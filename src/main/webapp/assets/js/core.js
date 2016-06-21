@@ -288,5 +288,20 @@ var Quotes =
          text:'More than 60 percent of students admitted to California state colleges require remedial education.',
          link_text: 'Early Assessment Program',
          link_type: 'research'
+     },
+     {
+         text:"I purchased Catchup Math for my 16-year-old son who is a junior. His weak subject is math, as was mine. He and I absolutely love Catchup Math. There are so many math concepts that we finally understand. We have actually quit hating math!",
+         link_text: 'AnnMarie -- Parent',
+         link_type:'success'
+     },
+     {
+         text:"A young mother out of high school for three years initially tested into our lowest math course. Not satisfied, she used Catchup Math for three weeks and then retested four course levels higher - a full year and a quarter. This was exactly our purpose for using it.",
+         link_text: 'College Instructor, Ohio',
+         link_type:'success'
+     },
+     {
+         text:"After using a huge variety of programs and text to help my son, Catchup Math has provided the positive reinforcement and helped focus him on his exact needs.",
+         link_text: 'Catherine -- Parent',
+         link_type:'success'
      }
  ];
