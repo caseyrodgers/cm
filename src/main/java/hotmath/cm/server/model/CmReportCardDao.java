@@ -5,6 +5,7 @@ import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_admin.server.model.StudentActivityDao;
+import hotmath.gwt.cm_admin.server.model.activity.StudentActivitySummaryModel;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
@@ -85,6 +86,10 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 }
 			 setFirstLastActivityDate(rval, samList);
 
+			 // get Activity Summary
+			 List<StudentActivitySummaryModel> sasList = saDao.getStudentActivitySummary(studentUid, samList);
+			 //TODO: setLastProgramStatus
+
 			 List<StudentUserProgramModel> filteredList = findMatchingUserPrograms(list, samList);
 
 			 if (filteredList.size() < 1) {
@@ -143,6 +148,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 startTime = System.currentTimeMillis();
 			 List<HaTest> testList = loadQuizData(conn, filteredList, beginDate, endDate);
 			 StudentActiveInfo ai = CmStudentDao.getInstance().loadActiveInfo(studentUid);
+			 //TODO: setLastProgramStatus using StudentActivitySummaryModel
 			 setFirstLastProgramStatus(conn, rval, testList, pm, ai);
 			 if (logger.isDebugEnabled()) {
 			     logger.debug(String.format("HaTest and HaTestRun: studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));

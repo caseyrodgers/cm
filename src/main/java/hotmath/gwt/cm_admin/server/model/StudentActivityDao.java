@@ -341,7 +341,12 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
         List<StudentActivityModel> samList = getStudentActivity(uid, false, fromDate, toDate);
 
-        List<StudentActivitySummaryModel> sasList = new ArrayList<StudentActivitySummaryModel>();
+        return getStudentActivitySummary(uid, samList);
+    }
+
+	public List<StudentActivitySummaryModel> getStudentActivitySummary(
+			int uid, List<StudentActivityModel> samList) {
+		List<StudentActivitySummaryModel> sasList = new ArrayList<StudentActivitySummaryModel>();
 
         // summarize student activity
         String progName = "";
@@ -461,7 +466,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         }
 
         return sasList;
-    }
+	}
 
 	public int getLessonCountForRunId(Integer runId) throws Exception {
     	String sql = "select count(*) as lesson_count from HA_TEST_RUN_LESSON where run_id = ?";
