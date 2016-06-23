@@ -5,9 +5,14 @@ import hotmath.HotMathProperties;
 import hotmath.ProblemID;
 import hotmath.SolutionManager;
 import hotmath.cm.util.CatchupMathProperties;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.service.SolutionDef;
+import hotmath.gwt.cm_core.client.model.TopicSearchResults;
+import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
+import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchApp;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.solution_editor.client.SolutionSearchModel;
 import hotmath.gwt.solution_editor.server.solution.TutorSolution;
 import hotmath.solution.Solution;
@@ -26,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import com.google.gson.Gson;
 
 import sb.util.MD5;
 
@@ -205,22 +212,47 @@ public class CmSolutionManagerDao {
     }
     
     public List<String> searchForPids(String searchFor, int limit) throws Exception {
-        List<String> list = new ArrayList<String>();
-        PreparedStatement ps=null;
-        Connection conn=null;
-        try {
-        	conn = HMConnectionPool.getConnection();
-            String sql = "select problemindex as pid from SOLUTIONS where problemindex like ? order by problemindex limit " + limit;
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, searchFor + "%");
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-                list.add(rs.getString("pid"));
-            }
-            return list;
+    	
+    	
+        if(searchFor.equals("[test]")) {
+			/** handle special case testing/debugging
+			 * 
+			 * see CM_SEARCH_DEBUG in catchup.mprops
+        	 * 
+        	 */
+        	Connection conn=null;
+        	try {
+        		conn = HMConnectionPool.getConnection();
+            	List<String> orderedTopics = new ArrayList<String>();
+            	ResultSet rs = conn.createStatement().executeQuery(CmMultiLinePropertyReader.getInstance().getProperty("CM_SEARCH_DEBUG"));
+            	while(rs.next()) {
+                	String pid = rs.getString("pid");
+					orderedTopics.add(pid + " " + rs.getString("type"));	
+            	}
+            	return orderedTopics;
+        	}
+        	finally {
+        		SqlUtilities.releaseResources(null, null, conn);
+        	}
         }
-        finally {
-            SqlUtilities.releaseResources(null, ps, conn);
+        else {
+	        List<String> list = new ArrayList<String>();
+	        PreparedStatement ps=null;
+	        Connection conn=null;
+	        try {
+	        	conn = HMConnectionPool.getConnection();
+	            String sql = "select problemindex as pid from SOLUTIONS where problemindex like ? order by problemindex limit " + limit;
+	            ps = conn.prepareStatement(sql);
+	            ps.setString(1, searchFor + "%");
+	            ResultSet rs = ps.executeQuery();
+	            while(rs.next()) {
+	                list.add(rs.getString("pid"));
+	            }
+	            return list;
+	        }
+	        finally {
+	            SqlUtilities.releaseResources(null, ps, conn);
+	        }
         }
     }
 
