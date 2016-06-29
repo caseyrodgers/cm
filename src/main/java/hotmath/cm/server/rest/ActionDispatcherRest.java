@@ -64,7 +64,7 @@ public class ActionDispatcherRest {
 	
 	@POST
 	@GET
-	@Path("/user/{userId}/reset")
+	@Path("/user/{userId}/reset_user")
 	public String resetCurrentUser(@PathParam("userId") int userId) throws Exception {
 		Cm2ActionManager.resetCurrentUser(userId);
 		return new Gson().toJson(new RpcData("status=OK"));
@@ -397,8 +397,6 @@ public class ActionDispatcherRest {
 
 	private String processDoRetailReset(int uid, String data) throws Exception {
 		JSONObject jo = new JSONObject(data);
-		int testId = jo.getInt("tid");
-		int runId = jo.getInt("rid");
 		String type = jo.getString("type");
 		
 		Connection conn=null; 
