@@ -300,7 +300,7 @@ var Quotes =
          link_type:'success'
      },
      {
-         text:"After using a huge variety of programs and text to help my son, Catchup Math has provided the positive reinforcement and helped focus him on his exact needs.",
+         text:"After using a huge variety of programs and textbooks to help my son, Catchup Math has provided the positive reinforcement and helped focus him on his exact needs.",
          link_text: 'Catherine -- Parent',
          link_type:'success'
      }
