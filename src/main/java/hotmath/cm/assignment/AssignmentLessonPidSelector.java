@@ -189,7 +189,7 @@ public class AssignmentLessonPidSelector {
         
 
         /** Only do this if NOT THE LIVE server */
-        if(!CatchupMathProperties.getInstance().getCmInstallationId().equals("live")) {
+        if(CatchupMathProperties.getInstance().getProperty("use.custom_problems","false").equals("true")) {
             /** Add any custom problem associated with this lesson 
              * 
              */
