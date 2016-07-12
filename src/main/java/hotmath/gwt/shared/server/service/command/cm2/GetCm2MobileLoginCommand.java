@@ -129,9 +129,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
         
         /** create new security key for this login session */
         String securityKey="";
-        if(uid == 0) {
-            securityKey = HaLoginInfoDao.getInstance().addLoginInfo(conn, basicUser, new ClientEnvironment(false),true);
-        }
+        securityKey = HaLoginInfoDao.getInstance().addLoginInfo(conn, basicUser, new ClientEnvironment(false),true);
         
         int programSegmentCount = 0;
         String testTitle = programFlow.getUserProgram().getTestName();
@@ -196,6 +194,11 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
         }
+        
+        
+        
+        
+        
         
         
         
