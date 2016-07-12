@@ -4,7 +4,7 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catchup Math Mobile</title>
-    <link type="text/css" rel="stylesheet" href="http://sexybuttons.googlecode.com/svn/trunk/sexybuttons.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/SexyButtons/sexybuttons.css">
     <link type="text/css" rel="stylesheet" href="/gwt-resources/css/CatchupMathMobile3_combined.css">
 
 <!--
@@ -48,8 +48,14 @@
     
 
     <script src="/gwt-resources/js/spin-min.js"></script>
-
     <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main_mobile.nocache"></script>
+    <script>
+    function __requireJsLoad_calculator(calcContainer, funcToCall) {
+    	$('#' + calcContainer).calculator({layout: $.calculator.scientificLayout});
+    	funcToCall();
+    }
+    </script>
+    
     <!--  Math Jax Configuration  -->
     <!--  CODE IS DUPLICATED (Copy/paste) -->
     <!-- ------------------------ -->
@@ -63,7 +69,7 @@
     
     
     <script src="/gwt-resources/js/CatchupMathMobile3_combined.js"></script>
-
+    
     <script src="/cm_mobile3/cm_mobile3.nocache.js"></script>
     
     

@@ -487,9 +487,8 @@ public class Cm2ActionManager {
 	}
 
 	
-	public static String purchaseAndloadUserProgram(int userId, String subject) throws Exception {
+	public static void purchaseUserProgram(int userId, String subject) throws Exception {
 		CmPaymentDao.getInstance().addPurchase(userId, subject);
-		return loadUserProgram(userId, subject);
 	}
 
 	public static void deleteUserByDeviceId(String deviceId) throws Exception {
