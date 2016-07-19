@@ -396,7 +396,6 @@ public class Cm2ActionManager {
     public static String getUserInfo(int uid) throws Exception {
         UserLoginResponse data = ActionDispatcher.getInstance().execute(new GetUserInfoAction(uid, null));
         return new Gson().toJson(data);
-        //return new Gson().toJson(data);
     }
 
     public static String getUserSyncEvents(int uid) throws Exception {
