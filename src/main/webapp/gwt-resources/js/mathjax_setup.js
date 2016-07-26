@@ -82,7 +82,8 @@ MathJax.Hub.Register.StartupHook("End Jax",function () {
             webFont: mjFont, 
             preferredFont: "STIX-Web",
             mtextFontInherit: true,
-            matchFontHeight: false
+            matchFontHeight: false,
+        	showProcessingMessages:false
             }
     });
   
