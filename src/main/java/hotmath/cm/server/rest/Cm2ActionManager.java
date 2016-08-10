@@ -378,6 +378,9 @@ public class Cm2ActionManager {
     public static String getTopicReviewText(String file, boolean spanish) throws Exception  {
         LessonResult res = ActionDispatcher.getInstance().execute(new GetReviewHtmlAction(file,  spanish));
         res.setLesson(GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/hotmath_help", res.getLesson()));      
+        
+        res.setLesson(GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/images/gt", res.getLesson()));
+        
         return new Gson().toJson(res);
     }
 
