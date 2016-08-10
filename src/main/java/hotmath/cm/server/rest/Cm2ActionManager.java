@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 
 import hotmath.ProblemID;
 import hotmath.cm.server.model.CmPaymentDao;
@@ -73,7 +72,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.CmProgram;
-import hotmath.gwt.shared.client.util.UserInfoDao;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.NewMobileUserCommand;
 import hotmath.gwt.shared.server.service.command.cm2.GetCm2MobileLoginCommand;
@@ -430,7 +428,16 @@ public class Cm2ActionManager {
 
 	public static RpcData saveFeedback(int uid, String feedbackMessage) throws Exception {
 		
+
+		
 		SaveFeedbackAction action = new SaveFeedbackAction();
+
+		
+		/** add user name to feedback message for cross referencing */
+
+		HaUser user = HaUserDao.getInstance().lookUser(uid,  true);
+		String userName = user.getUserName();
+		feedbackMessage = "userName: " + userName + "\n" + feedbackMessage;
 		action.setComments(feedbackMessage);
 		action.setStateInfo("uid: " + uid);
 		
