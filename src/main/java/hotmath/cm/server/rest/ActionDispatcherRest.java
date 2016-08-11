@@ -30,6 +30,7 @@ import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction.ResetType;
 import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;
+import hotmath.mathml.MathMlTransform;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.util.HMConnectionPool;
@@ -481,5 +482,17 @@ public class ActionDispatcherRest {
 	
 	private List<String> doPidSearch(String searchFor, int limit) throws Exception {
 		return new CmSolutionManagerDao().searchForPids(searchFor, limit);
+	}
+	
+	
+	@POST
+	@Path("transform")
+	public String processMathMlTransformation(String mathMl) throws Exception {
+		return RestResult.getResultObject(new CmRestCommand() {
+			@Override
+			public String execute() throws Exception {
+				return new MathMlTransform().processMathMlTransformations(mathMl);
+			}
+		});
 	}
 }
