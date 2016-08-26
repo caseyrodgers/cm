@@ -15,7 +15,7 @@ public interface BookView extends ResettablePage  {
 	BookModel getLoadedBookModel();
 	
 	static public interface Presenter {
-		void loadBookInfo(BookModel book,CallbackOnComplete callback);
+		void loadBookInfo(String textCode,CallbackOnComplete callback);
 		void getProblemNumbers(BookModel book, int page);
 		void loadSolution(ProblemNumber problem);
 	}

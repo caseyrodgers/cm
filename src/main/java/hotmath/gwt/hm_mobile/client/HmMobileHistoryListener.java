@@ -88,7 +88,7 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
     
                     final BookView view = HmMobile.__clientFactory.getBookView();
                     view.setPresenter(act);
-                    act.loadBookInfo(new BookModel(textCode), new CallbackOnComplete() {
+                    act.loadBookInfo(textCode, new CallbackOnComplete() {
 						@Override
 						public void isComplete() {
 		                    HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));						}

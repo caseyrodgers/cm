@@ -1,27 +1,21 @@
 package hotmath.gwt.hm_mobile.client.view;
 
+import java.util.List;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
+
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-
-import java.util.List;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 public class LoginViewImpl extends AbstractPagePanel implements LoginView, IPage {
 
@@ -35,38 +29,6 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView, IPage
 
 	public LoginViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
-		
-		
-		passwordWrapper.setAttribute("style",  "visibility: hidden");
-		usernameBox.addKeyUpHandler(new KeyUpHandler() {
-            
-            @Override
-            public void onKeyUp(KeyUpEvent event) {
-                int nc = event.getNativeKeyCode();
-                if(nc == 13) {
-                    handleLoginButton(null);
-                    return;
-                }
-                
-                //System.out.println("code: " + event.getNativeEvent().getKeyCode());
-                if( (event.isShiftKeyDown() && event.getNativeEvent().getKeyCode() == 50) || usernameBox.getText().indexOf("@") > -1) {
-                    passwordWrapper.setAttribute("style",  "visibility: visible");            
-                }
-                else {
-                    passwordWrapper.setAttribute("style",  "visibility: hidden");
-                }
-            }
-            
-        });
-		
-		passwordBox.addKeyUpHandler(new KeyUpHandler() {
-            @Override
-            public void onKeyUp(KeyUpEvent event) {
-                if(event.getNativeKeyCode() == 13) {
-                    handleLoginButton(null);
-                }
-            }
-        });
 	}
     @Override
     public void resetView() {
@@ -101,52 +63,13 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView, IPage
         this.callback.isComplete();
     }
     
-    
-    @UiHandler("loginButton")
-    protected void handleLoginButton(ClickEvent ce) {
-        String userName = usernameBox.getValue();
-        if(userName == null || userName.length() == 0) {
-            showMessage("User name must be specified.");
-            return;
-        }
-        String password = null;
-        if(userName.indexOf("@") > -1) {
-            password = passwordBox.getValue();
-            if(password == null || password.length() == 0) {
-                showMessage("Password must be specified.");
-                return;
-            }
-        }
-        
-        
-        presenter.doLogin(userName, password);
-    }
-    
     @UiHandler("demoButton")
     protected void handleDemoButton(ClickEvent ce) {
         presenter.setupDemoMode();
     }
-    
-    private void showMessage(String msg) {
-        errorMessage.setText(msg);
-    }
-    
-    @UiField 
-    DialogBox loginBox;
+
     
     @UiField
-    TextBox usernameBox;
-    
-    @UiField
-    PasswordTextBox passwordBox;
-    
-    @UiField
-    Label errorMessage;
-    
-    @UiField
-    TouchButton loginButton, demoButton;
-    
-    @UiField
-    Element passwordWrapper;
+    TouchButton demoButton;
     
 }

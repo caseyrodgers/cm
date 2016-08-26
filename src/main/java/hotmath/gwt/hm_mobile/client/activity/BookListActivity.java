@@ -1,5 +1,12 @@
 package hotmath.gwt.hm_mobile.client.activity;
 
+import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
+
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -10,13 +17,6 @@ import hotmath.gwt.hm_mobile.client.model.CategoryModel;
 import hotmath.gwt.hm_mobile.client.place.BookListPlace;
 import hotmath.gwt.hm_mobile.client.rpc.GetBooksAction;
 import hotmath.gwt.hm_mobile.client.view.BookListView;
-
-import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class BookListActivity extends AbstractActivity implements BookListView.Presenter {
     private ClientFactory clientFactory;
@@ -58,6 +58,25 @@ public class BookListActivity extends AbstractActivity implements BookListView.P
 
         try {
             GetBooksAction action = new GetBooksAction(new CategoryModel(subject));
+            
+            
+            Database.getInstance(new Database.Callback() {
+				
+				@Override
+				public void dbLoaded(Database database) {
+                    CmList<BookModel> books = database.getBooksInCategories(subject);
+                    
+                    BookListView bookView = clientFactory.getBookListView();
+                    bookView.showBookList(subject, books);
+                    clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
+                    
+                    callback.isComplete();
+				}
+			});
+            if(true) return;
+            
+            
+            
             HmMobile.getCmService().execute(action, new AsyncCallback<CmList<BookModel>>() {
                 @Override
                 public void onSuccess(CmList<BookModel> books) {

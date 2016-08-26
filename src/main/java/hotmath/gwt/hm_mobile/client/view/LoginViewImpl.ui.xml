@@ -82,33 +82,14 @@
 			<p>
 				Hotmath Mobile explains the odd numbered
 		        problems in over 300 math textbooks, with hint-step solutions. 
-		        To learn more about Hotmath, see if we cover your textbook,  
-		        and purchase a membership, visit <a href='http://hotmath.com'>Hotmath.com</a> 
+		        To learn more about Hotmath, see if we cover your textboo 
+		        visit <a href='http://hotmath.com'>Hotmath.com</a> 
 		        on a desktop computer.
 			</p>
-		
-		   
-			<h2>Login</h2>
-			<p>Personal subscribers enter email address;<br/> others enter school password.</p>
-			<div>
-				<g:TextBox styleName="{style.userName}" ui:field='usernameBox' />
-				<div ui:field="passwordWrapper" class='{style.passwordLable}'>
-					<span>Password:</span>
-				     <g:PasswordTextBox ui:field='passwordBox' />
-				</div>
-				<div class='{style.errorMessage}'>
-			        <g:Label ui:field='errorMessage' />
-			    </div>
-			</div>
-			<cm:TouchButton styleName="sexybutton sexy_cm_silver" ui:field='loginButton'>
-				<span>
-					<span>Log In</span>
-				</span>
-			</cm:TouchButton>
 			<cm:TouchButton styleName='sexybutton sexy_cm_silver {style.demoButton}'
 				ui:field='demoButton'>
 				<span>
-					<span>Free Textbooks Only</span>
+					<span>Start Hotmath</span>
 				</span>
 			</cm:TouchButton>
 

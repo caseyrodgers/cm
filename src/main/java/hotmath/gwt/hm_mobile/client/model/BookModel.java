@@ -5,6 +5,8 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 public class BookModel implements Response {
 
 	String textCode, title, image, publisher,copyRight,author,pubDate,subject;
+	int maxPageNumber;
+	int minPageNumber;
 	boolean free;
 	int page=0;
 	
@@ -21,6 +23,21 @@ public class BookModel implements Response {
 		this.free = isFree;
 	}
 	
+	public void setMaxPageNumber(int maxPageNumber) {
+		this.maxPageNumber = maxPageNumber;
+	}
+	
+	public int getMaxPageNumber() {
+		return maxPageNumber;
+	}
+	
+	public void setMinPageNumber(int minPageNumber) {
+		this.minPageNumber = minPageNumber;
+	}
+	
+	public int getMinPageNumber() {
+		return minPageNumber;
+	}
 	public boolean isFree() {
         return free;
     }

@@ -1,8 +1,23 @@
 package hotmath.gwt.hm_mobile.client.activity;
 
+import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
+
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionForMobileAction;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.model.Pid;
+import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.hm_mobile.client.ClientFactory;
 import hotmath.gwt.hm_mobile.client.HmMobile;
@@ -10,13 +25,6 @@ import hotmath.gwt.hm_mobile.client.event.EnableDisplayZoomEvent;
 import hotmath.gwt.hm_mobile.client.place.TutorViewPlace;
 import hotmath.gwt.hm_mobile.client.view.BookListView;
 import hotmath.gwt.hm_mobile.client.view.TutorView;
-
-import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 public class TutorViewActivity extends AbstractActivity implements TutorView.Presenter {
 	private ClientFactory clientFactory;
@@ -55,6 +63,46 @@ public class TutorViewActivity extends AbstractActivity implements TutorView.Pre
 
 	@Override
     public void getTutor(final String pid, final CallbackOnComplete callback) {
+		
+
+		Pid pidO = new Pid(pid);
+		String path = "/help/solutions/" + pidO.getTextCode() + "/" + pidO.getChapter() + "/" + pidO.getSection() + "/" + pidO.getProblemSet() + "/" + pidO.getPid();
+		
+		String url = path + "/tutor_all.txt";
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+		try {
+			Request response = builder.sendRequest(null, new RequestCallback() {
+				public void onError(Request request, Throwable exception) {
+					System.out.println("Error reading json: " + exception);
+				}
+
+				public void onResponseReceived(Request request, Response response) {
+					TutorAll tutorAll = parseTutorAll(response.getText());
+					
+					Pid p = new Pid(pid);
+					
+					ProblemNumber problemNumber = new ProblemNumber(p.getProblem(), p.getProblemSet(), p.getPid(), p.getPage());
+					SolutionResponse solutionResponse = new SolutionResponse(problemNumber,tutorAll.tutorRawHtml, tutorAll.tutorData,false,null);
+					
+					if(tutorAll.tutorData == null) {
+						PopupMessageBox.showMessage("Solution not found!");
+					}
+					else {
+					    clientFactory.getTutorView().loadSolution(solutionResponse);
+						callback.isComplete();
+					}
+				}
+			});
+		} catch (RequestException e) {
+			e.printStackTrace();
+		}
+		
+		if(true) {
+			return;
+		}
+		
+		
+		
 		clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));
 		GetSolutionForMobileAction action = new GetSolutionForMobileAction(pid);
 		HmMobile.getCmService().execute(action,new AsyncCallback<SolutionResponse>() {
@@ -75,4 +123,21 @@ public class TutorViewActivity extends AbstractActivity implements TutorView.Pre
 			}
 		});
     }
+	
+	
+	protected TutorAll parseTutorAll(String text) {
+		TutorAll ta = new TutorAll();
+		int sepStart = text.indexOf("++++++");
+		if(sepStart > -1) {
+			ta.tutorRawHtml = text.substring(0, sepStart);
+			ta.tutorData = text.substring(sepStart+6);
+		}
+		return ta;
+	}
+
+
+	class TutorAll {
+		String tutorRawHtml;
+		String tutorData;
+	}
 }
