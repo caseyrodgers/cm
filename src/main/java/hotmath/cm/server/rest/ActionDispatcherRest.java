@@ -487,7 +487,7 @@ public class ActionDispatcherRest {
 	
 	@POST
 	@Path("transform")
-	public String processMathMlTransformation(String mathMl) throws Exception {
+	public String processMathMlTransformation(final String mathMl) throws Exception {
 		return RestResult.getResultObject(new CmRestCommand() {
 			@Override
 			public String execute() throws Exception {
