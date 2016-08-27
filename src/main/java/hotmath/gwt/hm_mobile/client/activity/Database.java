@@ -39,7 +39,7 @@ public class Database {
 
 	private Database(final Callback callback) {
 
-		String url = "_data_BOOKINFO.json";
+		String url = "book_data/_data_BOOKINFO.json";
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
 
 		try {
