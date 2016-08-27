@@ -140,7 +140,7 @@ public class Database {
 
 		
 		/** process from server */
-		String url = "books/_data_BOOK_" + textCode.toLowerCase() + ".json";
+		String url = "book_data/_data_BOOK_" + textCode.toLowerCase() + ".json";
 		 RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
 		    try {
 		      builder.sendRequest(null, new RequestCallback() {

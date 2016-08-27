@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.hm_mobile.client.model.BookInfoModel;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
@@ -138,10 +139,10 @@ public class HmMobileDatabaseWriter {
 		PreparedStatement ps=null;
 		try {
 			String sql =
-					"select pagenumber, problemindex " +
+					"select cast(PROBLEMNUMBER as UNSIGNED) as sortnum , pagenumber, problemindex " +
 							"from SOLUTIONS " +
 							"where booktitle = ? " +
-							"order by pagenumber ";
+							" order by chaptertitle, problemset, sortnum";
 			
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, bookInfo.getBook().getTextCode());
@@ -151,8 +152,8 @@ public class HmMobileDatabaseWriter {
 				pages.add(new PageNumberWrapper(rs.getInt("pagenumber"),rs.getString("problemindex")));
 			}
 			
-			
-			SbFile sbFile = new SbFile(new File("/dev/projects/cm/src/main/java/hotmath/gwt/hm_mobile/public","_data_BOOK_" + bookInfo.getBook().getTextCode().toLowerCase() + ".json"));
+			String dir = CatchupMathProperties.getInstance().getCatchupHome() + "/src/main/java/hotmath/gwt/hm_mobile/public/book_data";
+			SbFile sbFile = new SbFile(new File(dir,"_data_BOOK_" + bookInfo.getBook().getTextCode().toLowerCase() + ".json"));
 			sbFile.setFileContents(new Gson().toJson(pages));
 			sbFile.writeFileOut();
 		}
