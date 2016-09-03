@@ -149,10 +149,10 @@ public class HaTestDefPlacement extends HaTestDef {
                 */
                 if(thisTest.indexOf("essentials") > -1) {
                     
-                    if(correct < 4) {
+                    if(correct < 9) {
                         program = CmProgram.FOUNDATIONS;
                     }
-                    else if(correct < 9) {
+                    else if(correct < 4) {
                         program = CmProgram.ESSENTIALS;
                     }
                 }

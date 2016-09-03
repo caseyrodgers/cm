@@ -39,7 +39,7 @@ public enum CmProgram {
     CUSTOM_PROGRAM(36,"Custom Program","Custom","Custom",false, 0),
     CUSTOM_QUIZ(46,"Custom Quiz","Custom","Custom",false, 0),
     ESSENTIALS_V1(41,"Essentials Program (version 1)","Ess","Prof", false, 6),
-    ESSENTIALS(42,"Essentials Program","Ess","Prof", true, 6),
+    ESSENTIALS(42,"Essentials","Ess","Prof", true, 6),
     OTHER_ESS(47,"Essentials, Other", "Ess", "Other",false,1),
     OTHER_PREALG(48,"Pre-Algebra, Other", "Pre-Alg", "Other",false,1),
     OTHER_ALG1(49,"Algebra 1, Other", "Alg 1", "Other", false, 1),
