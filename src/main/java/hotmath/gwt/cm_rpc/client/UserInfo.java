@@ -277,6 +277,11 @@ public class UserInfo implements  Response {
     public String getTestName() {
 		return testName;
 	}
+    
+    public void setTestName(String testName2Change) {
+		this.testName = testName2Change;
+	}
+
 
 	public void setProgramName(String testName) {
 		this.testName = testName;

@@ -197,20 +197,31 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
         
         
         
-        
-        
-        
-        
-        
         mobileUser.setPurchases(CmPaymentDao.getInstance().getPurchases(mobileUser.getUserId()));
         
 //        for(Cm2PrescriptionTopic p: mobileUser.getPrescriptionTopics()) {
 //        	p.setTopicTextExcerpt("TEST");
 //        }
+        
+        
+        /** remove Proficiency from test name (should not show on mobile)
+         * 
+         * TODO:  change in the DB the definitions of programs to remove proficiency
+         * 
+         */
+        mobileUser.getUserInfo().setTestName(removeProficiencyFromProgramName(mobileUser.getUserInfo().getTestName()));
+        
         return mobileUser;
     }
 
-    static public List<Cm2PrescriptionTopic> extractPrescriptionTopics(Connection conn, CmProgramFlowAction nextAction) throws Exception {
+    static public String removeProficiencyFromProgramName(String testName2Change) {
+    	if(testName2Change != null && testName2Change.indexOf("Proficiency") > -1) {
+    		return testName2Change.replace("Proficiency", "");
+    	}
+    	return testName2Change;
+	}
+
+	static public List<Cm2PrescriptionTopic> extractPrescriptionTopics(Connection conn, CmProgramFlowAction nextAction) throws Exception {
         try {
             List<Cm2PrescriptionTopic> topics = new ArrayList<Cm2PrescriptionTopic>();
             if(nextAction.getPlace() == CmPlace.QUIZ) {

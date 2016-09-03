@@ -156,6 +156,16 @@ public class Cm2ActionManager {
 	    		CmPaymentDao.getInstance().addPurchase(test.getUser().getUid(), results.getTestRunResults().getAssignedTest());
             }
         }
+
+        /** remove Proficiency from test names.
+         * 
+         * TODO: find a way to have different labels for programs, or remove
+         * proficiency from all programs.
+         * 
+         *  
+         */
+        results.getTestRunResults().setAssignedTest(GetCm2MobileLoginCommand.removeProficiencyFromProgramName(results.getTestRunResults().getAssignedTest()));
+        results.getTestRunResults().getNextAction().setAssignedTest(GetCm2MobileLoginCommand.removeProficiencyFromProgramName(results.getTestRunResults().getNextAction().getAssignedTest()));
         
         String json = new Gson().toJson(results);
         return json;
