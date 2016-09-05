@@ -148,11 +148,10 @@ public class HaTestDefPlacement extends HaTestDef {
                     map to real Program name.
                 */
                 if(thisTest.indexOf("essentials") > -1) {
-                    
-                    if(correct < 9) {
+                    if(correct < 4) {
                         program = CmProgram.FOUNDATIONS;
                     }
-                    else if(correct < 4) {
+                    else if(correct < 9) {
                         program = CmProgram.ESSENTIALS;
                     }
                 }
