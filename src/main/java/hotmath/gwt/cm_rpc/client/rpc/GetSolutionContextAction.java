@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 public class GetSolutionContextAction implements Action<CmList<SolutionContext>>{
     String pid;
+    boolean lookupDetails;
     
     public GetSolutionContextAction() {}
     
@@ -20,6 +21,16 @@ public class GetSolutionContextAction implements Action<CmList<SolutionContext>>
     public void setPid(String pid) {
         this.pid = pid;
     }
+    
+    
+    public boolean isLookupDetails() {
+		return lookupDetails;
+	}
+    
+    public void setLookupDetails(boolean lookupDetails) {
+		this.lookupDetails = lookupDetails;
+	}
+    
 
     @Override
     public String toString() {

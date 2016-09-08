@@ -1,11 +1,5 @@
 package hotmath.gwt.tutor_viewer.client.ui;
 
-import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
-import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
-import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
-import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +8,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 
-public class GenerateTutorContext {
+import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
+import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
+
+public class GenerateTutorContext extends TutorContextBase {
     
     TutorWrapperPanel _tutorWrapper;
     String pid;
@@ -30,8 +30,6 @@ public class GenerateTutorContext {
     public GenerateTutorContext(final String pid, final String jsonConfig, final GenerateTutorContextCallback callBack) {
         this.pid = pid;
         this.callBack = callBack;
-        
-        
         
         TutorCallbackDefault callback = new TutorCallbackDefault();
         _tutorWrapper = new TutorWrapperPanel(false,  false,false,false, callback);
@@ -90,18 +88,4 @@ public class GenerateTutorContext {
         var con = eval('(' + config + ')');
         return con.limit;
     }-*/;
-    
-    private native String _nativeGenerateContext(String pid, String js, String jsonConfig) /*-{
-        $wnd.gwt_solutionHasBeenInitialized = function() {};
-        
-        var that = this;
-        try {
-            return $wnd.TutorManager.generateContext(pid, js, jsonConfig);
-        }
-        catch(x) {
-            alert('error generating context: ' + x);
-        }
-        
-    }-*/;
-
 }

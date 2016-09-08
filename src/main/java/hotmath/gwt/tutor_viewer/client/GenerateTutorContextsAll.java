@@ -1,6 +1,7 @@
 package hotmath.gwt.tutor_viewer.client;
 
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionPidsAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetSolutionPidsAction.PidType;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.tutor_viewer.client.ui.GenerateTutorContext;
@@ -29,7 +30,7 @@ public class GenerateTutorContextsAll extends GenerateTutorContextPanel {
     public Widget createContexts(String pidNotUsed) {
         addLogMessage("Updating out of date global contexts");
 
-        GetSolutionPidsAction action = new GetSolutionPidsAction();
+        GetSolutionPidsAction action = new GetSolutionPidsAction(PidType.OUT_OF_DATE);
         CmRpcCore.getCmService().execute(action, new AsyncCallback<CmList<String>>() {
             @Override
             public void onSuccess(CmList<String> result) {

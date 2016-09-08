@@ -1,12 +1,5 @@
 package hotmath.gwt.tutor_viewer.client.ui;
 
-import hotmath.gwt.cm_core.client.CmCore;
-import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
-import hotmath.gwt.tutor_viewer.client.rpc.SaveSolutionContextsAction;
-import hotmath.gwt.tutor_viewer.client.ui.GenerateTutorContext.GenerateTutorContextCallback;
-
 import java.util.List;
 
 import com.google.gwt.user.client.Window;
@@ -17,6 +10,13 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
+import hotmath.gwt.tutor_viewer.client.rpc.SaveSolutionContextsAction;
+import hotmath.gwt.tutor_viewer.client.ui.GenerateTutorContext.GenerateTutorContextCallback;
 
 public class GenerateTutorContextPanel extends Composite {
     
@@ -70,7 +70,7 @@ public class GenerateTutorContextPanel extends Composite {
         });
     }
 
-    protected void addViewerLinks(String pid, int count) {
+    protected void addViewerLinks(String pid,  int count) {
         VerticalPanel vp = new VerticalPanel();
         for(int i=0;i<count;i++) {
             String p = pid + "$" + (i+1);

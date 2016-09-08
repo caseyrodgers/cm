@@ -1,5 +1,13 @@
 package hotmath.gwt.tutor_viewer.client;
 
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.RootPanel;
+
 import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
@@ -9,14 +17,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.tutor_viewer.client.ui.GenerateTutorContextPanel;
 import hotmath.gwt.tutor_viewer.client.ui.ShowTutorContextPanel;
 import hotmath.gwt.tutor_viewer.client.ui.TutorViewerPanelSimple;
-
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.RootPanel;
+import hotmath.gwt.tutor_viewer.client.ui.ValidateTutorContextPanel;
 
 
 
@@ -57,10 +58,16 @@ import com.google.gwt.user.client.ui.RootPanel;
             }
             
             if(CmCore.getQueryParameter("show_context") != null) {
-                RootPanel.get().add(new ShowTutorContextPanel().showAllContexts(pid));
+                RootPanel.get().add(new ShowTutorContextPanel().showAllContexts(pid, false));
+            }
+            else if(CmCore.getQueryParameter("show_context_details") != null) {
+                RootPanel.get().add(new ShowTutorContextPanel().showAllContexts(pid, true));
             }
             else if(CmCore.getQueryParameter("generate_context") != null) {
                 RootPanel.get().add(new GenerateTutorContextPanel().createContexts(pid));
+            }
+            else if(CmCore.getQueryParameter("validate_context") != null) {
+                RootPanel.get().add(new ValidateTutorContextPanel().validateContexts(pid));
             }
             else {
                 RootPanel.get().add(new TutorViewerPanelSimple(pid));

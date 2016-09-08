@@ -8,6 +8,9 @@ public class SolutionContext implements Serializable {
     String contextGuid;
     int probNum;
     String pid;
+    
+    
+    int countInUse;   // count of use in the wild (assigments)
 
     public SolutionContext() {}
     public SolutionContext(String pid, int probNum, String contextJson) {
@@ -34,6 +37,15 @@ public class SolutionContext implements Serializable {
     public void setPid(String pid) {
         this.pid = pid;
     }
+    
+    public int getCountInUse() {
+		return countInUse;
+	}
+    
+    public void setCountInUse(int countInUse) {
+		this.countInUse = countInUse;
+	}
+    
     
     @Override
     public String toString() {

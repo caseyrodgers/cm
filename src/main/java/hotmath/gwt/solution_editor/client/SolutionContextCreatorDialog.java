@@ -53,6 +53,8 @@ public class SolutionContextCreatorDialog extends GWindow{
         configuration.setWidth(200);
         framedPanel.add(new FieldLabel(configuration, "Configuration"));
         framedPanel.addButton(createGenerateButton());
+        framedPanel.addButton(createValidateButton());
+        framedPanel.addButton(createDetailsButton());
         return framedPanel;
     }
 
@@ -64,7 +66,31 @@ public class SolutionContextCreatorDialog extends GWindow{
             }
         });
     }
+        
+    private Widget createValidateButton() {
+         return new TextButton("Validate", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                doValidateContexts();
+            }
+        });
+    }
     
+    
+    private Widget createDetailsButton() {
+        return new TextButton("Details", new SelectHandler() {
+           @Override
+           public void onSelect(SelectEvent event) {
+               doShowExistingContextsDetails();
+           }
+       });
+   }
+    
+    
+    private void doShowExistingContextsDetails() {
+        String args= "show_context_details=true&pid=" + pid;
+        _contextsFrame.setUrl("/tutor_viewer/TutorViewer.html?" + args);
+    }
 
     private void showExistingContexts() {
         String args= "show_context=true&pid=" + pid;
@@ -73,6 +99,11 @@ public class SolutionContextCreatorDialog extends GWindow{
     
     private void doGenerateContexts() {
         String args= "generate_context=true&pid=" + pid + "&config="+configuration.getText();
+        _contextsFrame.setUrl("/tutor_viewer/TutorViewer.html?" + args);
+    }
+    
+    private void doValidateContexts() {
+        String args= "validate_context=true&pid=" + pid + "&config="+configuration.getText();
         _contextsFrame.setUrl("/tutor_viewer/TutorViewer.html?" + args);
     }
     

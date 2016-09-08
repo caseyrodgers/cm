@@ -74,6 +74,49 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	private SolutionDao() {
 		/** Empty */
 	}
+	
+	
+
+	/** get count of use of this context.  Meaning how many solutions are linked
+	 *  to the current version of the solution's define section?
+	 *  
+	 * @param conn
+	 * @param pid
+	 * @param probNum
+	 * @return
+	 */
+	public int getCountGlobalContextUse(Connection conn, String pid) throws Exception {
+		
+		PreparedStatement ps=null;
+		try {
+			String sql =    "select sum(cnt) as pid_context_instances " +
+					"from ( " +
+					"select 'in_ass_define' as type,count(*) as cnt " +
+					"from   CM_ASSIGNMENT_PIDS " +
+					"where pid = ? " +
+					" " +
+					"union " +
+					" " +
+					"select 'in_ass_user' as type,count(*) as cnt " +
+					"from   CM_ASSIGNMENT_PIDS_USER " +
+					"where pid = ? " +
+					") x ";
+			
+			ps = conn.prepareStatement(sql);
+			ps.setString(1,  pid);
+			ps.setString(2,  pid);
+			
+		    ResultSet rs = ps.executeQuery();
+		    if(rs.next()) {
+		    	return rs.getInt("pid_context_instances");
+		    }
+		}
+		finally {
+			SqlUtilities.releaseResources(null, ps, null);
+		}
+		
+		return 0;
+	}
 
 	/**
 	 * Return all contexts associated with this PID (problem set).
@@ -105,6 +148,24 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 					}
 				});
 		return matches.size() > 0 ? matches.get(0) : null;
+	}
+	
+	public List<SolutionContext> getSolutionContextPersonalAll(final String pid) throws CmException {
+		String sql = "select problem_number, variables from HA_SOLUTION_CONTEXT_work where pid = ? order by id";
+		List<SolutionContext> matches = getJdbcTemplate().query(sql, new Object[] { pid },
+				new RowMapper<SolutionContext>() {
+					@Override
+					public SolutionContext mapRow(ResultSet rs, int rowNum) throws SQLException {
+						String solnCtx;
+						try {
+							solnCtx = loadSolutionContextString(rs);
+						} catch (Exception e) {
+							throw new SQLException(e);
+						}
+						return new SolutionContext(pid, rs.getInt("problem_number"), solnCtx);
+					}
+				});
+		return matches;
 	}
 
 	public SolutionContext getSolutionContext_Debug(int runId, final String pid) throws CmException {
@@ -467,6 +528,23 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 		});
 		return pids;
 	}
+	
+	
+	/** get list of all pids that are dynamic (ie, have a tutor_define section)
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> getAllPidsWithGlobalSolutionContexts() throws Exception {
+		String sql = "select problemindex from SOLUTIONS where tutor_define != '' order by problemindex";
+		List<String> pids = getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<String>() {
+			@Override
+			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+				return rs.getString("problemindex");
+			}
+		});
+		return pids;
+	}
 
 	/**
 	 * Return all global contexts defined for this pid
@@ -475,7 +553,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 * @return
 	 */
 	public List<SolutionContext> getGlobalSolutionContextAll(String pid) {
-		String sql = "select * from HA_SOLUTION_GLOBAL_CONTEXT where pid = ? order by problem_number";
+		String sql = "select * from HA_SOLUTION_GLOBAL_CONTEXT where pid = ? order by create_time desc";
 		List<SolutionContext> pids = getJdbcTemplate().query(sql, new Object[] { pid },
 				new RowMapper<SolutionContext>() {
 					@Override
@@ -853,5 +931,6 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 			e.printStackTrace();
 		}
 	}
+
 
 }

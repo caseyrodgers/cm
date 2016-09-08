@@ -28,8 +28,18 @@ public class GetSolutionContextCommand extends ActionBase implements ActionHandl
 
     @Override
     public CmList<SolutionContext> execute(Connection conn, GetSolutionContextAction action) throws Exception {
-        CmList<SolutionContext> pids = new CmArrayList<SolutionContext>();
-        pids.addAll(SolutionDao.getInstance().getGlobalSolutionContextAll(action.getPid()));
-        return pids;
+        CmList<SolutionContext> contexts = new CmArrayList<SolutionContext>();
+        contexts.addAll(SolutionDao.getInstance().getGlobalSolutionContextAll(action.getPid()));
+        
+        
+        if(action.isLookupDetails()) {
+        	/** only do expensive lookup if requested
+        	 * 
+        	 */
+	        for(SolutionContext context: contexts) {
+	             context.setCountInUse(SolutionDao.getInstance().getCountGlobalContextUse(conn, context.getPid()));
+	        }
+        }
+        return contexts;
     }
 }
