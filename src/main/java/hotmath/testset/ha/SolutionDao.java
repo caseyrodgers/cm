@@ -536,7 +536,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 	 * @throws Exception
 	 */
 	public List<String> getAllPidsWithGlobalSolutionContexts() throws Exception {
-		String sql = "select problemindex from SOLUTIONS where tutor_define != '' order by problemindex";
+		String sql = "select problemindex from SOLUTIONS where active = 1 and (tutor_define != '' and tutor_define is not null) order by problemindex";
 		List<String> pids = getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<String>() {
 			@Override
 			public String mapRow(ResultSet rs, int rowNum) throws SQLException {

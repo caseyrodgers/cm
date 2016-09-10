@@ -712,7 +712,7 @@ function __findVarInContextNotInOther(v1, v2) {
     	}
     	
     	if(!found) {
-			if(!v.name == "tutor_data_record") {
+			if(!(v.name == "tutor_data_record")) {
     		    notFound[notFound.length] = v.name;
 			}
     	}

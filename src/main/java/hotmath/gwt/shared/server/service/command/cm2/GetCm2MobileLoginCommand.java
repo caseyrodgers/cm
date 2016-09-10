@@ -52,6 +52,7 @@ import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand.CustomProgramInfo;
 import hotmath.testset.ha.HaUserFactory;
 import hotmath.util.sql.SqlUtilities;
+import sb.util.SbFile;
 
 public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLoginAction, Cm2MobileUser> {
 	
@@ -210,7 +211,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
          * 
          */
         mobileUser.getUserInfo().setTestName(removeProficiencyFromProgramName(mobileUser.getUserInfo().getTestName()));
-        
+
         return mobileUser;
     }
 

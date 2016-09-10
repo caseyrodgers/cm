@@ -24,6 +24,7 @@ import hotmath.cm.server.model.DeviceStorage;
 import hotmath.cm.server.model.QuizSelection;
 import hotmath.cm.test.HaTestSet;
 import hotmath.cm.test.HaTestSetQuestion;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_core.client.model.TopicResource;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
@@ -35,6 +36,7 @@ import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
+import sb.util.SbFile;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/")
@@ -493,6 +495,21 @@ public class ActionDispatcherRest {
 			public String execute() throws Exception {
 				return new MathMlTransform().processMathMlTransformations(mathMl);
 			}
+		});
+	}
+	
+	
+	
+	@POST
+	@Path("version")
+	public String getVersion() throws Exception {
+		return RestResult.getResultObject(new CmRestCommand() {
+			@Override
+			public String execute() throws Exception {
+		        SbFile file = new SbFile(CatchupMathProperties.getInstance().getCatchupRuntime() + "/cm_app_ver.txt");
+		        String minVersion = file.getFileContents().toString();
+		        return minVersion; 
+		    }
 		});
 	}
 }

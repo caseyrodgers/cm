@@ -57,7 +57,7 @@ public class ValidateTutorContext extends TutorContextBase {
             	int cnt=0;
             	for(SolutionContext c: contexts) {
             		
-            		callBack.logMessage("validating context #" + (cnt++) + " of " + contexts.size());
+            		callBack.logMessage("validating context: " + c.getPid() + " -- " + c.getProbNum());
             		
             		String messages = getDifferencesBetweenContexts(currentContext, c.getContextJson());
                     if(messages != null) {

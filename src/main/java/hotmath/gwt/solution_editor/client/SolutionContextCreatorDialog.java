@@ -25,7 +25,7 @@ public class SolutionContextCreatorDialog extends GWindow{
     public SolutionContextCreatorDialog(String pid) {
         super(true);
         this.pid = pid;
-        setPixelSize(640,480);
+        setPixelSize(700,480);
         setHeadingText("Generate Solution Contexts");
         
         BorderLayoutContainer borderLayout = new BorderLayoutContainer();
