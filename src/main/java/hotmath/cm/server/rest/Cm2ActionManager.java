@@ -4,11 +4,14 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 
 import hotmath.ProblemID;
 import hotmath.cm.server.model.CmPaymentDao;
 import hotmath.cm.server.model.StudentEventsDao;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_core.client.model.TopicSearchResults;
@@ -85,6 +88,7 @@ import hotmath.testset.ha.HaUserFactory;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
+import sb.util.SbFile;
 
 /**
  * Central place to request a CM2 request with any specialized formatting
@@ -97,6 +101,10 @@ import hotmath.util.sql.SqlUtilities;
  */
 public class Cm2ActionManager {
 
+	
+
+	static Logger LOGGER = Logger.getLogger(Cm2ActionManager.class);
+	
     /**
      * Wrapper around GetUserInfoAction
      *
@@ -428,7 +436,34 @@ public class Cm2ActionManager {
         return jsonResponse;
     }
 
-	public static String loginUserMobile(String deviceId) throws Exception {
+	public static String loginUserMobile(String deviceId, String version) throws Exception {
+		
+		
+        
+        /** get the current beta version number.  
+         * 
+         * This will allow the client to check for out of date versions.
+         */
+		if(version != null) {
+	        String betaVersion=null;
+	        try {
+	            SbFile file = new SbFile(CatchupMathProperties.getInstance().getCatchupRuntime() + "/cm_app_ver.txt");
+	            betaVersion = file.getFileContents().toString();
+	        }
+	        catch(Exception e) {
+	        	LOGGER.warn("Error reading min app version: " + e.getMessage(), e);
+	        }
+	        
+	        if(!betaVersion.equals(version)) {
+	        	throw new Exception("Invalid Version '" + version + "'");
+	        }
+		}
+
+        
+        
+        
+        
+		
         GetCm2MobileLoginAction action = new GetCm2MobileLoginAction();
         action.setName("retail");
         action.setPassword(deviceId);

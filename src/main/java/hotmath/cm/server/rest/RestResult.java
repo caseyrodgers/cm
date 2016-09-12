@@ -93,6 +93,9 @@ public class RestResult  {
 		else if(msg.contains(" user") || msg.contains("company")) {
 			return msg;
 		}
+		else if(msg.contains("invalid version")) {
+			return msg;
+		}
 		else {
 			return null;
 		}

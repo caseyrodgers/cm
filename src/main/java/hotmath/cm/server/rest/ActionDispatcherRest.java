@@ -77,10 +77,27 @@ public class ActionDispatcherRest {
 
 	
 
+	/** @deprecated
+	 * 
+	 * @param deviceId
+	 * @return
+	 * @throws Exception
+	 */
 	@POST
 	@Path("/login/user/mobile")
 	public String loginMobileUser(String deviceId) throws Exception {
-		return Cm2ActionManager.loginUserMobile(deviceId);
+		return Cm2ActionManager.loginUserMobile(deviceId, null);
+	}
+	
+	@POST
+	@Path("/login/user/mobile/{deviceId}")
+	public String loginMobileUser2(@PathParam("deviceId") final String deviceId, final String version) throws Exception {
+		return RestResult.getResultObject(new CmRestCommand() {
+			@Override
+			public String execute() throws Exception {
+				return Cm2ActionManager.loginUserMobile(deviceId, version);
+			}
+		});
 	}
 
 	@POST

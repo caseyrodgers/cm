@@ -1,9 +1,6 @@
 package hotmath.gwt.cm_rpc.client.rpc.cm2;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import hotmath.cm.server.model.CmPurchases;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -13,6 +10,9 @@ import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Cm2MobileUser implements Response {
     
@@ -38,7 +38,6 @@ public class Cm2MobileUser implements Response {
     private boolean passedTest;
     
     public Cm2MobileUser() {}
-    
     
     List<Cm2PrescriptionTopic> prescriptionTopics = new ArrayList<Cm2PrescriptionTopic>();
     
