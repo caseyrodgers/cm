@@ -444,7 +444,7 @@ public class Cm2ActionManager {
          * 
          * This will allow the client to check for out of date versions.
          */
-		if(version != null) {
+		if(version != null && version.length() > 0) {
 	        String betaVersion=null;
 	        try {
 	            SbFile file = new SbFile(CatchupMathProperties.getInstance().getCatchupRuntime() + "/cm_app_ver.txt");
@@ -458,10 +458,6 @@ public class Cm2ActionManager {
 	        	throw new Exception("Invalid Version '" + version + "'");
 	        }
 		}
-
-        
-        
-        
         
 		
         GetCm2MobileLoginAction action = new GetCm2MobileLoginAction();
