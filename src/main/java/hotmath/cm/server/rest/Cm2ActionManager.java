@@ -161,7 +161,9 @@ public class Cm2ActionManager {
         if(results.getTestRunResults().getRunId() > 0) {
             HaTest test = HaTestDao.getInstance().loadTest(action.getTestId());
             if(test.getTestDef().getTestDefId() == CmProgram.AUTO_ENROLL.getDefId()) {
-	    		CmPaymentDao.getInstance().addPurchase(test.getUser().getUid(), results.getTestRunResults().getAssignedTest(), null);
+            	
+            	CmPaymentDao.PurchaseData purchaseData = new CmPaymentDao.PurchaseData(results.getTestRunResults().getAssignedTest());
+	    		CmPaymentDao.getInstance().addPurchase(test.getUser().getUid(), purchaseData);
             }
         }
 
@@ -536,15 +538,9 @@ public class Cm2ActionManager {
 	    }
 	}
 
-	
 	public static void purchaseUserProgram(int userId, String purchaseJson) throws Exception {
-		
-		class PurchaseData {
-			String name;
-			String jsonData;
-		}
-		PurchaseData purchase = new Gson().fromJson(purchaseJson, PurchaseData.class);
-		CmPaymentDao.getInstance().addPurchase(userId, purchase.name, purchase.jsonData);
+		CmPaymentDao.PurchaseData purchase = new Gson().fromJson(purchaseJson, CmPaymentDao.PurchaseData.class);
+		CmPaymentDao.getInstance().addPurchase(userId, purchase);
 	}
 
 	public static void deleteUserByDeviceId(String deviceId) throws Exception {
@@ -562,6 +558,16 @@ public class Cm2ActionManager {
 		}
 		finally {
 			SqlUtilities.releaseResources(null, null, conn);
+		}
+	}
+	
+	
+	static public void main(String as[]) {
+		try {
+			String purchaseJson = new SbFile("/temp/junk.json").getFileContents().toString("\n");
+			Cm2ActionManager.purchaseUserProgram(-1, purchaseJson);			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

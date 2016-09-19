@@ -59,8 +59,8 @@ public class ActionDispatcherRest {
 	@POST
 	@GET
 	@Path("/user/{userId}/program/purchase")
-	public String purchaseProgram(@PathParam("userId") int userId, String subject) throws Exception {
-		Cm2ActionManager.purchaseUserProgram(userId, subject);
+	public String purchaseProgram(@PathParam("userId") int userId, String dataJson) throws Exception {
+		Cm2ActionManager.purchaseUserProgram(userId, dataJson);
 		return new Gson().toJson(new RpcData("status=OK"));
 	}
 	
