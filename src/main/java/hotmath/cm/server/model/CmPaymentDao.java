@@ -90,7 +90,7 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
 		}
 	}
 
-	public void addPurchase(final int userId, PurchaseData purchaseData) {
+	public void addPurchase(final int userId, final PurchaseData purchaseData) {
 		__logger.info("Adding purchase: " + userId + ", " + purchaseData.getName());
 		try {
 			final String sql = "insert into CM_RETAIL_PURCHASES(uid, purchase, purchase_data,purchase_time)values(?,?,?,now())";
