@@ -75,14 +75,14 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
 
 	public static class PurchaseData {
 		private String name;
-		private Object jsonData;
+		private Object results;
 
 		public PurchaseData(String name) {
 			this.name = name;
 		}
 
-		public Object getJsonData() {
-			return jsonData;
+		public Object getResults() {
+			return results;
 		}
 
 		public String getName() {
@@ -103,7 +103,7 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
 					if (purchaseData == null) {
 						ps.setNull(3, Types.VARCHAR);
 					} else {
-						ps.setString(3, new Gson().toJson(purchaseData.jsonData));
+						ps.setString(3, new Gson().toJson(purchaseData.getResults()));
 					}
 					return ps;
 				}
