@@ -161,7 +161,7 @@ public class Cm2ActionManager {
         if(results.getTestRunResults().getRunId() > 0) {
             HaTest test = HaTestDao.getInstance().loadTest(action.getTestId());
             if(test.getTestDef().getTestDefId() == CmProgram.AUTO_ENROLL.getDefId()) {
-	    		CmPaymentDao.getInstance().addPurchase(test.getUser().getUid(), results.getTestRunResults().getAssignedTest());
+	    		CmPaymentDao.getInstance().addPurchase(test.getUser().getUid(), results.getTestRunResults().getAssignedTest(), null);
             }
         }
 
@@ -537,8 +537,14 @@ public class Cm2ActionManager {
 	}
 
 	
-	public static void purchaseUserProgram(int userId, String subject) throws Exception {
-		CmPaymentDao.getInstance().addPurchase(userId, subject);
+	public static void purchaseUserProgram(int userId, String purchaseJson) throws Exception {
+		
+		class PurchaseData {
+			String name;
+			String jsonData;
+		}
+		PurchaseData purchase = new Gson().fromJson(purchaseJson, PurchaseData.class);
+		CmPaymentDao.getInstance().addPurchase(userId, purchase.name, purchase.jsonData);
 	}
 
 	public static void deleteUserByDeviceId(String deviceId) throws Exception {

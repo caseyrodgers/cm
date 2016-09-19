@@ -3,6 +3,7 @@ package hotmath.cm.server.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -72,16 +73,22 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
         return purchases; 
     }
 
-	public void addPurchase(final int userId, final String subject) {
+	public void addPurchase(final int userId, final String subject, final String purchaseData) {
 		__logger.info("Adding purchase: " + userId + ", " + subject);
 		try {
-	        final String sql = "insert into CM_RETAIL_PURCHASES(uid, purchase, purchase_time)values(?,?,now())";
+	        final String sql = "insert into CM_RETAIL_PURCHASES(uid, purchase, purchase_time, purchase_data)values(?,?,?,now())";
 	        getJdbcTemplate().update(new PreparedStatementCreator() {
 	            @Override
 	            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
 	                PreparedStatement ps = conn.prepareStatement(sql);
 	                ps.setInt(1, userId);
 	                ps.setString(2, subject);
+	                if(purchaseData==null) {
+	                	ps.setNull(3, Types.VARCHAR);
+	                }
+	                else {
+	                    ps.setString(3, purchaseData);
+	                }
 	                return ps;
 	            }
 	        });
