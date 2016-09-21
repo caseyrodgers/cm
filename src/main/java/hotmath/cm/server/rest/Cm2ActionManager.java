@@ -456,7 +456,7 @@ public class Cm2ActionManager {
 	        	LOGGER.warn("Error reading min app version: " + e.getMessage(), e);
 	        }
 	        
-	        if(!betaVersion.equals(version)) {
+	        if((betaVersion != null && betaVersion.length() > 0) && !betaVersion.equals(version)) {
 	        	throw new Exception("Invalid Version '" + version + "'");
 	        }
 		}
