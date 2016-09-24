@@ -538,10 +538,6 @@ public class Cm2ActionManager {
 	    }
 	}
 
-	public static void purchaseUserProgram(int userId, String purchaseJson) throws Exception {
-		CmPaymentDao.PurchaseData purchase = new Gson().fromJson(purchaseJson, CmPaymentDao.PurchaseData.class);
-		CmPaymentDao.getInstance().addPurchase(userId, purchase);
-	}
 
 	public static void deleteUserByDeviceId(String deviceId) throws Exception {
 		int existingUid = HaUserFactory.lookupUserId(deviceId, deviceId);
@@ -565,7 +561,7 @@ public class Cm2ActionManager {
 	static public void main(String as[]) {
 		try {
 			String purchaseJson = new SbFile("/temp/junk.json").getFileContents().toString("\n");
-			Cm2ActionManager.purchaseUserProgram(-1, purchaseJson);			
+			//Cm2ActionManager.purchaseUserProgram(-1, purchaseJson);			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

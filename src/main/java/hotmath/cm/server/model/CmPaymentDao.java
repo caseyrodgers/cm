@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 import com.google.gson.Gson;
 
+import hotmath.cm.server.model.CmPaymentDao.PurchasedDataRestore;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.payment.PaymentResult;
 import hotmath.spring.SpringManager;
@@ -89,6 +90,13 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
 			return name;
 		}
 	}
+	
+	public class PurchasedDataRestore {
+		String productId;
+		String date;
+		String transactionId;
+		int state;
+	}
 
 	public void addPurchase(final int userId, final PurchaseData purchaseData) {
 		__logger.info("Adding purchase: " + userId + ", " + purchaseData.getName());
@@ -110,6 +118,19 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
 			});
 		} catch (Exception e) {
 			__logger.error("Error adding purchase", e);
+		}
+	}
+
+	public void restorePurchases(int userId, PurchasedDataRestore[] purchases) throws Exception {
+		for(PurchasedDataRestore pur: purchases) {
+			
+			PurchaseData purchaseData = new PurchaseData(pur.productId);
+			purchaseData.results = pur;
+			
+			/** will sync (silent error if already exist)
+			 * 
+			 */
+			addPurchase(userId,  purchaseData);
 		}
 	}
 

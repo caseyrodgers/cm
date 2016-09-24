@@ -20,6 +20,7 @@ import com.cedarsoftware.util.io.JsonWriter;
 import com.google.gson.Gson;
 
 import hotmath.cm.program.CmProgramFlow;
+import hotmath.cm.server.model.CmPaymentDao;
 import hotmath.cm.server.model.DeviceStorage;
 import hotmath.cm.server.model.QuizSelection;
 import hotmath.cm.test.HaTestSet;
@@ -59,10 +60,26 @@ public class ActionDispatcherRest {
 	@POST
 	@GET
 	@Path("/user/{userId}/program/purchase")
-	public String purchaseProgram(@PathParam("userId") int userId, String dataJson) throws Exception {
-		Cm2ActionManager.purchaseUserProgram(userId, dataJson);
+	public String purchaseProgram(@PathParam("userId") int userId, String purchaseJson) throws Exception {
+		CmPaymentDao.PurchaseData purchase = new Gson().fromJson(purchaseJson, CmPaymentDao.PurchaseData.class);
+		CmPaymentDao.getInstance().addPurchase(userId, purchase);
 		return new Gson().toJson(new RpcData("status=OK"));
 	}
+	
+	@POST
+	@GET
+	@Path("/user/{userId}/program/purchaseRestore")
+	public String purchaseProgramRestoreAll(@PathParam("userId") final int userId, final String dataJson) throws Exception {
+		return RestResult.getResultObject(new CmRestCommand() {
+			@Override
+			public String execute() throws Exception {
+				CmPaymentDao.PurchasedDataRestore purchases[] = new Gson().fromJson(dataJson, CmPaymentDao.PurchasedDataRestore[].class);
+				CmPaymentDao.getInstance().restorePurchases(userId, purchases);
+				return "OK";
+			}
+		});
+	}
+	
 	
 	
 	
