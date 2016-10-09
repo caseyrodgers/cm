@@ -83,7 +83,8 @@ MathJax.Hub.Register.StartupHook("End Jax",function () {
             preferredFont: "STIX-Web",
             mtextFontInherit: true,
             matchFontHeight: false,
-        	showProcessingMessages:false
+            showProcessingMessages: false,
+            processSectionDelay: 0
             }
     });
   
@@ -104,6 +105,5 @@ function processMathJax() {
             console.log('MathJax Complete');
         });
     }
-    
 }
 

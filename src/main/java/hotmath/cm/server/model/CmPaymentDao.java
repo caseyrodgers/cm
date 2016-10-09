@@ -63,12 +63,9 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
 
 		List<CmPurchase> res = getJdbcTemplate().query(sql, new RowMapper<CmPurchase>() {
 			public CmPurchase mapRow(java.sql.ResultSet rs, int rowNum) throws SQLException {
-				return new CmPurchase(rs.getString("purchase"));
+				return new CmPurchase(rs.getString("purchase"), rs.getInt("free_program")==0?false:true);
 			};
 		});
-		if (res.size() > 0) {
-			res.get(0).setFirst(true);
-		}
 		CmPurchases purchases = new CmPurchases(res);
 
 		return purchases;
@@ -77,9 +74,11 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
 	public static class PurchaseData {
 		private String name;
 		private Object results;
+		private boolean freeProgram;
 
-		public PurchaseData(String name) {
+		public PurchaseData(String name, boolean freeProgram) {
 			this.name = name;
+			this.freeProgram = freeProgram;
 		}
 
 		public Object getResults() {
@@ -89,19 +88,28 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
 		public String getName() {
 			return name;
 		}
+		
+		public boolean isFreeProgram() {
+			return freeProgram;
+		}
+		
+		public void setFreeProgram(boolean freeProgram) {
+			this.freeProgram = freeProgram;
+		}
 	}
 	
 	public class PurchasedDataRestore {
 		String productId;
 		String date;
 		String transactionId;
+		boolean freeProgram;
 		int state;
 	}
 
 	public void addPurchase(final int userId, final PurchaseData purchaseData) {
 		__logger.info("Adding purchase: " + userId + ", " + purchaseData.getName());
 		try {
-			final String sql = "insert into CM_RETAIL_PURCHASES(uid, purchase, purchase_data,purchase_time)values(?,?,?,now())";
+			final String sql = "insert into CM_RETAIL_PURCHASES(uid, purchase, purchase_data,free_program,purchase_time)values(?,?,?,?,now())";
 			getJdbcTemplate().update(new PreparedStatementCreator() {
 				@Override
 				public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
@@ -113,6 +121,9 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
 					} else {
 						ps.setString(3, new Gson().toJson(purchaseData.getResults()));
 					}
+					
+					ps.setInt(4,purchaseData.isFreeProgram()?-1:0);
+					
 					return ps;
 				}
 			});
@@ -124,7 +135,7 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
 	public void restorePurchases(int userId, PurchasedDataRestore[] purchases) throws Exception {
 		for(PurchasedDataRestore pur: purchases) {
 			
-			PurchaseData purchaseData = new PurchaseData(pur.productId);
+			PurchaseData purchaseData = new PurchaseData(pur.productId, pur.freeProgram);
 			purchaseData.results = pur;
 			
 			/** will sync (silent error if already exist)

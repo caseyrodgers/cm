@@ -162,7 +162,14 @@ public class Cm2ActionManager {
             HaTest test = HaTestDao.getInstance().loadTest(action.getTestId());
             if(test.getTestDef().getTestDefId() == CmProgram.AUTO_ENROLL.getDefId()) {
             	
-            	CmPaymentDao.PurchaseData purchaseData = new CmPaymentDao.PurchaseData(results.getTestRunResults().getAssignedTest());
+            	
+            	String programId = getProgramIdFromProgramName(results.getTestRunResults().getAssignedTest());
+            	
+            	CmPaymentDao.PurchaseData purchaseData = new CmPaymentDao.PurchaseData(
+            			programId,
+            			true);
+            	
+            	
 	    		CmPaymentDao.getInstance().addPurchase(test.getUser().getUid(), purchaseData);
             }
         }
@@ -181,7 +188,31 @@ public class Cm2ActionManager {
         return json;
     }
 
-    public static String getPrescriptionTopic(int runId, int topicIndex) throws Exception {
+    /** return the in app program item name for the program or
+     *  return the programName passed in.
+     *  
+     * @param programName
+     * @return
+     */
+    private static String getProgramIdFromProgramName(String programName) {
+    	String map[][] = {
+    			{"foundations_review", "Foundations"},
+    			{"essentials_review","Essentials"},
+    			{"prealgebra_review","Pre-Algebra"},
+    			{"algebra1_review","Algebra 1"},
+    			{"geometry_review","Geometry"},
+    			{"algebra2_review","Algebra 2"}
+    			};
+    	
+    	for(int i=0;i<map.length;i++) {
+    		if(map[i][1].equalsIgnoreCase(programName)) {
+    			return map[i][0];
+    		}
+    	}
+    	return programName;
+	}
+
+	public static String getPrescriptionTopic(int runId, int topicIndex) throws Exception {
         GetPrescriptionAction action = new GetPrescriptionAction(runId, topicIndex, true);
         return new ActionDispacherWrapper().execute(action);
     }

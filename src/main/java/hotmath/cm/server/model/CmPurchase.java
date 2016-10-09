@@ -3,21 +3,22 @@ package hotmath.cm.server.model;
 public class CmPurchase {
 
 	private String purchase;
-	boolean first;  // first one/free
+	boolean freeProgram;
 
-	public CmPurchase(String purchase) {
+	public CmPurchase(String purchase, boolean freeProgram) {
 		this.purchase = purchase;
+		this.freeProgram = freeProgram;
 	}
 	
 	public String getPurchase() {
 		return purchase;
 	}
-
-	public void setFirst(boolean first) {
-		this.first = first;
+	
+	public boolean isFreeProgram() {
+		return freeProgram;
 	}
 	
-	public boolean isFirst() {
-		return first;
+	public void setFreeProgram(boolean freeProgram) {
+		this.freeProgram = freeProgram;
 	}
 }
