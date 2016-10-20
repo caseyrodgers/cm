@@ -1,12 +1,5 @@
 package hotmath.assessment;
 
-import hotmath.SolutionManager;
-import hotmath.cm.util.CmCacheManager;
-import hotmath.cm.util.CmCacheManager.CacheName;
-import hotmath.concordance.ConcordanceEntry;
-import hotmath.inmh.INeedMoreHelpItem;
-import hotmath.util.sql.SqlUtilities;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +9,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import hotmath.SolutionManager;
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.concordance.ConcordanceEntry;
+import hotmath.gwt.cm_rpc.client.model.Pid;
+import hotmath.inmh.INeedMoreHelpItem;
+import hotmath.util.sql.SqlUtilities;
 import sb.util.SbUtilities;
 
 
@@ -363,7 +363,20 @@ public class InmhItemData {
      */
     private List<String> findSolutionsMatchingRange(final Connection conn, String range) throws Exception {
     	ConcordanceEntry con = new ConcordanceEntry(conn, range);
-        return (List<String>) Arrays.asList(con.getGUIDs());
+    	
+    	List<String> activePids = new ArrayList<String>();
+    	for(String p: con.getGUIDs()) {
+    		Pid pid = new Pid(p);
+    		
+    		String activePid = lookupActivePid(conn, pid.getTextCode(), pid.getChapter(), pid.getSection(), pid.getProblemSet(), Integer.parseInt(pid.getProblem()));
+    		if(activePid == null) {
+    			logger.error("No active problem found for: " + pid);
+    		}
+    		else {
+    		    activePids.add(activePid);
+    		}
+    	}
+        return activePids;
     }
     
     @Override
