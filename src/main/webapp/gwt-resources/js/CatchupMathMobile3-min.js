@@ -1,1 +1,0 @@
-function initStartCmMobile(){}function showWhiteboardActive(B){var A=B.parentNode.parentNode.getAttribute("pid");showWhiteboard_Gwt(A)}function debug(A){};
