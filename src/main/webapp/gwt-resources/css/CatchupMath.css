@@ -22,7 +22,7 @@ h1,h2,h3,h4 {
 .header-panel {
 	background-color: white;
 	background-image: url(../images/logo_cm.png);
-	background-position: 5 5;
+	background-position: 4px 8px;
 	background-repeat: no-repeat;
 	text-align: left;
 	overflow: visible !important;
