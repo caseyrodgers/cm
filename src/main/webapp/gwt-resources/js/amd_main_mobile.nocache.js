@@ -10,6 +10,10 @@ require.config({
  */
 // load all code required to run the whiteboard
 function requireJsLoad_whiteboard(funcToCall) {
+    funcToCall();
+    return;
+
+/**
     console.log('REQUIREJS loading whiteboard dependencies');
     try {
         require(['whiteboard_v3'], function(x) {
@@ -19,10 +23,17 @@ function requireJsLoad_whiteboard(funcToCall) {
     catch(ex) {
         alert(ex);
     }
+*/
 }
 
 
 function requireJsLoad_calculator(calcContainer, funcToCall) {
+     $('#' + calcContainer).calculator({layout: $.calculator.scientificLayout});
+     funcToCall();
+     return;
+    
+
+/**
     console.log('REQUIREJS loading whiteboard dependencies');
     try {
         require(['calculator/jquery.calculator'], function(x) {
@@ -33,6 +44,7 @@ function requireJsLoad_calculator(calcContainer, funcToCall) {
     catch(ex) {
         alert(ex);
     }
+*/
 }
 console.log('REQUIREJS main loaded');
 
