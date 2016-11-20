@@ -6,6 +6,8 @@ import java.sql.Connection;
 import org.apache.log4j.Logger;
 
 import hotmath.HotMathProperties;
+import hotmath.cm.util.CatchupMathProperties;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
@@ -18,6 +20,7 @@ import hotmath.mathml.MathMlTransform;
 import hotmath.testset.ha.info.CmLessonDao;
 import hotmath.util.HmContentExtractor;
 import sb.util.SbFile;
+import sb.util.SbProperties;
 
 public class GetReviewHtmlCommand implements ActionHandler<GetReviewHtmlAction, LessonResult>,
         ActionHandlerManualConnectionManagement {
@@ -43,6 +46,15 @@ public class GetReviewHtmlCommand implements ActionHandler<GetReviewHtmlAction, 
         if(action.isSpanish() && !result.isHasSpanish()) {
             result.setWarning("Spanish version of this lesson not available");
             action.setSpanish(false);
+            
+            InmhItemData missingItem = new InmhItemData(CmResourceType.REVIEW,action.getFile(), CmLessonDao.getInstance().getTopicLessonTitle(action.getFile()));
+            result.setItem(missingItem);
+            
+            String missingHtml = CatchupMathProperties.getInstance().getProperty("missing.spanish.lesson", "<h1 class='spanish-missing'>Spanish lesson is not available.</h1>");
+            
+            result.setLesson(missingHtml);
+            return result;
+            
         }
         String html = new SbFile(filePath + "/" + getFile(action.getFile(), action.isSpanish())).getFileContents().toString("\n");
         
