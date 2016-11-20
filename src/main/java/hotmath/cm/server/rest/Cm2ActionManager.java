@@ -89,6 +89,7 @@ import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 import sb.util.SbFile;
+import sb.util.SbUtilities;
 
 /**
  * Central place to request a CM2 request with any specialized formatting
@@ -430,7 +431,9 @@ public class Cm2ActionManager {
         LessonResult res = ActionDispatcher.getInstance().execute(new GetReviewHtmlAction(file,  spanish));
         res.setLesson(GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/hotmath_help", res.getLesson()));      
         
-        res.setLesson(GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/images/gt", res.getLesson()));
+        String html = GetCm2MobileLoginCommand.replaceImagesWithSolutionServer("/images/gt", res.getLesson());
+        html = SbUtilities.replaceSubString(html, "/images/special","./images/special");
+        res.setLesson(html);
         
         return new Gson().toJson(res);
     }

@@ -13,6 +13,16 @@ public class SearchTopicCommand_Test extends TestCase {
         super(name);
     }
 
+
+    public void testItSugTest() throws Exception {
+        TopicSearchResults results = new SearchTopicCommand().execute(HMConnectionPool.getConnection(),
+                new SearchTopicAction("sas-postulate",SearchApp.TEST, 0));
+        assertTrue(results.getTopics().size() > 0);
+        assertTrue(results.getSuggestions() != null);
+    }
+    
+
+    
     public void testItSug() throws Exception {
         TopicSearchResults results = new SearchTopicCommand().execute(HMConnectionPool.getConnection(),
                 new SearchTopicAction(SearchType.LESSON_LIKE, SearchApp.TEST, "Length", 0));

@@ -106,7 +106,7 @@ public class AssessmentPrescription {
         if (clientEnvironment == null) {
             clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(uid);
         }
-        logger.info("Creating prescription for client info: " + clientEnvironment);
+        logger.debug("Creating prescription for client info: " + clientEnvironment);
 
         // For each lesson assigned to quiz questions
         //

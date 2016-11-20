@@ -17,7 +17,7 @@ public class Pid {
 	
 	public Pid(String pid) {
 		this.pid = pid;
-		parsePid(pid);
+		parsePid();
 	}
 	
 	public String getProblem() {
@@ -48,7 +48,7 @@ public class Pid {
 		return section;
 	}
 
-	private void parsePid(String p) {
+	private void parsePid() {
 		String ps[] = pid.split("_");
 		
 		this.textCode = ps[0];
@@ -57,5 +57,10 @@ public class Pid {
 		this.problemSet = ps[3];
 		this.problem = ps[4];
 		this.page = Integer.parseInt(ps[5]);
+	}
+	
+	@Override
+	public String toString() {
+		return pid;
 	}
 }
