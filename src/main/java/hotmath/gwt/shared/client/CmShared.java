@@ -317,8 +317,9 @@ public class CmShared implements EntryPoint {
                 hostName += ":" + port;
             }
         }
-
-        String url = "http://" + hostName;
+        String protocol = Window.Location.getProtocol();
+        if (protocol.indexOf(":") < 0) protocol += ":";
+        String url = protocol + "//" + hostName;
         return url;
     }
 
