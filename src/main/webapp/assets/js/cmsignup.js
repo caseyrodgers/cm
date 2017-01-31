@@ -573,7 +573,7 @@ function checkCreditCard() {
             return false;
         }
     }
-
+/*
     fld = $get('card_ccv2');
     if(!cardSecurityCodeIsValid(cardType, fld.value)) {
         if(cardType == 'Amex') {
@@ -584,7 +584,7 @@ function checkCreditCard() {
         }
         return false;
     }
-
+ */
     fld = $get('sel_card_expire_month');
     if(fld.selectedIndex < 1) {
         if(showError(fld, "Expiration month?"))
@@ -656,6 +656,7 @@ function _checkFieldNotNull(field, messageIfNull) {
 
 // validate CVV2 code.
 //
+/*
 function cardSecurityCodeIsValid(cardType, s) {
  if(s.length < 3 || s.length > 4) {
      return false;
@@ -673,7 +674,8 @@ function cardSecurityCodeIsValid(cardType, s) {
  }
  return true;
 }
-
+ */
+ 
 // Is creditcard number value
 // Return true is is valid, false otherwise
 function cardnumberIsValid(s) {
@@ -1096,7 +1098,7 @@ function payNowToggle(chkbox) {
 function enablePayNow(enable) {
 	var e1 = document.getElementById('payNow_div');
 	var e2 = document.getElementById('card_number');
-	var e3 = document.getElementById('card_ccv2');
+	//var e3 = document.getElementById('card_ccv2');
 	var e4 = document.getElementById('first_name');
 	var e5 = document.getElementById('last_name');
 	var e6 = document.getElementById('address1');
@@ -1107,7 +1109,7 @@ function enablePayNow(enable) {
 	if (enable == true) {
     	e1.setAttribute('style', 'display:block');
     	e2.attributes.required = "required";
-    	e3.attributes.required = "required";
+    	//e3.attributes.required = "required";
     	e4.attributes.required = "required";
     	e5.attributes.required = "required";
     	e6.attributes.required = "required";
@@ -1118,7 +1120,7 @@ function enablePayNow(enable) {
     else {
      	e1.setAttribute('style', 'display:none');
     	e2.attributes.required = "not-required";
-    	e3.attributes.required = "not-required";
+    	//e3.attributes.required = "not-required";
     	e4.attributes.required = "not-required";
     	e5.attributes.required = "not-required";
     	e6.attributes.required = "not-required";
