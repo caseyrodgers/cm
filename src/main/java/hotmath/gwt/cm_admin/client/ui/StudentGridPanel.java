@@ -447,9 +447,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
         toolbar.add(displayPrintableReportToolItem(_grid));
 
-        if (CmCore.isDebug() == true) {
-            toolbar.add(createRefreshButton());
-        }
+        toolbar.add(createRefreshButton());
         
         return toolbar;
     }
@@ -832,7 +830,7 @@ Individual
     }
 
     private TextButton createRefreshButton() {
-        TextButton btn = new StudentPanelButton("Refresh List");
+        TextButton btn = new StudentPanelButton("Refresh");
         btn.setToolTip("Refresh Student List with latest information.");
         btn.addSelectHandler(new SelectHandler() {
             @Override
