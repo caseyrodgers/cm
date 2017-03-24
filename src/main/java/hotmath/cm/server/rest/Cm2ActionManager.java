@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 
 import hotmath.ProblemID;
+import hotmath.cm.login.service.LoginService;
 import hotmath.cm.server.model.CmPaymentDao;
 import hotmath.cm.server.model.StudentEventsDao;
 import hotmath.cm.util.CatchupMathProperties;
@@ -17,8 +18,10 @@ import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_core.client.model.UserSyncInfo;
 import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
+import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionForMobileAction;
+import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
@@ -383,18 +386,17 @@ public class Cm2ActionManager {
     }
     
 
-    public static String getCm2Assignment(int uid, int assignKey) throws Exception {
+    public static StudentAssignment getCm2Assignment(int uid, int assignKey) throws Exception {
 
         GetStudentAssignmentAction action = new GetStudentAssignmentAction(uid,  assignKey);
         StudentAssignment studentAssignment = ActionDispatcher.getInstance().execute(action);
  
-    	
+    	return studentAssignment;
     	
        // Assignment assignment = AssignmentDao.getInstance().getAssignment(assignKey);
        // List<PrescriptionSessionDataResource> cm2Resources = AssignmentDao.getInstance().getAssigmentResources(assignment);
          
         //Cm2Assignment cm2Ass = new Cm2Assignment(assignment, cm2Resources); 
-        return new Gson().toJson(studentAssignment);
     }
 
 	public static String saveAssignmentProblemWidgetValue(int uid, int assKey, String pid, String value,
@@ -471,6 +473,13 @@ public class Cm2ActionManager {
         String jsonResponse = new ActionDispacherWrapper().execute(action);
         return jsonResponse;
     }
+    
+    public static Cm2MobileUser loginSchoolUser(String user, String pass) throws Exception {
+    	GetCm2MobileLoginAction action = new GetCm2MobileLoginAction(user,  pass, null);
+    	Cm2MobileUser data = ActionDispatcher.getInstance().execute(action);
+    	
+    	return data;
+    }
 
 	public static String loginUserMobile(String deviceId, String version) throws Exception {
 		
@@ -502,6 +511,9 @@ public class Cm2ActionManager {
         action.setDeviceToken(deviceId);
 
         Cm2MobileUser userInfo = ActionDispatcher.getInstance().execute(action);
+        
+        userInfo.getUserInfo().setUserAccountType(AccountType.OTHER);
+        
         return new Gson().toJson(userInfo);
         // return new Gson().toJson(userInfo);
 	}

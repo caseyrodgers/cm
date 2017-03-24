@@ -1,28 +1,5 @@
 package hotmath.gwt.solution_editor.client;
 
-import hotmath.gwt.cm_core.client.CmEvent;
-import hotmath.gwt.cm_core.client.CmEventListener;
-import hotmath.gwt.cm_core.client.EventBus;
-import hotmath.gwt.cm_core.client.EventTypes;
-import hotmath.gwt.cm_core.client.model.CmPartner;
-import hotmath.gwt.cm_core.client.model.SearchSuggestion;
-import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
-import hotmath.gwt.cm_core.client.util.CmBusyManager;
-import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
-import hotmath.gwt.cm_rpc.client.model.SpellCheckResults;
-import hotmath.gwt.cm_rpc.client.rpc.DeleteSolutionAction;
-import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAdminAction;
-import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAdminAction.Type;
-import hotmath.gwt.cm_rpc.client.rpc.SpellCheckAction;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.rpc.RetryActionManager;
-import hotmath.gwt.solution_editor.client.SolutionSearcherDialog.Callback;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,10 +29,34 @@ import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.Viewport;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.FileUploadField;
+import com.sencha.gxt.widget.core.client.form.FormPanel;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.menu.MenuItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
+
+import hotmath.gwt.cm_core.client.CmEvent;
+import hotmath.gwt.cm_core.client.CmEventListener;
+import hotmath.gwt.cm_core.client.EventBus;
+import hotmath.gwt.cm_core.client.EventTypes;
+import hotmath.gwt.cm_core.client.model.SearchSuggestion;
+import hotmath.gwt.cm_core.client.util.CmAlertify.ConfirmCallback;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
+import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.model.SolutionAdminResponse;
+import hotmath.gwt.cm_rpc.client.model.SpellCheckResults;
+import hotmath.gwt.cm_rpc.client.rpc.DeleteSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAdminAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAdminAction.Type;
+import hotmath.gwt.cm_rpc.client.rpc.SpellCheckAction;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.shared.client.rpc.RetryActionManager;
+import hotmath.gwt.solution_editor.client.SolutionSearcherDialog.Callback;
 
 
 public class SolutionEditor implements EntryPoint {
@@ -141,7 +142,7 @@ public class SolutionEditor implements EntryPoint {
         
         SolutionSearcherDialog.getInstance(null);
         
-        RootPanel.get("main-content").add(mainPort);
+       // RootPanel.get("main-content").add(mainPort);
         if(__pidToLoad != null) {
             _stepEditorViewer.loadSolution(__pidToLoad.split("$")[0]);  // strip off any context reference
         }
@@ -151,6 +152,18 @@ public class SolutionEditor implements EntryPoint {
         CmBusyManager.showLoading(false);
         
         Login.getInstance().makeSureLoggedIn();
+        
+        
+        
+        
+        final FileUploadField fileUpload = new FileUploadField();
+        final FormPanel form = new FormPanel();
+        form.setEncoding(FormPanel.Encoding.MULTIPART);
+        form.setMethod(FormPanel.Method.POST);
+        form.add(fileUpload);
+
+        RootPanel.get("main-content").add(form);
+        
         
         
         

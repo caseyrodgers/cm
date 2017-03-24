@@ -1,5 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
+<%@page import="java.util.List"%>
+<%@page import="hotmath.assessment.RppWidget"%>
 <%@page import="hotmath.util.HMConnectionPool"%>
 <%@page import="hotmath.util.sql.SqlUtilities"%>
 <%@page import="java.sql.Connection"%>
@@ -25,11 +27,15 @@
 	    		throw new Exception("'item' or 'range' must be specified");
 	    	
 	    	_range = item;
-	    	_matches = InmhAssessment.getItemSolutionPool(item);
+	    	List<RppWidget> wids = InmhAssessment.getItemSolutionPool(item);
+	    	_matches = new String[wids.size()];
+	    	for(RppWidget r: wids) {
+	    		_matches[_matches.length] = r.getFile();
+	    	}
 	    }
     }
     finally {
-        SqlUtilities.releaseResources(null,null,conn);
+	        SqlUtilities.releaseResources(null,null,conn);
     }
 %>
 </head>

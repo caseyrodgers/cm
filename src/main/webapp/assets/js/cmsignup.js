@@ -934,7 +934,7 @@ function signupComplete(data) {
                "<div class='col'>Password: </div><div class='val'>" + password + "</div>" +
                "</div>" +
                "</p>" + 
-              "<p>Visit <a href='http://catchupmath.com'>http://catchupmath.com</a>" +
+              "<p>Visit <a href='https://catchupmath.com'>https://catchupmath.com</a>" +
               " and enter the login information shown above.</p>" +
               "<p class='info-sent'>Your signup information has also been sent to the email address: " + email + "</p>" +
               "<p class='info-sent'>If you do not receive your account email within a few minutes, please check your spam folder. " +
@@ -970,7 +970,7 @@ function selfpayComplete(data) {
        "<div class='col'>Password: </div><div class='val'>" + password + "</div>" +
        "</div>" +
        "</p>" + 
-       "<p>Visit <a href='http://catchupmath.com'>http://catchupmath.com</a>" +
+       "<p>Visit <a href='https://catchupmath.com'>https://catchupmath.com</a>" +
        " as directed by your instructor and enter the login information shown above.</p>" +
        "<p class='info-sent'>A confirmation has also been emailed to: " + email + "</p>" +
        "<p class='info-sent'>If you do not receive your account email within a few minutes, please check your spam folder. " +

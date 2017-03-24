@@ -161,6 +161,38 @@ public class InmhAssessment {
 			SqlUtilities.releaseResources(null,stmt, conn);
 		}
 	}
+	
+	
+	static public List<RppWidget> getExpandedRange(String rangeDef) throws Exception {
+		
+		
+		rangeDef = rangeDef.split(":")[0]; // remove grade levels
+		List<RppWidget> rppWidgets = new ArrayList<RppWidget>();
+		
+		Connection conn=null;
+		Statement stmt=null;
+		try {
+			conn = HMConnectionPool.getConnection();
+			stmt = conn.createStatement();
+			
+			Range range = new Range(rangeDef);
+			if(!range.getRange().startsWith("{")) {
+			    ConcordanceEntry con = new ConcordanceEntry(conn, range.getRange());
+				for(String c: con.getGUIDs()) {
+				    rppWidgets.add(new RppWidget(c, range.getGradeLevels()));
+				}
+			}
+			else {
+				rppWidgets.add(new RppWidget(range.getRange(), range.getGradeLevels()));
+			}
+            
+			return rppWidgets;
+		}
+		finally {
+			SqlUtilities.releaseResources(null,stmt, conn);
+		}
+	}
+ 
 }
 
 /** Class to encapsulate the concept of the shared INMH items

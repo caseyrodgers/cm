@@ -30,7 +30,7 @@ public class InmhItemData {
     INeedMoreHelpItem item;
     List<String> pidsReferenced = new ArrayList<String>();
 
-    Logger logger = Logger.getLogger(InmhItemData.class);
+    static private Logger logger = Logger.getLogger(InmhItemData.class);
 
     public InmhItemData() {
     }
@@ -116,9 +116,38 @@ public class InmhItemData {
             ps.setString(1, this.item.getFile());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Range range = new Range(rs.getString("range"));
-                if (range.getRange() == null || range.getRange().length() == 0)
-                    continue;
+                String rangeDef = rs.getString("range");
+                widgets.addAll(getWidgetPoolForRange(conn, rangeDef));
+            }
+        } catch (Exception e) {
+        	logger.error(String.format("*** Load of RppWidgets for %s failed", item.getFile(), e));
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
+            logger.debug("finished getting solution pool " + logTag);
+        }
+        
+        if(canCache) {
+            CmCacheManager.getInstance().addToCache(CacheName.WOOKBOOK_POOL, cacheKey, widgets);
+        }
+        return widgets;
+    }
+    
+    
+    
+    static public List<RppWidget> getWidgetPoolForRange(final Connection conn, String rangeDef) throws Exception {
+    	
+    	// SQL to get list of ranges that match each INMH item
+        String sql = "select `range` from inmh_assessment i where i.file = ? order by id";
+        PreparedStatement ps = null;
+
+        logger.debug("getting pool for range " + rangeDef);
+        
+        List<RppWidget> widgets = new ArrayList<RppWidget>();
+        try {
+            ps = conn.prepareStatement(sql);
+            
+            Range range = new Range(rangeDef);
+            if (range.getRange() != null && range.getRange().length() > 0) {
                 
                 if (range.getRange().startsWith("{")) {
                     
@@ -145,16 +174,15 @@ public class InmhItemData {
                         logger.debug("Generating random range: " + range);
                         rangePids = findSolutionsInRandomRange(conn, range.getRange());
                         if(rangePids.size() == 0) {
-                            logger.warn("No random problems found: " + this + ", " + range.getRange());
+                            logger.warn("No random problems found: " +  range.getRange());
                         }
                         else {
                             logger.debug("random range contains: " + rangePids.size());
                             logger.debug("random range: " + rangePids);
                         }
-                        canCache=false;
                     }
                     
-                	logger.debug("find solutions in range " + logTag);
+                	logger.debug("find solutions in range " + range.getRange());
                 	
                 	List<String> related=null;
                 	if(rangePids != null) {
@@ -163,7 +191,7 @@ public class InmhItemData {
                 	else {
                 	    related = findSolutionsMatchingRange(conn, range.getRange());
                 	}
-                    logger.debug("finished finding solutions in range " + logTag);
+                    logger.debug("finished finding solutions in range " + range.getRange());
                     for (String s : related) {
                         RppWidget widget = new RppWidget(s);
                         widget.getGradeLevels().addAll(range.getGradeLevels());
@@ -175,23 +203,22 @@ public class InmhItemData {
                             }
                         }
                         else {
-                            logger.info(String.format("Duplicate RPP %s for item '%s'",widget,this));
+                            logger.info(String.format("Duplicate RPP %s for item '%s'",widget));
                         }
                     }
                 }
             }
         } catch (Exception e) {
-        	logger.error(String.format("*** Load of RppWidget for %s failed", item.getFile(), e));
+        	logger.error(String.format("*** Load of RppWidget for %s failed", rangeDef, e));
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
-            logger.debug("finished getting solution pool " + logTag);
-        }
-        
-        if(canCache) {
-            CmCacheManager.getInstance().addToCache(CacheName.WOOKBOOK_POOL, cacheKey, widgets);
+            logger.debug("finished getting solution pool " + rangeDef);
         }
         return widgets;
     }
+    
+    
+    
 
     /** return list of pids that randomly selected
      *  from pids created by expanding range.
@@ -204,7 +231,7 @@ public class InmhItemData {
      * @return
      * @throws Exception
      */
-    public List<String> findSolutionsInRandomRange(final Connection conn, String range) throws Exception {
+    static public List<String> findSolutionsInRandomRange(final Connection conn, String range) throws Exception {
         List<String> pids = new ArrayList<String>();
         try {
             //range="test,casey,1.1,[1-5-2]";
@@ -253,7 +280,7 @@ public class InmhItemData {
         }
     }
 
-    private void createRandomSet(List<String> pids, Connection conn, List<String> possiblePids, int numToCreate) {
+    static private void createRandomSet(List<String> pids, Connection conn, List<String> possiblePids, int numToCreate) {
 
         int maxAttempts=numToCreate * 5;
         while(maxAttempts-- > -1) {
@@ -278,7 +305,7 @@ public class InmhItemData {
         }        
     }
 
-    private void createRandomSet(List<String> pids, Connection conn, String range, int start, int end, int numToCreate) throws Exception {
+    static private void createRandomSet(List<String> pids, Connection conn, String range, int start, int end, int numToCreate) throws Exception {
         
         String pieces[] = range.split(",");
 
@@ -320,7 +347,7 @@ public class InmhItemData {
         }
     }
 
-    private String lookupActivePid(Connection conn, String book, String chapter, String section, String problemSet, int problemNumber) throws Exception  {
+    static private String lookupActivePid(Connection conn, String book, String chapter, String section, String problemSet, int problemNumber) throws Exception  {
         String sql = 
                 "select problemnumber, problemindex " + 
                 "from SOLUTIONS " +
@@ -361,7 +388,7 @@ public class InmhItemData {
      * @return
      * @throws Exception
      */
-    private List<String> findSolutionsMatchingRange(final Connection conn, String range) throws Exception {
+    static private List<String> findSolutionsMatchingRange(final Connection conn, String range) throws Exception {
     	ConcordanceEntry con = new ConcordanceEntry(conn, range);
     	
     	List<String> activePids = new ArrayList<String>();

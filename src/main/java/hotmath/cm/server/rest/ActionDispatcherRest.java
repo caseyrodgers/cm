@@ -27,6 +27,8 @@ import hotmath.cm.test.HaTestSet;
 import hotmath.cm.test.HaTestSetQuestion;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_core.client.model.TopicResource;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentStatuses;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
@@ -130,6 +132,21 @@ public class ActionDispatcherRest {
 		return Cm2ActionManager.loginUser(uid, un, pwd, subject, token);
 	}
 
+	
+	@POST
+	@Path("/login/school/user")
+	public String loginSchoolUser(final String userInfo) throws Exception {
+		
+		return RestResult.getResultObject(new CmRestCommand() {
+			@Override
+			public String execute() throws Exception {
+				JSONObject jo = new JSONObject(userInfo);
+				String un = jo.getString("user");
+				String pwd = jo.getString("pass");
+				return new Gson().toJson(Cm2ActionManager.loginSchoolUser(un, pwd));
+			}
+		});
+	}
 	
 	@POST
 	@GET
@@ -326,6 +343,35 @@ public class ActionDispatcherRest {
 
 		return Cm2ActionManager.advanceUserProgram(uid, !retake);
 	}
+	
+	@POST
+	@Path("/assignments/{uid}/{assignKey}")
+	public String getAssignment(@PathParam("uid") final int uid, @PathParam("assignKey") final int assignKey) throws Exception {
+		
+		return RestResult.getResultObject(new CmRestCommand() {
+			@Override
+			public String execute() throws Exception {
+				try {
+					StudentAssignment ass = Cm2ActionManager.getCm2Assignment(uid, assignKey);
+					
+					ass.getStudentStatuses().getStudentAssignment().getStudentStatuses().setStudentAssignment(null);
+					new Gson().toJson(ass);
+					//String json = JsonWriter.objectToJson(ass);
+					String json = new Gson().toJson(ass);
+					System.out.print(json);
+					
+					return json;
+				}
+				catch(Throwable t) {
+					t.printStackTrace();	
+					throw t;
+				}
+			}
+		});
+		
+		
+	}
+
 
 	@POST
 	@Path("/assignments/{uid}")
@@ -333,11 +379,6 @@ public class ActionDispatcherRest {
 		return Cm2ActionManager.getAssignmentsListing(uid);
 	}
 
-	@POST
-	@Path("/assignments/{uid}/{assignKey}")
-	public String getAssignment(@PathParam("uid") int uid, @PathParam("assignKey") int assignKey) throws Exception {
-		return Cm2ActionManager.getCm2Assignment(uid, assignKey);
-	}
 
 	@POST
 	@Path("/assignments/{uid}/{assignKey}/turn_in")
