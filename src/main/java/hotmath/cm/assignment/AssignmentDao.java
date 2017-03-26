@@ -699,8 +699,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 				StudentAssignment stuAssignment = new StudentAssignment(uid,
 						assignment, userInfo.getTurnInDate(),
 						userInfo.isGraded());
-				stuAssignment.setStudentStatuses(new StudentAssignmentStatuses(
-						stuAssignment, probList, null));
+				stuAssignment.setStudentStatuses(new StudentAssignmentStatuses(	stuAssignment, probList, null));
 				stuAssignment.setStudentName(nameMap.get(uid));
 				stuAssignments.add(stuAssignment);
 				stuAssignMap.put(uid, stuAssignment);
@@ -1936,8 +1935,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			assignment.setPids(pids);
 		}
 
-		StudentAssignmentUserInfo studentInfo = getStudentAssignmentUserInfo(
-				uid, assignKey);
+		StudentAssignmentUserInfo studentInfo = getStudentAssignmentUserInfo(uid, assignKey);
 
 		/**
 		 * Read list of assignment problems that have statuses for this user
@@ -2060,6 +2058,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			// studentAssignment.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(studentAssignment.getStudentStatuses().getAssigmentStatuses()));
 			studentAssignment.setHomeworkGrade(getUserScore(uid, assignKey));
 		}
+		
+		studentAssignment.getTeacherNotes().addAll(studentInfo.getTeacherNotes());
+		
 
 		if (updateViewedTime) {
 			updateStudentAssignmentLastView(assignKey, uid);
@@ -2094,13 +2095,20 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 								: false;
 						boolean isEditable = rs.getString("status").equals(
 								"Open") ? true : false;
+						List<ProblemAnnotation> teacherNotes = null;
+						try {
+							teacherNotes = AssignmentDao.getInstance().getUnreadAnnotatedProblemsForAssignment(assignKey);
+						}
+						catch(Exception e) {
+							__logger.error("Reading annotations", e);
+						}
 						return new StudentAssignmentUserInfo(uid, rs
 								.getString("user_name"), assignKey, rs
 								.getDate("turn_in_date"), isGraded, isEditable,
 								rs.getTimestamp("last_access"), rs
 										.getTimestamp("due_date"), rs
 										.getInt("close_past_due") == 0, rs
-										.getInt("is_prevent_lesson") != 0);
+										.getInt("is_prevent_lesson") != 0, teacherNotes);
 					}
 				});
 
@@ -2911,6 +2919,29 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 				"ASSIGNMENT_UNREAD_ANNOTATED_PROBLEMS");
 		List<ProblemAnnotation> pids = getJdbcTemplate().query(sql,
 				new Object[] { uid }, new RowMapper<ProblemAnnotation>() {
+					@Override
+					public ProblemAnnotation mapRow(ResultSet rs, int rowNum)
+							throws SQLException {
+						return new ProblemAnnotation(rs.getInt("assign_key"),
+								rs.getString("pid"));
+					}
+				});
+		return pids;
+	}
+	
+
+	/** return list of unread teacher annotations for this assignment or empty list
+	 * 
+	 * 
+	 * @param assignKey
+	 * @return
+	 */
+	public List<ProblemAnnotation> getUnreadAnnotatedProblemsForAssignment(final int assignKey) throws Exception {
+		
+		String sql = CmMultiLinePropertyReader.getInstance().getProperty(
+				"ASSIGNMENT_UNREAD_ANNOTATED_PROBLEMS_FOR_ASSIGNMENT");
+		List<ProblemAnnotation> pids = getJdbcTemplate().query(sql,
+				new Object[] { assignKey }, new RowMapper<ProblemAnnotation>() {
 					@Override
 					public ProblemAnnotation mapRow(ResultSet rs, int rowNum)
 							throws SQLException {

@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_rpc_assignments.client.model.assignment;
 
-import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 
 /** Define a single assignment as defined in CM.
@@ -39,6 +41,7 @@ public class StudentAssignment implements Response {
     boolean assigned; // is this user assigned to this assignment?
 
     StudentAssignmentStatuses studentStatuses;
+	private List<ProblemAnnotation> teacherNotes = new ArrayList<ProblemAnnotation>();
 
     public StudentAssignment(){}
     
@@ -49,6 +52,13 @@ public class StudentAssignment implements Response {
         this.assignmentGraded = assignmentGraded;
     }
 
+    public List<ProblemAnnotation> getTeacherNotes() {
+		return teacherNotes;
+	}
+    
+    public void setTeacherNotes(List<ProblemAnnotation> teacherNotes) {
+		this.teacherNotes = teacherNotes;
+	}
     
    public boolean isAssigned() {
         return assigned;

@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_rpc_assignments.client.model.assignment;
 
-import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 /** Represents a user's state information about individual
  *  assignments.  
@@ -22,6 +24,8 @@ public class StudentAssignmentUserInfo implements Response {
     private Date dueDate;
     private boolean pastDueSubmitable;
     private boolean preventLessonAccess;
+    
+    List<ProblemAnnotation> teacherNotes = new ArrayList<ProblemAnnotation>();
 
     public StudentAssignmentUserInfo(){}
 
@@ -30,7 +34,7 @@ public class StudentAssignmentUserInfo implements Response {
         this.assignKey = assignKey;
     }
 
-    public StudentAssignmentUserInfo(int uid, String name, int assignKey, Date turnInDate, boolean graded, boolean isEditable,Date viewDateTime, Date dueDate, boolean pastDueSubmitable, boolean isPreventLessonAccess) {
+    public StudentAssignmentUserInfo(int uid, String name, int assignKey, Date turnInDate, boolean graded, boolean isEditable,Date viewDateTime, Date dueDate, boolean pastDueSubmitable, boolean isPreventLessonAccess, List<ProblemAnnotation> teacherNotes) {
         this(uid, assignKey);
         this.name = name;
         this.turnInDate = turnInDate;
@@ -40,8 +44,19 @@ public class StudentAssignmentUserInfo implements Response {
         this.dueDate = dueDate;
         this.pastDueSubmitable = pastDueSubmitable;
         this.preventLessonAccess = isPreventLessonAccess;
+        this.teacherNotes.addAll(teacherNotes);
     }
 
+    
+    public List<ProblemAnnotation> getTeacherNotes() {
+		return teacherNotes;
+	}
+    
+    public void setTeacherNotes(List<ProblemAnnotation> teacherNotes) {
+		this.teacherNotes = teacherNotes;
+	}
+    
+    
     public String getName() {
         return name;
     }

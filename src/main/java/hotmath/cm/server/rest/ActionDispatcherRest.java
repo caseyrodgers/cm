@@ -358,7 +358,7 @@ public class ActionDispatcherRest {
 					new Gson().toJson(ass);
 					//String json = JsonWriter.objectToJson(ass);
 					String json = new Gson().toJson(ass);
-					System.out.print(json);
+					//System.out.print(json);
 					
 					return json;
 				}
