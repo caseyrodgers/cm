@@ -92,6 +92,14 @@ public class ActionDispatcherRest {
 		Cm2ActionManager.resetCurrentUser(userId);
 		return new Gson().toJson(new RpcData("status=OK"));
 	}
+	
+	@POST
+	@GET
+	@Path("/user/{userId}/refresh_user")
+	public String refresCurrentUser(@PathParam("userId") int userId) throws Exception {
+		return Cm2ActionManager.refreshUser(userId);
+	}
+
 
 
 	

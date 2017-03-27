@@ -474,8 +474,18 @@ public class Cm2ActionManager {
         return jsonResponse;
     }
     
+    
+    public static String refreshUser(int uid) throws Exception {
+    	 GetCm2MobileLoginAction action = new GetCm2MobileLoginAction(uid);
+         Cm2MobileUser user = ActionDispatcher.getInstance().execute(action);
+         user.getUserInfo().setUserAccountType(AccountType.SCHOOL_TEACHER);
+         
+         return new Gson().toJson(user);
+    }
+
+    
     public static Cm2MobileUser loginSchoolUser(String user, String pass) throws Exception {
-    	GetCm2MobileLoginAction action = new GetCm2MobileLoginAction(user,  pass, null);
+		GetCm2MobileLoginAction action = new GetCm2MobileLoginAction(user,  pass, null);
     	Cm2MobileUser data = ActionDispatcher.getInstance().execute(action);
     	
     	return data;
