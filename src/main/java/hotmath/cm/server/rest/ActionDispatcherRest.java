@@ -19,6 +19,7 @@ import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
 import com.google.gson.Gson;
 
+import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.cm.server.model.CmPaymentDao;
 import hotmath.cm.server.model.DeviceStorage;
@@ -27,6 +28,7 @@ import hotmath.cm.test.HaTestSet;
 import hotmath.cm.test.HaTestSetQuestion;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_core.client.model.TopicResource;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentStatuses;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -513,6 +515,28 @@ public class ActionDispatcherRest {
 	public String saveUserFeedback(@PathParam("uid") int uid, String feedbackMessage) throws Exception {
 		return JsonWriter.objectToJson(Cm2ActionManager.saveFeedback(uid, feedbackMessage));
 	}
+	
+	
+	
+	@POST
+	@Path("user/{uid}/teacher_notes")
+	public String getTeacherNotes(@PathParam("uid") final int uid, String data) throws Exception {
+		
+		return RestResult.getResultObject(new CmRestCommand() {
+			@Override
+			public String execute() throws Exception {
+				List<ProblemAnnotation> ann = AssignmentDao.getInstance().getUnreadAnnotatedProblems(uid);
+				return new Gson().toJson(ann);
+			}
+		});
+		
+	}
+
+	
+	
+	
+	
+	
 
 	@POST
 	@Path("quiz/{rid}/results")

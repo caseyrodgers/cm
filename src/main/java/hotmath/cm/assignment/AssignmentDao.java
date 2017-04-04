@@ -2913,7 +2913,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 				+ ", students ungraded: " + cntUngraded);
 	}
 
-	private List<ProblemAnnotation> getUnreadAnnotatedProblems(final int uid)
+	public List<ProblemAnnotation> getUnreadAnnotatedProblems(final int uid)
 			throws Exception {
 		String sql = CmMultiLinePropertyReader.getInstance().getProperty(
 				"ASSIGNMENT_UNREAD_ANNOTATED_PROBLEMS");
