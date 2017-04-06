@@ -373,7 +373,13 @@ public class Cm2ActionManager {
     public static String getAssignmentsListing(int uid) throws Exception  {
         CmList<StudentAssignmentInfo> results = ActionDispatcher.getInstance().execute(new GetAssignmentsForUserAction(uid));
         List<StudentAssignmentInfo> assignList = new ArrayList<StudentAssignmentInfo>();
-        assignList.addAll(results);
+        
+        for(StudentAssignmentInfo r: results) {
+        	if(!r.getStatus().equals("Closed")) {
+        		assignList.add(r);
+        	}
+        }
+        //assignList.addAll(results);
         Cm2Assignments assignments = new Cm2Assignments(assignList);
         
         return new Gson().toJson(assignments);
