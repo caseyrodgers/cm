@@ -142,7 +142,7 @@ public class SolutionEditor implements EntryPoint {
         
         SolutionSearcherDialog.getInstance(null);
         
-       // RootPanel.get("main-content").add(mainPort);
+        RootPanel.get("main-content").add(mainPort);
         if(__pidToLoad != null) {
             _stepEditorViewer.loadSolution(__pidToLoad.split("$")[0]);  // strip off any context reference
         }
