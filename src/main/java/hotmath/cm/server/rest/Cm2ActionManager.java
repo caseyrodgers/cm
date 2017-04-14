@@ -1,15 +1,18 @@
 package hotmath.cm.server.rest;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sql.ConnectionPoolDataSource;
 
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 
 import hotmath.ProblemID;
-import hotmath.cm.login.service.LoginService;
 import hotmath.cm.server.model.CmPaymentDao;
 import hotmath.cm.server.model.StudentEventsDao;
 import hotmath.cm.util.CatchupMathProperties;
@@ -18,7 +21,6 @@ import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
 import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_core.client.model.UserSyncInfo;
 import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
-import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionForMobileAction;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
@@ -628,4 +630,25 @@ public class Cm2ActionManager {
 			e.printStackTrace();
 		}
 	}
+
+
+	static public List<TestingPid> getTestingPids() throws Exception {
+		List<TestingPid> pids = new ArrayList<TestingPid>();
+		Connection conn=null;
+        String sql = "select * from CM_TESTING_PIDS order by id";
+        PreparedStatement ps = null;
+        try {
+        	conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+            	pids.add(new TestingPid(rs.getString("pid"), rs.getString("input")));
+            }
+            return pids;
+        }
+        finally {
+            SqlUtilities.releaseResources(null, ps, conn);
+        }
+	}
+
 }

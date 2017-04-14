@@ -103,9 +103,6 @@ public class ActionDispatcherRest {
 	}
 
 
-
-	
-
 	/** @deprecated
 	 * 
 	 * @param deviceId
@@ -616,6 +613,18 @@ public class ActionDispatcherRest {
 		        SbFile file = new SbFile(CatchupMathProperties.getInstance().getCatchupRuntime() + "/cm_app_ver.txt");
 		        String minVersion = file.getFileContents().toString();
 		        return minVersion; 
+		    }
+		});
+	}
+	
+
+	@GET
+	@Path("testing_pids")
+	public String getTestingPids() throws Exception {
+		return RestResult.getResultObject(new CmRestCommand() {
+			@Override
+			public String execute() throws Exception {
+				return new Gson().toJson(Cm2ActionManager.getTestingPids());
 		    }
 		});
 	}

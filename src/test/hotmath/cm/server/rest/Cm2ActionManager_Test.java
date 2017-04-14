@@ -13,6 +13,9 @@ public class Cm2ActionManager_Test extends TestCase {
         super(name);
     }
     
+    public void testGetTestPids() throws Exception {
+    	assertTrue(Cm2ActionManager.getTestingPids() != null);
+    }
     public void testGetSearchTopic() throws Exception {
     	String result = Cm2ActionManager.getSearchTopic("topics/integers.html");
     	assertNotNull(result);
