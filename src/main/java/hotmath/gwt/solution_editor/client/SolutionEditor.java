@@ -153,19 +153,12 @@ public class SolutionEditor implements EntryPoint {
         
         Login.getInstance().makeSureLoggedIn();
         
-        
-        
-        
-        final FileUploadField fileUpload = new FileUploadField();
-        final FormPanel form = new FormPanel();
-        form.setEncoding(FormPanel.Encoding.MULTIPART);
-        form.setMethod(FormPanel.Method.POST);
-        form.add(fileUpload);
-
-        RootPanel.get("main-content").add(form);
-        
-        
-        
+//        final FileUploadField fileUpload = new FileUploadField();
+//        final FormPanel form = new FormPanel();
+//        form.setEncoding(FormPanel.Encoding.MULTIPART);
+//        form.setMethod(FormPanel.Method.POST);
+//        form.add(fileUpload);
+//        RootPanel.get("main-content").add(form);
         
 //        List<SolutionSearchModel> ss = new ArrayList<SolutionSearchModel>();
 //        ss.add(new SolutionSearchModel("test_casey_1_1_1_2",true));
