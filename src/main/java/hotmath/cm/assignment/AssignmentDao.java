@@ -1693,14 +1693,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			Date lastStudentView = saui.getViewDateTime();
 
 			Date lastAssignmentModification = getLastTeacherAssignmentModification(assignKey);
-			if (lastStudentView == null
-					|| lastStudentView.getTime() < lastAssignmentModification
-							.getTime()) {
+			if (lastStudentView == null	|| lastStudentView.getTime() < lastAssignmentModification.getTime()) {
 				return true;
 			}
 
-			Date lastStatusModification = getLastTeacherModfiedStudentStatus(
-					assignKey, uid);
+			Date lastStatusModification = getLastTeacherModfiedStudentStatus(assignKey, uid);
 			if (lastStatusModification != null) {
 				if (lastStudentView.getTime() < lastStatusModification
 						.getTime()) {
@@ -2342,16 +2339,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
 	private void updateStudentAssignmentLastView(final int assignKey,
 			final int uid) throws Exception {
-		final Date viewTime = new Date(System.currentTimeMillis());
 		int cnt = getJdbcTemplate().update(new PreparedStatementCreator() {
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con)
 					throws SQLException {
-				String sql = "update CM_ASSIGNMENT_USER set last_access = ? where assign_key = ? and uid = ?";
+				String sql = "update CM_ASSIGNMENT_USER set last_access = now() where assign_key = ? and uid = ?";
 				PreparedStatement ps = con.prepareStatement(sql);
-				ps.setTimestamp(1, new java.sql.Timestamp(viewTime.getTime()));
-				ps.setInt(2, assignKey);
-				ps.setInt(3, uid);
+				ps.setInt(1, assignKey);
+				ps.setInt(2, uid);
 				return ps;
 			}
 		});
