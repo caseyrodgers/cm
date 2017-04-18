@@ -492,8 +492,8 @@ public class Cm2ActionManager {
     }
 
     
-    public static Cm2MobileUser loginSchoolUser(String user, String pass) throws Exception {
-		GetCm2MobileLoginAction action = new GetCm2MobileLoginAction(user,  pass, null);
+    public static Cm2MobileUser loginSchoolUser(String user, String pass, String subject) throws Exception {
+		GetCm2MobileLoginAction action = new GetCm2MobileLoginAction(user,  pass, subject);
     	Cm2MobileUser data = ActionDispatcher.getInstance().execute(action);
     	
     	return data;

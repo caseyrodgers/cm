@@ -150,7 +150,8 @@ public class ActionDispatcherRest {
 				JSONObject jo = new JSONObject(userInfo);
 				String un = jo.getString("user");
 				String pwd = jo.getString("pass");
-				return new Gson().toJson(Cm2ActionManager.loginSchoolUser(un, pwd));
+				String subject = jo.getString("subject")!=null?jo.getString("subject"):null;
+				return new Gson().toJson(Cm2ActionManager.loginSchoolUser(un, pwd, subject));
 			}
 		});
 	}
@@ -517,7 +518,7 @@ public class ActionDispatcherRest {
 	
 	@POST
 	@Path("user/{uid}/teacher_notes")
-	public String getTeacherNotes(@PathParam("uid") final int uid, String data) throws Exception {
+	public String getTeacherNotes(@PathParam("uid") final int uid, final String data) throws Exception {
 		
 		return RestResult.getResultObject(new CmRestCommand() {
 			@Override
