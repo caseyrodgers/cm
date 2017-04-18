@@ -1,19 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_core.client.CmCore;
-import hotmath.gwt.cm_core.client.util.CmBusyManager;
-import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGradeBookAction;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
-import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.ui.GradeBookDialog;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.ui.CmCellRendererBoolean;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +28,22 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.GridSelectionModel;
+
+import hotmath.gwt.cm_admin.client.ui.StudentMessageCollectDialog;
+import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.UserInfoBase;
+import hotmath.gwt.cm_core.client.util.CmBusyManager;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGradeBookAction;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.ui.GradeBookDialog;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.ui.CmCellRendererBoolean;
 
 /** Shows grid of all students in assignment 
  * and the summary of the selected assignment.
@@ -199,7 +201,7 @@ public class GradeBookPanel extends ContentPanel {
     private void addSendMessageButton() {
 
         TextButton btn = new TextButton("Send Message");
-        btn.setToolTip("Send a personal message this this student");
+        btn.setToolTip("Send a personal message to this student");
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
@@ -210,7 +212,7 @@ public class GradeBookPanel extends ContentPanel {
             		return;
             	}
             	
-            	Window.alert("Send Message: " + item);
+            	new StudentMessageCollectDialog(item.getUid());
             }
         });
 

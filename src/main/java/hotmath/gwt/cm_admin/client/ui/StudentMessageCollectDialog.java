@@ -31,6 +31,9 @@ public class StudentMessageCollectDialog extends GWindow {
 		setModal(true);
 		
 		drawUi();
+		
+		
+		setVisible(true);
 	}
 	
 	TextArea _textArea = new TextArea();
