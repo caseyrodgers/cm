@@ -150,7 +150,7 @@ public class ActionDispatcherRest {
 				JSONObject jo = new JSONObject(userInfo);
 				String un = jo.getString("user");
 				String pwd = jo.getString("pass");
-				String subject = jo.getString("subject")!=null?jo.getString("subject"):null;
+				String subject = jo.has("subject")?jo.getString("subject"):null;
 				return new Gson().toJson(Cm2ActionManager.loginSchoolUser(un, pwd, subject));
 			}
 		});
