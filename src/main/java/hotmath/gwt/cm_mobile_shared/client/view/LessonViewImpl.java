@@ -1,20 +1,23 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
+import java.util.List;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+
 import hotmath.gwt.cm_core.client.BackAction;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.activity.LessonView;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-
-import java.util.List;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
+import hotmath.gwt.cm_rpc.client.CmRpc;
 
 public class LessonViewImpl extends Composite implements LessonView {
 
@@ -106,6 +109,15 @@ public class LessonViewImpl extends Composite implements LessonView {
         this.lessonName = lessonName;
         _body.clear();
         _body.add(new HTML(lessonHtml));
+        
+        
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+            	CmRpc.jsni_processMathJax();
+            }
+        });
+        
     }
     
     
