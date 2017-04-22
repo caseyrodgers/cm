@@ -158,11 +158,6 @@ public class CmShared implements EntryPoint {
                                                return navigator.userAgent.toLowerCase();
                                                }-*/;
 
-    static native void processMathJax() /*-{
-                                        // defined in CatchupMath.js
-                                        $wnd.processMathJax();
-                                        }-*/;
-
     /**
      * Verify login attempt by reading security key and making sure it Validated
      * only once ..

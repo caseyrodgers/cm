@@ -16,10 +16,7 @@ public class CmRpc implements EntryPoint {
     static native public void jsni_processMathJax() /*-{
         $wnd.processMathJax();
     }-*/;
-    
-    
-    
-    
+
     static {
         /** Setup a couple of global event handlers 
          * 
