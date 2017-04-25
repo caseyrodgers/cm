@@ -253,7 +253,7 @@ public class ActionDispatcher {
 		String c[] = action.getClass().getName().split("\\.");
 		String clazzName = c[c.length - 1];
 
-		logger.debug(String
+		logger.info(String
 				.format("RPC Action (userId:%d,userType:%s) (ID:%s) executing: %s toString: %s",
 						clientInfo.getUserId(), clientInfo.getUserType(),
 						actionId, clazzName, action.toString()));
@@ -395,7 +395,7 @@ public class ActionDispatcher {
 			long executeTimeMills = (now - timeStart);
 
 			if (!failed)
-				logger.debug(String
+				logger.info(String
 						.format("RPC Action (userId:%d,userType:%s) (ID:%s) %s toString: %s complete; elapsed time: %d msec",
 								clientInfo.getUserId(),
 								clientInfo.getUserType(), actionId, clazzName,
