@@ -421,8 +421,11 @@ public class ActionDispatcherRest {
 		return RestResult.getResultObject(new CmRestCommand() {
 			@Override
 			public String execute() throws Exception {
-				JSONObject jo = new JSONObject(json);
-				String currentProgram = jo.has("programName")?jo.getString("programName"):"";
+				String currentProgram="";
+				if(json != null && json.startsWith("(")) {
+					JSONObject jo = new JSONObject(json);
+					currentProgram = jo.has("programName")?jo.getString("programName"):"";
+				}
 				return Cm2ActionManager.getUserSyncEvents(uid, currentProgram);				
 			}
 		});
