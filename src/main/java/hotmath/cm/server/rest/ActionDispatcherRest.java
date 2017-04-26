@@ -425,6 +425,7 @@ public class ActionDispatcherRest {
 				if(json != null && json.startsWith("{")) {
 					JSONObject jo = new JSONObject(json);
 					currentProgram = jo.has("programName")?jo.getString("programName"):"";
+					currentProgram = currentProgram.trim();
 				}
 				return Cm2ActionManager.getUserSyncEvents(uid, currentProgram);				
 			}
