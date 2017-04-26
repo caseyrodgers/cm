@@ -422,7 +422,7 @@ public class ActionDispatcherRest {
 			@Override
 			public String execute() throws Exception {
 				String currentProgram="";
-				if(json != null && json.startsWith("(")) {
+				if(json != null && json.startsWith("{")) {
 					JSONObject jo = new JSONObject(json);
 					currentProgram = jo.has("programName")?jo.getString("programName"):"";
 				}
