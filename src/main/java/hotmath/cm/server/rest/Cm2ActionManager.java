@@ -470,8 +470,10 @@ public class Cm2ActionManager {
     	HaUser user = HaUserDao.getInstance().lookUser(uid, false);
     	String assignedTestName = user.getAssignedTestName();
     	
-    	if(!assignedTestName.equals(currentProgram) ) {
-    		data.getEvents().add(new StudentEvent("{'type': 'program_changed'}"));
+    	if(currentProgram != null && currentProgram.length() > 0) {
+	    	if(!assignedTestName.startsWith(currentProgram.trim()) ) {
+	    		data.getEvents().add(new StudentEvent("{'type': 'program_changed'}"));
+	    	}
     	}
     	
 
