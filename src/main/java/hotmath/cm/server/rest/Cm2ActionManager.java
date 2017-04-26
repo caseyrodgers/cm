@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.ConnectionPoolDataSource;
-
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -18,6 +16,7 @@ import hotmath.cm.server.model.StudentEventsDao;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_core.client.model.Cm2PrescriptionTopic;
+import hotmath.gwt.cm_core.client.model.StudentEvent;
 import hotmath.gwt.cm_core.client.model.TopicSearchResults;
 import hotmath.gwt.cm_core.client.model.UserSyncInfo;
 import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
@@ -463,9 +462,19 @@ public class Cm2ActionManager {
         return new Gson().toJson(data);
     }
 
-    public static String getUserSyncEvents(int uid) throws Exception {
+    public static String getUserSyncEvents(int uid, String currentProgram) throws Exception {
         GetUserSyncAction action = new GetUserSyncAction(uid);
         UserSyncInfo data = ActionDispatcher.getInstance().execute(action);
+        
+    	
+    	HaUser user = HaUserDao.getInstance().lookUser(uid, false);
+    	String assignedTestName = user.getAssignedTestName();
+    	
+    	if(!assignedTestName.equals(currentProgram) ) {
+    		data.getEvents().add(new StudentEvent("{'type': 'program_changed'}"));
+    	}
+    	
+
         return new Gson().toJson(data);
     }
 

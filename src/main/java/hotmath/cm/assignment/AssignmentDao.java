@@ -1,5 +1,31 @@
 package hotmath.cm.assignment;
 
+import java.io.UnsupportedEncodingException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+
 import hotmath.ProblemID;
 import hotmath.cm.exam.ExamDao;
 import hotmath.cm.server.model.StudentAssignmentStatus;
@@ -60,33 +86,6 @@ import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.sql.SqlUtilities;
-
-import java.io.UnsupportedEncodingException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.PreparedStatementSetter;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-
 import sb.util.SbUtilities;
 
 public class AssignmentDao extends SimpleJdbcDaoSupport {
@@ -1586,8 +1585,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 		 * Sort so active/not-expired assignments are on top
 		 * 
 		 */
-		String sql = CmMultiLinePropertyReader.getInstance().getProperty(
-				"GET_STUDENT_ASSIGNMENTS");
+		String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_ASSIGNMENTS");
 		List<StudentAssignmentInfo> assInfos = getJdbcTemplate().query(sql,
 				new Object[] { uid, uid }, new RowMapper<StudentAssignmentInfo>() {
 					@Override
@@ -1643,6 +1641,16 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 								assignKey, uid, isGraded, turnInDate, status,
 								dueDate, rs.getString("comments"), cntProblems,
 								cntSubmitted, score, assignmentHasChanged);
+						
+						
+						try {
+							updateStudentAssignmentLastView(assignKey, uid);
+						}
+						catch(Exception e) {
+							__logger.error("Could not update last view time", e);
+						}
+						
+						
 						return info;
 					}
 				});

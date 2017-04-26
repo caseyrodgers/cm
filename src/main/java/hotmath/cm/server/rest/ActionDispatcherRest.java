@@ -417,8 +417,15 @@ public class ActionDispatcherRest {
 	@GET
 	@POST
 	@Path("/user/{uid}/events")
-	public String getUserSyncEvents(@PathParam("uid") int uid) throws Exception {
-		return Cm2ActionManager.getUserSyncEvents(uid);
+	public String getUserSyncEvents(@PathParam("uid") final int uid, final String json) throws Exception {
+		return RestResult.getResultObject(new CmRestCommand() {
+			@Override
+			public String execute() throws Exception {
+				JSONObject jo = new JSONObject(json);
+				String currentProgram = jo.has("programName")?jo.getString("programName"):"";
+				return Cm2ActionManager.getUserSyncEvents(uid, currentProgram);				
+			}
+		});
 	}
 
 	@POST
