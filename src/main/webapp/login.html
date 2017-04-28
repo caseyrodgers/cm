@@ -34,29 +34,7 @@ pageTracker._trackPageview();
         <!-- InstanceBeginEditable name="head" -->
 <link rel="stylesheet" type="text/css" href="/assets/css/login.css" />
 <style>
-   #main-content {
-     margin-top: 40px;
-     height: 400px;
-     
-   }
 
-   #system_check {
-	   position: absolute;
-	   left: 10px;
-	   top: 210px;	   
-   }
-   
-   #system_check a {
-	   color: black;
-	   text-decoration: underline;
-   }
-   
-   #new-info {
-       font-size: 1.4em;
-       margin-top: 15px;
-       width: 585px;
-       float: right;
-   }
 
 </style>
 
@@ -140,12 +118,15 @@ pageTracker._trackPageview();
         <div id='system_check'>
         <p>
          First time using Catchup Math on this computer?
-         <a style='display: block' href='/system_checker.jsp'>
+         <a style='display: block' href='#' onclick='showChecker();return false'>
             Check compatibility
          </a>
         </p>
         </div>
         <h1>Catchup Math Login</h1>
+        <div id='mobile-beta-info'>
+             School Students, want to try our new <a target='_blank' href='http://mobile2.catchupmath.com?action=reset'>Mobile Beta?</a>
+        </div>
         <div id='login-wrapper' class='round-corners body-left'>
           <form autocomplete="off" id="login_form" onSubmit="return doLogin();" action="/loginService" method="POST">
             <input type='hidden' name='real_login' value='true'/>
@@ -160,29 +141,11 @@ pageTracker._trackPageview();
               </div>
             </div>
             <div class="error" id="login_error" style="float: left;"></div>
+            <button id='login_more-info' type='button' class='sexybutton sexysimple' onclick='handleMoreInfo()'>More Info</button>
             <button id='login_submit' type='submit' class='submit sexybutton sexysimple'>Login</button>
             <div id='login_busy'>&nbsp;</div>
           </form>
         </div>
-          <ul id="login_faq_list" class='body-right round-corners'>
-            <li>
-            	<h2>School/College</h2>
-                <p>
-                    Your Login Name may be something like JFK752. For Password, put your own password
-                    or the self-registration code you were given.
-                    <a href='#' onclick='showMore();return false;'>Read more &gt;</a></p>
-            </li>
-            <li class='separate'>
-                &nbsp;
-            </li>
-            
-            <li>
-              <h2>Personal Accounts</h2>
-               <p>If you or your parents purchased Catchup Math, use your email address along with the
-                  password that was emailed to you.
-                  <a href='#' onclick='showMorePersonal();return false;'>Read more &gt;</a></p>
-            </li>
-         </ul>
          <br clear="all"/>
          <div id='new-info'>
          </div>

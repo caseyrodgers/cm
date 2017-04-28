@@ -8,6 +8,16 @@ YUI().use('event',function(Y) {
     //document.getElementById("fld_user").value = '';
     
     document.getElementById('fld_user').focus();
+    
+    
+    
+    
+    var isMobile = window.matchMedia("only screen and (max-width: 760px)");
+
+    if (!isMobile.matches) {
+        showMobileBetaInfo();
+    }
+    
   }, Y, "The DOMContentLoaded event fired.  The DOM is now safe to modify via script.");
 });
 
@@ -107,4 +117,39 @@ var moreInfoPersonal = '' +
 
 function showMorePersonal() {
 showDialog(moreInfoPersonal,"More Info");
+}
+
+
+
+var moreLoginInfo=
+	"        <ul id='login_faq_list' class='round-corners'>" +
+	"            <li>" +
+	"            	<h2>School/College</h2>" +
+	"                <p>" +
+	"                    Your Login Name may be something like JFK752. For Password, put your own password" +
+	"                    or the self-registration code you were given." +
+	"                    <a href='#' onclick='showMore();return false;'>Read more &gt;</a></p>" +
+	"            </li>" +
+	"            " +
+	"            <li>" +
+	"              <h2>Personal Accounts</h2>" +
+	"               <p>If you or your parents purchased Catchup Math, use your email address along with the" +
+	"                  password that was emailed to you." +
+	"                  <a href='#' onclick='showMorePersonal();return false;'>Read more &gt;</a></p>" +
+	"            </li>" +
+	"         </ul>";
+
+function handleMoreInfo() {
+	showDialog(moreLoginInfo,"More Info");
+}
+
+
+function showMobileBetaInfo() {
+	document.getElementById("mobile-beta-info").style.visibility = 'visible';
+}
+
+
+function showChecker() {
+	var html = "<iframe width='100%' height='450px' src='system_checker_extract.jsp'></iframe>";
+	showDialog(html,"System Checker");
 }
