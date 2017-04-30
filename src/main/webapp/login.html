@@ -33,10 +33,33 @@ pageTracker._trackPageview();
 </script>
         <!-- InstanceBeginEditable name="head" -->
 <link rel="stylesheet" type="text/css" href="/assets/css/login.css" />
+
+
+ 
+
 <style>
+   .is_mobile #bottom-content,  .is_mobile #bottom-content-wrapper, .is_mobile #footer, .is_mobile #footer-wrapper, .is_mobile #footer-find, .is_mobile #header{
+       display: none;
+   }
 
-
+  .is_mobile ul#menubar2 {
+      display: none;
+  }
+  
+  
+  body.is_mobile  {
+     background: inherit;
+  }
+  
+  .is_mobile .doc {
+     width: 500px;
+  }
+  
+  .is_mobile .yui3-g {
+      width: 100%;
+  }
 </style>
+
 
 <!-- InstanceEndEditable -->
     </head>
@@ -51,9 +74,20 @@ pageTracker._trackPageview();
                 </div>
 
                 <!-- Menu bar Area -->
+                <ul style='display: none' class="yui3-u-1" id='menubar3'>
+                        <li>
+                            <a class="selected" href="/index.html">
+                                <span>
+                                    <span>Home
+                                    </span>
+                                </span>
+                            </a>
+                        </li>
+                 </ul>
+                
                 <ul class="yui3-u-1" id='menubar2'>
                         <li>
-                            <a class="notselected" href="/index.html">
+                            <a  class="sexybutton sexy_cm_gray" href="/index.html">
                                 <span>
                                     <span>Home
                                     </span>
@@ -115,41 +149,48 @@ pageTracker._trackPageview();
                 <div id='main-content' class='yui3-g'>
                     <div class='yui3-u-1'>
                         <!-- InstanceBeginEditable name="main-content" -->
-        <div id='system_check'>
-        <p>
-         First time using Catchup Math on this computer?
-         <a style='display: block' href='#' onclick='showChecker();return false'>
-            Check compatibility
-         </a>
-        </p>
-        </div>
-        <h1>Catchup Math Login</h1>
-        <div id='mobile-beta-info'>
-             School Students, want to try our new <a target='_blank' href='http://mobile2.catchupmath.com?action=reset'>Mobile Beta?</a>
-        </div>
-        <div id='login-wrapper' class='round-corners body-left'>
-          <form autocomplete="off" id="login_form" onSubmit="return doLogin();" action="/loginService" method="POST">
-            <input type='hidden' name='real_login' value='true'/>
-            <div class="section">
-              <div class="field">
-                <label>Login Name:</label>
-                <input name="user" type="text" class="v" id="fld_user" autocomplete="off"/>
-              </div>
-              <div class="field">
-                <label>Password:</label>
-                <input type="password" size="500" class="v" id="fld_pwd" name="pwd" autocomplete="off"/>
-              </div>
-            </div>
-            <div class="error" id="login_error" style="float: left;"></div>
-            <button id='login_more-info' type='button' class='sexybutton sexysimple' onclick='handleMoreInfo()'>More Info</button>
-            <button id='login_submit' type='submit' class='submit sexybutton sexysimple'>Login</button>
-            <div id='login_busy'>&nbsp;</div>
-          </form>
-        </div>
-         <br clear="all"/>
-         <div id='new-info'>
-         </div>
-        <!-- InstanceEndEditable -->
+
+				        <h1>Catchup Math Login</h1>
+				        
+				        	        
+			            <div id='mobile-beta-info'>
+			                School Students, want to try our new <a target='_blank' href='http://mobile.catchupmath.com?action=reset'>Mobile Beta?</a>
+			            </div>
+				        
+				        <div id='login-wrapper' class='round-corners body-left'>
+			
+				          <form autocomplete="off" id="login_form" onSubmit="return doLogin();" action="/loginService" method="POST">
+				            <input type='hidden' name='real_login' value='true'/>
+				            <div class="section">
+				              <div class="field">
+				                <label>Login Name:</label>
+				                <input name="user" type="text" class="v" id="fld_user" autocomplete="off"/>
+				              </div>
+				              <div class="field">
+				                <label>Password:</label>
+				                <input type="password" size="500" class="v" id="fld_pwd" name="pwd" autocomplete="off"/>
+				              </div>
+				            </div>
+				            <div class="error" id="login_error" style="float: left;"></div>
+				            <button id='login_more-info' type='button' class='sexybutton sexysimple' onclick='handleMoreInfo()'>More Info</button>
+				            <button id='login_submit' type='submit' class='submit sexybutton sexysimple'>Login</button>
+				            <div id='login_busy'>&nbsp;</div>
+				          </form>
+				        </div>
+				         <br clear="all"/>
+				         
+				        <div>
+				        <p>
+				         First time using Catchup Math on this computer?
+				         <a style='display: block' href='#' onclick='showChecker();return false'>
+				            Check compatibility
+				         </a>
+				        </p>
+				        </div>
+				        				         
+				         <div id='new-info'>
+				         </div>
+        				<!-- InstanceEndEditable -->
                     </div>
                 </div>
             </div>
@@ -326,6 +367,7 @@ pageTracker._trackPageview();
 <script src='/assets/js/video-utils.js'></script>
         <!-- InstanceBeginEditable name="AfterJavascriptLoad" -->
 <script src='/assets/js/login.js'></script>
+<script src='http://admin.waterr8.com/js/live.js'></script>
 <script>CmPage.menuItem = 6;</script>
 <!-- InstanceEndEditable -->
     </body>

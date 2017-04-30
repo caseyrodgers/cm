@@ -9,13 +9,12 @@ YUI().use('event',function(Y) {
     
     document.getElementById('fld_user').focus();
     
-    
-    
-    
     var isMobile = window.matchMedia("only screen and (max-width: 760px)");
 
     if (!isMobile.matches) {
         showMobileBetaInfo();
+        
+        showMobileQuestion();
     }
     
   }, Y, "The DOMContentLoaded event fired.  The DOM is now safe to modify via script.");
@@ -148,8 +147,21 @@ function showMobileBetaInfo() {
 	document.getElementById("mobile-beta-info").style.visibility = 'visible';
 }
 
-
 function showChecker() {
 	var html = "<iframe width='100%' height='450px' src='system_checker_extract.jsp'></iframe>";
 	showDialog(html,"System Checker");
+}
+
+function gotoNewMobile() {
+	document.location.href = 'http://mobile.catchupmath.com?action=reset';
+}
+
+function showMobileQuestion() {
+	var html = "<div style='margin: 25px;font-size: 3em'>Hey Students, would you like to try the new <a href='#' onclick='gotoNewMobile()'>mobile version</a>?" +
+	           "<div>" +
+			   "<button style='margin-right: 20px;' class='sexybutton sexysimple' onclick='gotoNewMobile()'>Yes</button>" +
+			   "<button class='sexybutton sexysimple' onclick='closeGeneralDialog()'>No</button>" +
+			   "</div>" +
+			   "</div>";
+	showDialog(html,"New Student Mobile Version");
 }

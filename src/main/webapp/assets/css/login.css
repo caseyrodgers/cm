@@ -1,13 +1,13 @@
 /** login form */
 #login_form {
-	width: 300px;
+	width: 395px;
 	margin: auto;
 	margin-top: 30px;
 	height: 100px;
 }
 #login-wrapper {
-	width: 360px;
-	height: 150px;
+	width: 430px;
+	height: 170px;
 }
 
 
@@ -22,7 +22,7 @@
 }
 
 #login_form .field {
-	width: 320px;
+	width: 390px;
 	height: 2em;
 	text-align: right;
 	margin-bottom: 5px;
@@ -30,7 +30,7 @@
 
 #login_form .field label {
 	float: left;
-	width: 100px;
+	width: 130px;
 }
 
 #login_form .submit {
@@ -43,8 +43,8 @@
 }
 #login_form .field input {
 	float: right;
-	width: 200px;
-	font-size: 1.2em;
+	width: 250px;
+	font-size: 1.5em;
 }
 
 
@@ -173,4 +173,12 @@ h1, h2 {
 	visibility: hidden;
 	font-size: 1.4em;
 	font-weight: bold;
+}
+
+#mobile-beta-info a {
+	color: red;
+}
+
+#login_busy {
+	margin-top: 10px;
 }
