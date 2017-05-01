@@ -46,7 +46,7 @@ public class SaveFeedbackCommand implements ActionHandler<SaveFeedbackAction, Rp
             	String message = action.getComments() + "\n" + action.getStateInfo();
             	
             	String[] ccEmails = {};
-				SbMailManager.getInstance().sendFile(subject,message,toEmailAddrs, ccEmails, "registration@catchupmath.com");
+            	SbMailManager.getInstance().sendMessage(subject, message, "feedback@catchupmath.com", null, "text/plain");
             }
             catch(Exception e) {
             	logger.error("Error sending feedback email to admin", e);
