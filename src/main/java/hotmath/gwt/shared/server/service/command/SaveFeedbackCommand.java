@@ -1,14 +1,18 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.util.CatchupMathProperties;
+import hotmath.gwt.cm.client.ui.context.CatchupMathProgramCorruptedDialog;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.util.sql.SqlUtilities;
+import sb.mail.SbMailManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 
@@ -32,6 +36,22 @@ public class SaveFeedbackCommand implements ActionHandler<SaveFeedbackAction, Rp
 
             if (pstat.executeUpdate() != 1)
                 throw new Exception("could not save feedback comments");
+            
+            
+            try {
+    			
+            	String toEmailAddrs="feedback@catchupmath.com";
+            	String serverId = CatchupMathProperties.getInstance().getCmInstallationId();
+            	String subject = "Cm Mobile Feedback (serverId=" + serverId + "): " + new Date();
+            	String message = action.getComments() + "\n" + action.getStateInfo();
+            	
+            	String[] ccEmails = {};
+				SbMailManager.getInstance().sendFile(subject,message,toEmailAddrs, ccEmails, "registration@catchupmath.com");
+            }
+            catch(Exception e) {
+            	logger.error("Error sending feedback email to admin", e);
+            }
+            
         } catch (Exception e) {
             logger.info(e);
         } finally {
