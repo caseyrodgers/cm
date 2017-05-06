@@ -115,7 +115,7 @@ var moreInfoPersonal = '' +
 '</div>';
 
 function showMorePersonal() {
-showDialog(moreInfoPersonal,"More Info");
+	showDialog(moreInfoPersonal,"More Info");
 }
 
 
