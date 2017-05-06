@@ -69,7 +69,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
     public Cm2MobileUser execute(Connection conn, GetCm2MobileLoginAction action) throws Exception {
 
     	if(action.getName() != null && action.getName().equals("retail")) {
-    		/** if user does not exist, the create it.  Otherwise, use existing
+    		/** if user does not exist, then create it.  Otherwise, use existing
     		 * 
     		 */
     		int existingUid = HaUserFactory.lookupUserId(action.getPassword(), action.getPassword());
@@ -104,7 +104,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
        }
        
        if (basicUser.getUserType() != UserType.STUDENT) {
-            throw new CmException("Invalid user type: " + basicUser.getUserType());
+            throw new CmException("Only students can login here.");
        }
         
        
