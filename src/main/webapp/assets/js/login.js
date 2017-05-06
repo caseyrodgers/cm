@@ -8,12 +8,9 @@ YUI().use('event',function(Y) {
     //document.getElementById("fld_user").value = '';
     
     document.getElementById('fld_user').focus();
-    
-    var isMobile = window.matchMedia("only screen and (max-width: 760px)");
 
-    if (!isMobile.matches) {
+    if (isMobile.any) {
         showMobileBetaInfo();
-        
         showMobileQuestion();
     }
     
