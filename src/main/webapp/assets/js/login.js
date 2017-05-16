@@ -150,7 +150,7 @@ function showChecker() {
 }
 
 function gotoNewMobile() {
-	document.location.href = 'http://mobile.catchupmath.com?action=reset';
+	document.location.href = 'http://mobile.catchupmath.com?action=reset&ver=1.1.7';
 }
 
 function showMobileQuestion() {
