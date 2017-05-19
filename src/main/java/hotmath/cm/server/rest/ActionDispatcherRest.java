@@ -28,9 +28,9 @@ import hotmath.cm.test.HaTestSet;
 import hotmath.cm.test.HaTestSetQuestion;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_core.client.model.TopicResource;
+import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2MobileUser;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentStatuses;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
@@ -151,7 +151,9 @@ public class ActionDispatcherRest {
 				String un = jo.getString("user");
 				String pwd = jo.getString("pass");
 				String subject = jo.has("subject")?jo.getString("subject"):null;
-				return new Gson().toJson(Cm2ActionManager.loginSchoolUser(un, pwd, subject));
+				
+				Cm2MobileUser userLogin = Cm2ActionManager.loginSchoolUser(un, pwd, subject);
+				return new Gson().toJson(userLogin);
 			}
 		});
 	}

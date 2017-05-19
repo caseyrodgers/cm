@@ -90,7 +90,7 @@ public class RestResult  {
 		if(msg.contains("duplicate")) {
 			return "duplicate record";
 		}
-		else if(msg.contains(" user") || msg.contains("company")) {
+		else if(msg.contains(" user") || msg.contains(" student")) {
 			return msg;
 		}
 		else if(msg.contains("invalid version")) {

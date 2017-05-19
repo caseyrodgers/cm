@@ -104,7 +104,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
        }
        
        if (basicUser.getUserType() != UserType.STUDENT) {
-            throw new CmException("Only students can login here.");
+            throw new CmException("Only students can login here");
        }
         
        
