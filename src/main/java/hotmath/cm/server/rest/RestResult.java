@@ -87,17 +87,23 @@ public class RestResult  {
      */
 	static private String handleExceptionLocally(Exception e) {
 		String msg = e.getMessage().toLowerCase();
-		if(msg.contains("duplicate")) {
-			return "duplicate record";
-		}
-		else if(msg.contains(" user") || msg.contains(" student")) {
-			return msg;
-		}
-		else if(msg.contains("invalid version")) {
-			return msg;
-		}
-		else {
+		if(msg.length() > 1024) {
 			return null;
 		}
+		else {
+			return msg;
+		}
+//		if(msg.contains("duplicate")) {
+//			return "duplicate record";
+//		}
+//		else if(msg.contains(" user") || msg.contains(" student")) {
+//			return msg;
+//		}
+//		else if(msg.contains("invalid version")) {
+//			return msg;
+//		}
+//		else {
+//			return null;
+//		}
 	}	
 }
