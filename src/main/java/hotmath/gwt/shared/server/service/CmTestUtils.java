@@ -17,11 +17,11 @@ public class CmTestUtils {
      * @return
      * @throws Exception
      */
-    static public int setupDemoAccount(CmProgram program) throws Exception {
+    static public int setupDemoAccount(CmProgram program, HaBasicUser.UserType userType) throws Exception {
         Connection conn = null;
         try {
             conn = HMConnectionPool.getConnection();
-            HaBasicUser user = HaUserFactory.createDemoUser(conn, "ess");
+            HaBasicUser user = HaUserFactory.createDemoUser(conn, "ess", userType);
 
             CmStudentDao.getInstance().assignProgramToStudent(conn, user.getUserKey(),program,null);
             

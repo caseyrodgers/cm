@@ -13,6 +13,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -27,7 +28,7 @@ public class LoadTester {
         try {
             conn = HMConnectionPool.getConnection();
 
-            int _userId = CmTestUtils.setupDemoAccount(CmProgram.PREALG_PROF);
+            int _userId = CmTestUtils.setupDemoAccount(CmProgram.PREALG_PROF, HaBasicUser.UserType.STUDENT);
 
             CmStudentDao _dao = CmStudentDao.getInstance();
             StudentModelI _sm = _dao.getStudentModelBase(conn, _userId);

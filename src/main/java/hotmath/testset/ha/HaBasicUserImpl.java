@@ -1,8 +1,8 @@
 package hotmath.testset.ha;
 
-import hotmath.gwt.cm_tools.client.data.HaBasicUser;
-
 import java.util.Date;
+
+import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 
 abstract public class HaBasicUserImpl implements HaBasicUser {
     
@@ -14,6 +14,8 @@ abstract public class HaBasicUserImpl implements HaBasicUser {
     String loginName;
     String email;
     String partner;
+    
+    UserType userType = UserType.STUDENT;
 
 
 	public String getEmail() {
@@ -84,7 +86,15 @@ abstract public class HaBasicUserImpl implements HaBasicUser {
 		this.partner = partner;
 	}
 
+	@Override
+	public void setUserType(UserType userType) {
+		this.userType = userType;
+	}
+
+	@Override
+	public UserType getUserType() {
+		return userType;
+	}
+	
 	abstract public Object getUserObject();
-    abstract public UserType getUserType();
-    
 }

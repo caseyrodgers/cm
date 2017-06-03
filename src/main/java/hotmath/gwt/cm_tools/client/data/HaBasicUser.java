@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_tools.client.data;
 
-import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-
 import java.util.Date;
+
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 /** Represents the basic user information for
  *  signing into catchup math.
@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public interface HaBasicUser extends Response {
     
-    public static enum UserType { STUDENT, ADMIN, AUTO_CREATE, PARALLEL_PROGRAM, AUTO_REG_SELF_PAY, ERROR };
+    public static enum UserType { STUDENT, ADMIN, AUTO_CREATE, PARALLEL_PROGRAM, AUTO_REG_SELF_PAY, ERROR, STUDENT_MOBILE };
     
     String getUserName();
     String getPassword();
@@ -35,4 +35,5 @@ public interface HaBasicUser extends Response {
     
     // hack to return the proper type
     UserType getUserType();
+	void setUserType(UserType userType);
 }

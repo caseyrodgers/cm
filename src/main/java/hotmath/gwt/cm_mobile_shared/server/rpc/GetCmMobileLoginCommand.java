@@ -46,10 +46,10 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
            basicUser = HaUserFactory.getLoginUserInfo(conn, uid, "STUDENT");
        }
        else if(action.getName().equals("catchup_demo") && action.getPassword().equals("demo")) {
-           basicUser = HaUserFactory.createDemoUser(conn, "ess");
+           basicUser = HaUserFactory.createDemoUser(conn, "ess", HaBasicUser.UserType.STUDENT_MOBILE);
         }
        else {
-           basicUser = HaUserFactory.loginToCatchup(conn, action.getName(), action.getPassword());
+           basicUser = HaUserFactory.loginToCatchup(conn, action.getName(), action.getPassword(), HaBasicUser.UserType.STUDENT_MOBILE);
        }
        
        if (basicUser.getUserType() != UserType.STUDENT)

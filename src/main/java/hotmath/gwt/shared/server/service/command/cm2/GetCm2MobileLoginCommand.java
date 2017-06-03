@@ -38,6 +38,7 @@ import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2MobileLoginAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.GetCm2QuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.QuizCm2HtmlResult;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.CmMobileAssignmentUser;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -54,265 +55,267 @@ import hotmath.testset.ha.HaUserFactory;
 import hotmath.util.sql.SqlUtilities;
 
 public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLoginAction, Cm2MobileUser> {
-	
-	
+
 	static Logger __logger = Logger.getLogger(GetCm2MobileLoginCommand.class);
-	
 
-    @Override
-    public Class<? extends Action<? extends Response>> getActionType() {
-        return GetCm2MobileLoginAction.class;
-    }
-
-    @Override
-    public Cm2MobileUser execute(Connection conn, GetCm2MobileLoginAction action) throws Exception {
-
-    	if(action.getName() != null && action.getName().equals("retail")) {
-    		/** if user does not exist, then create it.  Otherwise, use existing
-    		 * 
-    		 */
-    		int existingUid = HaUserFactory.lookupUserId(action.getPassword(), action.getPassword());
-    		if(existingUid != 0) {
-    			__logger.info("retail user, using existing user for: " + action);
-    			action.setUid(existingUid);
-    		}
-    		else {
-    			__logger.info("retail user, creating new user: " + action);
-
-    			// create new retail user account
-    			RpcData data = ActionDispatcher.getInstance().execute(new NewMobileUserAction(action.getPassword()));
-    			action.setUid(data.getDataAsInt("uid"));
-    		}
-    	}
-    	
-    	
-       int uid = action.getUid();
-       
-       boolean isDemo=false;
-       HaBasicUser basicUser=null;
-       if(uid > 0) {
-           basicUser = HaUserFactory.getLoginUserInfo(conn, uid, "STUDENT");
-       }
-       else if(action.getName().equals("catchup_demo") && action.getPassword().equals("demo")) {
-           String subject = action.getSubject();
-           basicUser = HaUserFactory.createDemoUser(conn, subject);
-           isDemo=true;
-        }
-       else {
-           basicUser = HaUserFactory.loginToCatchup(conn, action.getName(), action.getPassword());
-       }
-       
-       if (basicUser.getUserType() != UserType.STUDENT) {
-            throw new CmException("Only students can login here");
-       }
-        
-       
-       
-       if(action.getDeviceToken() != null && action.getDeviceToken().length() > 0) {
-           HaLoginInfoDao.getInstance().addUserDevice(basicUser.getUserKey(), action.getDeviceToken());
-       }
-
-        CmProgramFlow programFlow = new CmProgramFlow(conn, basicUser.getUserKey());
-        
-        if(isDemo) {
-            programFlow.moveToNextFlowItem(conn);
-        }
-        
-        StudentModelI sm = CmStudentDao.getInstance().getStudentModelBase(conn, basicUser.getUserKey());
-        StudentActiveInfo active = programFlow.getActiveInfo();
-        
-        boolean didPassTest = false;
-        
-        AssignmentUserInfo assignmentInfo = AssignmentDao.getInstance().getStudentAssignmentMetaInfo(sm.getUid());
-        Cm2MobileUser mobileUser = new Cm2MobileUser(sm.getUid(), active.getActiveTestId(), active.getActiveSegment(), active.getActiveSegmentSlot(), didPassTest, active.getActiveRunId(), assignmentInfo);
-
-        
-        /** create new security key for this login session */
-        String securityKey="";
-        securityKey = HaLoginInfoDao.getInstance().addLoginInfo(conn, basicUser, new ClientEnvironment(false),true);
-        
-        int programSegmentCount = 0;
-        String testTitle = programFlow.getUserProgram().getTestName();
-        boolean isCustomProgram = programFlow.getUserProgram().getTestDefId() == CmProgram.CUSTOM_PROGRAM.getDefId();
-        if(isCustomProgram) {
-            CustomProgramInfo cpi = GetUserInfoCommand.processCustomProgram(conn, sm.getUid(), active, programFlow.getUserProgram());
-            programSegmentCount = cpi.getProgramSegmentCount();
-            testTitle = cpi.getTitle();
-            
-            //mobileUser.getBaseLoginResponse().getUserInfo().setProgramName(testTitle);
-            
-            
-            // TODO:
-            // here the CP is now ready for use, but what about the 
-            // programSegmentCount and testTitle ...?
-        }
-        
-        
-        /** look up the Custom Quiz name */
-        boolean isCustomQuiz = programFlow.getUserProgram().getCustomQuizId() > 0;
-        if(isCustomQuiz) {
-            testTitle = programFlow.getUserProgram().getCustomQuizName();
-        }
-
-        /**
-         * get list of previous prescribed lessons
-         * 
-         */
-        PreparedStatement ps = null;
-        try {
-            GetUserInfoAction loginAction = new GetUserInfoAction(mobileUser.getUserId(), null);
-            UserLoginResponse userLoginResponse = new GetUserInfoCommand().execute(conn, loginAction);
-            mobileUser.setBaseLoginResponse(userLoginResponse);
-            mobileUser.setSecurityKey(securityKey);
-            
-            mobileUser.getBaseLoginResponse().getUserInfo().setProgramName(testTitle);
-            
-            CmProgramFlowAction nextAction = programFlow.getActiveFlowAction(conn);
-            mobileUser.setTestId(programFlow.getActiveInfo().getActiveTestId());
-            
-            mobileUser.setPlace(nextAction.getPlace());
-            
-            mobileUser.setPrescriptionTopics(extractPrescriptionTopics(conn, nextAction));
-            
-            //mobileUser.setFlowAction(nextAction);
-
-            // quiz not created yet, must create it.
-            
-            if(nextAction.getPlace() == CmPlace.QUIZ && mobileUser.getTestId() == 0) {
-                // create it
-                CmProgramFlow cp = new CmProgramFlow(conn, mobileUser.getUserId());
-                cp.moveToNextFlowItem(conn);
-                mobileUser.setTestId(cp.getActiveInfo().getActiveTestId());
-            }
-            
-            if(nextAction.getPlace() != CmPlace.ASSIGNMENTS_ONLY &&  mobileUser.getTestId() > 0) {
-                // is quiz
-                GetCm2QuizHtmlAction actionQuiz = new GetCm2QuizHtmlAction(active.getActiveTestId());
-                QuizCm2HtmlResult quizResponse = new GetCm2QuizHtmlCommand().execute(conn, actionQuiz);
-                mobileUser.setCm2QuizResponse(quizResponse);
-            }
-        } finally {
-            SqlUtilities.releaseResources(null, ps, null);
-        }
-        
-        
-        
-        mobileUser.setPurchases(CmPaymentDao.getInstance().getPurchases(mobileUser.getUserId()));
-        
-//        for(Cm2PrescriptionTopic p: mobileUser.getPrescriptionTopics()) {
-//        	p.setTopicTextExcerpt("TEST");
-//        }
-        
-        
-        /** remove Proficiency from test name (should not show on mobile)
-         * 
-         * TODO:  change in the DB the definitions of programs to remove proficiency
-         * 
-         */
-        mobileUser.getUserInfo().setTestName(removeProficiencyFromProgramName(mobileUser.getUserInfo().getTestName()));
-
-        return mobileUser;
-    }
-
-    static public String removeProficiencyFromProgramName(String testName2Change) {
-    	if(testName2Change != null && testName2Change.indexOf("Proficiency") > -1) {
-    		return testName2Change.replace("Proficiency", "");
-    	}
-    	return testName2Change;
+	@Override
+	public Class<? extends Action<? extends Response>> getActionType() {
+		return GetCm2MobileLoginAction.class;
 	}
 
-	static public List<Cm2PrescriptionTopic> extractPrescriptionTopics(Connection conn, CmProgramFlowAction nextAction) throws Exception {
-        try {
-            List<Cm2PrescriptionTopic> topics = new ArrayList<Cm2PrescriptionTopic>();
-            if(nextAction.getPlace() == CmPlace.QUIZ) {
-            }
-            else if(nextAction.getPlace() == CmPlace.PRESCRIPTION) {
-                
-                PrescriptionSessionResponse pr = nextAction.getPrescriptionResponse();
-                List<SessionTopic> st = pr.getPrescriptionData().getSessionTopics();
-                
-                for(int i=0;i<st.size();i++) {
-                    
-                    // for each topic
-                    //
-                    GetPrescriptionAction pa = new GetPrescriptionAction(pr.getRunId(), i, false);
-                    PrescriptionSessionResponse data = new GetPrescriptionCommand().execute(conn, pa);
-                    
-                    PrescriptionSessionData currSess = data.getPrescriptionData().getCurrSession();
-                    String topicHtml = null; // "Review Text Not Loaded"; // new GetReviewHtmlCommand().execute(conn,new GetReviewHtmlAction(currSess.getFile())).getLesson();
-                    
-                    
-                    // point all solution images to image server
-                    topicHtml = replaceImagesWithSolutionServer("/hotmath_help", topicHtml);
-                    
-                    Cm2PrescriptionTopic topic = new Cm2PrescriptionTopic(currSess.getTopic(), topicHtml, getResources(data.getPrescriptionData()));
+	@Override
+	public Cm2MobileUser execute(Connection conn, GetCm2MobileLoginAction action) throws Exception {
 
-                    
-                    topics.add(topic);
-                }
-            }
-            return topics;
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-    }
+		if (action.getName() != null && action.getName().equals("retail")) {
+			/**
+			 * if user does not exist, then create it. Otherwise, use existing
+			 * 
+			 */
+			int existingUid = HaUserFactory.lookupUserId(action.getPassword(), action.getPassword());
+			if (existingUid != 0) {
+				__logger.info("retail user, using existing user for: " + action);
+				action.setUid(existingUid);
+			} else {
+				__logger.info("retail user, creating new user: " + action);
 
-    public static String replaceImagesWithSolutionServer(String searchFor, String html) throws Exception {
-    	if(html == null) {
-    		return html;
-    	}
-    	
-        String solutionServer = "http://" + CatchupMathProperties.getInstance().getProperty("solution.server",  "catchupmath.com");
-        html = html.replaceAll(searchFor, solutionServer + searchFor);
-        return html;
-    }
+				// create new retail user account
+				RpcData data = ActionDispatcher.getInstance().execute(new NewMobileUserAction(action.getPassword()));
+				action.setUid(data.getDataAsInt("uid"));
+			}
+		}
 
-    static public List<PrescriptionResource> getResources(PrescriptionData prescriptionData) {
-        
-        
-        CmResourceType order[] = {CmResourceType.REVIEW,CmResourceType.VIDEO,CmResourceType.PRACTICE,CmResourceType.WEBLINK}; 
-        
-        List<PrescriptionResource> allResources = new ArrayList<PrescriptionResource>();
-        for(PrescriptionSessionDataResource r: prescriptionData.getCurrSession().getInmhResources()) {
-            PrescriptionResource pr = new PrescriptionResource(r.getType().name()); 
-            // only types included in Cm2Mobile
-            String t = pr.getType();
-            
-            if(t.equals(CmResourceType.REVIEW.name()) || t.equals(CmResourceType.PRACTICE.name()) || t.equals(CmResourceType.VIDEO.name())) {
-                for(InmhItemData item: r.getItems()) {
-                    pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle(), item.isViewed()));
-                }
-                allResources.add(pr);
-            }
-            // t.equals(CmResourceType.ACTIVITY.name()) || 
-            else if(t.equals(CmResourceType.WEBLINK.name())) {
-                if(r.getItems().size() > 0) {
-                    for(InmhItemData item: r.getItems()) {
-                        
-                        if(item.getType() == CmResourceType.WEBLINK_EXTERNAL) {
-                            continue; // skip external
-                        }
-                        pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle(), item.isViewed()));
-                    }
-                   allResources.add(pr); 
-                }
-            }
-        }
-        
-        List<PrescriptionResource> resources = new ArrayList<PrescriptionResource>();
-        for(CmResourceType rt: order) {
-            for(PrescriptionResource ar: allResources) {
-                if(rt.name().equals(ar.getType())) {
-                    resources.add(ar);
-                    break;
-                }
-            }
-        }
-        
-        return resources;
-    }
+		int uid = action.getUid();
 
+		boolean isDemo = false;
+		HaBasicUser basicUser = null;
+		if (uid > 0) {
+			basicUser = HaUserFactory.getLoginUserInfo(conn, uid, "STUDENT");
+			basicUser.setUserType(UserType.STUDENT_MOBILE);
+		} else if (action.getName().equals("catchup_demo") && action.getPassword().equals("demo")) {
+			String subject = action.getSubject();
+			basicUser = HaUserFactory.createDemoUser(conn, subject, HaBasicUser.UserType.STUDENT_MOBILE);
+			isDemo = true;
+		} else {
+			basicUser = HaUserFactory.loginToCatchup(conn, action.getName(), action.getPassword(),
+					HaBasicUser.UserType.STUDENT_MOBILE);
+		}
+
+		/** only allow student access */
+		switch (basicUser.getUserType()) {
+			case STUDENT:
+			case STUDENT_MOBILE:
+				break;
+	
+			default:
+				throw new CmException("Only students can login here");
+		}
+
+		if (action.getDeviceToken() != null && action.getDeviceToken().length() > 0) {
+			HaLoginInfoDao.getInstance().addUserDevice(basicUser.getUserKey(), action.getDeviceToken());
+		}
+
+		CmProgramFlow programFlow = new CmProgramFlow(conn, basicUser.getUserKey());
+
+		if (isDemo) {
+			programFlow.moveToNextFlowItem(conn);
+		}
+
+		StudentModelI sm = CmStudentDao.getInstance().getStudentModelBase(conn, basicUser.getUserKey());
+		StudentActiveInfo active = programFlow.getActiveInfo();
+
+		boolean didPassTest = false;
+
+		AssignmentUserInfo assignmentInfo = AssignmentDao.getInstance().getStudentAssignmentMetaInfo(sm.getUid());
+		Cm2MobileUser mobileUser = new Cm2MobileUser(sm.getUid(), active.getActiveTestId(), active.getActiveSegment(),
+				active.getActiveSegmentSlot(), didPassTest, active.getActiveRunId(), assignmentInfo);
+
+		/** create new security key for this login session */
+		String securityKey = "";
+		securityKey = HaLoginInfoDao.getInstance().addLoginInfo(conn, basicUser, new ClientEnvironment(false), true);
+
+		int programSegmentCount = 0;
+		String testTitle = programFlow.getUserProgram().getTestName();
+		boolean isCustomProgram = programFlow.getUserProgram().getTestDefId() == CmProgram.CUSTOM_PROGRAM.getDefId();
+		if (isCustomProgram) {
+			CustomProgramInfo cpi = GetUserInfoCommand.processCustomProgram(conn, sm.getUid(), active,
+					programFlow.getUserProgram());
+			programSegmentCount = cpi.getProgramSegmentCount();
+			testTitle = cpi.getTitle();
+
+			// mobileUser.getBaseLoginResponse().getUserInfo().setProgramName(testTitle);
+
+			// TODO:
+			// here the CP is now ready for use, but what about the
+			// programSegmentCount and testTitle ...?
+		}
+
+		/** look up the Custom Quiz name */
+		boolean isCustomQuiz = programFlow.getUserProgram().getCustomQuizId() > 0;
+		if (isCustomQuiz) {
+			testTitle = programFlow.getUserProgram().getCustomQuizName();
+		}
+
+		/**
+		 * get list of previous prescribed lessons
+		 * 
+		 */
+		PreparedStatement ps = null;
+		try {
+			GetUserInfoAction loginAction = new GetUserInfoAction(mobileUser.getUserId(), null);
+			UserLoginResponse userLoginResponse = new GetUserInfoCommand().execute(conn, loginAction);
+			mobileUser.setBaseLoginResponse(userLoginResponse);
+			mobileUser.setSecurityKey(securityKey);
+
+			mobileUser.getBaseLoginResponse().getUserInfo().setProgramName(testTitle);
+
+			CmProgramFlowAction nextAction = programFlow.getActiveFlowAction(conn);
+			mobileUser.setTestId(programFlow.getActiveInfo().getActiveTestId());
+
+			mobileUser.setPlace(nextAction.getPlace());
+
+			mobileUser.setPrescriptionTopics(extractPrescriptionTopics(conn, nextAction));
+
+			// mobileUser.setFlowAction(nextAction);
+
+			// quiz not created yet, must create it.
+
+			if (nextAction.getPlace() == CmPlace.QUIZ && mobileUser.getTestId() == 0) {
+				// create it
+				CmProgramFlow cp = new CmProgramFlow(conn, mobileUser.getUserId());
+				cp.moveToNextFlowItem(conn);
+				mobileUser.setTestId(cp.getActiveInfo().getActiveTestId());
+			}
+
+			if (nextAction.getPlace() != CmPlace.ASSIGNMENTS_ONLY && mobileUser.getTestId() > 0) {
+				// is quiz
+				GetCm2QuizHtmlAction actionQuiz = new GetCm2QuizHtmlAction(active.getActiveTestId());
+				QuizCm2HtmlResult quizResponse = new GetCm2QuizHtmlCommand().execute(conn, actionQuiz);
+				mobileUser.setCm2QuizResponse(quizResponse);
+			}
+		} finally {
+			SqlUtilities.releaseResources(null, ps, null);
+		}
+
+		mobileUser.setPurchases(CmPaymentDao.getInstance().getPurchases(mobileUser.getUserId()));
+
+		// for(Cm2PrescriptionTopic p: mobileUser.getPrescriptionTopics()) {
+		// p.setTopicTextExcerpt("TEST");
+		// }
+
+		/**
+		 * remove Proficiency from test name (should not show on mobile)
+		 * 
+		 * TODO: change in the DB the definitions of programs to remove
+		 * proficiency
+		 * 
+		 */
+		mobileUser.getUserInfo().setTestName(removeProficiencyFromProgramName(mobileUser.getUserInfo().getTestName()));
+
+		return mobileUser;
+	}
+
+	static public String removeProficiencyFromProgramName(String testName2Change) {
+		if (testName2Change != null && testName2Change.indexOf("Proficiency") > -1) {
+			return testName2Change.replace("Proficiency", "");
+		}
+		return testName2Change;
+	}
+
+	static public List<Cm2PrescriptionTopic> extractPrescriptionTopics(Connection conn, CmProgramFlowAction nextAction)
+			throws Exception {
+		try {
+			List<Cm2PrescriptionTopic> topics = new ArrayList<Cm2PrescriptionTopic>();
+			if (nextAction.getPlace() == CmPlace.QUIZ) {
+			} else if (nextAction.getPlace() == CmPlace.PRESCRIPTION) {
+
+				PrescriptionSessionResponse pr = nextAction.getPrescriptionResponse();
+				List<SessionTopic> st = pr.getPrescriptionData().getSessionTopics();
+
+				for (int i = 0; i < st.size(); i++) {
+
+					// for each topic
+					//
+					GetPrescriptionAction pa = new GetPrescriptionAction(pr.getRunId(), i, false);
+					PrescriptionSessionResponse data = new GetPrescriptionCommand().execute(conn, pa);
+
+					PrescriptionSessionData currSess = data.getPrescriptionData().getCurrSession();
+					String topicHtml = null; // "Review Text Not Loaded"; // new
+												// GetReviewHtmlCommand().execute(conn,new
+												// GetReviewHtmlAction(currSess.getFile())).getLesson();
+
+					// point all solution images to image server
+					topicHtml = replaceImagesWithSolutionServer("/hotmath_help", topicHtml);
+
+					Cm2PrescriptionTopic topic = new Cm2PrescriptionTopic(currSess.getTopic(), topicHtml,
+							getResources(data.getPrescriptionData()));
+
+					topics.add(topic);
+				}
+			}
+			return topics;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	public static String replaceImagesWithSolutionServer(String searchFor, String html) throws Exception {
+		if (html == null) {
+			return html;
+		}
+
+		String solutionServer = "http://"
+				+ CatchupMathProperties.getInstance().getProperty("solution.server", "catchupmath.com");
+		html = html.replaceAll(searchFor, solutionServer + searchFor);
+		return html;
+	}
+
+	static public List<PrescriptionResource> getResources(PrescriptionData prescriptionData) {
+
+		CmResourceType order[] = { CmResourceType.REVIEW, CmResourceType.VIDEO, CmResourceType.PRACTICE,
+				CmResourceType.WEBLINK };
+
+		List<PrescriptionResource> allResources = new ArrayList<PrescriptionResource>();
+		for (PrescriptionSessionDataResource r : prescriptionData.getCurrSession().getInmhResources()) {
+			PrescriptionResource pr = new PrescriptionResource(r.getType().name());
+			// only types included in Cm2Mobile
+			String t = pr.getType();
+
+			if (t.equals(CmResourceType.REVIEW.name()) || t.equals(CmResourceType.PRACTICE.name())
+					|| t.equals(CmResourceType.VIDEO.name())) {
+				for (InmhItemData item : r.getItems()) {
+					pr.getItems().add(
+							new ResourceItem(item.getType().label(), item.getFile(), item.getTitle(), item.isViewed()));
+				}
+				allResources.add(pr);
+			}
+			// t.equals(CmResourceType.ACTIVITY.name()) ||
+			else if (t.equals(CmResourceType.WEBLINK.name())) {
+				if (r.getItems().size() > 0) {
+					for (InmhItemData item : r.getItems()) {
+
+						if (item.getType() == CmResourceType.WEBLINK_EXTERNAL) {
+							continue; // skip external
+						}
+						pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle(),
+								item.isViewed()));
+					}
+					allResources.add(pr);
+				}
+			}
+		}
+
+		List<PrescriptionResource> resources = new ArrayList<PrescriptionResource>();
+		for (CmResourceType rt : order) {
+			for (PrescriptionResource ar : allResources) {
+				if (rt.name().equals(ar.getType())) {
+					resources.add(ar);
+					break;
+				}
+			}
+		}
+
+		return resources;
+	}
 
 }

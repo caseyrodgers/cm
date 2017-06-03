@@ -24,7 +24,7 @@ public class NewMobileUserCommand implements ActionHandler<NewMobileUserAction, 
 	public RpcData execute(Connection conn, NewMobileUserAction action) throws Exception {
 		
 		// mobile user admin account
-		HaBasicUser mobileAdmin = HaUserFactory.loginToCatchup(conn, "cm_mobile", "cm_mobile");
+		HaBasicUser mobileAdmin = HaUserFactory.loginToCatchup(conn, "cm_mobile", "cm_mobile", HaBasicUser.UserType.STUDENT_MOBILE);
 		
 		String newUserName = action.getDeviceId();
 		String newPwd = action.getDeviceId();

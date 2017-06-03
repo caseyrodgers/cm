@@ -404,11 +404,6 @@ public class HaUser extends HaBasicUserImpl {
         return this;
     }
 
-    @Override
-    public UserType getUserType() {
-        return UserType.STUDENT;
-    }
-
     //@Override
     public int getUserKey() {
         return this.uid;

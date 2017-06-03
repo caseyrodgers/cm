@@ -424,11 +424,13 @@ public class ActionDispatcherRest {
 			@Override
 			public String execute() throws Exception {
 				String currentProgram="";
+				int activeMinutes=0;
 				if(json != null && json.startsWith("{")) {
 					JSONObject jo = new JSONObject(json);
 					currentProgram = jo.has("programName")?jo.getString("programName"):"";
+					activeMinutes = jo.has("activeMinutes")?jo.getInt("activeMinutes"):0;
 				}
-				return Cm2ActionManager.getUserSyncEvents(uid, currentProgram);				
+				return Cm2ActionManager.getUserSyncEvents(uid, currentProgram, activeMinutes);				
 			}
 		});
 	}

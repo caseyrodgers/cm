@@ -58,11 +58,11 @@ public class LoginCommand implements ActionHandler<LoginAction, HaUserLoginInfo>
 			cmUser = HaUserFactory.getLoginUserInfo(conn, uid, type);
 		}
 		else if (username != null && username.equals("catchup_demo")) {
-			cmUser = HaUserFactory.createDemoUser(conn, action.getSubject());
+			cmUser = HaUserFactory.createDemoUser(conn, action.getSubject(), HaBasicUser.UserType.STUDENT);
 		}
 		else if(cmUser == null && username != null && username.length() > 0 &&
 				passwd != null && passwd.length() > 0) {
-			cmUser = HaUserFactory.loginToCatchup(conn, username, passwd);
+			cmUser = HaUserFactory.loginToCatchup(conn, username, passwd, HaBasicUser.UserType.STUDENT);
 		}
 
 		if (cmUser == null) {

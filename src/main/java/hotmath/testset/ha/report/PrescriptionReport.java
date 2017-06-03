@@ -13,6 +13,7 @@ import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.server.service.CmTestUtils;
 import hotmath.inmh.INeedMoreHelpItem;
@@ -85,7 +86,7 @@ public class PrescriptionReport {
         }
 
         //programToTest = CmProgram.ALG2_PROF;
-        _uid = CmTestUtils.setupDemoAccount(CmProgram.PREALG_PROF);
+        _uid = CmTestUtils.setupDemoAccount(CmProgram.PREALG_PROF, HaBasicUser.UserType.STUDENT);
 
         try {
             _conn = HMConnectionPool.getConnection();

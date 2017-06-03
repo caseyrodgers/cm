@@ -1,12 +1,22 @@
 package hotmath.testset.ha;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmMessagePropertyReader;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_mobile_shared.server.rpc.GetCmMobileLoginCommand;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
@@ -18,24 +28,11 @@ import hotmath.gwt.cm_tools.client.model.CustomProgramComposite;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
-import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.client.util.CmException;
-import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.testset.ha.info.CmLessonDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 /**
  * Create the appropriate user type
@@ -49,12 +46,11 @@ public class HaUserFactory {
 
 	static Logger __logger = Logger.getLogger(HaUserFactory.class.getName());
 
-	static public HaBasicUser loginToCatchup(String user, String pwd)
-			throws Exception {
+	static public HaBasicUser loginToCatchup(String user, String pwd, HaBasicUser.UserType userType) throws Exception {
 		Connection conn = null;
 		try {
 			conn = HMConnectionPool.getConnection();
-			return loginToCatchup(conn, user, pwd);
+			return loginToCatchup(conn, user, pwd, userType);
 		} finally {
 			SqlUtilities.releaseResources(null, null, conn);
 		}
@@ -88,8 +84,13 @@ public class HaUserFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	static public HaBasicUser loginToCatchup(final Connection conn,
-			String user, String pwd) throws Exception {
+	static public HaBasicUser loginToCatchup(final Connection conn,	String user, String pwd, HaBasicUser.UserType userType) throws Exception {
+		HaBasicUser basicUser = loginToCatchupProcess(conn, user, pwd, userType);
+		basicUser.setUserType(userType);
+		return basicUser;
+	}
+	
+	static public HaBasicUser loginToCatchupProcess(final Connection conn,	String user, String pwd, HaBasicUser.UserType userType) throws Exception {
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
 		try {
@@ -354,12 +355,12 @@ public class HaUserFactory {
 	 *
 	 * @throws Exception
 	 */
-	static public HaBasicUser createDemoUser() throws Exception {
+	static public HaBasicUser createDemoUser(final HaBasicUser.UserType userType) throws Exception {
 
 		Connection conn = null;
 		try {
 			conn = HMConnectionPool.getConnection();
-			return createDemoUser(conn, null);
+			return createDemoUser(conn, null, userType );
 		} finally {
 
 		}
@@ -398,9 +399,9 @@ public class HaUserFactory {
 	 *
 	 * @throws Exception
 	 */
-	static public HaBasicUser createDemoUser(final Connection conn)
+	static public HaBasicUser createDemoUser(final Connection conn, HaBasicUser.UserType userType)
 			throws Exception {
-		return createDemoUser(conn, null);
+		return createDemoUser(conn, null, userType);
 	}
 
 	/**
@@ -408,7 +409,7 @@ public class HaUserFactory {
 	 *
 	 * @throws Exception
 	 */
-	static public HaBasicUser createDemoUser(final Connection conn, final String subject) throws Exception {
+	static public HaBasicUser createDemoUser(final Connection conn, final String subject, final HaBasicUser.UserType userType) throws Exception {
 
                 PreparedStatement pstat = null;
                 ResultSet rs = null;
@@ -465,7 +466,7 @@ public class HaUserFactory {
 
                         cmDao.addStudent(conn, student);
 
-                        HaBasicUser user = loginToCatchup(conn, demoUser, demoPwd);
+                        HaBasicUser user = loginToCatchup(conn, demoUser, demoPwd, userType);
                         return user;
                 } finally {
                         SqlUtilities.releaseResources(rs, pstat, null);
@@ -560,8 +561,7 @@ public class HaUserFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	static public HaBasicUser getLoginUserInfo(final Connection conn, int uid,
-			String type) throws Exception {
+	static public HaBasicUser getLoginUserInfo(final Connection conn, int uid, String type) throws Exception {
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
 		try {
@@ -819,7 +819,7 @@ public class HaUserFactory {
 		try {
 			conn = HMConnectionPool.getConnection();
 			for (int i = 20; i > 0; i--) {
-				HaBasicUser u = createDemoUser();
+				HaBasicUser u = createDemoUser(HaBasicUser.UserType.STUDENT);
 
 				int uid = u.getUserKey();
 

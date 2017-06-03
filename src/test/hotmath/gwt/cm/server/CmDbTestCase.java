@@ -9,6 +9,7 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.model.GroupInfoModel;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.server.service.CmTestUtils;
 import hotmath.gwt.shared.server.service.command.SaveWhiteboardDataCommand;
@@ -42,7 +43,7 @@ public class CmDbTestCase extends DbTestCase {
      */
     public int setupDemoAccount() throws Exception {
         
-        int uid = CmTestUtils.setupDemoAccount(CmProgram.PREALG_PROF);
+        int uid = CmTestUtils.setupDemoAccount(CmProgram.PREALG_PROF, HaBasicUser.UserType.STUDENT);
         
         _user = HaUser.lookUser(conn, uid, null);
         return uid;

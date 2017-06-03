@@ -23,6 +23,7 @@ import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionForMobileAction;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
+import hotmath.gwt.cm_rpc.client.UserInfo.UserType;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.model.SolutionMeta;
@@ -78,6 +79,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
+import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.shared.client.CmProgram;
 import hotmath.gwt.shared.server.service.command.GetReviewHtmlCommand;
 import hotmath.gwt.shared.server.service.command.NewMobileUserCommand;
@@ -462,12 +464,12 @@ public class Cm2ActionManager {
         return new Gson().toJson(data);
     }
 
-    public static String getUserSyncEvents(int uid, String currentProgram) throws Exception {
+    public static String getUserSyncEvents(int uid, String currentProgram, int activeMinutes) throws Exception {
         GetUserSyncAction action = new GetUserSyncAction(uid);
+        action.setUserActiveMinutes(activeMinutes);
         UserSyncInfo data = ActionDispatcher.getInstance().execute(action);
-        
-    	
-    	HaUser user = HaUserDao.getInstance().lookUser(uid, false);
+
+        HaUser user = HaUserDao.getInstance().lookUser(uid, false);
     	String assignedTestName = user.getAssignedTestName();
     	
     	if(currentProgram != null && currentProgram.length() > 0) {
@@ -475,8 +477,6 @@ public class Cm2ActionManager {
 	    		data.getEvents().add(new StudentEvent("{'type': 'program_changed'}"));
 	    	}
     	}
-    	
-
         return new Gson().toJson(data);
     }
 
