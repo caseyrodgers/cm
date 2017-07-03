@@ -320,7 +320,9 @@ public class LoginService extends HttpServlet {
                             if(loginInfo.getType().equals("AUTO_CREATE")) {
                                 props = "&type=AUTO_CREATE";
                             }
-                            resp.sendRedirect("/cm_mobile3/?uid=" + loginInfo.getUserId() + props);
+                            //resp.sendRedirect("http://mobile.catchupmath.com/?uid=" + loginInfo.getUserId() + props);
+                            resp.sendRedirect("http://192.168.1.67:8100/?action=reset&uid=" + loginInfo.getUserId() + props);
+                            // resp.sendRedirect("/cm_mobile3/?uid=" + loginInfo.getUserId() + props);
                             
                             //req.getRequestDispatcher("/cm_mobile3/launch.jsp").forward(req, resp);
                         }

@@ -503,6 +503,15 @@ public class Cm2ActionManager {
     }
 
     
+    
+    public static Cm2MobileUser loginSchoolByUid(int uid) throws Exception {
+		GetCm2MobileLoginAction action = new GetCm2MobileLoginAction();
+		action.setUid(uid);
+    	Cm2MobileUser data = ActionDispatcher.getInstance().execute(action);
+    	
+    	return data;
+    }
+    
     public static Cm2MobileUser loginSchoolUser(String user, String pass, String subject) throws Exception {
 		GetCm2MobileLoginAction action = new GetCm2MobileLoginAction(user,  pass, subject);
     	Cm2MobileUser data = ActionDispatcher.getInstance().execute(action);

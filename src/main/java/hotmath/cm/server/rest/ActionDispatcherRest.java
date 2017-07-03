@@ -138,7 +138,7 @@ public class ActionDispatcherRest {
 
 		return Cm2ActionManager.loginUser(uid, un, pwd, subject, token);
 	}
-
+	
 	
 	@POST
 	@Path("/login/school/user")
@@ -148,11 +148,17 @@ public class ActionDispatcherRest {
 			@Override
 			public String execute() throws Exception {
 				JSONObject jo = new JSONObject(userInfo);
-				String un = jo.getString("user");
-				String pwd = jo.getString("pass");
-				String subject = jo.has("subject")?jo.getString("subject"):null;
-				
-				Cm2MobileUser userLogin = Cm2ActionManager.loginSchoolUser(un, pwd, subject);
+				Cm2MobileUser userLogin=null;
+				if(jo.has("uid")) {
+					int uid = jo.getInt("uid");
+					userLogin = Cm2ActionManager.loginSchoolByUid(uid);
+				}
+				else {
+					String un = jo.getString("user");
+					String pwd = jo.getString("pass");
+					String subject = jo.has("subject")?jo.getString("subject"):null;
+					userLogin = Cm2ActionManager.loginSchoolUser(un, pwd, subject);
+				}
 				return new Gson().toJson(userLogin);
 			}
 		});

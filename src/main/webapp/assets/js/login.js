@@ -9,10 +9,10 @@ YUI().use('event',function(Y) {
     
     document.getElementById('fld_user').focus();
 
-    if (isMobile.any) {
-        showMobileBetaInfo();
-        showMobileQuestion();
-    }
+//    if (isMobile.any) {
+//        showMobileBetaInfo();
+//        showMobileQuestion();
+//    }
     
   }, Y, "The DOMContentLoaded event fired.  The DOM is now safe to modify via script.");
 });
