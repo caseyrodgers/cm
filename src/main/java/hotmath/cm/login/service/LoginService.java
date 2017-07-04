@@ -3,6 +3,7 @@ package hotmath.cm.login.service;
 import hotmath.cm.login.service.lcom.LcomManager;
 import hotmath.cm.login.service.lcom.LcomStudentSignup;
 import hotmath.cm.login.service.lcom.LcomTeacherSignup;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmMessagePropertyReader;
 import hotmath.cm.util.UserAgentDetect;
 import hotmath.gwt.cm_admin.server.model.ParallelProgramDao;
@@ -320,8 +321,14 @@ public class LoginService extends HttpServlet {
                             if(loginInfo.getType().equals("AUTO_CREATE")) {
                                 props = "&type=AUTO_CREATE";
                             }
+                            
+                            
+                            // "http://192.168.1.67:8100/?action=reset&uid="
                             //resp.sendRedirect("http://mobile.catchupmath.com/?uid=" + loginInfo.getUserId() + props);
-                            resp.sendRedirect("http://192.168.1.67:8100/?action=reset&uid=" + loginInfo.getUserId() + props);
+
+                            String mobileLoginUrl = CatchupMathProperties.getInstance().getProperty("mobile.login", "http://mobile.catchupmath.com/?action=reset&uid="); 
+                            resp.sendRedirect(mobileLoginUrl + loginInfo.getUserId() + props);
+                            
                             // resp.sendRedirect("/cm_mobile3/?uid=" + loginInfo.getUserId() + props);
                             
                             //req.getRequestDispatcher("/cm_mobile3/launch.jsp").forward(req, resp);
