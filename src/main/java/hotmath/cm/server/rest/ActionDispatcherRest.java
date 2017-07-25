@@ -2,6 +2,7 @@ package hotmath.cm.server.rest;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -31,6 +33,7 @@ import hotmath.gwt.cm_core.client.model.TopicResource;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2MobileUser;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc_core.client.rpc.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
@@ -46,6 +49,10 @@ import sb.util.SbFile;
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/")
 public class ActionDispatcherRest {
+	
+	
+	static Logger __LOGGER = Logger.getLogger(ActionDispatcherRest.class);
+	
 
 	@POST
 	@GET
@@ -163,6 +170,67 @@ public class ActionDispatcherRest {
 			}
 		});
 	}
+
+	@POST
+	@Path("/register/auto")
+	public String autoRegistration(final String regDataJson) throws Exception {
+		
+		return RestResult.getResultObject(new CmRestCommand() {
+			@Override
+			public String execute() throws Exception {
+				
+				HashMap<String,String> monMap = new HashMap<String,String>();
+				monMap.put("jan", "01");
+				monMap.put("feb", "02");
+				monMap.put("mar", "03");
+				monMap.put("apr", "04");
+				monMap.put("may", "05");
+				monMap.put("jun", "06");
+				monMap.put("jul", "07");
+				monMap.put("aug", "08");
+				monMap.put("sep", "09");
+				monMap.put("oct", "10");
+				monMap.put("nov", "11");
+				monMap.put("dec", "12");
+				JSONObject jo = new JSONObject(regDataJson);
+				int uid = jo.getInt("uid");
+				String firstName = jo.getString("firstName");
+				String lastName = jo.getString("lastName");
+				String mon = monMap.get(jo.getString("month").toLowerCase());
+				String day = jo.getString("day");
+				String birthDay = mon + day;
+				
+				
+				 final String password = (lastName + "-" + firstName + "-" + birthDay).toLowerCase();
+
+				 CreateAutoRegistrationAccountAction action = new CreateAutoRegistrationAccountAction(uid, lastName + ", " + firstName.trim(), password);
+				 RpcData rdata = null;
+				 try {
+					 rdata = ActionDispatcher.getInstance().execute(action);
+					 String errorMessage = rdata.getDataAsString("error_message");
+		             if (errorMessage != null && errorMessage.length() > 0) {
+		            	 System.out.println(errorMessage);
+		            	 // CatchupMathTools.showAlert(errorMessage);
+		             } else {
+		            	 String key = rdata.getDataAsString("key");
+		                 String assignedPassword = rdata.getDataAsString("password");
+		                 System.out.println("AUTO CREATE SUCCESS: " + key + ", " + assignedPassword);
+		                 // showPasswordAssignment(assignedPassword, key);
+		             }
+				 }
+				 catch(Exception e) {
+					 __LOGGER.error("Error creating auto registration: " + e.getMessage(), e);	 
+					 throw e;
+				 }
+	             
+				return new Gson().toJson(rdata);
+			}
+		});
+	}
+	
+	
+	
+	
 	
 	@POST
 	@GET
