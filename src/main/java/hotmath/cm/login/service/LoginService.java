@@ -322,14 +322,11 @@ public class LoginService extends HttpServlet {
                                 props = "&type=AUTO_CREATE";
                             }
                             
+                            // String mobileLoginUrl = "http://mobile.catchupmath.com/?uid="
+                            String mobileLoginUrl = CatchupMathProperties.getInstance().getProperty("mobile.login", "http://mobile.catchupmath.com/?action=reset&uid=");
+                            // String mobileLoginUrl = "http://192.168.1.67:8100/?action=reset&uid=";
                             
-                            // "http://192.168.1.67:8100/?action=reset&uid="
-                            //resp.sendRedirect("http://mobile.catchupmath.com/?uid=" + loginInfo.getUserId() + props);
-
-                            String mobileLoginUrl = CatchupMathProperties.getInstance().getProperty("mobile.login", "http://mobile.catchupmath.com/?action=reset&uid="); 
                             resp.sendRedirect(mobileLoginUrl + loginInfo.getUserId() + props);
-                            
-                            // resp.sendRedirect("/cm_mobile3/?uid=" + loginInfo.getUserId() + props);
                             
                             //req.getRequestDispatcher("/cm_mobile3/launch.jsp").forward(req, resp);
                         }
