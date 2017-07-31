@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
+import org.ietf.jgss.GSSException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -30,6 +31,7 @@ import hotmath.cm.test.HaTestSet;
 import hotmath.cm.test.HaTestSetQuestion;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_core.client.model.TopicResource;
+import hotmath.gwt.cm_rpc.client.rpc.SetLessonCompletedAction;
 import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2MobileUser;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
@@ -717,4 +719,29 @@ public class ActionDispatcherRest {
 		    }
 		});
 	}
+
+	
+	@POST
+	@Path("lesson/completed")
+	public String setLessonCompleted(final String json) throws Exception {
+		return RestResult.getResultObject(new CmRestCommand() {
+			@Override
+			public String execute() throws Exception {
+				try {
+					JSONObject jo = new JSONObject(json);
+					String lesson = jo.getString("lesson");
+					int runId = jo.getInt("run_id");
+					int session = jo.getInt("session");
+					RpcData res = ActionDispatcher.getInstance().execute(new SetLessonCompletedAction(lesson, runId, session));
+					return new Gson().toJson(res);
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+					throw e;
+				}
+		    }
+		});
+	}
+	
+	
 }

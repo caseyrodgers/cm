@@ -3,10 +3,12 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
+import hotmath.gwt.cm_rpc.client.rpc.SetLessonCompletedAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.util.sql.SqlUtilities;
 
@@ -57,9 +59,8 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
                     SqlUtilities.releaseResources(null,  stCheck, null);
                 }
             }
-            
             if(shouldAdd) {
-                
+            	
             	String sql = CmMultiLinePropertyReader.getInstance().getProperty("INSERT_INMH_USE");
                 pstat = conn.prepareStatement(sql);
     
@@ -73,6 +74,39 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
                 if (cnt != 1)
                     throw new Exception("Error adding test run item view");
             }
+            
+
+        	/** does this complete ALL the RPPS for this lesson ?, 
+        	 * if so mark the lesson as complete. 
+        	 */
+        	PreparedStatement psCnt=null;
+        	try {
+        		String sql = "select count(*) as cnt_unanswered " +
+        				"from HA_TEST_RUN_LESSON_PID p " +
+        				"  join HA_TEST_RUN_LESSON l on l.id = p.lid " +
+        				"  left join HA_TEST_RUN_INMH_USE u on  " +
+        				"    (u.run_id = l.run_id and u.session_number = l.lesson_number and u.item_file = p.pid) " +
+        				"where l.run_id = ? " +
+        				"and l.lesson_number = ? " +
+        				"and u.use_id is null ";
+        		
+        		psCnt = conn.prepareStatement(sql);
+        		psCnt.setInt(1,  action.getRunId());
+        		psCnt.setInt(2,  action.getSessionNumber());
+        		ResultSet rs = psCnt.executeQuery();
+        		rs.next();
+        		int unansweredRpps = rs.getInt(1);
+        		if(unansweredRpps == 0) {
+        			RpcData res = ActionDispatcher.getInstance().execute(new SetLessonCompletedAction(action.getFile(), action.getRunId(),action.getSessionNumber() ));
+        		}
+        	}
+        	finally {
+        		SqlUtilities.releaseResources(null, psCnt, null);
+        	}
+            
+
+            
+
 
             RpcData rpcData = new RpcData();
             rpcData.putData("success", "true");
