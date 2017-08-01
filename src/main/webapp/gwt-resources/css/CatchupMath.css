@@ -1225,6 +1225,12 @@ div[name=hm_flash_object] div {
 }
 
 
+/** so questions in tests line with with selections */
+.hm_question_def li>div{
+    display: inline;
+}
+
+
 #testset_div .hm_question_def .edit-button {
 	display: none;
 }
