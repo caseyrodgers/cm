@@ -12,5 +12,5 @@ public enum CmPlace implements Response {
     WELCOME,
     ERROR_FLASH_REQUIRED, 
     ASSIGNMENTS_ONLY,
-    NO_PROGRAM_ASSIGNED
+    NO_PROGRAM_ASSIGNED, AUTO_CREATE
 }

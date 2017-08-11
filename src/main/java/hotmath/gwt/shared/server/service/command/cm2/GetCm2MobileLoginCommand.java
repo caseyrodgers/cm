@@ -134,6 +134,11 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
 		Cm2MobileUser mobileUser = new Cm2MobileUser(sm.getUid(), active.getActiveTestId(), active.getActiveSegment(),
 				active.getActiveSegmentSlot(), didPassTest, active.getActiveRunId(), assignmentInfo);
 
+		if(isAutoCreate) {
+			mobileUser.setPlace(CmPlace.AUTO_CREATE);
+			return mobileUser;
+		}
+		
 		/** create new security key for this login session */
 		String securityKey = "";
 		securityKey = HaLoginInfoDao.getInstance().addLoginInfo(conn, basicUser, new ClientEnvironment(false), true);
