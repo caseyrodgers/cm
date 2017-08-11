@@ -100,11 +100,16 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
 					HaBasicUser.UserType.STUDENT_MOBILE);
 		}
 
+		boolean isAutoCreate=false;
+		
 		/** only allow student access */
 		switch (basicUser.getUserType()) {
 			case STUDENT:
 			case STUDENT_MOBILE:
 				break;
+				
+			case AUTO_CREATE:
+				isAutoCreate=true;
 	
 			default:
 				throw new CmException("Only students can login here");
