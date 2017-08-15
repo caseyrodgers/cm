@@ -110,10 +110,20 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
 				
 			case AUTO_CREATE:
 				isAutoCreate=true;
+                                break;
 	
 			default:
 				throw new CmException("Only students can login here");
 		}
+
+
+		if(isAutoCreate) {
+		    Cm2MobileUser mobileUser = new Cm2MobileUser(basicUser.getUserKey(), 0,0,0, false, 0,null);
+			mobileUser.setPlace(CmPlace.AUTO_CREATE);
+		    System.out.println("AUTO CREATE USER: " + mobileUser);
+			return mobileUser;
+		}
+
 
 		if (action.getDeviceToken() != null && action.getDeviceToken().length() > 0) {
 			HaLoginInfoDao.getInstance().addUserDevice(basicUser.getUserKey(), action.getDeviceToken());
@@ -134,10 +144,6 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
 		Cm2MobileUser mobileUser = new Cm2MobileUser(sm.getUid(), active.getActiveTestId(), active.getActiveSegment(),
 				active.getActiveSegmentSlot(), didPassTest, active.getActiveRunId(), assignmentInfo);
 
-		if(isAutoCreate) {
-			mobileUser.setPlace(CmPlace.AUTO_CREATE);
-			return mobileUser;
-		}
 		
 		/** create new security key for this login session */
 		String securityKey = "";
