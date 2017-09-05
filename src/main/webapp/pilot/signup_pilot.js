@@ -22,11 +22,32 @@ function checkForm() {
 	  if(fld.value == "") {
 		  missingFirstName = true;
 	  }
+          if(fld.value.length > 49) {
+              if(showError(fld, "First name is too long.  Please provide a shorter version")) {
+                  haveError = true;
+              }
+          }
+          var firstName = fld.value;
+
+
 	  fld = $get('fld_last_name');
 	  var missingLastName = false;
 	  if(fld.value == "") {
 		  missingLastName = true;
 	  }
+          var lastName = fld.value;
+          if(fld.value.length > 49) {
+              if(showError(fld, "Last name is too long.  Please provide a shorter version")) {
+                  haveError = true;
+              }
+          }
+
+          if(lastName.length + firstName.length > 49) {
+             if(showError(fld, "Last name + First name needs be less than 50 letters")) {
+                  haveError = true;
+              }
+          }
+
 	  if (missingLastName == true || missingFirstName == true) {
 		  var msg = "Please specify your ";
 		  if (missingFirstName == true && missingLastName == false)
@@ -39,12 +60,18 @@ function checkForm() {
 	          haveError = true;
 	      }
 	  }
+
 	  fld = $get('fld_school');
 	  if(fld.value == "" || fld.value.split(' ').join('') == "") {
 	      if(showError(fld, "Please specify your school or district.")) {
 	          haveError = true;
 	      }
 	  }
+          if(fld.value.length > 49) {
+              if(showError(fld, "School name is too long.  Please provide a shorter version")) {
+                  haveError = true;
+              }
+          }
 	  fld = $get('fld_student_count');
 	  if(fld.value == "") {
 	      if(showError(fld, "Please specify the approximate number of students enrolled in your school or district.")) {
@@ -66,7 +93,7 @@ function checkForm() {
 	  else if(!validateZip(fld.value)) {
 	        if(showError(fld, "This is not a valid zip code (if outside U.S., use 99999)"))
 	            haveError = true;
-      }
+          }
 
 	  fld = $get('fld_email');
 	  if(fld.value == "") {
