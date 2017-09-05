@@ -19,8 +19,7 @@ class PrescriptionInfoPanel extends FlowLayoutContainer {
         cmDef = cm;
         setStyleName("prescription-info-panel");
 
-        String html = "<p>Use any menu items you wish, before or after trying " +
-                      "the Required Practice problems.</p>";
+        String html = "<p>Please read the lesson and watch the video, before trying the Required Practice problems.</p>";
         HTML htmlO = new HTML(html);
         add(htmlO);
         

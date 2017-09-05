@@ -93,7 +93,7 @@ public class CatchupMathTools implements EntryPoint {
         showAlert("Info", msg, callback);
     }
     
-    static public String FEEDBACK_MESSAGE="<p>Please use the Help button to send us feedback.</p>";
+    static public String FEEDBACK_MESSAGE="<p>Use the Help button to send us feedback.</p>";
     
     
     /** Call server to get version information, send the URL
