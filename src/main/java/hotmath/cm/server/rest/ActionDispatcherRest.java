@@ -51,10 +51,8 @@ import sb.util.SbFile;
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/")
 public class ActionDispatcherRest {
-	
-	
+
 	static Logger __LOGGER = Logger.getLogger(ActionDispatcherRest.class);
-	
 
 	@POST
 	@GET
@@ -62,14 +60,14 @@ public class ActionDispatcherRest {
 	public String getUserProgram(@PathParam("userId") int userId) throws Exception {
 		return Cm2ActionManager.getUserCurrentProgram(userId);
 	}
-	
+
 	@POST
 	@GET
 	@Path("/user/{userId}/program/load")
 	public String loadUserProgram(@PathParam("userId") int userId, String subject) throws Exception {
 		return Cm2ActionManager.loadUserProgram(userId, subject);
 	}
-	
+
 	@POST
 	@GET
 	@Path("/user/{userId}/program/purchase")
@@ -78,24 +76,23 @@ public class ActionDispatcherRest {
 		CmPaymentDao.getInstance().addPurchase(userId, purchase);
 		return new Gson().toJson(new RpcData("status=OK"));
 	}
-	
+
 	@POST
 	@GET
 	@Path("/user/{userId}/program/purchaseRestore")
-	public String purchaseProgramRestoreAll(@PathParam("userId") final int userId, final String dataJson) throws Exception {
+	public String purchaseProgramRestoreAll(@PathParam("userId") final int userId, final String dataJson)
+			throws Exception {
 		return RestResult.getResultObject(new CmRestCommand() {
 			@Override
 			public String execute() throws Exception {
-				CmPaymentDao.PurchasedDataRestore purchases[] = new Gson().fromJson(dataJson, CmPaymentDao.PurchasedDataRestore[].class);
+				CmPaymentDao.PurchasedDataRestore purchases[] = new Gson().fromJson(dataJson,
+						CmPaymentDao.PurchasedDataRestore[].class);
 				CmPaymentDao.getInstance().restorePurchases(userId, purchases);
 				return "OK";
 			}
 		});
 	}
-	
-	
-	
-	
+
 	@POST
 	@GET
 	@Path("/user/{userId}/reset_user")
@@ -103,7 +100,7 @@ public class ActionDispatcherRest {
 		Cm2ActionManager.resetCurrentUser(userId);
 		return new Gson().toJson(new RpcData("status=OK"));
 	}
-	
+
 	@POST
 	@GET
 	@Path("/user/{userId}/refresh_user")
@@ -111,8 +108,8 @@ public class ActionDispatcherRest {
 		return Cm2ActionManager.refreshUser(userId);
 	}
 
-
-	/** @deprecated
+	/**
+	 * @deprecated
 	 * 
 	 * @param deviceId
 	 * @return
@@ -123,10 +120,11 @@ public class ActionDispatcherRest {
 	public String loginMobileUser(String deviceId) throws Exception {
 		return Cm2ActionManager.loginUserMobile(deviceId, null);
 	}
-	
+
 	@POST
 	@Path("/login/user/mobile/{deviceId}")
-	public String loginMobileUser2(@PathParam("deviceId") final String deviceId, final String version) throws Exception {
+	public String loginMobileUser2(@PathParam("deviceId") final String deviceId, final String version)
+			throws Exception {
 		return RestResult.getResultObject(new CmRestCommand() {
 			@Override
 			public String execute() throws Exception {
@@ -147,25 +145,23 @@ public class ActionDispatcherRest {
 
 		return Cm2ActionManager.loginUser(uid, un, pwd, subject, token);
 	}
-	
-	
+
 	@POST
 	@Path("/login/school/user")
 	public String loginSchoolUser(final String userInfo) throws Exception {
-		
+
 		return RestResult.getResultObject(new CmRestCommand() {
 			@Override
 			public String execute() throws Exception {
 				JSONObject jo = new JSONObject(userInfo);
-				Cm2MobileUser userLogin=null;
-				if(jo.has("uid")) {
+				Cm2MobileUser userLogin = null;
+				if (jo.has("uid")) {
 					int uid = jo.getInt("uid");
 					userLogin = Cm2ActionManager.loginSchoolByUid(uid);
-				}
-				else {
+				} else {
 					String un = jo.getString("user");
 					String pwd = jo.getString("pass");
-					String subject = jo.has("subject")?jo.getString("subject"):null;
+					String subject = jo.has("subject") ? jo.getString("subject") : null;
 					userLogin = Cm2ActionManager.loginSchoolUser(un, pwd, subject);
 				}
 				return new Gson().toJson(userLogin);
@@ -176,12 +172,12 @@ public class ActionDispatcherRest {
 	@POST
 	@Path("/register/auto")
 	public String autoRegistration(final String regDataJson) throws Exception {
-		
+
 		return RestResult.getResultObject(new CmRestCommand() {
 			@Override
 			public String execute() throws Exception {
-				
-				HashMap<String,String> monMap = new HashMap<String,String>();
+
+				HashMap<String, String> monMap = new HashMap<String, String>();
 				monMap.put("jan", "01");
 				monMap.put("feb", "02");
 				monMap.put("mar", "03");
@@ -201,39 +197,34 @@ public class ActionDispatcherRest {
 				String mon = monMap.get(jo.getString("month").toLowerCase());
 				String day = jo.getString("day");
 				String birthDay = mon + day;
-				
-				
-				 final String password = (lastName + "-" + firstName + "-" + birthDay).toLowerCase();
 
-				 CreateAutoRegistrationAccountAction action = new CreateAutoRegistrationAccountAction(uid, lastName + ", " + firstName.trim(), password);
-				 RpcData rdata = null;
-				 try {
-					 rdata = ActionDispatcher.getInstance().execute(action);
-					 String errorMessage = rdata.getDataAsString("error_message");
-		             if (errorMessage != null && errorMessage.length() > 0) {
-		            	 System.out.println(errorMessage);
-		            	 // CatchupMathTools.showAlert(errorMessage);
-		             } else {
-		            	 String key = rdata.getDataAsString("key");
-		                 String assignedPassword = rdata.getDataAsString("password");
-		                 System.out.println("AUTO CREATE SUCCESS: " + key + ", " + assignedPassword);
-		                 // showPasswordAssignment(assignedPassword, key);
-		             }
-				 }
-				 catch(Exception e) {
-					 __LOGGER.error("Error creating auto registration: " + e.getMessage(), e);	 
-					 throw e;
-				 }
-	             
+				final String password = (lastName + "-" + firstName + "-" + birthDay).toLowerCase();
+
+				CreateAutoRegistrationAccountAction action = new CreateAutoRegistrationAccountAction(uid,
+						lastName + ", " + firstName.trim(), password);
+				RpcData rdata = null;
+				try {
+					rdata = ActionDispatcher.getInstance().execute(action);
+					String errorMessage = rdata.getDataAsString("error_message");
+					if (errorMessage != null && errorMessage.length() > 0) {
+						System.out.println(errorMessage);
+						// CatchupMathTools.showAlert(errorMessage);
+					} else {
+						String key = rdata.getDataAsString("key");
+						String assignedPassword = rdata.getDataAsString("password");
+						System.out.println("AUTO CREATE SUCCESS: " + key + ", " + assignedPassword);
+						// showPasswordAssignment(assignedPassword, key);
+					}
+				} catch (Exception e) {
+					__LOGGER.error("Error creating auto registration: " + e.getMessage(), e);
+					throw e;
+				}
+
 				return new Gson().toJson(rdata);
 			}
 		});
 	}
-	
-	
-	
-	
-	
+
 	@POST
 	@GET
 	@Path("/quiz/{testId}/set_all_correct")
@@ -241,26 +232,24 @@ public class ActionDispatcherRest {
 		return doAllQuizQuestionsCorrect(testId);
 	}
 
-	
 	private String doAllQuizQuestionsCorrect(int testId) throws Exception {
-		Connection conn=null;
+		Connection conn = null;
 		try {
 			conn = HMConnectionPool.getConnection();
-			HaTest test =  HaTestDao.getInstance().loadTest(testId);
-			HaTestSet testSet = new HaTestSet(conn,test.getPids());
-            for(HaTestSetQuestion q: testSet.getQuestions()) {
-            	int correctAnswer = q.getCorrectAnswer();
-            	
-            	Cm2ActionManager.setQuizAnswer(testId, q.getProblemIndex(), correctAnswer, true);
-            }			
-		} 
-		finally {
+			HaTest test = HaTestDao.getInstance().loadTest(testId);
+			HaTestSet testSet = new HaTestSet(conn, test.getPids());
+			for (HaTestSetQuestion q : testSet.getQuestions()) {
+				int correctAnswer = q.getCorrectAnswer();
+
+				Cm2ActionManager.setQuizAnswer(testId, q.getProblemIndex(), correctAnswer, true);
+			}
+		} finally {
 			SqlUtilities.releaseResources(null, null, conn);
 		}
-		
+
 		return new Gson().toJson(new RpcData("status=OK"));
 	}
-	
+
 	@POST
 	@GET
 	@Path("/quiz/{testId}/check")
@@ -272,42 +261,41 @@ public class ActionDispatcherRest {
 
 		boolean isAutoTestMode = false;
 
-		Connection conn=null;
+		Connection conn = null;
 		try {
 			conn = HMConnectionPool.getConnection();
-			
-			HaTest test =  HaTestDao.getInstance().loadTest(testId);
-			HaTestSet testSet = new HaTestSet(conn,test.getPids());
+
+			HaTest test = HaTestDao.getInstance().loadTest(testId);
+			HaTestSet testSet = new HaTestSet(conn, test.getPids());
 			JSONObject dataO = null;
 			if (json != null && json.length() > 0) {
 				JSONObject jo = new JSONObject(json);
 				isAutoTestMode = jo.has("testMode") ? jo.getBoolean("testMode") : false;
 
 				dataO = jo.getJSONObject("data");
-				 JSONArray sel = dataO.getJSONArray("selections");
-				 
-				 List<QuizSelection> selections = new ArrayList<QuizSelection>();
-				 for(int i=0;i<sel.length();i++) {
-					 JSONObject o = sel.getJSONObject(i);
-					 String pid = o.getString("pid");
-					 int choice = o.getInt("choice");
-					 boolean isCorrect = testSet.isCorrect(pid, choice);
-					 QuizSelection selection = new QuizSelection(pid, choice,isCorrect);
-					 
-					 Cm2ActionManager.setQuizAnswer(testId, selection.getPid(), selection.getChoice(), selection.isCorrect());
-				 }
+				JSONArray sel = dataO.getJSONArray("selections");
+
+				List<QuizSelection> selections = new ArrayList<QuizSelection>();
+				for (int i = 0; i < sel.length(); i++) {
+					JSONObject o = sel.getJSONObject(i);
+					String pid = o.getString("pid");
+					int choice = o.getInt("choice");
+					boolean isCorrect = testSet.isCorrect(pid, choice);
+					QuizSelection selection = new QuizSelection(pid, choice, isCorrect);
+
+					Cm2ActionManager.setQuizAnswer(testId, selection.getPid(), selection.getChoice(),
+							selection.isCorrect());
+				}
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		finally {
+		} finally {
 			SqlUtilities.releaseResources(null, null, conn);
 		}
-		
+
 		return Cm2ActionManager.checkQuiz(testId, isAutoTestMode);
 	}
-
 
 	@POST
 	@GET
@@ -429,42 +417,39 @@ public class ActionDispatcherRest {
 
 		return Cm2ActionManager.advanceUserProgram(uid, !retake);
 	}
-	
+
 	@POST
 	@Path("/assignments/{uid}/{assignKey}")
-	public String getAssignment(@PathParam("uid") final int uid, @PathParam("assignKey") final int assignKey) throws Exception {
-		
+	public String getAssignment(@PathParam("uid") final int uid, @PathParam("assignKey") final int assignKey)
+			throws Exception {
+
 		return RestResult.getResultObject(new CmRestCommand() {
 			@Override
 			public String execute() throws Exception {
 				try {
 					StudentAssignment ass = Cm2ActionManager.getCm2Assignment(uid, assignKey);
-					
+
 					ass.getStudentStatuses().getStudentAssignment().getStudentStatuses().setStudentAssignment(null);
 					new Gson().toJson(ass);
-					//String json = JsonWriter.objectToJson(ass);
+					// String json = JsonWriter.objectToJson(ass);
 					String json = new Gson().toJson(ass);
-					//System.out.print(json);
-					
+					// System.out.print(json);
+
 					return json;
-				}
-				catch(Throwable t) {
-					t.printStackTrace();	
+				} catch (Throwable t) {
+					t.printStackTrace();
 					throw t;
 				}
 			}
 		});
-		
-		
-	}
 
+	}
 
 	@POST
 	@Path("/assignments/{uid}")
 	public String getAssignmentsListing(@PathParam("uid") int uid) throws Exception {
 		return Cm2ActionManager.getAssignmentsListing(uid);
 	}
-
 
 	@POST
 	@Path("/assignments/{uid}/{assignKey}/turn_in")
@@ -499,14 +484,14 @@ public class ActionDispatcherRest {
 		return RestResult.getResultObject(new CmRestCommand() {
 			@Override
 			public String execute() throws Exception {
-				String currentProgram="";
-				int activeMinutes=0;
-				if(json != null && json.startsWith("{")) {
+				String currentProgram = "";
+				int activeMinutes = 0;
+				if (json != null && json.startsWith("{")) {
 					JSONObject jo = new JSONObject(json);
-					currentProgram = jo.has("programName")?jo.getString("programName"):"";
-					activeMinutes = jo.has("activeMinutes")?jo.getInt("activeMinutes"):0;
+					currentProgram = jo.has("programName") ? jo.getString("programName") : "";
+					activeMinutes = jo.has("activeMinutes") ? jo.getInt("activeMinutes") : 0;
 				}
-				return Cm2ActionManager.getUserSyncEvents(uid, currentProgram, activeMinutes);				
+				return Cm2ActionManager.getUserSyncEvents(uid, currentProgram, activeMinutes);
 			}
 		});
 	}
@@ -557,15 +542,13 @@ public class ActionDispatcherRest {
 		return Cm2ActionManager.getTopicReviewText(file, language.equalsIgnoreCase("spanish"));
 	}
 
-	
 	@POST
 	@Path("device/{deviceId}/new_user")
 	public String createNewUserForDeviceID(@PathParam("deviceId") String deviceId) throws Exception {
 		Cm2ActionManager.deleteUserByDeviceId(deviceId);
 		return new Gson().toJson(new RpcData("status=OK"));
 	}
-	
-	
+
 	@POST
 	@Path("user/{uid}/reset")
 	public String doRetailReset(@PathParam("uid") int uid, String data) throws Exception {
@@ -575,41 +558,38 @@ public class ActionDispatcherRest {
 	private String processDoRetailReset(int uid, String data) throws Exception {
 		JSONObject jo = new JSONObject(data);
 		String type = jo.getString("type");
-		
-		Connection conn=null; 
+
+		Connection conn = null;
 		try {
 			conn = HMConnectionPool.getConnection();
-			if(type == null || type.equals("quiz")) {
-				
-                CmProgramFlow programFlow = new CmProgramFlow(conn, uid);
-                programFlow.getActiveInfo().setActiveRunId(0); // 
-                programFlow.getActiveInfo().setActiveTestId(0); // 
-				ActionDispatcher.getInstance().execute(new ResetUserAction(ResetType.RESENT_QUIZ, programFlow.getUserProgram().getId(),0));
+			if (type == null || type.equals("quiz")) {
+
+				CmProgramFlow programFlow = new CmProgramFlow(conn, uid);
+				programFlow.getActiveInfo().setActiveRunId(0); //
+				programFlow.getActiveInfo().setActiveTestId(0); //
+				ActionDispatcher.getInstance()
+						.execute(new ResetUserAction(ResetType.RESENT_QUIZ, programFlow.getUserProgram().getId(), 0));
 				programFlow.saveActiveInfo(conn);
+			} else {
+				ResetUserAction action = new ResetUserAction(ResetType.FULL, uid, 0);
+				ActionDispatcher.getInstance().execute(action);
 			}
-			else {
-			   ResetUserAction action = new ResetUserAction(ResetType.FULL,uid, 0);
-			   ActionDispatcher.getInstance().execute(action);
-			}
-		}
-		finally {
+		} finally {
 			SqlUtilities.releaseResources(null, null, conn);
 		}
 		return JsonWriter.objectToJson(new RpcData());
 	}
-	
+
 	@POST
 	@Path("user/{uid}/feedback")
 	public String saveUserFeedback(@PathParam("uid") int uid, String feedbackMessage) throws Exception {
 		return JsonWriter.objectToJson(Cm2ActionManager.saveFeedback(uid, feedbackMessage));
 	}
-	
-	
-	
+
 	@POST
 	@Path("user/{uid}/teacher_notes")
 	public String getTeacherNotes(@PathParam("uid") final int uid, final String data) throws Exception {
-		
+
 		return RestResult.getResultObject(new CmRestCommand() {
 			@Override
 			public String execute() throws Exception {
@@ -617,38 +597,31 @@ public class ActionDispatcherRest {
 				return new Gson().toJson(ann);
 			}
 		});
-		
-	}
 
-	
-	
-	
-	
-	
+	}
 
 	@POST
 	@Path("quiz/{rid}/results")
 	public String getQuizResults(@PathParam("rid") int rid) throws Exception {
 		return JsonWriter.objectToJson(Cm2ActionManager.getQuizResults(rid));
 	}
-	
-	
+
 	@POST
 	@Path("storage/{deviceId}/save")
 	public String saveDeviceStorage(@PathParam("deviceId") String deviceId, String json) throws Exception {
 		saveDeviceStorageAux(deviceId, json);
 		return JsonWriter.objectToJson(new RpcData("status=ok"));
 	}
-	
+
 	private void saveDeviceStorageAux(String deviceId, String json) throws Exception {
 		DeviceStorage storage = new DeviceStorage();
 		JSONObject jo = new JSONObject(json);
 		String storageJson = jo.getString("data");
-		
+
 		JSONObject joData = new JSONObject(storageJson);
 		Iterator iter = joData.keys();
-		while(iter.hasNext()) {
-			String k = (String)iter.next();
+		while (iter.hasNext()) {
+			String k = (String) iter.next();
 			storage.getStorage().put(k, joData.getString(k));
 		}
 		DeviceStorageDao.saveStorage(deviceId, storage);
@@ -659,15 +632,14 @@ public class ActionDispatcherRest {
 	public String getDeviceStorage(@PathParam("deviceId") String deviceId) throws Exception {
 		return JsonWriter.objectToJson(DeviceStorageDao.getStorage(deviceId));
 	}
-	
+
 	@POST
 	@Path("storage/{deviceId}/delete")
 	public String deleteDeviceStorage(@PathParam("deviceId") String deviceId) throws Exception {
 		DeviceStorageDao.deleteStorage(deviceId);
 		return JsonWriter.objectToJson(new RpcData("status=ok"));
-	}	
-	
-	
+	}
+
 	@POST
 	@Path("pid_search")
 	public String searchForPids(String json) throws Exception {
@@ -675,13 +647,12 @@ public class ActionDispatcherRest {
 		String searchFor = jo.getString("data");
 		int limit = jo.getInt("limit");
 		return new Gson().toJson(doPidSearch(searchFor, limit));
-	}	
-	
+	}
+
 	private List<String> doPidSearch(String searchFor, int limit) throws Exception {
 		return new CmSolutionManagerDao().searchForPids(searchFor, limit);
 	}
-	
-	
+
 	@POST
 	@Path("transform")
 	public String processMathMlTransformation(final String mathMl) throws Exception {
@@ -692,22 +663,19 @@ public class ActionDispatcherRest {
 			}
 		});
 	}
-	
-	
-	
+
 	@POST
 	@Path("version")
 	public String getVersion() throws Exception {
 		return RestResult.getResultObject(new CmRestCommand() {
 			@Override
 			public String execute() throws Exception {
-		        SbFile file = new SbFile(CatchupMathProperties.getInstance().getCatchupRuntime() + "/cm_app_ver.txt");
-		        String minVersion = file.getFileContents().toString();
-		        return minVersion; 
-		    }
+				SbFile file = new SbFile(CatchupMathProperties.getInstance().getCatchupRuntime() + "/cm_app_ver.txt");
+				String minVersion = file.getFileContents().toString();
+				return minVersion;
+			}
 		});
 	}
-	
 
 	@GET
 	@Path("testing_pids")
@@ -716,11 +684,10 @@ public class ActionDispatcherRest {
 			@Override
 			public String execute() throws Exception {
 				return new Gson().toJson(Cm2ActionManager.getTestingPids());
-		    }
+			}
 		});
 	}
 
-	
 	@POST
 	@Path("lesson/completed")
 	public String setLessonCompleted(final String json) throws Exception {
@@ -732,16 +699,15 @@ public class ActionDispatcherRest {
 					String lesson = jo.getString("lesson");
 					int runId = jo.getInt("run_id");
 					int session = jo.getInt("session");
-					RpcData res = ActionDispatcher.getInstance().execute(new SetLessonCompletedAction(lesson, runId, session));
+					RpcData res = ActionDispatcher.getInstance()
+							.execute(new SetLessonCompletedAction(lesson, runId, session));
 					return new Gson().toJson(res);
-				}
-				catch(Exception e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 					throw e;
 				}
-		    }
+			}
 		});
 	}
-	
-	
+
 }

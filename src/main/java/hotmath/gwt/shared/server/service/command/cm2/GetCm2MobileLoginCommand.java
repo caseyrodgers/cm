@@ -288,8 +288,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
 
 	static public List<PrescriptionResource> getResources(PrescriptionData prescriptionData) {
 
-		CmResourceType order[] = { CmResourceType.REVIEW, CmResourceType.VIDEO, CmResourceType.PRACTICE,
-				CmResourceType.WEBLINK };
+		CmResourceType order[] = {CmResourceType.REVIEW, CmResourceType.VIDEO, CmResourceType.PRACTICE, CmResourceType.ACTIVITY, CmResourceType.WEBLINK };
 
 		List<PrescriptionResource> allResources = new ArrayList<PrescriptionResource>();
 		for (PrescriptionSessionDataResource r : prescriptionData.getCurrSession().getInmhResources()) {
@@ -297,8 +296,7 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
 			// only types included in Cm2Mobile
 			String t = pr.getType();
 
-			if (t.equals(CmResourceType.REVIEW.name()) || t.equals(CmResourceType.PRACTICE.name())
-					|| t.equals(CmResourceType.VIDEO.name())) {
+			if (t.equals(CmResourceType.REVIEW.name()) || t.equals(CmResourceType.PRACTICE.name()) || t.equals(CmResourceType.VIDEO.name()) || t.equals(CmResourceType.ACTIVITY.name()))  {
 				for (InmhItemData item : r.getItems()) {
 					pr.getItems().add(
 							new ResourceItem(item.getType().label(), item.getFile(), item.getTitle(), item.isViewed()));
@@ -313,13 +311,27 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
 						if (item.getType() == CmResourceType.WEBLINK_EXTERNAL) {
 							continue; // skip external
 						}
-						pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle(),
-								item.isViewed()));
+						pr.getItems().add(new ResourceItem(item.getType().label(), item.getFile(), item.getTitle(),item.isViewed()));
 					}
 					allResources.add(pr);
 				}
 			}
 		}
+		
+//		PrescriptionResource resActivitiesStandard = new PrescriptionResource(CmResourceType.ACTIVITY_STANDARD.name());
+//		/** add the activity standard */
+//		String actStand[][] = {{"/hotmath_help/games/numberchef/numchef.swf", "Number Chef"},
+//								{"/hotmath_help/games/ctf/ctf_hotmath.swf", "Catch The Fly"},
+//								{"/hotmath_help/games/numbercop/numbercop_hotmath.swf", "Number Cop"},
+//								{"/hotmath_help/games/kp/kp_hotmath_sound.swf", "Algebra vs. the Cockroaches"},
+//								{"/hotmath_help/games/factortris/factortris_hotmath_sound.swf", "Factortris"}
+//								};
+//		allResources.add(resActivitiesStandard);
+//		for(String s[]: actStand) {
+//			resActivitiesStandard.getItems().add(new ResourceItem(
+//					CmResourceType.ACTIVITY_STANDARD.name(), s[0], s[1], false));
+//		}
+
 
 		List<PrescriptionResource> resources = new ArrayList<PrescriptionResource>();
 		for (CmResourceType rt : order) {
@@ -330,6 +342,8 @@ public class GetCm2MobileLoginCommand implements ActionHandler<GetCm2MobileLogin
 				}
 			}
 		}
+		
+		
 
 		return resources;
 	}
