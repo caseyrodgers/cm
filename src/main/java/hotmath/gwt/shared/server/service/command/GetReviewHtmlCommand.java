@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 
 import hotmath.HotMathProperties;
 import hotmath.cm.util.CatchupMathProperties;
-import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
@@ -20,7 +19,6 @@ import hotmath.mathml.MathMlTransform;
 import hotmath.testset.ha.info.CmLessonDao;
 import hotmath.util.HmContentExtractor;
 import sb.util.SbFile;
-import sb.util.SbProperties;
 
 public class GetReviewHtmlCommand implements ActionHandler<GetReviewHtmlAction, LessonResult>,
         ActionHandlerManualConnectionManagement {
