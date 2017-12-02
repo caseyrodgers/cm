@@ -195,7 +195,9 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
          * add a low level down handler to catch any mouse down event
          *
          */
-        _mainContainer.addDomHandler(new MouseDownHandler() {
+        
+        
+        _mainPortWrapper.addDomHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
                 CmIdleTimeWatcher.getInstance().didKeyBoardActivity();
@@ -504,6 +506,8 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
                 _mainPortWrapper.remove(_mainContainer);
                 HeaderPanel.showRppDetails(false);
                 BorderLayoutData bdata = new BorderLayoutData();
+                
+                
                 _mainPortWrapper.setCenterWidget(assignmentViewer, bdata);
                 _mainPort.forceLayout();
             }
