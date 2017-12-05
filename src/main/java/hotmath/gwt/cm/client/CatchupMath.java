@@ -63,6 +63,8 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasNativeEvent;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -192,17 +194,20 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
         }
 
         /**
-         * add a low level down handler to catch any mouse down event
-         *
+         * idle tracking, add a low level down handler to catch any mouse down event/key events
          */
-        
-        
         _mainPortWrapper.addDomHandler(new MouseDownHandler() {
             @Override
             public void onMouseDown(MouseDownEvent event) {
-                CmIdleTimeWatcher.getInstance().didKeyBoardActivity();
+            	keyActivity();
             }
         }, MouseDownEvent.getType());
+        _mainPortWrapper.addDomHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				keyActivity();
+			}
+		}, KeyDownEvent.getType());
         CmIdleTimeWatcher.getInstance();
 
         Window.addCloseHandler(new CloseHandler<Window>() {
@@ -229,6 +234,11 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
         // });
 
         // CmNotifyManager.getInstance().notify("This is a test notification");
+    }
+    
+    private void keyActivity() {
+    	GWT.log("activity occurred..");
+        CmIdleTimeWatcher.getInstance().didKeyBoardActivity();
     }
 
     /**
