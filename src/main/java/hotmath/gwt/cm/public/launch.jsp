@@ -35,12 +35,14 @@
         <div id='debug-panel'></div>
         <div id='main-content'></div>
 
-        <script> 
+        <script>
+        /**
                 console = {
                     log: function (x) {
                        // empty
                     }
                 };
+                */
         </script>
         <!-- OPTIONAL: include this if you want history support -->
         <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>

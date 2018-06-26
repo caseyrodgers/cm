@@ -37,7 +37,7 @@ public class DevelopmentFilter implements Filter {
 		httpRes.setHeader("Access-Control-Allow-Origin", "*");
 		httpRes.setHeader("Access-Control-Allow-Headers", acrHeaders);
 		httpRes.setHeader("Access-Control-Allow-Methods", acrMethod);
-		
+
 		
 		chain.doFilter(httpReq, httpRes);
 	}

@@ -7,13 +7,14 @@ import java.sql.Types;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.impl.StaticLoggerBinder;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 import com.google.gson.Gson;
 
-import hotmath.cm.server.model.CmPaymentDao.PurchasedDataRestore;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.payment.PaymentResult;
 import hotmath.spring.SpringManager;
@@ -35,6 +36,8 @@ public class CmPaymentDao extends SimpleJdbcDaoSupport {
 			__instance = (CmPaymentDao) SpringManager.getInstance().getBeanFactory()
 					.getBean(CmPaymentDao.class.getName());
 		}
+		 org.slf4j.LoggerFactory lf;
+		
 		return __instance;
 	}
 

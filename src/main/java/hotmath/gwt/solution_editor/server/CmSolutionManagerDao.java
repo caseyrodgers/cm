@@ -96,7 +96,7 @@ public class CmSolutionManagerDao {
             
             __logger.debug("Writing solution: " + pid + ", to: " + outputBase);
 
-            StaticWriter.writeSolutionFile(conn,__creator, pid, __tutorProps, outputBase, false, null);
+            StaticWriter.writeSolutionFile(conn,__creator, pid, __tutorProps, __tutorProps, outputBase, false, null);
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -172,7 +172,7 @@ public class CmSolutionManagerDao {
                 throw new Exception("Could not create solution xml: " + newSolutionPid);
 
             String outputBase = CatchupMathProperties.getInstance().getSolutionBase() + HotMathProperties.getInstance().getStaticSolutionsDir();
-            StaticWriter.writeSolutionFile(conn,__creator, newSolutionPid, __tutorProps, outputBase, false, null);
+            StaticWriter.writeSolutionFile(conn,__creator, newSolutionPid, __tutorProps, __tutorProps, outputBase, false, null);
 
             return newSolutionPid;
         }
@@ -358,7 +358,7 @@ public class CmSolutionManagerDao {
             
             __logger.debug("Writing solution: " + pid + ", to: " + outputBase);
 
-            StaticWriter.writeSolutionFile(conn,__creator, pid, __tutorProps, outputBase, false, null);      
+            StaticWriter.writeSolutionFile(conn,__creator, pid, __tutorProps,__tutorProps, outputBase, false, null);      
             
             return true;
         }

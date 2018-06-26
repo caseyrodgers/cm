@@ -104,8 +104,15 @@ public class ActionDispatcherRest {
 	@POST
 	@GET
 	@Path("/user/{userId}/refresh_user")
-	public String refresCurrentUser(@PathParam("userId") int userId) throws Exception {
-		return Cm2ActionManager.refreshUser(userId);
+	public String refresCurrentUser(@PathParam("userId") final int userId) throws Exception {
+		return RestResult.getResultObject(new CmRestCommand() {
+			@Override
+			public String execute() throws Exception {
+				String refreshed = Cm2ActionManager.refreshUser(userId);
+				return refreshed;
+			}
+		});
+		
 	}
 
 	/**
@@ -429,7 +436,7 @@ public class ActionDispatcherRest {
 				try {
 					StudentAssignment ass = Cm2ActionManager.getCm2Assignment(uid, assignKey);
 
-					ass.getStudentStatuses().getStudentAssignment().getStudentStatuses().setStudentAssignment(null);
+					ass.getStudentStatuses().setStudentAssignment(null);
 					new Gson().toJson(ass);
 					// String json = JsonWriter.objectToJson(ass);
 					String json = new Gson().toJson(ass);

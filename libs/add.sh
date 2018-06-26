@@ -44,7 +44,7 @@ mvn install:install-file -DgroupId=gwt-log -DartifactId=gwt-log -Dversion=3.1.7 
 mvn install:install-file -DgroupId=itext -DartifactId=iText -Dversion=2.1.6 -Dpackaging=jar -Dfile=iText-2.1.6.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=gwt-debug-panel -DartifactId=gwt-debug-panel -Dversion=1.0 -Dpackaging=jar -Dfile=gwt-debug-panel-1.0.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=xmlrpc -DartifactId=xmlrpc -Dversion=3.1.2 -Dpackaging=jar -Dfile=xmlrpc-client-3.1.2.jar -DgeneratePom=true
-mvn install:install-file -DgroupId=paypal -DartifactId=paypal_api_combined -Dversion=1.0 -Dpackaging=jar -Dfile=paypal_api_combined.jar -DgeneratePom=true
+mvn install:install-file -DgroupId=paypal -DartifactId=paypal_api_combined -Dversion=1.1 -Dpackaging=jar -Dfile=paypal_api_combined_2018.jar -DgeneratePom=true
 
 mvn install:install-file -DgroupId=org.apache -DartifactId=poi -Dversion=3.9 -Dpackaging=jar -Dfile=poi-3.9.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=org.apache -DartifactId=poi-ooxml -Dversion=3.9 -Dpackaging=jar -Dfile=poi-ooxml-3.9.jar -DgeneratePom=true

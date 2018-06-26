@@ -40,6 +40,9 @@ public class PurchaseOrderServlet extends CatchupSignupServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    	
+    	
+    	org.slf4j.LoggerFactory lf=null;
         _logger.info("Attempting to create a CM Purchase Order for: " + req.getRemoteAddr());
         
         try {

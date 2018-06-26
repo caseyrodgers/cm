@@ -67,7 +67,7 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
     private RpcData executeAux(Connection conn, CreateAutoRegistrationAccountAction action) throws Exception {
         
         long millis = 0;
-
+action.setUserId(622200);
         CmStudentDao dao = CmStudentDao.getInstance();
         millis = System.currentTimeMillis();
         StudentModelI studentModel = dao.getStudentModelBase(conn, action.getUserId(), true);
