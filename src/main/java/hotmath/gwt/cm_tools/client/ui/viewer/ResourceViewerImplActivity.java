@@ -1,25 +1,20 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
+
 import hotmath.gwt.cm_core.client.util.GwtTester;
 import hotmath.gwt.cm_core.client.util.GwtTester.TestWidget;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
-import pl.rmalinowski.gwt2swf.client.ui.SWFSettings;
-import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
-import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
-import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
-
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.widget.core.client.ContentPanel;
 
 public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
     public ResourceViewerImplActivity() {
@@ -28,6 +23,8 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
         
         // setScrollMode(Scroll.AUTOY);
         
+
+    	
         __useRpaInfrastructure=false;
     }
 
@@ -36,25 +33,15 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
 
     public Widget getResourcePanel() {
         __lastItemData = getResourceItem();
-
+        
+        CmLogger.debug("Resource: " + __lastItemData);
         // for testing
         //String t = "http://test.catchupmath.com/hotmath_help/games/factortris/factortris_hotmath_sound.swf";
         //__lastItemData.setFile(t);
-        
-        
         if (panel == null) {
-            if (!SWFObjectUtil.isVersionIsValid(new PlayerVersion(CmShared.FLASH_MIN_VERSION))) {
-                HTML html = new HTML(CmShared.FLASH_ALT_CONTENT);
-                addResource(html, getResourceItem().getTitle());
-            } else {
-                SWFSettings s = new SWFSettings();
-                s.setMinPlayerVersion(new PlayerVersion(CmShared.FLASH_MIN_VERSION));
-                SWFWidget swfWidget = new SWFWidget(getResourceItem().getFile(), "100%", "100%", s);
-                swfWidget.addParam("wmode", "opaque");
-
-                swfWidget.setStyleName("activity-widget");
-                addResource(swfWidget, getResourceItem().getTitle());
-            }
+            String flashFile = getResourceItem().getFile();
+            HTML htmlDisplay = new HTML("<div style='width: 100%; height: 100%;' id=\"flash_activity\" src=\"" +  flashFile + "\" ></div>");
+            addResource(htmlDisplay, getResourceItem().getTitle());
             panel = this;
         }
         return panel;
@@ -62,6 +49,15 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
     
     static {
         publishNativeRpaFlashInfrastructure();
+        
+    	EventBus.getInstance().addEventListener(new CmEventListener() {
+			@Override
+			public void handleEvent(hotmath.gwt.shared.client.eventbus.CmEvent event) {
+				if(event.getEventType().equals(EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN)) {
+					invokeRuffle();
+				}
+			}
+		});        
     }
 
     
@@ -119,6 +115,11 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
         $wnd.flash_Rpp_getCompletionRule  = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplRppFlashCard::flash_Rpp_getCompletionRule();
      }-*/;
 
+    
+    static private native void invokeRuffle()  /*-{
+        $wnd.doRuffleTest();
+     }-*/;
+    
     static public void startTest() {
         new GwtTester(new TestWidget() {
             @Override

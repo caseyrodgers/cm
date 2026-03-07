@@ -111,6 +111,30 @@
 -->
 <!-- end SnapEngage code -->
 
-
-  </body>
+<script src="/assets/ruffle/ruffle.js"></script>
+<script>
+window.RufflePlayer = window.RufflePlayer || {};
+window.RufflePlayer.config = {
+    // Options affecting the whole page
+    "publicPath": undefined,
+    "polyfills": false,
+    // Options affecting files only
+    "autoplay": "auto",
+    "unmuteOverlay": "visible",
+    "backgroundColor": null,
+    "letterbox": "fullscreen",
+    "warnOnUnsupportedContent": true,
+    "upgradeToHttps": window.location.protocol === "https:",
+    "logLevel": "error",
+};
+</script>
+<script src='/gwt-resources/js/ruffle_tools.js'></script>
+<a style='position: absolute;top: 0;right: 0' href='javascript:doRuffleTest()'>_</a>
+<style>
+  ruffle-player {
+     width: 100%;
+     height: 100%;
+  }
+</style>
+</body>
 </html>

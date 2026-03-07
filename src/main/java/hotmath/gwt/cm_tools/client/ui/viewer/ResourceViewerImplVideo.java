@@ -3,10 +3,6 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.shared.client.CmShared;
-import pl.rmalinowski.gwt2swf.client.ui.SWFSettings;
-import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
-import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
-import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,7 +25,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
 
 	@Override
 	public Boolean allowMaximize() {
-		return true;
+		return false;
 	}
 
 	public ResourceViewerState getInitialMode() {
@@ -38,75 +34,50 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
 
 	public Widget getResourcePanel() {
 		clear();
-		if (!SWFObjectUtil.isVersionIsValid(new PlayerVersion(9))) {
-			HTML html = new HTML(CmShared.FLASH_ALT_CONTENT);
-			addResource(html, getResourceItem().getTitle());
+		// HTML html = new HTML(CmShared.FLASH_ALT_CONTENT);
+		// addResource(html, getResourceItem().getTitle());
+
+		InmhItemData item = getResourceItem();
+		boolean isYouTube = item.getFile().indexOf("youtube.com/") > -1;
+		HTML htmlOut = null;
+		if (isYouTube) {
+
+			String file = item.getFile();
+
+			htmlOut = new HTML(file);
 		} else {
-
-			InmhItemData item = getResourceItem();
-
-			SWFWidget swfWidget = null;
-			
-			boolean isYouTube = item.getFile().indexOf("youtube.com/") > -1;
-			if (isYouTube) {
-
-				String file = item.getFile();
-
-				SWFSettings s = new SWFSettings();
-				s.setMinPlayerVersion(new PlayerVersion(9));
-
-				swfWidget = new SWFWidget(file, "100%", "100%", s);
-			} else {
-				String prefix = null;
-				if (isANumber(item.getFile()))
-					prefix = "/help/flvs/tw/";
-				else if(item.getFile().startsWith("/") || item.getFile().startsWith("http")) {
-				    /** is absolute .. leave as is
-				     * 
-				     */
-				    prefix = "";
-				}
-				else {
-					prefix = "/help/flvs/mathtv/";
-				}
-				
-				String fileName = item.getFile();
-				if(!fileName.endsWith(".flv")) {
-				    fileName += ".flv";
-				}
-				String videoPath = prefix + fileName;
-
-				SWFSettings s = new SWFSettings();
-				s.setMinPlayerVersion(new PlayerVersion(9));
-
-				/**
-				 * add id to force no cache .. is a bug with flowplayer that if
-				 * in cache it only plays once.
-				 */
-				swfWidget = new SWFWidget(
-						"/gwt-resources/flowplayer/flowplayer-3.2.5/flowplayer-3.2.5.swf?id=" + id, "100%",
-						"100%", s);
-
-				// cm: $a12fd4b15a588479e9e
-				// hm: $852288f15c37539e229
-				String flashVars = "{'key':'$a12fd4b15a588479e9e','clip':{'url':'THE_VIDEO'},'playerId':'PLAYER_ID','playlist':[{'url':'THE_VIDEO'}]}";
-
-				flashVars = flashVars.replaceAll("THE_VIDEO", videoPath);
-				flashVars = flashVars.replaceAll("PLAYER_ID", id);
-
-				swfWidget.addFlashVar("config", flashVars);
+			String prefix = null;
+			if (isANumber(item.getFile()))
+				prefix = "/help/flvs/tw/";
+			else if(item.getFile().startsWith("/") || item.getFile().startsWith("http")) {
+			    /** is absolute .. leave as is
+			     * 
+			     */
+			    prefix = "";
 			}
-
-			swfWidget.addParam("wmode", "opaque");
-			swfWidget.addParam("scale", "scale");
-			swfWidget.addParam("allowfullscreen", "true");
-			swfWidget.addParam("allowscriptaccess", "always");
-			swfWidget.addParam("quality", "high");
-			swfWidget.addParam("cachebusting", "true");
-			swfWidget.addParam("bgcolor", "000000");
-
-			addResource(swfWidget, getResourceItem().getTitle());
+			else {
+				prefix = "/help/flvs/mathtv/";
+			}
+			
+			String fileName = item.getFile();
+			if(!fileName.endsWith(".flv")) {
+			    fileName += ".flv";
+			}
+			
+			
+			// use mp4 files only
+			fileName = fileName.replace(".flv",  ".mp4");
+			
+			String videoPath = "https://catchupmath.com" + prefix + fileName;
+			String videoHTML = "<div style=\"height: 250px\" class='video_wrapper'><video height=\"252px\" controls autoplay disablePictureInPicture disableRemotePlayback playsinline>" + 
+					"\r\n" + 
+					"    <source src=\"" + videoPath + "\" type=\"video/mp4\">\r\n" + 
+					"\r\n" + 
+					"    Sorry, your browser doesn't support embedded videos.\r\n" + 
+					"</video>";
+			htmlOut = new HTML(videoHTML);
 		}
+		addResource(htmlOut, getResourceItem().getTitle());
 		return this;
 	}
 

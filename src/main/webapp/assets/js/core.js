@@ -68,6 +68,13 @@ function setupPage() {
     if(he) {
     	he.appendChild(el);
     }
+    
+    
+    a = document.getElementById('footer-wrapper');
+    if(a) {
+        a.children[0].children[2].children[2].children[1].innerText = 'Catch Up at Home';
+    }
+    
  }
 
 function setupForMobile() {

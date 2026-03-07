@@ -182,11 +182,13 @@
          <artifactId>mail</artifactId>
          <version>1.4</version>
       </dependency>
+      <!--
       <dependency>
          <groupId>paypal</groupId>
          <artifactId>paypal_api_combined</artifactId>
          <version>1.1</version>
-      </dependency>
+         </dependency>
+         -->
       <dependency>
          <groupId>commons-collections</groupId>
          <artifactId>commons-collections</artifactId>
@@ -429,12 +431,14 @@
       <!-- <dependency> <groupId>org.seleniumhq.selenium</groupId> <artifactId>selenium-server</artifactId> 
 			<version>2.0rc3</version> </dependency> -->
       <!-- <dependency> <groupId>org.apache.httpcomponents</groupId> <artifactId>httpcomponents-client</artifactId> 
-			<version>4.1.0</version> </dependency> -->
+		   <version>4.1.0</version> </dependency> -->
+      <!--
       <dependency>
          <groupId>com.google.code.gwt-mobile-webkit</groupId>
          <artifactId>gwt-html5-storage</artifactId>
          <version>1.0.1</version>
-      </dependency>
+         </dependency>
+         -->
       <dependency>
          <groupId>com.google.guava</groupId>
          <artifactId>guava</artifactId>

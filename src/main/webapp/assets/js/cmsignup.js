@@ -119,8 +119,7 @@ function applyCode() {
 
 var _validationErrorCount=0;
 var _totalCost=99;
-function checkForm() {
-
+function checkForm(full=false) {
     clearErrorMessages();
     
     fld = $get('parent_email');
@@ -141,13 +140,19 @@ function checkForm() {
             return false;
 
     }
-
+    
     if( (fld.value != $get('parent_email').value) ) {
         if(showError(fld, "Must match above."))
             return false;
     }
     
+    fld = $get('zip');
+    if(fld.value == '') {
+        if(showError(fld, "Please enter your zip code"))
+            return false;
 
+    }
+    
     fld = $get('first_name');
     if(fld.value == '') {
         if(showError(fld, "What is your first name?"))
@@ -161,6 +166,15 @@ function checkForm() {
             return false;
 
     }
+    
+    if(!full) {
+    	// document.getElementById('selected_services').value = 'TYPE_SERVICE_CATCHUP_YEAR';
+    	document.getElementById('selected_services').value = 'TYPE_SERVICE_CATCHUP_GOODMATH15_3MON';
+    	doSignup();
+    	return false;
+    }
+
+
 
     fld = $get('address1');
     if(fld.value == '') {

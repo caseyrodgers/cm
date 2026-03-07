@@ -1,10 +1,12 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 
 import java.util.List;
+
 
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
@@ -14,7 +16,6 @@ import com.sencha.gxt.widget.core.client.container.SimpleContainer;
     private InmhItemData item;
 
     public ResourceViewerImplFlash() {
-        
     }
     
     

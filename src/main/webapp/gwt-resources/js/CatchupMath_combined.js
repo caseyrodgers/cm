@@ -15922,7 +15922,7 @@ var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456
 */
 
 var swfobject = function() {
-	
+    if(true) {return;}
 	var UNDEF = "undefined",
 		OBJECT = "object",
 		SHOCKWAVE_FLASH = "Shockwave Flash",
@@ -16109,7 +16109,8 @@ var swfobject = function() {
 		  c. Avoid wrong descriptions by multiple Flash Player entries in the plugin Array, caused by incorrect browser imports
 		- Disadvantage of this method is that it depends on the availability of the DOM, while the plugins collection is immediately available
 	*/
-	function testPlayerVersion() {
+    function testPlayerVersion() {
+        console.log('testing flash version');
 		var b = doc.getElementsByTagName("body")[0];
 		var o = createElement(OBJECT);
 		o.setAttribute("type", FLASH_MIME_TYPE);

@@ -67,7 +67,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         _main.add(_guiWidget);
 
         //BorderLayoutData southData = new BorderLayoutData(.30f);
-        _main.add(new PrescriptionInfoPanel(PrescriptionCmGuiDefinition.__instance));
+        // _main.add(new PrescriptionInfoPanel(PrescriptionCmGuiDefinition.__instance));
         
         
         new Timer() {

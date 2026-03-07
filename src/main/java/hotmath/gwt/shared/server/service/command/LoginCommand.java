@@ -2,6 +2,8 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.ClientEnvironment;
+import hotmath.cm.server.rest.Cm2ActionManager;
+import hotmath.gwt.cm_rpc.client.rpc.cm2.Cm2MobileUser;
 import hotmath.gwt.cm_rpc_core.client.CmUserException;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -30,6 +32,7 @@ public class LoginCommand implements ActionHandler<LoginAction, HaUserLoginInfo>
 
 	public HaUserLoginInfo execute(final Connection conn, LoginAction action) throws Exception {
 
+		
 		HaBasicUser cmUser = null;
 
 		int uid = action.getUid();
@@ -41,6 +44,13 @@ public class LoginCommand implements ActionHandler<LoginAction, HaUserLoginInfo>
 		boolean isRealLogin = action.isRealLogin();
 
 		if (type == null) type = "STUDENT";
+		
+//		
+//		String un = username;
+//		String pwd = passwd;
+//		String subject = null;
+//		Cm2MobileUser userLogin = Cm2ActionManager.loginSchoolUser(un, pwd, subject);
+		
 		
 		if (uid == 0 ) {
 			/** uid param has precedence */

@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.history.CmHistoryManager;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData.CmResourceType;
@@ -98,6 +99,13 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
             }
             
             ResourceMenuButton btnResource = new ResourceMenuButton(resource, callback);
+            
+            if(!CmCore.isDebug()) {
+	            if(resource.getType() == CmResourceType.ACTIVITY) {
+	            	btnResource.setEnabled(false);
+	            }
+            }
+            
 
             resourceButtons.put(resource.getType().label(), btnResource);
             
@@ -131,12 +139,15 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
         add(rbtn);
         add(createFiller());
 
-        for (PrescriptionSessionDataResource resource : new CmInmhStandardResources()) {
-    		ResourceMenuButton btn = new ResourceMenuButton(resource, callback);
-    		add(btn);
-    		add(createFiller());
-    		resourceButtons.put(resource.getType().label(), btn);
-        }
+        /** standard flash resources
+         * 
+         */
+//        for (PrescriptionSessionDataResource resource : new CmInmhStandardResources()) {
+//    		ResourceMenuButton btn = new ResourceMenuButton(resource, callback);
+//    		add(btn);
+//    		add(createFiller());
+//    		resourceButtons.put(resource.getType().label(), btn);
+//        }
     }
 
     

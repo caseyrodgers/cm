@@ -33,18 +33,23 @@ if (!String.prototype.trim) {
  * @returns {Boolean}
  */
 var _isLoggingIn=false;
-function doLogin() {
+function doLogin(userName = null) {
     if(_isLoggingIn)
         return false;
-
+    
+    var isMobile = true;
+    
     var user = document.getElementById("fld_user").value;
     user = user.trim();
     var pass = document.getElementById("fld_pwd").value;
     pass = pass.trim();
+    //alert('test 2');
     if (!user || user.length==0 || !pass || pass.length==0) {
         showLoginInvalid();
         return false;
-    } else {
+    } else if(isMobile) {
+    	return false;
+    }else {
         // disable the login button to not allow repeats
         _isLoggingIn = true;
         document.getElementById('login_submit').disabled = 'disabled';

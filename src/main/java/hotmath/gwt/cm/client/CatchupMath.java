@@ -173,7 +173,6 @@ public class CatchupMath implements EntryPoint, HasNativeEvent {
         if (CmCore.getQueryParameter("debug") != null) {
             _mainPortWrapper.addStyleName("debug-mode");
         }
-
         /**
          * Add the main panel to the "hm_content" div on the CatchupMath.html
          *
