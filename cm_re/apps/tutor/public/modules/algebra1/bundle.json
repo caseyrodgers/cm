@@ -1,0 +1,112 @@
+{
+  "solutions": [
+    {
+      "pid": "sol-linear-eq-1",
+      "subjectId": "algebra1",
+      "version": "2.0",
+      "date": null,
+      "createdBy": null,
+      "active": null,
+      "identification": {
+        "book": "algebra1",
+        "chapter": "1",
+        "section": "1",
+        "set": "practice",
+        "problemNumber": "1"
+      },
+      "statement": "<p>Solve for <em>x</em>: 2x + 3 = 11</p>",
+      "statementFigure": null,
+      "steps": [
+        {
+          "role": "step",
+          "content": "<p>Subtract 3 from both sides: 2x = 8</p>"
+        },
+        {
+          "role": "step",
+          "content": "<p>Divide both sides by 2: x = 4</p>"
+        }
+      ]
+    },
+    {
+      "pid": "sol-quadratic-1",
+      "subjectId": "algebra1",
+      "version": "2.0",
+      "date": null,
+      "createdBy": null,
+      "active": null,
+      "identification": {
+        "book": "algebra1",
+        "chapter": "1",
+        "section": "1",
+        "set": "practice",
+        "problemNumber": "2"
+      },
+      "statement": "<p>Solve for <em>x</em>: x^2 - 5x + 6 = 0</p>",
+      "statementFigure": null,
+      "steps": [
+        {
+          "role": "step",
+          "content": "<p>Factor: (x - 2)(x - 3) = 0</p>"
+        },
+        {
+          "role": "step",
+          "content": "<p>So x = 2 or x = 3</p>"
+        }
+      ]
+    },
+    {
+      "pid": "alg1ptests_1_1_chapter1practicetest_10_1",
+      "subjectId": "algebra1",
+      "version": "2.0",
+      "date": null,
+      "createdBy": null,
+      "active": null,
+      "identification": {
+        "book": "alg1ptests",
+        "chapter": "1",
+        "section": "1",
+        "set": "chapter1practicetest",
+        "problemNumber": "10",
+        "page": null
+      },
+      "statement": "<p></p>\n<p></p>",
+      "statementFigure": null,
+      "question": {
+        "prompt": "<div>\n <p>What is the solution of the equation <span class=\"equation1\">\n   <MATH>\n    <MROW>\n     <MFRAC>\n      <MN>4</MN>\n      <MN>5</MN>\n     </MFRAC>\n     <MI>x</MI>\n     <MO>+</MO>\n     <MN>5</MN>\n     <MO>=</MO>\n     <MN>2</MN>\n     <MI>x</MI>\n    </MROW>\n   </MATH></span>?</p>\n</div>",
+        "choices": [
+          {
+            "content": "<p>\n <MATH>\n  <MROW>\n   <MFRAC>\n    <MROW>\n     <MN>25</MN>\n    </MROW>\n    <MN>6</MN>\n   </MFRAC>\n  </MROW>\n </MATH></p>",
+            "feedback": null
+          },
+          {
+            "content": "<p>\n <MATH>\n  <MROW>\n   <MFRAC>\n    <MN>6</MN>\n    <MROW>\n     <MN>25</MN>\n    </MROW>\n   </MFRAC>\n  </MROW>\n </MATH></p>",
+            "feedback": null
+          },
+          {
+            "content": "<p>\n <MATH>\n  <MROW>\n   <MFRAC>\n    <MN>1</MN>\n    <MN>2</MN>\n   </MFRAC>\n  </MROW>\n </MATH></p>",
+            "feedback": null
+          },
+          {
+            "content": "<p>\n <MATH>\n  <MROW>\n   <MFRAC>\n    <MN>5</MN>\n    <MN>6</MN>\n   </MFRAC>\n  </MROW>\n </MATH></p>",
+            "feedback": null
+          }
+        ],
+        "correctIndex": 0
+      },
+      "steps": [
+        {
+          "role": "hint",
+          "content": "<div class=\"step_content\">\n <p>The correct answer choice is A.</p>\n</div>",
+          "figure": null,
+          "figures": null
+        },
+        {
+          "role": "step",
+          "content": "<div class=\"step_content\">\n <p>Subtract 2<i>x</i> from both sides of the equation.</p>\n <p>\n  <MATH display=\"block\">\n   <MROW>\n    <MFRAC>\n     <MN>4</MN>\n     <MN>5</MN>\n    </MFRAC>\n    <MI>x</MI>\n    <MO>+</MO>\n    <MN>5</MN>\n    <MO>\u00e2\u02c6\u2019</MO>\n    <MN>2</MN>\n    <MI>x</MI>\n    <MO>=</MO>\n    <MN>2</MN>\n    <MI>x</MI>\n    <MO>\u00e2\u02c6\u2019</MO>\n    <MN>2</MN>\n    <MI>x</MI>\n   </MROW>\n  </MATH></p>\n <p>\n  <MATH display=\"block\">\n   <MROW>\n    <MFRAC>\n     <MN>4</MN>\n     <MN>5</MN>\n    </MFRAC>\n    <MI>x</MI>\n    <MO>\u00e2\u02c6\u2019</MO>\n    <MN>2</MN>\n    <MI>x</MI>\n    <MO>+</MO>\n    <MN>5</MN>\n    <MO>=</MO>\n    <MN>0</MN>\n   </MROW>\n  </MATH></p>\n</div>",
+          "figure": null,
+          "figures": null
+        }
+      ]
+    }
+  ]
+}

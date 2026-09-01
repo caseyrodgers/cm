@@ -1,0 +1,16 @@
+{
+  "name": "@cm_re/editor",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@cm_re/shared-types": "*",
+    "react": "^18",
+    "react-dom": "^18",
+    "@tiptap/react": "^2",
+    "@tiptap/starter-kit": "^2"
+  },
+  "devDependencies": {
+    "vite": "^5",
+    "typescript": "^5"
+  }
+}

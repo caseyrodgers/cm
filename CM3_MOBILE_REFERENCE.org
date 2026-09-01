@@ -1,0 +1,213 @@
+#+TITLE: Catchup Math — cm3_mobile (legacy mobile app) reference
+#+STARTUP: overview
+
+* What this is
+
+Prior art for the [[file:NEW_DIRECTION.org][cm_re]] =tutor= app. The previous mobile client, at
+=C:\dev\projects\catchupmath\cm3_mobile= (its own git repo, separate
+from =cm=). "Catchup Math School Version", =com.hotmath.cm3_mobile=,
+last real work mid-2018 (=config.xml= version 2.1.12).
+
+Read this before rebuilding a feature in =cm_re/apps/tutor= — the page
+inventory, the REST surface, and the widget set are all directly
+reusable as a spec. The offline layer is *not* reusable (see below).
+
+* Stack
+
+- Ionic 3.19 / Angular 5.0 / Cordova (=cordova-android ~6.1=; iOS
+  icons/splash present in =config.xml= but =cordova.platforms= lists
+  android only).
+- TypeScript 2.4.2, RxJS 5.5, =@ionic/app-scripts 3.1= (webpack under
+  the hood; no Angular CLI).
+- Build: =npm run build= → =ionic-app-scripts build=. Dev:
+  =src/main/start_dev.bat=. Top-level =pom.xml= is a thin Maven wrapper
+  (frontend-maven-plugin style) — the real project is =src/main/=.
+- Author line in =package.json=: "Seabreeze Software".
+- Games/'widgets' pulled from private npm packages: =cmtutor=,
+  =cmwhiteboard=, =cmvirtualkeyboard=, =cmcalculator=, =cm-games=,
+  =cm-numberchef=. Plus =phaser-ce 2.8=, =p2=, =pixi=, =flowplayer=,
+  =swfobject= (Flash activities still in scope in 2018).
+- Working tree is dirty (13 modified files uncommitted since
+  =eb0df71 "added to 2.1.12"=), and heavy untracked sprawl
+  (=node_modules_old3/=, =platforms/=, =.idea/=, =junk/=,
+  =cmtutor/=). Treat committed HEAD as the reference, not the tree.
+
+* App shell
+
+- Entry: =src/main/src/app/main.ts= → =app.module.ts= → =cm3-app.ts=
+  (=Cm3App=, =rootPage = 'HomePage'=, lazy-loaded page modules by
+  string name).
+- =cm3-app.ts= bridges a DOM =window:tutorEvent= into the app's own
+  event bus (=Cm3EventsService.broadcast('tutorEvent', ...)=) — the
+  tutor widget is an external JS blob that communicates by firing
+  window events. cm_re will need an equivalent boundary if it reuses
+  =cmtutor= as-is.
+- App-wide event bus: =Cm3EventsService= (=cm3-events.service.ts=),
+  string topics e.g. =cm3_change_state=.
+
+* Page inventory (src/main/src/pages/)
+
+30 pages. Grouped:
+
+- *Entry / account:* =home=, =login=, =self-registration=,
+  =school-accounts-info=, =purchase=, =revert=, =share=,
+  =process-timeout=, =whereami=, =about=, =feedback=.
+- *Work loop:* =assignments=, =assignment-resource-tutor=,
+  =prescription=, =prescription-search=, =quiz=, =quiz-results=.
+- *Resource viewers:* =resource-tutor=, =resource-review=,
+  =resource-video=, =resource-activity-flash=,
+  =resource-activity-html5=, =resource-view-default=,
+  =student-video=.
+- *Search / help:* =search=, =solution-search=, =help=, =intel-help=,
+  =detailed-description=.
+- *Tools:* =calculator=, =games=.
+
+Two distinct tutor entry points: =resource-tutor= (practice problems)
+and =assignment-resource-tutor= (assignment problems) — mirrors the
+=TutorType.PRACTICE / TutorType.ASSIGNMENT= enum in
+=cmtutor-service.ts=.
+
+* Directives (src/main/src/directives/)
+
+=cm3-local-options=, =cm3-progress-bar=, =cm3-standard-modal-header=,
+=cm3-whiteboard=, =double-tap=, =press=, =swipe=. Touch-gesture
+helpers + the whiteboard mount point.
+
+* Services (src/main/src/services/) — ~40
+
+Notable ones for the rewrite:
+
+- =configure.service.ts= — =ConfigureService=. Holds =__serverBase=,
+  =version=, =deviceId=, options. Server mode switch:
+  - dev  = =http://test.catchupmath.com:8080=
+  - prod = =http://mobile.catchupmath.com=
+  - local = =http://192.168.1.67:8083=
+  - committed default =_THE_SERVER_MODE = 'local'=.
+  Also derives a socket server (=__socketServerPort = 8086=) — there
+  was a websocket channel (=cm-server-events.service.ts=,
+  =notifications.service.ts=).
+- =api.service.ts= — =APIService=. The bulk of the REST calls (quiz,
+  assignments, review text, resource-complete, search, feedback, user
+  info, problem widget value save). All =httpClient.post=, all under
+  =__serverBase + /api/v1/=.
+- =cmtutor-service.ts= — =CmtutorService=. Wraps the external
+  =CMTutor= global (most method bodies are commented-out passthroughs
+  by 2018). Live method:
+  =getSolutionFromServer(pid, rid)= →
+  =POST /api/v1/prescription/{rid}/solution/{pid}=.
+  =showTutor()= opens =AssignmentResourceTutorPage= as a modal.
+- =solution.service.ts= — =SolutionService=.
+  =searchForSolutions(searchFor, limit)= →
+  =POST /api/v1/pid_search/= (={data, limit}=).
+- =resource-viewer.service.ts= — =ResourceViewerService=. Dispatch by
+  =resource.item.type=: =practice → tutor modal=, =video=, =review=,
+  =activity (flash|html5)=, =ACTIVITY_STANDARD=. HTML5-vs-Flash pick
+  is a filename substring hack (=indexOf("numbercop")=).
+- =prescription.service.ts= — =PrescriptionService=. Reads
+  =user.prescription.prescriptionData.sessionTopics= and a
+  =completed_topics= map from local store to compute "topics not
+  complete". This is the core "assignment progress" logic.
+- =network.service.ts= — =NetworkService=. Online/offline via
+  =@ionic-native/network=; "network failure, will keep trying" alert
+  UX with retry counter. Online-first posture — offline = show a
+  popup and wait, not "work offline".
+- Others: =assignments=, =quiz=, =game=, =intelhelp=, =first-help=,
+  =mastered-topic=, =fta-grade=, =user=, =user-options=,
+  =notifications=, =share=, =feedback=, =reset=, =start=,
+  =whereami=, =review-text-reader=, =resource-items=,
+  =widget-keyboard=, =whiteboard=, =loading=, =cm3-utils=.
+
+* REST API v1 surface (as called by the client)
+
+Base: =ConfigureService.__serverBase= + path. All POST.
+
+| Path                                                        | Purpose |
+|------------------------------------------------------------+---------|
+| =/api/v1/login/user/mobile/{deviceId}=                      | mobile login |
+| =/api/v1/login/school/user=                                 | school login |
+| =/api/v1/device/=                                           | device register |
+| =/api/v1/user/{uid}/info=                                   | user status |
+| =/api/v1/user/{uid}/feedback=                               | submit feedback |
+| =/api/v1/user/{uid}/assignment/{akey}/{pid}=                | get assignment problem |
+| =/api/v1/user/{uid}/assignment/{akey}/{pid}/widget=         | save widget value |
+| =/api/v1/user/{uid}/assignment/{akey}/{pid}/status=         | set problem status |
+| =/api/v1/assignments/{uid}=                                 | list assignments |
+| =/api/v1/assignments/{uid}/{akey}=                          | get one assignment |
+| =/api/v1/assignments/{uid}/{akey}/turn_in=                  | turn in |
+| =/api/v1/prescription/{rid}/solution/{pid}=                 | get solution for a problem |
+| =/api/v1/prescription/{rid}/context/{pid}=                  | save problem context (note the =//= bug in the client URL) |
+| =/api/v1/pid_search/=                                       | search solutions by text |
+| =/api/v1/quiz/{tid}/answer=                                 | save quiz answer |
+| =/api/v1/quiz/{tid}/set_all_correct=                        | (debug) mark all correct |
+| =/api/v1/run/{rid}/resource/view=                           | mark resource complete |
+| =/api/v1/review=                                            | get topic review HTML (=file=, =language=) |
+| =/api/v1/search=  , =/api/v1/search/topic=                  | site search |
+| =/api/v1/storage/{deviceId}[/save|/delete]=                 | server-side k/v state (see below — never finished) |
+
+These map onto the same legacy Java server the GWT app talks to. When
+cm_re's Spring backend is built, this is the v1 contract the mobile
+client expected — useful for shaping v2.
+
+* Offline / storage — do NOT copy this
+
+=services/storage-engine/= looks like a real offline abstraction. It
+isn't:
+
+- =IStorageEngine= interface + three impls: =LocalStorageImpl=,
+  =FileStorageImpl=, =ServerStorageImpl=.
+- =StorageEngineService= constructor *hardcodes* =new LocalStorageImpl()=
+  and the platform-switch to file storage is commented out.
+- =ServerStorageImpl= — every method body is commented out, returns
+  =null=. Dead.
+- =FileStorageImpl= / =file-storage.service.ts= — unfinished:
+  =getDataFromLSFile()= literally =resolve("THE_FILE_DATA")=,
+  =setDataToLSFile()= just builds =key + "=" + val= and resolves it.
+  Never wired up.
+- =ServerStoreService= is the actual API the app uses: a synchronous
+  in-memory =storage: {}= map, hydrated once from =localStorage= on
+  init, written back to =localStorage= key-by-key on every =storeKey=.
+  =loadKeyToObject= uses =eval('(' + json + ')')=.
+- =ConfigureService.deviceId = 'THE_DEVICE_ID'= (hardcoded placeholder).
+
+Net: the 2018 app was *online-only in practice*. State that survived a
+restart = whatever fit in =localStorage= as a flat string map
+(options, =completed_topics=, mastered topics). No solution caching,
+no assignment caching, no sync queue. cm_re's Dexie/IndexedDB module
+system (already built) is a genuine step past this, not a port of it.
+
+* Takeaways for cm_re/apps/tutor
+
+1. *Page map is a ready-made feature checklist* — home, login,
+   self-registration, assignments list, prescription (recommended
+   practice), quiz + results, the resource viewers, search, help,
+   calculator, games. cm_re currently has: subject selector + module
+   download + minimal SolutionNav/StepViewer. Long way to feature
+   parity; this list is the backlog.
+2. *Two tutor modes* (practice vs assignment) — keep the distinction.
+3. *Resource types* to eventually support: practice, video, review
+   text, activity (Flash — likely drop or Ruffle), activity (HTML5).
+4. *The v1 REST contract above* is the starting point for the Spring
+   backend's API design.
+5. *Websocket/notifications channel* existed (port 8086) — out of
+   scope for offline-first, note it existed.
+6. *Don't mine the storage-engine for an offline design* — it's a
+   localStorage k/v wrapper with three-quarters of it stubbed.
+7. *The =cmtutor= widget is an external window-event-driven JS blob.*
+   If cm_re reuses it rather than rebuilding the step UI in React,
+   budget for that integration seam (=window:tutorEvent= bridge).
+   cm_re's current direction (React StepViewer + DOMPurify) is a
+   rebuild, which sidesteps this.
+
+8. *A widget infrastructure will be needed* (Casey, 2026-08-30 —
+   ACKNOWLEDGED). =QuestionView= (the multiple-choice component, built
+   2026-08-30) is the first of a whole class: legacy had tutor input
+   widget, whiteboard, virtual keyboard, calculator, games, numberchef.
+   Right now =QuestionView= is hand-wired into =SolutionNav= with a
+   bespoke =onAnswer= callback. Before the second widget lands, cm_re
+   needs a shared contract: mount-a-widget-by-type into a step or
+   statement, a common =getValue= / =setValue= / report
+   =correct|incorrect= / lifecycle interface, and an event channel (the
+   React equivalent of the =window:tutorEvent= bridge above).
+   =QuestionView= should be refactored onto that contract once it
+   exists rather than staying a one-off. Tracked as a next-step in
+   =_Claude/catchupmath/STATUS.md=.

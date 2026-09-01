@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.catchupmath</groupId>
+  <artifactId>cm_re-backend</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <!-- TODO: once the backend grows past the preprocessor into a real
+       API server, add parent org.springframework.boot:spring-boot-starter-parent
+       and dependencies: spring-boot-starter-web, spring-boot-starter-data-jpa,
+       postgresql driver, flyway-core. The preprocessor below is a plain CLI
+       tool and deliberately doesn't need any of that. -->
+
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <!-- Tolerant HTML parser — chosen specifically because it recovers
+         gracefully from the malformed-attribute pattern found in the
+         legacy corpus (see SOLUTION_INFO.org Q4) rather than throwing,
+         and its DOM API makes statement/step extraction straightforward. -->
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>1.17.2</version>
+    </dependency>
+    <!-- JSON output. Plain Gson rather than Jackson+Spring — the
+         preprocessor has no other need for a framework. -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.10.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.10.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
+      </plugin>
+      <!-- Lets the two pipeline CLIs be re-run without hand-assembling a
+           classpath. Regenerating a module is:
+             mvn -q compile exec:java -Dexec.mainClass=com.catchupmath.cmre.preprocessor.LegacySolutionPreprocessor \
+                 -Dexec.args="<legacy-solutions>/<subject> <subjectId> ../tutor/public/modules/<subjectId>"
+             mvn -q        exec:java -Dexec.mainClass=com.catchupmath.cmre.preprocessor.ModuleAssembler \
+                 -Dexec.args="../tutor/public/modules/<subjectId> <subjectId> <version>"
+           See SOLUTION_INFO.org for the alg1ptests invocation actually used. -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.2.0</version>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

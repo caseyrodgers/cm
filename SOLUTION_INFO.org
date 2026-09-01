@@ -1,0 +1,497 @@
+#+TITLE: Catchup Math (cm_re) — Solution Content: Real-World Findings
+#+STARTUP: overview
+
+* Summary
+
+Everything learned about the *actual* shape and contents of legacy
+solution exports, derived from real data (not guessed) — the real
+Java model, one fully-converted example, and a survey of 925 solution
+directories. This informs =shared-types='s =Solution=/=StepUnit=
+schema (already updated to match part of this) and the still-open
+question of how images fit into the pipeline. See
+[[file:NEW_DIRECTION.org][NEW_DIRECTION.org]] for the architecture decisions this feeds into.
+
+* The real data model
+
+Derived from the actual legacy Java classes in
+=cm/src/main/java/hotmath/gwt/solution_editor/server/solution/=:
+=TutorSolution=, =TutorProblem=, =TutorStepUnit(ImplHint|ImplStep)=.
+
+1. *TutorSolution*: =version= ("2.0"), =date=, =createdBy=, =active=,
+   =tutorDefine=, one =problem=.
+2. *TutorProblem*: =pid= (e.g.
+   =alg1ptests_1_1_chapter1practicetest_10_1=), =identification=
+   (book/chapter/section/set/problemNumber/page), =statement= (HTML —
+   the problem text *and* any embedded multiple-choice
+   =<ul><li correct="yes|no">= markup and MathML, all as one opaque
+   blob — but cm_re's preprocessor now splits the MC part out into a
+   structured =question= field, see "Multiple-choice questions" below),
+   optional =statementFigure=, and a flat ordered list of =stepUnits=.
+3. *TutorStepUnit*: only two real roles, =HINT= and =STEP= (a stray
+   unused =StepType= enum with =QUESSTION=/=PROOF= sits in
+   =TutorSolution.java=, never wired to anything — don't model those).
+   Each unit is role + HTML content (=hint=/=step= field) + optional
+   =figure=/=figures=.
+
+*Corrections this made vs. an earlier invented placeholder schema*:
+
+1. Problem statement is its own top-level field, not folded into steps.
+2. Steps are only ever hint/step, never question/proof.
+3. Multiple-choice answers live inside statement HTML as markup in the
+   *legacy* model. (cm_re's preprocessor later changed this on its own
+   side — extracting them into a structured =McQuestion=; see
+   "Multiple-choice questions" below. The legacy source is unchanged.)
+4. Step content field is named =content= (not =html=) and stays a
+   plain string — supports embedded HTML/MathML without requiring it.
+
+Full conversion of one real example
+(=alg1ptests_1_1_Chapter1PracticeTest_10_1=), with a field-by-field
+provenance table, lives at
+=catchupmath/temp/help_2022_06/solutions/alg1ptests/1/1/Chapter1PracticeTest/alg1ptests_1_1_Chapter1PracticeTest_10_1/version2/=.
+
+* Images in solution content
+
+** Survey (2026-08-25)
+
+Surveyed the whole =alg1ptests= subject tree:
+
+1. *925* solution directories total.
+2. *788* (85%) contain at least one =.gif=.
+3. Two genuinely different categories are mixed together — conflating
+   them would have led to over- or under-building image support.
+
+** Category 1: WIRIS/CKEditor equation-duplicate GIFs — skip these
+
+Tiny files (sizes cluster at 109–225 bytes), named =imageNNN.gif=
+(Word/CKEditor-export numbering, non-sequential per problem — e.g.
+=image004.gif= then =image025.gif=), *never referenced* in the
+solution's own HTML.
+
+Confirmed root cause: =cm/src/main/java/hotmath/gwt/cm_admin/client/
+custom_content/problem/WirisEditorDialog.java= embeds a WIRIS
+equation-editor iframe in the *authoring* tool (=cm_admin=, alongside
+=CKEditorPanel.java=). WIRIS/CKEditor's standard integration pattern
+saves a static image snapshot of each inserted equation at save-time,
+historically for contexts that couldn't render MathML — a byproduct
+of authoring, not something the live tutor ever displayed. Verified:
+
+1. Every one of these images is a pixel-exact match to an equation
+   that *also* exists as raw =<math>= MathML in the same solution's
+   =tutor_steps.html= (verified against the real example: statement
+   equation, all 4 multiple-choice answers, and a 7-line step
+   derivation each had a matching GIF).
+2. Images and the MathML-bearing HTML share the same generation
+   timestamp — a save-time byproduct, not one format superseding the
+   other over time.
+3. The live tutor rendering path uses the MathML directly; nothing
+   references the images.
+
+*Original decision: don't port =imageNNN.gif= into cm_re* — and the
+preprocessor filtered them by name (=^image\d+\.gif$=).
+
+*** CORRECTION (2026-08-31): that name filter was wrong for ~43% of the corpus
+
+The "never referenced" finding above was drawn from *one* hand-picked
+solution and does not generalise. Corpus-wide, *363 of 846*
+=alg1ptests= solutions reference an =imageNNN.gif= *directly inline*
+in a step — it *is* the rendered math there (quadratic formula
+substitution, simplified radicals, ...), with no MathML alternative
+in that spot. The name filter dropped all of them, so those images
+404'd in the tutor. Only 182 of 846 solutions had an asset dir
+deployed.
+
+*Fix:* the preprocessor no longer filters by name. It copies an image
+*iff its filename appears in the cleaned solution JSON* (where
+HtmlCleaner has already rewritten every kept =<img src>= to
+=/modules/<subjectId>/<pid>/<basename>=). Reference-based selection is
+strictly better: it copies exactly what's used and still drops the
+genuinely-orphan WIRIS dupes (nothing points at them, so they're
+never in the set). Also handles the =resources/= subdir some exports
+use (HtmlCleaner flattens the path to a bare basename; the copier
+falls back to a subtree walk for that basename, writes it flat to
+match the URL).
+
+*Result after re-running the pipeline (manifest v3):* 482 asset dirs
+(was 182), 1963 image files, 1971 distinct image refs in the bundle,
+*8 unresolved* — 3 solutions (=alg1ptests_1_5_chapter5practicetest_10_5=,
+=coursetest_2_algebra1practicetest_13_1= / =_16_1=) referencing files
+that are absent from the legacy export entirely. Genuine upstream
+data loss, surfaced in the preprocessor's =MISSING:= report. 0 orphan
+files copied.
+
+Category 2 below (real diagrams, =f-<ch>-<set>-<n>.gif=) was always
+handled correctly and is unaffected — those were reference-copied
+already; the fix just extends the same reference-based logic to
+=imageNNN.gif=.
+
+** Category 2: real diagrams — genuinely need handling
+
+Found via size outliers (up to 65 KB, versus Category 1's ~150 bytes)
+and a distinct naming convention: =f-<chapter>-<set>-<n>.gif= (not
+the Word-export =imageNNN= pattern). Example:
+=alg1ptests_1_1_Chapter10PracticeTest.../f-10-18-6.gif= is an actual
+parabola graphed on a coordinate plane, used as one of several
+multiple-choice answer-option graphs.
+
+Unlike Category 1, these *are* genuinely referenced, directly inline
+in the statement/step HTML:
+#+begin_example
+<IMG class="figure" height="250" width="300"
+     src="/help/solutions/alg1ptests/10/1/chapter10practicetest/.../f-10-18-1.gif">
+#+end_example
+
+Absolute server paths (=/help/solutions/...=), not relative — these
+won't resolve as-is once served from a different origin/path
+structure in cm_re.
+
+** A shared global icon set, also inline =<img>=
+
+Same example solution renders inequality symbols (<, >, ≤, ≥) as
+inline images against a *shared, non-per-solution* path, not MathML
+or Unicode:
+#+begin_example
+<IMG id="token_83" class="text-bottom" src="/images/specialchars/lt.gif">
+#+end_example
+This is a small, fixed shared asset pool used across the whole
+corpus — a candidate for bundling once in the app shell rather than
+treating it as per-module downloadable content the way real diagrams
+would be.
+
+** Malformed legacy HTML, found in the wild
+
+One line in the real example has a broken attribute — a missing
+closing quote:
+#+begin_example
+<img class="graphimgstatic id="figure-9" src=".../f-10-18-5.gif"/>
+#+end_example
+Real corpus content is messier than the one clean example first
+examined suggested. Worth confirming DOMPurify/the browser's HTML
+parser tolerates this gracefully (likely yes — browsers are very
+forgiving of malformed attributes — but not yet explicitly verified
+against this exact malformed snippet).
+
+* Open design questions (not yet resolved)
+
+Numbered so answers can reference them directly (e.g. "answer to
+Q3: ..."). Answered by Casey 2026-08-26.
+
+1. [X] How do real diagram images (Category 2) get bundled for
+       offline use?
+       *Answer:* real images are part of the solution package — bundled
+       the same way as the solution JSON, not a separate mechanism.
+2. [X] URL resolution: legacy content hardcodes absolute
+       =/help/solutions/...= paths — rewrite at conversion time, or
+       serve an equivalent path structure?
+       *Answer:* rewrite at conversion time, to relative paths.
+3. [X] Shared =/images/specialchars/*.gif= icon set — bundle once in
+       the app shell, or per-module?
+       *Answer:* create placeholders now, source the real set later.
+       *Update 2026-08-26:* placeholders turned out to be unnecessary
+       — the real asset directory exists at
+       =catchupmath/temp/help_2022_06/secure/images/specialchars/=
+       (255 files: Greek letters/math operators like =lt.gif=,
+       =degree.gif=, =sqrt.gif=, plus a large set of TI-83/84
+       calculator button icons, =q0.gif=–=qzoom.gif=, used in
+       calculator-instruction content — a second use case beyond math
+       symbols). Copied all 253 real =.gif= files (excluding stray
+       =CVS=/=Thumbs.db=) into
+       =cm_re/apps/tutor/public/specialchars/=. Still open: the
+       actual conversion-time URL rewrite from
+       =/images/specialchars/X.gif= to our own =/specialchars/X.gif=
+       hasn't been implemented yet — only the assets are in place.
+4. [X] Confirm DOMPurify/browser parsing tolerates the malformed-HTML
+       pattern found in the corpus.
+       *Answer:* this is the main problem — likely need to filter out
+       or repair bad HTML during conversion, not just hope the parser
+       tolerates it.
+       *Update 2026-08-26, verified empirically* (=StepViewer/
+       malformed-html.check.ts=): for the *specific* pattern found
+       (=class="foo id="bar"=, a missing closing quote), the browser's
+       standard HTML parser actually recovers gracefully — the =src=
+       attribute (the only thing that matters for rendering the
+       image) survives completely intact; only the unrelated
+       =class=/=id= values get mangled, which nothing in cm_re
+       currently depends on. Surveyed prevalence across the
+       =alg1ptests= subject: *63 of 1,665* =tutor_steps*.html= files
+       (~4%) contain this same class of malformed attribute — real,
+       but a minority, and (based on the verified example) survivable
+       rather than content-breaking. *Not fully closed*: this
+       confirms one specific malformation pattern is safe; it doesn't
+       prove every malformed-HTML variant in the corpus is equally
+       harmless (e.g. a broken quote landing inside =src= itself,
+       rather than =class=/=id=, would actually corrupt the URL —
+       not yet found an example of that, but also not ruled out).
+5. [X] =TutorStepUnit.figure=/=figures= fields — ever actually used?
+       *Answer:* yes — there's a special "figure" representing an
+       important concept for the problem statement, distinct from the
+       inline =<img>= tags already found in Category 2.
+
+** Architectural decision, 2026-08-26: a one-time pre-processor, not runtime tolerance
+
+Casey's call, reframing Q4 (and folding in Q2's URL rewrite): *assume
+=solution_editor= only ever works with valid, clean HTML.* Build a
+one-time *pre-processor* that runs over every existing legacy
+solution once, fixing it up into cm_re's expected clean format
+(well-formed HTML, rewritten specialchars/image URLs, the real
+=Solution= JSON shape). =solution_editor= itself is never responsible
+for tolerating malformed legacy markup — that responsibility lives
+entirely in the pre-processor, run once per solution, not carried
+forward as ongoing runtime complexity in the editor or the tutor.
+
+Consequences for Q4's findings above: the "does DOMPurify/browser
+parsing tolerate this" investigation was still worth doing (needed to
+know whether *legacy* content is safe to view via the "View source
+directory" debug link, and to gauge how much repair work the
+pre-processor actually has to do), but it's no longer the load-bearing
+answer to "is our pipeline safe" — the pre-processor is. The 63/1,665
+(~4%) malformed-attribute count becomes a concrete pre-processor
+requirement (fix at least that pattern) rather than a runtime risk to
+manage.
+
+*Not yet designed:* how the pre-processor is invoked long-term
+(one-off script vs. a repeatable build step, given more legacy content
+could still surface), and where its output ultimately lands relative
+to module =bundle.json= fixtures (directly, or via a separate
+converted-solutions store that bundles get generated from).
+
+** Pre-processor: built and verified at scale (2026-08-26)
+
+Real, working implementation — not a stub — in
+=cm_re/apps/backend=, package =com.catchupmath.cmre.preprocessor=:
+
+- =model/Identification.java=, =model/StepUnit.java=,
+  =model/Solution.java= — plain POJOs mirroring shared-types' schema.
+- =HtmlCleaner.java= — drops dead =.not_used= markup (e.g.
+  =hm_flash_widget=), rewrites specialchars =<img>= src to
+  =/specialchars/X.gif= (Q3), rewrites per-solution image src from
+  legacy absolute =/help/solutions/...= paths to =<pid>/<filename>=
+  (Q1/Q2 — images travel with their solution's own JSON, not a shared
+  pool). Structural malformation (the Q4 missing-quote pattern) is
+  fixed for free by jsoup's tolerant HTML parser + re-serialization —
+  the same recovery a browser does, no special-case code needed.
+- =LegacySolutionParser.java= — parses one legacy solution directory
+  (tutor_steps.html, falling back to tutor_steps_2.html) into a clean
+  =Solution=.
+- =LegacySolutionPreprocessor.java= — CLI entry point; walks a
+  directory tree, converts every solution found, writes
+  =<pid>.json= + a =<pid>/= assets folder per solution, skips WIRIS
+  equation-duplicate GIFs (Category 1), reports success/failure counts.
+
+*Dependencies added to =pom.xml=*: jsoup (tolerant HTML parsing —
+chosen specifically for its graceful recovery from malformed
+attributes) and Gson (plain JSON output, no Spring needed for a CLI
+tool). Deliberately NOT wired to Spring Boot yet — this is a plain
+=java -cp ...= runnable tool; Spring Boot parent/starters stay a TODO
+in =pom.xml= for whenever the backend grows into a real API server.
+
+*** Verified against real data, not just compiled
+
+Run directly against the actual legacy corpus, not synthetic
+fixtures:
+
+1. Both previously hand-converted examples
+   (=alg1ptests_1_1_Chapter1PracticeTest_10_1=,
+   =alg1ptests_10_1_Chapter10PracticeTest_18_10=) — output matched the
+   hand conversion's content faithfully (see "Category 2" above for
+   the second example's real diagrams).
+2. *Full =alg1ptests= subject, 846 real solutions*: 846/846 succeeded
+   (zero exceptions). But "didn't crash" isn't "correct" — checked
+   for silent extraction gaps (null identification fields, empty
+   statements, empty steps arrays) and found three real bugs this
+   way, each fixed and re-verified at full scale before moving on:
+
+   - *Trailing sibling content dropped*: some exports place an
+     =<img>= (a real diagram) as a sibling of =.step_content=, still
+     inside the same stepunit wrapper div but after it closes —
+     extracting only =.step_content='s inner HTML silently lost it.
+     This is the exact malformed-attribute example from Q4
+     (=alg1ptests_10_1_Chapter10PracticeTest_18_10='s =f-10-18-5.gif=/
+     =f-10-18-6.gif=) — the missing-quote issue turned out to be a red
+     herring; the real bug was extraction scope, not HTML
+     malformation. Fixed by extracting the whole stepunit wrapper's
+     content (minus the always-empty =step_title-N= div) instead of
+     just its =.step_content= child.
+   - *=id==vs=name== inconsistency, more widespread than expected*:
+     already knew stepunit wrappers alternate between =id="stepunit-N"=
+     (=tutor_steps.html=) and =name="stepunit-N"=
+     (=tutor_steps_2.html=) and had handled that — but
+     =#problem_statement= and =#steps_head_title= have the exact same
+     =id=/=name= split, not yet handled. Any solution whose only
+     surviving file was =tutor_steps_2.html= (no =tutor_steps.html=
+     fallback available) got an empty statement and null
+     identification. Fixed by matching =[id=X], [name=X]= everywhere,
+     not just for stepunits. *This was the highest-impact bug* —
+     dropped null-=problemNumber= count 105→0 and empty-statement
+     count 103→0 out of 846.
+   - *Not every solution has a "Set:"*: found via
+     =alg1ptests_10_1__5_10= (note the double underscore — no
+     intermediate "set" directory in its path either) — a genuinely
+     different problem template (radio-button questions, no
+     multiple-choice =<li correct>= markup), title reads only
+     "Problem: 5" with no "Set:" label at all. A regex requiring both
+     together silently dropped =problemNumber= whenever =set= was
+     absent. Fixed: match them independently. Also exposed a second,
+     related bug — chapter/section derivation via fixed
+     parent-directory-hop-counting broke for solutions with no "set"
+     directory level (landed on the wrong directory entirely). Fixed
+     by deriving chapter/section as the first two path segments
+     relative to the subject root passed to the CLI, not a fixed
+     number of hops above the solution directory.
+
+   Final state after all three fixes, re-verified at full 846-solution
+   scale: 0 empty statements, 0 null =problemNumber= (2 solutions
+   correctly have null =set= — genuinely no set, not a bug), 1
+   genuinely empty solution found (source HTML is really just
+   whitespace + dead markup, nothing to extract — a real legacy data
+   quality issue, not a parser bug).
+
+3. *Regression tests* (=src/test/java/.../preprocessor/
+   LegacySolutionParserTest.java=, self-contained fixtures under
+   =src/test/resources/=, not depending on the external corpus):
+   one test per bug found above, all passing. Run: =mvn test=
+   (=Tests run: 3, Failures: 0=).
+
+** =alg1ptests= module: deployed and verified end to end (2026-08-26)
+
+The full real subject (846 solutions) is now a real, working cm_re
+module — not staged output sitting in a temp directory. Two things
+needed to happen first:
+
+1. *Image URL rewrite target changed from relative to absolute.*
+   =HtmlCleaner= originally rewrote per-solution image =src= to a bare
+   =<pid>/<filename>= (relative). That's wrong for how solution HTML
+   actually gets rendered: =StepViewer= uses
+   =dangerouslySetInnerHTML= with no base-URL scoping (no =<base>=
+   tag, no iframe), so a relative src resolves against whatever route
+   the SPA happens to be on — =/= — not against wherever the image
+   actually lives. Fixed: rewrite to an app-root-absolute
+   =/modules/{subjectId}/{pid}/{filename}=, matching
+   =apps/tutor/public/modules/{subjectId}/{pid}/= — the real
+   serving location. Caught and fixed before anything was deployed,
+   not after.
+2. *=ModuleAssembler.java=* (new) — the second half of the pipeline:
+   reads the pre-processor's per-=<pid>.json= output sitting in a
+   module directory, merges them into =bundle.json= (=solutions:
+   [...]=), computes =manifest.json= (=solutionIds=, real
+   =approxSizeBytes=), then deletes the now-redundant loose per-
+   solution files so the directory matches the existing
+   algebra1/geometry fixture convention. *Found and fixed a real bug
+   in this tool itself* while checking its own output: the first
+   version computed =approxSizeBytes= by walking the module directory
+   BEFORE deleting the loose =<pid>.json= originals, double-counting
+   every solution's content (once in =bundle.json=, once in the
+   not-yet-deleted source files) — inflated the true ~5.2 MB module to
+   a reported ~8.75 MB. Fixed by deleting first, then measuring.
+
+*** Pipeline run for real, output verified at every stage
+
+1. =LegacySolutionPreprocessor= run with =subjectId=alg1ptests=
+   (matching the real legacy book code — deliberately distinct from
+   the synthetic =algebra1=/=geometry= demo fixtures, so provenance
+   stays unambiguous), output directed straight at
+   =apps/tutor/public/modules/alg1ptests/= (the real serving
+   location, not a temp staging dir). 846/846 succeeded.
+2. =ModuleAssembler= run against that directory →
+   =manifest.json= + =bundle.json=, real measured
+   *=approxSizeBytes= = 5,470,809 (~5.2 MB)* — a genuine number,
+   worth weighing against the storage-eviction/Chromebook concern
+   already flagged for offline modules generally, now that there's a
+   real subject-sized module to reason about instead of a KB-scale
+   synthetic fixture.
+3. Added =alg1ptests= to =modules/index.json= (titled "Algebra 1
+   Practice Tests (real content)" — deliberately distinguishable from
+   the synthetic fixtures in the subject picker).
+4. Rebuilt the app; confirmed via curl that =manifest.json=,
+   =bundle.json=, and a real diagram image
+   (=f-10-18-1.gif=) all resolve at their final served
+   URLs — the image check specifically confirms the absolute-path
+   rewrite from fix #1 above actually lines up with where the asset
+   really lives, not just that the rewrite logic runs.
+5. *Full real end-to-end smoke test*, extended to cover this module
+   alongside the existing two: fetch manifest+bundle over HTTP →
+   write all 846 solutions into IndexedDB → read them back, including
+   the genuine null-=set= edge case (=alg1ptests_10_1__5_10=,
+   correctly reads back as =null #5=) → remove cleanly. Passing.
+
+The =alg1ptests= module is real, deployed, and load-bearing content
+now — not a fixture. Still no browser available in this environment
+to visually confirm rendering (same standing caveat as StepViewer's
+first build) — worth a real look via =make run=.
+
+* Multiple-choice questions: extracted to structured data (2026-08-30)
+
+Practice-test solutions embed exactly one single-select
+multiple-choice question in the statement. Earlier notes said "MC
+answers live inside statement HTML as markup, not separate structured
+data" and modelled it that way. That was wrong for the tutor's needs:
+rendered as raw HTML the choices are a dead list (DOMPurify strips the
+inline =onclick=, no select/check/feedback, and the answer key sits in
+the DOM). The preprocessor now lifts the question OUT into a structured
+=McQuestion= (=prompt=, =choices[]= each with optional =feedback=,
+=correctIndex=), removes its markup from =statement=, and the tutor
+renders it with an interactive =QuestionView= component.
+
+** Three real markup shapes (all in alg1ptests, 846 solutions)
+
+1. *Format A — =question_stepunit= / =question_responses=* (~282).
+   =<div class="question_stepunit">= with
+   =<ul class="question_responses">=; each =<li>= has a radio
+   =<input value="true|false">= (correctness marker), a =<label>=
+   with the choice body (letter-prefixed "A." / " B." in the text),
+   and a =<div style="display:none">= holding a bare
+   "Correct"/"Incorrect" string (NOT authored feedback — dropped).
+2. *Format B — =hm_question_def= / =<li correct>=* (~459).
+   =<div class="hm_question_def">= wrapping a prompt =<div>= then a
+   bare =<ul>= whose =<li correct="yes|no">= items each hold two
+   child =<div>=s: choice body, then a feedback cell that is
+   =&nbsp;= in every case seen. This is the same shape cm3_mobile's
+   =quiz.ts= and the legacy =quiz.js= handle.
+3. *Format B, declassed* — the =tutor_steps_2.html= export variant
+   sometimes drops the =hm_question_def= class and leaves a bare
+   =<div>= around the same =<ul><li correct>=. Detection therefore
+   keys off =li[correct]=, not the wrapper class.
+
+Plus a degenerate case: =hm_question_def= with a prompt but no
+choices list at all (export dropped it) — the wrapper is unwrapped so
+the prompt survives as prose, no =question= produced.
+
+** Extraction results (regenerated module, manifest v2)
+
+- 846/846 convert; *843 carry a structured =question=* (3 have no
+  choices in the source), all 843 with exactly 4 choices.
+- *0 question/list markup leaking into any =statement=* (verified
+  across the whole bundle).
+- 1 solution (=alg1ptests_8_1_chapter8practicetest_3_9=) has null
+  =correctIndex= — its source genuinely marks no choice correct. The
+  schema allows it; =QuestionView= degrades to "Answer recorded".
+- Per-choice =feedback= is null everywhere in this corpus (Format A's
+  marker dropped, Format B's =&nbsp;= treated as blank). The field
+  stays in the schema for solution_editor / other subjects.
+- Module size 5.47 MB → 4.92 MB (markup replaced by structured data).
+
+** Answer-key posture
+
+=correctIndex= *ships inside the downloaded module.* The tutor is
+offline-first and has to grade with no connection — withholding the
+key until an online check would break that. The guarantee is instead
+that =QuestionView= never renders =correctIndex= (or any per-choice
+correctness hint) into the DOM before the student checks; it's read
+only in the =check= handler. A separate future "grading mode" (quiz /
+assignment, hide answers from the student) can withhold it.
+
+** Re-running the pipeline
+
+=exec-maven-plugin= is now in =apps/backend/pom.xml=. From
+=apps/backend/=:
+: mvn -q compile exec:java -Dexec.mainClass=com.catchupmath.cmre.preprocessor.LegacySolutionPreprocessor \
+:     -Dexec.args="<legacy-solutions>/alg1ptests alg1ptests ../tutor/public/modules/alg1ptests"
+: rm ../tutor/public/modules/alg1ptests/{bundle,manifest}.json   # stale outputs would break the assembler's *.json glob
+: mvn -q exec:java -Dexec.mainClass=com.catchupmath.cmre.preprocessor.ModuleAssembler \
+:     -Dexec.args="../tutor/public/modules/alg1ptests alg1ptests 2"
+
+* References
+
+1. [[file:NEW_DIRECTION.org][NEW_DIRECTION.org]] — architecture decisions this feeds into
+2. =catchupmath/temp/help_2022_06/solutions/alg1ptests/1/1/Chapter1PracticeTest/alg1ptests_1_1_Chapter1PracticeTest_10_1/version2/= — full real-example conversion + field provenance
+3. =cm/src/main/java/hotmath/gwt/solution_editor/server/solution/= — the real legacy Java model
+4. =cm/src/main/java/hotmath/gwt/cm_admin/client/custom_content/problem/WirisEditorDialog.java= — confirms WIRIS is an authoring-tool integration, not a live-tutor one

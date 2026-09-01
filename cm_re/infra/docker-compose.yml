@@ -1,0 +1,3 @@
+# Local dev infra. TODO: a single postgres:16 service, exposing 5432,
+# with a volume so data survives restarts. apps/backend's
+# application.yml dev profile points at this.

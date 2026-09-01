@@ -1,0 +1,25 @@
+-- Flyway migration. First pass at the solutions table — versioned JSON
+-- document storage per NEW_DIRECTION.org, replacing the legacy flat-file
+-- + HA_* MySQL index split.
+--
+-- TODO:
+-- CREATE TABLE solutions (
+--   id UUID PRIMARY KEY,
+--   subject_id TEXT NOT NULL,
+--   program_id TEXT NOT NULL,
+--   title TEXT NOT NULL,
+--   version INT NOT NULL DEFAULT 1,
+--   steps JSONB NOT NULL,
+--   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+-- );
+-- CREATE INDEX ON solutions (subject_id);
+--
+-- CREATE TABLE progress_events (
+--   id UUID PRIMARY KEY,
+--   student_id TEXT NOT NULL,
+--   solution_id UUID NOT NULL REFERENCES solutions(id),
+--   step_id TEXT NOT NULL,
+--   event_type TEXT NOT NULL,
+--   payload JSONB,
+--   occurred_at TIMESTAMPTZ NOT NULL
+-- );

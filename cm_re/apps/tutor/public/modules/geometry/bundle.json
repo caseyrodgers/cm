@@ -1,0 +1,25 @@
+{
+  "solutions": [
+    {
+      "pid": "sol-triangle-area-1",
+      "subjectId": "geometry",
+      "version": "2.0",
+      "date": null,
+      "createdBy": null,
+      "active": null,
+      "identification": {
+        "book": "geometry",
+        "chapter": "1",
+        "section": "1",
+        "set": "practice",
+        "problemNumber": "1"
+      },
+      "statement": "<p>Find the area of a triangle with base 6 and height 4.</p>",
+      "statementFigure": null,
+      "steps": [
+        { "role": "step", "content": "<p>Area = 1/2 &times; base &times; height = 1/2 &times; 6 &times; 4</p>" },
+        { "role": "step", "content": "<p>Area = 12</p>" }
+      ]
+    }
+  ]
+}

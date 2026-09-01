@@ -1,0 +1,594 @@
+#+TITLE: Catchup Math (cm) — New Direction
+#+STARTUP: overview
+
+* Summary
+
+Explore a rewrite of the CM tutor + solution_editor stack, replacing the
+~2010-era GWT/GXT/Jetty 6 app (see [[file:STATUS.org][STATUS.org]] for the current build/run
+status of the legacy app). See [[file:APP_FLOW.org][APP_FLOW.org]] for the end-to-end app flow
+and a sequence diagram of the main players, and [[file:SOLUTION_INFO.org][SOLUTION_INFO.org]] for
+real-world findings on solution content (the real data model, and how
+images actually show up in the legacy corpus).
+
+* Problem statement
+
+CatchupMath displays "solutions" in a tutor UI, one step at a time. Each
+solution is a set of HTML/CSS/JSON files representing that solution's
+steps. A companion tool, =solution_editor=, allows creating and editing
+solutions. The tutor UI has a hard requirement: it must render
+dynamic, per-step HTML authored by editors — this isn't a fixed
+component tree, it's author-controlled markup.
+
+Today this is built on:
+- GWT 2.7.0 / GXT 3.1.2 (Java cross-compiled to JS), ~2015-era
+- Jetty 6.1.10 + hand-registered servlets (no framework, no Spring
+  despite a vestigial =beans.xml= context-param — see STATUS.org)
+- Solutions stored as flat HTML/CSS/JSON files under a
+  =solution.base= directory on disk, indexed via MySQL (=HA_*= tables)
+- Authoring done via a Java Applet-wrapped rich text editor
+  (~HtmlEditorApplet~, TinyMCE) inside =solution_editor=
+
+* Proposed new direction
+
+** Recommendation
+
+- *Frontend:* React + TypeScript SPA (or Next.js) for both the student
+  tutor and the =solution_editor= authoring tool.
+- *Rich content editing:* TipTap (built on ProseMirror) replacing
+  TinyMCE/HtmlEditorApplet — same "author structured rich content"
+  problem, but with a real extension API instead of hand-rolled
+  applet wrappers. TipTap extensions can also carry the math-specific
+  needs (MathML/LaTeX via KaTeX, matching the existing
+  =mathjax_setup.js= integration).
+- *Content storage:* model each solution as a versioned JSON document
+  (ordered array of steps, each step carrying sanitized HTML +
+  metadata) stored in Postgres (JSONB column), replacing the current
+  flat-file-on-disk + MySQL-index split.
+- *Dynamic HTML rendering (student side):* sanitize with DOMPurify
+  before render. Decades-old authored content may carry legacy cruft;
+  never trust it as-is even though it's admin-authored, not
+  user-submitted.
+- *Backend:* Java / Spring Boot, reusing the existing DAO/SQL layer
+  (decided 2026-08-20 — see Decisions log below).
+- *Offline:* student tutor must work with no connection (scope decided
+  2026-08-20 — see "Offline support" below). =solution_editor= stays
+  online-only.
+
+** Frontend platform: PWA, not Electron (decided 2026-08-20)
+
+Considered wrapping the student tutor in Electron for offline
+distribution instead of a PWA. Rejected: a meaningful share of K-12
+devices are Chromebooks, where Electron apps don't run at all
+(ChromeOS blocks/restricts the Linux container most schools would
+need). A PWA installs natively as a web app on ChromeOS, so it
+doesn't cut off that device class.
+
+Electron's real advantages — filesystem-backed module storage with no
+browser storage-eviction risk, and kiosk-mode lockdown for lab/test
+computers — are legitimate, but not worth losing Chromebook reach for.
+If they become real pain points later, revisit Electron as a
+*secondary* packaging channel wrapping the same React codebase, not
+as the primary target.
+
+** Offline support (student tutor only)
+
+Scope: the student-facing tutor must let a student work through
+solutions and submit answers with no network connection.
+=solution_editor= (authoring) stays online-only — editors are rarely
+in a no-connectivity spot, and offline authoring would require real
+multi-editor conflict resolution (CRDT or similar), which is a much
+bigger lift than the value justifies right now.
+
+Recommended approach — standard PWA offline-first pattern layered on
+top of the React/TypeScript + JSON-document storage model above:
+
+- *App shell + assets:* Service Worker (Workbox) — installable PWA,
+  works fully offline once the shell is cached.
+- *Solution content cache:* IndexedDB (via Dexie.js for a friendlier
+  API) caching the versioned JSON solution documents. This is a
+  natural fit with the Postgres JSONB storage model already
+  recommended — the same document shape ships to the client and gets
+  cached as-is.
+- *Mechanism confirmed (2026-08-20):* yes, a PWA can genuinely
+  download and store module content client-side —
+  - Cache Storage API (via the service worker) stores arbitrary
+    response bodies (JSON, HTML fragments, images) keyed by URL, no
+    meaningful size cap beyond quota — holds the module's actual
+    assets.
+  - IndexedDB holds structured data: the module manifest (which
+    modules are installed, at what version/hash) and the parsed
+    solution documents, so the app can query "is Algebra 1 installed"
+    without re-parsing blobs.
+  - Flow: student taps "Download for offline" → fetch the module
+    manifest → pull each asset into Cache Storage/IndexedDB → flip an
+    "installed" flag in the manifest table. Service worker then
+    serves that content whenever the network's down.
+  - *Caveat:* browsers can evict Cache Storage/IndexedDB under
+    storage pressure unless the app requests persistent storage
+    (~navigator.storage.persist()~), and quota varies a lot by
+    browser — Chrome/ChromeOS is generous, Safari/iPadOS historically
+    much stingier. Real risk on storage-constrained Chromebooks, not
+    just theoretical. The module system needs a "here's how much
+    space this'll use" prompt and a persistence request, not silent
+    caching.
+- *Prefetch unit = content module (per subject), not per-solution:*
+  package downloadable content as "modules" — one module per subject
+  (Algebra 1, Geometry, etc.), each a versioned bundle of that
+  subject's solution documents + assets. This maps directly onto the
+  =subj_id=/=prog_id= partitioning that already exists in the legacy
+  DB (=HA_SUBJ_DEF=, =HA_PROG_DEF=, =HA_TEST_DEF=) — not a new
+  taxonomy, just packaging what's already there. A student (or their
+  device, pre-emptively) downloads the module(s) for their assigned
+  subject; the tutor then runs standalone against that module with no
+  server calls except the write-sync queue below.
+  - Each module carries a manifest (version/hash); the app compares
+    local vs. server manifest to know whether a re-download is
+    needed, and can do it incrementally rather than as one big blob.
+  - Publishing an updated module (new/edited solutions) is a build
+    step on the backend — bump the module version, students get the
+    new bundle next time they're online and check manifests.
+  - Passive service-worker caching alone only covers content already
+    visited; module-based prefetch is what makes "download for
+    offline" an explicit, predictable action instead of an
+    accident of browsing history.
+- *Write sync queue:* answers/step-completions/progress events queue
+  in IndexedDB while offline, then flush to the server (retry-on-
+  reconnect, or the Background Sync API where supported) once back
+  online. Single-writer per student, so no conflict resolution needed
+  here — unlike the authoring-offline case above.
+
+** Rationale
+
+The core UI requirement — render author-controlled dynamic HTML,
+one step at a time — doesn't need GWT's original justification
+(cross-compiling Java to JS to get a desktop-like widget toolkit in
+2010-era browsers). A modern SPA framework handles dynamic content
+and componentized "step" rendering natively, with a much larger
+ecosystem and hiring pool than GWT/GXT today.
+
+* Tradeoffs
+
+** Storage migration is the biggest lift
+
+Moving solutions from flat files (=runtime/solutions=, the
+=.mprop=/XML step format, see =TutorSolutionParser.java=,
+=TutorSolutionXmlWriter.java=) into DB-backed JSON rows buys:
+- versioning
+- full-text search across solution content
+- referential integrity (no more orphaned files vs. DB rows)
+
+...but requires a one-time import/migration script, and it's not a
+pure UI swap — it touches how solutions are read at tutor-render time
+too.
+
+** Smaller first cut (alternative)
+
+Keep file-based solution storage exactly as-is; just replace
+GWT/GXT → React/TipTap on top of the existing file format and
+Jetty/servlet backend. Defers the storage migration to a phase two.
+Lower risk, faster to ship, but keeps the current flat-file sprawl
+and doesn't unlock search/versioning until phase two actually happens.
+
+* Decisions log
+
+** Legacy content pre-processor: a one-time fixup, not runtime tolerance (decided 2026-08-26)
+
+=solution_editor= assumes valid, well-formed HTML only — it is never
+responsible for tolerating malformed legacy markup. A separate,
+one-time *pre-processor* runs over every existing legacy solution
+once, fixing it up into cm_re's expected clean format (well-formed
+HTML, rewritten specialchars/image URLs, the real =Solution= JSON
+shape — see SOLUTION_INFO.org for the full findings this responds
+to). All the messiness of ~2010s-era exported HTML lives in that one
+conversion pass; the editor and the tutor both get to assume clean
+input downstream.
+
+Full detail — the malformed-HTML investigation this responds to
+(63/1,665 solutions in one subject affected, one specific pattern
+verified survivable by the browser's parser but not treated as
+license to skip fixing it), the specialchars/image URL rewrite this
+folds in, and what's still undesigned about the pre-processor itself
+(what exactly it fixes, how it's invoked, where output lands) — is in
+[[file:SOLUTION_INFO.org][SOLUTION_INFO.org]]'s "Architectural decision, 2026-08-26" section.
+
+*Built and verified, same day*: a real Java implementation lives in
+=cm_re/apps/backend=, package =com.catchupmath.cmre.preprocessor=
+(jsoup for tolerant HTML parsing, Gson for output — plain CLI tool,
+no Spring Boot yet). Run against the full real =alg1ptests= subject
+(846 solutions): 846/846 succeeded, and checking for *silent*
+extraction gaps (not just crashes) surfaced three real bugs — trailing
+sibling content dropped, an =id=/=name= attribute inconsistency wider
+than first assumed, and a problem template with no "Set:" label at
+all — all fixed and re-verified at full scale, plus locked in with
+regression tests (=LegacySolutionParserTest.java=, 3/3 passing). Full
+writeup in SOLUTION_INFO.org's "Pre-processor: built and verified at
+scale" section.
+
+*=alg1ptests= deployed as a real cm_re module, same day*: all 846
+solutions are now live at
+=apps/tutor/public/modules/alg1ptests/= (manifest.json + bundle.json,
+via a new =ModuleAssembler.java=), listed in =modules/index.json=,
+and verified through the full real pipeline — HTTP fetch → IndexedDB
+write → read-back, including a real diagram image resolving at its
+final served URL. Real measured size: *~5.2 MB* — the first
+subject-scale (not KB-scale synthetic-fixture-scale) number to weigh
+against the offline storage-budget concern. Caught and fixed a real
+bug in the image-URL rewrite before deployment (relative paths don't
+resolve under =dangerouslySetInnerHTML='s lack of base-URL scoping —
+needed to be app-root-absolute instead) and a real bug in
+=ModuleAssembler= itself (a double-counted size calculation). Full
+writeup in SOLUTION_INFO.org's "alg1ptests module: deployed and
+verified end to end" section.
+
+** Backend language: Java / Spring Boot (decided 2026-08-20)
+
+Stays JVM, reusing the existing DAO/SQL layer
+(=runtime/spring.xml= DAO beans, the ~200 hand-written queries in
+=runtime/catchup.mprops=) rather than porting to Node/TypeScript.
+
+Main reason: Eclipse + JVM HotSwap gives a genuinely different dev
+loop than anything in the Node ecosystem — it redefines a method's
+bytecode in the *already-running* process, so the DB connection pool,
+background threads (e.g. the =StudentEventService= queue watcher),
+and all other in-memory state survive a code edit untouched. Node's
+closest analogs (~node --watch~, ~nodemon~, webpack/Vite HMR) are
+either full process restarts or a module-cache swap that doesn't
+retroactively fix up already-constructed object instances — neither
+preserves live state the way HotSwap does. Given this backend has
+real long-lived in-memory state, that's a substantive advantage, not
+just familiarity.
+
+Two-language stack accepted as a tradeoff (Java backend, TS/React
+frontend) in exchange for that dev-loop win and reuse of the existing
+data-access layer.
+
+* First-pass component scaffold (2026-08-20)
+
+Structural mockup of the layout below lives at [[file:cm_re/][cm_re/]] (base directory
+=./cm_re=, sibling to the legacy app in this same repo) — stub
+files/dirs only, no working implementation yet:
+
+#+begin_example
+cm_re/
+├── apps/
+│   ├── tutor/     student PWA — offline, module downloads (see above)
+│   ├── editor/    solution_editor replacement — online-only, TipTap
+│   └── backend/   Java / Spring Boot — solution/module/progress-sync
+├── packages/
+│   └── shared-types/   canonical Solution / ModuleManifest TS types
+└── infra/              local dev infra (Postgres)
+#+end_example
+
+See =cm_re/README.md= for the full rationale on why =tutor= and
+=editor= are separate deployables.
+
+** =apps/tutor= PWA mechanics are real, not stubbed (2026-08-20)
+
+Verified end to end: real Vite + React build, =vite-plugin-pwa=
+generating an actual =dist/sw.js= (Workbox =generateSW=), a real
+manifest with real 192/512 PNG icons, served over =localhost=
+(exempt from the PWA HTTPS requirement). ~make run~ now runs
+~vite build~ then serves =dist/= — no more static placeholder.
+Confirmed via curl: =index.html=, =manifest.webmanifest=, =sw.js=,
+and the icon files all return 200 with real (non-placeholder)
+content.
+
+Still TODO: the actual tutor UI (StepViewer, SolutionNav) and the
+sync-queue logic — this pass only proved the PWA shell itself
+installs and would work offline once precached.
+
+** Module download/install implemented and verified (2026-08-20)
+
+"Download static modules from the server, install them so the PWA
+can read it" — built and verified end to end, not just type-checked:
+
+- =offline/db.ts=: real Dexie schema (=modules= table keyed by
+  subjectId, =solutions= table keyed by id + indexed by subjectId).
+- =api/client.ts=: fetches static module JSON — =/modules/:subjectId/
+  manifest.json= (small, for update checks) and =bundle.json= (full
+  solutions payload, only fetched on actual download). First pass
+  deliberately uses static files, not =apps/backend='s (still-stub)
+  =ModuleController= — same fetch shape either way, so pointing this
+  at a real backend later is a one-line =API_BASE= change.
+- =offline/moduleManager.ts=: =checkForUpdate=, =downloadModule=
+  (requests =navigator.storage.persist()= before writing, per the
+  eviction caveat above), =isModuleInstalled=, =getSolutionsForModule=.
+- =components/ModuleDownloadPrompt=: shows manifest size/count, drives
+  download, and — once installed — reads the solutions back out of
+  IndexedDB and lists them, proving the read path works too, not just
+  the write. Wired into =App.tsx=.
+- Sample fixture module at =public/modules/algebra1/{manifest,bundle}.json=
+  (2 solutions) so the above has something real to fetch.
+- *Verified with a real runtime smoke test*, not just a build:
+  =offline/moduleManager.smoketest.ts= runs under Node via
+  =fake-indexeddb= + =tsx= against a locally served build
+  (=npx vite preview=), exercising real fetch + real IndexedDB
+  writes/reads. Confirmed: not-installed → update-available=true →
+  download → installed=true → update-available=false → both solution
+  titles read back correctly. No browser was available in this
+  environment to test in situ; this is the closest verifiable
+  substitute — worth an actual browser check when one's available.
+
+** UI component library: switched to Tailwind + hand-written shadcn-style components (2026-08-21)
+
+Ionic looked good (confirmed by Casey), but the bundle-size cost was
+real and worth avoiding — see the Ionic trial writeup just below.
+Swapped to Tailwind v4 (=@tailwindcss/vite=, no config file needed)
++ a small hand-written =components/ui/= folder (=Button=, =Card=,
+=List=, =Spinner=) in the shadcn/ui pattern — plain Tailwind-styled
+React components using the standard =cn()= helper (=clsx= +
+=tailwind-merge=), no Radix runtime needed for anything this simple.
+=@ionic/react= and =ionicons= fully uninstalled.
+
+*Result, same build, same smoke test*:
+| | Ionic | Tailwind + shadcn-style |
+|---+---+---|
+| JS (gzip) | 1.17 MB (273 KB) | 275 KB (90 KB) |
+| CSS (gzip) | 13.6 KB (3.3 KB) | 11 KB (3.1 KB) |
+| PWA precache total | 1.19 MB | 296 KB |
+
+Roughly a 4x reduction in what has to download before the app shell
+installs, for a comparable visual result. Smoke test (subject listing
++ both modules' full download/install/read-back cycle) still passes
+unchanged — this was a UI-layer-only swap.
+
+** UI component library: tried Ionic (@ionic/react) (2026-08-21)
+
+Casey asked to try Ionic for visual polish (not for Capacitor/native
+packaging — the PWA-over-Electron decision above stands). Wired up
+=@ionic/react= as a plain component library: =setupIonicReact()= +
+core/normalize/structure/typography CSS in =main.tsx=, =IonApp=/
+=IonPage=/=IonHeader=/=IonContent= shell in =App.tsx=,
+=IonList=/=IonItem= in =SubjectSelector=, =IonCard=/=IonButton=/
+=IonSpinner= in =ModuleDownloadPrompt=.
+
+Build succeeds, smoke test still passes (UI-only change, download
+logic untouched). *Real cost worth flagging*: the JS bundle jumped
+from ~245 KB to ~1.17 MB (gzip ~80 KB → ~273 KB), and the PWA
+precache from ~256 KB to ~1.19 MB. That's a real, material addition
+to what has to download before the app shell even installs — worth
+weighing against the storage-eviction/Chromebook-constraint concern
+already noted in "Offline support" above, especially once actual
+step content and images add to it. No browser was available in this
+environment to actually *see* whether it looks better — worth a real
+visual check (and a look at MUI/Tailwind side by side, as originally
+offered) before treating this as decided rather than trialed.
+
+** "View JSON" → directory-listing popup for real solutions (2026-08-25)
+
+Casey wanted the debug link on =SolutionNav= to show a popup with a
+directory listing of "the solution dir" — the original legacy export
+directory a converted solution came from (images, alternate
+=tutor_steps*.html= variants, JSON sidecars) — not just the converted
+JSON.
+
+Considered and rejected: a =file://= link. Browsers can't read
+arbitrary local directories from JS, and navigating a =file://= URL
+from an =http://=-served page is unreliable/blocked in several
+browsers for security reasons — not something worth shipping
+unverifiable. Went with the same reliable pattern as the existing
+JSON view instead: a hand-captured static listing
+(=data/solutionSources.ts=, keyed by =pid=, captured once via =ls
+-la= on the real directory — excludes =version2/=, our own conversion
+artifact, not part of the original export) rendered into a small HTML
+page and opened via Blob URL.
+
+Behavior: solutions with a known real source (currently just
+=alg1ptests_1_1_chapter1practicetest_10_1=) show "View source
+directory" and get the real 17-file listing; the three synthetic
+fixture solutions (which never had a real source directory) fall back
+to the original "View JSON" behavor.
+
+*Follow-up same day*: Casey correctly pushed back that a listing with
+dead =href="#"= links wasn't actually useful — "during development,
+can't the HTTP server just return the directory so I can view the
+images?" Fixed properly: added a =make serve-legacy= target
+(=cm_re/Makefile=) — a dev-only static server (=python -m http.server
+8090 --directory <legacy solutions root>=) rooted at the real legacy
+=solutions/= tree. =solutionSources.ts= gained a =relativePath= per
+solution and a =LEGACY_SERVER_BASE_URL= constant; the generated
+listing's links now point at real files on that server instead of
+=#=. Kept generating our own listing page rather than letting the
+browser auto-index the directory — this exact directory has its own
+legacy =index.html= (the old redirect stub) which would hijack a raw
+directory-root request.
+
+*Verified for real*, not just built: started =make serve-legacy=,
+confirmed the directory root does in fact serve the old redirect stub
+(reproducing the exact reason a raw directory listing wouldn't work
+here), then fetched all 17 computed file URLs (images included) and
+confirmed every one returns 200. Full build passing.
+
+** Real bug: Dexie schema changes need a version bump, not just an edit (2026-08-24)
+
+Casey hit this live in a real browser: clicking "Update available"
+threw ~Cannot read properties of undefined (reading 'set')~ inside
+~ModuleDownloadPrompt~'s solution list. Root cause — when the
+Solution schema migration below changed the =solutions= table's
+primary key from =id= to =pid=, =db.ts= kept
+~this.version(1).stores(...)~ instead of bumping the version number.
+Dexie only applies schema changes when it sees a *higher* version
+number than what's already recorded in that browser's IndexedDB;
+editing an already-created version's =.stores()= call in place is a
+silent no-op for anyone who already opened the app before. Casey's
+browser had a real v1 database from earlier testing — it kept the
+stale =id=-keyed store, and new pid-only Solution objects collided
+against it, leaving old-shape records (no =identification= field)
+sitting alongside/instead of the new ones.
+
+Fixed in =db.ts=: =version(2)= drops the =solutions= store entirely
+(~solutions: null~), =version(3)= recreates it with the correct
+=pid=-based keyPath. No data-preserving migration logic — there's no
+real user data yet, this is all prototype/fixture content, so a clean
+drop-and-recreate is the right call. Documented the "bump the version
+number" rule directly in =db.ts='s comment so this doesn't recur.
+
+*Verified by reproducing the exact bug*, not just fixing blind:
+=offline/dbMigration.smoketest.ts= creates a real Dexie database
+under the OLD v1 schema, inserts an old-shape record (matching what
+was actually sitting in Casey's browser), then opens with the app's
+real =db.ts= and confirms (a) the stale record is gone after the
+v2/v3 migration and (b) storing+reading a real new-shape solution and
+accessing =identification.set= — the exact line that crashed — now
+works. All three smoke tests (module download/install, update-flow,
+and this new migration one) pass together.
+
+*Importantly, this self-heals* — Casey doesn't need to manually clear
+site data. The next time the app opens in that browser, Dexie sees
+the code's version(3) is higher than the browser's existing version
+and runs the drop/recreate automatically.
+
+** Real Solution schema, replacing the placeholder (2026-08-24)
+
+Investigated an actual exported legacy solution
+(=alg1ptests_1_1_Chapter1PracticeTest_10_1=, see
+=catchupmath/temp/help_2022_06/solutions/.../version2/= for the full
+conversion + field-provenance writeup) and the real Java model that
+produced it (=TutorSolution=/=TutorProblem=/=TutorStepUnit(ImplHint|
+ImplStep)=). Ported the findings into =shared-types= for real,
+replacing the earlier invented placeholder:
+
+- Problem statement is now its own top-level =Solution.statement=
+  field, not folded into the =steps= array.
+- =StepUnit.role= is only ever =\"hint\"= or =\"step\"= — the
+  placeholder's =\"question\"=/=\"proof\"= roles don't exist in the
+  legacy model (a stray unused =StepType= enum in
+  =TutorSolution.java= has them, but nothing ever wires it up).
+- Multiple-choice answers live inside =statement='s HTML as markup
+  (=<ul><li correct=\"yes|no\">=), not as separate structured data —
+  matching the legacy system, which never modeled them separately
+  either.
+- Step content field renamed =html= → =content=, staying a plain
+  =string=: supports embedded HTML/MathML without requiring it, no
+  union type needed since a tagless string sanitizes/renders
+  identically to a tagged one.
+- Added =Identification= (book/chapter/section/set/problemNumber/
+  page) and =pid= (=SolutionId=), replacing the placeholder's flat
+  =id=/=title=. There's no display "title" in the real model — the UI
+  derives one from =identification= instead (=ModuleDownloadPrompt='s
+  =solutionLabel()=).
+- =subjectId= kept as cm_re's own module-partition key, deliberately
+  distinct from =identification.book= (legacy problem metadata,
+  carried through as-is; the two don't necessarily match 1:1).
+
+Ported through the whole stack: =db.ts= (solutions table now keyed by
+=pid=), fixtures (=algebra1='s bundle now includes the actual real
+converted solution alongside two reshaped synthetic ones; =geometry='s
+reshaped too), both smoke tests. Full rebuild + both smoke tests
+passing, including the real solution round-tripping through fetch →
+IndexedDB → read-back correctly.
+
+** Minimal real StepViewer/SolutionNav (2026-08-24)
+
+First real (non-stub) rendering of solution content. =StepViewer=
+exports =StatementView=/=StepUnitView= — both sanitize with DOMPurify
+before rendering via =dangerouslySetInnerHTML=. =SolutionNav= holds
+step-index state, shows the statement plus the current step, with
+prev/next controls. Wired end to end: clicking a solution in
+=ModuleDownloadPrompt='s installed list now opens it in =SolutionNav=
+(=App.tsx= grew a third piece of state, =openSolution=).
+
+*Verified, not just built:* confirmed DOMPurify (v3) preserves MathML
+tags by default (no =ADD_TAGS= config needed) — first against a
+synthetic example, then against the *actual* real converted
+solution's statement (which also embeds the multiple-choice =<ul>=
+list) and both its steps, via a jsdom-backed check script
+(=StepViewer/dompurify-mathml.check.ts=). All real content survives
+sanitization intact. Full build + both module smoke tests still pass.
+
+*Known gap:* no real browser was available in this environment to
+visually confirm the rendered result. Everything checked here is
+content-integrity (nothing gets stripped) and build/logic correctness
+— worth an actual look in a browser (=make run= → click into the real
+solution) before calling the visual result "done."
+
+** Remove a downloaded module (2026-08-24)
+
+Added =removeModule(subjectId)= to =moduleManager.ts= — deletes the
+module's solutions and its manifest entry from IndexedDB (frees
+storage back up; purely local, no server-side counterpart). Wired
+into =ModuleDownloadPrompt= as a "Remove download" button, gated
+behind a =confirm()= prompt since it's a real "you'll need a
+connection again" cost, not an accidental-tap-safe action. Verified
+in the base smoke test: download → confirm solutions present →
+remove → confirm both =isModuleInstalled= is false and the solutions
+are actually gone, for both sample subjects.
+
+** Check-on-open update propagation, and two real gotchas found (2026-08-22)
+
+Wired =checkForUpdate= into both =SubjectSelector= (badges each
+installed subject "Installed" or "Update available") and
+=ModuleDownloadPrompt= (an "Update available — tap to update" button
+once viewing an installed subject). =downloadModule='s overwrite
+semantics needed no changes — install and update are the same
+operation, keyed by primary key (=subjectId=/=id=).
+
+Verified for real with a dedicated update-flow smoke test
+(=offline/moduleUpdate.smoketest.ts=): installs a module, "republishes"
+it by rewriting the served =dist/= manifest+bundle out from under the
+running app, confirms =checkForUpdate= flips to true, confirms
+=downloadModule= overwrites the stale IndexedDB content with the new
+version. Passing.
+
+Two real gotchas surfaced while testing this manually, both worth
+remembering:
+
+1. *=bundle.json= used to embed its own copy of the manifest* —
+   =downloadModule= wrote =db.modules= from that embedded copy, while
+   =checkForUpdate= compared against the standalone =manifest.json=.
+   Editing =bundle.json='s content without also bumping its embedded
+   manifest looked like a no-op. Fixed: =ModuleBundle= no longer
+   carries a manifest at all (see shared-types); =manifest.json= is
+   the single source of truth, and =downloadModule= fetches it
+   directly instead of trusting anything embedded in the bundle.
+2. *Editing =public/modules/...= doesn't reach the running app until
+   a rebuild.* =public/= is Vite's source directory; whatever's
+   serving the app (=make run=, =vite preview=) serves =dist/=, a
+   built copy. =make build= alone is enough to publish an edit — no
+   server restart needed, since the static server reads =dist/=
+   fresh per request, not an in-memory snapshot. Bit Casey twice in a
+   row before landing on this explanation; worth remembering for
+   anyone else hand-editing fixtures.
+
+** Subject selector widget (2026-08-21)
+
+Entry point is now =SubjectSelector=, not a hardcoded subjectId.
+Fetches =public/modules/index.json= (a second static-content
+endpoint, same pattern as the manifest/bundle files) listing
+available subjects, renders a pick-list, and hands the chosen
+subjectId to =App.tsx=, which then loads =ModuleDownloadPrompt= for
+that subject — "loads the tutor for that subject" in the sense that
+this is as far as the tutor goes today (see the still-TODO note on
+=App.tsx= — real step-by-step tutoring waits on
+SolutionNav/StepViewer).
+
+Added a second sample subject (=public/modules/geometry/=, 1
+solution) specifically so selection has more than one real option to
+prove out. Extended the smoke test to cover =listSubjects()= and both
+subjects' full download→install→read-back cycle — still passing.
+
+* Next steps
+
+- [X] First-pass component/file scaffold — =cm_re/=, confirmed 2026-08-20
+      (see above)
+- [X] Decide offline scope — student tutor only, confirmed 2026-08-20
+      (see "Offline support" above)
+- [X] Decide backend language — Java/Spring Boot, confirmed 2026-08-20
+      (see Decisions log above)
+- [ ] Prototype: render one existing solution's steps in
+      React + TipTap, reading directly from the current flat-file
+      format, to validate the "dynamic per-step HTML" approach before
+      committing to the storage migration
+- [ ] Design the versioned JSON solution schema (step ordering, step
+      metadata, hint/answer-check fields currently modeled in
+      =TutorStepUnitImplHint/Proof/Question/Step.java=) — this schema
+      is also what gets cached client-side for offline, so design it
+      with "ships to IndexedDB as-is" in mind
+- [ ] Write the solution-storage migration script (flat files + MySQL
+      index → Postgres JSONB) once schema is settled
+- [ ] Design the offline write-sync queue (student answers/progress
+      events) and prefetch/download-for-offline UX
+- [ ] Design the content-module manifest format (per-subject bundle
+      version/hash, incremental update check) and the backend
+      publish step that produces module bundles from the JSON
+      solution documents

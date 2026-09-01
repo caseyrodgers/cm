@@ -26,6 +26,43 @@ Build works. Root cause of "can't build" was the JDK on PATH, not the project it
      mvn gwt:compile -Dgwt.module=hotmath.gwt.cm.CatchupMath -Dgwt.compiler.force=true -o
      #+end_src
 
+** DONE Makefile broke when invoked from a plain PowerShell prompt (not Git Bash)
+   - Symptom :: ~make build~ from PowerShell (standalone ~make.exe~ at
+     ~C:\dev\tools\make.exe~, not part of Git Bash) failed with mvn's
+     ~The JAVA_HOME environment variable is not defined correctly~ error, even
+     though the exact same recipe worked fine from inside a Git Bash terminal.
+   - Root cause :: A plain PowerShell session doesn't have Git Bash's own
+     ~/usr/bin~ / ~/mingw64/bin~ at the front of ~PATH~ (those only get
+     prepended by Git Bash's profile scripts, which a bare ~make.exe -> bash.exe~
+     subprocess never sources). With the raw Windows PATH, ~uname~ resolves to
+     *Cygwin's* ~uname.exe~ (also installed on this machine at
+     ~C:\cygwin64\bin~) instead of Git's, which prints ~CYGWIN_NT-...~. The
+     ~mvn~ launcher script branches on that string and takes the
+     ~cygwin=true~ path, which runs ~JAVA_HOME=`cygpath --unix "$JAVA_HOME"`~
+     — but the ~cygpath~ that resolves is *also* Cygwin's, and Cygwin's
+     ~cygpath~ doesn't understand Git/MSYS-style ~/c/...~ paths (it expects
+     ~/cygdrive/c/...~), so it mangles ~JAVA_HOME~ into something that fails
+     mvn's own ~[ -x "$JAVA_HOME/bin/java" ]~ check.
+   - Verified fix :: Two changes to the ~Makefile~:
+     1. Pin ~SHELL~ explicitly so ~make~ always uses Git Bash regardless of
+        which terminal invoked it (short 8.3 path needed — a raw path with
+        spaces in ~SHELL :=~ silently fails):
+        #+begin_src makefile
+        SHELL := C:/PROGRA~1/Git/usr/bin/bash.exe
+        .SHELLFLAGS := -ec
+        #+end_src
+     2. Explicitly prepend Git's own ~usr/bin~ and ~mingw64/bin~ to ~PATH~
+        inside the recipe, ahead of everything else, so ~uname~/~cygpath~
+        resolve to Git's tools and not Cygwin's:
+        #+begin_src sh
+        PATH="/c/Program Files/Git/usr/bin:/c/Program Files/Git/mingw64/bin:/c/java/java-se-8u44-ri/bin:$PATH" JAVA_HOME=/c/java/java-se-8u44-ri mvn ...
+        #+end_src
+   - Verified :: ~make build~ run directly from a plain PowerShell prompt
+     (not Git Bash) now produces a clean ~BUILD SUCCESS~.
+   - ~build.bat~ was unaffected — it's pure ~cmd.exe~ syntax with a
+     Windows-style ~JAVA_HOME~, so it never hit the Cygwin/mingw ~uname~
+     branch in mvn's script. Re-verified working as-is.
+
 ** DONE Makefile / build.bat don't pin JDK 8
    - Both just ran ~mvn gwt:compile ...~ with no ~JAVA_HOME~ override, so they failed
      against the machine's default JDK 23 until the environment was set manually.
@@ -90,6 +127,41 @@ Build works. Root cause of "can't build" was the JDK on PATH, not the project it
      zips, ~security/2020~–~2023~ dirs, etc.
    - Fix :: pass on ~.gitignore~; either commit what belongs in version control or
      ignore generated/vendor artifacts so ~git status~ stays legible.
+
+* Solution content pipeline (cm_re rewrite)
+
+Where a solution's content actually goes, raw export to rendered
+tutor step — reflects what's built and verified in =cm_re/= so far
+(see =NEW_DIRECTION.org= for the full decisions log; this is just the
+picture). Diagram uses Mermaid (mermaid-mode), not wsd — see
+CLAUDE.md's "Diagram format" section.
+
+#+begin_src mermaid :file solution_pipeline.png
+flowchart TD
+    A["Raw legacy export dir<br/>tutor_steps.html + images + JSON sidecars"] --> B["Manual conversion<br/>extract statement + steps"]
+    B --> C["Solution JSON<br/>shared-types schema: pid, identification, statement, steps"]
+    C --> D["Module bundle.json + manifest.json<br/>public/modules/&lt;subject&gt;/"]
+    D -->|"GET manifest.json / bundle.json"| E["api/client.ts fetch"]
+    E --> F["IndexedDB<br/>db.ts: modules + solutions tables"]
+    F -->|"getSolutionsForModule"| G["SolutionNav / StepViewer<br/>DOMPurify sanitize + render"]
+#+end_src
+
+#+RESULTS:
+[[file:solution_pipeline.png]]
+
+
+- *Q: does the purify happen for the entire module at once? Or, is it on
+  view of solution. The latter is better, it might run out of memory/cpu
+  otherwise.*
+  *ANSWERED (2026-08-30): per-view, already.* The only
+  =DOMPurify.sanitize()= call sites are =StepViewer= and =QuestionView=,
+  both at render time inside =dangerouslySetInnerHTML=. =SolutionNav=
+  renders the statement + the question + *only* =steps[stepIndex]= — not
+  all steps — so it's lazy even within one solution. The
+  download/IndexedDB-write path (=moduleManager.downloadModule= →
+  =db.ts=) does *zero* sanitization; it stores raw published HTML for all
+  846 solutions untouched. Nothing ever sanitizes a whole module in one
+  pass. No memory/CPU cliff.
 
 * Next steps
 

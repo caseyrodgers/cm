@@ -1,0 +1,9 @@
+{
+  "name": "cm_re",
+  "private": true,
+  "workspaces": [
+    "apps/tutor",
+    "apps/editor",
+    "packages/shared-types"
+  ]
+}
