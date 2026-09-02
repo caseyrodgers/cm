@@ -46,21 +46,14 @@ export interface Stroke {
 }
 
 /**
- * The scratch drawing for one solution. `pid` is the primary key —
- * one board per solution.
- *
- * The board is a single continuous vertical surface divided into
- * fixed-height bands, one per solution step. `revealedSegments` is how
- * many bands are currently unlocked — it grows as the student advances
- * through the steps and never shrinks, so earlier scratch work (and the
- * room it lives in) is always still there. Strokes are stored flat
- * across the whole surface; their y-coordinate already says which band
- * they're in.
+ * The scratch drawing for one solution — a single continuous board.
+ * `pid` is the primary key (one board per solution); stepping through
+ * the solution doesn't partition it, every step's work lands on the
+ * same surface.
  */
 export interface Whiteboard {
   pid: string;
   strokes: Stroke[];
-  revealedSegments: number;
   updatedAt: number;
 }
 

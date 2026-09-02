@@ -42,7 +42,7 @@ import { List, ListItemButton } from "../ui/list";
  * persisted in IndexedDB (local only).
  */
 
-type View = { k: "index" } | { k: "question"; idx: number } | { k: "score" };
+type View = { k: "index" } | { k: "question"; idx: number } | { k: "score" } | { k: "review"; idx: number };
 
 // only solutions with a scorable MC question can be in a test
 const scorable = (s: Solution) => !!s.question && typeof s.question.correctIndex === "number";
@@ -250,10 +250,44 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
               ) : (
                 <p className="text-sm text-slate-500">This problem has no question.</p>
               )}
-              {/* Same per-solution board as the normal view (keyed by pid),
-                  but single-band scratch space — there are no steps to walk
-                  through in a test. */}
-              <WhiteboardPanel key={`wb-${pid}`} pid={pid} stepIndex={0} stepCount={0} />
+              {/* Same per-solution board as the normal view (keyed by pid). */}
+              <WhiteboardPanel key={`wb-${pid}`} pid={pid} />
+            </>
+          ) : (
+            <Spinner />
+          )}
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // ---- review one answered problem (from the score screen) ----
+  if (view.k === "review") {
+    const pid = test.pids[view.idx];
+    const solution = solutions.get(pid);
+    const a = test.answers[pid];
+    const backToScore = () => setView({ k: "score" });
+    return (
+      <Card>
+        <CardContent>
+          <div className="mb-3 flex items-center justify-between text-sm">
+            <button className="text-blue-600 hover:underline" onClick={backToScore}>
+              &larr; Score
+            </button>
+            <span className="text-slate-500">
+              {view.idx + 1} / {test.pids.length}
+            </span>
+          </div>
+          <h2 className="mb-3 text-base font-semibold text-slate-900">{solutionTitle(pid, subjectId)}</h2>
+          {solution ? (
+            <>
+              <StatementView solution={solution} />
+              {solution.question && a ? (
+                <QuestionView key={pid} question={solution.question} reviewMode initialSelectedIndex={a.selectedIndex} />
+              ) : (
+                <p className="text-sm text-slate-500">No recorded answer for this problem.</p>
+              )}
+              <WhiteboardPanel key={`wb-${pid}`} pid={pid} />
             </>
           ) : (
             <Spinner />
@@ -287,8 +321,8 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
               const key = solution?.question?.correctIndex;
               const right = a && a.correct === true;
               const scoredWrong = a && a.correct === false;
-              return (
-                <li key={pid} className="flex items-baseline gap-2 py-1.5 text-sm">
+              const row = (
+                <>
                   <span className="w-6 shrink-0 text-right text-slate-400">{i + 1}.</span>
                   <span className="flex-1 text-slate-700">{solutionTitle(pid, subjectId)}</span>
                   {a ? (
@@ -310,6 +344,21 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
                   >
                     {right ? "✓" : scoredWrong ? "✗" : "–"}
                   </span>
+                </>
+              );
+              return (
+                <li key={pid}>
+                  {a ? (
+                    <button
+                      type="button"
+                      onClick={() => setView({ k: "review", idx: i })}
+                      className="flex w-full items-baseline gap-2 py-1.5 text-left text-sm hover:bg-slate-50"
+                    >
+                      {row}
+                    </button>
+                  ) : (
+                    <div className="flex items-baseline gap-2 py-1.5 text-sm">{row}</div>
+                  )}
                 </li>
               );
             })}

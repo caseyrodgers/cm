@@ -18,12 +18,9 @@ export async function getWhiteboard(pid: string): Promise<Whiteboard | undefined
  * Overwrites the board for one solution. Callers debounce this (see
  * WhiteboardPanel) — it's a full replace, not an append, so the last
  * write wins and there's no partial-state to reconcile.
- * `revealedSegments` is how many step-bands are currently unlocked
- * (see Whiteboard) — persisted so reopening restores the same board
- * height before the student re-advances through the steps.
  */
-export async function saveWhiteboard(pid: string, strokes: Stroke[], revealedSegments: number): Promise<void> {
-  await db.whiteboards.put({ pid, strokes, revealedSegments, updatedAt: Date.now() });
+export async function saveWhiteboard(pid: string, strokes: Stroke[]): Promise<void> {
+  await db.whiteboards.put({ pid, strokes, updatedAt: Date.now() });
 }
 
 /** Removes the board entirely (Clear button). */

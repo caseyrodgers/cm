@@ -21,11 +21,10 @@ const strokesA: Stroke[] = [
 
 assert((await getWhiteboard(pidA)) === undefined, "no board before anything is drawn");
 
-await saveWhiteboard(pidA, strokesA, 3);
+await saveWhiteboard(pidA, strokesA);
 const readA = await getWhiteboard(pidA);
 assert(readA && readA.strokes.length === 2, "board saved and read back for pidA");
 assert(readA!.strokes[0].points.length === 6, "stroke point data round-trips intact");
-assert(readA!.revealedSegments === 3, "revealedSegments (step-band count) round-trips");
 assert(typeof readA!.updatedAt === "number" && readA!.updatedAt > 0, "updatedAt stamped");
 
 assert((await getWhiteboard(pidB)) === undefined, "a different solution's board is independent (still empty)");
@@ -36,12 +35,10 @@ db.close();
 await db.open();
 const afterReload = await getWhiteboard(pidA);
 assert(afterReload && afterReload.strokes.length === 2, "board survives a reopen (real IndexedDB persistence)");
-assert(afterReload!.revealedSegments === 3, "revealedSegments survives the reopen too");
 
-await saveWhiteboard(pidA, [strokesA[0]], 5);
+await saveWhiteboard(pidA, [strokesA[0]]);
 const replaced = await getWhiteboard(pidA);
 assert(replaced!.strokes.length === 1, "save is a full replace (undo path), not an append");
-assert(replaced!.revealedSegments === 5, "revealedSegments only grows in the UI, but the store itself just takes what it's given");
 
 await clearWhiteboard(pidA);
 assert((await getWhiteboard(pidA)) === undefined, "clear removes the board");

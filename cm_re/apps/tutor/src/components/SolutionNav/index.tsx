@@ -86,15 +86,10 @@ export default function SolutionNav({ solution, onBack }: { solution: Solution; 
           </div>
         )}
 
-        {/* Per-solution scratch space, banded by step (see WhiteboardPanel).
-            key=pid so navigating to another solution unmounts this one
-            (flushing its save) and mounts a fresh board. */}
-        <WhiteboardPanel
-          key={solution.pid}
-          pid={solution.pid}
-          stepIndex={stepIndex}
-          stepCount={solution.steps.length}
-        />
+        {/* Per-solution scratch space — one continuous board. key=pid so
+            navigating to another solution unmounts this one (flushing its
+            save) and mounts a fresh board. */}
+        <WhiteboardPanel key={solution.pid} pid={solution.pid} />
       </CardContent>
     </Card>
   );
