@@ -17,6 +17,7 @@ export const CHAPTER_SIZE = 5;
 export function testTitle(scope: TestScope | undefined): string {
   if (scope?.kind === "subject") return "Whole subject test";
   if (scope?.kind === "chapter") return `${scope.label} test`;
+  if (scope?.kind === "custom") return scope.label;
   return "Quick test";
 }
 

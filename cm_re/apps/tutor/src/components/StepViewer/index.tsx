@@ -9,7 +9,7 @@ import type { Solution, StepUnit } from "@cm_re/shared-types";
  * <mfrac>, ...) without extra configuration — verified against the
  * installed v3 in dompurify-mathml.check.ts before building this.
  */
-function SanitizedHtml({ html, className }: { html: string; className?: string }) {
+export function SanitizedHtml({ html, className }: { html: string; className?: string }) {
   return <div className={className} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }} />;
 }
 

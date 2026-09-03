@@ -303,6 +303,11 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
   // ---- score ----
   if (view.k === "score") {
     const { correct, scorable: scorableCount, answered, total } = scoreTest(test);
+    // "missed" = got it wrong or never answered it.
+    const missedPids = test.pids.filter((p) => {
+      const a = test.answers[p];
+      return !a || a.correct === false;
+    });
     return (
       <Card>
         <CardHeader>
@@ -367,7 +372,18 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
             })}
           </ul>
 
-          <Button className="mt-4 w-full" onClick={backToPicker} disabled={busy}>
+          {missedPids.length > 0 && (
+            <Button
+              className="mt-4 w-full"
+              disabled={busy}
+              onClick={() =>
+                begin(missedPids, { kind: "custom", label: `${title} — retry missed` }, [...solutions.values()])
+              }
+            >
+              Make a lesson from the {missedPids.length} you missed &rarr;
+            </Button>
+          )}
+          <Button variant="outline" className="mt-2 w-full" onClick={backToPicker} disabled={busy}>
             Back to test menu
           </Button>
         </CardContent>

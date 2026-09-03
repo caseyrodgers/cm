@@ -4,13 +4,12 @@ import type { Solution } from "@cm_re/shared-types";
  * "Learn" — AI explanation of the current problem, tuned to a grade
  * level ("tell me like a 7th grader").
  *
- * explainProblem() calls the backend dev server
- * (com.catchupmath.cmre.server, GET /api/ai/problem/{pid}), which
- * currently returns a stub payload ({ pid, text, placeholder:true }).
- * The endpoint takes only the pid for now — matching AiService
- * .getAIForProblem(String). `grade` / `title` / `problemText` are
- * carried on the request for when the real generation needs them, but
- * are not sent yet.
+ * explainProblem() calls the backend
+ * (com.catchupmath.cmre.server, GET /api/ai/problem/{pid}?grade=<n>),
+ * which does a live Claude call and returns { pid, text, placeholder }.
+ * `pid` and `grade` are sent; `title` / `problemText` are still only
+ * for the eventual pre-generation path (the server composes its own
+ * problem text from the served bundles).
  */
 
 const AI_BASE = "/api/ai";
@@ -27,11 +26,11 @@ export function gradeLabel(g: Grade): string {
 
 export interface ExplainRequest {
   pid: string;
-  /** Human problem title (see lib/solutionTitle). Not sent yet. */
+  /** Human problem title (see lib/solutionTitle). Not sent — for the eventual pre-generation path. */
   title: string;
-  /** Plain-text-ish of the problem statement, for the eventual prompt. Not sent yet. */
+  /** Plain-text-ish of the problem statement. Not sent — the server composes its own from the bundles. */
   problemText: string;
-  /** Not sent yet — the endpoint is pid-only for now. */
+  /** Sent as ?grade= so the explanation is pitched to this level. */
   grade: Grade;
 }
 
@@ -51,7 +50,8 @@ export class ExplainAbortError extends Error {
 export async function explainProblem(req: ExplainRequest, signal?: AbortSignal): Promise<ExplainResult> {
   let res: Response;
   try {
-    res = await fetch(`${AI_BASE}/problem/${encodeURIComponent(req.pid)}`, { signal });
+    const url = `${AI_BASE}/problem/${encodeURIComponent(req.pid)}?grade=${encodeURIComponent(req.grade)}`;
+    res = await fetch(url, { signal });
   } catch (e) {
     if (isAbort(e)) throw new ExplainAbortError();
     throw new Error(`explain request failed: ${String(e)}`);

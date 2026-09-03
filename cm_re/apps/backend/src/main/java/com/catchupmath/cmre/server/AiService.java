@@ -23,7 +23,11 @@ public final class AiService {
         this.claude = new ClaudeClient();
     }
 
-    public String getAIForProblem(String pid) {
+    /**
+     * @param grade target grade level ("7", "10", "12", or blank) — woven
+     *   into the prompt so the explanation is pitched appropriately.
+     */
+    public String getAIForProblem(String pid, String grade) {
         String safePid = pid == null ? "" : pid;
 
         if (!claude.isConfigured()) {
@@ -37,7 +41,14 @@ public final class AiService {
 
         String prompt = "You are a patient math tutor. A student is stuck on this problem:\n\n"
                 + problem
-                + "\n\nExplain how to solve it, step by step, in plain language a student can follow. Be concise.";
+                + "\n\nExplain how to solve it, step by step, in plain language a student can follow. Be concise."
+                + gradeLevelPhrase(grade)
+                + "\n\nReturn the answer as an HTML fragment. Prose in <p>; steps in <ol><li>;"
+                + " emphasis with <strong>. Write EVERY formula, fraction, equation and"
+                + " numeric expression as MathML inside <math>...</math> (e.g."
+                + " <math><mfrac><mn>20</mn><mn>160</mn></mfrac></math>). No Markdown, no LaTeX,"
+                + " no $ delimiters, no <script>/<style>/<img>, no surrounding <html> or"
+                + " <body> tags — just the fragment.";
 
         try {
             String text = claude.complete(prompt);
@@ -46,6 +57,16 @@ public final class AiService {
             System.err.println("AiService: " + e);
             return payload(safePid, "Couldn't reach the AI service: " + e.getMessage(), true);
         }
+    }
+
+    /** "" when no usable grade, else a sentence telling the model who to pitch to. */
+    static String gradeLevelPhrase(String grade) {
+        String digits = grade == null ? "" : grade.replaceAll("[^0-9]", "");
+        if (digits.isEmpty()) {
+            return "";
+        }
+        return " Pitch it for a grade-" + digits + " student — use the vocabulary, notation,"
+                + " and math background typical of that level.";
     }
 
     private static String payload(String pid, String text, boolean placeholder) {

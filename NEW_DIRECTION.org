@@ -567,6 +567,94 @@ solution) specifically so selection has more than one real option to
 prove out. Extended the smoke test to cover =listSubjects()= and both
 subjects' full download→install→read-back cycle — still passing.
 
+** Tutor feature build-out (2026-08-27 → 2026-09-03)
+
+Consolidated log of the run of work after the scaffold. Every item is
+in git on =github.com/caseyrodgers/cm= =main=; each has a smoke
+test or check unless noted, and all builds are green. No real browser
+in this environment, so interaction/visual behaviour is the standing
+"verify with =make run=" caveat throughout.
+
+*** Multiple-choice questions — extracted, not embedded
+
+The legacy statement HTML carries the MC question as markup (two
+dialects: =hm_question_def= / =<li correct>=, and =question_stepunit=
+/ =question_responses= radios, plus a class-less =tutor_steps_2=
+variant). The preprocessor now lifts it into a structured
+=question?: McQuestion= ({prompt, choices[], correctIndex}) on the
+=Solution=; =statement= keeps only the prose. 843/846 alg1ptests
+solutions carry one. New =QuestionView= React component renders it —
+practice mode (check → reveal), test mode (submit, no reveal),
+review mode (read-only, pre-filled). Correct answer gets a bright
+green + ✓ badge on check; the key never enters the DOM before then.
+See SOLUTION_INFO.org for the parser detail + the reference-based
+image fix (imageNNN.gif referenced inline in ~43% of solutions was
+being wrongly skipped — 182→482 asset dirs after).
+
+*** URL deep-linking
+
+Tiny hash router (=src/routing.ts=, no react-router): =#/= picker,
+=#/m/<subjectId>= module, =#/s/<pid>= a solution, =#/t/<subjectId>=
+practice test. =#/s/<pid>= resolves by pid alone (IndexedDB keyed by
+pid, Solution carries subjectId). Inferred titles + chapter ordering
+from the pid (=lib/solutionTitle.ts=, =lib/problemOrder.ts=).
+
+*** Whiteboard
+
+Per-solution scratch board (=WhiteboardPanel=): vector strokes,
+IndexedDB (=whiteboards= table, keyed by pid), *local only* — no
+server path (enforced by a smoke-test assertion). Went through
+step-banded → reverted to one continuous board (Casey) → now a
+semi-transparent panel pinned to the right edge, Esc to close.
+
+*** Practice tests
+
+=#/t/<subjectId>= — a picker: quick (10 random) / whole subject
+(all scorable, ordered) / per-chapter (5 each). Problem index with
+answered/to-do badges → answer view (test mode) → score screen with
+a compact breakdown; each answered row links to a read-only review.
+"Make a lesson from the N you missed" builds a =scope: custom= retry
+set. All local (=practiceTests= table, keyed by subjectId), persists
+across reload, one active test per subject.
+
+*** "Learn" — AI explanation
+
+=LearnPanel= below the statement (and in the test question/review
+views): grade picker (7th/10th/12th, sticky in localStorage) →
+"Explain this problem" → renders the answer. Wired to the backend,
+which does a live Claude call (see below). The model is asked to
+return an HTML fragment with =<math>= MathML for every formula;
+=LearnPanel= sanitises with DOMPurify (keeps MathML) and the browser
+renders it natively — same path as =StepViewer=. Options for a
+pre-generated / cached explanation store are in AI_DISCUSS.org (no
+decision yet).
+
+*** Backend: a real (tiny) server
+
+=apps/backend= gained =com.catchupmath.cmre.server= — pure JDK
+=com.sun.net.httpserver=, zero runtime deps beyond Gson. =TutorServer=
+serves the built tutor + =/api/= on one origin (HTTP always, HTTPS if
+=CM_KEYSTORE= set). =GET /api/ai/problem/{pid}= → =AiService=:
+=SolutionStore= composes problem text from the served bundles,
+=ClaudeClient= does a bare =java.net.http= POST to the Messages API
+(key from =ANTHROPIC_API_KEY= env only — never source; repo is
+public). Missing key / bad pid / API error → =placeholder:true=, UI
+degrades. This is *not* Spring Boot — the "Backend language" decision
+still stands, this is the minimum to serve + proxy one call.
+
+*** Ops
+
+- =make run= / =make debug= use =mvn exec:java=; =make debug= opens
+  JDWP :5005. Eclipse: =cm_re-backend= project committed
+  (.project/.classpath/.settings); =DEBUG.org= documents the launch
+  flow; =*.launch= gitignored (Eclipse persists secrets into them).
+- =make dist= assembles a committed, runnable distribution at
+  =cm_re/deploy/= (=cm_re-server.jar= fat jar + =web/= + =run.sh=) so
+  the outward-facing box — CentOS 7, glibc 2.17, can't run Node 18 /
+  Vite 5 — just needs a JRE and =git pull=. =make serve= runs it.
+  =deploy/README.md= has the server steps (needs OpenJDK 17 tarball,
+  real TLS, outbound HTTPS to api.anthropic.com).
+
 * Next steps
 
 - [X] First-pass component/file scaffold — =cm_re/=, confirmed 2026-08-20
@@ -588,7 +676,19 @@ subjects' full download→install→read-back cycle — still passing.
       index → Postgres JSONB) once schema is settled
 - [ ] Design the offline write-sync queue (student answers/progress
       events) and prefetch/download-for-offline UX
-- [ ] Design the content-module manifest format (per-subject bundle
-      version/hash, incremental update check) and the backend
-      publish step that produces module bundles from the JSON
-      solution documents
+      — =offline/syncQueue.ts= is still a stub; practice-test answers
+      and QuestionView results are the first real payloads for it
+- [X] Content-module manifest format + client download/update — done
+      in the scaffold work (manifest.json/bundle.json, version/hash
+      check, =ModuleAssembler=); the *backend publish step* that
+      generates bundles from JSON solution docs is still TODO (the
+      preprocessor CLI does it one-off today)
+- [ ] Decide the AI-explanation generation/serving model
+      (pre-generated store vs. live-per-call vs. hybrid) — see
+      AI_DISCUSS.org; live-per-call is wired now as the starting point
+- [ ] solution_editor (=apps/editor=) — still just a stub; the whole
+      authoring side is unstarted
+- [ ] "Widget infrastructure" — =QuestionView= + =WhiteboardPanel= are
+      hand-wired into =SolutionNav=; legacy had a whole set (tutor
+      input, whiteboard, keyboard, calculator, games). A shared
+      mount/lifecycle contract is the next structural piece.

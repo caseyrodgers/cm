@@ -91,10 +91,24 @@ lookup + cache.
 
 * Status
 
-- 2026-09-02: LearnPanel UI built (stub only), grade set trimmed to
-  7/10/12, panel placed directly below the problem statement. This
-  doc captures the options for the real generation/serving layer —
-  *no decision made yet.*
+- 2026-09-02: LearnPanel UI built, grade set trimmed to 7/10/12,
+  panel placed directly below the problem statement (also in the
+  practice-test question + review views).
+- 2026-09-02: wired to a real backend. =GET /api/ai/problem/{pid}=
+  (=com.catchupmath.cmre.server.AiService=) → =SolutionStore=
+  composes problem text from the served module bundles, =ClaudeClient=
+  does a bare =java.net.http= POST to the Messages API. Key from
+  =ANTHROPIC_API_KEY= env only. Missing key / bad pid / API error →
+  =placeholder:true= and the UI degrades.
+- 2026-09-03: the model is prompted to return an HTML fragment with
+  =<math>= MathML for formulas; LearnPanel sanitises (DOMPurify keeps
+  MathML) and the browser renders it natively — same path as
+  StepViewer. Verified end to end against a real problem.
+
+*This is the "live per-call" starting point.* The choice between a
+pre-generated store (Idea A/B/C above) and keeping live calls is
+*still open* — decide once there's a feel for cost and quality at
+volume.
 
 * References
 

@@ -8,6 +8,7 @@ import {
   ExplainAbortError,
   type Grade,
 } from "../../api/aiClient";
+import { SanitizedHtml } from "../StepViewer";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 import { cn } from "../../lib/utils";
@@ -124,7 +125,14 @@ export default function LearnPanel({ solution, title }: { solution: Solution; ti
                   Stub response from the server — the AI model isn't wired up yet
                 </p>
               )}
-              <div className="whitespace-pre-wrap rounded-md bg-slate-50 p-3 text-sm text-slate-800">{result}</div>
+              {/* The model returns an HTML fragment with <math> MathML for
+                  formulas (see AiService's prompt). Sanitize + render the
+                  same way StepViewer does — DOMPurify keeps MathML, the
+                  browser renders it natively. */}
+              <SanitizedHtml
+                html={result}
+                className="learn-explanation rounded-md bg-slate-50 p-3 text-sm text-slate-800"
+              />
             </div>
           )}
         </div>
@@ -132,3 +140,4 @@ export default function LearnPanel({ solution, title }: { solution: Solution; ti
     </div>
   );
 }
+

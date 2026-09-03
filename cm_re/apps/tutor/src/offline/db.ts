@@ -68,7 +68,9 @@ export interface TestAnswer {
 export type TestScope =
   | { kind: "random" }
   | { kind: "subject" }
-  | { kind: "chapter"; chapterKey: string; label: string };
+  | { kind: "chapter"; chapterKey: string; label: string }
+  /** A review set built from problems missed on a previous test. */
+  | { kind: "custom"; label: string };
 
 /**
  * The student's current practice test for one subject, keyed by
