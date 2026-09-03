@@ -1,4 +1,4 @@
-.PHONY: build run debug serve-legacy kill-python
+.PHONY: build run debug dist serve serve-legacy kill-python
 
 # JDWP address for `make debug`. suspend=y makes the JVM wait for a
 # debugger before running main() (good for breakpoints in startup);
@@ -35,6 +35,19 @@ run: build
 # that mvn+exec:java share.)
 debug: build
 	cd apps/backend && MAVEN_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=$(JDWP_SUSPEND),address=localhost:$(JDWP_PORT)" mvn -q compile exec:java -Dexec.mainClass=com.catchupmath.cmre.server.TutorServer
+
+# Assemble the committed, runnable distribution into cm_re/deploy/
+# (deploy/cm_re-server.jar + deploy/web/). Run this on a machine with
+# Node, commit deploy/, push. The server then just `git pull`s.
+dist: build
+	cd apps/backend && mvn -q -DskipTests package
+	@echo "cm_re/deploy/ updated -> git add deploy && commit && push; then 'git pull' + 'make serve' on the server"
+
+# Run from a committed deploy/ on a box with only a JRE (no Node, no
+# Maven). Override:  make serve PORT=8080
+PORT ?= 8080
+serve:
+	java -jar deploy/cm_re-server.jar $(PORT) deploy/web
 
 # Dev-only: serves the real legacy solution export tree as-is (images,
 # alternate tutor_steps*.html, JSON sidecars) so SolutionNav's "View

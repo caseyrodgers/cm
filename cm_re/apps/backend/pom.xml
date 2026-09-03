@@ -63,6 +63,57 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.2.0</version>
       </plugin>
+      <!-- `mvn package` assembles the committed, runnable distribution at
+           cm_re/deploy/ so the outward-facing box only needs a JRE (no
+           Maven, no Node) and updates via `git pull`:
+             deploy/cm_re-server.jar   fat jar (server + deps)
+             deploy/web/               the built tutor (from apps/tutor/dist)
+           Run: java -jar deploy/cm_re-server.jar <port> deploy/web
+           `make dist` runs `make build` first so web/ is fresh. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.3.1</version>
+        <executions>
+          <execution>
+            <id>bundle-web</id>
+            <phase>prepare-package</phase>
+            <goals><goal>copy-resources</goal></goals>
+            <configuration>
+              <outputDirectory>${project.basedir}/../../deploy/web</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource><directory>${project.basedir}/../tutor/dist</directory></resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.7.1</version>
+        <configuration>
+          <finalName>cm_re-server</finalName>
+          <appendAssemblyId>false</appendAssemblyId>
+          <outputDirectory>${project.basedir}/../../deploy</outputDirectory>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <archive>
+            <manifest>
+              <mainClass>com.catchupmath.cmre.server.TutorServer</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>fatjar</id>
+            <phase>package</phase>
+            <goals><goal>single</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
