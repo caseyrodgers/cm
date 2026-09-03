@@ -3,6 +3,7 @@ import type { Solution } from "@cm_re/shared-types";
 import { StatementView, StepUnitView } from "../StepViewer";
 import { QuestionView } from "../QuestionView";
 import WhiteboardPanel from "../WhiteboardPanel";
+import LearnPanel from "../LearnPanel";
 import { solutionTitle } from "../../lib/solutionTitle";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
@@ -55,6 +56,8 @@ export default function SolutionNav({ solution, onBack }: { solution: Solution; 
         </h2>
 
         <StatementView solution={solution} />
+
+        <LearnPanel key={`learn-${solution.pid}`} solution={solution} title={solutionTitle(solution.pid, solution.subjectId)} />
 
         {solution.question && (
           // TODO(syncQueue): forward the result to offline/syncQueue.ts

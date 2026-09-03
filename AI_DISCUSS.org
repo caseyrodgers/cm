@@ -1,0 +1,104 @@
+#+TITLE: Catchup Math (cm_re) — AI "Learn" explanation: design discussion
+#+STARTUP: overview
+
+* Context
+
+The tutor has a *Learn* panel (=cm_re/apps/tutor/src/components/LearnPanel=)
+that asks an AI to explain the current problem at a grade level
+(7th / 10th / 12th). The call goes through
+=cm_re/apps/tutor/src/api/aiClient.ts=, currently a *stub* — it
+simulates ~900 ms latency and returns a canned, grade-flavoured
+placeholder with a "AI not connected" caption. No real model call
+anywhere yet.
+
+Casey's stated end goal: *a server process that returns pre-created AI
+responses* — i.e. not a live model call per request; explanations are
+generated ahead of time, stored, and served.
+
+Numbers to reason about: ~846 solutions per subject × 3 grade levels ≈
+*2,500 explanations per subject*.
+
+Whatever we pick, the existing =explainProblem(req, signal)= signature
+already abstracts it — Idea A makes the body a local store lookup,
+Idea B a =fetch=, Idea C branches. The UI does not change.
+
+* Idea A — bake explanations into the module (fully static, offline)
+
+Extend the preprocessor pipeline: a batch job generates
+=explanations.json= per subject, next to =bundle.json= —
+
+#+begin_example
+{ "<pid>": { "7": "…", "10": "…", "12": "…" }, … }
+#+end_example
+
+=ModuleAssembler= bundles it; the tutor downloads it with the subject;
+=explainProblem= becomes a Dexie lookup. *No server, no network,
+instant, works offline.*
+
+- *Cost*: ~2,500 entries/subject. At ~1–2 KB each ≈ *3–5 MB* — roughly
+  doubles a subject's download.
+- *Regeneration*: improving the prompt means re-generating and
+  re-downloading the whole file (bump =manifest.version=).
+- *Fits when*: explanations are static reference content and the grade
+  set stays small and fixed.
+
+* Idea B — server endpoint + client cache (thin, always improvable)
+
+Postgres table:
+
+#+begin_example
+explanation(pid, grade, prompt_version, model, text, content_hash, generated_at)
+#+end_example
+
+Backend =GET /api/explain?pid=&grade== returns the row. An offline
+batch job (or an admin =POST /api/explain/generate?subject== endpoint)
+fills the table. The client caches each response in IndexedDB keyed by
+=(pid, grade, prompt_version)=, so Learn is offline after the first
+view per problem+grade.
+
+- *Cost*: module stays lean; regenerate/improve *one row at a time*;
+  trivial to A/B prompt versions or add grades/tones later.
+- *Downside*: Learn needs connectivity the first time per (pid, grade);
+  a backend is now required.
+- *Fits when*: explanation quality is something we'll keep tuning.
+
+* Idea C — hybrid
+
+Bundle one grade (or the high-traffic chapters) for guaranteed offline
+coverage of the common path; everything else falls through to B's
+lookup + cache.
+
+* Cross-cutting — applies to whichever we pick
+
+- *Key on a =prompt_version= + =model= tag*, not just =(pid, grade)= —
+  that's the regeneration trigger when the prompt template improves.
+- *Store =content_hash= of the solution* with each explanation →
+  stale-detection when the editor rewrites a solution.
+- *Generation tooling = same discipline as the 846-solution
+  preprocessor run*: plain CLI, resumable (skip existing),
+  rate-limited, logs failures. Same "iterate over solutions, write
+  JSON" loop that already exists.
+- *Missing-row fallback*: "explanation not ready yet" + optionally
+  enqueue a job; or, if online and within budget, one live call.
+
+* Current lean
+
+- *B* if explanation quality is something we'll tune repeatedly
+  (likely) — cheap to iterate, small footprint, backend already
+  planned (Spring Boot + Postgres, see NEW_DIRECTION.org).
+- *A* if it's write-once reference content and we want Learn to work
+  with zero backend.
+
+* Status
+
+- 2026-09-02: LearnPanel UI built (stub only), grade set trimmed to
+  7/10/12, panel placed directly below the problem statement. This
+  doc captures the options for the real generation/serving layer —
+  *no decision made yet.*
+
+* References
+
+- =cm_re/apps/tutor/src/api/aiClient.ts= — the stub + the seam
+- =cm_re/apps/tutor/src/components/LearnPanel/index.tsx= — the UI
+- [[file:NEW_DIRECTION.org][NEW_DIRECTION.org]] — backend = Spring Boot + Postgres JSONB decision
+- [[file:SOLUTION_INFO.org][SOLUTION_INFO.org]] — the preprocessor pipeline this generation job would extend

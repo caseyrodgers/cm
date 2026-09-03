@@ -2,3 +2,9 @@ node_modules/
 dist/
 target/
 *.log
+
+# Eclipse launch configs are personal (machine paths, and Eclipse's
+# Environment tab persists secrets like ANTHROPIC_API_KEY into them).
+# Canonical debug setup is in DEBUG.org.
+*.launch
+

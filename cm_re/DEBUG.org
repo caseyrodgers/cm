@@ -1,0 +1,81 @@
+#+TITLE: cm_re — debugging the Java server in Eclipse
+#+STARTUP: overview
+
+* One-time setup
+
+1. *Build the tutor* so there's something to serve:
+   =cd cm_re && make build= (or =cd apps/tutor && npm run build=).
+   Eclipse does not build the frontend; do this whenever the tutor
+   changes.
+2. *Import the backend* (once): File → Import → Existing Maven
+   Projects → select =cm_re/apps/backend=. Project name:
+   =cm_re-backend= (JavaSE-17). The =.project/.classpath/.settings=
+   are already committed.
+
+Two shared launch configs are checked in at =apps/backend/= and show
+up automatically in Run/Debug Configurations:
+
+| Launch                          | Type                   | Use |
+|---------------------------------+------------------------+-----|
+| =TutorServer=                   | Java Application       | Eclipse builds + runs + debugs the server itself |
+| =TutorServer (attach 5005)=     | Remote Java Application | Attach to a server started by =make debug= |
+
+* Option A — let Eclipse run it (normal case)
+
+1. Set breakpoints in
+   =src/main/java/com/catchupmath/cmre/server/= — e.g.
+   =AiService.getAIForProblem=, the =/api/ai/problem/{pid}= branch in
+   =ApiHandler.handle=, =TutorServer.main=, =StaticHandler.handle=.
+2. Run menu → Debug Configurations → *TutorServer* → Debug.
+   (Or right-click =TutorServer.java= → Debug As → Java Application,
+   which creates the same thing.)
+3. Console shows =cm_re server / http http://localhost:5173=.
+4. Hit it: browser at http://localhost:5173, or
+   =curl http://localhost:5173/api/ai/problem/somepid=. Execution
+   stops at the breakpoint; step with F5/F6/F8.
+5. Hot Code Replace works for method-body edits while suspended
+   (save the file) — no restart. Structural changes (new
+   methods/fields) still need a relaunch.
+
+Launch details:
+- *Program arguments*: none needed. =TutorServer= finds
+  =apps/tutor/dist= by walking up from the working directory, so a
+  bare "Debug As → Java Application" works. (The checked-in
+  =TutorServer.launch= still passes =5173 ../tutor/dist= explicitly.)
+- To also serve HTTPS on :5174, add on the Environment tab:
+  =CM_KEYSTORE= = path to a PKCS12, =CM_KEYSTORE_PASS= = its password.
+- To debug a preprocessor CLI instead, make a new Java Application
+  launch with main class
+  =com.catchupmath.cmre.preprocessor.LegacySolutionPreprocessor= (or
+  =ModuleAssembler=) and the same args used in SOLUTION_INFO.org.
+
+* Option B — attach to `make debug`
+
+Use this when you want the server started exactly the way =make run=
+does (real built =dist/=, from the shell) but still want Eclipse
+breakpoints.
+
+1. Terminal: =cd cm_re && make debug=
+   - Opens a JDWP socket on =localhost:5005= and, with the default
+     =JDWP_SUSPEND=y=, the JVM *waits* for a debugger before running
+     =main()=.
+   - =make debug JDWP_SUSPEND=n= to start serving immediately and
+     attach whenever; =make debug JDWP_PORT=6000= for a different port
+     (update the launch's Connect port to match).
+2. Eclipse: Debug Configurations → *TutorServer (attach 5005)* →
+   Debug. Breakpoints, stepping, and Hot Code Replace all work the
+   same as Option A. "Allow termination" is on, so the red stop
+   button kills the server too.
+
+* Gotchas
+
+- *Port 5173 already in use*: an old =make run= / python instance.
+  =make kill-python=, or =netstat -ano | findstr :5173= then
+  =taskkill /PID <pid> /F=.
+- *=suspend=y= and nothing attaches*: the server never starts serving
+  — expected. Attach, or relaunch with =JDWP_SUSPEND=n=.
+- *Static files 404 / blank app*: =dist/= is stale or missing — run
+  =make build=.
+- *=make debug= from PowerShell*: the recipe only shells out to =mvn=
+  and =java= (no =uname= branch), so it doesn't hit the Cygwin/
+  JAVA_HOME issue the top-level =cm= Makefile had.

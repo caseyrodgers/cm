@@ -21,6 +21,7 @@ import { navigate, hashFor } from "../../routing";
 import { QuestionView, choiceLetter } from "../QuestionView";
 import { StatementView } from "../StepViewer";
 import WhiteboardPanel from "../WhiteboardPanel";
+import LearnPanel from "../LearnPanel";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
@@ -250,6 +251,7 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
               ) : (
                 <p className="text-sm text-slate-500">This problem has no question.</p>
               )}
+              <LearnPanel key={`learn-${pid}`} solution={solution} title={solutionTitle(pid, subjectId)} />
               {/* Same per-solution board as the normal view (keyed by pid). */}
               <WhiteboardPanel key={`wb-${pid}`} pid={pid} />
             </>
@@ -287,6 +289,7 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
               ) : (
                 <p className="text-sm text-slate-500">No recorded answer for this problem.</p>
               )}
+              <LearnPanel key={`learn-${pid}`} solution={solution} title={solutionTitle(pid, subjectId)} />
               <WhiteboardPanel key={`wb-${pid}`} pid={pid} />
             </>
           ) : (
