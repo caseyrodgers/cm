@@ -21,5 +21,7 @@ public class Solution {
     public String statementFigure;
     /** Set when the legacy statement embedded a multiple-choice question; null otherwise. */
     public McQuestion question;
+    /** Set when the legacy statement asked for a widget in place of interactive content; null otherwise (most solutions). */
+    public WidgetSlot widgetSlot;
     public List<StepUnit> steps = new ArrayList<>();
 }

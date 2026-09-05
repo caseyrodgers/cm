@@ -7,12 +7,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The REST API, mounted at /api/.
  *
- *   GET /api/health                       -> {"status":"ok"}
- *   GET /api/ai/problem/{pid}?grade=7     -> AiService.getAIForProblem(pid, grade)
+ *   GET /api/health                                  -> {"status":"ok"}
+ *   GET /api/ai/problem/{pid}?grade=7                -> AiService.getAIForProblem(pid, grade)
+ *   GET /api/ai/chapter-name/{subjectId}?label=&pids= -> AiService.getChapterName(subjectId, label, pids)
  */
 public class ApiHandler implements HttpHandler {
 
@@ -45,6 +48,21 @@ public class ApiHandler implements HttpHandler {
                 }
                 String grade = queryParam(ex.getRequestURI().getRawQuery(), "grade");
                 send(ex, 200, "application/json", ai.getAIForProblem(pid, grade));
+                return;
+            }
+
+            String chapterPrefix = "/api/ai/chapter-name/";
+            if (path.startsWith(chapterPrefix)) {
+                String subjectId = URLDecoder.decode(path.substring(chapterPrefix.length()), StandardCharsets.UTF_8);
+                String rawQuery = ex.getRequestURI().getRawQuery();
+                String label = queryParam(rawQuery, "label");
+                String pidsParam = queryParam(rawQuery, "pids");
+                List<String> pids = pidsParam.isBlank() ? List.of() : Arrays.asList(pidsParam.split(","));
+                if (subjectId.isBlank() || label.isBlank() || pids.isEmpty()) {
+                    send(ex, 400, "application/json", "{\"error\":\"missing subjectId, label, or pids\"}");
+                    return;
+                }
+                send(ex, 200, "application/json", ai.getChapterName(subjectId, label, pids));
                 return;
             }
 

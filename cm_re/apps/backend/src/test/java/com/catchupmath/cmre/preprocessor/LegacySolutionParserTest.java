@@ -3,6 +3,7 @@ package com.catchupmath.cmre.preprocessor;
 import com.catchupmath.cmre.preprocessor.model.McQuestion;
 import com.catchupmath.cmre.preprocessor.model.Solution;
 import com.catchupmath.cmre.preprocessor.model.StepUnit;
+import com.catchupmath.cmre.preprocessor.model.WidgetSlot;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -143,5 +144,33 @@ class LegacySolutionParserTest {
 
         assertFalse(solution.statement.toLowerCase().contains("question_responses"));
         assertFalse(solution.statement.toLowerCase().contains("question_stepunit"));
+    }
+
+    /**
+     * Real bug found investigating a 404 (TUTOR_WIDGET.org, 2026-09-04):
+     * a legacy statement can carry a dead
+     * {@code <img src=".../tutor_widget_dummy.png">} — a placeholder
+     * for an interactive widget slot, with no cm_re asset behind it.
+     * The parser must strip it from the statement (it 404s otherwise)
+     * and record the slot as structured data instead of silently
+     * dropping or silently 404-ing it.
+     */
+    @Test
+    void extractsWidgetSlotFromDummyImageMarker() throws Exception {
+        File dir = resource("widget_dummy_image");
+        Solution solution = LegacySolutionParser.parse(dir, "alg1ptests", dir);
+
+        WidgetSlot slot = solution.widgetSlot;
+        assertNotNull(slot, "the tutor_widget_dummy.png marker should be lifted into solution.widgetSlot");
+        assertEquals("whiteboard", slot.type, "the legacy banner told the student to use the whiteboard");
+
+        assertFalse(solution.statement.toLowerCase().contains("tutor_widget_dummy"),
+                "the dead image reference must not survive into the statement (it 404s in cm_re)");
+        assertFalse(solution.statement.toLowerCase().contains("widget-dummy"));
+
+        // The MC question sharing this statement is unaffected.
+        assertNotNull(solution.question, "extracting the widget slot must not disturb the MC question extraction");
+        assertEquals(4, solution.question.choices.size());
+        assertEquals(3, solution.question.correctIndex);
     }
 }

@@ -70,6 +70,43 @@ function isAbort(e: unknown): boolean {
   return e instanceof DOMException && e.name === "AbortError";
 }
 
+export interface ChapterNameResult {
+  /** Deduced topic name, e.g. "Linear Equations" — "" when unavailable (no key, no sample problems, API error). */
+  name: string;
+  placeholder: boolean;
+}
+
+/**
+ * Deduces a short topic name for a chapter from a sample of its own
+ * problems (GET /api/ai/chapter-name/{subjectId}). The legacy export
+ * carries no chapter-title field anywhere, so this is inference from
+ * real content via Claude, not a lookup — see AiService.getChapterName.
+ */
+export async function inferChapterName(
+  subjectId: string,
+  chapterLabel: string,
+  samplePids: string[],
+  signal?: AbortSignal
+): Promise<ChapterNameResult> {
+  const pidsParam = samplePids.slice(0, 3).map(encodeURIComponent).join(",");
+  const url = `${AI_BASE}/chapter-name/${encodeURIComponent(subjectId)}?label=${encodeURIComponent(chapterLabel)}&pids=${pidsParam}`;
+  let res: Response;
+  try {
+    res = await fetch(url, { signal });
+  } catch (e) {
+    if (isAbort(e)) throw new ExplainAbortError();
+    throw new Error(`chapter-name request failed: ${String(e)}`);
+  }
+  if (!res.ok) {
+    throw new Error(`chapter-name request failed: ${res.status}`);
+  }
+  const data = (await res.json()) as { name?: string; placeholder?: boolean };
+  return {
+    name: typeof data.name === "string" ? data.name : "",
+    placeholder: data.placeholder === true,
+  };
+}
+
 /** Rough plain text from a solution's statement + steps, for the request payload. */
 export function problemTextOf(solution: Solution): string {
   const parts = [solution.statement, ...solution.steps.map((s) => s.content)];

@@ -90,6 +90,22 @@ export interface McQuestion {
   correctIndex?: number;
 }
 
+/**
+ * A slot for a mounted widget (see cm_re/TUTOR_WIDGET.org), lifted out
+ * of the legacy statement HTML by the preprocessor. Legacy content
+ * marked these with a dead placeholder image
+ * (`<img ... src="/images/tutor5/tutor_widget_dummy.png">`, a static
+ * "use our whiteboard" banner shown where an interactive widget would
+ * otherwise render) — the preprocessor strips that image and records
+ * the slot here instead of leaving a 404'ing `<img>` in `statement`.
+ * `type` matches a registry key in the tutor's widgets/ contract
+ * (currently only "whiteboard" exists as a real widget). Rare: ~1 of
+ * 846 alg1ptests solutions has one.
+ */
+export interface WidgetSlot {
+  type: string;
+}
+
 export interface Solution {
   /** Legacy TutorProblem.pid — e.g. "alg1ptests_1_1_chapter1practicetest_10_1". Doubles as our SolutionId. */
   pid: SolutionId;
@@ -125,6 +141,8 @@ export interface Solution {
    * interactive QuestionView component, never as raw HTML.
    */
   question?: McQuestion;
+  /** A widget the legacy statement asked for in place of interactive content. See WidgetSlot. Most solutions have none. */
+  widgetSlot?: WidgetSlot;
   /** Flat, ordered — legacy TutorProblem.stepUnits is a flat List<TutorStepUnit>, always added as hint+step pairs. */
   steps: StepUnit[];
 }

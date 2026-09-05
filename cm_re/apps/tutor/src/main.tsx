@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { registerSW } from "virtual:pwa-register";
 import "./styles.css";
+import "./widgets";
 
 // autoUpdate: new service worker versions activate automatically on next
 // load, no user-facing "update available" prompt (fine for a first pass;

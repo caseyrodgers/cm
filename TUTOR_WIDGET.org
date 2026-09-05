@@ -1,0 +1,192 @@
+#+TITLE: Catchup Math (cm_re) — tutor widget infrastructure
+#+STARTUP: overview
+
+* Origin: a missing image led here
+
+Investigating why =images/tutor5/tutor_widget_dummy.png= 404s in
+cm_re surfaced real evidence of a legacy "tutor widget" concept that
+cm_re has no equivalent of yet. Casey: "let's work on widgets."
+
+* The missing image — why, and what it is
+
+** Why it's missing
+
+The file is real, but only exists in the *raw legacy content tree*:
+=temp/help_2022_06/secure/images/tutor5/tutor_widget_dummy.png=,
+plus old server snapshots under =hm/live/...=, =cm3_mobile=, and the
+legacy =cm= webapp's =gwt-resources/images/=. It never made it into
+=cm_re=, for two independent reasons:
+
+1. =HtmlCleaner.rewriteImageUrls= only knows two =src= patterns:
+   per-solution images (=/help/solutions/.../<file>=) and the shared
+   specialchars icon set (=/images/specialchars/...=).
+   =/images/tutor5/...= matches neither, so the =<img>= tag passes
+   through byte-for-byte unrewritten — still pointing at a legacy
+   absolute path =cm_re='s server doesn't serve at all
+   (=StaticHandler= only serves =/modules/=, =/specialchars/=, and
+   the app shell).
+2. Even if the URL *were* rewritten, =copyReferencedImages= only
+   searches inside the solution's own export directory.
+   =tutor_widget_dummy.png= lives in a shared, subject-wide location
+   (=secure/images/tutor5/=), not next to any individual solution —
+   so the reference-based copy fix (SOLUTION_INFO.org, 2026-08-31)
+   wouldn't reach it either.
+
+Rare: *1 of 846* =alg1ptests= solutions references it
+(=alg1ptests_13_1_chapter13practicetest_21_13=).
+
+** What it's for
+
+The image is a static instructional banner reading:
+
+#+begin_quote
+Work out your answer on our whiteboard; your teacher will receive a
+copy. Then, click the arrow buttons to see our step-by-step answer.
+#+end_quote
+
+Legacy markup:
+=<img style="widget-dummy" src="/images/tutor5/tutor_widget_dummy.png">=
+(that =style==​ attribute is malformed — almost certainly meant to be
+=class="widget-dummy"=, matching other authoring-tool corruption
+already catalogued in SOLUTION_INFO.org).
+
+It's the *fallback graphic for a widget slot*: the legacy tutor had a
+concept of per-problem interactive widgets (graphing tools,
+drag-and-drop, etc.), and when a problem had no real widget wired in,
+the authoring tool dropped this placeholder telling the student to
+use the whiteboard instead.
+
+=WhiteboardPanel= (built 2026-09-01/02) is, in hindsight, cm_re's
+first — accidental — answer to exactly what this fallback banner
+points students at.
+
+* Corroborating evidence: cm3_mobile's real widget set
+
+=CM3_MOBILE_REFERENCE.org= already catalogued the legacy mobile
+app's widget packages (=cmtutor=, =cmwhiteboard=,
+=cmvirtualkeyboard=, =cmcalculator=, =cm-games=, =cm-numberchef=) and
+flagged (takeaway #8, 2026-08-30) that cm_re would eventually need a
+shared mount/lifecycle contract once a second widget landed.
+=QuestionView= + =WhiteboardPanel= are now both hand-wired into
+=SolutionNav= with no shared contract between them — this
+=tutor_widget_dummy.png= finding is further confirmation the real
+system had *widget slots per problem*, not just a fixed page layout.
+
+* Two separable next steps (not yet started)
+
+1. *Quick fix* — make the one real reference resolve:
+   - Either special-case =/images/tutor5/...= in =HtmlCleaner= to
+     rewrite to a new shared asset path (e.g.
+     =/shared/tutor5/tutor_widget_dummy.png=) and copy the file once
+     into =apps/tutor/public/shared/tutor5/= (not per-solution —
+     it's subject-wide), or
+   - Since it's only ever a static "use the whiteboard" banner and
+     cm_re already *has* a real whiteboard, consider just dropping
+     the dead =<img>= reference entirely (like =.not_used= markup)
+     and, when a statement contains it, rendering cm_re's own
+     "use the whiteboard below" hint instead of a 404'd legacy image.
+2. *Widget-slot infrastructure* — the structural piece:
+   - A shared contract for mounting a widget into a step/statement:
+     mount-by-type, common =getValue=/=setValue=/report-
+     correctness/lifecycle interface, an event channel (the React
+     equivalent of legacy =window:tutorEvent=).
+   - Refactor =QuestionView= and =WhiteboardPanel= onto it once it
+     exists, rather than each staying a one-off special case in
+     =SolutionNav=.
+   - Decide whether a "widget slot" is a first-class field on
+     =Solution= (detected/extracted by the preprocessor, the way
+     =McQuestion= was) or purely a client-side render-time thing.
+
+*Decided (2026-09-04)*: build the widget-slot infrastructure. Casey:
+"we want a widget-slot infrastructure. The widgets need to be js and
+adhere to a basic contract."
+
+* Widget-slot infrastructure — built so far (2026-09-04)
+
+** Contract (=apps/tutor/src/widgets/types.ts=)
+
+Plain-JS, framework-agnostic by design (a widget doesn't have to know
+React exists):
+
+- =WidgetModule<TValue>= — ={ type: string; mount(el, ctx):
+  WidgetInstance }=
+- =WidgetContext<TValue>= — ={ instanceId, config, initialValue?,
+  onChange?, onResult? }=; debouncing =onChange= calls is the
+  *widget's* job, not the host's.
+- =WidgetInstance<TValue>= — ={ destroy(); getValue?(); setValue?()
+  }=
+
+** React bridge (=widgets/WidgetSlot.tsx=) + registry (=widgets/registry.ts=)
+
+=<WidgetSlot type instanceId config initialValue onChange onResult />=
+mounts/destroys on =type=+=instanceId= identity change only — config
+and callback changes on a live instance don't force a remount
+(callbacks are read through refs). =registerWidget=/=getWidget= is a
+plain =Map<string, WidgetModule>=; modules self-register as an import
+side effect (=widgets/index.ts=, not yet written).
+
+** Backend: =Solution.widgetSlot= (done, verified)
+
+=widgetSlot?: { type: string }= added to shared-types and mirrored in
+=preprocessor/model/WidgetSlot.java=. =LegacySolutionParser= detects
+the =tutor_widget_dummy.png= dead-image marker, strips it from
+=statement=, and sets =widgetSlot = { type: "whiteboard" }=. New
+fixture + test =extractsWidgetSlotFromDummyImageMarker= —
+=mvn test= → 6/6 passing.
+
+** Frontend: first widget built — "input" (2026-09-04)
+
+Original plan was to port =WhiteboardPanel='s canvas straight into
+this contract as the first real widget. Casey redirected: *"the
+first widget should be an 'input' widget to take in a value for the
+problem statement... probably only be a text input with a number
+filter. But, it is possible to extend it to external, prebuilt
+components."* Answered question 1 from the list below directly; 2
+and 3 are still open.
+
+- =widgets/inputWidget.ts= — =type: "input"=, value shape =string=.
+  Plain text field, =config.numeric !== false= (default on) filters
+  keystrokes to digits/one leading =-=/one =.= via a =sanitizeNumeric=
+  pass on the =input= event. =getValue=/=setValue= supported;
+  =onChange= fires on every keystroke (cheap enough not to need
+  debouncing, unlike the whiteboard's stroke stream).
+  - The "extend to external prebuilt components" ask doesn't need
+    anything special from this file — the contract only requires
+    =mount(el, ctx)=, so a future equation-editor/graphing-tool
+    widget is just another =WidgetModule= registered under its own
+    =type=, mounting a third-party element instead of plain DOM.
+    =inputWidget.ts= is a sibling case, not a base class.
+- =widgets/index.ts= — registers =inputWidget= as an import side
+  effect; imported once from =main.tsx=.
+- Verified: =npx tsc --noEmit= clean, =npm run build= succeeds (70
+  modules, no new warnings).
+
+Still open (unresolved from the original three questions):
+
+2. *Whiteboard conversion* — =WhiteboardPanel= is still today's
+   standalone React component, not yet ported onto the widget-slot
+   contract. Not started this pass.
+3. *Wiring* — =inputWidget= is registered and buildable but nothing
+   mounts it yet. No solution currently produces
+   =widgetSlot.type = "input"= (the preprocessor only ever emits
+   ="whiteboard"=, from the =tutor_widget_dummy.png= marker), and
+   =SolutionNav=/=StatementView= don't render an =<WidgetSlot>= for
+   the statement yet. Needs: how a solution is authored/detected as
+   needing free-response input (new preprocessor rule? editor-set
+   field? per-problem override?), and whether entered values get
+   graded/compared to an expected answer or just captured.
+
+* References
+
+- =SOLUTION_INFO.org= — malformed-attribute corpus findings
+  (=.not_used=, the =style=/=class= confusion pattern), the
+  reference-based image-copy fix this widget image falls outside of
+- =CM3_MOBILE_REFERENCE.org= — the real legacy widget package list,
+  takeaway #8 (widget infrastructure flagged 2026-08-30)
+- =NEW_DIRECTION.org= — "Tutor feature build-out" log,
+  =QuestionView=/=WhiteboardPanel= as the two hand-wired widgets next
+  steps calls out
+- =cm_re/apps/backend/.../preprocessor/HtmlCleaner.java= — where the
+  per-solution image URL rewrite lives today
+- =cm_re/apps/backend/.../preprocessor/LegacySolutionPreprocessor.java=
+  — =copyReferencedImages=, scoped to a solution's own export dir

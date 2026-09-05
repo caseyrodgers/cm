@@ -1,5 +1,13 @@
 package com.catchupmath.cmre.server;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * The "Learn" / AI explanation service.
  *
@@ -39,8 +47,13 @@ public final class AiService {
             return payload(safePid, "No problem found for id \"" + safePid + "\".", true);
         }
 
+        List<ClaudeClient.ImageAttachment> images = loadImages(store.problemImagesFor(safePid));
+
         String prompt = "You are a patient math tutor. A student is stuck on this problem:\n\n"
                 + problem
+                + (images.isEmpty() ? "" : "\n\n(Part of this problem — the equation and/or its answer"
+                        + " choices — is shown to you only as the attached image(s), not as text above."
+                        + " Read the image(s) carefully; they are the actual problem content, not decoration.)")
                 + "\n\nExplain how to solve it, step by step, in plain language a student can follow. Be concise."
                 + gradeLevelPhrase(grade)
                 + "\n\nReturn the answer as an HTML fragment. Prose in <p>; steps in <ol><li>;"
@@ -51,12 +64,91 @@ public final class AiService {
                 + " <body> tags — just the fragment.";
 
         try {
-            String text = claude.complete(prompt);
+            String text = claude.complete(prompt, images);
             return payload(safePid, text, false);
         } catch (Exception e) {
             System.err.println("AiService: " + e);
             return payload(safePid, "Couldn't reach the AI service: " + e.getMessage(), true);
         }
+    }
+
+    /** Reads each image file and base64-encodes it for the vision content block; unreadable files are skipped (logged), not fatal. */
+    private static List<ClaudeClient.ImageAttachment> loadImages(List<Path> paths) {
+        List<ClaudeClient.ImageAttachment> out = new ArrayList<>();
+        for (Path p : paths) {
+            try {
+                byte[] bytes = Files.readAllBytes(p);
+                out.add(new ClaudeClient.ImageAttachment(mediaTypeFor(p), Base64.getEncoder().encodeToString(bytes)));
+            } catch (IOException e) {
+                System.err.println("AiService: failed to read image " + p + ": " + e);
+            }
+        }
+        return out;
+    }
+
+    private static String mediaTypeFor(Path p) {
+        String name = p.getFileName().toString().toLowerCase(Locale.ROOT);
+        if (name.endsWith(".png")) {
+            return "image/png";
+        }
+        if (name.endsWith(".jpg") || name.endsWith(".jpeg")) {
+            return "image/jpeg";
+        }
+        if (name.endsWith(".webp")) {
+            return "image/webp";
+        }
+        return "image/gif"; // the legacy corpus is almost entirely .gif
+    }
+
+    /**
+     * Deduces a short topic name for a chapter/set from a sample of its
+     * own problems — the legacy export carries no chapter-title field
+     * anywhere (checked tutor_data.js / inmh_list.json: only a
+     * book-level title), so this is inference from real content, not a
+     * lookup. Returns {chapterLabel, name, placeholder}; name is "" when
+     * unavailable (no key, no sample problems, or an API error) so the
+     * caller can fall back to the numeric label alone.
+     */
+    public String getChapterName(String subjectId, String chapterLabel, List<String> samplePids) {
+        String safeLabel = chapterLabel == null ? "" : chapterLabel;
+
+        if (!claude.isConfigured()) {
+            return chapterPayload(safeLabel, "", true);
+        }
+
+        List<String> texts = new ArrayList<>();
+        for (String pid : samplePids) {
+            store.problemTextFor(pid).ifPresent(texts::add);
+            if (texts.size() >= 3) {
+                break;
+            }
+        }
+        if (texts.isEmpty()) {
+            return chapterPayload(safeLabel, "", true);
+        }
+
+        String prompt = "Here are sample problems from \"" + safeLabel + "\" of a \"" + subjectId
+                + "\" math course:\n\n"
+                + String.join("\n---\n", texts)
+                + "\n\nBased on their content, give a short, specific topic name for this chapter"
+                + " (2-5 words, e.g. \"Linear Equations\" or \"Quadratic Functions\"). Respond with"
+                + " ONLY the topic name — no punctuation, quotes, or explanation.";
+
+        try {
+            String name = claude.complete(prompt).trim().replaceAll("^[\"'.]+|[\"'.]+$", "");
+            return chapterPayload(safeLabel, name, false);
+        } catch (Exception e) {
+            System.err.println("AiService.getChapterName: " + e);
+            return chapterPayload(safeLabel, "", true);
+        }
+    }
+
+    private static String chapterPayload(String chapterLabel, String name, boolean placeholder) {
+        return "{"
+                + "\"chapterLabel\":" + jsonString(chapterLabel) + ","
+                + "\"name\":" + jsonString(name) + ","
+                + "\"placeholder\":" + placeholder
+                + "}";
     }
 
     /** "" when no usable grade, else a sentence telling the model who to pitch to. */

@@ -5,6 +5,7 @@ import com.catchupmath.cmre.preprocessor.model.McChoice;
 import com.catchupmath.cmre.preprocessor.model.McQuestion;
 import com.catchupmath.cmre.preprocessor.model.Solution;
 import com.catchupmath.cmre.preprocessor.model.StepUnit;
+import com.catchupmath.cmre.preprocessor.model.WidgetSlot;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.jsoup.Jsoup;
@@ -79,6 +80,7 @@ public class LegacySolutionParser {
             // the tutor never has to parse either legacy MC dialect at
             // runtime. See extractQuestion / SOLUTION_INFO.org.
             solution.question = extractQuestion(statementEl, subjectId, solution.pid);
+            solution.widgetSlot = extractWidgetSlot(statementEl);
             solution.statement = HtmlCleaner.cleanToInnerHtml(statementEl, subjectId, solution.pid);
         } else {
             solution.statement = "";
@@ -107,6 +109,33 @@ public class LegacySolutionParser {
         }
 
         return solution;
+    }
+
+    // The legacy "static fallback for an interactive widget" marker —
+    // a dead placeholder image with no cm_re equivalent (see
+    // cm/TUTOR_WIDGET.org). Path-suffix match, case-insensitive: seen
+    // as both /images/tutor5/tutor_widget_dummy.png and other legacy
+    // roots pointing at the same filename.
+    private static final Pattern WIDGET_DUMMY_IMG = Pattern.compile("tutor_widget_dummy\\.png$", Pattern.CASE_INSENSITIVE);
+
+    /**
+     * Detects the legacy "use an interactive widget here" marker — a
+     * dead placeholder =<img src=".../tutor_widget_dummy.png">= whose
+     * only content, if you actually open the image, is a static banner
+     * telling the student to use the whiteboard and step arrows
+     * instead (see TUTOR_WIDGET.org). Removes the image from the
+     * statement (it 404s in cm_re; nothing points at a real asset) and
+     * returns a WidgetSlot recording what the legacy banner asked for.
+     * Rare — ~1 of 846 alg1ptests solutions has one.
+     */
+    private static WidgetSlot extractWidgetSlot(Element statementEl) {
+        for (Element img : statementEl.select("img[src]")) {
+            if (WIDGET_DUMMY_IMG.matcher(img.attr("src")).find()) {
+                img.remove();
+                return new WidgetSlot("whiteboard");
+            }
+        }
+        return null;
     }
 
     // Leading enumerator on a Format-A choice label: "A. ", "b) ", etc.

@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Solution } from "@cm_re/shared-types";
 import { isModuleInstalled, getSolution, getSolutionsForModule } from "../../offline/moduleManager";
+import { listSubjects } from "../../api/client";
+import { chapterTopicName } from "../../lib/chapterName";
 import {
   getActiveTest,
   startTest,
@@ -16,10 +18,11 @@ import {
   type TestScope,
 } from "../../offline/practiceTestStore";
 import { solutionTitle } from "../../lib/solutionTitle";
-import { orderPids, groupByChapter } from "../../lib/problemOrder";
+import { orderPids, groupByChapter, chapterOf } from "../../lib/problemOrder";
 import { navigate, hashFor } from "../../routing";
 import { QuestionView, choiceLetter } from "../QuestionView";
 import { StatementView } from "../StepViewer";
+import SolutionNav from "../SolutionNav";
 import WhiteboardPanel from "../WhiteboardPanel";
 import LearnPanel from "../LearnPanel";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -48,12 +51,33 @@ type View = { k: "index" } | { k: "question"; idx: number } | { k: "score" } | {
 // only solutions with a scorable MC question can be in a test
 const scorable = (s: Solution) => !!s.question && typeof s.question.correctIndex === "number";
 
+/** Human subject name from modules/index.json; falls back to the id (e.g. offline). */
+async function subjectTitle(id: string): Promise<string> {
+  try {
+    return (await listSubjects()).find((s) => s.subjectId === id)?.title ?? id;
+  } catch {
+    return id;
+  }
+}
+
+/**
+ * [{label:"Chapter 3",name:"Linear Equations"}] -> "Chapter 3: Linear
+ * Equations review". `name` is "" when it couldn't be deduced (no AI
+ * key, offline, ...) — falls back to the bare numeric label.
+ */
+function joinChapters(entries: { label: string; name: string }[]): string {
+  if (entries.length === 0) return "review";
+  const parts = entries.map((e) => (e.name ? `${e.label}: ${e.name}` : e.label));
+  return `${parts.join(", ")} review`;
+}
+
 export default function PracticeTest({ subjectId }: { subjectId: string }) {
   const [installed, setInstalled] = useState<boolean | null>(null);
   const [test, setTest] = useState<PracticeTestT | null | undefined>(undefined);
   const [allSolutions, setAllSolutions] = useState<Solution[] | null>(null);
   const [solutions, setSolutions] = useState<Map<string, Solution>>(new Map());
   const [view, setView] = useState<View>({ k: "index" });
+  const [lessonIdx, setLessonIdx] = useState(0); // position in a scope:"custom" review lesson
   const [busy, setBusy] = useState(false);
 
   // Load install state + any active test on mount / subject change.
@@ -75,6 +99,7 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
         if (cancelled) return;
         setSolutions(new Map(loaded.filter((s): s is Solution => !!s).map((s) => [s.pid, s])));
         setView(active.completedAt ? { k: "score" } : { k: "index" });
+        setLessonIdx(0);
       }
     })();
     return () => {
@@ -133,6 +158,62 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
     setSolutions(new Map());
     setTest(null);
     setView({ k: "index" });
+    setLessonIdx(0);
+  }
+
+  /**
+   * "Custom lesson" from a finished test: for each question the student
+   * missed, take its chapter and pick a *different* random problem from
+   * that same chapter that HAS worked steps. The result is a
+   * walk-through set (scope "custom") opened in the full tutor
+   * (SolutionNav) — practice adjacent to what they got wrong, not a
+   * re-quiz. The lesson label names the subject and the chapter(s).
+   */
+  async function makeMissedLesson() {
+    if (!test) return;
+    setBusy(true);
+    try {
+      // Only problems that have steps to walk through.
+      const pool = (await getSolutionsForModule(subjectId)).filter((s) => scorable(s) && s.steps.length > 0);
+      const byChapter = new Map<string, string[]>();
+      for (const s of pool) {
+        const k = chapterOf(s.pid, subjectId).key;
+        (byChapter.get(k) ?? byChapter.set(k, []).get(k)!).push(s.pid);
+      }
+      const missed = test.pids.filter((p) => {
+        const a = test.answers[p];
+        return !a || a.correct === false;
+      });
+      const picked = new Set<string>();
+      const chapterLabelByKey = new Map<string, string>();
+      for (const mp of missed) {
+        const ch = chapterOf(mp, subjectId);
+        chapterLabelByKey.set(ch.key, ch.label);
+        const chPids = byChapter.get(ch.key) ?? [];
+        const fresh = chPids.filter((p) => p !== mp && !picked.has(p));
+        const [pick] = sample(fresh.length ? fresh : chPids.filter((p) => !picked.has(p)), 1);
+        if (pick) picked.add(pick);
+      }
+      const lessonPids = orderPids([...picked], subjectId);
+      if (lessonPids.length === 0) {
+        alert("No step-by-step problems available in those chapters to build a lesson from.");
+        return;
+      }
+      // Deduce each involved chapter's topic name (AI, cached) from a
+      // few of its own problems — the legacy source has no such field.
+      const chapterEntries = await Promise.all(
+        [...chapterLabelByKey.entries()].map(async ([key, label]) => {
+          const samplePids = (byChapter.get(key) ?? []).slice(0, 3);
+          const name = await chapterTopicName(subjectId, label, samplePids);
+          return { label, name };
+        })
+      );
+      const label = `${await subjectTitle(subjectId)} — ${joinChapters(chapterEntries)}`;
+      await begin(lessonPids, { kind: "custom", label }, pool);
+      setLessonIdx(0);
+    } finally {
+      setBusy(false);
+    }
   }
 
   // ---- render ----
@@ -213,6 +294,36 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
   }
 
   const title = testTitle(test.scope);
+
+  // ---- custom review lesson: walk each problem in the full tutor ----
+  if (test.scope?.kind === "custom") {
+    const idx = Math.min(lessonIdx, test.pids.length - 1);
+    const pid = test.pids[idx];
+    const solution = solutions.get(pid);
+    return (
+      <div>
+        <div className="mb-2 flex items-center justify-between text-sm">
+          <button className="text-blue-600 hover:underline" onClick={backToPicker}>
+            &larr; Test menu
+          </button>
+          <span className="text-slate-500">
+            {title} · {idx + 1} / {test.pids.length}
+          </span>
+        </div>
+        {/* key=pid so moving to the next problem remounts a fresh
+            SolutionNav — otherwise its internal stepIndex carries over. */}
+        {solution ? <SolutionNav key={pid} solution={solution} onBack={backToPicker} /> : <Spinner />}
+        <div className="mt-2 flex items-center justify-between">
+          <Button variant="outline" disabled={idx === 0} onClick={() => setLessonIdx(idx - 1)}>
+            &larr; Previous problem
+          </Button>
+          <Button variant="outline" disabled={idx >= test.pids.length - 1} onClick={() => setLessonIdx(idx + 1)}>
+            Next problem &rarr;
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   // ---- one question ----
   if (view.k === "question") {
@@ -373,14 +484,8 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
           </ul>
 
           {missedPids.length > 0 && (
-            <Button
-              className="mt-4 w-full"
-              disabled={busy}
-              onClick={() =>
-                begin(missedPids, { kind: "custom", label: `${title} — retry missed` }, [...solutions.values()])
-              }
-            >
-              Make a lesson from the {missedPids.length} you missed &rarr;
+            <Button className="mt-4 w-full" disabled={busy} onClick={makeMissedLesson}>
+              {busy ? <Spinner /> : `Missed Questions Lesson: ${missedPids.length} problem${missedPids.length === 1 ? "" : "s"} →`}
             </Button>
           )}
           <Button variant="outline" className="mt-2 w-full" onClick={backToPicker} disabled={busy}>
