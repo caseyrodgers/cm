@@ -104,7 +104,7 @@ export function QuestionView({
   const buttonLabel = revealOnCheck ? "Check answer" : "Submit answer";
 
   return (
-    <div className="mb-4 rounded-lg border border-slate-200 p-4">
+    <div data-testid="mc-question" className="mb-4 rounded-lg border border-slate-200 p-4">
       {celebrate && <CorrectCelebration onDone={() => setCelebrate(false)} />}
       {!isBlank(question.prompt) && <Sanitized className="prose-sm mb-3 block" html={question.prompt} />}
 
@@ -117,6 +117,8 @@ export function QuestionView({
             <li key={i}>
               <button
                 type="button"
+                data-testid="mc-choice"
+                data-choice-index={i}
                 disabled={locked || reviewMode}
                 onClick={() => setSelected(i)}
                 className={cn(
@@ -168,7 +170,12 @@ export function QuestionView({
 
       {!reviewMode && (
         <div className="mt-3 flex items-center gap-3">
-          <Button variant="outline" onClick={submit} disabled={selected === null || (checked && locked)}>
+          <Button
+            variant="outline"
+            data-testid="mc-submit"
+            onClick={submit}
+            disabled={selected === null || (checked && locked)}
+          >
             {buttonLabel}
           </Button>
           {reveal && (

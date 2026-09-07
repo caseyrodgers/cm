@@ -90,13 +90,23 @@ export default function SolutionNav({ solution, onBack }: { solution: Solution; 
 
         {solution.steps.length > 0 && (
           <div className="mt-4 flex items-center justify-between">
-            <Button variant="outline" onClick={() => goStep(clampedIndex - 1)} disabled={atStart}>
+            <Button
+              variant="outline"
+              data-testid="step-prev"
+              onClick={() => goStep(clampedIndex - 1)}
+              disabled={atStart}
+            >
               &larr; Previous
             </Button>
-            <span className="text-xs text-slate-500">
+            <span data-testid="step-counter" className="text-xs text-slate-500">
               {clampedIndex + 1} / {solution.steps.length}
             </span>
-            <Button variant="outline" onClick={() => goStep(clampedIndex + 1)} disabled={atEnd}>
+            <Button
+              variant="outline"
+              data-testid="step-next"
+              onClick={() => goStep(clampedIndex + 1)}
+              disabled={atEnd}
+            >
               Next &rarr;
             </Button>
           </div>

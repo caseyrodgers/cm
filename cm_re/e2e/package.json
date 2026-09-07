@@ -1,0 +1,20 @@
+{
+  "name": "@cm_re/e2e",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Playwright end-to-end tests for the cm_re tutor (and editor).",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:slow": "playwright test --grep @slow",
+    "test:ai": "RUN_AI_TESTS=1 playwright test learn-ai",
+    "report": "playwright show-report",
+    "codegen": "playwright codegen http://localhost:5173"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22"
+  }
+}
