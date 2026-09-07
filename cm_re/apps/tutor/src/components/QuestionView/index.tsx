@@ -3,6 +3,7 @@ import DOMPurify from "dompurify";
 import type { McQuestion } from "@cm_re/shared-types";
 import { Button } from "../ui/button";
 import { cn } from "../../lib/utils";
+import { bumpCorrectTotal } from "../../lib/correctCount";
 import CorrectCelebration from "../CorrectCelebration";
 
 /**
@@ -93,11 +94,13 @@ export function QuestionView({
       selectedIndex: selected,
       correct: hasKey ? selected === question.correctIndex : null,
     });
-    // Reward only where the result is actually revealed to the student
-    // (practice / "Learn" flow) — never in test mode, where feedback is
-    // withheld until the score screen, and never in read-only review.
+    // Reward + tally only where the result is actually revealed to the
+    // student (practice / custom-lesson) — never in test mode, where
+    // feedback is withheld until the score screen (PracticeTest.onFinish
+    // adds the test's correct count there), and never in read-only review.
     if (right && revealOnCheck && !reviewMode) {
       setCelebrate(true);
+      bumpCorrectTotal();
     }
   }
 

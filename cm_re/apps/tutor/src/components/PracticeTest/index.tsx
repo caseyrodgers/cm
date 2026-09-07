@@ -18,6 +18,7 @@ import {
   type TestScope,
 } from "../../offline/practiceTestStore";
 import { solutionTitle } from "../../lib/solutionTitle";
+import { bumpCorrectTotal } from "../../lib/correctCount";
 import { orderPids, groupByChapter, chapterOf } from "../../lib/problemOrder";
 import { navigate, hashFor } from "../../routing";
 import { QuestionView, choiceLetter } from "../QuestionView";
@@ -148,6 +149,11 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
     if (unanswered > 0 && !confirm(`${unanswered} question${unanswered === 1 ? "" : "s"} still unanswered. Finish anyway?`)) {
       return;
     }
+    // Add this test's correct answers to the lifetime tally, once — a
+    // completed test can be reopened straight to the score screen without
+    // coming back through here. (Test-mode QuestionViews don't tally on
+    // their own; grading is only final at finish.)
+    if (!test.completedAt) bumpCorrectTotal(scoreTest(test).correct);
     await finishTest(subjectId);
     setTest((t) => (t ? { ...t, completedAt: Date.now() } : t));
     setView({ k: "score" });
