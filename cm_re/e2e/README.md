@@ -19,15 +19,18 @@ npx playwright install chromium      # reuses the machine's browser cache if pre
 
 ## Running
 
-The tests need the app on `http://localhost:5173`. Easiest: keep the
-server up in another terminal.
-
 ```sh
-cd cm_re && make run          # terminal 1 — builds the tutor, starts the Java server
-cd cm_re/e2e && npm test      # terminal 2
+cd cm_re && make e2e
 ```
 
-`make e2e` from `cm_re/` does the same as `npm test` here.
+That's self-contained — it builds the tutor, starts the Java server,
+runs the suite, and shuts the server down. If you already have `make
+run` going in another terminal it reuses that one (faster — no rebuild).
+
+Running from `cm_re/e2e` directly, `npm test` expects a server already
+on `http://localhost:5173` (start one with `make run`). Set
+`CM_E2E_START_SERVER=1` to have it boot one itself — this is what `make
+e2e` does.
 
 Other commands (run from `cm_re/e2e`):
 
@@ -40,12 +43,6 @@ Other commands (run from `cm_re/e2e`):
 | `npm run test:ai` | run the live Claude "Learn" test (costs money — see below) |
 | `npm run report` | open the HTML report from the last run |
 | `npm run codegen` | record a new test by clicking through the app |
-
-### Let Playwright start the server
-
-Set `CM_E2E_START_SERVER=1` and it will run `make run` itself (needs
-Maven + JDK 17; first start takes 1–2 min). Otherwise it just expects a
-server already listening.
 
 ### Point at a different origin
 

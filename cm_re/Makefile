@@ -94,11 +94,12 @@ editor-dev:
 	cd apps/editor && npm install && npm run dev
 
 # --- Playwright end-to-end tests (e2e/) ---
-# Need the app on :5173 — run `make run` in another terminal first, or
-# set CM_E2E_START_SERVER=1 to let Playwright boot it. First run:
-#   cd e2e && npm install && npx playwright install chromium
+# Self-contained: CM_E2E_START_SERVER=1 lets Playwright boot `make run`
+# itself (and reuse one already listening on :5173, so having `make run`
+# in another terminal just makes it faster). First run also needs the
+# browser:  cd e2e && npm install && npx playwright install chromium
 e2e:
-	cd e2e && npm install && npm test
+	cd e2e && npm install && CM_E2E_START_SERVER=1 npm test
 
 e2e-ui:
-	cd e2e && npm install && npm run test:ui
+	cd e2e && npm install && CM_E2E_START_SERVER=1 npm run test:ui
