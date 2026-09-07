@@ -10,10 +10,16 @@ import java.nio.file.Path;
 import java.util.Map;
 
 /**
- * Serves the built tutor from a web root (apps/tutor/dist). Any
- * request path that doesn't resolve to a real file under the root and
- * has no file extension falls back to index.html, so a hard refresh on
- * any route still loads the app.
+ * Serves a built single-page app from a web root. Any request path
+ * that doesn't resolve to a real file under the root and has no file
+ * extension falls back to index.html, so a hard refresh on any route
+ * still loads the app.
+ *
+ * With a non-empty {@code urlPrefix} the handler serves an app mounted
+ * under a sub-path (e.g. "/editor" -> apps/editor/dist): the prefix is
+ * stripped before resolving against the root, and index.html is
+ * resolved inside the root, not at the server origin. That lets one
+ * server host both the tutor at "/" and the editor at "/editor/".
  *
  * Directory traversal is blocked by resolving against the normalised
  * root and rejecting anything that escapes it.
@@ -39,9 +45,20 @@ public class StaticHandler implements HttpHandler {
             Map.entry("map", "application/json"));
 
     private final Path root;
+    /** "" for an app at the origin; "/editor" for one mounted under /editor/. No trailing slash. */
+    private final String urlPrefix;
 
     public StaticHandler(Path webRoot) {
+        this(webRoot, "");
+    }
+
+    public StaticHandler(Path webRoot, String urlPrefix) {
         this.root = webRoot.toAbsolutePath().normalize();
+        String p = urlPrefix == null ? "" : urlPrefix.trim();
+        while (p.endsWith("/")) {
+            p = p.substring(0, p.length() - 1);
+        }
+        this.urlPrefix = p;
     }
 
     @Override
@@ -52,6 +69,18 @@ public class StaticHandler implements HttpHandler {
         }
 
         String urlPath = ex.getRequestURI().getPath();
+
+        if (!urlPrefix.isEmpty()) {
+            if (urlPath.equals(urlPrefix) || urlPath.equals(urlPrefix + "/")) {
+                urlPath = "/index.html";
+            } else if (urlPath.startsWith(urlPrefix + "/")) {
+                urlPath = urlPath.substring(urlPrefix.length());
+            } else {
+                ApiHandler.send(ex, 404, "text/plain", "not found");
+                return;
+            }
+        }
+
         if (urlPath.equals("/") || urlPath.isEmpty()) {
             urlPath = "/index.html";
         }

@@ -1,3 +1,12 @@
-// Entry point. No service worker, no offline concerns — online-only by
-// design (see NEW_DIRECTION.org "Frontend platform" decision).
-// TODO: ReactDOM.createRoot(...).render(<App />)
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./styles.css";
+
+// No service worker, no offline concerns — online-only by design
+// (see NEW_DIRECTION.org "Frontend platform" decision).
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);

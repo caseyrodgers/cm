@@ -10,3 +10,36 @@
 .learn-explanation li { margin: 0.25rem 0; }
 .learn-explanation strong { font-weight: 600; }
 .learn-explanation math { font-size: 1.05em; }
+
+/* --- CorrectCelebration: the big "Correct!" reward burst --- */
+@keyframes cc-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cc-fade-out { from { opacity: 1; } to { opacity: 0; } }
+
+@keyframes cc-pop {
+  0%   { transform: scale(0.4) rotate(-8deg); opacity: 0; }
+  55%  { transform: scale(1.12) rotate(3deg); opacity: 1; }
+  75%  { transform: scale(0.97) rotate(-1deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+@keyframes cc-particle {
+  0%   { transform: translate(0, 0) scale(0.6) rotate(0); opacity: 1; }
+  100% { transform: translate(var(--cc-dx), var(--cc-dy)) scale(1) rotate(var(--cc-rot)); opacity: 0; }
+}
+
+.cc-overlay { animation: cc-fade-in 0.2s ease-out; }
+.cc-overlay-leaving { animation: cc-fade-out 0.4s ease-in forwards; }
+
+.cc-pop { animation: cc-pop 0.5s cubic-bezier(0.2, 0.8, 0.2, 1.2) both; }
+
+.cc-particle {
+  position: absolute;
+  border-radius: 2px;
+  animation: cc-particle 0.9s ease-out both;
+  animation-delay: var(--cc-delay);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cc-pop { animation: cc-fade-in 0.2s ease-out both; }
+  .cc-particle { display: none; }
+}

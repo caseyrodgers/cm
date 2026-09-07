@@ -4,16 +4,18 @@
 * Context
 
 The tutor has a *Learn* panel (=cm_re/apps/tutor/src/components/LearnPanel=)
-that asks an AI to explain the current problem at a grade level
-(7th / 10th / 12th). The call goes through
-=cm_re/apps/tutor/src/api/aiClient.ts=, currently a *stub* — it
-simulates ~900 ms latency and returns a canned, grade-flavoured
-placeholder with a "AI not connected" caption. No real model call
-anywhere yet.
+that asks an AI to explain the current problem at a grade level —
+"Tell me like I'm a…" 7th / 10th / 12th Grader. The call goes through
+=cm_re/apps/tutor/src/api/aiClient.ts= → =GET /api/ai/problem/{pid}?grade==
+on the dependency-free Java server, which does a *live* Claude call
+(=com.catchupmath.cmre.server.AiService= / =ClaudeClient=). See the
+Status section for the build history; the stub described in earlier
+revisions of this doc is gone.
 
 Casey's stated end goal: *a server process that returns pre-created AI
 responses* — i.e. not a live model call per request; explanations are
-generated ahead of time, stored, and served.
+generated ahead of time, stored, and served. The live call is the
+starting point, not the destination.
 
 Numbers to reason about: ~846 solutions per subject × 3 grade levels ≈
 *2,500 explanations per subject*.
@@ -104,11 +106,42 @@ lookup + cache.
   =<math>= MathML for formulas; LearnPanel sanitises (DOMPurify keeps
   MathML) and the browser renders it natively — same path as
   StepViewer. Verified end to end against a real problem.
+- 2026-09-03: =getAIForProblem(pid, grade)= — =?grade== flows through
+  =ApiHandler= → =AiService.gradeLevelPhrase= into the prompt.
+- 2026-09-04: chapter-name inference. =GET
+  /api/ai/chapter-name/{subjectId}?label=&pids== →
+  =AiService.getChapterName= samples up to 3 of a chapter's problem
+  texts and asks for a 2–5 word topic name (legacy export carries no
+  chapter title). Client caches per chapter in =localStorage=
+  (=lib/chapterName.ts=). Used in the lesson header + missed-questions
+  lesson label.
+- 2026-09-04: *image-only problem content now reaches the model.*
+  =SolutionStore.plain()= was stripping every =<img>= before composing
+  the prompt, so problems that render their equation and/or MC choices
+  as a =.gif= (SOLUTION_INFO.org: images referenced by ~43% of the
+  corpus) sent Claude a blank. =SolutionStore= now also resolves each
+  =<img src>= in the statement/choices to a real file under =webRoot=
+  (=ProblemContext{text, images}=, capped 4/problem, traversal-guarded);
+  =ClaudeClient.complete(prompt, images)= attaches them as base64
+  vision content blocks; =AiService= reads/encodes them (media type
+  from extension — corpus is almost all =.gif=, which the Messages API
+  accepts) and notes their presence in the prompt. Verified live
+  against =alg1ptests_10_1_chapter10practicetest_7_10= (4 pure-image
+  answer choices, same failure shape Casey reported) — debug print
+  confirmed =attachedImages=4= reached =ClaudeClient=, real
+  step-by-step answer came back. Committed =7d3ad164d=.
+- 2026-09-05: copy polish — heading "Tell me like a…" → "Tell me
+  like I'm a…", choices "7th Grade" → "7th Grader" etc.
+  (=gradeLabel=). Stale placeholder caption ("AI model isn't wired up
+  yet") replaced with "the AI explanation service is unavailable
+  right now" — =placeholder:true= now means no key / bad pid / API
+  error, not a stub.
 
 *This is the "live per-call" starting point.* The choice between a
 pre-generated store (Idea A/B/C above) and keeping live calls is
 *still open* — decide once there's a feel for cost and quality at
-volume.
+volume. Note the vision path adds real per-call cost (4 images ×
+base64 on an image-heavy problem) — a data point for that decision.
 
 * References
 

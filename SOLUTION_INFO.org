@@ -124,6 +124,14 @@ handled correctly and is unaffected — those were reference-copied
 already; the fix just extends the same reference-based logic to
 =imageNNN.gif=.
 
+*Downstream consequence (2026-09-04):* because so much of the corpus
+carries its math (and, for MC problems, its answer *choices*) as an
+image with no text alternative, the AI "Learn" server had to be
+taught to *send those images to the model*, not just the text — the
+text-extraction path was silently dropping =<img>= and Claude replied
+"the equation isn't showing". Fixed in =SolutionStore= /
+=ClaudeClient= (base64 vision content blocks). See AI_DISCUSS.org.
+
 ** Category 2: real diagrams — genuinely need handling
 
 Found via size outliers (up to 65 KB, versus Category 1's ~150 bytes)

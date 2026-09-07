@@ -1,0 +1,102 @@
+#+TITLE: Catchup Math — project doc index
+#+STARTUP: overview
+
+This repo (=github.com/caseyrodgers/cm=, branch =main=) holds two
+things:
+
+1. The *legacy app* (=cm=) — a ~2015-era GWT 2.7 / GXT 3.1 webapp,
+   builds + runs locally on pinned JDK 8, otherwise set aside.
+2. The *rewrite* (=cm_re/=) — a React + TypeScript PWA tutor plus a
+   Java backend, in active development.
+
+All design notes, investigations, and decision logs live in =*.org=
+files at the repo root (plus a couple under =cm_re/=). This file is
+the map. Every link is =[[file:…]]= — open in Emacs or follow the
+path.
+
+* Start here
+
+- [[file:NEW_DIRECTION.org][NEW_DIRECTION.org]] — *the master doc.* Problem statement, the
+  proposed new direction, the full *Decisions log* (PWA-not-Electron,
+  Java/Spring-Boot backend, Postgres JSONB storage, per-subject
+  content modules, legacy pre-processor as a one-time fixup), the
+  first-pass scaffold, the consolidated *Tutor feature build-out* log
+  (2026-08-27 → 2026-09-05), and the *Next steps* checklist. Read
+  this first; the others are depth on one topic each.
+- [[file:APP_FLOW.org][APP_FLOW.org]] — high-level runtime flow of the rewritten tutor,
+  with two Mermaid sequence diagrams (full lifecycle; a student's
+  first visit).
+
+* Rewrite — subsystem notes
+
+- [[file:SOLUTION_INFO.org][SOLUTION_INFO.org]] — everything about the *legacy solution content
+  format* and the pre-processor that converts it: the real exported
+  shape, malformed-authoring-tool patterns, the image taxonomy
+  (WIRIS equation dupes vs. real inline math vs. diagrams vs. the
+  shared specialchars set) and the reference-based image-copy fix,
+  multiple-choice question extraction, and the regression bugs found
+  running it at corpus scale.
+- [[file:AI_DISCUSS.org][AI_DISCUSS.org]] — the *"Learn" AI explanation* feature: three
+  candidate serving models (bake into the module / server endpoint +
+  client cache / hybrid), cross-cutting concerns (prompt-version
+  keying, staleness, generation tooling), and a dated status log of
+  what's actually built (live per-call today: grade-aware, MathML
+  output, image/vision context for image-only problems). The
+  pre-generated-vs-live decision is still open.
+- [[file:TUTOR_WIDGET.org][TUTOR_WIDGET.org]] — the *widget-slot infrastructure*: how a dead
+  =tutor_widget_dummy.png= reference led to it, the plain-JS widget
+  contract (=WidgetModule= / =WidgetContext= / =WidgetInstance=), the
+  registry + React bridge, =Solution.widgetSlot= as a
+  preprocessor-extracted field, the first =inputWidget=, and the
+  open questions (wiring, grading, whiteboard conversion).
+- [[file:SOLUTION_EDITOR.org][SOLUTION_EDITOR.org]] — the *solution editor* (=apps/editor=), the
+  online-only TipTap authoring tool that replaces the legacy GWT
+  =solution_editor=. Currently a stub (six comment-only files);
+  this doc has the status, the feature set derived from the 93
+  legacy classes, the data contract, the backend endpoints it needs
+  (none exist yet), open questions, and a milestone plan. *Next up.*
+- [[file:cm_re/DEBUG.org][cm_re/DEBUG.org]] — Eclipse debug setup for =apps/backend=: the
+  local "Java Application" launch and the "attach 5005" remote launch
+  against =make debug=, plus gotchas (=*.launch= is gitignored
+  because Eclipse persists secrets into it).
+
+* Reference — the legacy world
+
+- [[file:CM3_MOBILE_REFERENCE.org][CM3_MOBILE_REFERENCE.org]] — writeup of =cm3_mobile= (repo at
+  =C:\dev\projects\catchupmath\cm3_mobile=), the 2018 Ionic 3 /
+  Angular 5 / Cordova mobile client: a 30-page + ~40-service feature
+  inventory that doubles as a parity checklist, the v1 REST contract
+  the client expected, the legacy widget package list, and the
+  takeaway that its offline storage is *not* reusable prior art.
+- [[file:STATUS.org][STATUS.org]] — *legacy GWT app only.* The local build/run problem
+  list (checkboxed), JDK 8 pinning, the real-Jetty run, and the
+  remaining not-started cleanup items. Nothing here is about
+  =cm_re/=.
+
+* Non-.org references
+
+- =cm_re/README.md= — the rewrite scaffold: workspace layout, the
+  =apps/tutor= / =apps/editor= / =apps/backend= / =packages/= split.
+- =cm_re/deploy/README.md= — how the outward-facing (JRE-only) box
+  runs the server from a =git pull=; =CM_NO_EDITOR=1= note.
+- =.mcp.json= (repo root) — Playwright MCP server for headless-browser
+  UI verification; =.claude/settings.local.json= pre-enables it.
+- =cm_re/THINGS.org= — a small scratch TODO, not a design doc.
+- Session-continuity state (living "what did we do, where are we")
+  is kept *outside this repo* at
+  =C:\Users\casey\Documents\_Claude\catchupmath\STATUS.md=, updated
+  per-session; the =.org= files here are the durable design record it
+  points back into.
+
+* Suggested reading order
+
+1. =NEW_DIRECTION.org= (skim the Decisions log + Next steps)
+2. =APP_FLOW.org= (get the runtime shape)
+3. Whichever subsystem note matches the task —
+   =SOLUTION_EDITOR.org= for the authoring tool (next up),
+   =SOLUTION_INFO.org= for content/pipeline work,
+   =AI_DISCUSS.org= for the Learn feature,
+   =TUTOR_WIDGET.org= for interactive widgets,
+   =cm_re/DEBUG.org= to attach a debugger.
+4. =CM3_MOBILE_REFERENCE.org= when you need to know what the old
+   product did.

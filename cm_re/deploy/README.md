@@ -8,6 +8,7 @@ pulled on the server.
 deploy/
   cm_re-server.jar   fat jar: the Java server + its deps
   web/               the built tutor PWA (from apps/tutor/dist)
+  web/editor/        the built solution editor (from apps/editor/dist)
   run.sh             java -jar cm_re-server.jar $PORT web
 ```
 
@@ -16,11 +17,15 @@ deploy/
 ```sh
 git pull
 export ANTHROPIC_API_KEY=...          # optional — enables live "Learn"
+export CM_NO_EDITOR=1                 # internet-facing: see below
 cd cm_re && ./deploy/run.sh           # or: make serve PORT=8080
 ```
 
-Serves the app + `GET /api/health` + `GET /api/ai/problem/{pid}` on one
-origin. It's a PWA, so **off localhost it needs real TLS** — front it
+Serves the tutor + `GET /api/health` + `GET /api/ai/problem/{pid}` on
+one origin. The **solution editor** (`/editor/` + `/api/editor/*`) is
+served by the same instance when `web/editor/` is present — but it has
+**unauthenticated write endpoints** (edit/publish solutions), so on any
+internet-facing box set **`CM_NO_EDITOR=1`** until editor auth exists. It's a PWA, so **off localhost it needs real TLS** — front it
 with nginx/Caddy, or set `CM_KEYSTORE` / `CM_KEYSTORE_PASS` to a
 real-cert PKCS12 (HTTPS then also serves on `PORT+1`). The server needs
 outbound HTTPS to `api.anthropic.com` for Learn. Run it under systemd,

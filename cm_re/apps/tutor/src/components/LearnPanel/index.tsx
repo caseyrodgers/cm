@@ -91,7 +91,7 @@ export default function LearnPanel({ solution, title }: { solution: Solution; ti
 
       {open && (
         <div className="border-t border-slate-200 p-3">
-          <p className="mb-2 text-sm font-medium text-slate-700">Tell me like a…</p>
+          <p className="mb-2 text-sm font-medium text-slate-700">Tell me like I'm a…</p>
           <div className="mb-3 grid grid-cols-3 gap-2">
             {GRADES.map((g) => (
               <button
@@ -122,7 +122,7 @@ export default function LearnPanel({ solution, title }: { solution: Solution; ti
             <div className="mt-3">
               {placeholder && (
                 <p className="mb-1 text-xs font-medium text-amber-700">
-                  Stub response from the server — the AI model isn't wired up yet
+                  Placeholder — the AI explanation service is unavailable right now
                 </p>
               )}
               {/* The model returns an HTML fragment with <math> MathML for

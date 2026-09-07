@@ -1,4 +1,4 @@
-.PHONY: build run debug dist serve serve-legacy kill-python
+.PHONY: build run debug dist serve serve-legacy kill-python api editor editor-dev
 
 # JDWP address for `make debug`. suspend=y makes the JVM wait for a
 # debugger before running main() (good for breakpoints in startup);
@@ -37,14 +37,18 @@ debug: build
 	cd apps/backend && MAVEN_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=$(JDWP_SUSPEND),address=localhost:$(JDWP_PORT)" mvn -q compile exec:java -Dexec.mainClass=com.catchupmath.cmre.server.TutorServer
 
 # Assemble the committed, runnable distribution into cm_re/deploy/
-# (deploy/cm_re-server.jar + deploy/web/). Run this on a machine with
-# Node, commit deploy/, push. The server then just `git pull`s.
-dist: build
+# (deploy/cm_re-server.jar + deploy/web/ + deploy/web/editor/). Run
+# this on a machine with Node, commit deploy/, push. The server then
+# just `git pull`s.
+dist: build editor
 	cd apps/backend && mvn -q -DskipTests package
 	@echo "cm_re/deploy/ updated -> git add deploy && commit && push; then 'git pull' + 'make serve' on the server"
 
 # Run from a committed deploy/ on a box with only a JRE (no Node, no
-# Maven). Override:  make serve PORT=8080
+# Maven). Override the port:  make serve PORT=9000
+# Serves tutor + editor (one instance). On an internet-facing box set
+# CM_NO_EDITOR=1 to drop /editor/ + /api/editor/* until editor auth
+# exists (the editor API has unauthenticated write endpoints).
 PORT ?= 8080
 serve:
 	java -jar deploy/cm_re-server.jar $(PORT) deploy/web
@@ -60,3 +64,31 @@ serve-legacy:
 
 kill-python:
 	taskkill /F /IM python.exe
+
+# --- solution editor (apps/editor) — online-only authoring UI ---
+# ONE server, two APIs, two UIs (all in one Java instance):
+#   /          tutor            /api/          tutor API
+#   /editor/   solution editor  /api/editor/   editor CRUD API
+#
+#   make editor    # build apps/editor/dist
+#   make api       # the one server (prints the /editor/ URL)
+#
+# The editor mounts automatically when apps/editor/dist and a modules/
+# content root are present. It has write endpoints and no auth yet, so
+# set CM_NO_EDITOR=1 on any internet-facing instance to suppress it.
+#
+# `api` is `run` without the tutor rebuild: it ensures apps/tutor/dist
+# exists once (TutorServer needs a web root), then starts the server via
+# mvn exec:java (full classpath for Gson).
+editor:
+	cd apps/editor && npm install && npm run build
+
+api:
+	cd apps/tutor && [ -d dist ] || (npm install && npm run build)
+	cd apps/backend && mvn -q compile exec:java -Dexec.mainClass=com.catchupmath.cmre.server.TutorServer
+
+# Only for actively hacking the editor UI: Vite dev server (HMR) on
+# :5174, proxying /api to a separately-running `make api` on :5173.
+# Not needed just to view the editor.
+editor-dev:
+	cd apps/editor && npm install && npm run dev

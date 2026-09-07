@@ -2,7 +2,7 @@ import type { Solution } from "@cm_re/shared-types";
 
 /**
  * "Learn" — AI explanation of the current problem, tuned to a grade
- * level ("tell me like a 7th grader").
+ * level ("tell me like I'm a 7th grader").
  *
  * explainProblem() calls the backend
  * (com.catchupmath.cmre.server, GET /api/ai/problem/{pid}?grade=<n>),
@@ -19,9 +19,9 @@ export type Grade = "7" | "10" | "12";
 /** A few representative levels rather than every grade — 7th / 10th / 12th. */
 export const GRADES: Grade[] = ["7", "10", "12"];
 
-/** "7th Grade" / "10th Grade" / "12th Grade". */
+/** "7th Grader" / "10th Grader" / "12th Grader". */
 export function gradeLabel(g: Grade): string {
-  return `${g}th Grade`;
+  return `${g}th Grader`;
 }
 
 export interface ExplainRequest {

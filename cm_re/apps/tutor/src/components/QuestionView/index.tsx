@@ -3,6 +3,7 @@ import DOMPurify from "dompurify";
 import type { McQuestion } from "@cm_re/shared-types";
 import { Button } from "../ui/button";
 import { cn } from "../../lib/utils";
+import CorrectCelebration from "../CorrectCelebration";
 
 /**
  * Interactive renderer for a solution's embedded multiple-choice
@@ -64,11 +65,19 @@ export function QuestionView({
 }) {
   const [selected, setSelected] = useState<number | null>(initialSelectedIndex ?? null);
   const [checked, setChecked] = useState(reviewMode);
+  const [celebrate, setCelebrate] = useState(false);
 
-  // Reset when the parent swaps in a different question.
+  // Reset when the parent swaps in a different question. In review mode
+  // (score-screen "look back at this problem"), the quiz withheld all
+  // feedback, so opening a problem the student got right is the first
+  // time they're told — reward it here, on mount, since there's no
+  // "Check answer" button in review to fire it from.
   useEffect(() => {
     setSelected(initialSelectedIndex ?? null);
     setChecked(reviewMode);
+    const reviewingACorrectAnswer =
+      reviewMode && typeof question.correctIndex === "number" && initialSelectedIndex === question.correctIndex;
+    setCelebrate(reviewingACorrectAnswer);
   }, [question, initialSelectedIndex, reviewMode]);
 
   const hasKey = typeof question.correctIndex === "number";
@@ -79,16 +88,24 @@ export function QuestionView({
   function submit() {
     if (selected === null || (checked && locked)) return;
     setChecked(true);
+    const right = hasKey && selected === question.correctIndex;
     onAnswer?.({
       selectedIndex: selected,
       correct: hasKey ? selected === question.correctIndex : null,
     });
+    // Reward only where the result is actually revealed to the student
+    // (practice / "Learn" flow) — never in test mode, where feedback is
+    // withheld until the score screen, and never in read-only review.
+    if (right && revealOnCheck && !reviewMode) {
+      setCelebrate(true);
+    }
   }
 
   const buttonLabel = revealOnCheck ? "Check answer" : "Submit answer";
 
   return (
     <div className="mb-4 rounded-lg border border-slate-200 p-4">
+      {celebrate && <CorrectCelebration onDone={() => setCelebrate(false)} />}
       {!isBlank(question.prompt) && <Sanitized className="prose-sm mb-3 block" html={question.prompt} />}
 
       <ul className="space-y-2">

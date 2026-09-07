@@ -63,6 +63,7 @@ export default function SolutionLoader({ pid }: { pid: string }) {
 
   return (
     <SolutionNav
+      key={state.solution.pid}
       solution={state.solution}
       onBack={() => navigate(hashFor.module(state.solution.subjectId))}
     />

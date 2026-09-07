@@ -17,9 +17,22 @@ import { getSolutionSource, LEGACY_SERVER_BASE_URL, type SolutionSource } from "
  */
 export default function SolutionNav({ solution, onBack }: { solution: Solution; onBack: () => void }) {
   const [stepIndex, setStepIndex] = useState(0);
-  const step = solution.steps[stepIndex];
-  const atStart = stepIndex === 0;
-  const atEnd = stepIndex === solution.steps.length - 1;
+
+  // Start over at step 0 whenever the solution changes — callers don't
+  // always remount this component per solution (no key={pid}).
+  useEffect(() => setStepIndex(0), [solution.pid]);
+
+  const lastStep = Math.max(solution.steps.length - 1, 0);
+  // Clamp on read too: a fast double-tap on Prev/Next can enqueue two
+  // updates before the disabled state re-renders, so stepIndex can land
+  // outside [0, lastStep]. Without this, both nav buttons re-enable
+  // (their guards used ===) and `step` is undefined — "no steps" shown
+  // on a solution that has them, with no way back.
+  const clampedIndex = Math.min(Math.max(stepIndex, 0), lastStep);
+  const step = solution.steps[clampedIndex];
+  const atStart = clampedIndex <= 0;
+  const atEnd = clampedIndex >= lastStep;
+  const goStep = (next: number) => setStepIndex(Math.min(Math.max(next, 0), lastStep));
 
   // Debug affordance: show either the original legacy export
   // directory's file listing (when this solution was actually
@@ -77,13 +90,13 @@ export default function SolutionNav({ solution, onBack }: { solution: Solution; 
 
         {solution.steps.length > 0 && (
           <div className="mt-4 flex items-center justify-between">
-            <Button variant="outline" onClick={() => setStepIndex((i) => i - 1)} disabled={atStart}>
+            <Button variant="outline" onClick={() => goStep(clampedIndex - 1)} disabled={atStart}>
               &larr; Previous
             </Button>
             <span className="text-xs text-slate-500">
-              {stepIndex + 1} / {solution.steps.length}
+              {clampedIndex + 1} / {solution.steps.length}
             </span>
-            <Button variant="outline" onClick={() => setStepIndex((i) => i + 1)} disabled={atEnd}>
+            <Button variant="outline" onClick={() => goStep(clampedIndex + 1)} disabled={atEnd}>
               Next &rarr;
             </Button>
           </div>

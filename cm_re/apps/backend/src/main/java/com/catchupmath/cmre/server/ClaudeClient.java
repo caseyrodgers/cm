@@ -17,14 +17,33 @@ import java.util.List;
  * plain text back. No SDK; java.net.http + Gson (already a dependency).
  *
  * Config from the environment (never hard-coded — this repo is public):
- *   ANTHROPIC_API_KEY   required
- *   ANTHROPIC_MODEL     optional, default claude-haiku-4-5-20251001
+ *   ANTHROPIC_API_KEY    required
+ *   ANTHROPIC_MODEL      optional, default claude-haiku-4-5-20251001
+ *   ANTHROPIC_MAX_TOKENS optional, default 4096
  */
 public class ClaudeClient {
 
     private static final String ENDPOINT = "https://api.anthropic.com/v1/messages";
     private static final String DEFAULT_MODEL = "claude-haiku-4-5-20251001";
-    private static final int MAX_TOKENS = 1024;
+    // Ceiling on the response. A grade-pitched "Learn" explanation is full
+    // of token-heavy <math> markup, so 1024 truncated real answers
+    // mid-sentence (before the conclusion). 4096 clears the longest ones
+    // seen; it's only a cap, so short calls (chapter-name inference) are
+    // unaffected. Override with ANTHROPIC_MAX_TOKENS.
+    private static final int DEFAULT_MAX_TOKENS = 4096;
+
+    private static int maxTokens() {
+        String v = System.getenv("ANTHROPIC_MAX_TOKENS");
+        if (v != null && !v.isBlank()) {
+            try {
+                int n = Integer.parseInt(v.trim());
+                if (n > 0) return n;
+            } catch (NumberFormatException ignored) {
+                // fall through to the default
+            }
+        }
+        return DEFAULT_MAX_TOKENS;
+    }
 
     /** A vision attachment for the user turn — base64-encoded, per the Messages API's image content block. mediaType is one of image/jpeg, image/png, image/gif, image/webp. */
     public record ImageAttachment(String mediaType, String base64Data) {}
@@ -82,7 +101,7 @@ public class ClaudeClient {
 
         JsonObject body = new JsonObject();
         body.addProperty("model", model);
-        body.addProperty("max_tokens", MAX_TOKENS);
+        body.addProperty("max_tokens", maxTokens());
         body.add("messages", messages);
 
         HttpRequest req = HttpRequest.newBuilder(URI.create(ENDPOINT))

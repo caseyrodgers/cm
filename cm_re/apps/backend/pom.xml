@@ -68,8 +68,12 @@
            Maven, no Node) and updates via `git pull`:
              deploy/cm_re-server.jar   fat jar (server + deps)
              deploy/web/               the built tutor (from apps/tutor/dist)
+             deploy/web/editor/        the built editor (from apps/editor/dist)
            Run: java -jar deploy/cm_re-server.jar <port> deploy/web
-           `make dist` runs `make build` first so web/ is fresh. -->
+           The editor UI + API only mount when CM_EDITOR is set, so a
+           plain `make serve` still serves just the tutor.
+           `make dist` runs `make build` + `make editor` first so both
+           dist dirs are fresh. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -84,6 +88,18 @@
               <overwrite>true</overwrite>
               <resources>
                 <resource><directory>${project.basedir}/../tutor/dist</directory></resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>bundle-editor</id>
+            <phase>prepare-package</phase>
+            <goals><goal>copy-resources</goal></goals>
+            <configuration>
+              <outputDirectory>${project.basedir}/../../deploy/web/editor</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource><directory>${project.basedir}/../editor/dist</directory></resource>
               </resources>
             </configuration>
           </execution>

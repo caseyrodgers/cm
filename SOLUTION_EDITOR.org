@@ -1,0 +1,302 @@
+#+TITLE: Catchup Math (cm_re) — solution editor (=apps/editor=)
+#+STARTUP: overview
+
+Doc index: [[file:PROJECT.org][PROJECT.org]]. Design decisions this depends on: [[file:NEW_DIRECTION.org][NEW_DIRECTION.org]].
+The content format it authors: [[file:SOLUTION_INFO.org][SOLUTION_INFO.org]].
+
+* One-line
+
+=apps/editor= is the browser replacement for the legacy GWT
+=solution_editor= — an online-only authoring tool for the canonical
+=Solution= document (=packages/shared-types/src/solution.ts=) that
+the tutor reads. *We work on this next.*
+
+* Status — 2026-09-05: increment 1 shipped (read-only, file-backed)
+
+Decision (Casey): *rebuild the screens in React against new
+endpoints* — no GWT reuse (the legacy step editor is a dead Java
+applet, GXT 3.1.2 is commercial-frozen, "just the RPC layer" isn't
+small). GWT-reuse analysis: rejected.
+
+*What runs now* (=npx tsc --noEmit= + =vite build= clean, backend
+=mvn clean test= green, all endpoints curl-verified live):
+
+Backend — editor CRUD API on the *existing dependency-free*
+=TutorServer= (no Spring, no DB yet — see "Backend endpoints"):
+- =server/SolutionSource.java= — file-backed store over
+  =apps/tutor/public/modules/<subjectId>/bundle.json= (the same file
+  the preprocessor writes and the tutor serves). Re-reads on every
+  call, no cache. Gson config matches =ModuleAssembler= exactly, so a
+  round-trip PUT of a preprocessor-generated solution is
+  byte-identical (verified on =alg1ptests= — zero git diff).
+- =server/EditorHandler.java= — routes under =/api/editor/=, gated:
+  =TutorServer.resolveEditorHandler= only mounts it when =CM_EDITOR=
+  is set *and* =apps/tutor/public/modules= resolves. The public
+  serving deploy gets neither, so it never exposes writes.
+  - =GET  /api/editor/subjects=
+  - =GET  /api/editor/solutions?subject=<id>= → 846 summaries for alg1ptests
+  - =GET  /api/editor/solutions/<pid>=
+  - =PUT  /api/editor/solutions/<pid>= (round-trip + revert verified)
+  - =POST /api/editor/modules/<subjectId>/publish= → recompute
+    manifest (version = sha256 of bundle, sorted ids, real dir size),
+    copy bundle+manifest into the served web root
+
+Frontend — =apps/editor= is now a real Vite app:
+- =index.html=, =vite.config.ts= (=:5174=, proxies =/api= →
+  =:5173=), =tsconfig.json=, =package.json= scripts, real
+  =main.tsx=/=App.tsx= (hash routes =#/= ↔ =#/s/<pid>=).
+- =src/api/client.ts= — =listSubjects=/=listSolutions=/
+  =getSolution=/=saveSolution=/=publishModule=.
+- =components/SolutionList= — subject picker, live text filter, tag
+  badges (MC / widget / step count), "Publish module" button.
+- =components/SolutionView= — *read-only* render of statement / MC
+  question / widget slot / steps, via DOMPurify (same
+  sanitize-then-=dangerouslySetInnerHTML= the tutor uses; MathML
+  renders natively).
+- =src/styles.css= — plain CSS, no Tailwind yet.
+- =components/StepEditor= / =components/MathEditor= — still the
+  original =TODO= stubs; next increment.
+
+*One server, two APIs, two UIs* (Casey: "I don't want two servers").
+The Java =TutorServer= serves everything on one origin:
+
+| path | what |
+|------+------|
+| =/= | tutor SPA |
+| =/editor/= | solution editor SPA (=StaticHandler= with a =/editor= prefix strip + its own SPA fallback) |
+| =/api/= | tutor API (health, AI) |
+| =/api/editor/= | editor CRUD API |
+
+*Mounted by default* — no flag. The editor UI mounts when
+=apps/editor/dist= (or =deploy/web/editor/=) exists; the editor API
+mounts when a =modules/= content root resolves. Built with Vite
+=base: "/editor/"= so asset URLs resolve there.
+
+: make editor    # build apps/editor/dist (once, or after UI changes)
+: make api       # the one server — prints the /editor/ URL  (:5173)
+
+Same from the committed deploy jar (=make dist= builds the editor too
+and bundles it at =deploy/web/editor/=):
+
+: make serve            # tutor + editor, :8080
+: make serve PORT=9000  # …or any port
+
+*Opt-out for internet-facing boxes:* =CM_NO_EDITOR=1= drops =/editor/=
++ =/api/editor/*= — the editor API has unauthenticated write
+endpoints (=PUT solutions=, =POST publish=) and no auth yet.
+=deploy/run.sh= and =deploy/README.md= tell the server operator to set
+it. (With it set, =/editor/= still 200s the *tutor* shell via SPA
+fallback, but the editor JS 404s and the API is gone — cosmetic.)
+
+On a deploy-only tree (no repo checkout) the editor API edits the
+served =deploy/web/modules/…= bundles directly (walk-up fallback).
+
+(=make editor-dev= still runs a standalone Vite HMR server on :5174
+proxying to :5173 — only for actively hacking the editor UI.)
+
+*Not done:* editing (TipTap), the MathEditor node, real auth, any
+DB. =SolutionView= is read-only. Publish rewrites the committed
+=public/modules/...= files in place — fine for a solo tool, noisy in
+git for large subjects.
+
+*Verification going forward:* a Playwright MCP server (=.mcp.json=,
+2026-09-06) means editor screens can be opened in a real headless
+Chromium and screenshot-checked, not just type-checked.
+
+* Decisions already locked (from NEW_DIRECTION.org)
+
+- *React + TypeScript*, Vite, separate deployable from =apps/tutor=.
+- *TipTap* for rich step-content editing (=@tiptap/react= +
+  =starter-kit=; math as a custom node extension).
+- *Online-only by design* — no service worker, no IndexedDB, no
+  offline queue. Offline authoring would need real multi-editor
+  conflict resolution; not worth it. =src/main.tsx= already says so.
+- *Writes the exact =Solution= shape the tutor reads* — both import
+  =@cm_re/shared-types=, never redeclare. This is the whole point of
+  the shared-types package: "can't drift between what the editor
+  writes and what the tutor reads."
+- *Backend: Java / Spring Boot + Postgres JSONB*, versioned solution
+  documents. NB: the Spring backend *does not exist yet* — the only
+  backend today is the tiny dependency-free =TutorServer= that serves
+  static files + proxies the one AI call. The editor needs real
+  persistence endpoints that nothing currently provides.
+
+* What it has to do (feature set)
+
+Derived from the legacy =solution_editor= (93 Java classes under
+=src/main/java/.../hotmath/gwt/solution_editor/=). Grouped by
+priority:
+
+** Core (a solution can be created and saved)
+
+- *Browse / search solutions* by subject / program / id — legacy
+  =SolutionSearcherDialog=, =ListSolutionSearch=,
+  =SearchForSolutionsAction=.
+- *Edit the problem statement* (HTML, may embed MathML + figure) —
+  legacy =ProblemStatement=, =StatementContainer=.
+- *Edit steps* — a flat ordered list of hint/step units, each a
+  TipTap-edited HTML fragment — legacy =SolutionStepEditor=,
+  =StepContainer=, =EditableStepUnit=, =StepUnitWrapper=,
+  =HtmlEditorApplet= / =TinyMCE= (the thing TipTap replaces).
+- *Save* one solution — legacy =SaveSolutionAdminAction= /
+  =SaveSolutionStepsAdminAction=; "save as" =SaveSolutionAsDialog=.
+
+** Math authoring
+
+- *MathML / LaTeX editor* rendered live — legacy =MathMlEditorDialog=,
+  =MathMlTransformationDialog=, =AddMathMlResourceAction=,
+  =GetMathMlTransformationAction=. New plan: a TipTap node extension
+  wrapping a KaTeX-rendered span (=components/MathEditor=). KaTeX is
+  *not yet a dependency.*
+
+** Resources / figures
+
+- *Attach / list / upload figures and resources* per solution —
+  legacy =SolutionResourcePanel=, =SolutionResourceAddDialog=,
+  =SolutionResourceUploadDialog=, =SolutionResourceListDialog=,
+  =GetSolutionResourcesAdminAction=. Maps to =Solution.statementFigure=
+  and =StepUnit.figure= / =figures=.
+
+** Structured extras (new — legacy stored these as statement markup)
+
+- *Multiple-choice question* editor — legacy embedded MC as HTML in
+  the statement; cm_re has a structured =McQuestion= (=prompt=,
+  =choices[]=, =correctIndex=, per-choice =feedback=). The editor
+  should edit it *as structure*, not markup. The preprocessor already
+  extracts it from legacy content; the editor is how new/edited ones
+  are authored.
+- *Widget slot* — =Solution.widgetSlot = { type }=. Pick a widget
+  type from the tutor's registry (only ="whiteboard"= real today;
+  ="input"= built, not yet wired). See [[file:TUTOR_WIDGET.org][TUTOR_WIDGET.org]].
+
+** Publish
+
+- *Publish a module* — turn the current set of a subject's solution
+  docs into =manifest.json= + =bundle.json= (what the tutor
+  downloads). Today =ModuleAssembler= (a CLI) does this from
+  per-solution JSON files; the editor needs a backend endpoint that
+  does the equivalent from DB rows and bumps =ModuleManifest.version=.
+
+** Auth
+
+- Legacy had its own login (=SolutionEditorLoginPanel=,
+  =SolutionEditorUser=). cm_re auth model is undecided — flag, don't
+  assume.
+
+* Data contract
+
+The editor's output is one =Solution= per document (see
+=shared-types/src/solution.ts= for every field + provenance). Fields
+the editor owns:
+
+- =pid=, =subjectId=, =version= (format version, e.g. "2.0"),
+  =identification= (book/chapter/section/set/problemNumber/page),
+  =date= / =createdBy= / =active= (server metadata).
+- =statement= (HTML+MathML), =statementFigure=.
+- =question?: McQuestion= — structured, not markup.
+- =widgetSlot?: { type }=.
+- =steps: StepUnit[]= — flat, ordered, each ={ role: "hint"|"step",
+  content, figure?, figures? }=. Legacy always adds them as
+  hint+step pairs.
+
+*Relationship to the preprocessor:* =LegacySolutionParser= +
+=ModuleAssembler= are a *one-time* legacy→clean conversion
+(SOLUTION_INFO.org). Once a subject's content is in the clean schema,
+the editor is the authoring path — the preprocessor is not rerun
+against edited content. New backend persistence is the boundary: the
+preprocessor writes the first clean copy, the editor + Spring backend
+own it thereafter.
+
+* Backend endpoints
+
+*Resolved:* extend the dependency-free =TutorServer=, not Spring Boot
+(the tutor only needs static files; a full Spring app just for the
+editor was not worth it now). File store, not Postgres — yet.
+
+| Client call | HTTP | Status | Legacy analogue |
+|-------------+------+--------+-----------------|
+| =listSubjects()= | =GET /api/editor/subjects= | done | — |
+| =listSolutions(subjectId)= | =GET /api/editor/solutions?subject== | done | =SearchForSolutionsAction= |
+| =getSolution(pid)= | =GET /api/editor/solutions/{pid}= | done | =GetSolutionAdminCommand= |
+| =saveSolution(doc)= | =PUT /api/editor/solutions/{pid}= | done | =SaveSolutionAdminCommand= |
+| =publishModule(subjectId)= | =POST /api/editor/modules/{subjectId}/publish= | done | =ModuleAssembler= CLI |
+| (figures) | =POST /api/editor/solutions/{pid}/resources= | TODO | =SolutionResourceUploadDialog= |
+
+Mounted under =/api/editor/= (not =/api/=) and gated on the
+=CM_EDITOR= env var so the public deploy never exposes writes. Store
+is =SolutionSource= over =apps/tutor/public/modules/<id>/bundle.json=.
+
+* Legacy → new mapping (quick reference)
+
+| Legacy (GWT) | cm_re |
+|--------------+-------|
+| =SolutionEditor.java= (app shell) | =apps/editor/src/App.tsx= |
+| =SolutionSearcherDialog=, =ListSolutionSearch= | =components/SolutionList= |
+| =SolutionStepEditor=, =HtmlEditorApplet=, =TinyMCE= | =components/StepEditor= (TipTap) |
+| =MathMlEditorDialog=, =MathMlTransformationDialog= | =components/MathEditor= (TipTap node + KaTeX) |
+| =ProblemStatement=, =StatementContainer= | (statement pane — not stubbed yet) |
+| =SolutionResourcePanel= + resource dialogs | (figures pane — not stubbed yet) |
+| =WidgetListDialog=, =WidgetModel= | widgetSlot picker → [[file:TUTOR_WIDGET.org][TUTOR_WIDGET.org]] registry |
+| =SaveSolution*AdminAction/Command= | =PUT /api/solutions/{pid}= |
+| GWT-RPC =*Action= / =*Command= pairs | plain REST + JSON |
+| =SolutionEditorLoginPanel= | auth — undecided |
+| =XmlFormatter=, =FormatXmlAdminAction= | n/a — JSON, no XML |
+
+* Open questions (decide before/while building)
+
+1. *Backend*: start Spring Boot now, or bolt write endpoints onto
+   =TutorServer=? (Leaning: a small dedicated editor backend; the
+   tutor's serving path stays dependency-free.)
+2. *Storage*: Postgres JSONB is decided in principle — is it stood up
+   anywhere yet? (No.) What's the dev DB story?
+3. *Auth*: who can edit, how do they sign in? No cm_re auth exists.
+4. *Math*: KaTeX (fast, LaTeX-in) vs. authoring MathML directly (what
+   the tutor renders natively). Round-trip: does the editor store
+   LaTeX and convert on save, or store MathML? The tutor renders
+   =<math>= MathML today.
+5. *Preview*: does the editor render steps with the *same* components
+   as =apps/tutor= (=StepViewer=, =QuestionView=, =SanitizedHtml=)?
+   Sharing them keeps WYSIWYG honest — worth a =packages/= extract.
+6. *Concurrency*: single editor at a time assumed (online-only, no
+   conflict resolution) — enforce with a lock, or just last-write-
+   wins?
+7. *Publish*: does "publish module" run server-side from DB rows, and
+   how does it reach the tutor's static host (write =bundle.json= to
+   the same =deploy/web/modules/= the server serves)?
+
+* Milestones
+
+1. [X] *Stand up the app* — =index.html=, =vite.config.ts=,
+   =tsconfig.json=, =main.tsx=, =make editor= (+ =make api=).
+   (2026-09-05)
+2. [X] *Read-only solution view* — =SolutionList= (from
+   =/api/editor/solutions=) → =SolutionView=. Renders via DOMPurify
+   directly rather than importing the tutor's components — a
+   =packages/= extract of =StepViewer=/=QuestionView= is deferred
+   (open question 5). (2026-09-05)
+5. [X] *Backend + save* — went with the file-store stand-in, not
+   Spring/Postgres (open question 1 still formally open, but this
+   unblocks everything). =getSolution=/=saveSolution=/=publish= wired
+   and curl-verified. (2026-09-05)
+7. [X] *Publish module* endpoint — =POST /api/editor/modules/<id>/publish=.
+   (2026-09-05)
+3. [ ] *Edit one step* — TipTap in =StepEditor=, editing
+   =steps[i].content= HTML; wire the existing =saveSolution=.
+   *← next*
+4. [ ] *MathEditor node* — KaTeX-rendered inline math as a TipTap
+   extension.
+6. [ ] *Statement + MC question + widget-slot + figures* panes.
+8. [ ] *Auth* (open question 3), and the *Spring/Postgres* migration
+   (open question 1) when the file store stops being enough.
+
+* References
+
+- =apps/editor/src/*= — the six stub files
+- =packages/shared-types/src/solution.ts= — the document shape
+- =src/main/java/.../hotmath/gwt/solution_editor/= — the legacy app
+  (93 classes) this replaces
+- =cm_re/apps/backend/.../preprocessor/= — =LegacySolutionParser= +
+  =ModuleAssembler=, the one-time legacy→clean conversion
+- [[file:SOLUTION_INFO.org][SOLUTION_INFO.org]] — the content format, image handling, MC extraction
+- [[file:TUTOR_WIDGET.org][TUTOR_WIDGET.org]] — the widget registry a widgetSlot picker draws from
+- [[file:NEW_DIRECTION.org][NEW_DIRECTION.org]] — the platform/backend/offline decisions above

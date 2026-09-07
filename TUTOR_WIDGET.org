@@ -72,34 +72,20 @@ shared mount/lifecycle contract once a second widget landed.
 =tutor_widget_dummy.png= finding is further confirmation the real
 system had *widget slots per problem*, not just a fixed page layout.
 
-* Two separable next steps (not yet started)
+* Two separable next steps (original framing)
 
-1. *Quick fix* — make the one real reference resolve:
-   - Either special-case =/images/tutor5/...= in =HtmlCleaner= to
-     rewrite to a new shared asset path (e.g.
-     =/shared/tutor5/tutor_widget_dummy.png=) and copy the file once
-     into =apps/tutor/public/shared/tutor5/= (not per-solution —
-     it's subject-wide), or
-   - Since it's only ever a static "use the whiteboard" banner and
-     cm_re already *has* a real whiteboard, consider just dropping
-     the dead =<img>= reference entirely (like =.not_used= markup)
-     and, when a statement contains it, rendering cm_re's own
-     "use the whiteboard below" hint instead of a 404'd legacy image.
-2. *Widget-slot infrastructure* — the structural piece:
-   - A shared contract for mounting a widget into a step/statement:
-     mount-by-type, common =getValue=/=setValue=/report-
-     correctness/lifecycle interface, an event channel (the React
-     equivalent of legacy =window:tutorEvent=).
-   - Refactor =QuestionView= and =WhiteboardPanel= onto it once it
-     exists, rather than each staying a one-off special case in
-     =SolutionNav=.
-   - Decide whether a "widget slot" is a first-class field on
-     =Solution= (detected/extracted by the preprocessor, the way
-     =McQuestion= was) or purely a client-side render-time thing.
-
-*Decided (2026-09-04)*: build the widget-slot infrastructure. Casey:
-"we want a widget-slot infrastructure. The widgets need to be js and
-adhere to a basic contract."
+1. *Quick fix* — make the one real reference resolve. *Resolved a
+   different way*: the preprocessor now strips the dead
+   =tutor_widget_dummy.png= =<img>= entirely and records
+   =widgetSlot = {type:"whiteboard"}= instead (see below), so there's
+   no 404 to fix and no shared-asset copy needed.
+2. *Widget-slot infrastructure* — the structural piece.
+   *Decided (2026-09-04)*: build it. Casey: "we want a widget-slot
+   infrastructure. The widgets need to be js and adhere to a basic
+   contract." Progress below. =QuestionView= is *not* refactored onto
+   it yet, and the "first-class field on =Solution=?" question is
+   answered *yes* — =widgetSlot= is extracted by the preprocessor,
+   like =McQuestion=.
 
 * Widget-slot infrastructure — built so far (2026-09-04)
 
@@ -123,7 +109,7 @@ mounts/destroys on =type=+=instanceId= identity change only — config
 and callback changes on a live instance don't force a remount
 (callbacks are read through refs). =registerWidget=/=getWidget= is a
 plain =Map<string, WidgetModule>=; modules self-register as an import
-side effect (=widgets/index.ts=, not yet written).
+side effect of =widgets/index.ts=, which =main.tsx= imports once.
 
 ** Backend: =Solution.widgetSlot= (done, verified)
 
@@ -159,7 +145,8 @@ and 3 are still open.
 - =widgets/index.ts= — registers =inputWidget= as an import side
   effect; imported once from =main.tsx=.
 - Verified: =npx tsc --noEmit= clean, =npm run build= succeeds (70
-  modules, no new warnings).
+  modules, no new warnings). Committed =7d3ad164d= (2026-09-04),
+  alongside the AI vision fix.
 
 Still open (unresolved from the original three questions):
 

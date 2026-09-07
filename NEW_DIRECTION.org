@@ -1,6 +1,8 @@
 #+TITLE: Catchup Math (cm) — New Direction
 #+STARTUP: overview
 
+# Doc index for the whole project: [[file:PROJECT.org][PROJECT.org]]
+
 * Summary
 
 Explore a rewrite of the CM tutor + solution_editor stack, replacing the
@@ -567,13 +569,15 @@ solution) specifically so selection has more than one real option to
 prove out. Extended the smoke test to cover =listSubjects()= and both
 subjects' full download→install→read-back cycle — still passing.
 
-** Tutor feature build-out (2026-08-27 → 2026-09-03)
+** Tutor feature build-out (2026-08-27 → 2026-09-06)
 
 Consolidated log of the run of work after the scaffold. Every item is
 in git on =github.com/caseyrodgers/cm= =main=; each has a smoke
-test or check unless noted, and all builds are green. No real browser
-in this environment, so interaction/visual behaviour is the standing
-"verify with =make run=" caveat throughout.
+test or check unless noted, and all builds are green. Interaction /
+visual behaviour carried a standing "verify with =make run=" caveat
+throughout — as of 2026-09-06 there's a *Playwright MCP server*
+(=.mcp.json=) so that can now be a real headless-Chromium
+screenshot-and-check (see "Browser verification" under Ops).
 
 *** Multiple-choice questions — extracted, not embedded
 
@@ -620,14 +624,65 @@ across reload, one active test per subject.
 *** "Learn" — AI explanation
 
 =LearnPanel= below the statement (and in the test question/review
-views): grade picker (7th/10th/12th, sticky in localStorage) →
-"Explain this problem" → renders the answer. Wired to the backend,
-which does a live Claude call (see below). The model is asked to
-return an HTML fragment with =<math>= MathML for every formula;
-=LearnPanel= sanitises with DOMPurify (keeps MathML) and the browser
-renders it natively — same path as =StepViewer=. Options for a
-pre-generated / cached explanation store are in AI_DISCUSS.org (no
+views): "Tell me like I'm a…" grade picker (7th/10th/12th *Grader*,
+sticky in localStorage) → "Explain this problem" → renders the
+answer. Wired to the backend,
+which does a live Claude call (see below). The picked grade flows to
+the server (=?grade==) and is woven into the prompt. The model is
+asked to return an HTML fragment with =<math>= MathML for every
+formula; =LearnPanel= sanitises with DOMPurify (keeps MathML) and the
+browser renders it natively — same path as =StepViewer=. Options for
+a pre-generated / cached explanation store are in AI_DISCUSS.org (no
 decision yet).
+
+*Image-only problem content (2026-09-04).* Many legacy problems
+render the equation and/or the MC answer choices as an inline =.gif=,
+not text — and the text-extraction path feeding the prompt was
+stripping every =<img>=, so Claude got a blank ("the equation isn't
+showing... choices are blank too", real report). =SolutionStore= now
+also resolves those =<img src>= refs to real files under =webRoot=
+and =ClaudeClient= attaches them as base64 vision content blocks.
+Verified live against a 4-pure-image-choice problem. Commit
+=7d3ad164d=.
+
+*** "Correct!" reward burst (gamification, first pass)
+
+=components/CorrectCelebration= — a big, bright full-viewport overlay
+(green radial wash, gradient "Correct!" at =text-8xl=, a 16-particle
+CSS-only burst) shown when a student checks a right answer. Pops in,
+holds, fades, auto-dismisses (~2.3s) or on click. Keyframes in
+=styles.css=; honors =prefers-reduced-motion=. =QuestionView= fires
+it from =submit()= only when the result is actually revealed
+(practice / "Learn" flow) — *not* in test mode (feedback withheld
+till the score screen) or read-only review. Bundle +1.8 KB JS /
++5.6 KB CSS. Visual behaviour needs =make run= to eyeball.
+
+*** Chapter-name inference
+
+Legacy export has no chapter-title field anywhere. =GET
+/api/ai/chapter-name/{subjectId}?label=&pids== →
+=AiService.getChapterName= samples up to 3 of the chapter's problem
+texts, asks for a 2–5 word topic name; client caches per chapter in
+=localStorage= (=lib/chapterName.ts=). Feeds the lesson header and
+the missed-questions lesson label ("Chapter 3: Ratios and
+Proportions review").
+
+*** Widget-slot infrastructure (2026-09-04, first cut)
+
+Plain-JS, framework-agnostic widget contract at
+=apps/tutor/src/widgets/= — =WidgetModule{type, mount(el, ctx)}= /
+=WidgetContext{instanceId, config, initialValue?, onChange?,
+onResult?}= / =WidgetInstance{destroy, getValue?, setValue?}=, a
+registry, and a React bridge (=WidgetSlot.tsx=, remounts only on
+=type=+=instanceId= identity change). =Solution.widgetSlot?: {type}=
+is a first-class preprocessor-extracted field (like =McQuestion=):
+the dead =tutor_widget_dummy.png= banner is stripped from =statement=
+and lifted to =widgetSlot={type:"whiteboard"}=. First widget:
+=inputWidget= (=type:"input"=) — a text field with a numeric
+keystroke filter, extensible to external/prebuilt widgets with no
+contract change. *Not yet wired* into any real solution, and
+=QuestionView= / =WhiteboardPanel= are *not* refactored onto it yet.
+Full detail + open questions in TUTOR_WIDGET.org.
 
 *** Backend: a real (tiny) server
 
@@ -654,6 +709,26 @@ still stands, this is the minimum to serve + proxy one call.
   Vite 5 — just needs a JRE and =git pull=. =make serve= runs it.
   =deploy/README.md= has the server steps (needs OpenJDK 17 tarball,
   real TLS, outbound HTTPS to api.anthropic.com).
+  - *Gotcha*: the =maven-resources-plugin= copy into =deploy/web=
+    doesn't clean first (unlike Vite's own =dist/=), so old
+    hashed =assets/index-*.js|css= pile up on every =make dist= and
+    must be pruned by hand before committing (done once at
+    =7d3ad164d=). Worth a =maven-clean-plugin= bind or a
+    delete-before-copy step.
+- *One server, two apps* (2026-09-05/06). The Java =TutorServer=
+  serves the tutor at =/= and the solution editor at =/editor/= (a
+  =StaticHandler= with a =/editor= prefix-strip), plus =/api/= and
+  =/api/editor/=. Mounted by default; =CM_NO_EDITOR=1= drops the
+  editor on an internet-facing box (its write endpoints have no auth
+  yet). =make dist= bundles =apps/editor/dist= into
+  =deploy/web/editor/=. Details in SOLUTION_EDITOR.org.
+- *Browser verification* (2026-09-06). =.mcp.json= at the repo root
+  adds a *Playwright MCP server* (=@playwright/mcp=, headless
+  Chromium, pre-installed under =~/AppData/Local/ms-playwright/=).
+  =.claude/settings.local.json= pre-enables it
+  (=enabledMcpjsonServers=). Lets a session actually open =make run=
+  in a browser, click through, and screenshot — retiring the "no
+  real browser in this environment" caveat for UI checks.
 
 * Next steps
 
@@ -685,10 +760,18 @@ still stands, this is the minimum to serve + proxy one call.
       preprocessor CLI does it one-off today)
 - [ ] Decide the AI-explanation generation/serving model
       (pre-generated store vs. live-per-call vs. hybrid) — see
-      AI_DISCUSS.org; live-per-call is wired now as the starting point
+      AI_DISCUSS.org; live-per-call is wired now as the starting
+      point, now grade-aware and with image (vision) context for
+      image-only problems — the latter adds real per-call cost, a
+      data point for this decision
 - [ ] solution_editor (=apps/editor=) — still just a stub; the whole
-      authoring side is unstarted
-- [ ] "Widget infrastructure" — =QuestionView= + =WhiteboardPanel= are
-      hand-wired into =SolutionNav=; legacy had a whole set (tutor
-      input, whiteboard, keyboard, calculator, games). A shared
-      mount/lifecycle contract is the next structural piece.
+      authoring side is unstarted. *Next up* — status, feature set,
+      data contract, needed backend endpoints, open questions and a
+      milestone plan are in [[file:SOLUTION_EDITOR.org][SOLUTION_EDITOR.org]].
+- [~] "Widget infrastructure" — *contract + registry + React bridge
+      built* (=apps/tutor/src/widgets/=, 2026-09-04), plus a
+      preprocessor-extracted =Solution.widgetSlot= field and a first
+      =inputWidget=. Still open: wire =inputWidget= into real
+      solutions (detection rule + grading decision), convert
+      =WhiteboardPanel= onto the contract, refactor =QuestionView=
+      onto it. See TUTOR_WIDGET.org.
