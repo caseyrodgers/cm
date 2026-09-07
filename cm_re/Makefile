@@ -1,4 +1,4 @@
-.PHONY: build run debug dist serve serve-legacy kill-python api editor editor-dev e2e e2e-ui
+.PHONY: build run debug dist serve serve-legacy kill-python api editor editor-dev e2e e2e-ui e2e-setup
 
 # JDWP address for `make debug`. suspend=y makes the JVM wait for a
 # debugger before running main() (good for breakpoints in startup);
@@ -94,12 +94,14 @@ editor-dev:
 	cd apps/editor && npm install && npm run dev
 
 # --- Playwright end-to-end tests (e2e/) ---
-# Self-contained: CM_E2E_START_SERVER=1 lets Playwright boot `make run`
-# itself (and reuse one already listening on :5173, so having `make run`
-# in another terminal just makes it faster). First run also needs the
-# browser:  cd e2e && npm install && npx playwright install chromium
-e2e:
-	cd e2e && npm install && CM_E2E_START_SERVER=1 npm test
+# Fully self-contained: e2e-setup installs deps + the browser (both no-op
+# fast once present), and CM_E2E_START_SERVER=1 lets Playwright boot
+# `make run` itself, reusing one already on :5173 if present.
+e2e-setup:
+	cd e2e && npm install && npx playwright install chromium
 
-e2e-ui:
-	cd e2e && npm install && CM_E2E_START_SERVER=1 npm run test:ui
+e2e: e2e-setup
+	cd e2e && CM_E2E_START_SERVER=1 npm test
+
+e2e-ui: e2e-setup
+	cd e2e && CM_E2E_START_SERVER=1 npm run test:ui

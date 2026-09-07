@@ -9,28 +9,21 @@ These complement the fast in-process `*.smoketest.ts` / `*.check.ts` files
 under `apps/tutor/src/` — those test logic with `fake-indexeddb`; these
 test the assembled app in a browser.
 
-## One-time setup
-
-```sh
-cd cm_re/e2e
-npm install
-npx playwright install chromium      # reuses the machine's browser cache if present
-```
-
 ## Running
 
 ```sh
 cd cm_re && make e2e
 ```
 
-That's self-contained — it builds the tutor, starts the Java server,
-runs the suite, and shuts the server down. If you already have `make
-run` going in another terminal it reuses that one (faster — no rebuild).
+Fully self-contained — `make e2e` installs deps + the browser on first
+run (`e2e-setup`, no-ops fast after), builds the tutor, starts the Java
+server, runs the suite, and shuts the server down. If you already have
+`make run` going in another terminal it reuses that one (no rebuild).
 
-Running from `cm_re/e2e` directly, `npm test` expects a server already
-on `http://localhost:5173` (start one with `make run`). Set
-`CM_E2E_START_SERVER=1` to have it boot one itself — this is what `make
-e2e` does.
+Running from `cm_re/e2e` directly with `npm test` expects a server
+already on `http://localhost:5173` (start one with `make run`), and deps
+already installed (`npm install && npx playwright install chromium`).
+Set `CM_E2E_START_SERVER=1` to have it boot the server itself.
 
 Other commands (run from `cm_re/e2e`):
 
