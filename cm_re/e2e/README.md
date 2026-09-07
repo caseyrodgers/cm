@@ -25,15 +25,22 @@ already on `http://localhost:5173` (start one with `make run`), and deps
 already installed (`npm install && npx playwright install chromium`).
 Set `CM_E2E_START_SERVER=1` to have it boot the server itself.
 
+`make e2e` (and a bare `npm test`) runs **every spec in `tests/`** —
+14 tests. The only one that doesn't execute is `learn-ai`, which
+skips itself unless `RUN_AI_TESTS=1` (it calls the real Claude API).
+So a normal run is 13 passed + 1 skipped. The `@slow` at-scale spec
+*does* run by default (it's tagged only because it installs the full
+846-solution module; in practice it's still sub-second).
+
 Other commands (run from `cm_re/e2e`):
 
 | command | what |
 |---|---|
-| `npm test` | all specs except `@slow` and the live-AI ones |
+| `npm test` | every spec (`learn-ai` self-skips without `RUN_AI_TESTS=1`) |
 | `npm run test:headed` | same, with a visible browser |
 | `npm run test:ui` | Playwright's interactive UI mode |
-| `npm run test:slow` | also run `@slow` (installs the real 846-solution module) |
-| `npm run test:ai` | run the live Claude "Learn" test (costs money — see below) |
+| `npm run test:slow` | run **only** the `@slow` spec |
+| `npm run test:ai` | run **only** the live Claude "Learn" test, with the key set (costs money) |
 | `npm run report` | open the HTML report from the last run |
 | `npm run codegen` | record a new test by clicking through the app |
 
