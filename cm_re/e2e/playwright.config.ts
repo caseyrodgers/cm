@@ -6,7 +6,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const cmRe = resolve(here, "..");
 
 // Point tests at an already-running server (default) or an alternate origin.
-// `make run` uses :5173; a `make serve` deploy jar uses :8080.
+// `make run` and `make serve` both listen on :5173.
 const BASE_URL = process.env.CM_E2E_BASE_URL || "http://localhost:5173";
 
 // Whether Playwright is allowed to start the server itself. Off by default:

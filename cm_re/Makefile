@@ -45,11 +45,11 @@ dist: build editor
 	@echo "cm_re/deploy/ updated -> git add deploy && commit && push; then 'git pull' + 'make serve' on the server"
 
 # Run from a committed deploy/ on a box with only a JRE (no Node, no
-# Maven). Override the port:  make serve PORT=9000
-# Serves tutor + editor (one instance). On an internet-facing box set
-# CM_NO_EDITOR=1 to drop /editor/ + /api/editor/* until editor auth
-# exists (the editor API has unauthenticated write endpoints).
-PORT ?= 8080
+# Maven). Same :5173 as `make run` (one port everywhere) — override with
+# make serve PORT=9000. Serves tutor + editor (one instance). On an
+# internet-facing box set CM_NO_EDITOR=1 to drop /editor/ + /api/editor/*
+# until editor auth exists (the editor API has unauthenticated writes).
+PORT ?= 5173
 serve:
 	java -jar deploy/cm_re-server.jar $(PORT) deploy/web
 
@@ -96,9 +96,9 @@ editor-dev:
 # --- Playwright end-to-end tests (e2e/) ---
 # Fully self-contained: e2e-setup installs deps + the browser (both no-op
 # fast once present). With no E2E_BASE_URL, Playwright boots `make run`
-# itself on :5173 (reusing one already there). To run against a server
-# you already have up on another port (e.g. a `make serve` deploy jar):
-#   make e2e E2E_BASE_URL=http://localhost:8080
+# itself on :5173 (reusing one already there — `make run` or `make serve`,
+# both :5173). Point at a non-default port or a remote host with:
+#   make e2e E2E_BASE_URL=http://localhost:9000
 E2E_BASE_URL ?=
 
 e2e-setup:

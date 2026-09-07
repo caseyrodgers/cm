@@ -46,19 +46,19 @@ Other commands (run from `cm_re/e2e`):
 
 ### Point at a different origin
 
-`make run` serves `:5173` (the default). A `make serve` deploy jar serves
-`:8080`. To run against a server you already have up:
+`make run` and `make serve` both listen on `:5173` (the default the
+tests use). To run against a server on a different port or a remote
+host:
 
 ```sh
-make e2e E2E_BASE_URL=http://localhost:8080     # from cm_re/
+make e2e E2E_BASE_URL=http://localhost:9000     # from cm_re/
 # or, from cm_re/e2e:
-CM_E2E_BASE_URL=http://localhost:8080 npm test
+CM_E2E_BASE_URL=http://localhost:9000 npm test
 ```
 
 With `E2E_BASE_URL` set, `make e2e` does **not** start its own server —
 it uses yours as-is. Make sure it's serving current code (`git pull` +
-restart `make serve` if it's stale — the tests rely on `data-testid`
-hooks added recently).
+restart if it's stale — the tests rely on `data-testid` hooks).
 
 ### Live AI test
 

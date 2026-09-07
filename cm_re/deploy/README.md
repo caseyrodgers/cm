@@ -18,11 +18,12 @@ deploy/
 git pull
 export ANTHROPIC_API_KEY=...          # optional — enables live "Learn"
 export CM_NO_EDITOR=1                 # internet-facing: see below
-cd cm_re && ./deploy/run.sh           # or: make serve PORT=8080
+cd cm_re && ./deploy/run.sh           # or: make serve   (both listen on :5173)
 ```
 
 Serves the tutor + `GET /api/health` + `GET /api/ai/problem/{pid}` on
-one origin. The **solution editor** (`/editor/` + `/api/editor/*`) is
+one origin, on `:5173` by default (same port as `make run` — set `PORT`
+to change it). The **solution editor** (`/editor/` + `/api/editor/*`) is
 served by the same instance when `web/editor/` is present — but it has
 **unauthenticated write endpoints** (edit/publish solutions), so on any
 internet-facing box set **`CM_NO_EDITOR=1`** until editor auth exists. It's a PWA, so **off localhost it needs real TLS** — front it
