@@ -95,13 +95,17 @@ editor-dev:
 
 # --- Playwright end-to-end tests (e2e/) ---
 # Fully self-contained: e2e-setup installs deps + the browser (both no-op
-# fast once present), and CM_E2E_START_SERVER=1 lets Playwright boot
-# `make run` itself, reusing one already on :5173 if present.
+# fast once present). With no E2E_BASE_URL, Playwright boots `make run`
+# itself on :5173 (reusing one already there). To run against a server
+# you already have up on another port (e.g. a `make serve` deploy jar):
+#   make e2e E2E_BASE_URL=http://localhost:8080
+E2E_BASE_URL ?=
+
 e2e-setup:
 	cd e2e && npm install && npx playwright install chromium
 
 e2e: e2e-setup
-	cd e2e && CM_E2E_START_SERVER=1 npm test
+	cd e2e && $(if $(E2E_BASE_URL),CM_E2E_BASE_URL=$(E2E_BASE_URL),CM_E2E_START_SERVER=1) npm test
 
 e2e-ui: e2e-setup
-	cd e2e && CM_E2E_START_SERVER=1 npm run test:ui
+	cd e2e && $(if $(E2E_BASE_URL),CM_E2E_BASE_URL=$(E2E_BASE_URL),CM_E2E_START_SERVER=1) npm run test:ui
