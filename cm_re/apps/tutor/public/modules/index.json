@@ -1,5 +1,6 @@
 [
   { "subjectId": "algebra1", "title": "Algebra 1" },
   { "subjectId": "geometry", "title": "Geometry" },
-  { "subjectId": "alg1ptests", "title": "Algebra 1 Practice Tests (real content)" }
+  { "subjectId": "alg1ptests", "title": "Algebra 1 Practice Tests (real content)" },
+  { "subjectId": "geoptests", "title": "Geometry Practice Tests (real content)" }
 ]
