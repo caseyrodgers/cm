@@ -18,6 +18,8 @@ test.describe("practice test", () => {
 
     // test mode: the button says "Submit answer" and nothing is revealed
     await expect(page.getByTestId("mc-submit")).toHaveText(/Submit answer/i);
+    // no "Learn" while the test is in progress
+    await expect(page.getByRole("button", { name: /Learn .* explain this problem/i })).toHaveCount(0);
 
     const key = await answerKey(page, SUBJECT.demo);
     const correct = Object.values(key)[0];

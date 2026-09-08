@@ -381,7 +381,9 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
               ) : (
                 <p className="text-sm text-slate-500">This problem has no question.</p>
               )}
-              <LearnPanel key={`learn-${pid}`} solution={solution} title={solutionTitle(pid, subjectId)} />
+              {/* No "Learn" while the test is in progress — it's an
+                  assessment. It's available on the score-screen review
+                  and in the missed-questions lesson afterward. */}
               {/* Same per-solution board as the normal view (keyed by pid). */}
               <WhiteboardPanel key={`wb-${pid}`} pid={pid} />
             </>
