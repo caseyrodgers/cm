@@ -9,8 +9,9 @@ import { cn } from "../../lib/utils";
  * stepping through the solution doesn't partition it, every step's
  * work lands on the same surface.
  *
- * When open it's a vertical panel pinned to the right edge of the
- * viewport, so the problem stays visible on the left while you work.
+ * When open it's a semi-transparent overlay covering the problem/step
+ * card (`absolute inset-0` inside the `relative` Card), so you draw on
+ * top of the problem — which stays faintly visible through the board.
  * Strokes are vector, stored in a fixed logical coordinate space
  * (LOGICAL_W x LOGICAL_H, portrait) so the drawing is resolution- and
  * resize-independent regardless of the panel's actual pixel size; the
@@ -178,7 +179,7 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
       </button>
 
       {open && (
-        <aside className="fixed inset-y-0 right-0 z-40 flex w-[min(92vw,26rem)] flex-col border-l border-slate-300 bg-white/70 shadow-2xl">
+        <aside className="absolute inset-0 z-30 flex flex-col overflow-hidden rounded-lg border border-slate-300 bg-white/80 shadow-2xl">
           <div className="flex items-center gap-2 border-b border-slate-200 bg-white/85 px-3 py-2">
             <span className="text-sm font-medium text-slate-700">Whiteboard</span>
             <div className="ml-auto flex items-center gap-1.5">
@@ -214,7 +215,7 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
               ref={canvasRef}
               width={LOGICAL_W * dpr}
               height={LOGICAL_H * dpr}
-              className="block w-full touch-none rounded-md border border-slate-300 bg-white/40"
+              className="block w-full touch-none rounded-md border border-slate-300 bg-white/50"
               style={{ aspectRatio: `${LOGICAL_W} / ${LOGICAL_H}` }}
               onPointerDown={onPointerDown}
               onPointerMove={onPointerMove}
