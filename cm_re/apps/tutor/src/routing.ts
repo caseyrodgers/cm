@@ -13,16 +13,19 @@ import { useEffect, useState } from "react";
  *   #/s/<pid>           jump straight to one solution, by its globally
  *                       unique pid (SolutionLoader reads it from
  *                       IndexedDB and derives its subject)
- *   #/t/<subjectId>     a 10-question practice test for that subject
- *                       (PracticeTest handles its own index/question/
- *                       score sub-views internally)
+ *   #/t/<subjectId>          a practice test for that subject
+ *                            (PracticeTest handles its own index/
+ *                            question/score sub-views internally)
+ *   #/t/<subjectId>/<pid>    a specific problem in the active "Missed
+ *                            Questions Lesson" walkthrough — the hash
+ *                            tracks which problem you're on
  */
 
 export type Route =
   | { kind: "subjects" }
   | { kind: "module"; subjectId: string }
   | { kind: "solution"; pid: string }
-  | { kind: "test"; subjectId: string };
+  | { kind: "test"; subjectId: string; pid?: string };
 
 export function parseHash(hash: string): Route {
   // Accept "#/m/x", "#m/x", "/m/x", "m/x" — normalise to segments.
@@ -36,7 +39,7 @@ export function parseHash(hash: string): Route {
     return { kind: "solution", pid: segments[1] };
   }
   if (segments[0] === "t" && segments[1]) {
-    return { kind: "test", subjectId: segments[1] };
+    return { kind: "test", subjectId: segments[1], pid: segments[2] };
   }
   return { kind: "subjects" };
 }
@@ -45,7 +48,10 @@ export const hashFor = {
   subjects: () => "#/",
   module: (subjectId: string) => `#/m/${encodeURIComponent(subjectId)}`,
   solution: (pid: string) => `#/s/${encodeURIComponent(pid)}`,
-  test: (subjectId: string) => `#/t/${encodeURIComponent(subjectId)}`,
+  test: (subjectId: string, pid?: string) =>
+    pid
+      ? `#/t/${encodeURIComponent(subjectId)}/${encodeURIComponent(pid)}`
+      : `#/t/${encodeURIComponent(subjectId)}`,
 };
 
 /** Navigate by setting the hash — the single source of truth; the hook below re-renders off `hashchange`. */

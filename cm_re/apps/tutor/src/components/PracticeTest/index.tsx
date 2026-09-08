@@ -72,14 +72,24 @@ function joinChapters(entries: { label: string; name: string }[]): string {
   return `${parts.join(", ")} review`;
 }
 
-export default function PracticeTest({ subjectId }: { subjectId: string }) {
+export default function PracticeTest({ subjectId, pid }: { subjectId: string; pid?: string }) {
   const [installed, setInstalled] = useState<boolean | null>(null);
   const [test, setTest] = useState<PracticeTestT | null | undefined>(undefined);
   const [allSolutions, setAllSolutions] = useState<Solution[] | null>(null);
   const [solutions, setSolutions] = useState<Map<string, Solution>>(new Map());
   const [view, setView] = useState<View>({ k: "index" });
-  const [lessonIdx, setLessonIdx] = useState(0); // position in a scope:"custom" review lesson
   const [busy, setBusy] = useState(false);
+
+  // In a "Missed Questions Lesson" (scope "custom") the URL carries the
+  // problem being viewed: #/t/<subjectId>/<pid>. Keep it pointing at a
+  // real one so Prev/Next, refresh, and deep links all agree.
+  useEffect(() => {
+    if (test?.scope?.kind === "custom" && test.pids.length > 0) {
+      if (!pid || !test.pids.includes(pid)) {
+        navigate(hashFor.test(subjectId, test.pids[0]));
+      }
+    }
+  }, [test, pid, subjectId]);
 
   // Load install state + any active test on mount / subject change.
   useEffect(() => {
@@ -100,7 +110,6 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
         if (cancelled) return;
         setSolutions(new Map(loaded.filter((s): s is Solution => !!s).map((s) => [s.pid, s])));
         setView(active.completedAt ? { k: "score" } : { k: "index" });
-        setLessonIdx(0);
       }
     })();
     return () => {
@@ -164,7 +173,7 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
     setSolutions(new Map());
     setTest(null);
     setView({ k: "index" });
-    setLessonIdx(0);
+    if (pid) navigate(hashFor.test(subjectId)); // drop the lesson pid from the URL
   }
 
   /**
@@ -216,7 +225,7 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
       );
       const label = `${await subjectTitle(subjectId)} — ${joinChapters(chapterEntries)}`;
       await begin(lessonPids, { kind: "custom", label }, pool);
-      setLessonIdx(0);
+      navigate(hashFor.test(subjectId, lessonPids[0])); // URL tracks the lesson problem
     } finally {
       setBusy(false);
     }
@@ -302,10 +311,14 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
   const title = testTitle(test.scope);
 
   // ---- custom review lesson: walk each problem in the full tutor ----
+  // Which problem is driven by the URL (#/t/<subjectId>/<pid>); the
+  // effect above keeps `pid` pointed at a real one.
   if (test.scope?.kind === "custom") {
-    const idx = Math.min(lessonIdx, test.pids.length - 1);
-    const pid = test.pids[idx];
-    const solution = solutions.get(pid);
+    const found = pid ? test.pids.indexOf(pid) : -1;
+    const idx = found >= 0 ? found : 0;
+    const currentPid = test.pids[idx];
+    const solution = solutions.get(currentPid);
+    const goTo = (i: number) => navigate(hashFor.test(subjectId, test.pids[i]));
     return (
       <div>
         <div className="mb-2 flex items-center justify-between text-sm">
@@ -318,12 +331,12 @@ export default function PracticeTest({ subjectId }: { subjectId: string }) {
         </div>
         {/* key=pid so moving to the next problem remounts a fresh
             SolutionNav — otherwise its internal stepIndex carries over. */}
-        {solution ? <SolutionNav key={pid} solution={solution} onBack={backToPicker} /> : <Spinner />}
+        {solution ? <SolutionNav key={currentPid} solution={solution} onBack={backToPicker} /> : <Spinner />}
         <div className="mt-2 flex items-center justify-between">
-          <Button variant="outline" disabled={idx === 0} onClick={() => setLessonIdx(idx - 1)}>
+          <Button variant="outline" disabled={idx === 0} onClick={() => goTo(idx - 1)}>
             &larr; Previous problem
           </Button>
-          <Button variant="outline" disabled={idx >= test.pids.length - 1} onClick={() => setLessonIdx(idx + 1)}>
+          <Button variant="outline" disabled={idx >= test.pids.length - 1} onClick={() => goTo(idx + 1)}>
             Next problem &rarr;
           </Button>
         </div>

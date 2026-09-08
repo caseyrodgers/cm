@@ -43,7 +43,7 @@ export default function App() {
           />
         )}
         {route.kind === "solution" && <SolutionLoader pid={route.pid} />}
-        {route.kind === "test" && <PracticeTest subjectId={route.subjectId} />}
+        {route.kind === "test" && <PracticeTest subjectId={route.subjectId} pid={route.pid} />}
       </main>
     </div>
   );

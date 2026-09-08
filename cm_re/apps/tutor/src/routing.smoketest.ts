@@ -29,8 +29,18 @@ assert(
 assert(hashFor.solution("a b/c") === "#/s/a%20b%2Fc", "hashFor.solution encodes the pid");
 assert(parseHash(hashFor.solution("weird pid/2")).kind === "solution", "hashFor.solution round-trips through parseHash");
 const t = parseHash("#/t/alg1ptests");
-assert(t.kind === "test" && t.subjectId === "alg1ptests", "#/t/<subjectId> -> test(<subjectId>)");
+assert(t.kind === "test" && t.subjectId === "alg1ptests" && t.pid === undefined, "#/t/<subjectId> -> test(<subjectId>), no pid");
 assert(parseHash(hashFor.test("alg1ptests")).kind === "test", "hashFor.test round-trips through parseHash");
+const tp = parseHash("#/t/alg1ptests/alg1ptests_3_1_chapter3practicetest_5_3");
+assert(
+  tp.kind === "test" && tp.subjectId === "alg1ptests" && tp.pid === "alg1ptests_3_1_chapter3practicetest_5_3",
+  "#/t/<subjectId>/<pid> -> test with the lesson pid",
+);
+assert(
+  hashFor.test("alg1ptests", "p/1") === "#/t/alg1ptests/p%2F1" &&
+    parseHash(hashFor.test("s", "p/1")).kind === "test",
+  "hashFor.test(subjectId, pid) encodes + round-trips",
+);
 assert(parseHash("#/bogus/x").kind === "subjects", "unknown route -> subjects");
 
 // --- getSolution(pid) after a real install ---

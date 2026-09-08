@@ -70,8 +70,6 @@ export default function SolutionNav({ solution, onBack }: { solution: Solution; 
 
         <StatementView solution={solution} />
 
-        <LearnPanel key={`learn-${solution.pid}`} solution={solution} title={solutionTitle(solution.pid, solution.subjectId)} />
-
         {solution.question && (
           // TODO(syncQueue): forward the result to offline/syncQueue.ts
           // once that stops being a stub — this is the first real
@@ -81,6 +79,12 @@ export default function SolutionNav({ solution, onBack }: { solution: Solution; 
             onAnswer={(r) => console.debug("[QuestionView] answer", solution.pid, r)}
           />
         )}
+
+        {/* After the problem, before the worked steps: "explain what I'm
+            looking at, then walk me through it". For practice-test items
+            the statement is near-empty (the question is extracted), so
+            putting Learn above it made Learn look like the problem. */}
+        <LearnPanel key={`learn-${solution.pid}`} solution={solution} title={solutionTitle(solution.pid, solution.subjectId)} />
 
         {step ? (
           <StepUnitView step={step} />
