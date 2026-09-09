@@ -11,6 +11,7 @@ test.describe("module install", () => {
       "Geometry Practice Tests",
       "Pre-Algebra Practice Tests",
       "Graphing Calculator Practice",
+      "Placement Test",
     ]) {
       await expect(page.getByRole("button", { name: new RegExp(name) })).toBeVisible();
     }

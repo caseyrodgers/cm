@@ -3,5 +3,6 @@
   { "subjectId": "alg2ptests", "title": "Algebra 2 Practice Tests" },
   { "subjectId": "geoptests", "title": "Geometry Practice Tests" },
   { "subjectId": "prealgptests", "title": "Pre-Algebra Practice Tests" },
-  { "subjectId": "gcpractice", "title": "Graphing Calculator Practice" }
+  { "subjectId": "gcpractice", "title": "Graphing Calculator Practice" },
+  { "subjectId": "placement", "title": "Placement Test" }
 ]
