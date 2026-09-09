@@ -7,22 +7,25 @@ import { useEffect, useState } from "react";
  * works the same offline. No react-router dependency (the bundle-size
  * budget is tight — see NEW_DIRECTION.org's Ionic removal).
  *
- * Routes:
- *   #/                  subject picker
- *   #/m/<subjectId>     one subject's module (full download / solution list)
- *   #/s/<pid>           jump straight to one solution, by its globally
- *                       unique pid (SolutionLoader reads it from
- *                       IndexedDB and derives its subject)
+ * Top-level sections (the app shell's nav):
+ *   #/                  Hub / home
+ *   #/tests             pick a subject for a practice test
+ *   #/problems          pick a subject to browse its problems by chapter
+ *   #/me                this student's status + reset
+ *
+ * Within a subject / a solution:
+ *   #/m/<subjectId>          a subject's problems (download + chapter list)
+ *   #/s/<pid>                one solution, by its globally unique pid
  *   #/t/<subjectId>          a practice test for that subject
- *                            (PracticeTest handles its own index/
- *                            question/score sub-views internally)
  *   #/t/<subjectId>/<pid>    a specific problem in the active "Missed
- *                            Questions Lesson" walkthrough — the hash
- *                            tracks which problem you're on
+ *                            Questions Lesson" walkthrough
  */
 
 export type Route =
-  | { kind: "subjects" }
+  | { kind: "hub" }
+  | { kind: "tests" }
+  | { kind: "problems" }
+  | { kind: "me" }
   | { kind: "module"; subjectId: string }
   | { kind: "solution"; pid: string }
   | { kind: "test"; subjectId: string; pid?: string };
@@ -41,11 +44,17 @@ export function parseHash(hash: string): Route {
   if (segments[0] === "t" && segments[1]) {
     return { kind: "test", subjectId: segments[1], pid: segments[2] };
   }
-  return { kind: "subjects" };
+  if (segments[0] === "tests") return { kind: "tests" };
+  if (segments[0] === "problems") return { kind: "problems" };
+  if (segments[0] === "me") return { kind: "me" };
+  return { kind: "hub" };
 }
 
 export const hashFor = {
-  subjects: () => "#/",
+  hub: () => "#/",
+  tests: () => "#/tests",
+  problems: () => "#/problems",
+  me: () => "#/me",
   module: (subjectId: string) => `#/m/${encodeURIComponent(subjectId)}`,
   solution: (pid: string) => `#/s/${encodeURIComponent(pid)}`,
   test: (subjectId: string, pid?: string) =>

@@ -17,8 +17,11 @@ function assert(cond: unknown, msg: string) {
 }
 
 // --- parseHash / hashFor round-trips ---
-assert(parseHash("").kind === "subjects", "empty hash -> subjects");
-assert(parseHash("#/").kind === "subjects", "#/ -> subjects");
+assert(parseHash("").kind === "hub", "empty hash -> hub");
+assert(parseHash("#/").kind === "hub", "#/ -> hub");
+assert(parseHash("#/tests").kind === "tests", "#/tests -> tests");
+assert(parseHash("#/problems").kind === "problems", "#/problems -> problems");
+assert(parseHash("#/me").kind === "me", "#/me -> me");
 const m = parseHash("#/m/alg1ptests");
 assert(m.kind === "module" && m.subjectId === "alg1ptests", "#/m/alg1ptests -> module(alg1ptests)");
 const s = parseHash("#/s/alg1ptests_1_1_chapter1practicetest_10_1");
@@ -41,7 +44,7 @@ assert(
     parseHash(hashFor.test("s", "p/1")).kind === "test",
   "hashFor.test(subjectId, pid) encodes + round-trips",
 );
-assert(parseHash("#/bogus/x").kind === "subjects", "unknown route -> subjects");
+assert(parseHash("#/bogus/x").kind === "hub", "unknown route -> hub");
 
 // --- getSolution(pid) after a real install ---
 const { downloadModule, getSolution } = await import("./offline/moduleManager");

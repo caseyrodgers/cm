@@ -3,8 +3,8 @@ import { SUBJECT, installModule } from "../helpers";
 
 test.describe("module install", () => {
   test("subject picker lists the seeded subjects", async ({ page }) => {
-    await page.goto("/#/");
-    await expect(page.getByRole("heading", { name: /Choose a subject/i })).toBeVisible();
+    await page.goto("/#/problems");
+    await expect(page.getByRole("heading", { name: /pick a subject/i })).toBeVisible();
     for (const name of [
       "Algebra 1 Practice Tests",
       "Algebra 2 Practice Tests",

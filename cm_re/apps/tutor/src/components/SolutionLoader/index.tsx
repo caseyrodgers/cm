@@ -53,7 +53,7 @@ export default function SolutionLoader({ pid }: { pid: string }) {
             <code className="break-all">{pid}</code> isn't in any module installed on this device. Download its subject
             first, then open this link again.
           </p>
-          <Button variant="outline" onClick={() => navigate(hashFor.subjects())}>
+          <Button variant="outline" onClick={() => navigate(hashFor.problems())}>
             Choose a subject
           </Button>
         </CardContent>

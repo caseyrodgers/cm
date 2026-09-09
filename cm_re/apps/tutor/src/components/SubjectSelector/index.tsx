@@ -55,7 +55,6 @@ export default function SubjectSelector({
 
   return (
     <>
-      <h2 className="mb-2 text-base font-medium text-slate-700">Choose a subject</h2>
       <List>
         {subjects.map((s) => (
           <ListItemButton key={s.subjectId} onClick={() => onSelect(s.subjectId)}>
