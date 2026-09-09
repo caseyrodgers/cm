@@ -849,5 +849,97 @@
     "alg1ptests_coursetest_2_algebra1practicetest_9_1",
     "alg1ptests_coursetest_2_algebra1practicetest_9_2"
   ],
-  "approxSizeBytes": 5502253
+  "approxSizeBytes": 5502253,
+  "chapters": [
+    {
+      "key": "ch-1",
+      "label": "Chapter 1",
+      "name": "Linear Equations and Applications",
+      "rank": 1
+    },
+    {
+      "key": "ch-2",
+      "label": "Chapter 2",
+      "name": "Equations of Lines",
+      "rank": 2
+    },
+    {
+      "key": "ch-3",
+      "label": "Chapter 3",
+      "name": "Proportional Relationships and Rates",
+      "rank": 3
+    },
+    {
+      "key": "ch-4",
+      "label": "Chapter 4",
+      "name": "Absolute Value and Inequalities",
+      "rank": 4
+    },
+    {
+      "key": "ch-5",
+      "label": "Chapter 5",
+      "name": "Systems of Linear Inequalities",
+      "rank": 5
+    },
+    {
+      "key": "ch-6",
+      "label": "Chapter 6",
+      "name": "Factoring Quadratic Trinomials",
+      "rank": 6
+    },
+    {
+      "key": "ch-7",
+      "label": "Chapter 7",
+      "name": "Polynomial Division",
+      "rank": 7
+    },
+    {
+      "key": "ch-8",
+      "label": "Chapter 8",
+      "name": "Radical Expressions and Equations",
+      "rank": 8
+    },
+    {
+      "key": "ch-9",
+      "label": "Chapter 9",
+      "name": "Exponential Functions",
+      "rank": 9
+    },
+    {
+      "key": "ch-10",
+      "label": "Chapter 10",
+      "name": "Quadratic Functions and Equations",
+      "rank": 10
+    },
+    {
+      "key": "ch-11",
+      "label": "Chapter 11",
+      "name": "Linear Equations and Data Analysis",
+      "rank": 11
+    },
+    {
+      "key": "ch-12",
+      "label": "Chapter 12",
+      "name": "Interquartile Range and Quartiles",
+      "rank": 12
+    },
+    {
+      "key": "ch-13",
+      "label": "Chapter 13",
+      "name": "Probability and Events",
+      "rank": 13
+    },
+    {
+      "key": "course-1",
+      "label": "Course Test 1",
+      "name": "Percents and Inequalities",
+      "rank": 1001
+    },
+    {
+      "key": "course-2",
+      "label": "Course Test 2",
+      "name": "Lines and Percents",
+      "rank": 1002
+    }
+  ]
 }

@@ -23,6 +23,11 @@ export async function getInstalledModules(): Promise<InstalledModule[]> {
   return db.modules.toArray();
 }
 
+/** The locally-stored manifest for an installed subject (carries `chapters` with baked-in topic names), or undefined. */
+export async function getInstalledManifest(subjectId: string): Promise<InstalledModule | undefined> {
+  return db.modules.get(subjectId);
+}
+
 export async function getSolutionsForModule(subjectId: string): Promise<Solution[]> {
   return db.solutions.where("subjectId").equals(subjectId).toArray();
 }

@@ -182,5 +182,133 @@
     "placement_prealg_1_1_6_1",
     "placement_prealg_1_1_7_1"
   ],
-  "approxSizeBytes": 811389
+  "approxSizeBytes": 811389,
+  "chapters": [
+    {
+      "key": "ch-1",
+      "label": "Chapter 1",
+      "name": "Absolute Value",
+      "rank": 1
+    },
+    {
+      "key": "ch-2",
+      "label": "Chapter 2",
+      "name": "Simplifying Fractions and Expressions",
+      "rank": 2
+    },
+    {
+      "key": "ch-3",
+      "label": "Chapter 3",
+      "name": "Factoring and Simplification",
+      "rank": 3
+    },
+    {
+      "key": "ch-4",
+      "label": "Chapter 4",
+      "name": "Linear Inequalities and Graphs",
+      "rank": 4
+    },
+    {
+      "key": "ch-5",
+      "label": "Chapter 5",
+      "name": "Number Theory and Polynomials",
+      "rank": 5
+    },
+    {
+      "key": "ch-6",
+      "label": "Chapter 6",
+      "name": "Basic Number Concepts",
+      "rank": 6
+    },
+    {
+      "key": "ch-7",
+      "label": "Chapter 7",
+      "name": "Basic Arithmetic and Geometry",
+      "rank": 7
+    },
+    {
+      "key": "ch-8",
+      "label": "Chapter 8",
+      "name": "Algebraic Expressions and Coordinate Geometry",
+      "rank": 8
+    },
+    {
+      "key": "ch-9",
+      "label": "Chapter 9",
+      "name": "Algebraic Expressions and Coordinates",
+      "rank": 9
+    },
+    {
+      "key": "ch-10",
+      "label": "Chapter 10",
+      "name": "Absolute Value and Distance",
+      "rank": 10
+    },
+    {
+      "key": "ch-11",
+      "label": "Chapter 11",
+      "name": "Circles and Radicals",
+      "rank": 11
+    },
+    {
+      "key": "ch-12",
+      "label": "Chapter 12",
+      "name": "Conic Sections and Applications",
+      "rank": 12
+    },
+    {
+      "key": "ch-13",
+      "label": "Chapter 13",
+      "name": "Polynomials and Divisibility",
+      "rank": 13
+    },
+    {
+      "key": "ch-14",
+      "label": "Chapter 14",
+      "name": "Rational Functions and Sequences",
+      "rank": 14
+    },
+    {
+      "key": "ch-15",
+      "label": "Chapter 15",
+      "name": "Algebraic Expressions and Transformations",
+      "rank": 15
+    },
+    {
+      "key": "ch-16",
+      "label": "Chapter 16",
+      "name": "Areas of Parallelograms",
+      "rank": 16
+    },
+    {
+      "key": "ch-17",
+      "label": "Chapter 17",
+      "name": "Basic Geometry Formulas",
+      "rank": 17
+    },
+    {
+      "key": "ch-18",
+      "label": "Chapter 18",
+      "name": "Circles and Transformations",
+      "rank": 18
+    },
+    {
+      "key": "ch-19",
+      "label": "Chapter 19",
+      "name": "Geometric Shapes and Properties",
+      "rank": 19
+    },
+    {
+      "key": "ch-20",
+      "label": "Chapter 20",
+      "name": "Transformations and Circles",
+      "rank": 20
+    },
+    {
+      "key": "other",
+      "label": "Other",
+      "name": "Quadratic Functions and Factoring",
+      "rank": 100000
+    }
+  ]
 }

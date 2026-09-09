@@ -148,6 +148,24 @@ export interface Solution {
 }
 
 /**
+ * One chapter present in a module. The legacy export has no
+ * chapter-title field, so `label` ("Chapter 3", "Course Test 1") is
+ * derived from the pid and `name` is an AI-inferred topic name, baked
+ * in at assembly time (ChapterNamer) so the client never has to make a
+ * call. `name` is "" when inference wasn't available at build time.
+ */
+export interface ChapterInfo {
+  /** stable grouping key derived from the pid, e.g. "ch-10", "course-1", "other" — matches problemOrder.chapterOf(...).key */
+  key: string;
+  /** numeric label, e.g. "Chapter 10", "Course Test 1" */
+  label: string;
+  /** AI-inferred 2–5 word topic name, e.g. "Quadratic Functions"; "" if not inferred */
+  name: string;
+  /** sort position (numeric chapters first, then course tests, then other) */
+  rank: number;
+}
+
+/**
  * One per-subject downloadable bundle. See NEW_DIRECTION.org
  * "Offline support" — the prefetch unit is the module, not the
  * individual solution.
@@ -159,6 +177,8 @@ export interface ModuleManifest {
   solutionIds: SolutionId[];
   /** Approximate download size in bytes, shown to the student before they commit to downloading on a metered/limited connection. */
   approxSizeBytes: number;
+  /** Chapters in this module, in order, with topic names baked in at assembly time. Absent on modules assembled before this field existed. */
+  chapters?: ChapterInfo[];
 }
 
 /**

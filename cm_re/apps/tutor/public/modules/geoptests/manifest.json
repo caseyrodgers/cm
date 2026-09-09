@@ -905,5 +905,91 @@
     "geoptests_coursetest_2_geometrypracticetest_8_2",
     "geoptests_coursetest_2_geometrypracticetest_9_2"
   ],
-  "approxSizeBytes": 4970642
+  "approxSizeBytes": 4970642,
+  "chapters": [
+    {
+      "key": "ch-1",
+      "label": "Chapter 1",
+      "name": "Angle Measures and Types",
+      "rank": 1
+    },
+    {
+      "key": "ch-2",
+      "label": "Chapter 2",
+      "name": "Reasoning and Proof",
+      "rank": 2
+    },
+    {
+      "key": "ch-3",
+      "label": "Chapter 3",
+      "name": "Lines and Angles",
+      "rank": 3
+    },
+    {
+      "key": "ch-4",
+      "label": "Chapter 4",
+      "name": "Triangle Congruence Postulates",
+      "rank": 4
+    },
+    {
+      "key": "ch-5",
+      "label": "Chapter 5",
+      "name": "Properties of Quadrilaterals",
+      "rank": 5
+    },
+    {
+      "key": "ch-6",
+      "label": "Chapter 6",
+      "name": "Similar Triangles and Coordinates",
+      "rank": 6
+    },
+    {
+      "key": "ch-7",
+      "label": "Chapter 7",
+      "name": "Right Triangles and Trigonometry",
+      "rank": 7
+    },
+    {
+      "key": "ch-8",
+      "label": "Chapter 8",
+      "name": "Transformations and Symmetry",
+      "rank": 8
+    },
+    {
+      "key": "ch-9",
+      "label": "Chapter 9",
+      "name": "Central Angles and Arcs",
+      "rank": 9
+    },
+    {
+      "key": "ch-10",
+      "label": "Chapter 10",
+      "name": "Areas of Polygons and Circles",
+      "rank": 10
+    },
+    {
+      "key": "ch-11",
+      "label": "Chapter 11",
+      "name": "Cones and Cylinders",
+      "rank": 11
+    },
+    {
+      "key": "course-1",
+      "label": "Course Test 1",
+      "name": "Transformations and Angle Relationships",
+      "rank": 1001
+    },
+    {
+      "key": "course-2",
+      "label": "Course Test 2",
+      "name": "Geometric Transformations and Properties",
+      "rank": 1002
+    },
+    {
+      "key": "other",
+      "label": "Other",
+      "name": "Mixed Problem Solving",
+      "rank": 100000
+    }
+  ]
 }

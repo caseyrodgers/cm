@@ -1,5 +1,10 @@
 import { inferChapterName } from "../api/aiClient";
 
+/** "Chapter 3: Ratios and Proportions", or just "Chapter 3" when no topic name is known. */
+export function chapterDisplay(label: string, name?: string | null): string {
+  return name ? `${label}: ${name}` : label;
+}
+
 /**
  * Cached wrapper around inferChapterName — the AI call is a real
  * (if cheap) round-trip, so a chapter's deduced name is looked up once

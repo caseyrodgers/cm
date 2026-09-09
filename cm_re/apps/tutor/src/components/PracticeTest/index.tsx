@@ -1,8 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Solution } from "@cm_re/shared-types";
-import { isModuleInstalled, getSolution, getSolutionsForModule } from "../../offline/moduleManager";
+import {
+  isModuleInstalled,
+  getSolution,
+  getSolutionsForModule,
+  getInstalledManifest,
+} from "../../offline/moduleManager";
 import { listSubjects } from "../../api/client";
-import { chapterTopicName } from "../../lib/chapterName";
+import { chapterDisplay } from "../../lib/chapterName";
 import {
   getActiveTest,
   startTest,
@@ -79,6 +84,14 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
   const [solutions, setSolutions] = useState<Map<string, Solution>>(new Map());
   const [view, setView] = useState<View>({ k: "index" });
   const [busy, setBusy] = useState(false);
+  // key -> baked-in topic name from the installed manifest ("" if none)
+  const [chapterNames, setChapterNames] = useState<Map<string, string>>(new Map());
+
+  useEffect(() => {
+    getInstalledManifest(subjectId).then((m) =>
+      setChapterNames(new Map((m?.chapters ?? []).map((c) => [c.key, c.name])))
+    );
+  }, [subjectId]);
 
   // In a "Missed Questions Lesson" (scope "custom") the URL carries the
   // problem being viewed: #/t/<subjectId>/<pid>. Keep it pointing at a
@@ -214,15 +227,12 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
         alert("No step-by-step problems available in those chapters to build a lesson from.");
         return;
       }
-      // Deduce each involved chapter's topic name (AI, cached) from a
-      // few of its own problems — the legacy source has no such field.
-      const chapterEntries = await Promise.all(
-        [...chapterLabelByKey.entries()].map(async ([key, label]) => {
-          const samplePids = (byChapter.get(key) ?? []).slice(0, 3);
-          const name = await chapterTopicName(subjectId, label, samplePids);
-          return { label, name };
-        })
-      );
+      // Topic names come from the manifest (baked in by ChapterNamer at
+      // assembly time) — no runtime AI call.
+      const chapterEntries = [...chapterLabelByKey.entries()].map(([key, label]) => ({
+        label,
+        name: chapterNames.get(key) ?? "",
+      }));
       const label = `${await subjectTitle(subjectId)} — ${joinChapters(chapterEntries)}`;
       await begin(lessonPids, { kind: "custom", label }, pool);
       navigate(hashFor.test(subjectId, lessonPids[0])); // URL tracks the lesson problem
@@ -291,17 +301,24 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
 
           <p className="mb-2 text-sm font-medium text-slate-700">By chapter ({CHAPTER_SIZE} questions each)</p>
           <List>
-            {chapters.map(({ chapter, pids }) => (
-              <ListItemButton
-                key={chapter.key}
-                onClick={() =>
-                  begin(sample(pids, CHAPTER_SIZE), { kind: "chapter", chapterKey: chapter.key, label: chapter.label }, pool)
-                }
-              >
-                <span>{chapter.label}</span>
-                <span className="text-xs text-slate-400">{pids.length} available</span>
-              </ListItemButton>
-            ))}
+            {chapters.map(({ chapter, pids }) => {
+              const display = chapterDisplay(chapter.label, chapterNames.get(chapter.key));
+              return (
+                <ListItemButton
+                  key={chapter.key}
+                  onClick={() =>
+                    begin(
+                      sample(pids, CHAPTER_SIZE),
+                      { kind: "chapter", chapterKey: chapter.key, label: display },
+                      pool
+                    )
+                  }
+                >
+                  <span>{display}</span>
+                  <span className="text-xs text-slate-400">{pids.length} available</span>
+                </ListItemButton>
+              );
+            })}
           </List>
         </CardContent>
       </Card>

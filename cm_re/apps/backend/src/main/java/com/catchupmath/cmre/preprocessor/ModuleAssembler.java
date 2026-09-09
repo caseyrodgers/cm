@@ -93,6 +93,14 @@ public class ModuleAssembler {
         solutionIds.forEach(solutionIdsJson::add);
         manifest.add("solutionIds", solutionIdsJson);
         manifest.addProperty("approxSizeBytes", approxSizeBytes);
+
+        // Bake per-chapter topic names into the manifest (AI, best-effort
+        // — no ANTHROPIC_API_KEY just means empty names + the client
+        // falls back to "Chapter N"). Run `ChapterNamer <moduleDir>`
+        // afterwards to fill them in / refresh without re-assembling.
+        System.out.println("Naming chapters...");
+        manifest.add("chapters", ChapterNamer.inferChapters(solutions, subjectId, null, false));
+
         Files.writeString(new File(moduleDir, "manifest.json").toPath(), gson.toJson(manifest), StandardCharsets.UTF_8);
 
         System.out.println("Assembled " + solutionIds.size() + " solutions into " + bundleFile);

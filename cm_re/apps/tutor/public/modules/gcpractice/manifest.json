@@ -23,5 +23,67 @@
     "gcpractice_7_1_practiceproblems_1_1",
     "gcpractice_9_1_practiceproblems_1_1"
   ],
-  "approxSizeBytes": 577861
+  "approxSizeBytes": 577861,
+  "chapters": [
+    {
+      "key": "ch-1",
+      "label": "Chapter 1",
+      "name": "Solving Linear Equations Graphically",
+      "rank": 1
+    },
+    {
+      "key": "ch-2",
+      "label": "Chapter 2",
+      "name": "Graphing Linear Equations",
+      "rank": 2
+    },
+    {
+      "key": "ch-3",
+      "label": "Chapter 3",
+      "name": "Direct and Inverse Variation",
+      "rank": 3
+    },
+    {
+      "key": "ch-4",
+      "label": "Chapter 4",
+      "name": "Graphing Inequalities",
+      "rank": 4
+    },
+    {
+      "key": "ch-5",
+      "label": "Chapter 5",
+      "name": "Solving Linear Systems",
+      "rank": 5
+    },
+    {
+      "key": "ch-6",
+      "label": "Chapter 6",
+      "name": "Scientific Notation Operations",
+      "rank": 6
+    },
+    {
+      "key": "ch-7",
+      "label": "Chapter 7",
+      "name": "Rational Expressions",
+      "rank": 7
+    },
+    {
+      "key": "ch-9",
+      "label": "Chapter 9",
+      "name": "Graphing Equations with Technology",
+      "rank": 9
+    },
+    {
+      "key": "ch-10",
+      "label": "Chapter 10",
+      "name": "Quadratic Equations",
+      "rank": 10
+    },
+    {
+      "key": "ch-11",
+      "label": "Chapter 11",
+      "name": "Scatter Plots and Data",
+      "rank": 11
+    }
+  ]
 }

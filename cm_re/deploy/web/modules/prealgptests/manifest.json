@@ -809,5 +809,97 @@
     "prealgptests_coursetest_2_pre-algebrapracticetest_8_2",
     "prealgptests_coursetest_2_pre-algebrapracticetest_9_2"
   ],
-  "approxSizeBytes": 2905384
+  "approxSizeBytes": 2905384,
+  "chapters": [
+    {
+      "key": "ch-1",
+      "label": "Chapter 1",
+      "name": "Algebraic Expressions and Evaluation",
+      "rank": 1
+    },
+    {
+      "key": "ch-2",
+      "label": "Chapter 2",
+      "name": "Integer Operations and Applications",
+      "rank": 2
+    },
+    {
+      "key": "ch-3",
+      "label": "Chapter 3",
+      "name": "Fractions and Greatest Common Factor",
+      "rank": 3
+    },
+    {
+      "key": "ch-4",
+      "label": "Chapter 4",
+      "name": "Fractions and Mixed Numbers",
+      "rank": 4
+    },
+    {
+      "key": "ch-5",
+      "label": "Chapter 5",
+      "name": "Fractions and Word Problems",
+      "rank": 5
+    },
+    {
+      "key": "ch-6",
+      "label": "Chapter 6",
+      "name": "Ratios and Proportions",
+      "rank": 6
+    },
+    {
+      "key": "ch-7",
+      "label": "Chapter 7",
+      "name": "Polygons and Congruence",
+      "rank": 7
+    },
+    {
+      "key": "ch-8",
+      "label": "Chapter 8",
+      "name": "Roots and Polynomials",
+      "rank": 8
+    },
+    {
+      "key": "ch-9",
+      "label": "Chapter 9",
+      "name": "Area and Volume",
+      "rank": 9
+    },
+    {
+      "key": "ch-10",
+      "label": "Chapter 10",
+      "name": "Linear Equations and Slope",
+      "rank": 10
+    },
+    {
+      "key": "ch-11",
+      "label": "Chapter 11",
+      "name": "Unit Conversion",
+      "rank": 11
+    },
+    {
+      "key": "ch-12",
+      "label": "Chapter 12",
+      "name": "Coordinate Geometry and Counting",
+      "rank": 12
+    },
+    {
+      "key": "ch-13",
+      "label": "Chapter 13",
+      "name": "Volume of 3D Shapes",
+      "rank": 13
+    },
+    {
+      "key": "course-1",
+      "label": "Course Test 1",
+      "name": "Direct Variation Problems",
+      "rank": 1001
+    },
+    {
+      "key": "course-2",
+      "label": "Course Test 2",
+      "name": "Scientific Notation and Divisibility",
+      "rank": 1002
+    }
+  ]
 }

@@ -916,5 +916,103 @@
     "alg2ptests_coursetest_3_algebra2practicetest_8_3",
     "alg2ptests_coursetest_3_algebra2practicetest_9_3"
   ],
-  "approxSizeBytes": 5230196
+  "approxSizeBytes": 5230196,
+  "chapters": [
+    {
+      "key": "ch-1",
+      "label": "Chapter 1",
+      "name": "Solving Linear Equations",
+      "rank": 1
+    },
+    {
+      "key": "ch-2",
+      "label": "Chapter 2",
+      "name": "Linear Functions and Correlations",
+      "rank": 2
+    },
+    {
+      "key": "ch-3",
+      "label": "Chapter 3",
+      "name": "Systems of Linear Equations",
+      "rank": 3
+    },
+    {
+      "key": "ch-4",
+      "label": "Chapter 4",
+      "name": "Matrices and Inverses",
+      "rank": 4
+    },
+    {
+      "key": "ch-5",
+      "label": "Chapter 5",
+      "name": "Polynomials and Complex Numbers",
+      "rank": 5
+    },
+    {
+      "key": "ch-6",
+      "label": "Chapter 6",
+      "name": "Polynomial Factoring and Products",
+      "rank": 6
+    },
+    {
+      "key": "ch-7",
+      "label": "Chapter 7",
+      "name": "Radical Expressions and Exponents",
+      "rank": 7
+    },
+    {
+      "key": "ch-8",
+      "label": "Chapter 8",
+      "name": "Logarithmic Equations",
+      "rank": 8
+    },
+    {
+      "key": "ch-9",
+      "label": "Chapter 9",
+      "name": "Permutations and Combinations",
+      "rank": 9
+    },
+    {
+      "key": "ch-10",
+      "label": "Chapter 10",
+      "name": "Trigonometry and Triangle Applications",
+      "rank": 10
+    },
+    {
+      "key": "ch-11",
+      "label": "Chapter 11",
+      "name": "Transformations of Functions",
+      "rank": 11
+    },
+    {
+      "key": "ch-12",
+      "label": "Chapter 12",
+      "name": "Parabolas and Focus Directrix",
+      "rank": 12
+    },
+    {
+      "key": "course-1",
+      "label": "Course Test 1",
+      "name": "Absolute Value and Polynomials",
+      "rank": 1001
+    },
+    {
+      "key": "course-2",
+      "label": "Course Test 2",
+      "name": "Complex Numbers and Polynomials",
+      "rank": 1002
+    },
+    {
+      "key": "course-3",
+      "label": "Course Test 3",
+      "name": "Complex Numbers and Polynomials",
+      "rank": 1003
+    },
+    {
+      "key": "other",
+      "label": "Other",
+      "name": "Literal Equations",
+      "rank": 100000
+    }
+  ]
 }
