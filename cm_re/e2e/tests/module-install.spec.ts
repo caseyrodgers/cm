@@ -5,11 +5,14 @@ test.describe("module install", () => {
   test("subject picker lists the seeded subjects", async ({ page }) => {
     await page.goto("/#/");
     await expect(page.getByRole("heading", { name: /Choose a subject/i })).toBeVisible();
-    // exact-text child disambiguates a base subject from its "… Practice Tests (real content)" sibling
-    await expect(page.getByRole("button").filter({ has: page.getByText("Algebra 1", { exact: true }) })).toHaveCount(1);
-    await expect(page.getByRole("button").filter({ has: page.getByText("Geometry", { exact: true }) })).toHaveCount(1);
-    await expect(page.getByRole("button", { name: /Algebra 1 Practice Tests/ })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Geometry Practice Tests/ })).toBeVisible();
+    for (const name of [
+      "Algebra 1 Practice Tests",
+      "Algebra 2 Practice Tests",
+      "Geometry Practice Tests",
+      "Graphing Calculator Practice",
+    ]) {
+      await expect(page.getByRole("button", { name: new RegExp(name) })).toBeVisible();
+    }
   });
 
   test("download makes a module usable offline, remove tears it down", async ({ page }) => {
