@@ -14,7 +14,7 @@ import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 import { List, ListItemButton } from "../ui/list";
 import { solutionTitle } from "../../lib/solutionTitle";
-import { chapterDisplay } from "../../lib/chapterName";
+import { chapterDisplay, isCourseTest, COURSE_TEST_BLURB } from "../../lib/chapterName";
 import { compareProblems, groupByChapter } from "../../lib/problemOrder";
 import { navigate, hashFor } from "../../routing";
 
@@ -248,6 +248,9 @@ function ChapterList({
               <span className="flex-1">{chapterDisplay(chapter.label, nameOf(chapter.key))}</span>
               <span className="text-xs font-normal text-slate-400">{pids.length}</span>
             </button>
+            {isCourseTest(chapter.key) && (
+              <p className="px-3 pb-2 text-xs text-slate-400">{COURSE_TEST_BLURB}</p>
+            )}
             {isOpen && (
               <List>
                 {pids.map((pid) => {

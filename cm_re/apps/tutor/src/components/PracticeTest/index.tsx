@@ -7,7 +7,7 @@ import {
   getInstalledManifest,
 } from "../../offline/moduleManager";
 import { listSubjects } from "../../api/client";
-import { chapterDisplay } from "../../lib/chapterName";
+import { chapterDisplay, isCourseTest, COURSE_TEST_BLURB } from "../../lib/chapterName";
 import {
   getActiveTest,
   startTest,
@@ -314,8 +314,13 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
                     )
                   }
                 >
-                  <span>{display}</span>
-                  <span className="text-xs text-slate-400">{pids.length} available</span>
+                  <span className="flex flex-col">
+                    <span>{display}</span>
+                    {isCourseTest(chapter.key) && (
+                      <span className="text-xs font-normal text-slate-400">{COURSE_TEST_BLURB}</span>
+                    )}
+                  </span>
+                  <span className="shrink-0 self-start text-xs text-slate-400">{pids.length} available</span>
                 </ListItemButton>
               );
             })}

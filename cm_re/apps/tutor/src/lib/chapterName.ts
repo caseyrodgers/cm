@@ -5,6 +5,15 @@ export function chapterDisplay(label: string, name?: string | null): string {
   return name ? `${label}: ${name}` : label;
 }
 
+/** true for the cumulative "Course Test N" buckets (chapterOf key "course-1", …). */
+export function isCourseTest(chapterKey: string): boolean {
+  return chapterKey.startsWith("course-");
+}
+
+/** The detail line shown under a "Course Test …" label. */
+export const COURSE_TEST_BLURB =
+  "A cumulative test — problems drawn from across the whole course, not a single chapter.";
+
 /**
  * Cached wrapper around inferChapterName — the AI call is a real
  * (if cheap) round-trip, so a chapter's deduced name is looked up once
