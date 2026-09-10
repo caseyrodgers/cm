@@ -524,7 +524,9 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
           {missedPids.length > 0 && (
             <div className="mt-4">
               <Button className="w-full" disabled={busy} onClick={makeMissedLesson}>
-                {busy ? <Spinner /> : `Missed Questions Lesson: ${missedPids.length} problem${missedPids.length === 1 ? "" : "s"} →`}
+                {busy
+                  ? <Spinner />
+                  : `Lesson Based on Missed Questions: ${missedPids.length} problem${missedPids.length === 1 ? "" : "s"} →`}
               </Button>
               <p className="mt-1 rounded-md bg-slate-50 px-3 py-1.5 text-xs text-slate-500">
                 For each question you missed, a different problem from the same chapter — worked through step by step,

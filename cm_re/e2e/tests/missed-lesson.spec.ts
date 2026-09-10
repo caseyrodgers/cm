@@ -26,7 +26,7 @@ test.describe("@slow missed questions lesson", () => {
       await page.getByTestId("mc-submit").click();
     }
     await finish.click();
-    await page.getByRole("button", { name: /Missed Questions Lesson/i }).click();
+    await page.getByRole("button", { name: /Lesson Based on Missed Questions/i }).click();
   }
 
   test("URL tracks the current problem and deep-links survive reload", async ({ page }) => {
