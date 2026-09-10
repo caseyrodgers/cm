@@ -522,9 +522,15 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
           </ul>
 
           {missedPids.length > 0 && (
-            <Button className="mt-4 w-full" disabled={busy} onClick={makeMissedLesson}>
-              {busy ? <Spinner /> : `Missed Questions Lesson: ${missedPids.length} problem${missedPids.length === 1 ? "" : "s"} →`}
-            </Button>
+            <div className="mt-4">
+              <Button className="w-full" disabled={busy} onClick={makeMissedLesson}>
+                {busy ? <Spinner /> : `Missed Questions Lesson: ${missedPids.length} problem${missedPids.length === 1 ? "" : "s"} →`}
+              </Button>
+              <p className="mt-1 rounded-md bg-slate-50 px-3 py-1.5 text-xs text-slate-500">
+                For each question you missed, a different problem from the same chapter — worked through step by step,
+                not a re-quiz.
+              </p>
+            </div>
           )}
           <Button variant="outline" className="mt-2 w-full" onClick={backToPicker} disabled={busy}>
             Back to test menu
