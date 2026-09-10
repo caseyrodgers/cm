@@ -8,6 +8,7 @@ import {
   checkForUpdate,
   removeModule,
 } from "../../offline/moduleManager";
+import { getActiveTest, scoreTest, testTitle, type PracticeTest } from "../../offline/practiceTestStore";
 import { Card, CardHeader, CardTitle, CardSubtitle, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
@@ -42,6 +43,7 @@ export default function ModuleDownloadPrompt({
   const [solutions, setSolutions] = useState<Solution[] | null>(null); // null = not fetched yet
   const [showAll, setShowAll] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
+  const [activeTest, setActiveTest] = useState<PracticeTest | null>(null);
 
   useEffect(() => {
     getModuleManifest(subjectId)
@@ -55,6 +57,7 @@ export default function ModuleDownloadPrompt({
       checkForUpdate(subjectId)
         .then(setHasUpdate)
         .catch(() => setHasUpdate(false));
+      getActiveTest(subjectId).then((t) => setActiveTest(t ?? null));
     }
   }, [installed, subjectId]);
 
@@ -93,6 +96,7 @@ export default function ModuleDownloadPrompt({
       setHasUpdate(false);
       setSolutions(null);
       setShowAll(false);
+      setActiveTest(null);
       setStatus("idle");
     } catch {
       setStatus("error");
@@ -117,12 +121,17 @@ export default function ModuleDownloadPrompt({
           <>
             <p className="mb-3 text-sm font-medium text-green-700">&#10003; Installed for offline use.</p>
 
-            {/* Two ways into a subject's problems: a short random test
-                (the default path), or the complete list on demand. */}
+            {/* Two ways into a subject's problems: a practice test (the
+                default path), or the complete list on demand. */}
             <div className="mb-3 space-y-2">
-              <Button className="w-full" onClick={() => navigate(hashFor.test(subjectId))}>
-                Take a 10-question practice test &rarr;
-              </Button>
+              <div>
+                <Button className="w-full" onClick={() => navigate(hashFor.test(subjectId))}>
+                  {practiceTestCta(activeTest)} &rarr;
+                </Button>
+                <p className="mt-1 rounded-md bg-slate-50 px-3 py-1.5 text-xs text-slate-500">
+                  {practiceTestContext(activeTest)}
+                </p>
+              </div>
               <Button variant="outline" className="w-full" onClick={() => setShowAll((v) => !v)}>
                 {showAll ? "Hide full problem list" : `Show all ${manifest.solutionIds.length} problems`}
               </Button>
@@ -164,6 +173,23 @@ export default function ModuleDownloadPrompt({
       </CardContent>
     </Card>
   );
+}
+
+/** Button label — reflects whether there's a test to resume / a score to see. */
+function practiceTestCta(t: PracticeTest | null): string {
+  if (!t) return "Take a practice test";
+  if (t.scope?.kind === "custom") return "Resume your lesson";
+  if (t.completedAt != null) return "See your last score";
+  return "Resume practice test";
+}
+
+/** The label area under the button — what test, and where you are in it. */
+function practiceTestContext(t: PracticeTest | null): string {
+  if (!t) return "Quick set, the whole subject, or a single chapter — pick when you start.";
+  if (t.scope?.kind === "custom") return `${testTitle(t.scope)} — a walk-through of problems near what you missed.`;
+  const { correct, answered, total } = scoreTest(t);
+  if (t.completedAt != null) return `${testTitle(t.scope)} · scored ${correct}/${total}. Start a new one from there.`;
+  return `${testTitle(t.scope)} · ${answered} of ${total} answered — pick up where you left off.`;
 }
 
 /**
