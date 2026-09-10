@@ -1,4 +1,4 @@
-.PHONY: build run debug dist serve serve-legacy kill-python api editor editor-dev e2e e2e-ui e2e-setup
+.PHONY: build run debug dist serve serve-legacy kill-python kill-server api editor editor-dev e2e e2e-ui e2e-setup
 
 # JDWP address for `make debug`. suspend=y makes the JVM wait for a
 # debugger before running main() (good for breakpoints in startup);
@@ -25,8 +25,15 @@ build:
 # mvn exec:java runs TutorServer with the full Maven classpath (it uses
 # Gson), so no classpath assembly here. TutorServer finds apps/tutor/dist
 # by walking up from the working directory.
+# CM_DEV=1 -> the dev server also mounts POST /api/dev/shutdown, so
+# `make kill-server` can stop just this JVM (not every java.exe).
 run: build
-	cd apps/backend && mvn -q compile exec:java -Dexec.mainClass=com.catchupmath.cmre.server.TutorServer
+	cd apps/backend && CM_DEV=1 mvn -q compile exec:java -Dexec.mainClass=com.catchupmath.cmre.server.TutorServer
+
+# Stop ONLY the dev server on :5173 (POST /api/dev/shutdown, else the
+# listening PID) — never a blanket taskkill of java.exe.
+kill-server:
+	@sh scripts/kill-server.sh
 
 # Same as `run` but with a JDWP debug socket on JDWP_PORT (default 5005).
 # With JDWP_SUSPEND=y the JVM waits for a debugger to attach before
@@ -34,7 +41,7 @@ run: build
 # (attach 5005)". See DEBUG.org.  (MAVEN_OPTS puts the agent on the JVM
 # that mvn+exec:java share.)
 debug: build
-	cd apps/backend && MAVEN_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=$(JDWP_SUSPEND),address=localhost:$(JDWP_PORT)" mvn -q compile exec:java -Dexec.mainClass=com.catchupmath.cmre.server.TutorServer
+	cd apps/backend && CM_DEV=1 MAVEN_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=$(JDWP_SUSPEND),address=localhost:$(JDWP_PORT)" mvn -q compile exec:java -Dexec.mainClass=com.catchupmath.cmre.server.TutorServer
 
 # Assemble the committed, runnable distribution into cm_re/deploy/
 # (deploy/cm_re-server.jar + deploy/web/ + deploy/web/editor/). Run
@@ -85,7 +92,7 @@ editor:
 
 api:
 	cd apps/tutor && [ -d dist ] || (npm install && npm run build)
-	cd apps/backend && mvn -q compile exec:java -Dexec.mainClass=com.catchupmath.cmre.server.TutorServer
+	cd apps/backend && CM_DEV=1 mvn -q compile exec:java -Dexec.mainClass=com.catchupmath.cmre.server.TutorServer
 
 # Only for actively hacking the editor UI: Vite dev server (HMR) on
 # :5174, proxying /api to a separately-running `make api` on :5173.

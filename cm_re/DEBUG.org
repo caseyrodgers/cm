@@ -69,9 +69,12 @@ breakpoints.
 
 * Gotchas
 
-- *Port 5173 already in use*: an old =make run= / python instance.
-  =make kill-python=, or =netstat -ano | findstr :5173= then
-  =taskkill /PID <pid> /F=.
+- *Port 5173 already in use* / stopping a stray dev server: =make
+  kill-server=. It POSTs =/api/dev/shutdown= (mounted only when
+  =CM_DEV= is set, which =make run=/=make api=/=make debug= do), and
+  failing that kills just the PID listening on the port — never a
+  blanket =taskkill /IM java.exe= (that also kills Eclipse). Override
+  the port with =make kill-server PORT=9000=.
 - *=suspend=y= and nothing attaches*: the server never starts serving
   — expected. Attach, or relaunch with =JDWP_SUSPEND=n=.
 - *Static files 404 / blank app*: =dist/= is stale or missing — run

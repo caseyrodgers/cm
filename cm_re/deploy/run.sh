@@ -9,6 +9,8 @@
 #   CM_NO_EDITOR=1    drop /editor/ + /api/editor/* — SET THIS on any
 #                     internet-facing box: the editor API has
 #                     unauthenticated write endpoints (no auth yet).
+#   CM_DEV           dev only — mounts POST /api/dev/shutdown (stops the
+#                     JVM). Do NOT set this on production; leave unset.
 #
 # It's a PWA: off-localhost it needs real TLS. Either put nginx/Caddy in
 # front, or point CM_KEYSTORE at a real-cert PKCS12.

@@ -58,6 +58,9 @@ public final class TutorServer {
 
         HttpServer http = HttpServer.create(new InetSocketAddress(httpPort), 0);
         http.createContext("/api/", apiHandler);
+        if (DevHandler.enabled()) {
+            http.createContext("/api/dev/", new DevHandler());
+        }
         if (editorHandler != null) {
             http.createContext("/api/editor/", editorHandler);
         }
@@ -71,6 +74,9 @@ public final class TutorServer {
         System.out.println("  http    http://localhost:" + httpPort);
         System.out.println("  webroot " + webRoot);
         System.out.println("  api     GET /api/health , GET /api/ai/problem/{pid}");
+        System.out.println("  dev     " + (DevHandler.enabled()
+                ? "POST /api/dev/shutdown  (CM_DEV set - stop with `make kill-server`)"
+                : "off (set CM_DEV to enable POST /api/dev/shutdown)"));
         System.out.println("  editor  " + (editorHandler == null
                 ? "off (CM_NO_EDITOR set, or no modules/ content root found)"
                 : "API /api/editor/*   UI " + (editorWebRoot != null
@@ -85,6 +91,9 @@ public final class TutorServer {
             HttpsServer https = HttpsServer.create(new InetSocketAddress(httpsPort), 0);
             https.setHttpsConfigurator(new HttpsConfigurator(sslContext(keystorePath, keystorePass)));
             https.createContext("/api/", apiHandler);
+            if (DevHandler.enabled()) {
+                https.createContext("/api/dev/", new DevHandler());
+            }
             if (editorHandler != null) {
                 https.createContext("/api/editor/", editorHandler);
             }
