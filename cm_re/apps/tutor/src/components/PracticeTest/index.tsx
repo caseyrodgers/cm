@@ -534,8 +534,7 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
                   : `Lesson Based on Missed Questions: ${missedPids.length} problem${missedPids.length === 1 ? "" : "s"} →`}
               </Button>
               <p className="mt-1 rounded-md bg-slate-50 px-3 py-1.5 text-xs text-slate-500">
-                For each question you missed, a different problem from the same chapter — worked through step by step,
-                not a re-quiz.
+                For each question you missed, a different problem from the same chapter — worked through step by step.
               </p>
             </div>
           )}
