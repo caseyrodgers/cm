@@ -10,6 +10,7 @@ test.describe("module install", () => {
       "Algebra 2 Practice Tests",
       "Geometry Practice Tests",
       "Pre-Algebra Practice Tests",
+      "Mini Calculus",
       "Graphing Calculator Practice",
       "Placement Test",
     ]) {
