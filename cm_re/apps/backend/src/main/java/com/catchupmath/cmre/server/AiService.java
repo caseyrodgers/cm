@@ -72,6 +72,82 @@ public final class AiService {
         }
     }
 
+    /**
+     * "Ask AI about my work" — the student's whiteboard scratch work,
+     * captured as a PNG on the client, sent here as base64. Reviews it
+     * against the problem and gives qualitative feedback on whether it
+     * shows real understanding — not a correct/incorrect verdict, no
+     * grade. Same degrade-gracefully posture as getAIForProblem: no key
+     * / no image / unknown pid / API error all come back
+     * placeholder:true with a readable message.
+     *
+     * @param imageBase64 PNG bytes, base64-encoded (a leading
+     *   "data:image/png;base64," prefix, if present, is stripped).
+     */
+    public String checkWork(String pid, String imageBase64) {
+        String safePid = pid == null ? "" : pid;
+
+        if (!claude.isConfigured()) {
+            return workPayload(safePid, "Set ANTHROPIC_API_KEY on the server to enable AI feedback.", true);
+        }
+
+        String image = stripDataUrlPrefix(imageBase64 == null ? "" : imageBase64.trim());
+        if (image.isEmpty()) {
+            return workPayload(safePid, "No whiteboard image was sent.", true);
+        }
+
+        String problem = store.problemTextFor(safePid).orElse(null);
+        if (problem == null) {
+            return workPayload(safePid, "No problem found for id \"" + safePid + "\".", true);
+        }
+
+        List<ClaudeClient.ImageAttachment> images = loadImages(store.problemImagesFor(safePid));
+        boolean hasProblemImages = !images.isEmpty();
+        images.add(new ClaudeClient.ImageAttachment("image/png", image));
+
+        String prompt = "You are a patient math tutor reviewing a student's scratch work on this problem:\n\n"
+                + problem
+                + (hasProblemImages ? "\n\n(Part of this problem — the equation and/or its answer choices — is"
+                        + " shown to you only as image(s), not as text above. Read them carefully.)" : "")
+                + "\n\nThe LAST attached image is a photo of the student's handwritten/drawn work on a digital"
+                + " whiteboard while solving this problem. Look at it and assess whether it shows real"
+                + " understanding of THIS problem — not just whether a final answer happens to match, but"
+                + " whether the steps or reasoning shown actually make sense for it."
+                + " Be encouraging but honest: call out what's right, and gently point out anything missing,"
+                + " confused, or incorrect. If the board is blank or illegible, say so plainly rather than"
+                + " guessing at what might be there. Keep it to a few sentences, conversational — no letter"
+                + " grade, no percentage, no pass/fail verdict."
+                + "\n\nReturn the answer as an HTML fragment. Prose in <p>; write any formula/equation you"
+                + " reference as MathML inside <math>...</math>. No Markdown, no LaTeX, no $ delimiters, no"
+                + " <script>/<style>/<img>, no surrounding <html> or <body> tags — just the fragment.";
+
+        try {
+            String text = claude.complete(prompt, images);
+            return workPayload(safePid, text, false);
+        } catch (Exception e) {
+            System.err.println("AiService.checkWork: " + e);
+            return workPayload(safePid, "Couldn't reach the AI service: " + e.getMessage(), true);
+        }
+    }
+
+    private static String stripDataUrlPrefix(String s) {
+        if (s.startsWith("data:")) {
+            int comma = s.indexOf(',');
+            if (comma >= 0) {
+                return s.substring(comma + 1);
+            }
+        }
+        return s;
+    }
+
+    private static String workPayload(String pid, String feedback, boolean placeholder) {
+        return "{"
+                + "\"pid\":" + jsonString(pid) + ","
+                + "\"feedback\":" + jsonString(feedback) + ","
+                + "\"placeholder\":" + placeholder
+                + "}";
+    }
+
     /** Reads each image file and base64-encodes it for the vision content block; unreadable files are skipped (logged), not fatal. */
     private static List<ClaudeClient.ImageAttachment> loadImages(List<Path> paths) {
         List<ClaudeClient.ImageAttachment> out = new ArrayList<>();

@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Stroke } from "../../offline/db";
 import { getWhiteboard, saveWhiteboard, clearWhiteboard } from "../../offline/whiteboardStore";
+import { checkWork, ExplainAbortError } from "../../api/aiClient";
+import { SanitizedHtml } from "../StepViewer";
 import { Button } from "../ui/button";
+import { Spinner } from "../ui/spinner";
 import { cn } from "../../lib/utils";
 import { confirm } from "../../lib/dialog";
 
@@ -22,6 +25,15 @@ import { confirm } from "../../lib/dialog";
  * server. Keyed by pid; render with `key={pid}` so switching solutions
  * gets a fresh mount (which flushes the previous board's save on
  * unmount).
+ *
+ * "Ask AI about my work" is the one server round-trip this component
+ * makes: flattens the canvas onto a white background (the on-screen
+ * canvas is transparent, drawn over a translucent CSS backdrop — a
+ * transparent PNG would leave the model guessing at contrast), base64s
+ * it, and POSTs it alongside the pid so the server can pair it with the
+ * problem's own text/images. Response is qualitative feedback on
+ * whether the work shows understanding — not a correct/incorrect
+ * verdict (see aiClient.checkWork).
  */
 
 const LOGICAL_W = 480;
@@ -30,16 +42,22 @@ const SAVE_DEBOUNCE_MS = 400;
 const PEN_COLORS = ["#1f2937", "#1A99D6", "#C14444"] as const;
 const PEN_WIDTH = 2.5;
 
+type AiStatus = "idle" | "loading" | "done" | "error";
+
 export default function WhiteboardPanel({ pid }: { pid: string }) {
   const [open, setOpen] = useState(false);
   const [color, setColor] = useState<string>(PEN_COLORS[0]);
   const [strokeCount, setStrokeCount] = useState(0);
+  const [aiStatus, setAiStatus] = useState<AiStatus>("idle");
+  const [aiFeedback, setAiFeedback] = useState<string | null>(null);
+  const [aiPlaceholder, setAiPlaceholder] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const strokesRef = useRef<Stroke[]>([]);
   const drawingRef = useRef<Stroke | null>(null);
   const dirtyRef = useRef(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const aiAbortRef = useRef<AbortController | null>(null);
 
   const dpr = typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
 
@@ -103,6 +121,7 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
   }, [flushSave]);
 
   useEffect(() => flushSave, [flushSave]);
+  useEffect(() => () => aiAbortRef.current?.abort(), []);
 
   function toLogical(e: React.PointerEvent<HTMLCanvasElement>): [number, number] {
     const r = e.currentTarget.getBoundingClientRect();
@@ -170,6 +189,43 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
     void clearWhiteboard(pid);
   }
 
+  /** Flattens the drawn strokes onto a white background PNG (the live canvas has a transparent 2D-context backing store — its CSS translucency is a display effect, not real pixel data) and returns bare base64 (no data: prefix). */
+  function captureFlattenedPng(): string | null {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    const flat = document.createElement("canvas");
+    flat.width = canvas.width;
+    flat.height = canvas.height;
+    const fctx = flat.getContext("2d");
+    if (!fctx) return null;
+    fctx.fillStyle = "#ffffff";
+    fctx.fillRect(0, 0, flat.width, flat.height);
+    fctx.drawImage(canvas, 0, 0);
+    const dataUrl = flat.toDataURL("image/png");
+    const comma = dataUrl.indexOf(",");
+    return comma >= 0 ? dataUrl.slice(comma + 1) : null;
+  }
+
+  async function askAI() {
+    if (strokeCount === 0) return;
+    const image = captureFlattenedPng();
+    if (!image) return;
+    aiAbortRef.current?.abort();
+    const ac = new AbortController();
+    aiAbortRef.current = ac;
+    setAiStatus("loading");
+    setAiFeedback(null);
+    try {
+      const res = await checkWork(pid, image, ac.signal);
+      setAiFeedback(res.feedback);
+      setAiPlaceholder(res.placeholder);
+      setAiStatus("done");
+    } catch (e) {
+      if (e instanceof ExplainAbortError) return;
+      setAiStatus("error");
+    }
+  }
+
   return (
     <>
       <button
@@ -226,6 +282,30 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
               onPointerLeave={endStroke}
               onPointerCancel={endStroke}
             />
+          </div>
+
+          <div className="border-t border-slate-200 bg-white/85 px-3 py-2">
+            <Button className="w-full" onClick={askAI} disabled={strokeCount === 0 || aiStatus === "loading"}>
+              {aiStatus === "loading" ? <Spinner /> : "Ask AI about my work"}
+            </Button>
+
+            {aiStatus === "error" && (
+              <p className="mt-2 text-sm text-red-600">Couldn't get feedback. Try again.</p>
+            )}
+
+            {aiFeedback && (
+              <div className="mt-2">
+                {aiPlaceholder && (
+                  <p className="mb-1 text-xs font-medium text-amber-700">
+                    Placeholder — the AI feedback service is unavailable right now
+                  </p>
+                )}
+                <SanitizedHtml
+                  html={aiFeedback}
+                  className="learn-explanation rounded-md bg-slate-50 p-3 text-sm text-slate-800"
+                />
+              </div>
+            )}
           </div>
 
           <p className="border-t border-slate-200 bg-white/85 px-3 py-1.5 text-xs text-slate-400">

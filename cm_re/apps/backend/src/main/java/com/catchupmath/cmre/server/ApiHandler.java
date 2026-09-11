@@ -1,9 +1,13 @@
 package com.catchupmath.cmre.server;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -13,11 +17,17 @@ import java.util.List;
 /**
  * The REST API, mounted at /api/.
  *
- *   GET /api/health                                  -> {"status":"ok"}
- *   GET /api/ai/problem/{pid}?grade=7                -> AiService.getAIForProblem(pid, grade)
- *   GET /api/ai/chapter-name/{subjectId}?label=&pids= -> AiService.getChapterName(subjectId, label, pids)
+ *   GET  /api/health                                  -> {"status":"ok"}
+ *   GET  /api/ai/problem/{pid}?grade=7                -> AiService.getAIForProblem(pid, grade)
+ *   GET  /api/ai/chapter-name/{subjectId}?label=&pids= -> AiService.getChapterName(subjectId, label, pids)
+ *   POST /api/ai/check-work/{pid}  {"image":"<base64 png>"} -> AiService.checkWork(pid, image)
  */
 public class ApiHandler implements HttpHandler {
+
+    // Generous but bounded — a whiteboard PNG base64-encoded is typically
+    // well under 1 MB; this just stops a runaway/bogus upload from
+    // reading forever.
+    private static final int MAX_BODY_BYTES = 8 * 1024 * 1024;
 
     private final AiService ai;
 
@@ -29,7 +39,25 @@ public class ApiHandler implements HttpHandler {
     public void handle(HttpExchange ex) throws IOException {
         try {
             String path = ex.getRequestURI().getPath();
-            if (!"GET".equalsIgnoreCase(ex.getRequestMethod())) {
+            String method = ex.getRequestMethod();
+
+            String checkWorkPrefix = "/api/ai/check-work/";
+            if (path.startsWith(checkWorkPrefix)) {
+                if (!"POST".equalsIgnoreCase(method)) {
+                    send(ex, 405, "application/json", "{\"error\":\"method not allowed\"}");
+                    return;
+                }
+                String pid = URLDecoder.decode(path.substring(checkWorkPrefix.length()), StandardCharsets.UTF_8);
+                if (pid.isBlank()) {
+                    send(ex, 400, "application/json", "{\"error\":\"missing pid\"}");
+                    return;
+                }
+                String image = readImageField(ex);
+                send(ex, 200, "application/json", ai.checkWork(pid, image));
+                return;
+            }
+
+            if (!"GET".equalsIgnoreCase(method)) {
                 send(ex, 405, "application/json", "{\"error\":\"method not allowed\"}");
                 return;
             }
@@ -71,6 +99,34 @@ public class ApiHandler implements HttpHandler {
             send(ex, 500, "application/json",
                     "{\"error\":" + AiService.jsonString(String.valueOf(e.getMessage())) + "}");
         }
+    }
+
+    /** Reads the request body as JSON and returns its "image" string field ("" if absent/blank/oversized/malformed — the caller treats that as "no image"). */
+    private static String readImageField(HttpExchange ex) throws IOException {
+        byte[] body = readBounded(ex.getRequestBody(), MAX_BODY_BYTES);
+        if (body == null) {
+            return "";
+        }
+        try {
+            JsonObject obj = JsonParser.parseString(new String(body, StandardCharsets.UTF_8)).getAsJsonObject();
+            return obj.has("image") && obj.get("image").isJsonPrimitive() ? obj.get("image").getAsString() : "";
+        } catch (RuntimeException e) {
+            return "";
+        }
+    }
+
+    /** Reads at most {@code max} bytes; returns null if the stream has more than that (caller treats as no body). */
+    private static byte[] readBounded(InputStream in, int max) throws IOException {
+        ByteArrayOutputStream buf = new ByteArrayOutputStream(Math.min(max, 64 * 1024));
+        byte[] chunk = new byte[16 * 1024];
+        int n;
+        while ((n = in.read(chunk)) != -1) {
+            if (buf.size() + n > max) {
+                return null;
+            }
+            buf.write(chunk, 0, n);
+        }
+        return buf.toByteArray();
     }
 
     /** Value of `name` from a raw query string ("a=1&grade=7"), URL-decoded, or "" if absent. */

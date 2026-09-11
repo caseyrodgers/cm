@@ -10,6 +10,10 @@ import type { Solution } from "@cm_re/shared-types";
  * `pid` and `grade` are sent; `title` / `problemText` are still only
  * for the eventual pre-generation path (the server composes its own
  * problem text from the served bundles).
+ *
+ * checkWork() is the whiteboard's "Ask AI about my work" — POSTs a PNG
+ * of the student's scratch work (POST /api/ai/check-work/{pid}) and
+ * gets back qualitative feedback on whether it shows understanding.
  */
 
 const AI_BASE = "/api/ai";
@@ -68,6 +72,47 @@ export async function explainProblem(req: ExplainRequest, signal?: AbortSignal):
 
 function isAbort(e: unknown): boolean {
   return e instanceof DOMException && e.name === "AbortError";
+}
+
+export interface CheckWorkResult {
+  /** Qualitative feedback on whether the whiteboard work shows understanding — HTML fragment, same MathML convention as explainProblem's text. Not a correct/incorrect verdict. */
+  feedback: string;
+  placeholder: boolean;
+}
+
+/**
+ * "Ask AI about my work" (POST /api/ai/check-work/{pid}) — sends a
+ * base64 PNG of the student's whiteboard, gets back qualitative
+ * feedback on whether it shows understanding of the problem. The
+ * server composes the problem context itself (same as explainProblem);
+ * only the pid + image are sent.
+ */
+export async function checkWork(
+  pid: string,
+  imageBase64: string,
+  signal?: AbortSignal
+): Promise<CheckWorkResult> {
+  let res: Response;
+  try {
+    const url = `${AI_BASE}/check-work/${encodeURIComponent(pid)}`;
+    res = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ image: imageBase64 }),
+      signal,
+    });
+  } catch (e) {
+    if (isAbort(e)) throw new ExplainAbortError();
+    throw new Error(`check-work request failed: ${String(e)}`);
+  }
+  if (!res.ok) {
+    throw new Error(`check-work request failed: ${res.status}`);
+  }
+  const data = (await res.json()) as { feedback?: string; placeholder?: boolean };
+  return {
+    feedback: typeof data.feedback === "string" ? data.feedback : "",
+    placeholder: data.placeholder === true,
+  };
 }
 
 export interface ChapterNameResult {

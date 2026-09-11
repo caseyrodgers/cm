@@ -54,4 +54,37 @@ test.describe("whiteboard", () => {
     await page.reload();
     await expect(page.getByRole("button", { name: /^Whiteboard \(1\)/ })).toBeVisible();
   });
+
+  test("Ask AI about my work — disabled until a stroke exists, POSTs the pid + a PNG, renders feedback", async ({
+    page,
+  }) => {
+    // Mocked — a live version of this same flow (real Claude vision
+    // call) is covered separately in learn-ai.spec.ts (RUN_AI_TESTS=1).
+    let capturedImage: string | undefined;
+    await page.route(`**/api/ai/check-work/${MC_PID}`, async (route) => {
+      capturedImage = (route.request().postDataJSON() as { image?: string })?.image;
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ pid: MC_PID, feedback: "<p>Nice work, the steps track.</p>", placeholder: false }),
+      });
+    });
+
+    await page.getByRole("button", { name: /^Whiteboard/ }).click();
+    const askBtn = page.getByRole("button", { name: /Ask AI about my work/i });
+    await expect(askBtn).toBeDisabled(); // no strokes yet
+
+    const canvas = page.locator("aside canvas");
+    const box = (await canvas.boundingBox())!;
+    await page.mouse.move(box.x + 30, box.y + 30);
+    await page.mouse.down();
+    await page.mouse.move(box.x + 90, box.y + 70, { steps: 8 });
+    await page.mouse.up();
+    await expect(askBtn).toBeEnabled();
+
+    await askBtn.click();
+    await expect(page.locator(".learn-explanation")).toContainText("Nice work, the steps track.");
+    expect(capturedImage).toBeTruthy();
+    expect(capturedImage!.length).toBeGreaterThan(100); // a real base64 PNG, not a stub
+  });
 });
