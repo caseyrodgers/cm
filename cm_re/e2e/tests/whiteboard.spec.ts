@@ -67,9 +67,11 @@ test.describe("whiteboard", () => {
     await slider.dispatchEvent("input");
     await expect(canvas).toHaveCSS("background-color", "rgb(255, 255, 255)"); // fully opaque
 
-    await slider.fill("0");
+    // slider floors at 0.5 — its low end is "50% opacity", not "fully see-through"
+    await expect(slider).toHaveAttribute("min", "0.5");
+    await slider.fill("0.5");
     await slider.dispatchEvent("input");
-    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0)"); // fully see-through
+    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.5)");
 
     await slider.fill("0.8");
     await slider.dispatchEvent("input");

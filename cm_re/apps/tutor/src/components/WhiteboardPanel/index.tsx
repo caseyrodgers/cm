@@ -16,9 +16,10 @@ import { confirm } from "../../lib/dialog";
  * When open it's a semi-transparent overlay covering the problem/step
  * card (`absolute inset-0` inside the `relative` Card), so you draw on
  * top of the problem — which stays visible through the board at a
- * student-adjustable opacity (the slider in the toolbar; 0 = the
- * problem shows through almost fully, 1 = an opaque board). Sticky in
- * localStorage across solutions/sessions, not tied to any one pid.
+ * student-adjustable opacity (the slider in the toolbar, ranged 50%-100%
+ * — MIN_OPACITY floors it there since below that the board stopped
+ * reading as a surface at all). Sticky in localStorage across
+ * solutions/sessions, not tied to any one pid.
  * Strokes are vector, stored in a fixed logical coordinate space
  * (LOGICAL_W x LOGICAL_H, portrait) so the drawing is resolution- and
  * resize-independent regardless of the panel's actual pixel size; the
@@ -46,14 +47,19 @@ const PEN_COLORS = ["#1f2937", "#1A99D6", "#C14444"] as const;
 const PEN_WIDTH = 2.5;
 
 const OPACITY_KEY = "cm_re.whiteboard.opacity";
-/** Matches the board's pre-slider look (was a fixed bg-white/50 on the canvas). */
+// Floored at 50% — below that the board stopped reading as a surface to
+// write on at all, just a faint wash. Slider's low end (0%) means "50%
+// opacity", not "fully see-through"; DEFAULT_OPACITY matches the board's
+// pre-slider look (was a fixed bg-white/50 on the canvas), so it's also
+// the slider's low end.
+const MIN_OPACITY = 0.5;
 const DEFAULT_OPACITY = 0.5;
 
 function loadOpacity(): number {
   try {
     const v = typeof localStorage !== "undefined" ? localStorage.getItem(OPACITY_KEY) : null;
     const n = v === null ? NaN : parseFloat(v);
-    return Number.isFinite(n) ? clamp(n, 0, 1) : DEFAULT_OPACITY;
+    return Number.isFinite(n) ? clamp(n, MIN_OPACITY, 1) : DEFAULT_OPACITY;
   } catch {
     return DEFAULT_OPACITY;
   }
@@ -187,7 +193,7 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
   }
 
   function setOpacity(n: number) {
-    const clamped = clamp(n, 0, 1);
+    const clamped = clamp(n, MIN_OPACITY, 1);
     setOpacityState(clamped);
     try {
       localStorage.setItem(OPACITY_KEY, String(clamped));
@@ -304,7 +310,7 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
             <input
               id="wb-opacity"
               type="range"
-              min={0}
+              min={MIN_OPACITY}
               max={1}
               step={0.05}
               value={opacity}
