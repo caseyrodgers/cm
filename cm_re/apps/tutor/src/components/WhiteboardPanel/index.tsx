@@ -15,10 +15,17 @@ import { confirm } from "../../lib/dialog";
  *
  * When open it's a semi-transparent overlay covering the problem/step
  * card (`absolute inset-0` inside the `relative` Card), so you draw on
- * top of the problem — which stays visible through the board at a
- * student-adjustable opacity (the slider in the toolbar, ranged
- * MIN_OPACITY-MAX_OPACITY; defaults to DEFAULT_OPACITY). Sticky in
- * localStorage across solutions/sessions, not tied to any one pid.
+ * top of the problem — which stays visible through the board via a
+ * "Problem visibility" slider in the toolbar: drag right and more of
+ * the problem shows through (the board's white backdrop gets more
+ * transparent); drag left and the board gets more opaque. The slider's
+ * own value is this visibility, not the canvas's alpha directly —
+ * they're inverses of each other (see opacityToVisibility) — because
+ * "opacity" and "visibility" point opposite ways: more opaque board
+ * means less of the problem is visible. `opacity` state always holds
+ * the actual canvas alpha; only the slider's displayed value is
+ * flipped. Sticky in localStorage across solutions/sessions (still
+ * keyed/stored as the alpha, for continuity), not tied to any one pid.
  * Strokes are vector, stored in a fixed logical coordinate space
  * (LOGICAL_W x LOGICAL_H, portrait) so the drawing is resolution- and
  * resize-independent regardless of the panel's actual pixel size; the
@@ -51,6 +58,19 @@ const OPACITY_KEY = "cm_re.whiteboard.opacity";
 const MIN_OPACITY = 0.0;
 const MAX_OPACITY = 0.8;
 const DEFAULT_OPACITY = 0.4;
+
+/**
+ * The slider is labeled — and drags — as "how visible is the problem
+ * underneath", not "how opaque is the board": dragging it right should
+ * reveal more of the problem, so it needs to move opposite to the
+ * canvas's actual background alpha (higher alpha = more opaque = LESS
+ * of the problem shows). This reflects a value across the midpoint of
+ * [MIN_OPACITY, MAX_OPACITY] — it's its own inverse, so the same call
+ * converts opacity->visibility and visibility->opacity.
+ */
+function opacityToVisibility(v: number): number {
+  return MIN_OPACITY + MAX_OPACITY - v;
+}
 
 function loadOpacity(): number {
   try {
@@ -302,7 +322,7 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
 
           <div className="flex items-center gap-2 border-b border-slate-200 bg-white/85 px-3 py-1.5">
             <label htmlFor="wb-opacity" className="text-xs text-slate-500">
-              Opacity
+              Problem visibility
             </label>
             <input
               id="wb-opacity"
@@ -310,12 +330,14 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
               min={MIN_OPACITY}
               max={MAX_OPACITY}
               step={0.05}
-              value={opacity}
-              onChange={(e) => setOpacity(e.target.valueAsNumber)}
+              value={opacityToVisibility(opacity)}
+              onChange={(e) => setOpacity(opacityToVisibility(e.target.valueAsNumber))}
               className="flex-1 accent-blue-600"
-              aria-label="whiteboard opacity"
+              aria-label="problem visibility through the whiteboard"
             />
-            <span className="w-9 text-right text-xs tabular-nums text-slate-500">{Math.round(opacity * 100)}%</span>
+            <span className="w-9 text-right text-xs tabular-nums text-slate-500">
+              {Math.round(((opacityToVisibility(opacity) - MIN_OPACITY) / (MAX_OPACITY - MIN_OPACITY)) * 100)}%
+            </span>
           </div>
 
           <div className="flex-1 overflow-y-auto p-2">

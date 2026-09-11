@@ -55,23 +55,27 @@ test.describe("whiteboard", () => {
     await expect(page.getByRole("button", { name: /^Whiteboard \(1\)/ })).toBeVisible();
   });
 
-  test("opacity slider adjusts the canvas backdrop and is sticky across a reload", async ({ page }) => {
+  test("problem-visibility slider: right reveals the problem, left hides it; sticky across a reload", async ({
+    page,
+  }) => {
     await page.getByRole("button", { name: /^Whiteboard/ }).click();
     const canvas = page.locator("aside canvas");
     const slider = page.locator("#wb-opacity");
 
     await expect(slider).toHaveAttribute("min", "0");
-    await expect(slider).toHaveAttribute("max", "0.8"); // capped — never a fully opaque board
+    await expect(slider).toHaveAttribute("max", "0.8"); // never a fully opaque board, even at the "hidden" end
     await expect(slider).toHaveValue("0.4"); // default
     await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.4)");
 
+    // drag all the way right — problem should become fully visible (canvas fully transparent)
     await slider.fill("0.8");
     await slider.dispatchEvent("input");
-    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.8)"); // max, still see-through
+    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0)");
 
+    // drag all the way left — problem should be as hidden as it gets (canvas at max alpha)
     await slider.fill("0");
     await slider.dispatchEvent("input");
-    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0)"); // fully see-through
+    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.8)");
 
     await slider.fill("0.6");
     await slider.dispatchEvent("input");
