@@ -60,24 +60,24 @@ test.describe("whiteboard", () => {
     const canvas = page.locator("aside canvas");
     const slider = page.locator("#wb-opacity");
 
-    await expect(slider).toHaveValue("0.5"); // default
-    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.5)");
-
-    await slider.fill("1");
-    await slider.dispatchEvent("input");
-    await expect(canvas).toHaveCSS("background-color", "rgb(255, 255, 255)"); // fully opaque
-
-    // slider floors at 0.5 — its low end is "50% opacity", not "fully see-through"
-    await expect(slider).toHaveAttribute("min", "0.5");
-    await slider.fill("0.5");
-    await slider.dispatchEvent("input");
-    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.5)");
+    await expect(slider).toHaveAttribute("min", "0");
+    await expect(slider).toHaveAttribute("max", "0.8"); // capped — never a fully opaque board
+    await expect(slider).toHaveValue("0.4"); // default
+    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.4)");
 
     await slider.fill("0.8");
     await slider.dispatchEvent("input");
+    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.8)"); // max, still see-through
+
+    await slider.fill("0");
+    await slider.dispatchEvent("input");
+    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0)"); // fully see-through
+
+    await slider.fill("0.6");
+    await slider.dispatchEvent("input");
     await page.reload();
     await page.getByRole("button", { name: /^Whiteboard/ }).click();
-    await expect(page.locator("#wb-opacity")).toHaveValue("0.8"); // sticky in localStorage
+    await expect(page.locator("#wb-opacity")).toHaveValue("0.6"); // sticky in localStorage
   });
 
   test("Ask AI about my work — disabled until a stroke exists, POSTs the pid + a PNG, renders feedback", async ({
