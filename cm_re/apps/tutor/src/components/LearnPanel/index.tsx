@@ -9,7 +9,6 @@ import {
   type Grade,
 } from "../../api/aiClient";
 import { SanitizedHtml } from "../StepViewer";
-import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 import { cn } from "../../lib/utils";
 
@@ -19,7 +18,10 @@ import { cn } from "../../lib/utils";
  * which returns a canned placeholder (see that file's TODO).
  *
  * Collapsible section, sits with the solution. The chosen grade is
- * remembered in localStorage so it's sticky across problems.
+ * remembered in localStorage so it's sticky across problems. Picking a
+ * grade button fires the explanation immediately — there's no separate
+ * "Explain this problem" step; re-tapping a grade (the same one or a
+ * different one) re-explains at that level.
  */
 
 const GRADE_KEY = "cm_re.learn.grade";
@@ -55,10 +57,10 @@ export default function LearnPanel({ solution, title }: { solution: Solution; ti
     } catch {
       /* private mode / storage disabled — fine, just not sticky */
     }
+    explain(g);
   }
 
-  async function explain() {
-    if (!grade) return;
+  async function explain(g: Grade) {
     abortRef.current?.abort();
     const ac = new AbortController();
     abortRef.current = ac;
@@ -66,7 +68,7 @@ export default function LearnPanel({ solution, title }: { solution: Solution; ti
     setResult(null);
     try {
       const res = await explainProblem(
-        { pid: solution.pid, title, problemText: problemTextOf(solution), grade },
+        { pid: solution.pid, title, problemText: problemTextOf(solution), grade: g },
         ac.signal
       );
       setResult(res.text);
@@ -92,27 +94,24 @@ export default function LearnPanel({ solution, title }: { solution: Solution; ti
       {open && (
         <div className="border-t border-slate-200 p-3">
           <p className="mb-2 text-sm font-medium text-slate-700">Tell me like I'm a…</p>
-          <div className="mb-3 grid grid-cols-3 gap-2">
+          <div className="mb-1 grid grid-cols-3 gap-2">
             {GRADES.map((g) => (
               <button
                 key={g}
                 type="button"
                 onClick={() => pickGrade(g)}
+                disabled={status === "loading"}
                 className={cn(
-                  "rounded-md border px-2 py-2 text-sm transition-colors",
+                  "rounded-md border px-2 py-2 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-60",
                   grade === g
                     ? "border-blue-500 bg-blue-50 font-medium text-blue-800"
                     : "border-slate-200 text-slate-700 hover:border-slate-300"
                 )}
               >
-                {gradeLabel(g)}
+                {status === "loading" && grade === g ? <Spinner /> : gradeLabel(g)}
               </button>
             ))}
           </div>
-
-          <Button className="w-full" onClick={explain} disabled={!grade || status === "loading"}>
-            {status === "loading" ? <Spinner /> : result ? "Explain again" : "Explain this problem"}
-          </Button>
 
           {status === "error" && (
             <p className="mt-2 text-sm text-red-600">Couldn't get an explanation. Try again.</p>

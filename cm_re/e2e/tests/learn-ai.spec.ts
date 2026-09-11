@@ -16,8 +16,8 @@ test.describe("Learn — AI explanation", () => {
     await openSolution(page, MC_PID);
 
     await page.getByRole("button", { name: /Learn .* explain this problem/i }).click();
+    // Picking a grade fires the explanation immediately — no separate submit step.
     await page.getByRole("button", { name: /10th Grader/i }).click();
-    await page.getByRole("button", { name: /^Explain this problem$/ }).click();
 
     const explanation = page.locator(".learn-explanation");
     await expect(explanation).toBeVisible({ timeout: 60_000 });
