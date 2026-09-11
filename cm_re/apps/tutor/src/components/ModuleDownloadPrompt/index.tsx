@@ -17,6 +17,7 @@ import { solutionTitle } from "../../lib/solutionTitle";
 import { chapterDisplay, isCourseTest, COURSE_TEST_BLURB } from "../../lib/chapterName";
 import { compareProblems, groupByChapter } from "../../lib/problemOrder";
 import { navigate, hashFor } from "../../routing";
+import { confirm } from "../../lib/dialog";
 
 type Status = "idle" | "downloading" | "removing" | "error";
 
@@ -86,9 +87,13 @@ export default function ModuleDownloadPrompt({
   }
 
   async function handleRemove() {
-    if (!confirm(`Remove "${subjectId}"? You'll need a connection to download it again.`)) {
-      return;
-    }
+    const ok = await confirm({
+      title: "Remove download",
+      message: `Remove "${subjectId}"? You'll need a connection to download it again.`,
+      confirmLabel: "Remove",
+      danger: true,
+    });
+    if (!ok) return;
     setStatus("removing");
     try {
       await removeModule(subjectId);

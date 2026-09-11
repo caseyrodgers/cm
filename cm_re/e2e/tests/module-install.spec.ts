@@ -27,8 +27,8 @@ test.describe("module install", () => {
     await expect(page.getByText(/pick when you start/i)).toBeVisible(); // the context label under it
     await expect(page.getByRole("button", { name: /Show all \d+ problems/i })).toBeVisible();
 
-    page.once("dialog", (d) => d.accept()); // "Remove download" confirm()
     await page.getByRole("button", { name: /Remove download/i }).click();
+    await page.getByTestId("app-dialog-confirm").click(); // custom "Remove download" dialog
     await expect(page.getByRole("button", { name: /Download for offline/i })).toBeVisible();
   });
 

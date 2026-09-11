@@ -36,8 +36,9 @@ test.describe("app shell", () => {
     await page.goto("/#/me");
     await expect(page.locator("main")).toContainText("Correct answers");
 
-    page.once("dialog", (d) => d.accept()); // reset confirm()
     await page.getByRole("button", { name: /Reset my progress/i }).click();
+    await expect(page.getByTestId("app-dialog")).toBeVisible();
+    await page.getByTestId("app-dialog-confirm").click();
 
     await expect(page.getByTestId("correct-total")).toHaveText(/0$/);
   });

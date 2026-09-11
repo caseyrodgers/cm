@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getStudentStats, resetStats, type StudentStats } from "../../lib/studentStats";
 import { activeShellId, setShell } from "../../lib/shell";
+import { confirm } from "../../lib/dialog";
 import { SHELL_IDS } from "../../shells";
 import { navigate, hashFor } from "../../routing";
 import { Card, CardContent } from "../ui/card";
@@ -27,9 +28,14 @@ export default function StudentStatus() {
   }, []);
 
   async function onReset() {
-    if (!confirm("Reset your progress? This clears your correct-answer count, every practice test, and every whiteboard. Downloaded subjects stay.")) {
-      return;
-    }
+    const ok = await confirm({
+      title: "Reset my progress",
+      message:
+        "This clears your correct-answer count, every practice test, and every whiteboard. Downloaded subjects stay.",
+      confirmLabel: "Reset",
+      danger: true,
+    });
+    if (!ok) return;
     setBusy(true);
     try {
       await resetStats();

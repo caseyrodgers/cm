@@ -5,6 +5,7 @@ import SolutionLoader from "./components/SolutionLoader";
 import PracticeTest from "./components/PracticeTest";
 import Hub from "./components/Hub";
 import StudentStatus from "./components/StudentStatus";
+import DialogHost from "./components/DialogHost";
 import { useHashRoute, navigate, hashFor } from "./routing";
 import { activeShellId } from "./lib/shell";
 import { SHELLS } from "./shells";
@@ -16,7 +17,12 @@ export default function App() {
   const route = useHashRoute();
   const Shell = SHELLS[activeShellId()] ?? SHELLS.default;
 
-  return <Shell>{renderRoute(route)}</Shell>;
+  return (
+    <>
+      <Shell>{renderRoute(route)}</Shell>
+      <DialogHost />
+    </>
+  );
 }
 
 function renderRoute(route: ReturnType<typeof useHashRoute>) {

@@ -8,6 +8,7 @@ import {
 } from "../../offline/moduleManager";
 import { listSubjects } from "../../api/client";
 import { chapterDisplay, isCourseTest, COURSE_TEST_BLURB } from "../../lib/chapterName";
+import { confirm, alert } from "../../lib/dialog";
 import {
   getActiveTest,
   startTest,
@@ -168,8 +169,13 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
   async function onFinish() {
     if (!test) return;
     const unanswered = test.pids.filter((p) => !test.answers[p]).length;
-    if (unanswered > 0 && !confirm(`${unanswered} question${unanswered === 1 ? "" : "s"} still unanswered. Finish anyway?`)) {
-      return;
+    if (unanswered > 0) {
+      const go = await confirm({
+        title: "Finish test?",
+        message: `${unanswered} question${unanswered === 1 ? "" : "s"} still unanswered. Finish anyway?`,
+        confirmLabel: "Finish anyway",
+      });
+      if (!go) return;
     }
     // Add this test's correct answers to the lifetime tally, once — a
     // completed test can be reopened straight to the score screen without
@@ -224,7 +230,7 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
       }
       const lessonPids = orderPids([...picked], subjectId);
       if (lessonPids.length === 0) {
-        alert("No step-by-step problems available in those chapters to build a lesson from.");
+        await alert("No step-by-step problems available in those chapters to build a lesson from.");
         return;
       }
       // Topic names come from the manifest (baked in by ChapterNamer at

@@ -3,6 +3,7 @@ import type { Stroke } from "../../offline/db";
 import { getWhiteboard, saveWhiteboard, clearWhiteboard } from "../../offline/whiteboardStore";
 import { Button } from "../ui/button";
 import { cn } from "../../lib/utils";
+import { confirm } from "../../lib/dialog";
 
 /**
  * Per-solution scratch whiteboard. One continuous board per solution —
@@ -156,9 +157,11 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
     scheduleSave();
   }
 
-  function clearAll() {
+  async function clearAll() {
     if (strokesRef.current.length === 0) return;
-    if (!confirm("Clear the whiteboard for this problem?")) return;
+    if (!(await confirm({ title: "Clear whiteboard", message: "Clear the whiteboard for this problem?", confirmLabel: "Clear", danger: true }))) {
+      return;
+    }
     strokesRef.current = [];
     setStrokeCount(0);
     redraw();
