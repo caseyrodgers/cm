@@ -31,7 +31,11 @@ function renderRoute(route: ReturnType<typeof useHashRoute>) {
       return <Hub />;
     case "tests":
       return (
-        <SubjectPicker heading="Practice test — pick a subject" onSelect={(id) => navigate(hashFor.test(id))} />
+        <SubjectPicker
+          heading="Practice test — pick a subject"
+          onSelect={(id) => navigate(hashFor.test(id))}
+          onlyPracticeTestable
+        />
       );
     case "problems":
       return (
@@ -53,11 +57,19 @@ function renderRoute(route: ReturnType<typeof useHashRoute>) {
   }
 }
 
-function SubjectPicker({ heading, onSelect }: { heading: string; onSelect: (subjectId: string) => void }) {
+function SubjectPicker({
+  heading,
+  onSelect,
+  onlyPracticeTestable,
+}: {
+  heading: string;
+  onSelect: (subjectId: string) => void;
+  onlyPracticeTestable?: boolean;
+}) {
   return (
     <div>
       <h2 className="mb-2 text-base font-medium text-slate-700">{heading}</h2>
-      <SubjectSelector onSelect={onSelect} />
+      <SubjectSelector onSelect={onSelect} onlyPracticeTestable={onlyPracticeTestable} />
     </div>
   );
 }

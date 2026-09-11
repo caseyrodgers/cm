@@ -179,6 +179,8 @@ export interface ModuleManifest {
   approxSizeBytes: number;
   /** Chapters in this module, in order, with topic names baked in at assembly time. Absent on modules assembled before this field existed. */
   chapters?: ChapterInfo[];
+  /** How many solutions carry a scorable MC question (question.correctIndex is a number) — 0 means this subject has no practice-test path, only browsable solutions (e.g. free-response calculus). Absent on modules assembled before this field existed. */
+  scorableCount?: number;
 }
 
 /**
@@ -208,4 +210,6 @@ export interface ModuleBundle {
 export interface SubjectSummary {
   subjectId: string;
   title: string;
+  /** Mirrors ModuleManifest.scorableCount — lets the subject picker filter to practice-testable subjects without fetching every manifest. 0/absent means browse-only (e.g. Mini Calculus, Graphing Calculator Practice). */
+  scorableCount?: number;
 }

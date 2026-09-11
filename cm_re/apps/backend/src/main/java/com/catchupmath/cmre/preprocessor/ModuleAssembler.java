@@ -3,6 +3,7 @@ package com.catchupmath.cmre.preprocessor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -93,6 +94,20 @@ public class ModuleAssembler {
         solutionIds.forEach(solutionIdsJson::add);
         manifest.add("solutionIds", solutionIdsJson);
         manifest.addProperty("approxSizeBytes", approxSizeBytes);
+
+        long scorableCount = 0;
+        for (JsonElement e : solutions) {
+            JsonObject q = e.getAsJsonObject().has("question") && e.getAsJsonObject().get("question").isJsonObject()
+                    ? e.getAsJsonObject().getAsJsonObject("question")
+                    : null;
+            if (q != null && q.has("correctIndex") && q.get("correctIndex").isJsonPrimitive()
+                    && q.get("correctIndex").getAsJsonPrimitive().isNumber()) {
+                scorableCount++;
+            }
+        }
+        manifest.addProperty("scorableCount", scorableCount);
+        System.out.println("scorableCount: " + scorableCount + " / " + solutionIds.size()
+                + (scorableCount == 0 ? "  (no MC questions -> no practice-test path for this subject)" : ""));
 
         // Bake per-chapter topic names into the manifest (AI, best-effort
         // — no ANTHROPIC_API_KEY just means empty names + the client

@@ -21,8 +21,11 @@ type SubjectStatus = "not-installed" | "up-to-date" | "update-available";
  */
 export default function SubjectSelector({
   onSelect,
+  onlyPracticeTestable = false,
 }: {
   onSelect: (subjectId: string) => void;
+  /** Practice Tests entry point only: drop subjects with no scorable MC content (scorableCount === 0/absent) — e.g. Mini Calculus, Graphing Calculator Practice have nothing to score a test on. Problems browsing shows every subject regardless. */
+  onlyPracticeTestable?: boolean;
 }) {
   const [subjects, setSubjects] = useState<SubjectSummary[] | null>(null);
   const [statuses, setStatuses] = useState<Record<string, SubjectStatus>>({});
@@ -30,7 +33,8 @@ export default function SubjectSelector({
 
   useEffect(() => {
     listSubjects()
-      .then(async (list) => {
+      .then(async (all) => {
+        const list = onlyPracticeTestable ? all.filter((s) => (s.scorableCount ?? 0) > 0) : all;
         setSubjects(list);
         const entries = await Promise.all(
           list.map(async (s): Promise<[string, SubjectStatus]> => {
@@ -43,7 +47,7 @@ export default function SubjectSelector({
         setStatuses(Object.fromEntries(entries));
       })
       .catch(() => setError(true));
-  }, []);
+  }, [onlyPracticeTestable]);
 
   if (error) {
     return <p className="text-sm text-red-600">Couldn't load the subject list. Check your connection and try again.</p>;
