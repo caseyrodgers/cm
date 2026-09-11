@@ -71,6 +71,10 @@ test.describe("whiteboard", () => {
     await slider.fill("0.8");
     await slider.dispatchEvent("input");
     await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0)");
+    // ...and the overlay container itself must carry no fixed backdrop of its own,
+    // or it caps visibility regardless of what the canvas does (regression: it
+    // used to have a fixed bg-white/80 sitting behind the canvas).
+    await expect(page.locator("aside")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
 
     // drag all the way left — problem should be as hidden as it gets (canvas at max alpha)
     await slider.fill("0");

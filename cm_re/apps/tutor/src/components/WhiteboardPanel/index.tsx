@@ -289,7 +289,15 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
       </button>
 
       {open && (
-        <aside className="absolute inset-0 z-30 flex flex-col overflow-hidden rounded-lg border border-slate-300 bg-white/80 shadow-2xl">
+        // No background of its own — the header/opacity/footer bars carry their own
+        // fixed bg-white/85 for control legibility, and the canvas carries the one
+        // student-controlled backdrop (the "Problem visibility" slider). If this
+        // container had its own fixed background too, it would sit behind the
+        // canvas and cap how see-through the board can ever get, no matter where
+        // the slider is (found live: at "100% visible" the canvas alone went fully
+        // transparent, but the problem was still faintly washed out by this
+        // container's old bg-white/80 underneath it).
+        <aside className="absolute inset-0 z-30 flex flex-col overflow-hidden rounded-lg border border-slate-300 shadow-2xl">
           <div className="flex items-center gap-2 border-b border-slate-200 bg-white/85 px-3 py-2">
             <span className="text-sm font-medium text-slate-700">Whiteboard</span>
             <div className="ml-auto flex items-center gap-1.5">
