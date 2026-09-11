@@ -55,6 +55,39 @@ test.describe("whiteboard", () => {
     await expect(page.getByRole("button", { name: /^Whiteboard \(1\)/ })).toBeVisible();
   });
 
+  test("Clear wipes immediately with no confirmation, and Undo brings it all back", async ({ page }) => {
+    await page.getByRole("button", { name: /^Whiteboard/ }).click();
+    const canvas = page.locator("aside canvas");
+    const box = (await canvas.boundingBox())!;
+
+    async function stroke(dx1: number, dy1: number, dx2: number, dy2: number) {
+      await page.mouse.move(box.x + dx1, box.y + dy1);
+      await page.mouse.down();
+      await page.mouse.move(box.x + dx2, box.y + dy2, { steps: 6 });
+      await page.mouse.up();
+    }
+    await stroke(30, 30, 90, 70);
+    await stroke(50, 100, 120, 140);
+    await expect(page.getByRole("button", { name: /^Whiteboard \(2\)/ })).toBeVisible();
+
+    const clearBtn = page.getByRole("button", { name: "Clear" });
+    const undoBtn = page.getByRole("button", { name: "Undo" });
+
+    await clearBtn.click();
+    // no confirmation dialog at all
+    await expect(page.getByTestId("app-dialog")).toBeHidden();
+    await expect(page.getByRole("button", { name: /^Whiteboard$/ })).toBeVisible(); // count gone, back to bare label
+    await expect(undoBtn).toBeEnabled(); // clearing is itself undoable
+
+    await undoBtn.click();
+    await expect(page.getByRole("button", { name: /^Whiteboard \(2\)/ })).toBeVisible(); // both strokes back at once
+
+    // survives a reload too (clearWhiteboard wasn't left half-applied)
+    await page.waitForTimeout(600);
+    await page.reload();
+    await expect(page.getByRole("button", { name: /^Whiteboard \(2\)/ })).toBeVisible();
+  });
+
   test("problem-visibility slider: right reveals the problem, left hides it; sticky across a reload", async ({
     page,
   }) => {

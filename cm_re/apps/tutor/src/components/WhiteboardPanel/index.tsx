@@ -6,7 +6,6 @@ import { SanitizedHtml } from "../StepViewer";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 import { cn } from "../../lib/utils";
-import { confirm } from "../../lib/dialog";
 
 /**
  * Per-solution scratch whiteboard. One continuous board per solution —
@@ -51,6 +50,7 @@ const LOGICAL_H = 1200;
 const SAVE_DEBOUNCE_MS = 400;
 const PEN_COLORS = ["#1f2937", "#1A99D6", "#C14444"] as const;
 const PEN_WIDTH = 2.5;
+const HISTORY_LIMIT = 50;
 
 const OPACITY_KEY = "cm_re.whiteboard.opacity";
 // Capped at 80% — even at max the problem should stay at least a little
@@ -93,6 +93,7 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
   const [open, setOpen] = useState(false);
   const [color, setColor] = useState<string>(PEN_COLORS[0]);
   const [strokeCount, setStrokeCount] = useState(0);
+  const [historyCount, setHistoryCount] = useState(0);
   const [opacity, setOpacityState] = useState<number>(loadOpacity);
   const [aiStatus, setAiStatus] = useState<AiStatus>("idle");
   const [aiFeedback, setAiFeedback] = useState<string | null>(null);
@@ -104,6 +105,12 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
   const dirtyRef = useRef(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const aiAbortRef = useRef<AbortController | null>(null);
+  // One-shot-per-action undo stack: a snapshot of strokesRef.current taken
+  // right before each destructive action (a completed stroke, or a Clear).
+  // Undo pops it back, so Clear is undoable exactly like drawing a stroke
+  // is — no special-casing needed. Session-only (not persisted): resets
+  // on remount, same as strokesRef itself.
+  const historyRef = useRef<Stroke[][]>([]);
 
   const dpr = typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
 
@@ -204,11 +211,19 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
     }
   }
 
+  /** Snapshots strokesRef.current onto the undo stack before a destructive change (shallow copy — completed strokes are never mutated in place, so this is cheap and safe). Capped so a very long session doesn't grow it unbounded. */
+  function pushHistory() {
+    historyRef.current.push([...strokesRef.current]);
+    if (historyRef.current.length > HISTORY_LIMIT) historyRef.current.shift();
+    setHistoryCount(historyRef.current.length);
+  }
+
   function endStroke() {
     const stroke = drawingRef.current;
     drawingRef.current = null;
     if (!stroke) return;
     if (stroke.points.length === 2) stroke.points.push(stroke.points[0] + 0.01, stroke.points[1] + 0.01);
+    pushHistory();
     strokesRef.current.push(stroke);
     setStrokeCount(strokesRef.current.length);
     scheduleSave();
@@ -225,18 +240,19 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
   }
 
   function undo() {
-    if (strokesRef.current.length === 0) return;
-    strokesRef.current = strokesRef.current.slice(0, -1);
+    const prev = historyRef.current.pop();
+    if (prev === undefined) return;
+    setHistoryCount(historyRef.current.length);
+    strokesRef.current = prev;
     setStrokeCount(strokesRef.current.length);
     redraw();
     scheduleSave();
   }
 
-  async function clearAll() {
+  /** Clears immediately, no confirmation — Undo brings the whole board back in one step (it's on the same undo stack as a single stroke, see pushHistory). */
+  function clearAll() {
     if (strokesRef.current.length === 0) return;
-    if (!(await confirm({ title: "Clear whiteboard", message: "Clear the whiteboard for this problem?", confirmLabel: "Clear", danger: true }))) {
-      return;
-    }
+    pushHistory();
     strokesRef.current = [];
     setStrokeCount(0);
     redraw();
@@ -316,7 +332,7 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
                   style={{ backgroundColor: c }}
                 />
               ))}
-              <Button variant="outline" onClick={undo} disabled={strokeCount === 0}>
+              <Button variant="outline" onClick={undo} disabled={historyCount === 0}>
                 Undo
               </Button>
               <Button variant="outline" onClick={clearAll} disabled={strokeCount === 0}>
