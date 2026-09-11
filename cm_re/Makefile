@@ -1,4 +1,4 @@
-.PHONY: build run debug dist serve serve-legacy kill-python kill-server api editor editor-dev e2e e2e-ui e2e-setup
+.PHONY: build run debug dist serve serve-legacy kill-python kill-server api editor editor-dev tutor-dev e2e e2e-ui e2e-setup
 
 # JDWP address for `make debug`. suspend=y makes the JVM wait for a
 # debugger before running main() (good for breakpoints in startup);
@@ -99,6 +99,14 @@ api:
 # Not needed just to view the editor.
 editor-dev:
 	cd apps/editor && npm install && npm run dev
+
+# Hot-fix loop for the tutor itself: Vite dev server on :5175 with real
+# HMR (CSS/TSX apply instantly, no `make build`, no service worker so
+# no stale-cache surprises). /api/* proxies to a `make run`/`make api`
+# on :5173 if you also want Learn etc. working; not needed just to edit
+# labels/CSS/JSON.
+tutor-dev:
+	cd apps/tutor && npm install && npm run dev
 
 # --- Playwright end-to-end tests (e2e/) ---
 # Fully self-contained: e2e-setup installs deps + the browser (both no-op
