@@ -18,6 +18,7 @@ import { chapterDisplay, isCourseTest, COURSE_TEST_BLURB } from "../../lib/chapt
 import { compareProblems, groupByChapter } from "../../lib/problemOrder";
 import { navigate, hashFor } from "../../routing";
 import { confirm } from "../../lib/dialog";
+import { useCurrentSubject } from "../../lib/useCurrentSubject";
 
 type Status = "idle" | "downloading" | "removing" | "error";
 
@@ -38,6 +39,7 @@ export default function ModuleDownloadPrompt({
   subjectId: string;
   onOpenSolution: (solution: Solution) => void;
 }) {
+  const subject = useCurrentSubject();
   const [manifest, setManifest] = useState<ModuleManifest | null>(null);
   const [installed, setInstalled] = useState(false);
   const [hasUpdate, setHasUpdate] = useState(false);
@@ -115,7 +117,7 @@ export default function ModuleDownloadPrompt({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{subjectId}</CardTitle>
+        <CardTitle>{subject?.title ?? subjectId}</CardTitle>
         <CardSubtitle>
           {manifest.solutionIds.length} solutions &middot; {(manifest.approxSizeBytes / 1024).toFixed(0)} KB
         </CardSubtitle>

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useHashRoute, navigate, hashFor } from "../routing";
 import { useCorrectTotal } from "../lib/correctCount";
+import { useCurrentSubject } from "../lib/useCurrentSubject";
 
 /**
  * The default app shell — header nav (Hub / Practice Tests / Problems /
@@ -44,6 +45,7 @@ function sectionOf(kind: string): Section | null {
 export default function DefaultShell({ children }: { children: ReactNode }) {
   const route = useHashRoute();
   const total = useCorrectTotal();
+  const subject = useCurrentSubject();
   const section = sectionOf(route.kind);
   const deep = route.kind === "module" || route.kind === "solution" || route.kind === "test";
 
@@ -92,6 +94,16 @@ export default function DefaultShell({ children }: { children: ReactNode }) {
             </button>
           ))}
         </nav>
+        {subject && (
+          <div
+            data-testid="subject-header"
+            className="border-t border-slate-100 bg-slate-50 px-4 py-1.5"
+          >
+            <span className="mx-auto block max-w-3xl text-sm font-semibold text-slate-900">
+              {subject.title}
+            </span>
+          </div>
+        )}
       </header>
 
       <main className="mx-auto w-full max-w-3xl flex-1 p-4">{children}</main>
