@@ -64,8 +64,8 @@ test.describe("whiteboard", () => {
 
     await expect(slider).toHaveAttribute("min", "0");
     await expect(slider).toHaveAttribute("max", "0.8"); // never a fully opaque board, even at the "hidden" end
-    await expect(slider).toHaveValue("0.4"); // default
-    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.4)");
+    await expect(slider).toHaveValue("0.2"); // default = 25% visibility (0.25 * 0.8)
+    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.6)");
 
     // drag all the way right — problem should become fully visible (canvas fully transparent)
     await slider.fill("0.8");

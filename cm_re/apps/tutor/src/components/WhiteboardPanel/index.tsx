@@ -57,7 +57,10 @@ const OPACITY_KEY = "cm_re.whiteboard.opacity";
 // visible through the board, never a fully opaque surface.
 const MIN_OPACITY = 0.0;
 const MAX_OPACITY = 0.8;
-const DEFAULT_OPACITY = 0.4;
+// Default problem-visibility %, in the same terms as the slider/label the
+// student sees (25% = mostly-hidden board on first open) — expressed here
+// rather than as a raw opacity so it's a one-line tune, not a math problem.
+const DEFAULT_VISIBILITY_PCT = 0.25;
 
 /**
  * The slider is labeled — and drags — as "how visible is the problem
@@ -71,6 +74,8 @@ const DEFAULT_OPACITY = 0.4;
 function opacityToVisibility(v: number): number {
   return MIN_OPACITY + MAX_OPACITY - v;
 }
+
+const DEFAULT_OPACITY = opacityToVisibility(MIN_OPACITY + DEFAULT_VISIBILITY_PCT * (MAX_OPACITY - MIN_OPACITY));
 
 function loadOpacity(): number {
   try {
