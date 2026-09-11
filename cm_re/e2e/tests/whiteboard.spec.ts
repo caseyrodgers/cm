@@ -55,6 +55,29 @@ test.describe("whiteboard", () => {
     await expect(page.getByRole("button", { name: /^Whiteboard \(1\)/ })).toBeVisible();
   });
 
+  test("opacity slider adjusts the canvas backdrop and is sticky across a reload", async ({ page }) => {
+    await page.getByRole("button", { name: /^Whiteboard/ }).click();
+    const canvas = page.locator("aside canvas");
+    const slider = page.locator("#wb-opacity");
+
+    await expect(slider).toHaveValue("0.5"); // default
+    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.5)");
+
+    await slider.fill("1");
+    await slider.dispatchEvent("input");
+    await expect(canvas).toHaveCSS("background-color", "rgb(255, 255, 255)"); // fully opaque
+
+    await slider.fill("0");
+    await slider.dispatchEvent("input");
+    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0)"); // fully see-through
+
+    await slider.fill("0.8");
+    await slider.dispatchEvent("input");
+    await page.reload();
+    await page.getByRole("button", { name: /^Whiteboard/ }).click();
+    await expect(page.locator("#wb-opacity")).toHaveValue("0.8"); // sticky in localStorage
+  });
+
   test("Ask AI about my work — disabled until a stroke exists, POSTs the pid + a PNG, renders feedback", async ({
     page,
   }) => {

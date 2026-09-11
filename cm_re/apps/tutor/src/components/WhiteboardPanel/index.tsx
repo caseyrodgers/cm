@@ -15,7 +15,10 @@ import { confirm } from "../../lib/dialog";
  *
  * When open it's a semi-transparent overlay covering the problem/step
  * card (`absolute inset-0` inside the `relative` Card), so you draw on
- * top of the problem — which stays faintly visible through the board.
+ * top of the problem — which stays visible through the board at a
+ * student-adjustable opacity (the slider in the toolbar; 0 = the
+ * problem shows through almost fully, 1 = an opaque board). Sticky in
+ * localStorage across solutions/sessions, not tied to any one pid.
  * Strokes are vector, stored in a fixed logical coordinate space
  * (LOGICAL_W x LOGICAL_H, portrait) so the drawing is resolution- and
  * resize-independent regardless of the panel's actual pixel size; the
@@ -42,12 +45,27 @@ const SAVE_DEBOUNCE_MS = 400;
 const PEN_COLORS = ["#1f2937", "#1A99D6", "#C14444"] as const;
 const PEN_WIDTH = 2.5;
 
+const OPACITY_KEY = "cm_re.whiteboard.opacity";
+/** Matches the board's pre-slider look (was a fixed bg-white/50 on the canvas). */
+const DEFAULT_OPACITY = 0.5;
+
+function loadOpacity(): number {
+  try {
+    const v = typeof localStorage !== "undefined" ? localStorage.getItem(OPACITY_KEY) : null;
+    const n = v === null ? NaN : parseFloat(v);
+    return Number.isFinite(n) ? clamp(n, 0, 1) : DEFAULT_OPACITY;
+  } catch {
+    return DEFAULT_OPACITY;
+  }
+}
+
 type AiStatus = "idle" | "loading" | "done" | "error";
 
 export default function WhiteboardPanel({ pid }: { pid: string }) {
   const [open, setOpen] = useState(false);
   const [color, setColor] = useState<string>(PEN_COLORS[0]);
   const [strokeCount, setStrokeCount] = useState(0);
+  const [opacity, setOpacityState] = useState<number>(loadOpacity);
   const [aiStatus, setAiStatus] = useState<AiStatus>("idle");
   const [aiFeedback, setAiFeedback] = useState<string | null>(null);
   const [aiPlaceholder, setAiPlaceholder] = useState(false);
@@ -168,6 +186,16 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
     scheduleSave();
   }
 
+  function setOpacity(n: number) {
+    const clamped = clamp(n, 0, 1);
+    setOpacityState(clamped);
+    try {
+      localStorage.setItem(OPACITY_KEY, String(clamped));
+    } catch {
+      /* private mode / storage disabled — fine, just not sticky */
+    }
+  }
+
   function undo() {
     if (strokesRef.current.length === 0) return;
     strokesRef.current = strokesRef.current.slice(0, -1);
@@ -269,13 +297,31 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
             </div>
           </div>
 
+          <div className="flex items-center gap-2 border-b border-slate-200 bg-white/85 px-3 py-1.5">
+            <label htmlFor="wb-opacity" className="text-xs text-slate-500">
+              Opacity
+            </label>
+            <input
+              id="wb-opacity"
+              type="range"
+              min={0}
+              max={1}
+              step={0.05}
+              value={opacity}
+              onChange={(e) => setOpacity(e.target.valueAsNumber)}
+              className="flex-1 accent-blue-600"
+              aria-label="whiteboard opacity"
+            />
+            <span className="w-9 text-right text-xs tabular-nums text-slate-500">{Math.round(opacity * 100)}%</span>
+          </div>
+
           <div className="flex-1 overflow-y-auto p-2">
             <canvas
               ref={canvasRef}
               width={LOGICAL_W * dpr}
               height={LOGICAL_H * dpr}
-              className="block w-full touch-none rounded-md border border-slate-300 bg-white/50"
-              style={{ aspectRatio: `${LOGICAL_W} / ${LOGICAL_H}` }}
+              className="block w-full touch-none rounded-md border border-slate-300"
+              style={{ aspectRatio: `${LOGICAL_W} / ${LOGICAL_H}`, backgroundColor: `rgba(255,255,255,${opacity})` }}
               onPointerDown={onPointerDown}
               onPointerMove={onPointerMove}
               onPointerUp={endStroke}
