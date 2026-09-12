@@ -8,6 +8,7 @@ import { solutionTitle } from "../../lib/solutionTitle";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { getSolutionSource, LEGACY_SERVER_BASE_URL, type SolutionSource } from "../../data/solutionSources";
+import { bumpViewedTotal } from "../../lib/correctCount";
 
 /**
  * Step-by-step navigation over one Solution's steps array. Reads from
@@ -21,6 +22,13 @@ export default function SolutionNav({ solution, onBack }: { solution: Solution; 
   // Start over at step 0 whenever the solution changes — callers don't
   // always remount this component per solution (no key={pid}).
   useEffect(() => setStepIndex(0), [solution.pid]);
+
+  // Lifetime "problems viewed" tally — once per distinct pid shown here
+  // (standalone #/s/ view, missed-questions-lesson walkthrough), not
+  // per render.
+  useEffect(() => {
+    bumpViewedTotal();
+  }, [solution.pid]);
 
   const lastStep = Math.max(solution.steps.length - 1, 0);
   // Clamp on read too: a fast double-tap on Prev/Next can enqueue two

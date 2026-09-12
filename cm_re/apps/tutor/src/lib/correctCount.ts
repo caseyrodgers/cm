@@ -1,18 +1,23 @@
 import { useEffect, useState } from "react";
 
 /**
- * Two running lifetime tallies, same shape: every question answered
- * correctly, and every question answered at all (right or wrong) —
- * the denominator for the first. Persisted in localStorage so they
- * survive browser restarts; per-device, never synced. Wrapped in
- * try/catch throughout — private mode / disabled storage just means
- * they don't stick (reads as 0).
+ * Three running lifetime tallies, same shape: every question answered
+ * correctly, every question answered at all (right or wrong — the
+ * denominator for the first), and every problem viewed (opened in the
+ * full statement+steps view, whether or not it's ever answered).
+ * Persisted in localStorage so they survive browser restarts;
+ * per-device, never synced. Wrapped in try/catch throughout — private
+ * mode / disabled storage just means they don't stick (reads as 0).
  *
- * Counted exactly once per answer, at grading time, together:
+ * Counted exactly once per event:
  *   - practice / custom-lesson: QuestionView.submit() — answered bumps
  *     on every submit, correct bumps only when right
  *   - a practice test: PracticeTest.onFinish() adds the test's answered
  *     count and correct count together
+ *   - viewed bumps once per distinct pid shown in SolutionNav (the
+ *     standalone #/s/ view and the missed-questions-lesson walkthrough
+ *     — not the in-test question view, which QuestionView/PracticeTest
+ *     already cover via answered/correct)
  * Never in review mode (that's replaying an already-counted answer).
  */
 
@@ -93,3 +98,10 @@ export const getAnsweredTotal = answeredTally.get;
 export const bumpAnsweredTotal = answeredTally.bump;
 export const resetAnsweredTotal = answeredTally.reset;
 export const useAnsweredTotal = answeredTally.useTotal;
+
+const viewedTally = makeTally("cm_re.viewedTotal", "cm_re:viewed-total");
+
+export const getViewedTotal = viewedTally.get;
+export const bumpViewedTotal = viewedTally.bump;
+export const resetViewedTotal = viewedTally.reset;
+export const useViewedTotal = viewedTally.useTotal;

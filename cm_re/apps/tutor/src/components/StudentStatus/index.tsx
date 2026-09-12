@@ -49,8 +49,13 @@ export default function StudentStatus() {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-2">
-        <Stat label="Correct answers" value={String(stats.correctTotal)} />
+      <div className="grid grid-cols-3 gap-2">
+        <Stat label="Problems" value={String(stats.viewedTotal)} testId="viewed-total" />
+        <Stat label="Questions" value={String(stats.answeredTotal)} testId="answered-total" />
+        <Stat label="Correct" value={String(stats.correctTotal)} />
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
         <Stat label="Grade" value={stats.grade ? `${stats.grade}` : "—"} />
         <Stat label="Downloads" value={stats.downloads.count ? `${stats.downloads.count} · ${mb(stats.downloads.approxSizeBytes)}` : "none"} />
         <Stat label="Whiteboards" value={String(stats.whiteboardCount)} />
@@ -124,11 +129,13 @@ export default function StudentStatus() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({ label, value, testId }: { label: string; value: string; testId?: string }) {
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-3">
       <p className="text-xs text-slate-500">{label}</p>
-      <p className="mt-0.5 text-lg font-semibold text-slate-900">{value}</p>
+      <p className="mt-0.5 text-lg font-semibold text-slate-900" data-testid={testId}>
+        {value}
+      </p>
     </div>
   );
 }

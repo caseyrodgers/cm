@@ -1,6 +1,13 @@
 import { db } from "../offline/db";
 import { listSubjects } from "../api/client";
-import { getCorrectTotal, resetCorrectTotal, resetAnsweredTotal } from "./correctCount";
+import {
+  getCorrectTotal,
+  getAnsweredTotal,
+  getViewedTotal,
+  resetCorrectTotal,
+  resetAnsweredTotal,
+  resetViewedTotal,
+} from "./correctCount";
 import { scoreTest, testTitle } from "../offline/practiceTestStore";
 
 /**
@@ -28,6 +35,10 @@ export interface SubjectStat {
 
 export interface StudentStats {
   correctTotal: number;
+  /** every question answered, right or wrong — the denominator for correctTotal */
+  answeredTotal: number;
+  /** every problem viewed (opened in the full statement+steps view) */
+  viewedTotal: number;
   grade: string | null;
   whiteboardCount: number;
   downloads: { count: number; approxSizeBytes: number };
@@ -80,6 +91,8 @@ export async function getStudentStats(): Promise<StudentStats> {
 
   return {
     correctTotal: getCorrectTotal(),
+    answeredTotal: getAnsweredTotal(),
+    viewedTotal: getViewedTotal(),
     grade,
     whiteboardCount,
     downloads: {
@@ -87,6 +100,27 @@ export async function getStudentStats(): Promise<StudentStats> {
       approxSizeBytes: installedModules.reduce((n, m) => n + (m.approxSizeBytes ?? 0), 0),
     },
     subjects,
+  };
+}
+
+export interface InstalledSummary {
+  /** installed subjects (downloaded modules), not the full catalog */
+  subjectCount: number;
+  /** solutions across every installed module — content actually on this device */
+  problemCount: number;
+}
+
+/**
+ * Hub's two content-size numbers — deliberately just this, not the
+ * full getStudentStats() (which also hits the network for the subject
+ * catalog and reads practice tests/whiteboards). Hub only needs what's
+ * already sitting in IndexedDB.
+ */
+export async function getInstalledSummary(): Promise<InstalledSummary> {
+  const modules = await db.modules.toArray();
+  return {
+    subjectCount: modules.length,
+    problemCount: modules.reduce((n, m) => n + (m.solutionIds?.length ?? 0), 0),
   };
 }
 
@@ -98,6 +132,7 @@ export async function getStudentStats(): Promise<StudentStats> {
 export async function resetStats(): Promise<void> {
   resetCorrectTotal();
   resetAnsweredTotal();
+  resetViewedTotal();
   await db.transaction("rw", db.practiceTests, db.whiteboards, async () => {
     await db.practiceTests.clear();
     await db.whiteboards.clear();

@@ -7,10 +7,17 @@ async function total(page: import("@playwright/test").Page): Promise<number> {
   return t === "" ? NaN : Number(t);
 }
 
-/** Reads the Hub's "Total Number of Questions" stat (every answer, right or wrong). */
+/** Reads the #/me "Questions" stat (every answer, right or wrong). */
 async function answeredTotal(page: import("@playwright/test").Page): Promise<number> {
-  await page.goto("/#/");
+  await page.goto("/#/me");
   const t = await page.getByTestId("answered-total").innerText();
+  return Number(t.trim());
+}
+
+/** Reads the #/me "Problems" stat (every problem viewed, whether or not it's answered). */
+async function viewedTotal(page: import("@playwright/test").Page): Promise<number> {
+  await page.goto("/#/me");
+  const t = await page.getByTestId("viewed-total").innerText();
   return Number(t.trim());
 }
 
@@ -64,7 +71,7 @@ test.describe("running total of correct answers", () => {
   });
 });
 
-test.describe("Hub — Total Number of Questions", () => {
+test.describe("Me — Questions", () => {
   test("counts every answer, right or wrong, and doesn't double-count a finished test", async ({ page }) => {
     await installModule(page, SUBJECT.demo);
     expect(await answeredTotal(page)).toBe(0);
@@ -94,5 +101,36 @@ test.describe("Hub — Total Number of Questions", () => {
     await page.reload();
     await page.goto(`/#/t/${SUBJECT.demo}`);
     expect(await answeredTotal(page)).toBe(2); // reopening a finished test doesn't double-count
+  });
+});
+
+test.describe("Me — Problems (viewed)", () => {
+  test("counts every problem viewed, not deduplicated, in either the standalone view or a lesson walkthrough", async ({
+    page,
+  }) => {
+    await installModule(page, SUBJECT.demo);
+    expect(await viewedTotal(page)).toBe(0);
+
+    await openSolution(page, MC_PID);
+    expect(await viewedTotal(page)).toBe(1);
+
+    // a different solution
+    await page.goto(`/#/s/sol-linear-eq-1`);
+    await page.waitForSelector("h2");
+    expect(await viewedTotal(page)).toBe(2);
+
+    // re-viewing the first one again still counts (not a "distinct pids" set)
+    await openSolution(page, MC_PID);
+    expect(await viewedTotal(page)).toBe(3);
+
+    // a practice-test question view does NOT bump this (it's not SolutionNav;
+    // QuestionView/PracticeTest already cover it via the Questions stat)
+    await page.goto(`/#/t/${SUBJECT.demo}`);
+    await page.getByRole("button", { name: /Quick test/i }).click();
+    await page.getByRole("button", { name: /^Start/ }).click();
+    const correct = Object.values(await answerKey(page, SUBJECT.demo))[0];
+    await choices(page).nth(correct).click();
+    await page.getByTestId("mc-submit").click();
+    expect(await viewedTotal(page)).toBe(3);
   });
 });

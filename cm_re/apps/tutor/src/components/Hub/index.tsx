@@ -1,12 +1,15 @@
-import { useCorrectTotal, useAnsweredTotal } from "../../lib/correctCount";
+import { useEffect, useState } from "react";
+import { getInstalledSummary, type InstalledSummary } from "../../lib/studentStats";
 import { navigate, hashFor } from "../../routing";
 import { Card, CardContent } from "../ui/card";
 
 /**
  * The landing screen. Deliberately thin — it points at the two ways
- * into the content (a practice test, or browsing problems) and at the
- * student's own status. What the header/nav looks like is the shell's
- * job (see shells/).
+ * into the content (a practice test, or browsing problems) and shows
+ * what's actually on this device (installed subjects/problems). The
+ * student's own performance stats (Problems viewed, Questions
+ * answered, Correct) live on #/me instead — see StudentStatus. What
+ * the header/nav looks like is the shell's job (see shells/).
  */
 
 const TILES: { label: string; sub: string; to: string }[] = [
@@ -16,20 +19,31 @@ const TILES: { label: string; sub: string; to: string }[] = [
 ];
 
 export default function Hub() {
-  const correctTotal = useCorrectTotal();
-  const answeredTotal = useAnsweredTotal();
+  const [summary, setSummary] = useState<InstalledSummary | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getInstalledSummary().then((s) => {
+      if (!cancelled) setSummary(s);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3">
         <div className="rounded-lg border border-slate-200 bg-white p-5 text-center">
-          <p className="text-sm text-slate-500">Correct answers, all time</p>
-          <p className="mt-1 text-4xl font-extrabold text-slate-900">{correctTotal}</p>
+          <p className="text-sm text-slate-500">Installed Problems</p>
+          <p className="mt-1 text-4xl font-extrabold text-slate-900" data-testid="installed-problem-count">
+            {summary ? summary.problemCount : "—"}
+          </p>
         </div>
         <div className="rounded-lg border border-slate-200 bg-white p-5 text-center">
-          <p className="text-sm text-slate-500">Total Number of Questions</p>
-          <p className="mt-1 text-4xl font-extrabold text-slate-900" data-testid="answered-total">
-            {answeredTotal}
+          <p className="text-sm text-slate-500">Subjects</p>
+          <p className="mt-1 text-4xl font-extrabold text-slate-900" data-testid="installed-subject-count">
+            {summary ? summary.subjectCount : "—"}
           </p>
         </div>
       </div>

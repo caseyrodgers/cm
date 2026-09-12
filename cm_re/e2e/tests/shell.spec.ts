@@ -22,7 +22,23 @@ test.describe("app shell", () => {
 
     await nav.getByRole("button", { name: "Me" }).click();
     await expect(page).toHaveURL(/#\/me$/);
-    await expect(page.getByText("Correct answers", { exact: true })).toBeVisible();
+    await expect(page.getByText("Correct", { exact: true })).toBeVisible();
+  });
+
+  test("Hub shows installed content counts, not the student's personal stats", async ({ page }) => {
+    await page.goto("/#/");
+    await expect(page.getByText("Installed Problems")).toBeVisible();
+    await expect(page.getByText("Subjects", { exact: true })).toBeVisible();
+    // nothing installed yet
+    await expect(page.getByTestId("installed-problem-count")).toHaveText("0");
+    await expect(page.getByTestId("installed-subject-count")).toHaveText("0");
+    // the personal stats live on #/me now, not here
+    await expect(page.getByText("Correct", { exact: true })).toHaveCount(0);
+
+    await installModule(page, SUBJECT.demo);
+    await page.goto("/#/");
+    await expect(page.getByTestId("installed-problem-count")).toHaveText("3"); // algebra1 demo: 3 solutions
+    await expect(page.getByTestId("installed-subject-count")).toHaveText("1");
   });
 
   test("Me shows status and reset clears the correct-answer count", async ({ page }) => {
@@ -34,7 +50,7 @@ test.describe("app shell", () => {
     await expect(page.getByTestId("correct-total")).toHaveText(/1$/);
 
     await page.goto("/#/me");
-    await expect(page.locator("main")).toContainText("Correct answers");
+    await expect(page.locator("main")).toContainText("Correct");
 
     await page.getByRole("button", { name: /Reset my progress/i }).click();
     await expect(page.getByTestId("app-dialog")).toBeVisible();
