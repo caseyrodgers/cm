@@ -69,6 +69,7 @@ public final class AiService {
                 + " <body> tags — just the fragment.";
 
         try {
+            AiLog.logRequest("getAIForProblem", safePid, prompt, images);
             String text = claude.complete(prompt, images);
             return payload(safePid, text, false);
         } catch (Exception e) {
@@ -146,6 +147,7 @@ public final class AiService {
                 + " <script>/<style>/<img>, no surrounding <html> or <body> tags — just the fragment.";
 
         try {
+            AiLog.logRequest("checkWork", safePid, prompt, images);
             String text = claude.complete(prompt, images);
             return workPayload(safePid, text, false);
         } catch (Exception e) {
@@ -198,7 +200,9 @@ public final class AiService {
                 + " plain text, no HTML, no Markdown, no commentary before or after it.";
 
         try {
-            String text = claude.complete(prompt, List.of(new ClaudeClient.ImageAttachment("image/png", image)));
+            List<ClaudeClient.ImageAttachment> images = List.of(new ClaudeClient.ImageAttachment("image/png", image));
+            AiLog.logRequest("readWork", safePid, prompt, images);
+            String text = claude.complete(prompt, images);
             return readPayload(safePid, text.strip(), false);
         } catch (Exception e) {
             System.err.println("AiService.readWork: " + e);
@@ -295,6 +299,7 @@ public final class AiService {
                 + " ONLY the topic name — no punctuation, quotes, or explanation.";
 
         try {
+            AiLog.logRequest("getChapterName", safeLabel, prompt, null);
             String name = claude.complete(prompt).trim().replaceAll("^[\"'.]+|[\"'.]+$", "");
             return chapterPayload(safeLabel, name, false);
         } catch (Exception e) {
