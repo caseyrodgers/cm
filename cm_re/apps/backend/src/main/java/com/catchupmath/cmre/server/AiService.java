@@ -55,6 +55,11 @@ public final class AiService {
                         + " choices — is shown to you only as the attached image(s), not as text above."
                         + " Read the image(s) carefully; they are the actual problem content, not decoration.)")
                 + "\n\nExplain how to solve it, step by step, in plain language a student can follow. Be concise."
+                + " Walk through the method and the reasoning all the way up to — but not including — the"
+                + " final answer: do NOT state the final numeric result, do NOT say which multiple-choice"
+                + " option is correct, and do NOT solve the very last arithmetic/simplification step for"
+                + " them. Leave that last step for the student to do themselves once they understand the"
+                + " approach — this is a teaching explanation, not an answer key."
                 + gradeLevelPhrase(grade)
                 + "\n\nReturn the answer as an HTML fragment. Prose in <p>; steps in <ol><li>;"
                 + " emphasis with <strong>. Write EVERY formula, fraction, equation and"
