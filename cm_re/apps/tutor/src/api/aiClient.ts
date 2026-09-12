@@ -14,6 +14,10 @@ import type { Solution } from "@cm_re/shared-types";
  * checkWork() is the whiteboard's "Ask AI about my work" — POSTs a PNG
  * of the student's scratch work (POST /api/ai/check-work/{pid}) and
  * gets back qualitative feedback on whether it shows understanding.
+ *
+ * readWork() is "Read back what I wrote" — same PNG capture, but a pure
+ * transcription (POST /api/ai/read-work/{pid}): no judgment, just what
+ * the handwritten numbers/math actually say, typed out.
  */
 
 const AI_BASE = "/api/ai";
@@ -111,6 +115,46 @@ export async function checkWork(
   const data = (await res.json()) as { feedback?: string; placeholder?: boolean };
   return {
     feedback: typeof data.feedback === "string" ? data.feedback : "",
+    placeholder: data.placeholder === true,
+  };
+}
+
+export interface ReadWorkResult {
+  /** Plain-text readback of the handwritten numbers/math on the board (e.g. "x = 7") — a pure transcription, not an assessment. Empty/placeholder text when the board is illegible or the service is unavailable. */
+  transcription: string;
+  placeholder: boolean;
+}
+
+/**
+ * "Snap" mode — POSTs a base64 PNG of the whiteboard and gets back a
+ * plain-text transcription of the handwritten numbers/math, nothing
+ * more (no correctness judgment — see checkWork for that). Same
+ * capture path as checkWork; different server-side prompt.
+ */
+export async function readWork(
+  pid: string,
+  imageBase64: string,
+  signal?: AbortSignal
+): Promise<ReadWorkResult> {
+  let res: Response;
+  try {
+    const url = `${AI_BASE}/read-work/${encodeURIComponent(pid)}`;
+    res = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ image: imageBase64 }),
+      signal,
+    });
+  } catch (e) {
+    if (isAbort(e)) throw new ExplainAbortError();
+    throw new Error(`read-work request failed: ${String(e)}`);
+  }
+  if (!res.ok) {
+    throw new Error(`read-work request failed: ${res.status}`);
+  }
+  const data = (await res.json()) as { transcription?: string; placeholder?: boolean };
+  return {
+    transcription: typeof data.transcription === "string" ? data.transcription : "",
     placeholder: data.placeholder === true,
   };
 }

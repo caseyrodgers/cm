@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Stroke } from "../../offline/db";
 import { getWhiteboard, saveWhiteboard, clearWhiteboard } from "../../offline/whiteboardStore";
-import { checkWork, ExplainAbortError } from "../../api/aiClient";
+import { checkWork, readWork, ExplainAbortError } from "../../api/aiClient";
 import { SanitizedHtml } from "../StepViewer";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
@@ -35,14 +35,19 @@ import { cn } from "../../lib/utils";
  * gets a fresh mount (which flushes the previous board's save on
  * unmount).
  *
- * "Ask AI about my work" is the one server round-trip this component
- * makes: flattens the canvas onto a white background (the on-screen
- * canvas is transparent, drawn over a translucent CSS backdrop — a
- * transparent PNG would leave the model guessing at contrast), base64s
- * it, and POSTs it alongside the pid so the server can pair it with the
- * problem's own text/images. Response is qualitative feedback on
- * whether the work shows understanding — not a correct/incorrect
- * verdict (see aiClient.checkWork).
+ * "Ask AI about my work" and "Read back what I wrote" are the two
+ * server round-trips this component makes, both via the same capture
+ * (captureFlattenedPng: flattens the canvas onto a white background —
+ * the on-screen canvas is transparent, drawn over a translucent CSS
+ * backdrop, and a transparent PNG would leave the model guessing at
+ * contrast — then base64s it). "Ask AI" (aiClient.checkWork) reviews
+ * the work and gives qualitative feedback on whether it shows
+ * understanding — not a correct/incorrect verdict. "Read back" (aka
+ * "snap", aiClient.readWork) is pure transcription — no judgment, just
+ * what the handwritten numbers/math actually say, typed out — the
+ * on-demand-OCR option from the two "snap" designs considered (the
+ * other, live shape-snapping as you draw, would need an on-device
+ * recognition model and was set aside).
  */
 
 const LOGICAL_W = 480;
@@ -98,6 +103,9 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
   const [aiStatus, setAiStatus] = useState<AiStatus>("idle");
   const [aiFeedback, setAiFeedback] = useState<string | null>(null);
   const [aiPlaceholder, setAiPlaceholder] = useState(false);
+  const [readStatus, setReadStatus] = useState<AiStatus>("idle");
+  const [transcription, setTranscription] = useState<string | null>(null);
+  const [readPlaceholder, setReadPlaceholder] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const strokesRef = useRef<Stroke[]>([]);
@@ -105,6 +113,7 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
   const dirtyRef = useRef(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const aiAbortRef = useRef<AbortController | null>(null);
+  const readAbortRef = useRef<AbortController | null>(null);
   // One-shot-per-action undo stack: a snapshot of strokesRef.current taken
   // right before each destructive action (a completed stroke, or a Clear).
   // Undo pops it back, so Clear is undoable exactly like drawing a stroke
@@ -175,6 +184,7 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
 
   useEffect(() => flushSave, [flushSave]);
   useEffect(() => () => aiAbortRef.current?.abort(), []);
+  useEffect(() => () => readAbortRef.current?.abort(), []);
 
   function toLogical(e: React.PointerEvent<HTMLCanvasElement>): [number, number] {
     const r = e.currentTarget.getBoundingClientRect();
@@ -298,6 +308,27 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
     }
   }
 
+  /** "Snap" mode: reads back the handwritten numbers/math as typed text — pure transcription, no judgment (that's askAI). Same capture as askAI, different endpoint. */
+  async function readMyWork() {
+    if (strokeCount === 0) return;
+    const image = captureFlattenedPng();
+    if (!image) return;
+    readAbortRef.current?.abort();
+    const ac = new AbortController();
+    readAbortRef.current = ac;
+    setReadStatus("loading");
+    setTranscription(null);
+    try {
+      const res = await readWork(pid, image, ac.signal);
+      setTranscription(res.transcription);
+      setReadPlaceholder(res.placeholder);
+      setReadStatus("done");
+    } catch (e) {
+      if (e instanceof ExplainAbortError) return;
+      setReadStatus("error");
+    }
+  }
+
   return (
     <>
       <button
@@ -385,9 +416,19 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
           </div>
 
           <div className="border-t border-slate-200 bg-white/85 px-3 py-2">
-            <Button className="w-full" onClick={askAI} disabled={strokeCount === 0 || aiStatus === "loading"}>
-              {aiStatus === "loading" ? <Spinner /> : "Ask AI about my work"}
-            </Button>
+            <div className="flex gap-2">
+              <Button className="flex-1" onClick={askAI} disabled={strokeCount === 0 || aiStatus === "loading"}>
+                {aiStatus === "loading" ? <Spinner /> : "Ask AI about my work"}
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={readMyWork}
+                disabled={strokeCount === 0 || readStatus === "loading"}
+              >
+                {readStatus === "loading" ? <Spinner /> : "Read back what I wrote"}
+              </Button>
+            </div>
 
             {aiStatus === "error" && (
               <p className="mt-2 text-sm text-red-600">Couldn't get feedback. Try again.</p>
@@ -404,6 +445,23 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
                   html={aiFeedback}
                   className="learn-explanation rounded-md bg-slate-50 p-3 text-sm text-slate-800"
                 />
+              </div>
+            )}
+
+            {readStatus === "error" && (
+              <p className="mt-2 text-sm text-red-600">Couldn't read the board. Try again.</p>
+            )}
+
+            {transcription && (
+              <div className="mt-2">
+                {readPlaceholder && (
+                  <p className="mb-1 text-xs font-medium text-amber-700">
+                    Placeholder — the AI reading service is unavailable right now
+                  </p>
+                )}
+                <p className="whitespace-pre-wrap rounded-md bg-slate-50 p-3 font-mono text-sm text-slate-800">
+                  {transcription}
+                </p>
               </div>
             )}
           </div>

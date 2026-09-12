@@ -153,4 +153,39 @@ test.describe("whiteboard", () => {
     expect(capturedImage).toBeTruthy();
     expect(capturedImage!.length).toBeGreaterThan(100); // a real base64 PNG, not a stub
   });
+
+  test('Read back what I wrote — disabled until a stroke exists, POSTs the pid + a PNG, renders the transcription', async ({
+    page,
+  }) => {
+    // Mocked, same reasoning as the "Ask AI" test above — a live version
+    // hitting real Claude vision was manually verified this session
+    // ("x = 7" scribble -> transcription "x = 7"; a random illegible
+    // scribble -> an honest "no legible work" sentence, not a guess).
+    let capturedImage: string | undefined;
+    await page.route(`**/api/ai/read-work/${MC_PID}`, async (route) => {
+      capturedImage = (route.request().postDataJSON() as { image?: string })?.image;
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ pid: MC_PID, transcription: "x = 7", placeholder: false }),
+      });
+    });
+
+    await page.getByRole("button", { name: /^Whiteboard/ }).click();
+    const readBtn = page.getByRole("button", { name: /Read back what I wrote/i });
+    await expect(readBtn).toBeDisabled(); // no strokes yet
+
+    const canvas = page.locator("aside canvas");
+    const box = (await canvas.boundingBox())!;
+    await page.mouse.move(box.x + 30, box.y + 30);
+    await page.mouse.down();
+    await page.mouse.move(box.x + 90, box.y + 70, { steps: 8 });
+    await page.mouse.up();
+    await expect(readBtn).toBeEnabled();
+
+    await readBtn.click();
+    await expect(page.locator(".font-mono")).toHaveText("x = 7");
+    expect(capturedImage).toBeTruthy();
+    expect(capturedImage!.length).toBeGreaterThan(100); // a real base64 PNG, not a stub
+  });
 });

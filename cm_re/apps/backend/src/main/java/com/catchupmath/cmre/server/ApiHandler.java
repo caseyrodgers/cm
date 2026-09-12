@@ -21,6 +21,7 @@ import java.util.List;
  *   GET  /api/ai/problem/{pid}?grade=7                -> AiService.getAIForProblem(pid, grade)
  *   GET  /api/ai/chapter-name/{subjectId}?label=&pids= -> AiService.getChapterName(subjectId, label, pids)
  *   POST /api/ai/check-work/{pid}  {"image":"<base64 png>"} -> AiService.checkWork(pid, image)
+ *   POST /api/ai/read-work/{pid}   {"image":"<base64 png>"} -> AiService.readWork(pid, image)
  */
 public class ApiHandler implements HttpHandler {
 
@@ -54,6 +55,22 @@ public class ApiHandler implements HttpHandler {
                 }
                 String image = readImageField(ex);
                 send(ex, 200, "application/json", ai.checkWork(pid, image));
+                return;
+            }
+
+            String readWorkPrefix = "/api/ai/read-work/";
+            if (path.startsWith(readWorkPrefix)) {
+                if (!"POST".equalsIgnoreCase(method)) {
+                    send(ex, 405, "application/json", "{\"error\":\"method not allowed\"}");
+                    return;
+                }
+                String pid = URLDecoder.decode(path.substring(readWorkPrefix.length()), StandardCharsets.UTF_8);
+                if (pid.isBlank()) {
+                    send(ex, 400, "application/json", "{\"error\":\"missing pid\"}");
+                    return;
+                }
+                String image = readImageField(ex);
+                send(ex, 200, "application/json", ai.readWork(pid, image));
                 return;
             }
 

@@ -134,6 +134,66 @@ public final class AiService {
         }
     }
 
+    /**
+     * "Snap" mode — reads back the handwritten numbers/math on the
+     * whiteboard as typed text, e.g. "x = 7", "3/4x + 5 = 2x". Pure
+     * transcription, not an assessment: no correctness judgment, no
+     * feedback on the work, just "here's what I can make out". Unlike
+     * checkWork, a missing/unknown pid doesn't fail the request —
+     * problem context only helps disambiguate ambiguous strokes (e.g.
+     * knowing fractions are in play), it isn't required to read digits
+     * off a page.
+     *
+     * @param imageBase64 PNG bytes, base64-encoded (a leading
+     *   "data:image/png;base64," prefix, if present, is stripped).
+     */
+    public String readWork(String pid, String imageBase64) {
+        String safePid = pid == null ? "" : pid;
+
+        if (!claude.isConfigured()) {
+            return readPayload(safePid, "Set ANTHROPIC_API_KEY on the server to enable this.", true);
+        }
+
+        String image = stripDataUrlPrefix(imageBase64 == null ? "" : imageBase64.trim());
+        if (image.isEmpty()) {
+            return readPayload(safePid, "No whiteboard image was sent.", true);
+        }
+
+        String problem = store.problemTextFor(safePid).orElse(null);
+
+        String prompt = (problem != null
+                ? "A student is using a digital whiteboard while solving this math problem:\n\n" + problem + "\n\n"
+                : "")
+                + "The attached image is a photo of what's written on their whiteboard."
+                + " FIRST, look carefully and note to yourself what marks, numbers, symbols or text are"
+                + " actually visible — don't default to calling it unclear or illegible just because it's"
+                + " sparse or handwritten; read it the way you'd read anyone's quick scratch work."
+                + " THEN transcribe it as typed text: convert handwritten digits and math symbols into their"
+                + " typed equivalents (e.g. a handwritten \"7\" becomes \"7\", a fraction becomes \"3/4\","
+                + " an equation becomes \"x = 7\"). Transcribe ONLY what's actually there — do not solve the"
+                + " problem, do not correct or complete their work, do not add anything they didn't write."
+                + " If, after really looking, there's truly nothing legible on the board, say so plainly in"
+                + " one short sentence instead of guessing."
+                + "\n\nReply with ONLY the transcription (or that one-sentence note if nothing's legible) —"
+                + " plain text, no HTML, no Markdown, no commentary before or after it.";
+
+        try {
+            String text = claude.complete(prompt, List.of(new ClaudeClient.ImageAttachment("image/png", image)));
+            return readPayload(safePid, text.strip(), false);
+        } catch (Exception e) {
+            System.err.println("AiService.readWork: " + e);
+            return readPayload(safePid, "Couldn't reach the AI service: " + e.getMessage(), true);
+        }
+    }
+
+    private static String readPayload(String pid, String transcription, boolean placeholder) {
+        return "{"
+                + "\"pid\":" + jsonString(pid) + ","
+                + "\"transcription\":" + jsonString(transcription) + ","
+                + "\"placeholder\":" + placeholder
+                + "}";
+    }
+
     private static String stripDataUrlPrefix(String s) {
         if (s.startsWith("data:")) {
             int comma = s.indexOf(',');
