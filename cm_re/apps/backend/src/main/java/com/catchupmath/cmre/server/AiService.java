@@ -160,11 +160,22 @@ public final class AiService {
      * "Snap" mode — reads back the handwritten numbers/math on the
      * whiteboard as typed text, e.g. "x = 7", "3/4x + 5 = 2x". Pure
      * transcription, not an assessment: no correctness judgment, no
-     * feedback on the work, just "here's what I can make out". Unlike
-     * checkWork, a missing/unknown pid doesn't fail the request —
-     * problem context only helps disambiguate ambiguous strokes (e.g.
-     * knowing fractions are in play), it isn't required to read digits
-     * off a page.
+     * feedback on the work, just "here's what I can make out".
+     *
+     * Deliberately sends NO problem context (unlike checkWork) — this
+     * used to include the problem statement on the theory that it
+     * "only helps disambiguate ambiguous strokes", but that was found
+     * to actively cause fabrication: given a board of genuinely
+     * illegible scribbles (an X, some dashes, a hook shape — nothing
+     * that read as actual digits) alongside a problem like "if y=2,
+     * 15y-4 is?", the model didn't say so — it confidently transcribed
+     * a complete, textbook-correct derivation ("y = 2 / 15y - 4 /
+     * 15(2) - 4") built entirely from the problem's own numbers, not
+     * from anything actually drawn. Random scribbles with no problem
+     * context read correctly as illegible; the moment the model has
+     * the "expected" numbers sitting right there, it reaches for them
+     * instead of admitting uncertainty. Removing the context removes
+     * the material there'd be to fabricate from.
      *
      * @param imageBase64 PNG bytes, base64-encoded (a leading
      *   "data:image/png;base64," prefix, if present, is stripped).
@@ -181,21 +192,21 @@ public final class AiService {
             return readPayload(safePid, "No whiteboard image was sent.", true);
         }
 
-        String problem = store.problemTextFor(safePid).orElse(null);
-
-        String prompt = (problem != null
-                ? "A student is using a digital whiteboard while solving this math problem:\n\n" + problem + "\n\n"
-                : "")
-                + "The attached image is a photo of what's written on their whiteboard."
+        String prompt = "The attached image is a photo of handwritten/drawn work on a digital whiteboard."
                 + " FIRST, look carefully and note to yourself what marks, numbers, symbols or text are"
                 + " actually visible — don't default to calling it unclear or illegible just because it's"
                 + " sparse or handwritten; read it the way you'd read anyone's quick scratch work."
                 + " THEN transcribe it as typed text: convert handwritten digits and math symbols into their"
                 + " typed equivalents (e.g. a handwritten \"7\" becomes \"7\", a fraction becomes \"3/4\","
-                + " an equation becomes \"x = 7\"). Transcribe ONLY what's actually there — do not solve the"
-                + " problem, do not correct or complete their work, do not add anything they didn't write."
-                + " If, after really looking, there's truly nothing legible on the board, say so plainly in"
-                + " one short sentence instead of guessing."
+                + " an equation becomes \"x = 7\")."
+                + " Transcribe ONLY the actual shapes you can see on the board. Never guess, complete, or"
+                + " invent content based on what a plausible or expected answer might look like — you have"
+                + " no information about what problem this work is for, and must not assume any. If several"
+                + " marks are grouped like separate lines of work but you can't actually resolve what most of"
+                + " them say, transcribe only the specific characters you can genuinely identify and describe"
+                + " the rest plainly as illegible marks — do not fill the gaps in with something that merely"
+                + " looks like a coherent derivation. If, after really looking, none of it is legible at all,"
+                + " say so plainly in one short sentence instead of guessing."
                 + "\n\nReply with ONLY the transcription (or that one-sentence note if nothing's legible) —"
                 + " plain text, no HTML, no Markdown, no commentary before or after it.";
 
