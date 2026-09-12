@@ -24,7 +24,7 @@ import {
   type TestScope,
 } from "../../offline/practiceTestStore";
 import { solutionTitle } from "../../lib/solutionTitle";
-import { bumpCorrectTotal } from "../../lib/correctCount";
+import { bumpCorrectTotal, bumpAnsweredTotal } from "../../lib/correctCount";
 import { orderPids, groupByChapter, chapterOf } from "../../lib/problemOrder";
 import { navigate, hashFor } from "../../routing";
 import { QuestionView, choiceLetter } from "../QuestionView";
@@ -177,11 +177,15 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
       });
       if (!go) return;
     }
-    // Add this test's correct answers to the lifetime tally, once — a
-    // completed test can be reopened straight to the score screen without
-    // coming back through here. (Test-mode QuestionViews don't tally on
-    // their own; grading is only final at finish.)
-    if (!test.completedAt) bumpCorrectTotal(scoreTest(test).correct);
+    // Add this test's counts to the lifetime tallies, once — a completed
+    // test can be reopened straight to the score screen without coming
+    // back through here. (Test-mode QuestionViews don't tally on their
+    // own; grading is only final at finish.)
+    if (!test.completedAt) {
+      const { correct, answered } = scoreTest(test);
+      bumpCorrectTotal(correct);
+      bumpAnsweredTotal(answered);
+    }
     await finishTest(subjectId);
     setTest((t) => (t ? { ...t, completedAt: Date.now() } : t));
     setView({ k: "score" });

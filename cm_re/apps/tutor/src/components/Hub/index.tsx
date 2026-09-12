@@ -1,4 +1,4 @@
-import { useCorrectTotal } from "../../lib/correctCount";
+import { useCorrectTotal, useAnsweredTotal } from "../../lib/correctCount";
 import { navigate, hashFor } from "../../routing";
 import { Card, CardContent } from "../ui/card";
 
@@ -16,13 +16,22 @@ const TILES: { label: string; sub: string; to: string }[] = [
 ];
 
 export default function Hub() {
-  const total = useCorrectTotal();
+  const correctTotal = useCorrectTotal();
+  const answeredTotal = useAnsweredTotal();
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 text-center">
-        <p className="text-sm text-slate-500">Correct answers, all time</p>
-        <p className="mt-1 text-4xl font-extrabold text-slate-900">{total}</p>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="rounded-lg border border-slate-200 bg-white p-5 text-center">
+          <p className="text-sm text-slate-500">Correct answers, all time</p>
+          <p className="mt-1 text-4xl font-extrabold text-slate-900">{correctTotal}</p>
+        </div>
+        <div className="rounded-lg border border-slate-200 bg-white p-5 text-center">
+          <p className="text-sm text-slate-500">Total Number of Questions</p>
+          <p className="mt-1 text-4xl font-extrabold text-slate-900" data-testid="answered-total">
+            {answeredTotal}
+          </p>
+        </div>
       </div>
 
       <div className="space-y-2">

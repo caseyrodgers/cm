@@ -1,6 +1,6 @@
 import { db } from "../offline/db";
 import { listSubjects } from "../api/client";
-import { getCorrectTotal, resetCorrectTotal } from "./correctCount";
+import { getCorrectTotal, resetCorrectTotal, resetAnsweredTotal } from "./correctCount";
 import { scoreTest, testTitle } from "../offline/practiceTestStore";
 
 /**
@@ -97,6 +97,7 @@ export async function getStudentStats(): Promise<StudentStats> {
  */
 export async function resetStats(): Promise<void> {
   resetCorrectTotal();
+  resetAnsweredTotal();
   await db.transaction("rw", db.practiceTests, db.whiteboards, async () => {
     await db.practiceTests.clear();
     await db.whiteboards.clear();
