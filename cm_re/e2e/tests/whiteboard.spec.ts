@@ -152,6 +152,12 @@ test.describe("whiteboard", () => {
     await expect(page.locator(".learn-explanation")).toContainText("Nice work, the steps track.");
     expect(capturedImage).toBeTruthy();
     expect(capturedImage!.length).toBeGreaterThan(100); // a real base64 PNG, not a stub
+
+    // dismissing the result doesn't touch the board itself, just hides
+    // the panel that was pushing it out of view
+    await page.getByRole("button", { name: "dismiss AI feedback" }).click();
+    await expect(page.locator(".learn-explanation")).toHaveCount(0);
+    await expect(page.locator("aside canvas")).toBeVisible();
   });
 
   test('Read back what I wrote — disabled until a stroke exists, POSTs the pid + a PNG, renders the transcription', async ({
@@ -187,5 +193,9 @@ test.describe("whiteboard", () => {
     await expect(page.locator(".font-mono")).toHaveText("x = 7");
     expect(capturedImage).toBeTruthy();
     expect(capturedImage!.length).toBeGreaterThan(100); // a real base64 PNG, not a stub
+
+    await page.getByRole("button", { name: "dismiss transcription" }).click();
+    await expect(page.locator(".font-mono")).toHaveCount(0);
+    await expect(page.locator("aside canvas")).toBeVisible();
   });
 });

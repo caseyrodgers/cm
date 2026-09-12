@@ -47,7 +47,10 @@ import { cn } from "../../lib/utils";
  * what the handwritten numbers/math actually say, typed out — the
  * on-demand-OCR option from the two "snap" designs considered (the
  * other, live shape-snapping as you draw, would need an on-device
- * recognition model and was set aside).
+ * recognition model and was set aside). Either result panel can be
+ * dismissed (✕, top-right of the box) without clearing the board —
+ * expanded, either one pushes the actual drawing surface out of view,
+ * so a quick way back to just the board matters.
  */
 
 const LOGICAL_W = 480;
@@ -435,15 +438,23 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
             )}
 
             {aiFeedback && (
-              <div className="mt-2">
+              <div className="relative mt-2">
+                <button
+                  type="button"
+                  aria-label="dismiss AI feedback"
+                  onClick={() => setAiFeedback(null)}
+                  className="absolute right-2 top-2 rounded px-1.5 py-0.5 text-slate-400 hover:bg-slate-200 hover:text-slate-600"
+                >
+                  ✕
+                </button>
                 {aiPlaceholder && (
-                  <p className="mb-1 text-xs font-medium text-amber-700">
+                  <p className="mb-1 pr-7 text-xs font-medium text-amber-700">
                     Placeholder — the AI feedback service is unavailable right now
                   </p>
                 )}
                 <SanitizedHtml
                   html={aiFeedback}
-                  className="learn-explanation rounded-md bg-slate-50 p-3 text-sm text-slate-800"
+                  className="learn-explanation rounded-md bg-slate-50 p-3 pr-8 text-sm text-slate-800"
                 />
               </div>
             )}
@@ -453,13 +464,21 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
             )}
 
             {transcription && (
-              <div className="mt-2">
+              <div className="relative mt-2">
+                <button
+                  type="button"
+                  aria-label="dismiss transcription"
+                  onClick={() => setTranscription(null)}
+                  className="absolute right-2 top-2 rounded px-1.5 py-0.5 text-slate-400 hover:bg-slate-200 hover:text-slate-600"
+                >
+                  ✕
+                </button>
                 {readPlaceholder && (
-                  <p className="mb-1 text-xs font-medium text-amber-700">
+                  <p className="mb-1 pr-7 text-xs font-medium text-amber-700">
                     Placeholder — the AI reading service is unavailable right now
                   </p>
                 )}
-                <p className="whitespace-pre-wrap rounded-md bg-slate-50 p-3 font-mono text-sm text-slate-800">
+                <p className="whitespace-pre-wrap rounded-md bg-slate-50 p-3 pr-8 font-mono text-sm text-slate-800">
                   {transcription}
                 </p>
               </div>
