@@ -41,7 +41,6 @@ export interface StudentStats {
   viewedTotal: number;
   grade: string | null;
   whiteboardCount: number;
-  downloads: { count: number; approxSizeBytes: number };
   subjects: SubjectStat[];
 }
 
@@ -95,10 +94,6 @@ export async function getStudentStats(): Promise<StudentStats> {
     viewedTotal: getViewedTotal(),
     grade,
     whiteboardCount,
-    downloads: {
-      count: installedModules.length,
-      approxSizeBytes: installedModules.reduce((n, m) => n + (m.approxSizeBytes ?? 0), 0),
-    },
     subjects,
   };
 }
@@ -108,11 +103,13 @@ export interface InstalledSummary {
   subjectCount: number;
   /** solutions across every installed module — content actually on this device */
   problemCount: number;
+  /** total download size across every installed module */
+  approxSizeBytes: number;
 }
 
 /**
- * Hub's two content-size numbers — deliberately just this, not the
- * full getStudentStats() (which also hits the network for the subject
+ * Hub's content-size numbers — deliberately just this, not the full
+ * getStudentStats() (which also hits the network for the subject
  * catalog and reads practice tests/whiteboards). Hub only needs what's
  * already sitting in IndexedDB.
  */
@@ -121,7 +118,13 @@ export async function getInstalledSummary(): Promise<InstalledSummary> {
   return {
     subjectCount: modules.length,
     problemCount: modules.reduce((n, m) => n + (m.solutionIds?.length ?? 0), 0),
+    approxSizeBytes: modules.reduce((n, m) => n + (m.approxSizeBytes ?? 0), 0),
   };
+}
+
+/** "512 KB" / "4.2 MB" — used for any installed-content size display (Hub, #/me). */
+export function formatSize(bytes: number): string {
+  return bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`;
 }
 
 /**

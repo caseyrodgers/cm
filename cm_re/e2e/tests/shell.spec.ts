@@ -27,11 +27,13 @@ test.describe("app shell", () => {
 
   test("Hub shows installed content counts, not the student's personal stats", async ({ page }) => {
     await page.goto("/#/");
-    await expect(page.getByText("Installed Problems")).toBeVisible();
-    await expect(page.getByText("Subjects", { exact: true })).toBeVisible();
+    await expect(page.getByText("Problems Installed")).toBeVisible();
+    await expect(page.getByText("Subjects Installed")).toBeVisible();
+    await expect(page.getByText("Downloads", { exact: true })).toBeVisible();
     // nothing installed yet
     await expect(page.getByTestId("installed-problem-count")).toHaveText("0");
     await expect(page.getByTestId("installed-subject-count")).toHaveText("0");
+    await expect(page.getByTestId("installed-downloads")).toHaveText("none");
     // the personal stats live on #/me now, not here
     await expect(page.getByText("Correct", { exact: true })).toHaveCount(0);
 
@@ -39,6 +41,7 @@ test.describe("app shell", () => {
     await page.goto("/#/");
     await expect(page.getByTestId("installed-problem-count")).toHaveText("3"); // algebra1 demo: 3 solutions
     await expect(page.getByTestId("installed-subject-count")).toHaveText("1");
+    await expect(page.getByTestId("installed-downloads")).toHaveText(/^1 · /); // "1 · N KB"
   });
 
   test("Me shows status and reset clears the correct-answer count", async ({ page }) => {

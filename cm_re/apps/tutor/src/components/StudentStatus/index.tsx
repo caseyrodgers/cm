@@ -14,10 +14,6 @@ import { Spinner } from "../ui/spinner";
  * plus a reset. Also the dev-time shell switcher.
  */
 
-function mb(bytes: number): string {
-  return bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`;
-}
-
 export default function StudentStatus() {
   const [stats, setStats] = useState<StudentStats | null>(null);
   const [busy, setBusy] = useState(false);
@@ -55,9 +51,8 @@ export default function StudentStatus() {
         <Stat label="Correct" value={String(stats.correctTotal)} />
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         <Stat label="Grade" value={stats.grade ? `${stats.grade}` : "—"} />
-        <Stat label="Downloads" value={stats.downloads.count ? `${stats.downloads.count} · ${mb(stats.downloads.approxSizeBytes)}` : "none"} />
         <Stat label="Whiteboards" value={String(stats.whiteboardCount)} />
       </div>
 
