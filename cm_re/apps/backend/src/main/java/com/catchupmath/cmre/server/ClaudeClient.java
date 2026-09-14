@@ -59,7 +59,7 @@ public class ClaudeClient {
 
     /** Sends {@code prompt} as a single user turn with no images; returns the assistant's text. */
     public String complete(String prompt) throws Exception {
-        return complete(prompt, null);
+        return complete(prompt, null, null);
     }
 
     /**
@@ -69,6 +69,18 @@ public class ClaudeClient {
      * author as a picture instead of text — see SolutionStore).
      */
     public String complete(String prompt, List<ImageAttachment> images) throws Exception {
+        return complete(prompt, images, null);
+    }
+
+    /**
+     * Same as {@link #complete(String, List)}, with an explicit sampling
+     * temperature (0-1; null omits the parameter, so the API's own
+     * default applies). Lower values make the model follow structural/
+     * rule-following instructions more consistently, at the cost of
+     * variety — worth it for a request like buildSkeleton's, which is
+     * closer to constrained classification than open-ended writing.
+     */
+    public String complete(String prompt, List<ImageAttachment> images, Double temperature) throws Exception {
         String apiKey = System.getenv("ANTHROPIC_API_KEY");
         if (apiKey == null || apiKey.isBlank()) {
             throw new IllegalStateException("ANTHROPIC_API_KEY is not set");
@@ -102,6 +114,9 @@ public class ClaudeClient {
         JsonObject body = new JsonObject();
         body.addProperty("model", model);
         body.addProperty("max_tokens", maxTokens());
+        if (temperature != null) {
+            body.addProperty("temperature", temperature);
+        }
         body.add("messages", messages);
 
         HttpRequest req = HttpRequest.newBuilder(URI.create(ENDPOINT))

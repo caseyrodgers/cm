@@ -247,18 +247,25 @@ public final class AiService {
      * real, editable ink (same Undo/Clear as anything hand-drawn), not
      * a separate picture layer.
      *
-     * Deliberately NOT a restatement of the problem — an earlier
-     * version of this prompt just copied the equation/expression and
-     * answer choices back as text, which Casey correctly flagged as
-     * useless: the problem itself is already visible right below/
-     * through the board, so re-typing it there adds nothing. The
-     * prompt now explicitly forbids that and asks instead for actual
-     * problem-solving aids — a redrawn (larger, clearer) geometric
-     * figure with given values labeled, coordinate axes or a number
-     * line, a table/T-chart, a blank structural template — and permits
-     * an empty response when none genuinely apply, rather than forcing
-     * something in. Same "don't reveal the answer" posture as Learn:
-     * never solves anything or points at a choice.
+     * Deliberately NOT a restatement of the problem, and deliberately
+     * NOT prose. Two corrections layered onto the original version of
+     * this prompt, both from Casey watching real output:
+     *   1. It used to just copy the equation/expression and answer
+     *      choices back as text — useless, since the problem itself is
+     *      already visible right below/through the board.
+     *   2. Once that was fixed, it started reaching for words instead —
+     *      guiding questions ("What is the radius?"), prose labels
+     *      ("Base pay per hour:"), bullet-point "things to identify"
+     *      lists. Still not what was asked for: "not words... only
+     *      mathematical structures... not steps."
+     * The prompt now forbids both and asks only for actual diagrams —
+     * a redrawn (larger, clearer) geometric figure with given values
+     * labeled, coordinate axes or a number line, a blank grid/table
+     * structure, a blank symbolic template (blanks and operators only,
+     * no words) — and permits an empty response when no real structure
+     * applies, rather than forcing prose in to have drawn something.
+     * Same "don't reveal the answer" posture as Learn: never solves
+     * anything or points at a choice.
      */
     public String buildSkeleton(String pid) {
         String safePid = pid == null ? "" : pid;
@@ -273,27 +280,35 @@ public final class AiService {
         }
 
         String prompt = "Here is a math problem:\n\n" + problem
-                + "\n\nCreate genuinely useful mathematical scaffolding for a student's digital whiteboard —"
-                + " NOT a solution, NOT any solving steps, and NOT the final answer."
-                + "\n\nIMPORTANT: do NOT restate or copy the problem. The problem's own text and its answer"
-                + " choices are already visible to the student elsewhere on the screen, so re-typing the"
-                + " equation, expression, or choices as text on the board would just be a useless duplicate —"
-                + " never do that."
-                + "\n\nInstead, provide whichever of these (if any) would actually help someone start solving"
-                + " THIS specific problem: a clear, larger redrawing of a described geometric figure with its"
-                + " given values labeled (side lengths, angles, coordinates) — genuinely useful to have bigger"
-                + " and easier to mark up than a small embedded picture; coordinate axes or a number line, if"
-                + " the problem involves graphing, inequalities, or intervals; a blank table or T-chart, if"
-                + " organizing given values or evaluating multiple inputs would help; a blank structural"
-                + " template — an empty fraction bar, a two-column table, labeled unit boxes for a word"
-                + " problem. Pick only what a real solver would actually reach for. If nothing on this list"
-                + " (or like it) genuinely applies — e.g. a plain one-line equation to solve, with no figure,"
-                + " no graphing, nothing to tabulate — output an empty array. Don't force something in just to"
-                + " have drawn something."
+                + "\n\nDecide whether this problem describes any of exactly these three things:"
+                + "\n(a) a geometric figure (a shape, points, a diagram) that could be redrawn larger and"
+                + " clearer than a small embedded picture, with its given values labeled on it;"
+                + "\n(b) something to graph, or an inequality/interval, where blank coordinate axes or a"
+                + " number line would help;"
+                + "\n(c) several given values or inputs that would be clearer organized into a blank grid or"
+                + " table (cells holding only a given number, or left empty)."
+                + "\n\nIf NONE of (a), (b), or (c) genuinely apply — this covers the majority of problems,"
+                + " including any problem that is just an equation or expression to solve, simplify, or"
+                + " evaluate, with no figure or graph described — output exactly this and stop: []"
+                + "\n\nDo not invent a substitute structure for that case. A \"Left side / Right side\" box, a"
+                + " balance diagram, a general template using letters like a/b/c standing in for the"
+                + " problem's own numbers, or any other container whose real purpose is to redo or restate the"
+                + " equation belongs in this empty-array case too — those are not (a), (b), or (c), no matter"
+                + " how structured they look."
+                + "\n\nExample of what NOT to output, for \"Solve for x: 4/5x + 5 = 2x\": anything like"
+                + " [{\"type\":\"text\",\"text\":\"Left side\"},{\"type\":\"text\",\"text\":\"4/5 x\"},"
+                + "{\"type\":\"text\",\"text\":\"Right side\"},{\"type\":\"text\",\"text\":\"2x\"}] — the"
+                + " correct output for that problem is []."
+                + "\n\nIf (a), (b), or (c) genuinely does apply, build ONLY the diagram/axes/table itself —"
+                + " never restate the problem's own equation or answer choices as text anywhere, and never use"
+                + " words: no prose, no sentences, no guiding questions, no explanatory labels like \"Base"
+                + " pay:\". Every \"text\" shape must be SHORT — a bare number, a unit, a single variable"
+                + " letter, or a blank placeholder like \"___\" — labeling a given value directly on the"
+                + " diagram (e.g. a side length on a triangle) is fine; anything longer is not."
                 + "\n\nNever solve anything, never simplify the problem's own expression, and never reveal or"
                 + " hint at which multiple-choice option is correct."
-                + "\n\nOutput ONLY a JSON array (no markdown code fences, no commentary before or after) of"
-                + " drawing instructions using this exact schema — nothing else:"
+                + "\n\nWhen you do output shapes, use ONLY a JSON array (no markdown code fences, no"
+                + " commentary before or after) with this exact schema — nothing else:"
                 + "\n[{\"type\":\"line\",\"from\":[x,y],\"to\":[x,y]},"
                 + " {\"type\":\"polyline\",\"points\":[[x,y],[x,y],...]},"
                 + " {\"type\":\"circle\",\"center\":[x,y],\"radius\":r},"
@@ -306,7 +321,13 @@ public final class AiService {
 
         try {
             AiLog.logRequest("buildSkeleton", safePid, prompt, null);
-            String text = claude.complete(prompt);
+            // Low temperature: this is closer to constrained classification
+            // ("is there real structure here, and if so which kind") than
+            // open-ended writing, and the default temperature was visibly
+            // inconsistent about following the no-restatement/no-words
+            // rules above — sometimes fine, sometimes reaching for an
+            // invented "Left side / Right side" restatement anyway.
+            String text = claude.complete(prompt, null, 0.2);
             JsonArray shapes = parseAndValidateShapes(text);
             return skeletonPayload(safePid, shapes, "", false);
         } catch (Exception e) {
