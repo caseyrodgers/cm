@@ -237,20 +237,28 @@ public final class AiService {
     private static final int MAX_SKELETON_SHAPES = 60;
 
     /**
-     * "Sketch a starting point" — asks Claude to restate the problem's
-     * GIVEN information as a short list of basic drawing primitives
-     * (lines, polylines, circles, text labels), which the client
-     * converts directly into the whiteboard's own native Stroke[]
-     * format and appends to the board. No image round-trip: this is a
-     * structured-JSON request, not a vision one — cheaper and more
-     * reliable than asking for an image, and the result is real,
-     * editable ink (same Undo/Clear as anything hand-drawn), not a
-     * separate picture layer.
+     * "Sketch a starting point" — asks Claude for genuinely useful
+     * mathematical scaffolding as a short list of basic drawing
+     * primitives (lines, polylines, circles, text labels), which the
+     * client converts directly into the whiteboard's own native
+     * Stroke[] format and appends to the board. No image round-trip:
+     * this is a structured-JSON request, not a vision one — cheaper
+     * and more reliable than asking for an image, and the result is
+     * real, editable ink (same Undo/Clear as anything hand-drawn), not
+     * a separate picture layer.
      *
-     * Same "don't reveal the answer" posture as Learn: explicitly told
-     * to restate only what's given (the equation as written, a
-     * described figure's given values, blank axes for a graphing
-     * problem) — never to solve anything or point at a choice.
+     * Deliberately NOT a restatement of the problem — an earlier
+     * version of this prompt just copied the equation/expression and
+     * answer choices back as text, which Casey correctly flagged as
+     * useless: the problem itself is already visible right below/
+     * through the board, so re-typing it there adds nothing. The
+     * prompt now explicitly forbids that and asks instead for actual
+     * problem-solving aids — a redrawn (larger, clearer) geometric
+     * figure with given values labeled, coordinate axes or a number
+     * line, a table/T-chart, a blank structural template — and permits
+     * an empty response when none genuinely apply, rather than forcing
+     * something in. Same "don't reveal the answer" posture as Learn:
+     * never solves anything or points at a choice.
      */
     public String buildSkeleton(String pid) {
         String safePid = pid == null ? "" : pid;
@@ -265,13 +273,25 @@ public final class AiService {
         }
 
         String prompt = "Here is a math problem:\n\n" + problem
-                + "\n\nCreate a simple visual starting point for a student's digital whiteboard — NOT a"
-                + " solution, NOT any solving steps, and NOT the final answer. Just restate the GIVEN"
-                + " information visually so the student doesn't have to copy it by hand: the equation or"
-                + " expression exactly as given, a described figure with its labeled given values (side"
-                + " lengths, angles, coordinates), or blank axes / a number line if the problem is about"
-                + " graphing. Do not solve anything, do not simplify, and do not reveal or hint at which"
-                + " multiple-choice option is correct."
+                + "\n\nCreate genuinely useful mathematical scaffolding for a student's digital whiteboard —"
+                + " NOT a solution, NOT any solving steps, and NOT the final answer."
+                + "\n\nIMPORTANT: do NOT restate or copy the problem. The problem's own text and its answer"
+                + " choices are already visible to the student elsewhere on the screen, so re-typing the"
+                + " equation, expression, or choices as text on the board would just be a useless duplicate —"
+                + " never do that."
+                + "\n\nInstead, provide whichever of these (if any) would actually help someone start solving"
+                + " THIS specific problem: a clear, larger redrawing of a described geometric figure with its"
+                + " given values labeled (side lengths, angles, coordinates) — genuinely useful to have bigger"
+                + " and easier to mark up than a small embedded picture; coordinate axes or a number line, if"
+                + " the problem involves graphing, inequalities, or intervals; a blank table or T-chart, if"
+                + " organizing given values or evaluating multiple inputs would help; a blank structural"
+                + " template — an empty fraction bar, a two-column table, labeled unit boxes for a word"
+                + " problem. Pick only what a real solver would actually reach for. If nothing on this list"
+                + " (or like it) genuinely applies — e.g. a plain one-line equation to solve, with no figure,"
+                + " no graphing, nothing to tabulate — output an empty array. Don't force something in just to"
+                + " have drawn something."
+                + "\n\nNever solve anything, never simplify the problem's own expression, and never reveal or"
+                + " hint at which multiple-choice option is correct."
                 + "\n\nOutput ONLY a JSON array (no markdown code fences, no commentary before or after) of"
                 + " drawing instructions using this exact schema — nothing else:"
                 + "\n[{\"type\":\"line\",\"from\":[x,y],\"to\":[x,y]},"
