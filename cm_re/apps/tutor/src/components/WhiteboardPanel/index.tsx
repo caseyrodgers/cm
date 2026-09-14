@@ -75,9 +75,12 @@ const HISTORY_LIMIT = 50;
 // "Sketch a starting point" ink — visually distinct (a muted slate)
 // from the 3 hand-drawing pen colors, so an AI-built scaffold always
 // reads as scaffolding, not as something the student wrote themselves.
+// Text labels get their own darker color — they're what the student
+// actually needs to read; the lines/shapes are just structural guides.
 const SKELETON_COLOR = "#94a3b8";
+const SKELETON_TEXT_COLOR = "#1e293b";
 const SKELETON_WIDTH = 2;
-const SKELETON_TEXT_WIDTH = 3; // drives drawStroke's font size (width*7, min 16px) -> 21px labels
+const SKELETON_TEXT_WIDTH = 4; // drives drawStroke's font size (width*7, min 16px) -> 28px labels
 const CIRCLE_SEGMENTS = 32;
 
 const OPACITY_KEY = "cm_re.whiteboard.opacity";
@@ -608,7 +611,7 @@ function shapesToStrokes(shapes: Shape[]): Stroke[] {
       }
       case "text": {
         const [x, y] = clampPoint(shape.at);
-        strokes.push({ color: SKELETON_COLOR, width: SKELETON_TEXT_WIDTH, points: [x, y], text: shape.text });
+        strokes.push({ color: SKELETON_TEXT_COLOR, width: SKELETON_TEXT_WIDTH, points: [x, y], text: shape.text });
         break;
       }
     }
