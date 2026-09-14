@@ -18,6 +18,12 @@ import type { Solution } from "@cm_re/shared-types";
  * readWork() is "Read back what I wrote" — same PNG capture, but a pure
  * transcription (POST /api/ai/read-work/{pid}): no judgment, just what
  * the handwritten numbers/math actually say, typed out.
+ *
+ * buildSkeleton() is "Sketch a starting point" (GET /api/ai/skeleton/
+ * {pid}) — asks for the problem's given information back as a short
+ * list of basic shapes (Shape below), which the whiteboard converts
+ * into its own native strokes and draws. No image either way: this is
+ * a structured-JSON request/response, not a vision call.
  */
 
 const AI_BASE = "/api/ai";
@@ -192,6 +198,47 @@ export async function inferChapterName(
   const data = (await res.json()) as { name?: string; placeholder?: boolean };
   return {
     name: typeof data.name === "string" ? data.name : "",
+    placeholder: data.placeholder === true,
+  };
+}
+
+/** A basic drawing primitive the server describes; the whiteboard converts these into its own native Stroke[]. Coordinates are in the same logical space the whiteboard already draws in. */
+export type Shape =
+  | { type: "line"; from: [number, number]; to: [number, number] }
+  | { type: "polyline"; points: [number, number][] }
+  | { type: "circle"; center: [number, number]; radius: number }
+  | { type: "text"; at: [number, number]; text: string };
+
+export interface BuildSkeletonResult {
+  shapes: Shape[];
+  /** Why shapes is empty, when it is — "" on a normal successful response with content. */
+  message: string;
+  placeholder: boolean;
+}
+
+/**
+ * "Sketch a starting point" (GET /api/ai/skeleton/{pid}) — the given
+ * information (the equation as stated, a described figure's given
+ * values, blank axes for a graphing problem) back as a short list of
+ * shapes, never a solution or the answer. Malformed/unrecognized
+ * shapes are already filtered out server-side; what comes back here
+ * is safe to convert and draw as-is.
+ */
+export async function buildSkeleton(pid: string, signal?: AbortSignal): Promise<BuildSkeletonResult> {
+  let res: Response;
+  try {
+    res = await fetch(`${AI_BASE}/skeleton/${encodeURIComponent(pid)}`, { signal });
+  } catch (e) {
+    if (isAbort(e)) throw new ExplainAbortError();
+    throw new Error(`skeleton request failed: ${String(e)}`);
+  }
+  if (!res.ok) {
+    throw new Error(`skeleton request failed: ${res.status}`);
+  }
+  const data = (await res.json()) as { shapes?: unknown; message?: string; placeholder?: boolean };
+  return {
+    shapes: Array.isArray(data.shapes) ? (data.shapes as Shape[]) : [],
+    message: typeof data.message === "string" ? data.message : "",
     placeholder: data.placeholder === true,
   };
 }

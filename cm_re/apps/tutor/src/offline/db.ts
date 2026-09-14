@@ -38,11 +38,21 @@ export interface InstalledModule extends ModuleManifest {
   installedAt: number;
 }
 
-/** One freehand stroke: a colour, a width, and a flat [x0,y0,x1,y1,...] point list (flat array = smaller when serialised). */
+/**
+ * One freehand stroke: a colour, a width, and a flat [x0,y0,x1,y1,...]
+ * point list (flat array = smaller when serialised) — OR, when `text`
+ * is set, a single-point text label instead of a drawn path (`points`
+ * holds just the [x,y] anchor; `text` is rendered there via fillText,
+ * not stroked). Additive field — no Dexie version bump needed, this
+ * is just a JS object shape, not an index/keyPath change. Used by the
+ * AI-built "starting skeleton" (see WhiteboardPanel.buildSkeleton) to
+ * label axes/vertices/given values; hand-drawn strokes never set it.
+ */
 export interface Stroke {
   color: string;
   width: number;
   points: number[];
+  text?: string;
 }
 
 /**

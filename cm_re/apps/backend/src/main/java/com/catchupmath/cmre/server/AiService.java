@@ -1,5 +1,10 @@
 package com.catchupmath.cmre.server;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -225,6 +230,142 @@ public final class AiService {
         return "{"
                 + "\"pid\":" + jsonString(pid) + ","
                 + "\"transcription\":" + jsonString(transcription) + ","
+                + "\"placeholder\":" + placeholder
+                + "}";
+    }
+
+    private static final int MAX_SKELETON_SHAPES = 60;
+
+    /**
+     * "Sketch a starting point" — asks Claude to restate the problem's
+     * GIVEN information as a short list of basic drawing primitives
+     * (lines, polylines, circles, text labels), which the client
+     * converts directly into the whiteboard's own native Stroke[]
+     * format and appends to the board. No image round-trip: this is a
+     * structured-JSON request, not a vision one — cheaper and more
+     * reliable than asking for an image, and the result is real,
+     * editable ink (same Undo/Clear as anything hand-drawn), not a
+     * separate picture layer.
+     *
+     * Same "don't reveal the answer" posture as Learn: explicitly told
+     * to restate only what's given (the equation as written, a
+     * described figure's given values, blank axes for a graphing
+     * problem) — never to solve anything or point at a choice.
+     */
+    public String buildSkeleton(String pid) {
+        String safePid = pid == null ? "" : pid;
+
+        if (!claude.isConfigured()) {
+            return skeletonPayload(safePid, new JsonArray(), "Set ANTHROPIC_API_KEY on the server to enable this.", true);
+        }
+
+        String problem = store.problemTextFor(safePid).orElse(null);
+        if (problem == null) {
+            return skeletonPayload(safePid, new JsonArray(), "No problem found for id \"" + safePid + "\".", true);
+        }
+
+        String prompt = "Here is a math problem:\n\n" + problem
+                + "\n\nCreate a simple visual starting point for a student's digital whiteboard — NOT a"
+                + " solution, NOT any solving steps, and NOT the final answer. Just restate the GIVEN"
+                + " information visually so the student doesn't have to copy it by hand: the equation or"
+                + " expression exactly as given, a described figure with its labeled given values (side"
+                + " lengths, angles, coordinates), or blank axes / a number line if the problem is about"
+                + " graphing. Do not solve anything, do not simplify, and do not reveal or hint at which"
+                + " multiple-choice option is correct."
+                + "\n\nOutput ONLY a JSON array (no markdown code fences, no commentary before or after) of"
+                + " drawing instructions using this exact schema — nothing else:"
+                + "\n[{\"type\":\"line\",\"from\":[x,y],\"to\":[x,y]},"
+                + " {\"type\":\"polyline\",\"points\":[[x,y],[x,y],...]},"
+                + " {\"type\":\"circle\",\"center\":[x,y],\"radius\":r},"
+                + " {\"type\":\"text\",\"at\":[x,y],\"text\":\"...\"}]"
+                + "\n\nCoordinate space: 480 units wide, up to 1200 tall, origin at top-left, y increases"
+                + " downward. Keep the whole thing compact — stay within the top 400 units so it's visible"
+                + " without scrolling. For text, write plainly the way you'd write by hand: fractions as"
+                + " \"4/5\", exponents as \"x^2\" — no MathML, no LaTeX. Keep it simple, a handful of shapes,"
+                + " not an elaborate illustration.";
+
+        try {
+            AiLog.logRequest("buildSkeleton", safePid, prompt, null);
+            String text = claude.complete(prompt);
+            JsonArray shapes = parseAndValidateShapes(text);
+            return skeletonPayload(safePid, shapes, "", false);
+        } catch (Exception e) {
+            System.err.println("AiService.buildSkeleton: " + e);
+            return skeletonPayload(safePid, new JsonArray(), "Couldn't reach the AI service: " + e.getMessage(), true);
+        }
+    }
+
+    /** Parses the model's response as a JSON array of shapes, tolerating a stray markdown code fence even though the prompt asks for none, and keeps only well-formed entries — an unknown/malformed shape is dropped, not fatal to the whole response. */
+    private static JsonArray parseAndValidateShapes(String text) {
+        String cleaned = text.strip();
+        if (cleaned.startsWith("```")) {
+            int firstNewline = cleaned.indexOf('\n');
+            int lastFence = cleaned.lastIndexOf("```");
+            if (firstNewline >= 0 && lastFence > firstNewline) {
+                cleaned = cleaned.substring(firstNewline + 1, lastFence).strip();
+            }
+        }
+        JsonArray out = new JsonArray();
+        try {
+            JsonElement parsed = JsonParser.parseString(cleaned);
+            if (!parsed.isJsonArray()) {
+                return out;
+            }
+            for (JsonElement el : parsed.getAsJsonArray()) {
+                if (out.size() >= MAX_SKELETON_SHAPES) {
+                    break;
+                }
+                if (isValidShape(el)) {
+                    out.add(el);
+                }
+            }
+        } catch (RuntimeException ignored) {
+            // Malformed JSON from the model -> empty shapes; the client treats that as "nothing to draw".
+        }
+        return out;
+    }
+
+    private static boolean isValidShape(JsonElement el) {
+        if (!el.isJsonObject()) {
+            return false;
+        }
+        JsonObject o = el.getAsJsonObject();
+        if (!o.has("type") || !o.get("type").isJsonPrimitive()) {
+            return false;
+        }
+        switch (o.get("type").getAsString()) {
+            case "line":
+                return isPoint(o.get("from")) && isPoint(o.get("to"));
+            case "polyline":
+                return o.has("points") && o.get("points").isJsonArray()
+                        && o.getAsJsonArray("points").size() >= 2 && allPoints(o.getAsJsonArray("points"));
+            case "circle":
+                return isPoint(o.get("center")) && o.has("radius") && o.get("radius").isJsonPrimitive();
+            case "text":
+                return isPoint(o.get("at")) && o.has("text") && o.get("text").isJsonPrimitive();
+            default:
+                return false;
+        }
+    }
+
+    private static boolean isPoint(JsonElement el) {
+        return el != null && el.isJsonArray() && el.getAsJsonArray().size() == 2;
+    }
+
+    private static boolean allPoints(JsonArray points) {
+        for (JsonElement p : points) {
+            if (!isPoint(p)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static String skeletonPayload(String pid, JsonArray shapes, String message, boolean placeholder) {
+        return "{"
+                + "\"pid\":" + jsonString(pid) + ","
+                + "\"shapes\":" + shapes + ","
+                + "\"message\":" + jsonString(message) + ","
                 + "\"placeholder\":" + placeholder
                 + "}";
     }

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Stroke } from "../../offline/db";
 import { getWhiteboard, saveWhiteboard, clearWhiteboard } from "../../offline/whiteboardStore";
-import { checkWork, readWork, ExplainAbortError } from "../../api/aiClient";
+import { checkWork, readWork, buildSkeleton, ExplainAbortError, type Shape } from "../../api/aiClient";
 import { SanitizedHtml } from "../StepViewer";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
@@ -35,22 +35,34 @@ import { cn } from "../../lib/utils";
  * gets a fresh mount (which flushes the previous board's save on
  * unmount).
  *
- * "Ask AI about my work" and "Read back what I wrote" are the two
- * server round-trips this component makes, both via the same capture
- * (captureFlattenedPng: flattens the canvas onto a white background —
- * the on-screen canvas is transparent, drawn over a translucent CSS
- * backdrop, and a transparent PNG would leave the model guessing at
- * contrast — then base64s it). "Ask AI" (aiClient.checkWork) reviews
- * the work and gives qualitative feedback on whether it shows
- * understanding — not a correct/incorrect verdict. "Read back" (aka
- * "snap", aiClient.readWork) is pure transcription — no judgment, just
- * what the handwritten numbers/math actually say, typed out — the
- * on-demand-OCR option from the two "snap" designs considered (the
- * other, live shape-snapping as you draw, would need an on-device
- * recognition model and was set aside). Either result panel can be
- * dismissed (✕, top-right of the box) without clearing the board —
- * expanded, either one pushes the actual drawing surface out of view,
- * so a quick way back to just the board matters.
+ * "Ask AI about my work" and "Read back what I wrote" are two of the
+ * three server round-trips this component makes, both via the same
+ * capture (captureFlattenedPng: flattens the canvas onto a white
+ * background — the on-screen canvas is transparent, drawn over a
+ * translucent CSS backdrop, and a transparent PNG would leave the
+ * model guessing at contrast — then base64s it). "Ask AI"
+ * (aiClient.checkWork) reviews the work and gives qualitative feedback
+ * on whether it shows understanding — not a correct/incorrect verdict.
+ * "Read back" (aka "snap", aiClient.readWork) is pure transcription —
+ * no judgment, just what the handwritten numbers/math actually say,
+ * typed out — the on-demand-OCR option from the two "snap" designs
+ * considered (the other, live shape-snapping as you draw, would need
+ * an on-device recognition model and was set aside). Either result
+ * panel can be dismissed (✕, top-right of the box) without clearing
+ * the board — expanded, either one pushes the actual drawing surface
+ * out of view, so a quick way back to just the board matters.
+ *
+ * "Sketch a starting point" (sketchStartingPoint, aiClient.buildSkeleton)
+ * is the third — no image involved at all, request or response: it
+ * asks Claude for the problem's given information back as a short
+ * list of basic shapes (Shape — line/polyline/circle/text), which
+ * shapesToStrokes converts directly into this board's own native
+ * Stroke[] and appends to it. Real ink, not a picture layer — same
+ * Undo/Clear/persistence as anything hand-drawn; drawing it is one
+ * pushHistory() away from being undone in a single step, same as
+ * Clear. Never reveals the answer or solving steps — restates only
+ * what's given (the equation as written, a figure's given values,
+ * blank axes for a graphing problem).
  */
 
 const LOGICAL_W = 480;
@@ -60,11 +72,17 @@ const PEN_COLORS = ["#1f2937", "#1A99D6", "#C14444"] as const;
 const PEN_WIDTH = 2.5;
 const HISTORY_LIMIT = 50;
 
+// "Sketch a starting point" ink — visually distinct (a muted slate)
+// from the 3 hand-drawing pen colors, so an AI-built scaffold always
+// reads as scaffolding, not as something the student wrote themselves.
+const SKELETON_COLOR = "#94a3b8";
+const SKELETON_WIDTH = 2;
+const SKELETON_TEXT_WIDTH = 3; // drives drawStroke's font size (width*7, min 16px) -> 21px labels
+const CIRCLE_SEGMENTS = 32;
+
 const OPACITY_KEY = "cm_re.whiteboard.opacity";
-// Capped at 80% — even at max the problem should stay at least a little
-// visible through the board, never a fully opaque surface.
 const MIN_OPACITY = 0.0;
-const MAX_OPACITY = 0.8;
+const MAX_OPACITY = 1;
 // Default problem-visibility %, in the same terms as the slider/label the
 // student sees (25% = mostly-hidden board on first open) — expressed here
 // rather than as a raw opacity so it's a one-line tune, not a math problem.
@@ -109,6 +127,8 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
   const [readStatus, setReadStatus] = useState<AiStatus>("idle");
   const [transcription, setTranscription] = useState<string | null>(null);
   const [readPlaceholder, setReadPlaceholder] = useState(false);
+  const [skeletonStatus, setSkeletonStatus] = useState<AiStatus>("idle");
+  const [skeletonMessage, setSkeletonMessage] = useState<string | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const strokesRef = useRef<Stroke[]>([]);
@@ -117,6 +137,7 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const aiAbortRef = useRef<AbortController | null>(null);
   const readAbortRef = useRef<AbortController | null>(null);
+  const skeletonAbortRef = useRef<AbortController | null>(null);
   // One-shot-per-action undo stack: a snapshot of strokesRef.current taken
   // right before each destructive action (a completed stroke, or a Clear).
   // Undo pops it back, so Clear is undoable exactly like drawing a stroke
@@ -188,6 +209,7 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
   useEffect(() => flushSave, [flushSave]);
   useEffect(() => () => aiAbortRef.current?.abort(), []);
   useEffect(() => () => readAbortRef.current?.abort(), []);
+  useEffect(() => () => skeletonAbortRef.current?.abort(), []);
 
   function toLogical(e: React.PointerEvent<HTMLCanvasElement>): [number, number] {
     const r = e.currentTarget.getBoundingClientRect();
@@ -332,6 +354,33 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
     }
   }
 
+  /** "Sketch a starting point" — no image involved; converts the server's shapes straight into native strokes and appends them, undoable in one step like Clear. */
+  async function sketchStartingPoint() {
+    skeletonAbortRef.current?.abort();
+    const ac = new AbortController();
+    skeletonAbortRef.current = ac;
+    setSkeletonStatus("loading");
+    setSkeletonMessage(null);
+    try {
+      const res = await buildSkeleton(pid, ac.signal);
+      if (res.shapes.length === 0) {
+        setSkeletonStatus(res.placeholder ? "error" : "done");
+        setSkeletonMessage(res.message || "Nothing to sketch for this problem.");
+        return;
+      }
+      pushHistory();
+      strokesRef.current = [...strokesRef.current, ...shapesToStrokes(res.shapes)];
+      setStrokeCount(strokesRef.current.length);
+      redraw();
+      scheduleSave();
+      setSkeletonStatus("done");
+    } catch (e) {
+      if (e instanceof ExplainAbortError) return;
+      setSkeletonStatus("error");
+      setSkeletonMessage("Couldn't reach the AI service.");
+    }
+  }
+
   return (
     <>
       <button
@@ -419,7 +468,17 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
           </div>
 
           <div className="border-t border-slate-200 bg-white/85 px-3 py-2">
-            <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={sketchStartingPoint}
+              disabled={skeletonStatus === "loading"}
+            >
+              {skeletonStatus === "loading" ? <Spinner /> : "Sketch a starting point"}
+            </Button>
+            {skeletonMessage && <p className="mt-1 text-xs text-slate-500">{skeletonMessage}</p>}
+
+            <div className="mt-2 flex gap-2">
               <Button className="flex-1" onClick={askAI} disabled={strokeCount === 0 || aiStatus === "loading"}>
                 {aiStatus === "loading" ? <Spinner /> : "Ask AI about my work"}
               </Button>
@@ -496,6 +555,13 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
 
 function drawStroke(ctx: CanvasRenderingContext2D, s: Stroke) {
   if (s.points.length < 2) return;
+  if (s.text) {
+    ctx.fillStyle = s.color;
+    ctx.font = `${Math.max(s.width * 7, 16)}px sans-serif`;
+    ctx.textBaseline = "middle";
+    ctx.fillText(s.text, s.points[0], s.points[1]);
+    return;
+  }
   ctx.strokeStyle = s.color;
   ctx.lineWidth = s.width;
   ctx.beginPath();
@@ -506,4 +572,46 @@ function drawStroke(ctx: CanvasRenderingContext2D, s: Stroke) {
 
 function clamp(v: number, lo: number, hi: number): number {
   return v < lo ? lo : v > hi ? hi : v;
+}
+
+/** [x,y] clamped into the board's logical bounds — the model occasionally strays slightly outside the coordinate space it was given. */
+function clampPoint([x, y]: [number, number]): [number, number] {
+  return [clamp(x, 0, LOGICAL_W), clamp(y, 0, LOGICAL_H)];
+}
+
+/** Converts the server's basic shape list into this board's own native Stroke[] — real ink, styled to visually read as AI-drawn scaffolding rather than the student's own strokes. */
+function shapesToStrokes(shapes: Shape[]): Stroke[] {
+  const strokes: Stroke[] = [];
+  for (const shape of shapes) {
+    switch (shape.type) {
+      case "line": {
+        const [x1, y1] = clampPoint(shape.from);
+        const [x2, y2] = clampPoint(shape.to);
+        strokes.push({ color: SKELETON_COLOR, width: SKELETON_WIDTH, points: [x1, y1, x2, y2] });
+        break;
+      }
+      case "polyline": {
+        const points = shape.points.flatMap((p) => clampPoint(p));
+        if (points.length >= 4) strokes.push({ color: SKELETON_COLOR, width: SKELETON_WIDTH, points });
+        break;
+      }
+      case "circle": {
+        const [cx, cy] = clampPoint(shape.center);
+        const points: number[] = [];
+        for (let i = 0; i <= CIRCLE_SEGMENTS; i++) {
+          const angle = (i / CIRCLE_SEGMENTS) * Math.PI * 2;
+          const [x, y] = clampPoint([cx + Math.cos(angle) * shape.radius, cy + Math.sin(angle) * shape.radius]);
+          points.push(x, y);
+        }
+        strokes.push({ color: SKELETON_COLOR, width: SKELETON_WIDTH, points });
+        break;
+      }
+      case "text": {
+        const [x, y] = clampPoint(shape.at);
+        strokes.push({ color: SKELETON_COLOR, width: SKELETON_TEXT_WIDTH, points: [x, y], text: shape.text });
+        break;
+      }
+    }
+  }
+  return strokes;
 }

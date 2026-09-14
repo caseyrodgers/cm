@@ -22,6 +22,7 @@ import java.util.List;
  *   GET  /api/ai/chapter-name/{subjectId}?label=&pids= -> AiService.getChapterName(subjectId, label, pids)
  *   POST /api/ai/check-work/{pid}  {"image":"<base64 png>"} -> AiService.checkWork(pid, image)
  *   POST /api/ai/read-work/{pid}   {"image":"<base64 png>"} -> AiService.readWork(pid, image)
+ *   GET  /api/ai/skeleton/{pid}                       -> AiService.buildSkeleton(pid)
  */
 public class ApiHandler implements HttpHandler {
 
@@ -93,6 +94,17 @@ public class ApiHandler implements HttpHandler {
                 }
                 String grade = queryParam(ex.getRequestURI().getRawQuery(), "grade");
                 send(ex, 200, "application/json", ai.getAIForProblem(pid, grade));
+                return;
+            }
+
+            String skeletonPrefix = "/api/ai/skeleton/";
+            if (path.startsWith(skeletonPrefix)) {
+                String pid = URLDecoder.decode(path.substring(skeletonPrefix.length()), StandardCharsets.UTF_8);
+                if (pid.isBlank()) {
+                    send(ex, 400, "application/json", "{\"error\":\"missing pid\"}");
+                    return;
+                }
+                send(ex, 200, "application/json", ai.buildSkeleton(pid));
                 return;
             }
 

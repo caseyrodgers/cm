@@ -96,12 +96,12 @@ test.describe("whiteboard", () => {
     const slider = page.locator("#wb-opacity");
 
     await expect(slider).toHaveAttribute("min", "0");
-    await expect(slider).toHaveAttribute("max", "0.8"); // never a fully opaque board, even at the "hidden" end
-    await expect(slider).toHaveValue("0.2"); // default = 25% visibility (0.25 * 0.8)
-    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.6)");
+    await expect(slider).toHaveAttribute("max", "1");
+    await expect(slider).toHaveValue("0.25"); // default = 25% visibility
+    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.75)");
 
     // drag all the way right — problem should become fully visible (canvas fully transparent)
-    await slider.fill("0.8");
+    await slider.fill("1");
     await slider.dispatchEvent("input");
     await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0)");
     // ...and the overlay container itself must carry no fixed backdrop of its own,
@@ -109,10 +109,10 @@ test.describe("whiteboard", () => {
     // used to have a fixed bg-white/80 sitting behind the canvas).
     await expect(page.locator("aside")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
 
-    // drag all the way left — problem should be as hidden as it gets (canvas at max alpha)
+    // drag all the way left — problem should be as hidden as it gets (canvas fully opaque)
     await slider.fill("0");
     await slider.dispatchEvent("input");
-    await expect(canvas).toHaveCSS("background-color", "rgba(255, 255, 255, 0.8)");
+    await expect(canvas).toHaveCSS("background-color", "rgb(255, 255, 255)");
 
     await slider.fill("0.6");
     await slider.dispatchEvent("input");
@@ -197,5 +197,61 @@ test.describe("whiteboard", () => {
     await page.getByRole("button", { name: "dismiss transcription" }).click();
     await expect(page.locator(".font-mono")).toHaveCount(0);
     await expect(page.locator("aside canvas")).toBeVisible();
+  });
+
+  test("Sketch a starting point — no image, converts shapes to real strokes, undoable in one step", async ({
+    page,
+  }) => {
+    // Mocked — a live version hitting real Claude was manually verified
+    // this session (a fraction-equation problem got the equation +
+    // choices restated as text; a circle/triangle geometry problem got
+    // an actual labeled circle-with-inscribed-triangle sketch — neither
+    // revealed the answer).
+    let requestedMethod: string | undefined;
+    await page.route(`**/api/ai/skeleton/${MC_PID}`, async (route) => {
+      requestedMethod = route.request().method();
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          pid: MC_PID,
+          shapes: [
+            { type: "line", from: [40, 40], to: [200, 40] },
+            { type: "polyline", points: [[40, 80], [120, 160], [200, 80], [40, 80]] },
+            { type: "circle", center: [300, 100], radius: 40 },
+            { type: "text", at: [40, 200], text: "x = ?" },
+          ],
+          message: "",
+          placeholder: false,
+        }),
+      });
+    });
+
+    await page.getByRole("button", { name: /^Whiteboard/ }).click();
+    const sketchBtn = page.getByRole("button", { name: /Sketch a starting point/i });
+    await expect(sketchBtn).toBeEnabled(); // available even on an empty board — that's the point
+
+    await sketchBtn.click();
+    await expect(page.getByRole("button", { name: /^Whiteboard \(4\)/ })).toBeVisible(); // 4 shapes -> 4 strokes
+    expect(requestedMethod).toBe("GET"); // no image round-trip for this one
+
+    // undoable in one step, same as Clear
+    await page.getByRole("button", { name: "Undo" }).click();
+    await expect(page.getByRole("button", { name: /^Whiteboard$/ })).toBeVisible();
+  });
+
+  test("Sketch a starting point — empty/placeholder response shows a message, draws nothing", async ({ page }) => {
+    await page.route(`**/api/ai/skeleton/${MC_PID}`, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ pid: MC_PID, shapes: [], message: "Nothing to sketch for this problem.", placeholder: false }),
+      });
+    });
+
+    await page.getByRole("button", { name: /^Whiteboard/ }).click();
+    await page.getByRole("button", { name: /Sketch a starting point/i }).click();
+    await expect(page.getByText("Nothing to sketch for this problem.")).toBeVisible();
+    await expect(page.getByRole("button", { name: /^Whiteboard$/ })).toBeVisible(); // no strokes added
   });
 });
