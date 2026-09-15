@@ -1,5 +1,5 @@
 import { db } from "../offline/db";
-import { listSubjects } from "../api/client";
+import { listSubjects, getModuleManifest } from "../api/client";
 import {
   getCorrectTotal,
   getAnsweredTotal,
@@ -22,8 +22,6 @@ const GRADE_KEY = "cm_re.learn.grade";
 export interface SubjectStat {
   subjectId: string;
   title: string;
-  installed: boolean;
-  approxSizeBytes: number;
   /** the active/last test for this subject, if any */
   test?: {
     title: string;
@@ -48,47 +46,49 @@ export interface StudentStats {
 }
 
 export async function getStudentStats(): Promise<StudentStats> {
-  const [installedModules, practiceTests, whiteboardCount, subjectList] = await Promise.all([
-    db.modules.toArray(),
+  const [practiceTests, whiteboardCount, subjectList] = await Promise.all([
     db.practiceTests.toArray(),
     db.whiteboards.count(),
     listSubjects().catch(() => [] as { subjectId: string; title: string }[]),
   ]);
 
-  const installedById = new Map(installedModules.map((m) => [m.subjectId, m]));
   const testById = new Map(practiceTests.map((t) => [t.subjectId, t]));
   const titleById = new Map(subjectList.map((s) => [s.subjectId, s.title]));
 
-  // Every subject we know about, from either source.
-  const ids = new Set<string>([...titleById.keys(), ...installedById.keys(), ...testById.keys()]);
+  // Candidate subjects: the whole catalog (for title lookup) plus any
+  // subject with a test but no catalog entry (removed upstream since).
+  const ids = new Set<string>([...titleById.keys(), ...testById.keys()]);
 
   const sortedIds = [...ids].sort();
   const chaptersById = new Map(
     await Promise.all(sortedIds.map(async (id): Promise<[string, ChapterMastery[]]> => [id, await getChapterMastery(id)]))
   );
 
-  const subjects: SubjectStat[] = sortedIds.map((subjectId) => {
-    const mod = installedById.get(subjectId);
-    const t = testById.get(subjectId);
-    const stat: SubjectStat = {
-      subjectId,
-      title: titleById.get(subjectId) ?? subjectId,
-      installed: !!mod,
-      approxSizeBytes: mod?.approxSizeBytes ?? 0,
-      chapters: chaptersById.get(subjectId) ?? [],
-    };
-    if (t) {
-      const s = scoreTest(t);
-      stat.test = {
-        title: testTitle(t.scope),
-        finished: t.completedAt != null,
-        correct: s.correct,
-        total: s.total,
-        answered: s.answered,
+  // Download status/size moved to Hub (see getSubjectDownloadStats) —
+  // #/me is personal performance only now, so a subject with neither a
+  // test nor any chapter history has nothing to show here and is
+  // dropped rather than listed bare.
+  const subjects: SubjectStat[] = sortedIds
+    .map((subjectId) => {
+      const t = testById.get(subjectId);
+      const stat: SubjectStat = {
+        subjectId,
+        title: titleById.get(subjectId) ?? subjectId,
+        chapters: chaptersById.get(subjectId) ?? [],
       };
-    }
-    return stat;
-  });
+      if (t) {
+        const s = scoreTest(t);
+        stat.test = {
+          title: testTitle(t.scope),
+          finished: t.completedAt != null,
+          correct: s.correct,
+          total: s.total,
+          answered: s.answered,
+        };
+      }
+      return stat;
+    })
+    .filter((s) => s.test || s.chapters.length > 0);
 
   let grade: string | null = null;
   try {
@@ -107,33 +107,59 @@ export async function getStudentStats(): Promise<StudentStats> {
   };
 }
 
-export interface InstalledSummary {
-  /** installed subjects (downloaded modules), not the full catalog */
-  subjectCount: number;
-  /** solutions across every installed module — content actually on this device */
-  problemCount: number;
-  /** total download size across every installed module */
-  approxSizeBytes: number;
+/** "512 KB" / "4.2 MB" — used for any installed-content size display (Hub). */
+export function formatSize(bytes: number): string {
+  return bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`;
+}
+
+export interface SubjectDownloadStat {
+  subjectId: string;
+  title: string;
+  installed: boolean;
+  /** null when the size couldn't be determined — offline and not yet installed, so no manifest to read. */
+  approxSizeBytes: number | null;
 }
 
 /**
- * Hub's content-size numbers — deliberately just this, not the full
- * getStudentStats() (which also hits the network for the subject
- * catalog and reads practice tests/whiteboards). Hub only needs what's
- * already sitting in IndexedDB.
+ * Every subject in the catalog, installed or not, with its download
+ * size — Hub's "all the subjects and their download stats" list. An
+ * installed subject's size is read straight from IndexedDB (already
+ * known, no network); a not-yet-installed one costs one small
+ * manifest.json fetch per subject (cheap, static files) so the list
+ * shows a real size before committing to a download, same number
+ * ModuleDownloadPrompt shows once you're inside that subject.
  */
-export async function getInstalledSummary(): Promise<InstalledSummary> {
-  const modules = await db.modules.toArray();
-  return {
-    subjectCount: modules.length,
-    problemCount: modules.reduce((n, m) => n + (m.solutionIds?.length ?? 0), 0),
-    approxSizeBytes: modules.reduce((n, m) => n + (m.approxSizeBytes ?? 0), 0),
-  };
-}
+export async function getSubjectDownloadStats(): Promise<SubjectDownloadStat[]> {
+  const [installedModules, subjectList] = await Promise.all([
+    db.modules.toArray(),
+    listSubjects().catch(() => [] as { subjectId: string; title: string }[]),
+  ]);
 
-/** "512 KB" / "4.2 MB" — used for any installed-content size display (Hub, #/me). */
-export function formatSize(bytes: number): string {
-  return bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`;
+  const installedById = new Map(installedModules.map((m) => [m.subjectId, m]));
+  const titleById = new Map(subjectList.map((s) => [s.subjectId, s.title]));
+
+  // Catalog order first (matches the pickers), then any installed
+  // subject the catalog doesn't mention (e.g. since removed upstream).
+  const orderedIds = subjectList.map((s) => s.subjectId);
+  for (const id of installedById.keys()) {
+    if (!orderedIds.includes(id)) orderedIds.push(id);
+  }
+
+  return Promise.all(
+    orderedIds.map(async (subjectId): Promise<SubjectDownloadStat> => {
+      const mod = installedById.get(subjectId);
+      const title = titleById.get(subjectId) ?? subjectId;
+      if (mod) {
+        return { subjectId, title, installed: true, approxSizeBytes: mod.approxSizeBytes ?? null };
+      }
+      try {
+        const manifest = await getModuleManifest(subjectId);
+        return { subjectId, title, installed: false, approxSizeBytes: manifest.approxSizeBytes };
+      } catch {
+        return { subjectId, title, installed: false, approxSizeBytes: null };
+      }
+    })
+  );
 }
 
 /**

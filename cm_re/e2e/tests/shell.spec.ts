@@ -25,23 +25,25 @@ test.describe("app shell", () => {
     await expect(page.getByText("Correct", { exact: true })).toBeVisible();
   });
 
-  test("Hub shows installed content counts, not the student's personal stats", async ({ page }) => {
+  test("Hub lists every subject with its download status, not the student's personal stats", async ({ page }) => {
     await page.goto("/#/");
-    await expect(page.getByText("Problems Installed")).toBeVisible();
-    await expect(page.getByText("Subjects Installed")).toBeVisible();
-    await expect(page.getByText("Downloads", { exact: true })).toBeVisible();
-    // nothing installed yet
-    await expect(page.getByTestId("installed-problem-count")).toHaveText("0");
-    await expect(page.getByTestId("installed-subject-count")).toHaveText("0");
-    await expect(page.getByTestId("installed-downloads")).toHaveText("none");
+    await expect(page.getByText("Subjects", { exact: true })).toBeVisible();
+    // A real catalog subject, not yet downloaded.
+    const alg1Row = page.getByRole("button", { name: /Algebra 1 Practice Tests/i });
+    await expect(alg1Row).toBeVisible();
+    await expect(alg1Row.getByText("not downloaded")).toBeVisible();
+    await expect(page.getByTestId("installed-subject-count")).toHaveText(/^0 of \d+ downloaded$/);
     // the personal stats live on #/me now, not here
     await expect(page.getByText("Correct", { exact: true })).toHaveCount(0);
 
     await installModule(page, SUBJECT.demo);
     await page.goto("/#/");
-    await expect(page.getByTestId("installed-problem-count")).toHaveText("3"); // algebra1 demo: 3 solutions
-    await expect(page.getByTestId("installed-subject-count")).toHaveText("1");
-    await expect(page.getByTestId("installed-downloads")).toHaveText(/^1 · /); // "1 · N KB"
+    // algebra1 is a demo fixture, not in the real catalog — still shows
+    // up (installed modules are never hidden), just under its raw id.
+    const demoRow = page.getByRole("button", { name: /^algebra1/i });
+    await expect(demoRow).toBeVisible();
+    await expect(demoRow.getByText("downloaded", { exact: true })).toBeVisible();
+    await expect(page.getByTestId("installed-subject-count")).toHaveText(/^1 of \d+ downloaded$/);
   });
 
   test("Me shows status and reset clears the correct-answer count", async ({ page }) => {

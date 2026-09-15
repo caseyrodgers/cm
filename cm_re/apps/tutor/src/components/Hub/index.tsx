@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
-import { getInstalledSummary, formatSize, type InstalledSummary } from "../../lib/studentStats";
+import { getSubjectDownloadStats, formatSize, type SubjectDownloadStat } from "../../lib/studentStats";
 import { navigate, hashFor } from "../../routing";
 import { Card, CardContent } from "../ui/card";
+import { List, ListItemButton } from "../ui/list";
+import { Spinner } from "../ui/spinner";
 
 /**
  * The landing screen. Deliberately thin — it points at the two ways
- * into the content (a practice test, or browsing problems) and shows
- * what's actually on this device (installed subjects/problems/
- * download size). The student's own performance stats (Problems
- * viewed, Questions answered, Correct) live on #/me instead — see
- * StudentStatus. What the header/nav looks like is the shell's job
- * (see shells/).
+ * into the content (a practice test, or browsing problems), and lists
+ * every subject in the catalog with its download status/size (moved
+ * here from #/me — see IDEAS.org "Change Hub to contain All the
+ * subjects and their download stats"). The student's own performance
+ * stats (Problems viewed, Questions answered, Correct, per-subject
+ * test/chapter progress) live on #/me instead — see StudentStatus.
+ * What the header/nav looks like is the shell's job (see shells/).
  */
 
 const TILES: { label: string; sub: string; to: string }[] = [
@@ -20,42 +23,22 @@ const TILES: { label: string; sub: string; to: string }[] = [
 ];
 
 export default function Hub() {
-  const [summary, setSummary] = useState<InstalledSummary | null>(null);
+  const [subjects, setSubjects] = useState<SubjectDownloadStat[] | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    getInstalledSummary().then((s) => {
-      if (!cancelled) setSummary(s);
+    getSubjectDownloadStats().then((s) => {
+      if (!cancelled) setSubjects(s);
     });
     return () => {
       cancelled = true;
     };
   }, []);
 
+  const installedCount = subjects?.filter((s) => s.installed).length ?? 0;
+
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-lg border border-slate-200 bg-white p-5 text-center">
-          <p className="text-sm text-slate-500">Subjects Installed</p>
-          <p className="mt-1 text-4xl font-extrabold text-slate-900" data-testid="installed-subject-count">
-            {summary ? summary.subjectCount : "—"}
-          </p>
-        </div>
-        <div className="rounded-lg border border-slate-200 bg-white p-5 text-center">
-          <p className="text-sm text-slate-500">Problems Installed</p>
-          <p className="mt-1 text-4xl font-extrabold text-slate-900" data-testid="installed-problem-count">
-            {summary ? summary.problemCount : "—"}
-          </p>
-        </div>
-      </div>
-
-      <div className="rounded-lg border border-slate-200 bg-white p-3 text-center">
-        <p className="text-sm text-slate-500">Downloads</p>
-        <p className="mt-1 text-lg font-semibold text-slate-900" data-testid="installed-downloads">
-          {summary ? (summary.subjectCount ? `${summary.subjectCount} · ${formatSize(summary.approxSizeBytes)}` : "none") : "—"}
-        </p>
-      </div>
-
       <div className="space-y-2">
         {TILES.map((t) => (
           <Card key={t.to}>
@@ -73,6 +56,43 @@ export default function Hub() {
           </Card>
         ))}
       </div>
+
+      <Card>
+        <CardContent>
+          <div className="mb-2 flex items-baseline justify-between">
+            <p className="text-sm font-semibold text-slate-900">Subjects</p>
+            {subjects && (
+              <span className="text-xs text-slate-500" data-testid="installed-subject-count">
+                {installedCount} of {subjects.length} downloaded
+              </span>
+            )}
+          </div>
+          {!subjects ? (
+            <Spinner />
+          ) : (
+            <List>
+              {subjects.map((s) => (
+                <ListItemButton key={s.subjectId} onClick={() => navigate(hashFor.module(s.subjectId))}>
+                  <span className="text-slate-800">{s.title}</span>
+                  <span className="flex shrink-0 items-center gap-2">
+                    <span className="text-xs text-slate-400">
+                      {s.approxSizeBytes != null ? formatSize(s.approxSizeBytes) : "—"}
+                    </span>
+                    <span
+                      className={
+                        "rounded-full px-2 py-0.5 text-xs font-medium " +
+                        (s.installed ? "bg-green-100 text-green-800" : "bg-slate-100 text-slate-500")
+                      }
+                    >
+                      {s.installed ? "downloaded" : "not downloaded"}
+                    </span>
+                  </span>
+                </ListItemButton>
+              ))}
+            </List>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

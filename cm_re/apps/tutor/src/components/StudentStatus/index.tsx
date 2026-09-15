@@ -11,8 +11,12 @@ import { Spinner } from "../ui/spinner";
 
 /**
  * The `#/me` screen — everything this browser knows about the current
- * student (there are no accounts; it's all localStorage + IndexedDB),
- * plus a reset. Also the dev-time shell switcher.
+ * student's *performance* (there are no accounts; it's all
+ * localStorage + IndexedDB), plus a reset. Also the dev-time shell
+ * switcher. Download status/size lives on Hub instead (see IDEAS.org
+ * "Change Hub to contain All the subjects and their download stats") —
+ * the per-subject list here only ever shows a subject once there's
+ * real activity on it (a test, or chapter mastery data).
  */
 
 export default function StudentStatus() {
@@ -59,9 +63,9 @@ export default function StudentStatus() {
 
       <Card>
         <CardContent>
-          <p className="mb-2 text-sm font-semibold text-slate-900">Subjects</p>
+          <p className="mb-2 text-sm font-semibold text-slate-900">My progress by subject</p>
           {stats.subjects.length === 0 ? (
-            <p className="text-sm text-slate-500">Nothing yet — take a practice test or open some problems.</p>
+            <p className="text-sm text-slate-500">Nothing yet — take a practice test to see progress here.</p>
           ) : (
             <ul className="divide-y divide-slate-100 text-sm">
               {stats.subjects.map((s) => (
@@ -80,14 +84,6 @@ export default function StudentStatus() {
                           : `${s.test.title}: ${s.test.answered}/${s.test.total} answered`}
                       </span>
                     )}
-                    <span
-                      className={
-                        "rounded-full px-2 py-0.5 text-xs font-medium " +
-                        (s.installed ? "bg-green-100 text-green-800" : "bg-slate-100 text-slate-500")
-                      }
-                    >
-                      {s.installed ? "downloaded" : "not downloaded"}
-                    </span>
                   </div>
                   <ChapterMasteryList chapters={s.chapters} />
                 </li>
