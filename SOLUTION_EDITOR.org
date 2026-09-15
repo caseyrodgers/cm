@@ -11,6 +11,45 @@ The content format it authors: [[file:SOLUTION_INFO.org][SOLUTION_INFO.org]].
 =Solution= document (=packages/shared-types/src/solution.ts=) that
 the tutor reads. *We work on this next.*
 
+* Status — 2026-09-14: statement + MC question are editable
+
+Casey: "the problem statement and question need to be editable." Both
+now are, reusing =StepEditor= (same TipTap + MathNode as steps) rather
+than building separate editors — statement is a plain HTML field just
+like a step's =content=; the question's =prompt= and each choice's
+=content=/=feedback= are all the same shape too.
+
+- =SolutionView= now tracks =statement=/=question=/=steps= as one
+  local editable copy of the doc; a single Save button (moved to a new
+  header bar next to the title/meta, replacing the old per-steps-
+  section one) PUTs all three together.
+- Question editing covers the full lifecycle, not just tweaking
+  existing text: *Add multiple-choice question* on a solution with
+  none (=blankQuestion()= — 4 empty choices, the corpus norm) and
+  *Remove question* on one that has one. Each choice has its own
+  content + feedback editors, a radio to mark it =correctIndex=, and a
+  *Remove* button (disabled at 1 choice remaining, so a question can't
+  end up with zero); *Add choice* appends another blank one. Removing
+  the currently-correct choice clears =correctIndex= rather than
+  silently pointing at the wrong one after the array shifts.
+- Widget slot stays read-only — out of scope for this pass (Casey
+  asked for statement + question specifically); figures likewise.
+
+*Verified live* against an isolated dev instance (not Casey's running
+=:5173= deploy server): opened a *real* =alg1ptests= MC problem and
+confirmed all 4 real choices render in the new editors with the
+correct radio actually checked (no corruption on load — the same
+MathNode guard from milestone 3 covers question/choice content too,
+since it's the same =StepEditor=). Then, on a fresh throwaway
+solution: typed a statement, added a question from scratch, filled
+all 4 choices' content plus one's feedback, marked one correct,
+saved, and confirmed via a clean API re-fetch that every field landed
+where it should (including the empty/undefined =feedback= key being
+correctly absent on choices that never got one). Removed the question
+in the same session, saved again, confirmed the =question= key is
+gone entirely. All test data reverted from the real bundles
+afterward. =tsc --noEmit= + =vite build= clean.
+
 * Status — 2026-09-14: create-a-new-solution added
 
 Casey asked "how would I create a new problem?" — answer at the time
@@ -371,7 +410,11 @@ is =SolutionSource= over =apps/tutor/public/modules/<id>/bundle.json=.
    losslessly (milestone 3's safety net); this milestone replaces its
    bare click-to-edit-raw-source prompt with real WYSIWYG authoring
    (LaTeX in, rendered via KaTeX, converted to/from MathML on save).
-6. [ ] *Statement + MC question + widget-slot + figures* panes.
+6. [-] *Statement + MC question + widget-slot + figures* panes.
+   Statement + MC question done (2026-09-14 — reuses =StepEditor=,
+   same MathNode guard; full add/edit/remove lifecycle for the
+   question and its choices, not just text tweaks). Widget-slot and
+   figures still read-only/unstarted.
 8. [ ] *Auth* (open question 3), and the *Spring/Postgres* migration
    (open question 1) when the file store stops being enough.
 

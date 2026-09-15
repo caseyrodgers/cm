@@ -116,6 +116,21 @@ a { color: var(--deep); }
 .meta dt { color: var(--muted); }
 .meta dd { margin: 0; }
 
+.sol-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.save-bar { display: flex; align-items: center; gap: 10px; flex-shrink: 0; padding-top: 2px; }
+.save-bar button {
+  font: inherit;
+  padding: 6px 16px;
+  border: 1px solid var(--blue);
+  border-radius: 6px;
+  background: var(--blue);
+  color: #fff;
+  cursor: pointer;
+}
+.save-bar button:disabled { opacity: 0.5; cursor: default; background: #94c9e6; border-color: #94c9e6; }
+.save-ok { color: var(--ok); font-size: 12px; font-weight: 600; }
+.save-bar .error { font-size: 12px; white-space: normal; max-width: 40ch; }
+
 .sol-view section {
   background: #fff;
   border: 1px solid var(--line);
@@ -124,6 +139,7 @@ a { color: var(--deep); }
   margin-bottom: 14px;
 }
 .sol-view h2 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+.field-label { margin: 12px 0 4px; font-size: 12px; }
 
 .rich { overflow-x: auto; }
 .rich img { max-width: 100%; height: auto; }
@@ -132,6 +148,22 @@ a { color: var(--deep); }
 .choices li { margin: 4px 0; padding: 4px 8px; border-radius: 6px; }
 .choices li.correct { background: #e8f7ec; border: 1px solid #b7e4c3; }
 .feedback { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.choices-edit { padding-left: 0; list-style: none; }
+.choices-edit li { margin: 0 0 12px; padding: 8px; border: 1px solid var(--line); }
+.choices-edit li.correct { border-color: #b7e4c3; }
+.choice-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.choice-correct { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.choice-remove {
+  font: inherit;
+  font-size: 12px;
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+}
+.choice-remove:disabled { opacity: 0.4; cursor: default; }
 
 .steps { padding-left: 20px; }
 .steps li { margin: 8px 0; }
