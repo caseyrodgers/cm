@@ -1,0 +1,82 @@
+{
+  "pid": "gcprealgpractice_3_1_numbertheory_4_20",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "3",
+    "section": "1",
+    "set": null,
+    "problemNumber": "4",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to find the least common multiple (LCM) of 8, 36, and 45\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16980\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmath.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16980\u0026quot;,180)\"\u003e and select \u003cb\u003elcm(\u003c/b\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16981\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmath.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16981\u0026quot;,180)\"\u003e and press \u003cimg id\u003d\"token_16982\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e to select \u003cb\u003elcm(\u003c/b\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_4_20/f-20-4-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eYour calculator can only find the LCM of two numbers at a time.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eUnfortunately, your calculator can only find the LCM of two numbers at a time. So, first find the LCM of the first two, then find the LCM of this answer and the third number.\u003c/p\u003e\n \u003cp\u003eEnter the first two numbers, separated by a comma. Press \u003cimg id\u003d\"token_16983\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_16984\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcomma.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16984\u0026quot;,125)\"\u003e \u003cimg id\u003d\"token_16985\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_16986\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_16987\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16987\u0026quot;,121)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_4_20/f-20-4-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16988\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16988\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16989\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16989\u0026quot;,144)\"\u003e. The calculator gives the LCM as 72.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_4_20/f-20-4-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eNow find the LCM of 72 and 45.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eNow find the LCM of 72 and 45.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16990\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmath.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16990\u0026quot;,180)\"\u003e and press \u003cimg id\u003d\"token_16991\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e to select \u003cb\u003elcm(\u003c/b\u003e. Then press \u003cimg id\u003d\"token_16992\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q7.gif\"\u003e \u003cimg id\u003d\"token_16993\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_16994\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcomma.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16994\u0026quot;,125)\"\u003e \u003cimg id\u003d\"token_16995\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e \u003cimg id\u003d\"token_16996\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_16997\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16997\u0026quot;,121)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_4_20/f-20-4-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16998\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16998\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16999\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16999\u0026quot;,144)\"\u003e. The calculator gives the LCM as 360.\u003c/p\u003e\n \u003cp\u003eSo, the LCM of 8, 36, and 45 is 360.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_4_20/f-20-4-5.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

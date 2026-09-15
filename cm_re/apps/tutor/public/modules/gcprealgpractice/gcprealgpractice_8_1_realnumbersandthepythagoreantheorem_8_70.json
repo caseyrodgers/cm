@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_8_70",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "8",
+    "section": "1",
+    "set": null,
+    "problemNumber": "8",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eCompare the numbers by replacing the blank with \u003cimg id\u003d\"token_19761\" class\u003d\"text-bottom\" src\u003d\"/specialchars/lt.gif\"\u003e , \u003cimg id\u003d\"token_19762\" class\u003d\"text-bottom\" src\u003d\"/specialchars/gt.gif\"\u003e , or \u003d.\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"107\" height\u003d\"25\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_8_70/image036.gif\" class\u003d\"text-top\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eGet the value for the left side on your calculator.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eGet the value for the left side on your calculator. Key in \u003cimg id\u003d\"token_19763\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19763\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_19764\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19765\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qsqrt.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19765\u0026quot;,219)\"\u003e \u003cimg id\u003d\"token_19766\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_19767\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_19768\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19768\u0026quot;,121)\"\u003e \u003cimg id\u003d\"token_19769\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19769\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the value as approximately –3.3166.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_8_70/f-70-8-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cdiv class\u003d\"question\"\u003e\n  \u003cp\u003eWhich is greater?\u003c/p\u003e\n \u003c/div\u003e\n \u003cdiv class\u003d\"question_guess\"\u003e\n  \u003cimg onmouseover\u003d\"doQuestionResponse(\u0027rid_4384\u0027,\u0027yes\u0027);\" onmouseout\u003d\"doQuestionResponseEnd();\" src\u003d\"/images/tutor5/hint_question-16x16.gif\" name\u003d\"question_0\"\u003e\u0026nbsp;\n  \u003cp\u003e–3.3\u003c/p\u003e\n \u003c/div\u003e\n \u003cdiv class\u003d\"question_guess\"\u003e\n  \u003cimg onmouseover\u003d\"doQuestionResponse(\u0027rid_4385\u0027,\u0027no\u0027);\" onmouseout\u003d\"doQuestionResponseEnd();\" src\u003d\"/images/tutor5/hint_question-16x16.gif\" name\u003d\"question_1\"\u003e\u0026nbsp;\n  \u003cp\u003e–3.3166\u003c/p\u003e\n \u003c/div\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eBe careful of the negative sign! –3.3 lies to the right of –3.3166 on the number line, so it is greater.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_8_70/f-70-8-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eComplete the statement.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eComplete the statement.\u003c/p\u003e\n \u003cp\u003eThe left side is less than the right side. So, use a less than sign.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"83\" height\u003d\"23\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_8_70/image037.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

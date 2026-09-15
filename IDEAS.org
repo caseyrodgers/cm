@@ -178,12 +178,71 @@ compile~, tutor ~tsc --noEmit~ + ~vite build~ clean.
 
 *** c:/dev/projects/catchupmath/solution_data/help_2022_06/solutions/gcprealgpractice/
 - [X] DOIT
+Status: Done (2026-09-15)
+
+Implementation notes: ran the existing preprocessor pipeline
+(~LegacySolutionPreprocessor~ -> ~ModuleAssembler~, unchanged) over
+the new export — 142/142 converted, 0 failures, 0 missing images, 659
+images copied. Free-response graphing-calculator content like its
+sibling ~gcpractice~ — 0 MC questions, so browse-only (no practice-
+test path). ~ModuleAssembler~'s built-in ~ChapterNamer~ named all 10
+chapters (e.g. "Calculator Basics and Operations", "Scientific
+Notation"). ~2.5 MB module. Added to ~modules/index.json~ as
+"Graphing Calculator Pre-Algebra Practice" (9 subjects now).
+
+Also fixed a stale path along the way: ~Makefile~'s
+~LEGACY_SOLUTIONS_DIR~ still pointed at
+~c:/dev/projects/catchupmath/temp/help_2022_06/solutions~, which no
+longer exists — the legacy corpus lives at
+~c:/dev/projects/catchupmath/solution_data/help_2022_06/solutions~
+now (renamed outside this session). Updated the constant so
+~make serve-legacy~ works again.
+
+Verified live: real headless-browser check confirmed the subject is
+excluded from the Practice Tests picker (scorableCount 0, matching
+gcpractice/minicalcgt) but listed in Problems; its 10-chapter list
+renders; a real module-specific image resolves (200, real bytes) both
+via direct fetch and rendered ~naturalWidth~ in the browser. Full e2e
+suite (38 specs) still green; backend ~mvn test~ clean.
 
 
 ** Change Hub to contain All the subjects and their download stats.  Remove that info from the Me tab.
 
 - [X] DOIT
-  
+Status: Done (2026-09-15)
+
+Implementation notes: split what used to be one mixed per-subject list
+on ~#/me~ (title + test progress + chapter mastery + a "downloaded"/
+"not downloaded" badge) along its real seam — download/content status
+is Hub's job, personal performance is Me's job (the same principle
+that moved Problems/Questions/Correct onto Me a few sessions back).
+
+- New ~lib/studentStats.ts:getSubjectDownloadStats()~ — every catalog
+  subject (not just installed ones), with install status + size. An
+  installed subject's size comes straight from IndexedDB (no
+  network); a not-yet-installed one costs one small ~manifest.json~
+  fetch, same number ~ModuleDownloadPrompt~ already shows once you're
+  inside that subject.
+- Hub (~components/Hub~) replaces its old two aggregate tiles +
+  "Downloads" line with a full tappable subject list (title, size,
+  downloaded/not-downloaded badge, "~N of M downloaded~" header) —
+  tapping a row still goes to the existing ~#/m/<id>~ download
+  experience rather than duplicating download/remove actions inline.
+- ~#/me~ (~StudentStatus~) drops the badge; ~getStudentStats()~ no
+  longer reads ~db.modules~ at all. A subject with neither a test nor
+  chapter-mastery history now has nothing to show, so it's filtered
+  out instead of appearing as a bare, badge-less row — "My progress by
+  subject" only ever lists subjects with real activity on them.
+- Removed the now-fully-dead ~getInstalledSummary~/~InstalledSummary~
+  (Hub's only caller).
+
+Verified: rewrote the affected e2e case
+(~shell.spec.ts~ "Hub lists every subject with its download status,
+not the student's personal stats") to match — asserts a real catalog
+subject shows "not downloaded" before install and "downloaded" after,
+plus the "N of M downloaded" count. Full e2e suite (38 specs) green;
+~tsc --noEmit~ + ~vite build~ clean.
+
 
 * Recommendation
 

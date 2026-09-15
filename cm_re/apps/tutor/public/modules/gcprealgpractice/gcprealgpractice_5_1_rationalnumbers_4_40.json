@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_5_1_rationalnumbers_4_40",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "5",
+    "section": "1",
+    "set": null,
+    "problemNumber": "4",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eEstimate the difference, and then check your estimate on your calculator.\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"60\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_5_1_rationalnumbers_4_40/image009.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eRound each number to the nearest whole.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eRound each number to the nearest whole.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"16\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_5_1_rationalnumbers_4_40/image010.gif\" class\u003d\"middle\"\u003e is more than \u003cimg width\u003d\"16\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_5_1_rationalnumbers_4_40/image011.gif\" class\u003d\"middle\"\u003e, so round the first number up.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"15\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_5_1_rationalnumbers_4_40/image012.gif\" class\u003d\"middle\"\u003e is also more than \u003cimg width\u003d\"16\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_5_1_rationalnumbers_4_40/image011.gif\" class\u003d\"middle\"\u003e, so round the second number up too.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"107\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_5_1_rationalnumbers_4_40/image013.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSubtract.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSubtract.\u003c/p\u003e\n \u003cp\u003e\u003d 2\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCheck using your calculator.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCheck using your calculator.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_18134\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q7.gif\"\u003e \u003cimg id\u003d\"token_18135\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qplus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18135\u0026quot;,203)\"\u003e \u003cimg id\u003d\"token_18136\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e\u003cimg id\u003d\"token_18137\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18137\u0026quot;,154)\"\u003e \u003cimg id\u003d\"token_18138\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_18139\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18139\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_18140\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qminus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18140\u0026quot;,185)\"\u003e \u003cimg id\u003d\"token_18141\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qopenparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18141\u0026quot;,196)\"\u003e \u003cimg id\u003d\"token_18142\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_18143\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qplus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18143\u0026quot;,203)\"\u003e \u003cimg id\u003d\"token_18144\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e\u003cimg id\u003d\"token_18145\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18145\u0026quot;,154)\"\u003e \u003cimg id\u003d\"token_18146\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_18147\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18147\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_18148\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18148\u0026quot;,121)\"\u003e \u003cimg id\u003d\"token_18149\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18149\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the value \u003cimg width\u003d\"31\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_5_1_rationalnumbers_4_40/image014.gif\" class\u003d\"middle\"\u003e, pretty close to our estimate.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_5_1_rationalnumbers_4_40/f-40-4-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

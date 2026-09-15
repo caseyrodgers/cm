@@ -1,0 +1,70 @@
+{
+  "pid": "gcprealgpractice_1_1_operations,expressions,andvariables_12b_1",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "1",
+    "section": "1",
+    "set": null,
+    "problemNumber": "12b",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse the Δ List feature on your calculator (from the \u003ci\u003eStat Ops\u003c/i\u003e menu)\u003ci\u003e \u003c/i\u003eto find the first differences of the square numbers. In other words, find the sequence of values\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"45\" height\u003d\"21\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12b_1/image016.gif\" alt\u003d\"*\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"45\" height\u003d\"20\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12b_1/image017.gif\" alt\u003d\"*\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"48\" height\u003d\"21\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12b_1/image018.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"48\" height\u003d\"21\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12b_1/image019.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n\u003cp\u003eetc.\u003c/p\u003e\n\u003cp\u003eWhat do you notice?\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eUse the lists from part a.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eUse the lists from part a. On the lists screen, use the arrow keys to highlight L3.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12b_1/f-1-12b-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16412\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_16413\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16413\u0026quot;,221)\"\u003e \u003cimg id\u003d\"token_16414\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16414\u0026quot;,211)\"\u003e to get the \u003ci\u003eStat Ops\u003c/i\u003e menu.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16415\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_16416\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16416\u0026quot;,221)\"\u003e \u003cimg id\u003d\"token_16417\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16417\u0026quot;,211)\"\u003e to get the \u003ci\u003eStat Ops\u003c/i\u003e menu. Then press \u003cimg id\u003d\"token_16418\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e to select Δ List.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12b_1/f-1-12b-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16419\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_16420\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16420\u0026quot;,221)\"\u003e again, and press \u003cimg id\u003d\"token_16421\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e to select L2.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16422\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_16423\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16423\u0026quot;,221)\"\u003e again, and press \u003cimg id\u003d\"token_16424\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e to select L2. Press \u003cimg id\u003d\"token_16425\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16425\u0026quot;,121)\"\u003e to complete the formula.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12b_1/f-1-12b-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16426\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16426\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16427\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16427\u0026quot;,144)\"\u003e. The calculator gives the first differences of the square numbers as:\u003c/p\u003e\n \u003cp\u003e1, 3, 5, 7, 9, 11, 13, 15, 17, 19\u003c/p\u003e\n \u003cp\u003eNotice that this is just the sequence of odd numbers!\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12b_1/f-1-12b-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

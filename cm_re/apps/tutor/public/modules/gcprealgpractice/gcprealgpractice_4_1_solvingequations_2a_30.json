@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_4_1_solvingequations_2a_30",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "4",
+    "section": "1",
+    "set": null,
+    "problemNumber": "2a",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to solve the equation.\u003c/p\u003e\n\u003cp\u003e5.5\u003ci\u003ex\u003c/i\u003e \u003d –42.9\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17614\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmath.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17614\u0026quot;,180)\"\u003e and then press \u003cimg id\u003d\"token_17615\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e to select the \u003cb\u003eSolver\u003c/b\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17616\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmath.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17616\u0026quot;,180)\"\u003e and then press \u003cimg id\u003d\"token_17617\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e to select the \u003cb\u003eSolver\u003c/b\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_2a_30/f-30-2-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the equation.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTo enter the equation, you first have to get 0 on one side. Add 42.9 from both sides.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_17618\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_17619\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17619\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_17620\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e\u003cimg id\u003d\"token_17621\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17621\u0026quot;,263)\"\u003e \u003cimg id\u003d\"token_17622\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qadd.gif\"\u003e \u003cimg id\u003d\"token_17623\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e \u003cimg id\u003d\"token_17624\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_17625\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17625\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_17626\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q9.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_2a_30/f-30-2a-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17627\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17627\u0026quot;,144)\"\u003e. Select the initial guess and bounds.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17628\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17628\u0026quot;,144)\"\u003e. Press \u003cimg id\u003d\"token_17629\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17629\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_17630\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17630\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_17631\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17631\u0026quot;,144)\"\u003eto use the default values for the initial guess and bounds.\u003c/p\u003e\n \u003cp\u003eThe calculator gives\u003c/p\u003e\n \u003cp\u003e\u003ci\u003ex\u003c/i\u003e \u003d –7.8.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_2a_30/f-30-2a-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

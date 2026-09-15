@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_1_1_operations,expressions,andvariables_6_1",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "1",
+    "section": "1",
+    "set": null,
+    "problemNumber": "6",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to evaluate the expression. Get the answer as an improper fraction.\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"45\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_6_1/image009.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eUse the \u003cimg id\u003d\"token_16185\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16185\u0026quot;,154)\"\u003e key to write the fraction bars.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16186\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16186\u0026quot;,154)\"\u003e key to write the fraction bar. Enter \u003cimg id\u003d\"token_16187\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_16188\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e for the numerator, press \u003cimg id\u003d\"token_16189\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdown.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16189\u0026quot;,136)\"\u003e, and enter \u003cimg id\u003d\"token_16190\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_16191\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e for the denominator.\u003c/p\u003e\n \u003cp\u003eThen press \u003cimg id\u003d\"token_16192\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16192\u0026quot;,211)\"\u003e, \u003cimg id\u003d\"token_16193\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtimes.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16193\u0026quot;,238)\"\u003e, and press \u003cimg id\u003d\"token_16194\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16194\u0026quot;,154)\"\u003e again. Enter \u003cimg id\u003d\"token_16195\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q7.gif\"\u003e for the numerator, press \u003cimg id\u003d\"token_16196\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdown.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16196\u0026quot;,136)\"\u003e, and enter \u003cimg id\u003d\"token_16197\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e for the denominator.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_6_1/f-1-6-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16198\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16198\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16199\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16199\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the value \u003cimg width\u003d\"35\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_6_1/image010.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_6_1/f-1-6-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eConvert to an improper fraction.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eConvert to an improper fraction. Press \u003cimg id\u003d\"token_16200\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtofrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16200\u0026quot;,233)\"\u003e \u003cimg id\u003d\"token_16201\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16201\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives \u003cimg width\u003d\"24\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_6_1/image011.gif\" class\u003d\"middle\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_6_1/f-1-6-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

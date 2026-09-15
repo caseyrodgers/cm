@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_5_1_rationalnumbers_2_40",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "5",
+    "section": "1",
+    "set": null,
+    "problemNumber": "2",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eEstimate the difference, and then check your estimate on your calculator.\u003c/p\u003e\n\u003cp\u003e78873 – 4986\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eRound both numbers to the nearest thousand.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eRound both numbers to the nearest thousand.\u003c/p\u003e\n \u003cp\u003eIn 78873, the hundreds place digit is \u003cimg id\u003d\"token_18085\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ge.gif\"\u003e 5, so round up. In 4986, the hundreds place digit is also \u003cimg id\u003d\"token_18086\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ge.gif\"\u003e 5, so round up there too.\u003c/p\u003e\n \u003cp\u003e\u003cimg id\u003d\"token_18087\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e 79000 – 5000\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSubtract.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSubtract.\u003c/p\u003e\n \u003cp\u003e\u003d 74,000\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCheck using your calculator.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCheck using your calculator.\u003c/p\u003e\n \u003cp\u003eThe correct answer is 73,887.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_5_1_rationalnumbers_2_40/f-40-2-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

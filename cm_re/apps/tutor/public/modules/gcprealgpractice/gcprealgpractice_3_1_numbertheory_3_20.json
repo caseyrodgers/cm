@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_3_1_numbertheory_3_20",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "3",
+    "section": "1",
+    "set": null,
+    "problemNumber": "3",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to find the least common multiple (LCM) of 6 and 28.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16950\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmath.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16950\u0026quot;,180)\"\u003e and select \u003cb\u003elcm(\u003c/b\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16951\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmath.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16951\u0026quot;,180)\"\u003e and press \u003cimg id\u003d\"token_16952\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e to select \u003cb\u003elcm(\u003c/b\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_3_20/f-20-3-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the numbers, separated by a comma.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the numbers, separated by a comma. Press \u003cimg id\u003d\"token_16953\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_16954\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcomma.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16954\u0026quot;,125)\"\u003e \u003cimg id\u003d\"token_16955\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_16956\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_16957\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16957\u0026quot;,121)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_3_20/f-20-3-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16958\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16958\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16959\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16959\u0026quot;,144)\"\u003e. The calculator gives the LCM as 84.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_3_20/f-20-3-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

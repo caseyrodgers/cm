@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_9b_70",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "8",
+    "section": "1",
+    "set": null,
+    "problemNumber": "9b",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUsing the \u003ci\u003eList \u003c/i\u003efeature on your calculator, enter the Fibonacci numbers from \u003ci\u003eF\u003c/i\u003e\u003csub\u003e0\u003c/sub\u003e up to \u003ci\u003eF\u003c/i\u003e\u003csub\u003e15\u003c/sub\u003e in L\u003csub\u003e1\u003c/sub\u003e. Then in L\u003csub\u003e2\u003c/sub\u003e, calculate the differences between consecutive terms of the Fibonacci sequence. That is, calculate:\u003c/p\u003e\n\u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e1\u003c/sub\u003e – \u003ci\u003eF\u003c/i\u003e\u003csub\u003e0\u003c/sub\u003e\u003c/p\u003e\n\u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e2\u003c/sub\u003e – \u003ci\u003eF\u003c/i\u003e\u003csub\u003e1\u003c/sub\u003e\u003c/p\u003e\n\u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e3\u003c/sub\u003e – \u003ci\u003eF\u003c/i\u003e\u003csub\u003e2\u003c/sub\u003e\u003c/p\u003e\n\u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e4\u003c/sub\u003e – \u003ci\u003eF\u003c/i\u003e\u003csub\u003e3\u003c/sub\u003e\u003c/p\u003e\n\u003cp\u003eetc.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19798\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qlist.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19798\u0026quot;,175)\"\u003e and enter the Fibonacci sequence in L\u003csub\u003e1\u003c/sub\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19799\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qlist.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19799\u0026quot;,175)\"\u003e and enter the Fibonacci sequence in L\u003csub\u003e1\u003c/sub\u003e.\u003c/p\u003e\n \u003cp\u003e1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, ...\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_19800\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_19801\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19801\u0026quot;,144)\"\u003e, \u003cimg id\u003d\"token_19802\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_19803\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19803\u0026quot;,144)\"\u003e, \u003cimg id\u003d\"token_19804\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_19805\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19805\u0026quot;,144)\"\u003e, \u003cimg id\u003d\"token_19806\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_19807\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19807\u0026quot;,144)\"\u003e, \u003cimg id\u003d\"token_19808\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_19809\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19809\u0026quot;,144)\"\u003e, \u003cimg id\u003d\"token_19810\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_19811\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19811\u0026quot;,144)\"\u003e, etc.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_9b_70/f-70-9b-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19812\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19812\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_19813\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19813\u0026quot;,246)\"\u003e and find the differences.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19814\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19814\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_19815\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19815\u0026quot;,246)\"\u003e to highlight L\u003csub\u003e2\u003c/sub\u003e.\u003c/p\u003e\n \u003cp\u003eThere is a function built–in to the calculator which allows you to calculate differences quickly. Press \u003cimg id\u003d\"token_19816\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19817\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19817\u0026quot;,221)\"\u003e \u003cimg id\u003d\"token_19818\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19818\u0026quot;,211)\"\u003e, and select \u003cimg id\u003d\"token_19819\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e for the Δ List function. (The symbol Δ stands for \u003ci\u003echange\u003c/i\u003e.)\u003ci\u003e \u003c/i\u003eThen press \u003cimg id\u003d\"token_19820\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19821\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19821\u0026quot;,221)\"\u003e again, select \u003cimg id\u003d\"token_19822\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e for L\u003csub\u003e1\u003c/sub\u003e, and press \u003cimg id\u003d\"token_19823\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19823\u0026quot;,121)\"\u003e to complete the formula.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_9b_70/f-70-9b-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19824\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19824\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19825\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19825\u0026quot;,144)\"\u003e. The calculator displays the differences. Notice that they are just the Fibonacci numbers again, offset by one place!\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_9b_70/f-70-9b-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

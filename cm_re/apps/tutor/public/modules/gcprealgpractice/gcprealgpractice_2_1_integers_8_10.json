@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_2_1_integers_8_10",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "2",
+    "section": "1",
+    "set": null,
+    "problemNumber": "8",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to evaluate the expression. Get the answer as a fraction.\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"39\" height\u003d\"21\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_8_10/image003.gif\" alt\u003d\"*\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the expression.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the expression. Key in \u003cimg id\u003d\"token_16744\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_16745\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtimes.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16745\u0026quot;,238)\"\u003e \u003cimg id\u003d\"token_16746\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_16747\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcap.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16747\u0026quot;,113)\"\u003e \u003cimg id\u003d\"token_16748\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16748\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_16749\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_8_10/f-10-8-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16750\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16750\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16751\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16751\u0026quot;,144)\"\u003e. The calculator gives the value 0.1875.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_8_10/f-10-8-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eConvert to a fraction.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16752\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfractodeci.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16752\u0026quot;,155)\"\u003e \u003cimg id\u003d\"token_16753\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16753\u0026quot;,144)\"\u003e. The calculator gives\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"25\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_8_10/image004.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "pid": "gcprealgpractice_6_1_proportionsandratios_10a_50",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "6",
+    "section": "1",
+    "set": null,
+    "problemNumber": "10a",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eFifty bears are released into a wildlife sanctuary. The population is expected to increase by 5% every year. Use your calculator to set up a table to show the population over the next few years. When will the population double?\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind the exponential function.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTo increase a value by 5%, multiply it by 1.05.\u003c/p\u003e\n \u003cp\u003eSo after 1 year, the bear population will be\u003c/p\u003e\n \u003cp\u003e50 \u003cimg id\u003d\"token_18652\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 1.05.\u003c/p\u003e\n \u003cp\u003eTo find the population after 2 years, multiply by 1.05 again.\u003c/p\u003e\n \u003cp\u003e(50 \u003cimg id\u003d\"token_18653\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 1.05) \u003cimg id\u003d\"token_18654\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 1.05, or\u003c/p\u003e\n \u003cp\u003e50 \u003cimg id\u003d\"token_18655\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 1.05\u003csup\u003e2\u003c/sup\u003e.\u003c/p\u003e\n \u003cp\u003eAfter 3 years:\u003c/p\u003e\n \u003cp\u003e50 \u003cimg id\u003d\"token_18656\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 1.05\u003csup\u003e3\u003c/sup\u003e\u003c/p\u003e\n \u003cp\u003eAfter \u003ci\u003ex\u003c/i\u003e years:\u003c/p\u003e\n \u003cp\u003e50 \u003cimg id\u003d\"token_18657\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 1.05\u003ci\u003e\u003csup\u003ex\u003c/sup\u003e\u003c/i\u003e.\u003c/p\u003e\n \u003cp\u003eSo, the function we need to enter is \u003ci\u003ey\u003c/i\u003e \u003d 50 \u003cimg id\u003d\"token_18658\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 1.05\u003ci\u003e\u003csup\u003ex\u003c/sup\u003e\u003c/i\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18659\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18659\u0026quot;,265)\"\u003e and enter the function.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18660\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18660\u0026quot;,265)\"\u003e and enter the function as\u003c/p\u003e\n \u003cp\u003e\u003cimg id\u003d\"token_18661\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_18662\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18663\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtimes.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18663\u0026quot;,238)\"\u003e \u003cimg id\u003d\"token_18664\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_18665\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18665\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_18666\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18667\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_18668\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcap.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18668\u0026quot;,113)\"\u003e\u003cimg id\u003d\"token_18669\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18669\u0026quot;,263)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_10a_50/f-50-10a-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eMake sure the \u003cimg id\u003d\"token_18670\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtblset.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18670\u0026quot;,231)\"\u003e values are set to TblStart \u003d 0, Δ Tbl \u003d 1.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18671\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_18672\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtblset.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18672\u0026quot;,231)\"\u003e to check the table settings.\u003c/p\u003e\n \u003cp\u003eMake sure the \u003cimg id\u003d\"token_18673\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtblset.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18673\u0026quot;,231)\"\u003e values are set to TblStart \u003d 0, Δ Tbl \u003d 1.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_10a_50/f-50-10a-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eView the table.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18674\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_18675\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtable.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18675\u0026quot;,228)\"\u003e to view the table.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_10a_50/f-50-10a-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eScroll down until the Y\u003csub\u003e1\u003c/sub\u003e column is greater than 100.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eScroll down until the Y\u003csub\u003e1\u003c/sub\u003e column is greater than 100.\u003c/p\u003e\n \u003cp\u003eThis occurs when \u003ci\u003ex\u003c/i\u003e \u003d 15.\u003c/p\u003e\n \u003cp\u003eSo, the bear population doubles after 15 years.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_10a_50/f-50-10a-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

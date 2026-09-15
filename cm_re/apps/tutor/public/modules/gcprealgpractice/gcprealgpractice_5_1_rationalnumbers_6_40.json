@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_5_1_rationalnumbers_6_40",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "5",
+    "section": "1",
+    "set": null,
+    "problemNumber": "6",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eEstimate the quotient, then check your estimate on your calculator.\u003c/p\u003e\n\u003cp\u003e62.42 \u003cimg id\u003d\"token_18165\" class\u003d\"text-bottom\" src\u003d\"/specialchars/divide.gif\"\u003e 8.78\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind \"compatible numbers\" to round off to.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eIn this case, rather than trying to round to the nearest one or ten, we want to find two close numbers which are easy to divide.\u003c/p\u003e\n \u003cp\u003e62.42 is close to 63, and 8.78 is close to 9. We know we can easily divide 63 by 9 – these are compatible numbers.\u003c/p\u003e\n \u003cp\u003e62.42 \u003cimg id\u003d\"token_18166\" class\u003d\"text-bottom\" src\u003d\"/specialchars/divide.gif\"\u003e 8.78 \u003cimg id\u003d\"token_18167\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e 63 \u003cimg id\u003d\"token_18168\" class\u003d\"text-bottom\" src\u003d\"/specialchars/divide.gif\"\u003e 9\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eDivide.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eDivide.\u003c/p\u003e\n \u003cp\u003e\u003d 7\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCheck using your calculator.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCheck using your calculator.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the value \u003cimg id\u003d\"token_18169\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e 7.109, pretty close to our estimate.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_5_1_rationalnumbers_6_40/f-40-6-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_5_1_rationalnumbers_1_40",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "5",
+    "section": "1",
+    "set": null,
+    "problemNumber": "1",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eEstimate the sum, and then check your estimate on your calculator.\u003c/p\u003e\n\u003cp\u003e35.29 + 211.8\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eRound the addends to the nearest unit.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eRound the addends to the nearest unit.\u003c/p\u003e\n \u003cp\u003eIn 35.29, the tenths place digit is \u003cimg id\u003d\"token_18079\" class\u003d\"text-bottom\" src\u003d\"/specialchars/lt.gif\"\u003e 5, so round down. In 211.8, the tenths place digit is \u003cimg id\u003d\"token_18080\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ge.gif\"\u003e 5, so round up.\u003c/p\u003e\n \u003cp\u003e\u003cimg id\u003d\"token_18081\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e 35 + 212\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eAdd.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eAdd.\u003c/p\u003e\n \u003cp\u003e\u003d 247\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCheck using your calculator.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCheck using your calculator.\u003c/p\u003e\n \u003cp\u003eThe correct answer is 247.09.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_5_1_rationalnumbers_1_40/f-40-1-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

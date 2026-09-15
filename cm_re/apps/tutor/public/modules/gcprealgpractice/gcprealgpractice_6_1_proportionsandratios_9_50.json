@@ -1,0 +1,118 @@
+{
+  "pid": "gcprealgpractice_6_1_proportionsandratios_9_50",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "6",
+    "section": "1",
+    "set": null,
+    "problemNumber": "9",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to answer.\u003c/p\u003e\n\u003cp\u003e\u003cb\u003ea\u003c/b\u003e. What is 0.2% of 31.9?\u003c/p\u003e\n\u003cp\u003e\u003cb\u003eb\u003c/b\u003e. 0.2 is what percent of 31.9?\u003c/p\u003e\n\u003cp\u003e\u003cb\u003ec\u003c/b\u003e. 0.2% of what number is 31.9?\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003e\u003cb\u003ea\u003c/b\u003e. To find 0.2% of 31.9, just multiply.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003e\u003cb\u003ea\u003c/b\u003e. To find 0.2% of 31.9, just multiply.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_18588\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_18589\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_18590\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18590\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_18591\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q9.gif\"\u003e \u003cimg id\u003d\"token_18592\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtimes.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18592\u0026quot;,238)\"\u003e \u003cimg id\u003d\"token_18593\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18594\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18594\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_18595\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e\u003cimg id\u003d\"token_18596\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qpercent.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18596\u0026quot;,199)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_9_50/f-50-9-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18597\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18597\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18598\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18598\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the answer 0.0638.\u003c/p\u003e\n \u003cp\u003eSo, 0.2% of 31.9 is 0.638.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_9_50/f-50-9-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003e\u003cb\u003eb\u003c/b\u003e. To answer the second question, divide 0.2 by 31.9.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003e\u003cb\u003eb\u003c/b\u003e. To answer the second question, divide 0.2 by 31.9.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_18599\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18600\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18600\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_18601\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_18602\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdivide.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18602\u0026quot;,133)\"\u003e \u003cimg id\u003d\"token_18603\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_18604\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_18605\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18605\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_18606\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q9.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_9_50/f-50-9-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18607\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18607\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18608\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18608\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the decimal value \u003cimg id\u003d\"token_18609\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e 0.00627.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_9_50/f-50-9-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eMultiply by 100 to convert to a percent.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eMultiply by 100 to convert to a percent.\u003c/p\u003e\n \u003cp\u003e0.2 is approximately 0.627% of 31.9.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_9_50/f-50-9-5.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003e\u003cb\u003ec\u003c/b\u003e. Write out the percent equation.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003e\u003cb\u003ec\u003c/b\u003e. Write out the percent equation.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"91\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_9_50/image016.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eUse the solver.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTo enter the equation in the solver, we have to get 0 alone on one side.\u003c/p\u003e\n \u003cp\u003eSubtract 31.9 from both sides.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18610\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmath.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18610\u0026quot;,180)\"\u003e \u003cimg id\u003d\"token_18611\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e. Key in \u003cimg id\u003d\"token_18612\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18613\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18613\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_18614\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e\u003cimg id\u003d\"token_18615\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18615\u0026quot;,154)\"\u003e \u003cimg id\u003d\"token_18616\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_18617\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18618\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18619\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtimes.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18619\u0026quot;,238)\"\u003e\u003cimg id\u003d\"token_18620\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18620\u0026quot;,263)\"\u003e \u003cimg id\u003d\"token_18621\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qminus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18621\u0026quot;,185)\"\u003e \u003cimg id\u003d\"token_18622\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_18623\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_18624\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18624\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_18625\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q9.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-13 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_9_50/f-50-9-6.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18626\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18626\u0026quot;,144)\"\u003e 4 times.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18627\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18627\u0026quot;,144)\"\u003e 4 times to select the default initial guess and boundaries.\u003c/p\u003e\n \u003cp\u003eThe calculator gives \u003ci\u003ex\u003c/i\u003e \u003d 15950.\u003c/p\u003e\n \u003cp\u003eSo, 0.2% of 15950 is 31.9.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-15 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_9_50/f-50-9-7.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

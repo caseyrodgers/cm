@@ -6,7 +6,7 @@
 JDWP_PORT    ?= 5005
 JDWP_SUSPEND ?= y
 
-LEGACY_SOLUTIONS_DIR := c:/dev/projects/catchupmath/temp/help_2022_06/solutions
+LEGACY_SOLUTIONS_DIR := c:/dev/projects/catchupmath/solution_data/help_2022_06/solutions
 
 # Real Vite + vite-plugin-pwa build: app shell, manifest with real
 # icons, generated service worker (dist/sw.js) via Workbox generateSW.

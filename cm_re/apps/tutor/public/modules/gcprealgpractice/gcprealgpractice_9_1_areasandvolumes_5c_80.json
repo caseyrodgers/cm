@@ -1,0 +1,106 @@
+{
+  "pid": "gcprealgpractice_9_1_areasandvolumes_5c_80",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "9",
+    "section": "1",
+    "set": null,
+    "problemNumber": "5c",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eThe kite from part \u003cb\u003ea \u003c/b\u003eis made up of 4 right triangles. Verify the calculator\u0027s result from part \u003cb\u003eb\u003c/b\u003e by using the formula for the area of a triangle.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eRecall the formula for the area of a triangle.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe formula for the area of a triangle is \u003cimg width\u003d\"60\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_5c_80/image005.gif\" class\u003d\"middle\"\u003e ,\u003c/p\u003e\n \u003cp\u003ewhere \u003ci\u003eb\u003c/i\u003e is the base length and \u003ci\u003eh\u003c/i\u003e is the height.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_5c_80/f-80-5a-5.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eWrite the area of the kite in terms of area of the right triangles.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe kite is made up of 4 right triangles. There are two pairs of congruent right triangles. We can think of the area of the kite as sum of areas of each triangle.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_5c_80/f-80-5c-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind the base length and the height of the upper left triangle.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eHalf of the length of the segment connecting (1, 5) and (7, 5) is base length of the upper left triangle. The length of the segment connecting (1, 5) and (7, 5) is 6.\u003c/p\u003e\n \u003cp\u003eSo, base length \u003ci\u003eb\u003c/i\u003e \u003d 6/2 or 3.\u003c/p\u003e\n \u003cp\u003eThe height of the upper left triangle is the vertical distance between the points (1, 5) and (4, 7), which is 2.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind the area of the upper left triangle.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe area of the upper left triangle is:\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"56\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_5c_80/image006.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003d 3 square units.\u003c/p\u003e\n \u003cp\u003eThe area of the upper left triangle is same as the area of the upper right triangle.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind the base length and the height of the lower left triangle.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eHalf of the length of the segment connecting (1, 5) and (7, 5) is base length of the lower left triangle. The length of the segment connecting (1, 5) and (7, 5) is 6.\u003c/p\u003e\n \u003cp\u003eSo, base length \u003ci\u003eb\u003c/i\u003e \u003d 6/2 or 3.\u003c/p\u003e\n \u003cp\u003eThe height of the upper left triangle is the vertical distance between the points (4, 0) and (1, 5), which is 5.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind the area of the lower left triangle.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe area of the lower left triangle is:\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"55\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_5c_80/image007.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003d 7.5 square units.\u003c/p\u003e\n \u003cp\u003eThe area of the lower left triangle is same as the area of the lower right triangle.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eAdd the areas of all triangles to find the area of the kite.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eAdd the areas of all triangles to find the area of the kite.\u003c/p\u003e\n \u003cp\u003eArea of the kite \u003d 3 + 3 + 7.5 + 7.5\u003c/p\u003e\n \u003cp\u003e\u003d 21 square units\u003c/p\u003e\n \u003cp\u003eThis verifies the result from part \u003cb\u003eb\u003c/b\u003e.\u003c/p\u003e\n \u003cp\u003e(Note: To exit the GEOBOARD application, press \u003cimg id\u003d\"token_20154\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_20155\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qquit.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20155\u0026quot;,207)\"\u003e, answer \"Yes\" at the prompt \"Quit this board?\", answer \"No\" at the prompt \"Save this board?\", then press \u003cimg id\u003d\"token_20156\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20156\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_20157\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20157\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_20158\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20158\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_20159\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e to quit.)\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

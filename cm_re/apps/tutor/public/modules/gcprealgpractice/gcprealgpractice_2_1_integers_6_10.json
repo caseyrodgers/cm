@@ -1,0 +1,46 @@
+{
+  "pid": "gcprealgpractice_2_1_integers_6_10",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "2",
+    "section": "1",
+    "set": null,
+    "problemNumber": "6",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to evaluate the expression.\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"104\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_6_10/image001.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eYou can either use the \u003cimg id\u003d\"token_16653\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16653\u0026quot;,154)\"\u003e key, or an extra pair of parentheses.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eYou can either use the \u003cimg id\u003d\"token_16654\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16654\u0026quot;,154)\"\u003e key, or an extra pair of parentheses. We\u0027ll use the \u003cimg id\u003d\"token_16655\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16655\u0026quot;,154)\"\u003e key.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16656\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16656\u0026quot;,154)\"\u003e. For the numerator, key in \u003cimg id\u003d\"token_16657\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_16658\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qplus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16658\u0026quot;,203)\"\u003e \u003cimg id\u003d\"token_16659\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qopenparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16659\u0026quot;,196)\"\u003e \u003cimg id\u003d\"token_16660\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16660\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_16661\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_16662\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qopenparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16662\u0026quot;,196)\"\u003e \u003cimg id\u003d\"token_16663\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q7.gif\"\u003e \u003cimg id\u003d\"token_16664\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qminus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16664\u0026quot;,185)\"\u003e \u003cimg id\u003d\"token_16665\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_16666\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_16667\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16667\u0026quot;,121)\"\u003e \u003cimg id\u003d\"token_16668\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16668\u0026quot;,121)\"\u003e. Then press \u003cimg id\u003d\"token_16669\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdown.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16669\u0026quot;,136)\"\u003e, and key in \u003cimg id\u003d\"token_16670\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16670\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_16671\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e for the denominator.\u003c/p\u003e\n \u003cp\u003eNote that there\u0027s a difference between the \u003cimg id\u003d\"token_16672\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16672\u0026quot;,189)\"\u003e and \u003cimg id\u003d\"token_16673\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qminus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16673\u0026quot;,185)\"\u003e keys.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_6_10/f-10-6-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16674\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16674\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16675\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16675\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the value \u003cimg width\u003d\"33\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_6_10/image002.gif\" class\u003d\"middle\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_6_10/f-10-6-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

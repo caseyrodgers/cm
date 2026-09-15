@@ -1,0 +1,82 @@
+{
+  "pid": "gcprealgpractice_1_1_operations,expressions,andvariables_12d_1",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "1",
+    "section": "1",
+    "set": null,
+    "problemNumber": "12d",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse the Δ List feature to find the first and \u003ci\u003esecond\u003c/i\u003edifferences of the cubic numbers. That is, set up one list which has the differences\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"44\" height\u003d\"21\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12d_1/image020.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"44\" height\u003d\"20\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12d_1/image021.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"47\" height\u003d\"21\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12d_1/image022.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"47\" height\u003d\"21\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12d_1/image023.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n\u003cp\u003eetc.\u003c/p\u003e\n\u003cp\u003eThen set up \u003ci\u003eanother\u003c/i\u003e list to show the differences between \u003ci\u003ethese \u003c/i\u003evalues.\u003c/p\u003e\n\u003cp\u003eWhat do you notice?\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eUse the lists from part c.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eUse the lists from part c. On the lists screen, use the arrow keys to highlight L3.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12d_1/f-1-12d-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eType the formula for L3.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16490\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_16491\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16491\u0026quot;,221)\"\u003e \u003cimg id\u003d\"token_16492\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16492\u0026quot;,211)\"\u003e to get the \u003ci\u003eStat Ops\u003c/i\u003e menu. Then press \u003cimg id\u003d\"token_16493\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e to select Δ List. Press \u003cimg id\u003d\"token_16494\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_16495\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16495\u0026quot;,221)\"\u003eagain, and press \u003cimg id\u003d\"token_16496\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e to select L2. Press \u003cimg id\u003d\"token_16497\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16497\u0026quot;,121)\"\u003e to complete the formula.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12d_1/f-1-12d-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16498\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16498\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16499\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16499\u0026quot;,144)\"\u003e. The calculator gives the first differences of the cube numbers as:\u003c/p\u003e\n \u003cp\u003e1, 7, 19, 37, 61, 91, 127, 169, 217\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12d_1/f-1-12d-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the formula for L4.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16500\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16500\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_16501\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16501\u0026quot;,246)\"\u003e to enter the formula for L4. Press \u003cimg id\u003d\"token_16502\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_16503\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16503\u0026quot;,221)\"\u003e \u003cimg id\u003d\"token_16504\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16504\u0026quot;,211)\"\u003e to get the \u003ci\u003eStat Ops\u003c/i\u003e menu. Then press \u003cimg id\u003d\"token_16505\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003eto select Δ List. Press \u003cimg id\u003d\"token_16506\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_16507\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16507\u0026quot;,221)\"\u003e again, and press \u003cimg id\u003d\"token_16508\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e to select L3. Press \u003cimg id\u003d\"token_16509\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16509\u0026quot;,121)\"\u003e to complete the formula.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12d_1/f-1-12d-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16510\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16510\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16511\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16511\u0026quot;,144)\"\u003e. The calculator gives the second differences of the cube numbers as:\u003c/p\u003e\n \u003cp\u003e6, 12, 18, 24, 30, 36, 42, 48\u003c/p\u003e\n \u003cp\u003eThese are just the multiples of 6!\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_1_1_operations,expressions,andvariables_12d_1/f-1-12d-5.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

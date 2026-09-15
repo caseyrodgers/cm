@@ -1,0 +1,118 @@
+{
+  "pid": "gcprealgpractice_6_1_proportionsandratios_8_50",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "6",
+    "section": "1",
+    "set": null,
+    "problemNumber": "8",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to answer.\u003c/p\u003e\n\u003cp\u003e\u003cb\u003ea\u003c/b\u003e. What is 85% of 620?\u003c/p\u003e\n\u003cp\u003e\u003cb\u003eb\u003c/b\u003e. 85 is what percent of 620?\u003c/p\u003e\n\u003cp\u003e\u003cb\u003ec\u003c/b\u003e. 85% of what number is 620?\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003e\u003cb\u003ea\u003c/b\u003e. To find 85% of 620, just multiply.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003e\u003cb\u003ea\u003c/b\u003e. To find 85% of 620, just multiply.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_18509\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_18510\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_18511\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18512\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtimes.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18512\u0026quot;,238)\"\u003e \u003cimg id\u003d\"token_18513\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_18514\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e\u003cimg id\u003d\"token_18515\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qpercent.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18515\u0026quot;,199)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_8_50/f-50-8-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18516\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18516\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18517\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18517\u0026quot;,144)\"\u003e. The calculator gives the answer 527.\u003c/p\u003e\n \u003cp\u003eSo, 85% of 620 is 527.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_8_50/f-50-8-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003e\u003cb\u003eb\u003c/b\u003e. To answer the second question, divide 85 by 620.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003e\u003cb\u003eb\u003c/b\u003e. To answer the second question, divide 85 by 620.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_18518\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_18519\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_18520\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdivide.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18520\u0026quot;,133)\"\u003e \u003cimg id\u003d\"token_18521\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_18522\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_18523\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_8_50/f-50-8-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18524\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18524\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18525\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18525\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the decimal value as 0.137096....\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_8_50/f-50-8-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eMultiply by 100 to convert to a percent.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eMultiply by 100 to convert to a percent.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18526\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtimes.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18526\u0026quot;,238)\"\u003e \u003cimg id\u003d\"token_18527\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_18528\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18529\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18530\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18530\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the value as 13.7096....\u003c/p\u003e\n \u003cp\u003eRound it to 13.71.\u003c/p\u003e\n \u003cp\u003eSo, 85 is approximately 13.71% of 620.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_8_50/f-50-8-5.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003e\u003cb\u003ec\u003c/b\u003e. Write out the percent equation.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003e\u003cb\u003ec\u003c/b\u003e. Write out the percent equation.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"88\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_8_50/image015.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eUse the solver.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTo enter the equation in the solver, we have to get 0 alone on one side.\u003c/p\u003e\n \u003cp\u003eSubtract 620 from both sides.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18531\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmath.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18531\u0026quot;,180)\"\u003e \u003cimg id\u003d\"token_18532\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e. Key in \u003cimg id\u003d\"token_18533\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_18534\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e\u003cimg id\u003d\"token_18535\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18535\u0026quot;,154)\"\u003e \u003cimg id\u003d\"token_18536\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_18537\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18538\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18539\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtimes.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18539\u0026quot;,238)\"\u003e\u003cimg id\u003d\"token_18540\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18540\u0026quot;,263)\"\u003e \u003cimg id\u003d\"token_18541\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qminus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18541\u0026quot;,185)\"\u003e \u003cimg id\u003d\"token_18542\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_18543\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_18544\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-13 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_8_50/f-50-8-6.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18545\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18545\u0026quot;,144)\"\u003e 4 times.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18546\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18546\u0026quot;,144)\"\u003e 4 times to select the default initial guess and boundaries.\u003c/p\u003e\n \u003cp\u003eThe calculator gives \u003ci\u003ex\u003c/i\u003e \u003cimg id\u003d\"token_18547\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e 729.41.\u003c/p\u003e\n \u003cp\u003eSo, 85% of 729.41 is approximately 620.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-15 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_8_50/f-50-8-7.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

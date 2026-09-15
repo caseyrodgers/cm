@@ -1,0 +1,70 @@
+{
+  "pid": "gcprealgpractice_6_1_proportionsandratios_3_50",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "6",
+    "section": "1",
+    "set": null,
+    "problemNumber": "3",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to convert the quantities to a common unit of measure. Then express the ratio as a fraction.\u003c/p\u003e\n\u003cp\u003e\u003ci\u003e6 miles to 300,000 inches\u003c/i\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eConvert miles to inches.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18310\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e on your calculator. To convert from miles to inches, press \u003cimg id\u003d\"token_18311\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e\u003cimg id\u003d\"token_18312\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qconvert.gif\"\u003e, select \u003cimg id\u003d\"token_18313\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e for length, then select \u003cimg id\u003d\"token_18314\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e for miles, and then select \u003cimg id\u003d\"token_18315\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e for inches.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_3_50/f-50-3-1-anim.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18316\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18316\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18317\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18317\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator tells us that 6 miles are 380160 inches.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_3_50/f-50-3-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSimplify the ratio.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the ratio using the \u003cimg id\u003d\"token_18318\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18318\u0026quot;,154)\"\u003e key to simplify.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_18319\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_18320\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_18321\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18322\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_18323\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_18324\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e\u003cimg id\u003d\"token_18325\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18325\u0026quot;,154)\"\u003e \u003cimg id\u003d\"token_18326\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_18327\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18328\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18329\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18330\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18331\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18332\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18332\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the decimal answer 1.2672.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_3_50/f-50-3-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eConvert to a fraction.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress qqToFrac: \u003cimg id\u003d\"token_18333\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18333\u0026quot;,144)\"\u003e to convert to an improper fraction.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"143\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_3_50/image006.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_3_50/f-50-3-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_7_1_geometry_4b_60",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "7",
+    "section": "1",
+    "set": null,
+    "problemNumber": "4b",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eMeasure the other two angles of Δ\u003ci\u003eABC\u003c/i\u003e from part \u003cb\u003ea\u003c/b\u003e. Verify that the sum of the three angles of the triangle is 180\u003cimg id\u003d\"token_19159\" class\u003d\"text-top\" src\u003d\"/specialchars/degree.gif\"\u003e.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFrom where we left off in part \u003cb\u003ea\u003c/b\u003e, press \u003cimg id\u003d\"token_19160\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19160\u0026quot;,157)\"\u003e (\"QUIT\"). Then measure \u003cimg id\u003d\"token_19161\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ang.gif\"\u003e\u003ci\u003eBAC\u003c/i\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFrom where we left off in part \u003cb\u003ea\u003c/b\u003e, press \u003cimg id\u003d\"token_19162\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19162\u0026quot;,157)\"\u003e (\"QUIT\"). Then measure \u003cimg id\u003d\"token_19163\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ang.gif\"\u003e\u003ci\u003eBAC\u003c/i\u003e. Select the points (0, 0), (5, 0), and (5, 2), in that order.\u003c/p\u003e\n \u003cp\u003eThe calculator gives \u003ci\u003em\u003c/i\u003e\u003cimg id\u003d\"token_19164\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ang.gif\"\u003e\u003ci\u003eBAC\u003c/i\u003e \u003d 90\u003cimg id\u003d\"token_19165\" class\u003d\"text-top\" src\u003d\"/specialchars/degree.gif\"\u003e. (You probably could have guessed this one!)\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_4b_60/f-60-4b-1-anim.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eAgain, press \u003cimg id\u003d\"token_19166\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19166\u0026quot;,157)\"\u003e (\"QUIT\") and then measure \u003cimg id\u003d\"token_19167\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ang.gif\"\u003e\u003ci\u003eACB\u003c/i\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eAgain, press \u003cimg id\u003d\"token_19168\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19168\u0026quot;,157)\"\u003e (\"QUIT\") and then measure \u003cimg id\u003d\"token_19169\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ang.gif\"\u003e\u003ci\u003eACB\u003c/i\u003e. Select the points (5, 0), (5, 2), and (0, 0), in that order.\u003c/p\u003e\n \u003cp\u003eThe calculator gives \u003ci\u003em\u003c/i\u003e\u003cimg id\u003d\"token_19170\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ang.gif\"\u003e\u003ci\u003eACB\u003c/i\u003e \u003cimg id\u003d\"token_19171\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e 68.199\u003cimg id\u003d\"token_19172\" class\u003d\"text-top\" src\u003d\"/specialchars/degree.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_4b_60/f-60-4b-2-anim.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eAdd the angle measures.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eAdd the angle measures.\u003c/p\u003e\n \u003cp\u003eTogether with the result from part \u003cb\u003ea\u003c/b\u003e, we have:\u003c/p\u003e\n \u003cp\u003e\u003ci\u003em\u003c/i\u003e\u003cimg id\u003d\"token_19173\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ang.gif\"\u003e\u003ci\u003eABC\u003c/i\u003e \u003cimg id\u003d\"token_19174\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e 21.801\u003cimg id\u003d\"token_19175\" class\u003d\"text-top\" src\u003d\"/specialchars/degree.gif\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003ci\u003em\u003c/i\u003e\u003cimg id\u003d\"token_19176\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ang.gif\"\u003e\u003ci\u003eBAC\u003c/i\u003e \u003d 90\u003cimg id\u003d\"token_19177\" class\u003d\"text-top\" src\u003d\"/specialchars/degree.gif\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003ci\u003em\u003c/i\u003e\u003cimg id\u003d\"token_19178\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ang.gif\"\u003e\u003ci\u003eACB\u003c/i\u003e \u003cimg id\u003d\"token_19179\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e 68.199\u003cimg id\u003d\"token_19180\" class\u003d\"text-top\" src\u003d\"/specialchars/degree.gif\"\u003e\u003c/p\u003e\n \u003cp\u003eAdd.\u003c/p\u003e\n \u003cp\u003e21.801 + 90 + 68.199 \u003d 180\u003c/p\u003e\n \u003cp\u003eSo, the sum of the measures of the angles of the triangle is 180\u003cimg id\u003d\"token_19181\" class\u003d\"text-top\" src\u003d\"/specialchars/degree.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

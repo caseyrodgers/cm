@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_9d_70",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "8",
+    "section": "1",
+    "set": null,
+    "problemNumber": "9d",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eIn L\u003csub\u003e3\u003c/sub\u003e, calculate the ratio of the number in the second column to the number in the first column. That is, calculate the values L\u003csub\u003e2\u003c/sub\u003e/L\u003csub\u003e1\u003c/sub\u003e.\u003c/p\u003e\n\u003cp\u003eWhat happens to these values?\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19839\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19839\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_19840\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19840\u0026quot;,246)\"\u003e to highlight L\u003csub\u003e3\u003c/sub\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19841\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19841\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_19842\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19842\u0026quot;,246)\"\u003e to highlight L\u003csub\u003e3\u003c/sub\u003e.\u003c/p\u003e\n \u003cp\u003eEnter the formula by keying in \u003cimg id\u003d\"token_19843\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19844\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19844\u0026quot;,221)\"\u003e \u003cimg id\u003d\"token_19845\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_19846\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdivide.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19846\u0026quot;,133)\"\u003e \u003cimg id\u003d\"token_19847\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19848\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19848\u0026quot;,221)\"\u003e \u003cimg id\u003d\"token_19849\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_9d_70/f-70-9d-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19850\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19850\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19851\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19851\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the list of values:\u003c/p\u003e\n \u003cp\u003e0, 1, 0.5, 0.66667, 0.6, 0.625, 0.61538, 0.61905, 0.61765,\u003c/p\u003e\n \u003cp\u003e0.61818, 0.61798, 0.61806, 0.61803, 0.61804, 0.61803\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_9d_70/f-70-9d-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eComment on the behavior of this sequence.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe values get closer and closer to a value somewhere between 0.61803 and 0.61804.\u003c/p\u003e\n \u003cp\u003e(The real value is\u003c/p\u003e\n \u003cp\u003e0.61803398874989484820458683436564..., and is known as the \u003ci\u003egolden mean\u003c/i\u003e. This number occurs frequently in biology.)\u003c/p\u003e\n \u003cp\u003eNote also that the sequence is alternately increasing and decreasing; first it increases from 0 to 1, then decreases from 1 to 0.5, then increases to \u003cimg width\u003d\"21\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_9d_70/image038.gif\" class\u003d\"middle\"\u003e etc.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

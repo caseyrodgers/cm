@@ -1,0 +1,46 @@
+{
+  "pid": "gcprealgpractice_3_1_numbertheory_10_20",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "3",
+    "section": "1",
+    "set": null,
+    "problemNumber": "10",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to convert the number 0.00008006 to scientific notation.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17322\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmode.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17322\u0026quot;,186)\"\u003e and set the first line to \u003cb\u003eSci\u003c/b\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17323\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmode.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17323\u0026quot;,186)\"\u003e and set the first line to \u003cb\u003eSci\u003c/b\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_10_20/f-20-10-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17324\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_17325\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qquit.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17325\u0026quot;,207)\"\u003e to return to the home screen.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17326\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_17327\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qquit.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17327\u0026quot;,207)\"\u003e to return to the home screen.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17328\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_17329\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17329\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_17330\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_17331\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_17332\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_17333\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_17334\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_17335\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_17336\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_17337\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_17338\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17338\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator returns the number in scientific notation: 8.006E–5.\u003c/p\u003e\n \u003cp\u003eThis means 8.006 \u003cimg id\u003d\"token_17339\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 10\u003csup\u003e–5\u003c/sup\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_10_20/f-20-10-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "pid": "gcprealgpractice_6_1_proportionsandratios_5_50",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "6",
+    "section": "1",
+    "set": null,
+    "problemNumber": "5",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to convert the quantities to a common unit of measure. Then express the ratio as a fraction.\u003c/p\u003e\n\u003cp\u003e\u003ci\u003e885,000 grams to 3 metric tons\u003c/i\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eConvert grams to metric tons.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18382\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_18383\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_18384\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_18385\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18386\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18387\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e on your calculator. To convert from grams to metric tons, press \u003cimg id\u003d\"token_18388\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e\u003cimg id\u003d\"token_18389\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qconvert.gif\"\u003e, select \u003cimg id\u003d\"token_18390\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e for mass/weight, then select \u003cimg id\u003d\"token_18391\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003efor grams, and then select 5 for metric tons.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_5_50/f-50-5-1-anim.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18392\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18392\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18393\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18393\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator tells us that 885,000 grams make 0.885 metric tons.\u003c/p\u003e\n \u003cp\u003e(Note that this would have been pretty easy to do without the calculator. That\u0027s why people like the metric system.)\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_5_50/f-50-5-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eDivide by 3.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eWe want to simplify the ratio\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"119\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_5_50/image008.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n \u003cp\u003eEnter the ratio using the \u003cimg id\u003d\"token_18394\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18394\u0026quot;,154)\"\u003e key to simplify.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_18395\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18396\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18396\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_18397\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_18398\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_18399\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e\u003cimg id\u003d\"token_18400\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18400\u0026quot;,154)\"\u003e \u003cimg id\u003d\"token_18401\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_18402\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18402\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the decimal value 0.295.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_5_50/f-50-5-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eConvert to a fraction.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18403\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfractodeci.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18403\u0026quot;,155)\"\u003e to convert to a fraction.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"141\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_5_50/image009.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_5_50/f-50-5-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "pid": "gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_5_70",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "8",
+    "section": "1",
+    "set": null,
+    "problemNumber": "5",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse the \u003ci\u003eList\u003c/i\u003e feature on your calculator and the distance formula to find the distances between point \u003ci\u003eA \u003c/i\u003eand each of the points \u003ci\u003eB\u003c/i\u003e, \u003ci\u003eC\u003c/i\u003e, \u003ci\u003eD\u003c/i\u003e, \u003ci\u003eE\u003c/i\u003e, and \u003ci\u003eF\u003c/i\u003e. Which is closest to point \u003ci\u003eA\u003c/i\u003e? Which is farthest?\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n\u003cdiv class\u003d\"problemstatement_figure\"\u003e\n \u003cimg src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_5_70/f-70-5-q.gif\"\u003e\n\u003c/div\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eWrite down the coordinates of each point.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe coordinates of the points are:\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eA\u003c/i\u003e(3, 2)\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eB\u003c/i\u003e(0, –1)\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eC\u003c/i\u003e(4, –2)\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eD\u003c/i\u003e(8, 1)\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eE\u003c/i\u003e(6, 4)\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eF\u003c/i\u003e(3, 9)\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_5_70/f-70-5-q.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the \u003ci\u003ex\u003c/i\u003e–coordinates in L\u003csub\u003e1\u003c/sub\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19636\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qlist.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19636\u0026quot;,175)\"\u003e. In L\u003csub\u003e1\u003c/sub\u003e, enter the \u003ci\u003ex\u003c/i\u003e–coordinates of the points \u003ci\u003eB\u003c/i\u003e, \u003ci\u003eC\u003c/i\u003e, \u003ci\u003eD\u003c/i\u003e, \u003ci\u003eE\u003c/i\u003e, and \u003ci\u003eF\u003c/i\u003e.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19637\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_19638\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19638\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_19639\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e \u003cimg id\u003d\"token_19640\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19640\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_19641\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_19642\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19642\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_19643\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_19644\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19644\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_19645\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_19646\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19646\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_5_70/f-70-5-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the \u003ci\u003ey\u003c/i\u003e–coordinates in L\u003csub\u003e2\u003c/sub\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19647\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19647\u0026quot;,211)\"\u003e and enter the \u003ci\u003ey\u003c/i\u003e–coordinates of the points \u003ci\u003eB\u003c/i\u003e, \u003ci\u003eC\u003c/i\u003e, \u003ci\u003eD\u003c/i\u003e, \u003ci\u003eE\u003c/i\u003e, and \u003ci\u003eF\u003c/i\u003e in L\u003csub\u003e2\u003c/sub\u003e.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19648\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19648\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_19649\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_19650\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19650\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_19651\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19651\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_19652\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_19653\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19653\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_19654\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_19655\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19655\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_19656\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e \u003cimg id\u003d\"token_19657\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19657\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_19658\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q9.gif\"\u003e \u003cimg id\u003d\"token_19659\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19659\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_5_70/f-70-5-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the distance formula to calculate values for L\u003csub\u003e3\u003c/sub\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe distance between a point (\u003ci\u003ex\u003c/i\u003e, \u003ci\u003ey\u003c/i\u003e) and \u003ci\u003eA\u003c/i\u003e(3, 2) is given by\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"163\" height\u003d\"35\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_5_70/image031.gif\" class\u003d\"text-top\"\u003e\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19660\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19660\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_19661\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19661\u0026quot;,246)\"\u003e so that L\u003csub\u003e3\u003c/sub\u003e is highlighted. Key in the formula by pressing \u003cimg id\u003d\"token_19662\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19663\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qsqrt.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19663\u0026quot;,219)\"\u003e \u003cimg id\u003d\"token_19664\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qopenparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19664\u0026quot;,196)\"\u003e \u003cimg id\u003d\"token_19665\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19666\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19666\u0026quot;,221)\"\u003e \u003cimg id\u003d\"token_19667\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_19668\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qminus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19668\u0026quot;,185)\"\u003e \u003cimg id\u003d\"token_19669\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_19670\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19670\u0026quot;,121)\"\u003e \u003cimg id\u003d\"token_19671\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qxsqr.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19671\u0026quot;,260)\"\u003e \u003cimg id\u003d\"token_19672\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qplus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19672\u0026quot;,203)\"\u003e \u003cimg id\u003d\"token_19673\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qopenparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19673\u0026quot;,196)\"\u003e \u003cimg id\u003d\"token_19674\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19675\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19675\u0026quot;,221)\"\u003e \u003cimg id\u003d\"token_19676\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_19677\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qminus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19677\u0026quot;,185)\"\u003e \u003cimg id\u003d\"token_19678\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_19679\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19679\u0026quot;,121)\"\u003e \u003cimg id\u003d\"token_19680\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qxsqr.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19680\u0026quot;,260)\"\u003e \u003cimg id\u003d\"token_19681\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19681\u0026quot;,121)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_5_70/f-70-5-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19682\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19682\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19683\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19683\u0026quot;,144)\"\u003e. The calculator finds the distances from each point to \u003ci\u003eA\u003c/i\u003e.\u003c/p\u003e\n \u003cp\u003eThe smallest value is 3.6056, corresponding to the point \u003ci\u003eE\u003c/i\u003e(6, 4). So, this is the closest point to \u003ci\u003eA\u003c/i\u003e.\u003c/p\u003e\n \u003cp\u003eThe largest value is 7, corresponding to the point \u003ci\u003eF\u003c/i\u003e(3, 9). This is the farthest point from \u003ci\u003eA\u003c/i\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_5_70/f-70-5-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "pid": "gcprealgpractice_10_1_linearequationsandinequalities_6c_90",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "10",
+    "section": "1",
+    "set": null,
+    "problemNumber": "6c",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eAlgebraically convert the equation from part \u003cb\u003ea\u003c/b\u003e into point–slope form, and then graph it on your calculator. Also, enter the coordinates of the four points you found in parts \u003cb\u003ea\u003c/b\u003e and \u003cb\u003eb \u003c/b\u003ein L\u003csub\u003e1\u003c/sub\u003e and L\u003csub\u003e2\u003c/sub\u003e, and plot the points on the graph.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eStarting with 15\u003ci\u003ex\u003c/i\u003e + 44\u003ci\u003ey\u003c/i\u003e \u003d 62, subtract 15\u003ci\u003ex\u003c/i\u003e from both sides.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eStarting with 15\u003ci\u003ex\u003c/i\u003e + 44\u003ci\u003ey\u003c/i\u003e \u003d 62, subtract 15\u003ci\u003ex\u003c/i\u003e from both sides.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"112\" height\u003d\"21\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_10_1_linearequationsandinequalities_6c_90/image008.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eDivide through by 44.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eDivide through by 44.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"105\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_10_1_linearequationsandinequalities_6c_90/image009.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n \u003cp\u003eSince we\u0027re using a calculator, we don\u0027t really need to simplify.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the function.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_21082\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21082\u0026quot;,265)\"\u003e and enter the function as Y\u003csub\u003e1\u003c/sub\u003e. Key in \u003cimg id\u003d\"token_21083\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21083\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_21084\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qopenparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21084\u0026quot;,196)\"\u003e \u003cimg id\u003d\"token_21085\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_21086\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_21087\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdivide.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21087\u0026quot;,133)\"\u003e \u003cimg id\u003d\"token_21088\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e \u003cimg id\u003d\"token_21089\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e \u003cimg id\u003d\"token_21090\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21090\u0026quot;,121)\"\u003e\u003cimg id\u003d\"token_21091\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21091\u0026quot;,263)\"\u003e \u003cimg id\u003d\"token_21092\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qplus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21092\u0026quot;,203)\"\u003e \u003cimg id\u003d\"token_21093\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qopenparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21093\u0026quot;,196)\"\u003e \u003cimg id\u003d\"token_21094\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_21095\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_21096\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdivide.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21096\u0026quot;,133)\"\u003e \u003cimg id\u003d\"token_21097\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e \u003cimg id\u003d\"token_21098\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e \u003cimg id\u003d\"token_21099\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21099\u0026quot;,121)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_10_1_linearequationsandinequalities_6c_90/f-90-6c-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cdiv class\u003d\"question\"\u003e\n  \u003cp\u003eWhat would be an appropriate viewing window for this graph?\u003c/p\u003e\n \u003c/div\u003e\n \u003cdiv class\u003d\"question_guess\"\u003e\n  \u003cimg onmouseover\u003d\"doQuestionResponse(\u0027rid_4696\u0027,\u0027no\u0027);\" onmouseout\u003d\"doQuestionResponseEnd();\" src\u003d\"/images/tutor5/hint_question-16x16.gif\" name\u003d\"question_0\"\u003e\u0026nbsp;\n  \u003cp\u003eXmin \u003d –10, Xmax \u003d 10, Xscl \u003d 1, Ymin \u003d –10, Ymax \u003d 10, Yscl \u003d 1\u003c/p\u003e\n \u003c/div\u003e\n \u003cdiv class\u003d\"question_guess\"\u003e\n  \u003cimg onmouseover\u003d\"doQuestionResponse(\u0027rid_4697\u0027,\u0027no\u0027);\" onmouseout\u003d\"doQuestionResponseEnd();\" src\u003d\"/images/tutor5/hint_question-16x16.gif\" name\u003d\"question_1\"\u003e\u0026nbsp;\n  \u003cp\u003eXmin \u003d –10, Xmax \u003d 10, Xscl \u003d 1, Ymin \u003d –1, Ymax \u003d 1, Yscl \u003d 0.1\u003c/p\u003e\n \u003c/div\u003e\n \u003cdiv class\u003d\"question_guess\"\u003e\n  \u003cimg onmouseover\u003d\"doQuestionResponse(\u0027rid_4698\u0027,\u0027yes\u0027);\" onmouseout\u003d\"doQuestionResponseEnd();\" src\u003d\"/images/tutor5/hint_question-16x16.gif\" name\u003d\"question_2\"\u003e\u0026nbsp;\n  \u003cp\u003eXmin \u003d –70, Xmax \u003d 70, Xscl \u003d 10, Ymin \u003d –25, Ymax \u003d 25, Yscl \u003d 5\u003c/p\u003e\n \u003c/div\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eWe need to show the points from parts \u003cb\u003ea\u003c/b\u003e and \u003cb\u003eb\u003c/b\u003e:\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"221\" height\u003d\"64\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_10_1_linearequationsandinequalities_6c_90/image010.gif\" class\u003d\"text-top\"\u003e\u003c/p\u003e\n \u003cp\u003eSo press \u003cimg id\u003d\"token_21100\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qwindow.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21100\u0026quot;,255)\"\u003e and set Xmin \u003d –70, Xmax \u003d 70, Xscl \u003d 10, Ymin \u003d –25, Ymax \u003d 25, Yscl \u003d 5.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_10_1_linearequationsandinequalities_6c_90/f-90-6c-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_21101\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qlist.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21101\u0026quot;,175)\"\u003e and enter the \u003ci\u003ex\u003c/i\u003e–coordinates of the points.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_21102\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qlist.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21102\u0026quot;,175)\"\u003e and enter the \u003ci\u003ex\u003c/i\u003e–coordinates of the points. Round the numbers to the nearest tenth for convenience. Key in \u003cimg id\u003d\"token_21103\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21103\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_21104\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_21105\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21105\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_21106\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_21107\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21107\u0026quot;,144)\"\u003e, \u003cimg id\u003d\"token_21108\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_21109\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21109\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_21110\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_21111\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21111\u0026quot;,144)\"\u003e, \u003cimg id\u003d\"token_21112\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_21113\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_21114\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21114\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_21115\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q7.gif\"\u003e \u003cimg id\u003d\"token_21116\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21116\u0026quot;,144)\"\u003e, \u003cimg id\u003d\"token_21117\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21117\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_21118\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_21119\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_21120\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21120\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_21121\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e \u003cimg id\u003d\"token_21122\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21122\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_10_1_linearequationsandinequalities_6c_90/f-90-6c-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_21123\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21123\u0026quot;,211)\"\u003e and enter the coordinates for the \u003ci\u003ey\u003c/i\u003e–coordinates. Again, round to the nearest tenth.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_21124\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21124\u0026quot;,211)\"\u003e and enter the coordinates for the \u003ci\u003ey\u003c/i\u003e–coordinates. Again, round to the nearest tenth.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_21125\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_21126\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21126\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_21127\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_21128\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21128\u0026quot;,144)\"\u003e, \u003cimg id\u003d\"token_21129\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_21130\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21130\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_21131\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_21132\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21132\u0026quot;,144)\"\u003e, \u003cimg id\u003d\"token_21133\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21133\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_21134\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_21135\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_21136\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21136\u0026quot;,144)\"\u003e, \u003cimg id\u003d\"token_21137\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_21138\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_21139\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21139\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-11 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_10_1_linearequationsandinequalities_6c_90/f-90-6c-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTurn the \u003ci\u003ePlot\u003c/i\u003e on.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_21140\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_21142\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21142\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_21143\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21143\u0026quot;,144)\"\u003e to turn the \u003ci\u003ePlot\u003c/i\u003e on. Make sure the Type is set to scatter plot, Xlist to L\u003csub\u003e1\u003c/sub\u003e and Ylist to L\u003csub\u003e2\u003c/sub\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-13 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_10_1_linearequationsandinequalities_6c_90/f-90-6c-5.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_21144\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21144\u0026quot;,157)\"\u003e to graph the function and plot the points.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_21145\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21145\u0026quot;,157)\"\u003e to graph the function and plot the points.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-15 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_10_1_linearequationsandinequalities_6c_90/f-90-6c-6.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

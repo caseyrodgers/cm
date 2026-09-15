@@ -1,0 +1,70 @@
+{
+  "pid": "gcprealgpractice_4_1_solvingequations_7_30",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "4",
+    "section": "1",
+    "set": null,
+    "problemNumber": "7",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to solve the equation. Get your answer as a fraction in lowest terms.\u003c/p\u003e\n\u003cp\u003e\u003cimg align\u003d\"center\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_7_30/image010.gif\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17928\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmath.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17928\u0026quot;,180)\"\u003eand then press \u003cimg id\u003d\"token_17929\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e to select the \u003cb\u003eSolver\u003c/b\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17930\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmath.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17930\u0026quot;,180)\"\u003e and then press \u003cimg id\u003d\"token_17931\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e to select the \u003cb\u003eSolver\u003c/b\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_7_30/f-30-6-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the equation.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTo enter the equation, you first have to get 0 on one side. Subtract 6/25 to both sides.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_17932\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17932\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_17933\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e\u003cimg id\u003d\"token_17934\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17934\u0026quot;,263)\"\u003e\u003cimg id\u003d\"token_17935\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17935\u0026quot;,154)\"\u003e \u003cimg id\u003d\"token_17936\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_17937\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qminus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17937\u0026quot;,185)\"\u003e \u003cimg id\u003d\"token_17938\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e\u003cimg id\u003d\"token_17939\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17939\u0026quot;,154)\"\u003e \u003cimg id\u003d\"token_17940\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_17941\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_7_30/f-30-7-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17942\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17942\u0026quot;,144)\"\u003e. Select the initial guess and bounds.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17943\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17943\u0026quot;,144)\"\u003e. Press \u003cimg id\u003d\"token_17944\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17944\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_17945\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17945\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_17946\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17946\u0026quot;,144)\"\u003eto use the default values for the initial guess and bounds.\u003c/p\u003e\n \u003cp\u003eThe calculator gives\u003c/p\u003e\n \u003cp\u003e\u003ci\u003ex\u003c/i\u003e \u003d -0.6.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_7_30/f-30-7-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17947\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_17948\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qquit.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17948\u0026quot;,207)\"\u003e to return to the home screen.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17949\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_17950\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qquit.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17950\u0026quot;,207)\"\u003e to return to the home screen.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17951\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17951\u0026quot;,263)\"\u003e \u003cimg id\u003d\"token_17952\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17952\u0026quot;,144)\"\u003eto see the solved value of \u003ci\u003ex\u003c/i\u003e.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_17953\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfractodeci.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17953\u0026quot;,155)\"\u003e to convert to a fraction.\u003c/p\u003e\n \u003cp\u003eThe calculator gives\u003c/p\u003e\n \u003cp\u003e\u003cimg align\u003d\"center\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_7_30/image012.gif\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_7_30/f-30-7-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

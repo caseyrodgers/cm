@@ -1,0 +1,106 @@
+{
+  "pid": "gcprealgpractice_7_1_geometry_5_60",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "7",
+    "section": "1",
+    "set": null,
+    "problemNumber": "5",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eFind the area of a semicircle with radius 3 units. Use the GEOBOARD application on your calculator to verify your answer.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eRecall the formula for the area of a circle.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe area of a circle of radius \u003ci\u003er\u003c/i\u003e is given by the formula\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"60\" height\u003d\"21\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_5_60/image003.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n \u003cp\u003eRecall that \u003ci\u003eπ\u003c/i\u003e \u003cimg id\u003d\"token_19212\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e 3.14.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe problem asks for the area of a semicircle, so divide by 2.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe problem asks for the area of a semicircle, that is, half the area of the circle with radius 3 units. So, divide by 2.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"60\" height\u003d\"44\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_5_60/image004.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSubstitute \u003ci\u003er\u003c/i\u003e \u003d 3. Calculate the area.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSubstitute \u003ci\u003er\u003c/i\u003e \u003d 3. Calculate the area.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"107\" height\u003d\"44\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_5_60/image005.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n \u003cp\u003eCalculate the area. On your calculator, key in \u003cimg id\u003d\"token_19213\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q9.gif\"\u003e \u003cimg id\u003d\"token_19214\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtimes.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19214\u0026quot;,238)\"\u003e \u003cimg id\u003d\"token_19215\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19216\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qpi.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19216\u0026quot;,200)\"\u003e \u003cimg id\u003d\"token_19217\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdivide.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19217\u0026quot;,133)\"\u003e \u003cimg id\u003d\"token_19218\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_19219\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19219\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the area as\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"159\" height\u003d\"21\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_5_60/image006.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_5_60/f-60-5-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19220\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qapps.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19220\u0026quot;,108)\"\u003e \u003cimg id\u003d\"token_19221\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e to enter the application.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19222\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qapps.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19222\u0026quot;,108)\"\u003e and select \u003cimg id\u003d\"token_19223\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e to start the GEOBOARD application. Press any key to start.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_5_60/f-60-5-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19224\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19224\u0026quot;,211)\"\u003e for the CIR menu.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19225\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19225\u0026quot;,211)\"\u003e for the CIR menu.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19226\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdown.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19226\u0026quot;,136)\"\u003e \u003cimg id\u003d\"token_19227\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19227\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_19228\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19228\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_19229\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19229\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_19230\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19230\u0026quot;,144)\"\u003e to select the radius 3.\u003c/p\u003e\n \u003cp\u003eThen press \u003cimg id\u003d\"token_19231\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19231\u0026quot;,157)\"\u003e (\"GOTO\").\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_5_60/f-60-5-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19232\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19232\u0026quot;,265)\"\u003e (\"DRAW\"). Then draw the semicircle.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19233\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19233\u0026quot;,265)\"\u003e (\"DRAW\"). Then press \u003cimg id\u003d\"token_19234\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19234\u0026quot;,265)\"\u003e (\"ADD\") and press \u003cimg id\u003d\"token_19235\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19235\u0026quot;,211)\"\u003e 6 times until you get to the point diametrically opposite the one you started from. Press \u003cimg id\u003d\"token_19236\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qzoom.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19236\u0026quot;,267)\"\u003e (\"ARC\") and \u003cimg id\u003d\"token_19237\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtrace.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19237\u0026quot;,240)\"\u003e (\"DONE\") to complete the semicircle.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-11 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_5_60/f-60-5-4-anim.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eMeasure the area.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19238\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19238\u0026quot;,157)\"\u003e (\"QUIT\") and then press \u003cimg id\u003d\"token_19239\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtrace.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19239\u0026quot;,240)\"\u003e(\"MEAS\") and select \u003cimg id\u003d\"token_19240\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e for \u003ci\u003eArea\u003c/i\u003e. Press \u003cimg id\u003d\"token_19241\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19241\u0026quot;,144)\"\u003e to select one of the endpoints of the diameter.\u003c/p\u003e\n \u003cp\u003eThe calculator gives an area of 14.137 square units, verifying our earlier result.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-13 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_5_60/f-60-5-5.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

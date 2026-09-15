@@ -1,0 +1,70 @@
+{
+  "pid": "gcprealgpractice_3_1_numbertheory_8a_20",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "3",
+    "section": "1",
+    "set": null,
+    "problemNumber": "8a",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eFollow these instructions:\u003c/p\u003e\n\u003cp\u003e1) Choose a prime number \u003ci\u003ep\u003c/i\u003e.\u003c/p\u003e\n\u003cp\u003e2) Choose a number \u003ci\u003ea \u003c/i\u003egreater than 0 but less than \u003ci\u003ep\u003c/i\u003e.\u003c/p\u003e\n\u003cp\u003e3) Find \u003ci\u003ea\u003csup\u003ep\u003c/sup\u003e\u003c/i\u003e. (That\u0027s \u003ci\u003ea\u003c/i\u003e to the power of \u003ci\u003ep\u003c/i\u003e.)\u003c/p\u003e\n\u003cp\u003e4) Divide this number by \u003ci\u003ep\u003c/i\u003e, and find the remainder.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eChoose a prime number.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eA prime number is one with only 1 and itself as factors.\u003c/p\u003e\n \u003cp\u003eChoose a prime number, say 7. So \u003ci\u003ep\u003c/i\u003e \u003d 7.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eChoose a number between 0 and 7.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eNow we have to choose a number \u003ci\u003ea \u003c/i\u003ebetween 0 and 7. We\u0027ll use \u003ci\u003ea\u003c/i\u003e \u003d 4.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind \u003ci\u003ea\u003csup\u003ep\u003c/sup\u003e\u003c/i\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eUse your calculator to find \u003ci\u003ea\u003csup\u003ep\u003c/sup\u003e\u003c/i\u003e. That\u0027s 4\u003csup\u003e7\u003c/sup\u003e, so key in \u003cimg id\u003d\"token_17217\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e \u003cimg id\u003d\"token_17218\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcap.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17218\u0026quot;,113)\"\u003e \u003cimg id\u003d\"token_17219\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q7.gif\"\u003e \u003cimg id\u003d\"token_17220\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17220\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives\u003c/p\u003e\n \u003cp\u003e4\u003csup\u003e7\u003c/sup\u003e \u003d 16384.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_8a_20/f-20-8a-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eUse the \u003cimg id\u003d\"token_17221\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qintdiv.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17221\u0026quot;,163)\"\u003e key.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eWe have to divide 16384 by 7, and find the remainder.\u003c/p\u003e\n \u003cp\u003eUse the \u003cimg id\u003d\"token_17222\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qintdiv.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17222\u0026quot;,163)\"\u003e key to divide with remainders.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_17223\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_17224\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e \u003cimg id\u003d\"token_17225\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_17226\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_17227\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e \u003cimg id\u003d\"token_17228\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e\u003cimg id\u003d\"token_17229\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qintdiv.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17229\u0026quot;,163)\"\u003e \u003cimg id\u003d\"token_17230\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q7.gif\"\u003e \u003cimg id\u003d\"token_17231\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_17231\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the answer as 2340 r 4.\u003c/p\u003e\n \u003cp\u003eSo, the remainder for \u003ci\u003ea \u003c/i\u003e\u003d 4 is \u003cb\u003e4\u003c/b\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_8a_20/f-20-8a-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "pid": "gcprealgpractice_7_1_geometry_4a_60",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "7",
+    "section": "1",
+    "set": null,
+    "problemNumber": "4a",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUsing the GEOBOARD application on your calculator, find \u003ci\u003em\u003c/i\u003e\u003cimg id\u003d\"token_19109\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ang.gif\"\u003e\u003ci\u003eABC\u003c/i\u003e for the points \u003ci\u003eA\u003c/i\u003e(5, 0), \u003ci\u003eB\u003c/i\u003e(0, 0), \u003ci\u003eC\u003c/i\u003e(5, 2).\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19110\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qapps.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19110\u0026quot;,108)\"\u003e \u003cimg id\u003d\"token_19111\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e to enter the application.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19112\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qapps.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19112\u0026quot;,108)\"\u003e and select \u003cimg id\u003d\"token_19113\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e to start the GEOBOARD application. Press any key to start.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_4a_60/f-60-4a-1.gif \"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSelect a 8 \u003cimg id\u003d\"token_19114\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 8 square board.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19115\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e to select a 8 \u003cimg id\u003d\"token_19116\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 8 square board.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_4a_60/f-60-4a-2.gif \"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTurn the axes on.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19117\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qzoom.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19117\u0026quot;,267)\"\u003e (\"FMAT\"), and press \u003cimg id\u003d\"token_19118\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdown.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19118\u0026quot;,136)\"\u003e \u003cimg id\u003d\"token_19119\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19119\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_19120\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19120\u0026quot;,144)\"\u003e to turn the axes on. Then press \u003cimg id\u003d\"token_19121\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19121\u0026quot;,157)\"\u003e (\"QUIT\").\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_4a_60/f-60-4a-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19122\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19122\u0026quot;,265)\"\u003e (\"DRAW\") and draw the angle.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19123\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19123\u0026quot;,265)\"\u003e (\"DRAW\") and draw the angle.\u003c/p\u003e\n \u003cp\u003eMove the cursor to the point (5, 0) and press \u003cimg id\u003d\"token_19124\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19124\u0026quot;,265)\"\u003e (\"ADD\"). Then move the cursor five units to the left, to (0, 0) and press \u003cimg id\u003d\"token_19125\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19125\u0026quot;,265)\"\u003e (\"ADD\") again. Then move the cursor two units up and five units to the right to (5, 2), and press \u003cimg id\u003d\"token_19126\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtrace.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19126\u0026quot;,240)\"\u003e (\"DONE\") to complete the triangle.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_4a_60/f-60-4a-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19127\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19127\u0026quot;,157)\"\u003e (\"QUIT\"). Then press \u003cimg id\u003d\"token_19128\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtrace.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19128\u0026quot;,240)\"\u003e(\"MEAS\").\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19129\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19129\u0026quot;,157)\"\u003e (\"QUIT\"). Then press \u003cimg id\u003d\"token_19130\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtrace.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19130\u0026quot;,240)\"\u003e(\"MEAS\"). Select \u003cimg id\u003d\"token_19131\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e for \u003ci\u003eAngle\u003c/i\u003e. Then position the cursor over (5, 0), and press \u003cimg id\u003d\"token_19132\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19132\u0026quot;,144)\"\u003e. Similarly select the other two points (0, 0) and (5, 2) in turn. (The order is important!)\u003c/p\u003e\n \u003cp\u003eThe calculator gives \u003ci\u003em\u003c/i\u003e\u003cimg id\u003d\"token_19133\" class\u003d\"text-bottom\" src\u003d\"/specialchars/ang.gif\"\u003e\u003ci\u003eABC\u003c/i\u003e \u003cimg id\u003d\"token_19134\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e 21.801\u003cimg id\u003d\"token_19135\" class\u003d\"text-top\" src\u003d\"/specialchars/degree.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_4a_60/f-60-4a-5-anim.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

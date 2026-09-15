@@ -1,0 +1,82 @@
+{
+  "pid": "gcprealgpractice_6_1_proportionsandratios_1_50",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "6",
+    "section": "1",
+    "set": null,
+    "problemNumber": "1",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse cross products to solve the proportion. Then use the \u003ci\u003eSolver\u003c/i\u003e on your calculator to check your answer.\u003c/p\u003e\n\u003cp\u003e\u003cimg width\u003d\"68\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_1_50/image001.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTake the cross products, and set them equal.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTake the cross products, and set them equal.\u003c/p\u003e\n \u003cp\u003e2.8\u003ci\u003ex\u003c/i\u003e \u003d 1.15(35)\u003c/p\u003e\n \u003cp\u003e2.8\u003ci\u003ex\u003c/i\u003e \u003d 40.25\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eDivide both sides by 2.8.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eDivide both sides by 2.8.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"91\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_1_50/image002.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003ci\u003ex \u003c/i\u003e\u003d 14.375\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCheck using the \u003ci\u003eSolver\u003c/i\u003e on your calculator.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCheck using the \u003ci\u003eSolver \u003c/i\u003eon your calculator.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18227\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmath.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18227\u0026quot;,180)\"\u003e \u003cimg id\u003d\"token_18228\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e to select the \u003ci\u003eSolver\u003c/i\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_1_50/f-50-1-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eGet 0 alone on one side.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTo enter the equation in the solver, we have to get 0 alone on one side.\u003c/p\u003e\n \u003cp\u003eSubtract \u003ci\u003ex\u003c/i\u003e/35 from both sides.\u003c/p\u003e\n \u003cp\u003eSo, the equation becomes\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"89\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_1_50/image003.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_18229\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_18230\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18230\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_18231\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_18232\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e\u003cimg id\u003d\"token_18233\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18233\u0026quot;,154)\"\u003e \u003cimg id\u003d\"token_18234\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_18235\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18235\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_18236\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_18237\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qminus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18237\u0026quot;,185)\"\u003e\u003cimg id\u003d\"token_18238\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18238\u0026quot;,263)\"\u003e\u003cimg id\u003d\"token_18239\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qfrac.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18239\u0026quot;,154)\"\u003e \u003cimg id\u003d\"token_18240\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_18241\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_1_50/f-50-1-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18242\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18242\u0026quot;,144)\"\u003e 4 times.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18243\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18243\u0026quot;,144)\"\u003e 4 times to select the default initial guess and boundaries.\u003c/p\u003e\n \u003cp\u003eThe calculator gives \u003ci\u003ex\u003c/i\u003e \u003d 14.375, verifying our answer.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_6_1_proportionsandratios_1_50/f-50-1-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

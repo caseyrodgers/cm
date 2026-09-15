@@ -1,0 +1,70 @@
+{
+  "pid": "gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "8",
+    "section": "1",
+    "set": null,
+    "problemNumber": "2b",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eTry some other values to verify your conjecture in part \u003cb\u003ea\u003c/b\u003e.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTry \u003ci\u003ea\u003c/i\u003e \u003d 8 and \u003ci\u003eb\u003c/i\u003e \u003d 9.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eLet \u003ci\u003ea\u003c/i\u003e \u003d 8 and \u003ci\u003eb\u003c/i\u003e \u003d 9.\u003c/p\u003e\n \u003cp\u003eThen find \u003cimg width\u003d\"52\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/image017.gif\" class\u003d\"text-bottom\"\u003e.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_19394\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19395\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qsqrt.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19395\u0026quot;,219)\"\u003e \u003cimg id\u003d\"token_19396\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_19397\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19397\u0026quot;,121)\"\u003e \u003cimg id\u003d\"token_19398\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtimes.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19398\u0026quot;,238)\"\u003e \u003cimg id\u003d\"token_19399\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19400\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qsqrt.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19400\u0026quot;,219)\"\u003e \u003cimg id\u003d\"token_19401\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q9.gif\"\u003e \u003cimg id\u003d\"token_19402\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19402\u0026quot;,121)\"\u003e \u003cimg id\u003d\"token_19403\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19403\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"105\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/image018.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/f-70-2b-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCalculate \u003cimg width\u003d\"57\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/image019.gif\" class\u003d\"text-bottom\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCalculate \u003cimg width\u003d\"57\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/image019.gif\" class\u003d\"text-bottom\"\u003e. Press \u003cimg id\u003d\"token_19404\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19405\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qsqrt.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19405\u0026quot;,219)\"\u003e \u003cimg id\u003d\"token_19406\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e \u003cimg id\u003d\"token_19407\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19407\u0026quot;,121)\"\u003e \u003cimg id\u003d\"token_19408\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qplus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19408\u0026quot;,203)\"\u003e \u003cimg id\u003d\"token_19409\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19410\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qsqrt.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19410\u0026quot;,219)\"\u003e \u003cimg id\u003d\"token_19411\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q9.gif\"\u003e \u003cimg id\u003d\"token_19412\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19412\u0026quot;,121)\"\u003e \u003cimg id\u003d\"token_19413\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19413\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"112\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/image020.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/f-70-2b-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eNow calculate \u003cimg width\u003d\"33\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/image021.gif\" class\u003d\"text-bottom\"\u003e and \u003cimg width\u003d\"32\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/image022.gif\" class\u003d\"text-bottom\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eNow calculate \u003cimg width\u003d\"33\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/image021.gif\" class\u003d\"text-bottom\"\u003e and \u003cimg width\u003d\"32\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/image022.gif\" class\u003d\"text-bottom\"\u003e.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19414\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19415\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qsqrt.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19415\u0026quot;,219)\"\u003e \u003cimg id\u003d\"token_19416\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q7.gif\"\u003e \u003cimg id\u003d\"token_19417\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_19418\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19418\u0026quot;,121)\"\u003e \u003cimg id\u003d\"token_19419\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19419\u0026quot;,144)\"\u003e. The calculator gives\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"87\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/image023.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19420\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19421\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qsqrt.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19421\u0026quot;,219)\"\u003e \u003cimg id\u003d\"token_19422\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_19423\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q7.gif\"\u003e \u003cimg id\u003d\"token_19424\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19424\u0026quot;,121)\"\u003e \u003cimg id\u003d\"token_19425\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19425\u0026quot;,144)\"\u003e. The calculator gives\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"87\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/image024.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/f-70-2b-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCompare the values.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eNote that \u003cimg width\u003d\"145\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/image025.gif\" class\u003d\"text-bottom\"\u003e, but\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"157\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_2b_70/image026.gif\" class\u003d\"text-bottom\"\u003e.\u003c/p\u003e\n \u003cp\u003eHence, the conjecture in part \u003cb\u003ea\u003c/b\u003e is verified.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

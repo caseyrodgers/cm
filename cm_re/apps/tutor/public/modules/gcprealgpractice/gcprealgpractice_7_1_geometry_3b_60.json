@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_7_1_geometry_3b_60",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "7",
+    "section": "1",
+    "set": null,
+    "problemNumber": "3b",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to reflect the triangle you drew in part \u003cb\u003ea\u003c/b\u003e across the \u003ci\u003ey\u003c/i\u003e–axis. Find the coordinates of the vertices of the image triangle.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFrom where you left off in part \u003cb\u003ea\u003c/b\u003e, press \u003cimg id\u003d\"token_19049\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19049\u0026quot;,157)\"\u003e (\"QUIT\").\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFrom where you left off in part \u003cb\u003ea\u003c/b\u003e, press \u003cimg id\u003d\"token_19050\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19050\u0026quot;,157)\"\u003e(\"QUIT\"). Then press \u003cimg id\u003d\"token_19051\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qwindow.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19051\u0026quot;,255)\"\u003e (\"TRFM\") to transform the graph. Select \u003cimg id\u003d\"token_19052\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003efor a reflection.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_3b_60/f-60-3b-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSelect the triangle and the line of reflection.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePosition the cursor over one of the vertices of the triangle and press \u003cimg id\u003d\"token_19053\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19053\u0026quot;,144)\"\u003e to select the object to be reflected.\u003c/p\u003e\n \u003cp\u003eThen select 2 points to identify the line of reflection. Since we are reflecting across the \u003ci\u003ey\u003c/i\u003e–axis, choose any two points on the \u003ci\u003ey\u003c/i\u003e–axis.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_3b_60/f-60-3b-2-anim.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19054\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qwindow.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19054\u0026quot;,255)\"\u003e (\"COPY\") to show both the original and the image triangle. Find the coordinates of the vertices of the image triangle.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19055\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qwindow.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19055\u0026quot;,255)\"\u003e (\"COPY\") to show both the original and the image triangle.\u003c/p\u003e\n \u003cp\u003eThe vertices of the image triangle are at (2, 1), (1, 1), and (1, 3).\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_3b_60/f-60-3b-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

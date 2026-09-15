@@ -1,0 +1,142 @@
+{
+  "pid": "gcprealgpractice_2_1_integers_10_10",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "2",
+    "section": "1",
+    "set": null,
+    "problemNumber": "10",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse the \u003ci\u003eList\u003c/i\u003e feature on your calculator to get the first few powers of 2 and 5, i.e.,\u003c/p\u003e\n\u003cp\u003e2\u003csup\u003e1\u003c/sup\u003e, 2\u003csup\u003e2\u003c/sup\u003e, 2\u003csup\u003e3\u003c/sup\u003e, 2\u003csup\u003e4\u003c/sup\u003e, etc.\u003c/p\u003e\n\u003cp\u003e5\u003csup\u003e1\u003c/sup\u003e, 5\u003csup\u003e2\u003c/sup\u003e, 5\u003csup\u003e3\u003c/sup\u003e, 5\u003csup\u003e4\u003c/sup\u003e, etc.\u003c/p\u003e\n\u003cp\u003eThen get the first few negative powers of 2 and 5, expressed as decimals. I.e.,\u003c/p\u003e\n\u003cp\u003e2\u003csup\u003e–1\u003c/sup\u003e, 2\u003csup\u003e–2\u003c/sup\u003e, 2\u003csup\u003e–3\u003c/sup\u003e, 2\u003csup\u003e–4\u003c/sup\u003e, etc.\u003c/p\u003e\n\u003cp\u003e5\u003csup\u003e–1\u003c/sup\u003e, 5\u003csup\u003e–2\u003c/sup\u003e, 5\u003csup\u003e–3\u003c/sup\u003e, 5\u003csup\u003e–4\u003c/sup\u003e, etc.\u003c/p\u003e\n\u003cp\u003e\u003csup\u003e\u003c/sup\u003eWhat do you notice? Why do you think this happens?\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16822\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qlist.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16822\u0026quot;,175)\"\u003e. Enter the numbers 1, 2, 3, 4, 5, ... in L1.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16823\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qlist.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16823\u0026quot;,175)\"\u003e. For L1, key in \u003cimg id\u003d\"token_16824\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_16825\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16825\u0026quot;,144)\"\u003e, \u003cimg id\u003d\"token_16826\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_16827\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16827\u0026quot;,144)\"\u003e, etc., up to \u003cimg id\u003d\"token_16828\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_16829\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_10_10/f-10-10-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the formula for the powers of 2 in L2.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16830\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16830\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_16831\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16831\u0026quot;,246)\"\u003e to highlight L2. Enter the formula by pressing \u003cimg id\u003d\"token_16832\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_16833\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcap.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16833\u0026quot;,113)\"\u003e \u003cimg id\u003d\"token_16834\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_16835\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16835\u0026quot;,221)\"\u003e \u003cimg id\u003d\"token_16836\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_10_10/f-10-10-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16837\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16837\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16838\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16838\u0026quot;,144)\"\u003e. The calculator gives the values of the powers of 2 as:\u003c/p\u003e\n \u003cp\u003e2, 4, 8, 16, 32, 64, 128, ...\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_10_10/f-10-10-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the formula for the powers of 5 in L3.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16839\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16839\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_16840\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16840\u0026quot;,246)\"\u003e to highlight L3. Enter the formula by pressing \u003cimg id\u003d\"token_16841\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_16842\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcap.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16842\u0026quot;,113)\"\u003e \u003cimg id\u003d\"token_16843\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_16844\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16844\u0026quot;,221)\"\u003e \u003cimg id\u003d\"token_16845\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_10_10/f-10-10-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16846\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16846\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16847\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16847\u0026quot;,144)\"\u003e. The calculator gives the values of the powers of 5 as:\u003c/p\u003e\n \u003cp\u003e5, 25, 125, 625, 3125, 15625, 78125, ...\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_10_10/f-10-10-5.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the formula for the negative powers of 2 in L4.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16848\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16848\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_16849\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16849\u0026quot;,246)\"\u003e to highlight L4. Enter the formula by pressing \u003cimg id\u003d\"token_16850\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_16851\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcap.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16851\u0026quot;,113)\"\u003e \u003cimg id\u003d\"token_16852\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16852\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_16853\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_16854\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16854\u0026quot;,221)\"\u003e \u003cimg id\u003d\"token_16855\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-11 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_10_10/f-10-10-6.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16856\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16856\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16857\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16857\u0026quot;,144)\"\u003e. The calculator gives the values of the negative powers of 2 as:\u003c/p\u003e\n \u003cp\u003e0.5, 0.25, 0.125, 0.0625, 0.03125, 0.01563 (actually 0.015625), 0.00781 (actually 0.0078125), ...\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-13 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_10_10/f-10-10-7.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the formula for the negative powers of 5 in L5.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16858\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16858\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_16859\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16859\u0026quot;,246)\"\u003e to highlight L5. Enter the formula by pressing \u003cimg id\u003d\"token_16860\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e \u003cimg id\u003d\"token_16861\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcap.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16861\u0026quot;,113)\"\u003e \u003cimg id\u003d\"token_16862\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16862\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_16863\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_16864\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qstat.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16864\u0026quot;,221)\"\u003e \u003cimg id\u003d\"token_16865\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-15 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_10_10/f-10-10-8.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16866\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16866\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_16867\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_16867\u0026quot;,144)\"\u003e. The calculator gives the values of the negative powers of 2 as:\u003c/p\u003e\n \u003cp\u003e0.2, 0.04, 0.008, 0.0016, 0.00032, 0.000064, 0.000013 (actually 0.0000128), ...\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-17 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_2_1_integers_10_10/f-10-10-9.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eComment on the relationship.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe digits in the negative powers of 2 are the same as the digits in the corresponding positive powers of 5. Similarly, the digits in the negative powers of 5 are the same as the digits in the corresponding positive powers of 2.\u003c/p\u003e\n \u003cp\u003eThe reason this works for 2 and 5 (and no other numbers, by the way) is that we use a \u003ci\u003edecimal\u003c/i\u003e or base 10 number system, and 2 and 5 are factors of 10, with 2(5) \u003d 10. If you have studied other bases, such as base 12, you might want to experiment to see if you can find a similar pattern there!\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}
