@@ -1,0 +1,106 @@
+{
+  "pid": "gcprealgpractice_4_1_solvingequations_9_30",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "4",
+    "section": "1",
+    "set": null,
+    "problemNumber": "9",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse your calculator to find \u003ci\u003eall\u003c/i\u003e solutions to the equation.\u003c/p\u003e\n\u003cp\u003e\u003cimg align\u003d\"center\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_9_30/image016.gif\"\u003e\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eBe careful when you see \u003ci\u003ex\u003c/i\u003e in the exponent. This kind of equation can act funny.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eBe careful when you see \u003ci\u003ex\u003c/i\u003e in the exponent. This kind of equation can act funny; it\u0027s not a nice normal linear equation like the previous three.\u003c/p\u003e\n \u003cp\u003eEnter the left and right sides as separate functions.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18046\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18046\u0026quot;,265)\"\u003e, and for Y\u003csub\u003e1\u003c/sub\u003e, enter \u003cimg id\u003d\"token_18047\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_18048\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcap.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18048\u0026quot;,113)\"\u003e\u003cimg id\u003d\"token_18049\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18049\u0026quot;,263)\"\u003e. For Y\u003csub\u003e2\u003c/sub\u003e, enter \u003cimg id\u003d\"token_18050\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18050\u0026quot;,263)\"\u003e \u003cimg id\u003d\"token_18051\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qxsqr.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18051\u0026quot;,260)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_9_30/f-30-9-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eView a table.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eView a table. Use the default \u003cimg id\u003d\"token_18052\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtblset.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18052\u0026quot;,231)\"\u003e values of TblStart \u003d 0 and Δ Tbl \u003d 1. Press \u003cimg id\u003d\"token_18053\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtable.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18053\u0026quot;,228)\"\u003e.\u003c/p\u003e\n \u003cp\u003eFr \u003ci\u003ex \u003c/i\u003e \u003d 1, 2, 3, etc., the first function will give the powers of 2:\u003c/p\u003e\n \u003cp\u003e2, 4, 8, 16, 32, ...\u003c/p\u003e\n \u003cp\u003eand the second function will give the square numbers:\u003c/p\u003e\n \u003cp\u003e1, 4, 9, 16, 64, ...\u003c/p\u003e\n \u003cp\u003eA quick inspection shows that Y\u003csub\u003e1\u003c/sub\u003e and Y\u003csub\u003e2\u003c/sub\u003e are equal for \u003ci\u003ex\u003c/i\u003e \u003d 2 and \u003ci\u003ex\u003c/i\u003e \u003d 4, and after that Y\u003csub\u003e1\u003c/sub\u003e grows much faster than Y\u003csub\u003e2\u003c/sub\u003e.\u003c/p\u003e\n \u003cp\u003eSo \u003ci\u003ex\u003c/i\u003e \u003d 2 and \u003ci\u003ex\u003c/i\u003e \u003d 4 are solutions, and there are no solutions greater than 4.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_9_30/f-30-9-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eAre there any more?\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eA good way to check for even more solutions would be to graph the two functions, and look for intersection points.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18054\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qwindow.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18054\u0026quot;,255)\"\u003e and set Xmin \u003d -10, Xmax \u003d 10, Xscl \u003d 1, Ymin \u003d 0, Ymax \u003d 20, Yscl \u003d 1.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_9_30/f-30-9-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18055\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18055\u0026quot;,157)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18056\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18056\u0026quot;,157)\"\u003e.\u003c/p\u003e\n \u003cp\u003eYou\u0027ll notice that aside from the solutions on the positive side of the \u003ci\u003ey\u003c/i\u003e-axis, at \u003ci\u003ex\u003c/i\u003e \u003d 2 and \u003ci\u003ex\u003c/i\u003e \u003d 4, which we already found, there seems to be another solution on the negative side, somewhere between 0 and 1.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_9_30/f-30-9-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n Press \u003cimg id\u003d\"token_18057\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qmath.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18057\u0026quot;,180)\"\u003e and then press \u003cimg id\u003d\"token_18058\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q6.gif\"\u003e to select the \u003cb\u003eSolver\u003c/b\u003e.\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_9_30/f-30-9-5.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the equation.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTo enter the equation, you first have to get 0 on one side. Subtract \u003ci\u003ex\u003c/i\u003e\u003csup\u003e2\u003c/sup\u003e from both sides.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_18059\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_18060\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcap.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18060\u0026quot;,113)\"\u003e\u003cimg id\u003d\"token_18061\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18061\u0026quot;,263)\"\u003e \u003cimg id\u003d\"token_18062\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qminus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18062\u0026quot;,185)\"\u003e\u003cimg id\u003d\"token_18063\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18063\u0026quot;,263)\"\u003e \u003cimg id\u003d\"token_18064\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qxsqr.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18064\u0026quot;,260)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-11 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_9_30/f-30-9-6.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18065\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18065\u0026quot;,144)\"\u003e. Select the initial guess and bounds.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18066\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18066\u0026quot;,144)\"\u003e. In this case, the initial guess value is important, since there are 3 solutions.\u003c/p\u003e\n \u003cp\u003eWe want to find the one between -1 and 0. So, enter \u003cimg id\u003d\"token_18067\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18067\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_18068\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q0.gif\"\u003e \u003cimg id\u003d\"token_18069\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18069\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_18070\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e on the second line.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_18071\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18071\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_18072\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18072\u0026quot;,144)\"\u003e \u003cimg id\u003d\"token_18073\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18073\u0026quot;,144)\"\u003e. The calculator gives\u003c/p\u003e\n \u003cp\u003e\u003ci\u003ex\u003c/i\u003e \u003cimg id\u003d\"token_18074\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e -0.7666647.\u003c/p\u003e\n \u003cp\u003eSo, the three solutions to the equation are \u003ci\u003ex\u003c/i\u003e \u003cimg id\u003d\"token_18075\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e -0.7666647, \u003ci\u003ex\u003c/i\u003e \u003d 2, and \u003ci\u003ex\u003c/i\u003e \u003d 4.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-13 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_4_1_solvingequations_9_30/f-30-9-7.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

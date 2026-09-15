@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_9a_70",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "8",
+    "section": "1",
+    "set": null,
+    "problemNumber": "9a",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eRecall that the sequence of Fibonacci numbers is obtained as follows. The 1\u003csup\u003est\u003c/sup\u003e term is 1, and the 2\u003csup\u003end\u003c/sup\u003e term is 1. To get the next term, add the two previous terms.\u003c/p\u003e\n\u003cp\u003eSo, the first few numbers in the sequence are as follows:\u003c/p\u003e\n\u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e1\u003c/sub\u003e \u003d 1\u003c/p\u003e\n\u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e2\u003c/sub\u003e \u003d 1\u003c/p\u003e\n\u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e3\u003c/sub\u003e \u003d 1 + 1 \u003d 2\u003c/p\u003e\n\u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e4\u003c/sub\u003e \u003d 1 + 2 \u003d 3\u003c/p\u003e\n\u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e5\u003c/sub\u003e \u003d 2 + 3 \u003d 5\u003c/p\u003e\n\u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e6\u003c/sub\u003e \u003d 3 + 5 \u003d 8\u003c/p\u003e\n\u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e7\u003c/sub\u003e \u003d 5 + 8 \u003d 13\u003c/p\u003e\n\u003cp\u003eetc.\u003c/p\u003e\n\u003cp\u003eFind the Fibonacci numbers up to \u003ci\u003eF\u003c/i\u003e\u003csub\u003e15\u003c/sub\u003e.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eAdd \u003ci\u003eF\u003c/i\u003e\u003csub\u003e6\u003c/sub\u003e and \u003ci\u003eF\u003c/i\u003e\u003csub\u003e7\u003c/sub\u003e to find \u003ci\u003eF\u003c/i\u003e\u003csub\u003e8\u003c/sub\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eAdd \u003ci\u003eF\u003c/i\u003e\u003csub\u003e6\u003c/sub\u003e and \u003ci\u003eF\u003c/i\u003e\u003csub\u003e7\u003c/sub\u003e to find \u003ci\u003eF\u003c/i\u003e\u003csub\u003e8\u003c/sub\u003e.\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e8\u003c/sub\u003e \u003d 8 + 13 \u003d 21\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eAdd \u003ci\u003eF\u003c/i\u003e\u003csub\u003e7\u003c/sub\u003e and \u003ci\u003eF\u003c/i\u003e\u003csub\u003e8\u003c/sub\u003e to find \u003ci\u003eF\u003c/i\u003e\u003csub\u003e9\u003c/sub\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eAdd \u003ci\u003eF\u003c/i\u003e\u003csub\u003e7\u003c/sub\u003e and \u003ci\u003eF\u003c/i\u003e\u003csub\u003e8\u003c/sub\u003e to find \u003ci\u003eF\u003c/i\u003e\u003csub\u003e9\u003c/sub\u003e.\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e9\u003c/sub\u003e \u003d 13 + 21 \u003d 34\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eContinue.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eContinue.\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e10\u003c/sub\u003e \u003d 21 + 34 \u003d 55\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e11\u003c/sub\u003e \u003d 34 + 55 \u003d 89\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e12\u003c/sub\u003e \u003d 55 + 89 \u003d 144\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e13\u003c/sub\u003e \u003d 89 + 144 \u003d 233\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e14\u003c/sub\u003e \u003d 144 + 233 \u003d 377\u003c/p\u003e\n \u003cp\u003e\u003ci\u003eF\u003c/i\u003e\u003csub\u003e15\u003c/sub\u003e \u003d 233 + 377 \u003d 610\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_7_1_geometry_1d_60",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "7",
+    "section": "1",
+    "set": null,
+    "problemNumber": "1d",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eVerify the calculator\u0027s result from part \u003cb\u003ec\u003c/b\u003e by using the formula for the area of a trapezoid.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eRecall the formula for the area of a trapezoid.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe formula for the area of a trapezoid is\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"105\" height\u003d\"48\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_1d_60/image001.gif\" class\u003d\"text-top\"\u003e\u003c/p\u003e\n \u003cp\u003ewhere \u003ci\u003eb\u003c/i\u003e\u003csub\u003e1\u003c/sub\u003e and \u003ci\u003eb\u003c/i\u003e\u003csub\u003e2\u003c/sub\u003e are the base lengths and \u003ci\u003eh\u003c/i\u003e is the height.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind the base lengths and height in our case.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe length of the segment connecting (0, 0) and (0, 3) is 3. The length of the segment connecting (5, 3) and (5, 4) is 1.\u003c/p\u003e\n \u003cp\u003eSo, for this trapezoid, \u003ci\u003eb\u003c/i\u003e\u003csub\u003e1\u003c/sub\u003e \u003d 3 and \u003ci\u003eb\u003c/i\u003e\u003csub\u003e2\u003c/sub\u003e \u003d \u003ci\u003e \u003c/i\u003e1.\u003c/p\u003e\n \u003cp\u003eThe height is the distance between the two bases, or 5 units. So \u003ci\u003eh\u003c/i\u003e \u003d 5.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_1d_60/f-60-1c-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSubstitute.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSubstitute in the formula.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"99\" height\u003d\"45\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_7_1_geometry_1d_60/image002.gif\" class\u003d\"text-top\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003d 2(5)\u003c/p\u003e\n \u003cp\u003e\u003d 10 square units\u003c/p\u003e\n \u003cp\u003eThis verifies the result from part \u003cb\u003ec\u003c/b\u003e.\u003c/p\u003e\n \u003cp\u003e(Note: To exit the GEOBOARD application, press \u003cimg id\u003d\"token_18904\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_18905\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qquit.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18905\u0026quot;,207)\"\u003e, answer \"Yes\" at the prompt \"Quit this board?\", answer \"No\" at the prompt \"Save this board?\", then press \u003cimg id\u003d\"token_18906\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18906\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_18907\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18907\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_18908\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_18908\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_18909\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e to quit.)\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

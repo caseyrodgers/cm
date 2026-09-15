@@ -1,0 +1,70 @@
+{
+  "pid": "gcprealgpractice_3_1_numbertheory_8c_20",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "3",
+    "section": "1",
+    "set": null,
+    "problemNumber": "8c",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eRepeat the process for a new prime \u003ci\u003ep\u003c/i\u003e and several values of \u003ci\u003ea\u003c/i\u003e.\u003c/p\u003e\n\u003cp\u003eDoes the same pattern work?\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTry \u003ci\u003ep\u003c/i\u003e \u003d 11.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTry \u003ci\u003ep\u003c/i\u003e \u003d 11.\u003c/p\u003e\n \u003cp\u003eTo start with, let \u003ci\u003ea\u003c/i\u003e \u003d 2.\u003c/p\u003e\n \u003cp\u003e2\u003csup\u003e11\u003c/sup\u003e \u003d 2048\u003c/p\u003e\n \u003cp\u003e2048 \u003cimg id\u003d\"token_17263\" class\u003d\"text-bottom\" src\u003d\"/specialchars/divide.gif\"\u003e 11 \u003d 186 r 2\u003c/p\u003e\n \u003cp\u003eSo, the remainder for \u003ci\u003ea\u003c/i\u003e \u003d 2 is \u003cb\u003e2\u003c/b\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_8c_20/f-20-8c-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eLet \u003ci\u003ea\u003c/i\u003e \u003d 3.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eNow repeat the process with \u003ci\u003ea\u003c/i\u003e \u003d 3.\u003c/p\u003e\n \u003cp\u003e3\u003csup\u003e11\u003c/sup\u003e \u003d 177147\u003c/p\u003e\n \u003cp\u003e177147 \u003cimg id\u003d\"token_17264\" class\u003d\"text-bottom\" src\u003d\"/specialchars/divide.gif\"\u003e 11 \u003d 16104 r 3\u003c/p\u003e\n \u003cp\u003eSo, the remainder for \u003ci\u003ea\u003c/i\u003e \u003d 3 is 3.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_8c_20/f-20-8c-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTry some more values of \u003ci\u003ea\u003c/i\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTry some more values of \u003ci\u003ea\u003c/i\u003e. The calculator steps for \u003ci\u003ea\u003c/i\u003e \u003d 4 are shown.\u003c/p\u003e\n \u003cp\u003e(Note: 9\u003csup\u003e11\u003c/sup\u003e is such a large number that the calculator uses scientific notation to display it.)\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_3_1_numbertheory_8c_20/f-20-8c-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eIdentify the pattern.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eIt appears that \u003ci\u003ea\u003c/i\u003e\u003csup\u003e11\u003c/sup\u003e \u003cimg id\u003d\"token_17265\" class\u003d\"text-bottom\" src\u003d\"/specialchars/divide.gif\"\u003e 11 always gives remainder \u003ci\u003ea\u003c/i\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

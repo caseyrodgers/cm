@@ -1,0 +1,82 @@
+{
+  "pid": "gcprealgpractice_9_1_areasandvolumes_3a_80",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "9",
+    "section": "1",
+    "set": null,
+    "problemNumber": "3a",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUsing the GEOBOARD application on your calculator, draw the trapezoid with vertices at (0, 2), (0, 4), (8, 0), and (8, 8).\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19959\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qapps.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19959\u0026quot;,108)\"\u003e \u003cimg id\u003d\"token_19960\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e to enter the application.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19961\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qapps.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19961\u0026quot;,108)\"\u003e and select \u003cimg id\u003d\"token_19962\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e to start the GEOBOARD application. Press any key to start.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_3a_80/f-80-3a-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSelect a 10 \u003cimg id\u003d\"token_19963\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 10 square board.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19964\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e to select a 10 \u003cimg id\u003d\"token_19965\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 10 square board.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_3a_80/f-80-3a-2.gif \"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTurn the axes on.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19966\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qzoom.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19966\u0026quot;,267)\"\u003e (\"FMAT\"), and press \u003cimg id\u003d\"token_19967\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdown.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19967\u0026quot;,136)\"\u003e \u003cimg id\u003d\"token_19968\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19968\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_19969\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19969\u0026quot;,144)\"\u003e to turn the axes on. Then press \u003cimg id\u003d\"token_19970\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19970\u0026quot;,157)\"\u003e (\"QUIT\").\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_3a_80/f-80-3a-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eMove to the point (0, 2). Press \u003cimg id\u003d\"token_19971\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19971\u0026quot;,265)\"\u003e twice (\"DRAW\", then \"ADD\").\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19972\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19972\u0026quot;,246)\"\u003e \u003cimg id\u003d\"token_19973\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19973\u0026quot;,246)\"\u003e to move to the point (0, 2). Then press \u003cimg id\u003d\"token_19974\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19974\u0026quot;,265)\"\u003e twice (\"DRAW\", then \"ADD\").\u003c/p\u003e\n \u003cp\u003eThen press \u003cimg id\u003d\"token_19975\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19975\u0026quot;,246)\"\u003e \u003cimg id\u003d\"token_19976\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19976\u0026quot;,246)\"\u003e and press \u003cimg id\u003d\"token_19977\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19977\u0026quot;,265)\"\u003e (\"ADD\") again to draw the segment connecting (0, 2) and (0, 4).\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_3a_80/f-80-3a-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eComplete the trapezoid.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19978\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19978\u0026quot;,211)\"\u003e 8 times and \u003cimg id\u003d\"token_19979\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19979\u0026quot;,246)\"\u003e 4 times, followed by \u003cimg id\u003d\"token_19980\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19980\u0026quot;,265)\"\u003e (\"ADD\"), to draw the segment connecting (0, 4) and (8, 8).\u003c/p\u003e\n \u003cp\u003eThen press \u003cimg id\u003d\"token_19981\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdown.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19981\u0026quot;,136)\"\u003e 8 times, followed by \u003cimg id\u003d\"token_19982\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19982\u0026quot;,265)\"\u003e(\"ADD\") to draw the segment connecting (8, 8) and (8, 0).\u003c/p\u003e\n \u003cp\u003eFinally, press \u003cimg id\u003d\"token_19983\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtrace.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19983\u0026quot;,240)\"\u003e (\"DONE\"). We now have our trapezoid.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_3a_80/f-80-3a-5.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

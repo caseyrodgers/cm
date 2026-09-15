@@ -1,0 +1,46 @@
+{
+  "pid": "gcprealgpractice_10_1_linearequationsandinequalities_6b_90",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "10",
+    "section": "1",
+    "set": null,
+    "problemNumber": "6b",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eFor the equation in part \u003cb\u003ea\u003c/b\u003e, use the \u003ci\u003eSolver\u003c/i\u003e to find the \u003ci\u003ex\u003c/i\u003e–coordinates corresponding to \u003ci\u003ey\u003c/i\u003e \u003d –22 and \u003ci\u003ey\u003c/i\u003e \u003d 22.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFrom where we left off in part \u003cb\u003ea\u003c/b\u003e, just type \u003cimg id\u003d\"token_21002\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21002\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_21003\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_21004\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e for \u003cb\u003eY\u003d\u003c/b\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFrom where we left off in part \u003cb\u003ea\u003c/b\u003e, just type \u003cimg id\u003d\"token_21005\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qnegative.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21005\u0026quot;,189)\"\u003e \u003cimg id\u003d\"token_21006\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_21007\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e for \u003cb\u003eY\u003d\u003c/b\u003e. Press \u003cimg id\u003d\"token_21008\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdown.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21008\u0026quot;,136)\"\u003e \u003cimg id\u003d\"token_21009\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdown.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21009\u0026quot;,136)\"\u003e to highlight Solve: \u003cb\u003eX\u003c/b\u003e and press \u003cimg id\u003d\"token_21010\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21010\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"61\" height\u003d\"25\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_10_1_linearequationsandinequalities_6b_90/image006.gif\" class\u003d\"text-top\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_10_1_linearequationsandinequalities_6b_90/f-90-6b-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_21011\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdown.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21011\u0026quot;,136)\"\u003e and enter the second \u003ci\u003ey\u003c/i\u003e–value.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_21012\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdown.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21012\u0026quot;,136)\"\u003e \u003cimg id\u003d\"token_21013\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_21014\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e to enter the second \u003ci\u003ey\u003c/i\u003e–value. Again, press \u003cimg id\u003d\"token_21015\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdown.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21015\u0026quot;,136)\"\u003e \u003cimg id\u003d\"token_21016\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdown.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21016\u0026quot;,136)\"\u003e to highlight Solve: \u003cb\u003eX\u003c/b\u003e and press \u003cimg id\u003d\"token_21017\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_21017\u0026quot;,144)\"\u003e.\u003c/p\u003e\n \u003cp\u003eThe calculator gives\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"77\" height\u003d\"25\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_10_1_linearequationsandinequalities_6b_90/image007.gif\" class\u003d\"text-top\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_10_1_linearequationsandinequalities_6b_90/f-90-6b-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

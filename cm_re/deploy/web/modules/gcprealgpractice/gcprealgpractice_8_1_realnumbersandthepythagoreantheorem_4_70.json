@@ -1,0 +1,94 @@
+{
+  "pid": "gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_4_70",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "8",
+    "section": "1",
+    "set": null,
+    "problemNumber": "4",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eUse the Pythagorean theorem to calculate the length of the hypotenuse of a right triangle with legs of length 4 and 5 units. Use the GEOBOARD application to verify your result.\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe Pythagorean Theorem states that the hypotenuse of a right triangle with legs of length \u003ci\u003ea\u003c/i\u003e and \u003ci\u003eb\u003c/i\u003e units is\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"65\" height\u003d\"27\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_4_70/image028.gif\" class\u003d\"text-top\"\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe Pythagorean Theorem states that the hypotenuse of a right triangle with legs of length \u003ci\u003ea\u003c/i\u003e and \u003ci\u003eb\u003c/i\u003e units is\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"65\" height\u003d\"27\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_4_70/image028.gif\" class\u003d\"text-top\"\u003e\u003c/p\u003e\n \u003cp\u003eSubstitute \u003ci\u003ea\u003c/i\u003e \u003d 4 and \u003ci\u003eb\u003c/i\u003e \u003d 5.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"136\" height\u003d\"27\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_4_70/image029.gif\" class\u003d\"text-top\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"45\" height\u003d\"23\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_4_70/image030.gif\" alt\u003d\"*\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n \u003cp\u003e\u003cimg id\u003d\"token_19566\" class\u003d\"text-bottom\" src\u003d\"/specialchars/approx.gif\"\u003e 6.0431\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19567\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qapps.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19567\u0026quot;,108)\"\u003e \u003cimg id\u003d\"token_19568\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e to enter the application.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19569\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qapps.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19569\u0026quot;,108)\"\u003e and select \u003cimg id\u003d\"token_19570\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e to start the GEOBOARD application. Press any key to start.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_4_70/f-70-4-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSelect a 6 \u003cimg id\u003d\"token_19571\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 6 square board.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19572\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e to select a 6 \u003cimg id\u003d\"token_19573\" class\u003d\"text-bottom\" src\u003d\"/specialchars/times.gif\"\u003e 6 square board.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_4_70/f-70-4-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19574\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19574\u0026quot;,265)\"\u003e (\"DRAW\") and then press \u003cimg id\u003d\"token_19575\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19575\u0026quot;,265)\"\u003e(\"ADD\") to select the vertices of the triangle.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19576\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19576\u0026quot;,265)\"\u003e (\"DRAW\") and then press \u003cimg id\u003d\"token_19577\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19577\u0026quot;,265)\"\u003e(\"ADD\") to select the vertices of the triangle.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19578\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19578\u0026quot;,211)\"\u003e 4 times, press \u003cimg id\u003d\"token_19579\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19579\u0026quot;,265)\"\u003e (\"ADD\") again, then press \u003cimg id\u003d\"token_19580\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qup.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19580\u0026quot;,246)\"\u003e 5 times, and press \u003cimg id\u003d\"token_19581\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19581\u0026quot;,265)\"\u003e (\"ADD\") followed by \u003cimg id\u003d\"token_19582\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtrace.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19582\u0026quot;,240)\"\u003e(\"DONE\").\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_4_70/f-70-4-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19583\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19583\u0026quot;,157)\"\u003e (\"QUIT\") and measure the hypotenuse.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19584\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qgraph.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19584\u0026quot;,157)\"\u003e (\"QUIT\") and then press \u003cimg id\u003d\"token_19585\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtrace.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19585\u0026quot;,240)\"\u003e(\"MEAS\") to measure the hypotenuse.\u003c/p\u003e\n \u003cp\u003eSelect \u003cimg id\u003d\"token_19586\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e for Length.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_4_70/f-70-4-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSelect the two endpoints of the hypotenuse.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSelect the two endpoints of the hypotenuse using the \u003cimg id\u003d\"token_19587\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19587\u0026quot;,144)\"\u003e key.\u003c/p\u003e\n \u003cp\u003eThe calculator gives the length as approximately 6.4031, verifying our earlier result.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-11 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_8_1_realnumbersandthepythagoreantheorem_4_70/f-70-4-5.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

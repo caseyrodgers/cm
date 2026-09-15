@@ -1,0 +1,58 @@
+{
+  "pid": "gcprealgpractice_9_1_areasandvolumes_9c_80",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "9",
+    "section": "1",
+    "set": null,
+    "problemNumber": "9c",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eWhose apple farm is bigger, Oscar\u0027s or Susie\u0027s?\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the size of Oscar\u0027s farm, and convert acres to hectares.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eIn part \u003cb\u003ea\u003c/b\u003e, we found that Oscar\u0027s farm covered 7.44 acres. Convert to hectares.\u003c/p\u003e\n \u003cp\u003eKey in \u003cimg id\u003d\"token_20455\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q7.gif\"\u003e \u003cimg id\u003d\"token_20456\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdot.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20456\u0026quot;,135)\"\u003e \u003cimg id\u003d\"token_20457\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e \u003cimg id\u003d\"token_20458\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e. Press \u003cimg id\u003d\"token_20459\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e\u003cimg id\u003d\"token_20460\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qconvert.gif\"\u003e and select \u003cimg id\u003d\"token_20461\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e for area. Then press \u003cimg id\u003d\"token_20462\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q5.gif\"\u003e for acres, followed by \u003cimg id\u003d\"token_20463\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q9.gif\"\u003e for ha.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_9c_80/f-80-9c-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_20464\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20464\u0026quot;,144)\"\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_20465\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qenter.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20465\u0026quot;,144)\"\u003e. The calculator gives the converted value as approximately 3.01 ha.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-3 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_9c_80/f-80-9c-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eCompare with Susie\u0027s farm.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eOscar\u0027s farm covers 3.01 hectares while Susie\u0027s farm covers 3.46 hectares.\u003c/p\u003e\n \u003cp\u003eSo, Susie\u0027s farm is bigger.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

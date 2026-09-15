@@ -5,5 +5,6 @@
   { "subjectId": "prealgptests", "title": "Pre-Algebra Practice Tests", "scorableCount": 806 },
   { "subjectId": "minicalcgt", "title": "Mini Calculus", "scorableCount": 0 },
   { "subjectId": "gcpractice", "title": "Graphing Calculator Practice", "scorableCount": 0 },
+  { "subjectId": "gcprealgpractice", "title": "Graphing Calculator Pre-Algebra Practice", "scorableCount": 0 },
   { "subjectId": "placement", "title": "Placement Test", "scorableCount": 179 }
 ]

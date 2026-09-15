@@ -1,0 +1,94 @@
+{
+  "pid": "gcprealgpractice_9_1_areasandvolumes_2_80",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "9",
+    "section": "1",
+    "set": null,
+    "problemNumber": "2",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eIn the figure, the sphere fits perfectly in the cube; that is, it touches each face exactly in the center point of the face.\u003c/p\u003e\n\u003cp\u003eAssume the sphere has radius \u003ci\u003er\u003c/i\u003e.\u003ci\u003e \u003c/i\u003eUse your calculator to find the volume of the region inside the cube but outside the sphere for different values of \u003ci\u003er\u003c/i\u003e. What is the least whole–number value of \u003ci\u003er\u003c/i\u003e for which the volume of this region is greater than 100 cubic units?\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n\u003cdiv class\u003d\"problemstatement_figure\"\u003e\n \u003cimg src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_2_80/f-80-2-q.gif\"\u003e\n\u003c/div\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind the volume of the cube.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe cube has side length 2\u003ci\u003er\u003c/i\u003e.\u003c/p\u003e\n \u003cp\u003eThe volume of a cube with side length \u003ci\u003es\u003c/i\u003e units is \u003ci\u003es\u003c/i\u003e\u003csup\u003e3\u003c/sup\u003e square units.\u003c/p\u003e\n \u003cp\u003eSo, the cube has volume (2\u003ci\u003er\u003c/i\u003e)\u003csup\u003e3\u003c/sup\u003e \u003d 8\u003ci\u003er\u003c/i\u003e\u003csup\u003e3\u003c/sup\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-1 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_2_80/f-80-2-q.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind the volume of the sphere.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe volume of the sphere is simply\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"44\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_2_80/image001.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind the area of the region inside the cube but outside the sphere.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eSubtract to find the area of the region inside the cube but outside the sphere.\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"104\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_2_80/image002.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter this function in your calculator.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19910\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19910\u0026quot;,265)\"\u003e to enter this function in your calculator.\u003c/p\u003e\n \u003cp\u003eFor Y\u003csub\u003e1\u003c/sub\u003e, enter \u003cimg id\u003d\"token_19911\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q8.gif\"\u003e\u003cimg id\u003d\"token_19912\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19912\u0026quot;,263)\"\u003e \u003cimg id\u003d\"token_19913\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcap.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19913\u0026quot;,113)\"\u003e \u003cimg id\u003d\"token_19914\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_19915\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qminus.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19915\u0026quot;,185)\"\u003e \u003cimg id\u003d\"token_19916\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qopenparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19916\u0026quot;,196)\"\u003e \u003cimg id\u003d\"token_19917\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e \u003cimg id\u003d\"token_19918\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdivide.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19918\u0026quot;,133)\"\u003e \u003cimg id\u003d\"token_19919\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e \u003cimg id\u003d\"token_19920\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcloseparen.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19920\u0026quot;,121)\"\u003e \u003cimg id\u003d\"token_19921\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19922\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qpi.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19922\u0026quot;,200)\"\u003e\u003cimg id\u003d\"token_19923\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19923\u0026quot;,263)\"\u003e \u003cimg id\u003d\"token_19924\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qcap.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19924\u0026quot;,113)\"\u003e \u003cimg id\u003d\"token_19925\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q3.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_2_80/f-80-2-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19926\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19927\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtblset.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19927\u0026quot;,231)\"\u003e to change the table settings.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19928\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19929\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtblset.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19929\u0026quot;,231)\"\u003e and set TblStart \u003d 1, Δ Tbl \u003d 1.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_2_80/f-80-2-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19930\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19931\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtable.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19931\u0026quot;,228)\"\u003e to view the table.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_19932\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_19933\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtable.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_19933\u0026quot;,228)\"\u003e to view the table.\u003c/p\u003e\n \u003cp\u003eWe see that the first whole number value for \u003ci\u003er\u003c/i\u003efor which the volume of the region is greater than 100 cubic units is 3.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-11 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_2_80/f-80-2-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}

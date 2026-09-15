@@ -1,0 +1,94 @@
+{
+  "pid": "gcprealgpractice_9_1_areasandvolumes_7a_80",
+  "subjectId": "gcprealgpractice",
+  "version": "2.0",
+  "date": null,
+  "createdBy": null,
+  "active": null,
+  "identification": {
+    "book": "gcprealgpractice",
+    "chapter": "9",
+    "section": "1",
+    "set": null,
+    "problemNumber": "7a",
+    "page": null
+  },
+  "statement": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eA right regular pyramid has a square base with side length 2\u003ci\u003ex\u003c/i\u003e cm and slant height 1 cm. It encloses a right cone with base radius \u003ci\u003ex\u003c/i\u003e.\u003c/p\u003e\n\u003cp\u003eUse your calculator to find the lateral surface areas of the pyramid and the cone for different values of \u003ci\u003ex\u003c/i\u003e. What is the ratio between the two lateral surface areas?\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e\n\u003cdiv class\u003d\"problemstatement_figure\"\u003e\n \u003cimg src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_7a_80/f-80-7a-q.gif\"\u003e\n\u003c/div\u003e",
+  "statementFigure": null,
+  "question": null,
+  "widgetSlot": null,
+  "steps": [
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind the formula for the lateral surface area of a right regular pyramid with side length 2\u003ci\u003ex\u003c/i\u003e and slant height 1.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eThe formula for the lateral surface area of a right regular pyramid with base perimeter \u003ci\u003ep\u003c/i\u003e and slant height \u003ci\u003es\u003c/i\u003e is\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"69\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_7a_80/image010.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n \u003cp\u003eHere, the perimeter of the base is 4(2\u003ci\u003ex\u003c/i\u003e) \u003d 8\u003ci\u003ex\u003c/i\u003e, and the slant height is 1. So, the formula becomes\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"128\" height\u003d\"41\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_7a_80/image011.gif\" class\u003d\"middle\"\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind the formula for the lateral surface area of the cone.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind the formula for the lateral surface area of a cone with base radius \u003ci\u003er\u003c/i\u003e and slant height \u003ci\u003es \u003c/i\u003eis\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"64\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_7a_80/image012.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n \u003cp\u003eSubstituting \u003ci\u003er\u003c/i\u003e \u003d \u003ci\u003ex\u003c/i\u003e and \u003ci\u003es\u003c/i\u003e \u003d 1, the formula becomes\u003c/p\u003e\n \u003cp\u003e\u003cimg width\u003d\"112\" height\u003d\"24\" src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_7a_80/image013.gif\" class\u003d\"text-bottom\"\u003e\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the two functions into your calculator.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eEnter the two functions into your calculator.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_20241\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20241\u0026quot;,265)\"\u003e.\u003c/p\u003e\n \u003cp\u003eFor Y\u003csub\u003e1\u003c/sub\u003e, key in \u003cimg id\u003d\"token_20242\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q4.gif\"\u003e\u003cimg id\u003d\"token_20243\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20243\u0026quot;,263)\"\u003e. For Y\u003csub\u003e2\u003c/sub\u003e, key in \u003cimg id\u003d\"token_20244\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_20245\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qpi.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20245\u0026quot;,200)\"\u003e\u003cimg id\u003d\"token_20246\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qx73.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20246\u0026quot;,263)\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-5 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_7a_80/f-80-7a-1.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eUse a table.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_20247\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_20248\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtblset.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20248\u0026quot;,231)\"\u003e and make sure TblStart \u003d 1 and Δ Tbl \u003d 1.\u003c/p\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_20249\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_20250\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtable.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20250\u0026quot;,228)\"\u003e to view the table.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-7 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_7a_80/f-80-7a-2.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eFind the ratio between the lateral surface areas.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eTo find the ratio between the lateral surface areas, go back to \u003cimg id\u003d\"token_20251\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qyeq.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20251\u0026quot;,265)\"\u003e. For Y\u003csub\u003e3\u003c/sub\u003e, key in \u003cimg id\u003d\"token_20252\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_20253\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qvars.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20253\u0026quot;,250)\"\u003e \u003cimg id\u003d\"token_20254\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_20255\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q1.gif\"\u003e \u003cimg id\u003d\"token_20256\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qdivide.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20256\u0026quot;,133)\"\u003e \u003cimg id\u003d\"token_20257\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_20258\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qvars.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20258\u0026quot;,250)\"\u003e \u003cimg id\u003d\"token_20259\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e \u003cimg id\u003d\"token_20260\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2.gif\"\u003e.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-9 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_7a_80/f-80-7a-3.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "hint",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003eGo back to the table.\u003c/p\u003e\n\u003c/div\u003e",
+      "figure": null,
+      "figures": null
+    },
+    {
+      "role": "step",
+      "content": "\u003cdiv class\u003d\"step_content\"\u003e\n \u003cp\u003ePress \u003cimg id\u003d\"token_20261\" class\u003d\"text-bottom\" src\u003d\"/specialchars/q2nd.gif\"\u003e \u003cimg id\u003d\"token_20262\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qtable.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20262\u0026quot;,228)\"\u003e to go back to the table, and press \u003cimg id\u003d\"token_20263\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20263\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_20264\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20264\u0026quot;,211)\"\u003e \u003cimg id\u003d\"token_20265\" class\u003d\"text-bottom\" src\u003d\"/specialchars/qright.gif\" onmouseout\u003d\"return parent.doMouseOut()\" onmouseover\u003d\"return parent.doMouseOver(\u0026quot;token_20265\u0026quot;,211)\"\u003e to see the Y\u003csub\u003e3\u003c/sub\u003e column.\u003c/p\u003e\n \u003cp\u003eThe ratio of lateral surface areas is approximately 1.2732. That is, the lateral surface area of the pyramid is about 1.2732 times that of the cone.\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n \u003cp\u003e\u003c/p\u003e\n\u003c/div\u003e\u003cimg class\u003d\"graphimgstatic id\u003d\" figure-11 src\u003d\"/modules/gcprealgpractice/gcprealgpractice_9_1_areasandvolumes_7a_80/f-80-7a-4.gif\"\u003e\n\u003cbr\u003e",
+      "figure": null,
+      "figures": null
+    }
+  ]
+}
