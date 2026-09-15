@@ -22,8 +22,12 @@ import type { Solution } from "@cm_re/shared-types";
  * buildSkeleton() is "Sketch a starting point" (GET /api/ai/skeleton/
  * {pid}) — asks for the problem's given information back as a short
  * list of basic shapes (Shape below), which the whiteboard converts
- * into its own native strokes and draws. No image either way: this is
- * a structured-JSON request/response, not a vision call.
+ * into its own native strokes and draws. Nothing is sent from the
+ * client beyond the pid — no request body, no vision call from here —
+ * but the server may itself attach the problem's own images (a figure
+ * authored as a picture rather than text) when composing its prompt,
+ * so a redrawn geometric figure can trace what's actually shown rather
+ * than a generic shape. Either way the response is structured JSON.
  */
 
 const AI_BASE = "/api/ai";
@@ -218,11 +222,11 @@ export interface BuildSkeletonResult {
 
 /**
  * "Sketch a starting point" (GET /api/ai/skeleton/{pid}) — the given
- * information (the equation as stated, a described figure's given
- * values, blank axes for a graphing problem) back as a short list of
- * shapes, never a solution or the answer. Malformed/unrecognized
- * shapes are already filtered out server-side; what comes back here
- * is safe to convert and draw as-is.
+ * information (the equation as stated, a described or pictured
+ * figure's given values, blank axes for a graphing problem) back as a
+ * short list of shapes, never a solution or the answer. Malformed/
+ * unrecognized shapes are already filtered out server-side; what
+ * comes back here is safe to convert and draw as-is.
  */
 export async function buildSkeleton(pid: string, signal?: AbortSignal): Promise<BuildSkeletonResult> {
   let res: Response;

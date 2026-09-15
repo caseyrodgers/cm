@@ -53,16 +53,19 @@ import { cn } from "../../lib/utils";
  * out of view, so a quick way back to just the board matters.
  *
  * "Sketch a starting point" (sketchStartingPoint, aiClient.buildSkeleton)
- * is the third — no image involved at all, request or response: it
- * asks Claude for the problem's given information back as a short
- * list of basic shapes (Shape — line/polyline/circle/text), which
- * shapesToStrokes converts directly into this board's own native
- * Stroke[] and appends to it. Real ink, not a picture layer — same
- * Undo/Clear/persistence as anything hand-drawn; drawing it is one
- * pushHistory() away from being undone in a single step, same as
+ * is the third — nothing is sent from here beyond the pid (no image,
+ * no request body): it asks Claude for the problem's given information
+ * back as a short list of basic shapes (Shape — line/polyline/circle/
+ * text), which shapesToStrokes converts directly into this board's own
+ * native Stroke[] and appends to it. Real ink, not a picture layer —
+ * same Undo/Clear/persistence as anything hand-drawn; drawing it is
+ * one pushHistory() away from being undone in a single step, same as
  * Clear. Never reveals the answer or solving steps — restates only
  * what's given (the equation as written, a figure's given values,
- * blank axes for a graphing problem).
+ * blank axes for a graphing problem). When the figure itself is
+ * authored as an embedded image rather than text, the server attaches
+ * it (vision) so the redrawn shape traces the real one instead of a
+ * generic guess — see AiService.buildSkeleton.
  */
 
 const LOGICAL_W = 480;

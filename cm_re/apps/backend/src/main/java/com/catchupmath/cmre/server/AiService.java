@@ -266,6 +266,15 @@ public final class AiService {
      * applies, rather than forcing prose in to have drawn something.
      * Same "don't reveal the answer" posture as Learn: never solves
      * anything or points at a choice.
+     *
+     * Some legacy problems author their figure as an embedded image
+     * rather than text (same corpus quirk getAIForProblem/checkWork
+     * already work around — see loadImages) — a triangle, a graph, a
+     * diagram of a shape. Case (a) explicitly asks for "a redrawn,
+     * larger, clearer" version of exactly that kind of figure, so this
+     * now attaches those images (vision), and the prompt tells the
+     * model to trace what it actually sees rather than guess a generic
+     * shape from the text alone.
      */
     public String buildSkeleton(String pid) {
         String safePid = pid == null ? "" : pid;
@@ -279,10 +288,21 @@ public final class AiService {
             return skeletonPayload(safePid, new JsonArray(), "No problem found for id \"" + safePid + "\".", true);
         }
 
+        List<ClaudeClient.ImageAttachment> images = loadImages(store.problemImagesFor(safePid));
+        boolean hasProblemImages = !images.isEmpty();
+
         String prompt = "Here is a math problem:\n\n" + problem
+                + (hasProblemImages ? "\n\n(Part of this problem — a figure, graph, or diagram — is shown to"
+                        + " you only as the attached image(s), not as text above. Look at the image(s)"
+                        + " carefully: they are the actual figure, not decoration.)" : "")
                 + "\n\nDecide whether this problem describes any of exactly these three things:"
                 + "\n(a) a geometric figure (a shape, points, a diagram) that could be redrawn larger and"
-                + " clearer than a small embedded picture, with its given values labeled on it;"
+                + " clearer than a small embedded picture, with its given values labeled on it"
+                + (hasProblemImages ? " — if the figure is one of the attached images, this case applies:"
+                        + " trace its actual outline (the real shape and proportions you see — a triangle's"
+                        + " actual vertices, a circle's actual size relative to what's inside it, an"
+                        + " irregular polygon's actual number of sides) rather than substituting a generic"
+                        + " or default shape" : "") + ";"
                 + "\n(b) coordinate points, a graph, or an inequality/interval, where blank x/y axes or a"
                 + " number line would help — this includes any problem that gives one or more (x, y) points"
                 + " to work with even if it never says the word \"graph\" (distance between two points,"
@@ -345,14 +365,14 @@ public final class AiService {
                 + " not an elaborate illustration.";
 
         try {
-            AiLog.logRequest("buildSkeleton", safePid, prompt, null);
+            AiLog.logRequest("buildSkeleton", safePid, prompt, images);
             // Low temperature: this is closer to constrained classification
             // ("is there real structure here, and if so which kind") than
             // open-ended writing, and the default temperature was visibly
             // inconsistent about following the no-restatement/no-words
             // rules above — sometimes fine, sometimes reaching for an
             // invented "Left side / Right side" restatement anyway.
-            String text = claude.complete(prompt, null, 0.2);
+            String text = claude.complete(prompt, images, 0.2);
             JsonArray shapes = parseAndValidateShapes(text);
             return skeletonPayload(safePid, shapes, "", false);
         } catch (Exception e) {
