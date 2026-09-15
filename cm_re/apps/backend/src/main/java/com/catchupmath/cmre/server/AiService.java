@@ -84,6 +84,72 @@ public final class AiService {
     }
 
     /**
+     * A follow-up question about a "Learn" explanation the student
+     * already got — "what is the form of the function?" etc. Reuses the
+     * same problem context (+ images, when the problem's content is
+     * pictured rather than typed) plus the prior explanation text as
+     * context, so the model isn't re-deriving from scratch or drifting
+     * off-topic. Same non-disclosure posture as getAIForProblem: never
+     * states the original problem's final numeric result or names the
+     * correct multiple-choice option — everything else is fair to
+     * answer in full, which covers a genuinely conceptual question like
+     * the example above.
+     *
+     * @param priorAnswer the HTML explanation previously returned by
+     *   getAIForProblem for this pid — supplies context, not re-sent
+     *   verbatim in the reply.
+     * @param question the student's follow-up, plain text.
+     */
+    public String followUp(String pid, String grade, String priorAnswer, String question) {
+        String safePid = pid == null ? "" : pid;
+
+        if (!claude.isConfigured()) {
+            return payload(safePid, "Set ANTHROPIC_API_KEY on the server to enable AI explanations.", true);
+        }
+
+        String problem = store.problemTextFor(safePid).orElse(null);
+        if (problem == null) {
+            return payload(safePid, "No problem found for id \"" + safePid + "\".", true);
+        }
+
+        if (question == null || question.isBlank()) {
+            return payload(safePid, "No follow-up question was sent.", true);
+        }
+
+        List<ClaudeClient.ImageAttachment> images = loadImages(store.problemImagesFor(safePid));
+
+        String prompt = "You are a patient math tutor. A student is working through this problem:\n\n"
+                + problem
+                + (images.isEmpty() ? "" : "\n\n(Part of this problem — the equation and/or its answer"
+                        + " choices — is shown to you only as the attached image(s), not as text above."
+                        + " Read the image(s) carefully; they are the actual problem content, not decoration.)")
+                + "\n\nYou already gave them this explanation of how to approach it:\n\n"
+                + (priorAnswer == null ? "" : priorAnswer)
+                + "\n\nThe student now has a follow-up question:\n\n" + (question == null ? "" : question)
+                + "\n\nAnswer the follow-up directly and concisely, using the problem and the explanation"
+                + " above as context. Do NOT restate the whole original explanation — just address what"
+                + " they're asking."
+                + " Same rule as before: do NOT state the final numeric result for the original problem,"
+                + " do NOT say which multiple-choice option is correct, and do NOT do the final"
+                + " arithmetic/simplification step for them. Everything else — concepts, the general form"
+                + " of an equation, intermediate reasoning, definitions — is fair to answer in full."
+                + gradeLevelPhrase(grade)
+                + "\n\nReturn the answer as an HTML fragment. Prose in <p>; steps in <ol><li> if useful;"
+                + " emphasis with <strong>. Write EVERY formula, fraction, equation and numeric expression"
+                + " as MathML inside <math>...</math>. No Markdown, no LaTeX, no $ delimiters, no"
+                + " <script>/<style>/<img>, no surrounding <html> or <body> tags — just the fragment.";
+
+        try {
+            AiLog.logRequest("followUp", safePid, prompt, images);
+            String text = claude.complete(prompt, images);
+            return payload(safePid, text, false);
+        } catch (Exception e) {
+            System.err.println("AiService.followUp: " + e);
+            return payload(safePid, "Couldn't reach the AI service: " + e.getMessage(), true);
+        }
+    }
+
+    /**
      * "Ask AI about my work" — the student's whiteboard scratch work,
      * captured as a PNG on the client, sent here as base64. Reviews it
      * against the problem and gives qualitative feedback on whether it

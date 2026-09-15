@@ -140,6 +140,51 @@ client contract, which is unchanged.
 
 
 
+** request more info about AI answer
+After getting response for 'Learn'.   Add a 'More Info' input to allow related question to the current response.  Like saying , "what is the form of the function?" and AI using the current problem's context.
+
+- [X] DOIT
+Status: Done (2026-09-15)
+
+Implementation notes: new ~POST /api/ai/follow-up/{pid}~
+(~AiService.followUp~) takes the student's follow-up question plus the
+prior "Learn" explanation's HTML as context, and answers it directly —
+reusing the same problem text/images lookup as
+~getAIForProblem~/~checkWork~, and the same non-disclosure rule (never
+states the original problem's final numeric answer or names the
+correct MC choice; everything else, including genuinely conceptual
+questions like the example above, is fair to answer in full).
+~aiClient.askFollowUp~ + a "Ask a follow-up" input under the Learn
+explanation in ~LearnPanel~; answers append to a running list rather
+than replacing anything, reset whenever a fresh explanation is
+requested (grade change / re-explain / different problem).
+
+Verified live end-to-end, real Claude calls: got a real explanation
+for a real MC problem, asked "what general form of equation is this?"
+as a follow-up, got back a genuinely contextual answer (named the
+actual coefficients from the problem, explained the general
+~ax+b=cx+d~ form, never stated the numeric solution) — confirmed via
+~ai-requests.log~ that the prior answer + question were both in the
+prompt. Real browser click-through (Learn -> pick grade -> type
+follow-up -> Ask -> second explanation block renders) also passed, and
+a permanent e2e case was added to ~learn-ai.spec.ts~ (gated behind
+~RUN_AI_TESTS=1~ like the rest of that file). Full e2e suite (38
+specs, 2 AI-gated skips without the flag) green; backend ~mvn
+compile~, tutor ~tsc --noEmit~ + ~vite build~ clean.
+  
+
+
+** New solution data to process and incorporate
+
+*** c:/dev/projects/catchupmath/solution_data/help_2022_06/solutions/gcprealgpractice/
+- [X] DOIT
+
+
+** Change Hub to contain All the subjects and their download stats.  Remove that info from the Me tab.
+
+- [X] DOIT
+  
+
 * Recommendation
 
 Start with the struggling-problems queue + per-chapter mastery view —

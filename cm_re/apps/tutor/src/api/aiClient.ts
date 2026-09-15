@@ -19,6 +19,11 @@ import type { Solution } from "@cm_re/shared-types";
  * transcription (POST /api/ai/read-work/{pid}): no judgment, just what
  * the handwritten numbers/math actually say, typed out.
  *
+ * followUp() is a follow-up question about a Learn explanation the
+ * student already has (POST /api/ai/follow-up/{pid}) — sends the prior
+ * explanation + the student's new question as context, gets back
+ * another { text, placeholder } in the same HTML+MathML shape.
+ *
  * buildSkeleton() is "Sketch a starting point" (GET /api/ai/skeleton/
  * {pid}) — asks for the problem's given information back as a short
  * list of basic shapes (Shape below), which the whiteboard converts
@@ -76,6 +81,39 @@ export async function explainProblem(req: ExplainRequest, signal?: AbortSignal):
   }
   if (!res.ok) {
     throw new Error(`explain request failed: ${res.status}`);
+  }
+  const data = (await res.json()) as { text?: string; placeholder?: boolean };
+  return {
+    text: typeof data.text === "string" ? data.text : "",
+    placeholder: data.placeholder === true,
+  };
+}
+
+export interface FollowUpRequest {
+  pid: string;
+  grade: Grade;
+  /** The prior Learn explanation's HTML — supplies context server-side, not re-sent back in the reply. */
+  priorAnswer: string;
+  /** The student's follow-up, plain text. */
+  question: string;
+}
+
+/** A follow-up question about a Learn explanation the student already has — see the file doc comment. */
+export async function askFollowUp(req: FollowUpRequest, signal?: AbortSignal): Promise<ExplainResult> {
+  let res: Response;
+  try {
+    res = await fetch(`${AI_BASE}/follow-up/${encodeURIComponent(req.pid)}`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ grade: req.grade, priorAnswer: req.priorAnswer, question: req.question }),
+      signal,
+    });
+  } catch (e) {
+    if (isAbort(e)) throw new ExplainAbortError();
+    throw new Error(`follow-up request failed: ${String(e)}`);
+  }
+  if (!res.ok) {
+    throw new Error(`follow-up request failed: ${res.status}`);
   }
   const data = (await res.json()) as { text?: string; placeholder?: boolean };
   return {

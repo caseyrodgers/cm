@@ -23,6 +23,7 @@ import java.util.List;
  *   POST /api/ai/check-work/{pid}  {"image":"<base64 png>"} -> AiService.checkWork(pid, image)
  *   POST /api/ai/read-work/{pid}   {"image":"<base64 png>"} -> AiService.readWork(pid, image)
  *   GET  /api/ai/skeleton/{pid}                       -> AiService.buildSkeleton(pid)
+ *   POST /api/ai/follow-up/{pid}   {"grade","priorAnswer","question"} -> AiService.followUp(...)
  */
 public class ApiHandler implements HttpHandler {
 
@@ -72,6 +73,25 @@ public class ApiHandler implements HttpHandler {
                 }
                 String image = readImageField(ex);
                 send(ex, 200, "application/json", ai.readWork(pid, image));
+                return;
+            }
+
+            String followUpPrefix = "/api/ai/follow-up/";
+            if (path.startsWith(followUpPrefix)) {
+                if (!"POST".equalsIgnoreCase(method)) {
+                    send(ex, 405, "application/json", "{\"error\":\"method not allowed\"}");
+                    return;
+                }
+                String pid = URLDecoder.decode(path.substring(followUpPrefix.length()), StandardCharsets.UTF_8);
+                if (pid.isBlank()) {
+                    send(ex, 400, "application/json", "{\"error\":\"missing pid\"}");
+                    return;
+                }
+                JsonObject body = readJsonBody(ex);
+                String grade = stringField(body, "grade");
+                String priorAnswer = stringField(body, "priorAnswer");
+                String question = stringField(body, "question");
+                send(ex, 200, "application/json", ai.followUp(pid, grade, priorAnswer, question));
                 return;
             }
 
@@ -142,6 +162,23 @@ public class ApiHandler implements HttpHandler {
         } catch (RuntimeException e) {
             return "";
         }
+    }
+
+    /** Reads the request body as a JSON object; an empty object on no body / malformed JSON (fields then just read as ""). */
+    private static JsonObject readJsonBody(HttpExchange ex) throws IOException {
+        byte[] body = readBounded(ex.getRequestBody(), MAX_BODY_BYTES);
+        if (body == null || body.length == 0) {
+            return new JsonObject();
+        }
+        try {
+            return JsonParser.parseString(new String(body, StandardCharsets.UTF_8)).getAsJsonObject();
+        } catch (RuntimeException e) {
+            return new JsonObject();
+        }
+    }
+
+    private static String stringField(JsonObject o, String key) {
+        return o.has(key) && o.get(key).isJsonPrimitive() ? o.get(key).getAsString() : "";
     }
 
     /** Reads at most {@code max} bytes; returns null if the stream has more than that (caller treats as no body). */

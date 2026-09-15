@@ -33,4 +33,27 @@ test.describe("Learn — AI explanation", () => {
     expect(text).not.toMatch(/\b(the|a|an|is|are|and|so|since|then|to|of|with|for|by|we|it)\s*$/i);
     expect(text).not.toMatch(/[=+\-*/,:]\s*$/);
   });
+
+  test("a follow-up question gets a real, contextual answer", async ({ page }) => {
+    await installModule(page, SUBJECT.demo);
+    await openSolution(page, MC_PID);
+
+    await page.getByRole("button", { name: /Learn .* explain this problem/i }).click();
+    await page.getByRole("button", { name: /10th Grader/i }).click();
+    await expect(page.locator(".learn-explanation").first()).toBeVisible({ timeout: 60_000 });
+
+    const input = page.getByPlaceholder(/Ask a follow-up/i);
+    await input.fill("what is the general form of this equation?");
+    await page.getByRole("button", { name: "Ask" }).click();
+
+    // A second .learn-explanation block is the follow-up's answer.
+    await expect(page.locator(".learn-explanation")).toHaveCount(2, { timeout: 60_000 });
+    const answer = ((await page.locator(".learn-explanation").nth(1).innerText()) ?? "").trim();
+    expect(answer.length).toBeGreaterThan(50);
+    expect(answer).not.toMatch(/unavailable right now/i); // placeholder path
+    expect(answer).not.toMatch(/no problem found|couldn.t reach the ai service/i);
+
+    // The question itself is echoed above its answer.
+    await expect(page.getByText("what is the general form of this equation?")).toBeVisible();
+  });
 });
