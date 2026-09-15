@@ -40,6 +40,17 @@ export default defineConfig({
       // (offline/moduleManager.ts + db.ts), not part of this precache.
       workbox: {
         globPatterns: ["**/*.{js,css,html,png,svg}"],
+        // The generated SW's navigation-fallback route defaults to
+        // "every same-origin navigation" — with no denylist, a browser
+        // that's ever loaded the tutor at "/" (this SW's scope) has it
+        // intercept navigation to /editor/ too and serve the tutor's
+        // own precached app shell instead of letting it hit the server
+        // for the editor's real page. Reproduced live: a fresh browser
+        // that visits "/" first, then "/editor/", got the tutor Hub
+        // screen back, not the editor. Both apps share one origin/port
+        // (see SOLUTION_EDITOR.org "one server, two UIs"), so the
+        // tutor's own SW has to explicitly carve the editor's path out.
+        navigateFallbackDenylist: [/^\/editor\//],
       },
     }),
   ],
