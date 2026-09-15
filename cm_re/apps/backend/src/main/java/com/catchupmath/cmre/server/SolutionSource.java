@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -125,6 +126,56 @@ public final class SolutionSource {
             }
         }
         return null;
+    }
+
+    private static final java.util.regex.Pattern PID_PATTERN = java.util.regex.Pattern.compile("^[A-Za-z0-9_-]+$");
+
+    /**
+     * Appends a new, minimal solution skeleton to {@code subjectId}'s
+     * bundle.json and returns the stored document. pids are global (the
+     * tutor resolves #/s/&lt;pid&gt; with no subject qualifier — see
+     * routing.ts), so uniqueness is checked across every subject, not
+     * just this one. Everything beyond identity is left blank for the
+     * author to fill in via the editor (statement/question/widget-slot
+     * panes are still read-only as of this increment — SOLUTION_EDITOR.org
+     * milestone 6 — so only steps are actually editable today; the rest
+     * of the skeleton exists so the document is well-formed).
+     */
+    public String createSolution(String subjectId, String pid) throws IOException {
+        if (pid == null || pid.isBlank()) {
+            throw new IllegalArgumentException("pid is required");
+        }
+        if (!PID_PATTERN.matcher(pid).matches()) {
+            throw new IllegalArgumentException("pid may only contain letters, digits, '_' and '-'");
+        }
+        if (getSolution(pid) != null) {
+            throw new IllegalArgumentException("pid already exists: " + pid);
+        }
+        JsonObject bundle = readBundle(subjectId); // throws IllegalArgumentException if subjectId is unknown
+
+        JsonObject sol = new JsonObject();
+        sol.addProperty("pid", pid);
+        sol.addProperty("subjectId", subjectId);
+        sol.addProperty("version", "2.0");
+        sol.add("date", JsonNull.INSTANCE);
+        sol.add("createdBy", JsonNull.INSTANCE);
+        sol.add("active", JsonNull.INSTANCE);
+
+        JsonObject identification = new JsonObject();
+        identification.addProperty("book", subjectId);
+        identification.addProperty("chapter", "");
+        identification.addProperty("section", "");
+        identification.addProperty("set", "");
+        identification.addProperty("problemNumber", "");
+        sol.add("identification", identification);
+
+        sol.addProperty("statement", "");
+        sol.add("statementFigure", JsonNull.INSTANCE);
+        sol.add("steps", new JsonArray());
+
+        bundle.getAsJsonArray("solutions").add(sol);
+        Files.writeString(bundlePath(subjectId), GSON.toJson(bundle), StandardCharsets.UTF_8);
+        return GSON.toJson(sol);
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.catchupmath.cmre.server;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -19,6 +21,7 @@ import java.util.List;
  * <pre>
  *   GET  /api/editor/subjects                      -> ["alg1ptests", ...]
  *   GET  /api/editor/solutions?subject=&lt;id&gt;        -> [{pid, identification, statementPreview, ...}]
+ *   POST /api/editor/solutions                     -> body: {subjectId, pid}; creates a minimal skeleton, returns it (201)
  *   GET  /api/editor/solutions/&lt;pid&gt;               -> full Solution
  *   PUT  /api/editor/solutions/&lt;pid&gt;               -> body: Solution JSON; stores it, echoes it back
  *   POST /api/editor/modules/&lt;subjectId&gt;/publish   -> recompute manifest + copy to the served web root
@@ -50,6 +53,25 @@ public final class EditorHandler implements HttpHandler {
                     return;
                 }
                 send(ex, 200, source.listSolutions(subject));
+                return;
+            }
+
+            if (path.equals("/api/editor/solutions") && method.equals("POST")) {
+                JsonObject body;
+                try {
+                    body = JsonParser.parseString(readBody(ex)).getAsJsonObject();
+                } catch (RuntimeException e) {
+                    send(ex, 400, err("request body is not a JSON object"));
+                    return;
+                }
+                String subjectId = optString(body, "subjectId");
+                String newPid = optString(body, "pid");
+                if (subjectId.isBlank() || newPid.isBlank()) {
+                    send(ex, 400, err("body must include subjectId and pid"));
+                    return;
+                }
+                String created = source.createSolution(subjectId, newPid);
+                send(ex, 201, created);
                 return;
             }
 
@@ -102,6 +124,10 @@ public final class EditorHandler implements HttpHandler {
         } catch (RuntimeException | IOException e) {
             send(ex, 500, err(String.valueOf(e.getMessage())));
         }
+    }
+
+    private static String optString(JsonObject o, String key) {
+        return o.has(key) && o.get(key).isJsonPrimitive() ? o.get(key).getAsString() : "";
     }
 
     private static String readBody(HttpExchange ex) throws IOException {

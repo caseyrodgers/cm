@@ -3,6 +3,7 @@ import {
   listSubjects,
   listSolutions,
   publishModule,
+  createSolution,
   type SolutionSummary,
 } from "../../api/client";
 
@@ -65,6 +66,21 @@ export default function SolutionList({ onOpen }: { onOpen: (pid: string) => void
     }
   }
 
+  // pids are global (not just unique within a subject — see routing.ts's
+  // #/s/<pid>), so a plain raw-text prompt is enough for now; the server
+  // rejects a collision or an invalid pid either way.
+  async function doCreate() {
+    const pid = window.prompt(`New solution pid (in "${subject}"):`)?.trim();
+    if (!pid) return;
+    setError(null);
+    try {
+      const sol = await createSolution(subject, pid);
+      onOpen(sol.pid);
+    } catch (e) {
+      setError(`Couldn't create "${pid}": ${e}`);
+    }
+  }
+
   return (
     <div>
       <div className="toolbar">
@@ -83,6 +99,7 @@ export default function SolutionList({ onOpen }: { onOpen: (pid: string) => void
           onChange={(e) => setQ(e.target.value)}
         />
         <span className="count">{filtered.length} / {rows.length}</span>
+        <button onClick={doCreate} disabled={!subject}>New solution</button>
         <button onClick={doPublish} disabled={!subject || busy}>Publish module</button>
       </div>
 

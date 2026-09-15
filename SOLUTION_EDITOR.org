@@ -11,6 +11,87 @@ The content format it authors: [[file:SOLUTION_INFO.org][SOLUTION_INFO.org]].
 =Solution= document (=packages/shared-types/src/solution.ts=) that
 the tutor reads. *We work on this next.*
 
+* Status — 2026-09-14: create-a-new-solution added
+
+Casey asked "how would I create a new problem?" — answer at the time
+was honestly "you can't, there's no create path anywhere in the
+backend" (=SolutionSource.saveSolution= only ever replaces an
+existing pid). Built the missing piece:
+
+- =SolutionSource.createSolution(subjectId, pid)= — appends a minimal
+  skeleton (blank statement, empty identification, no steps) to that
+  subject's =bundle.json=. pids are global (the tutor resolves
+  =#/s/<pid>= with no subject qualifier), so uniqueness is checked
+  across *every* subject via the existing =getSolution=, not just the
+  target one. Rejects an unknown subject, a blank/duplicate pid, or a
+  pid with characters outside =[A-Za-z0-9_-]=.
+- =POST /api/editor/solutions= (body =\{subjectId, pid\}=, 201 + the
+  created doc) in =EditorHandler=, same auth posture as the rest of
+  =/api/editor/*= (gated on =CM_EDITOR=).
+- =api/client.ts= gained =createSolution=; =SolutionList= gained a
+  *"New solution"* button next to Publish — prompts for a pid in the
+  currently-selected subject, creates it, navigates straight into
+  =SolutionView= for it.
+
+*Real limitation, stated plainly, not glossed over:* statement/MC
+question/widget-slot are still read-only (milestone 6) — a newly
+created solution can only get its *steps* filled in through the
+editor today. Everything else needs direct JSON editing until those
+panes exist.
+
+*Verified live, isolated from Casey's own running server* (a second
+dev instance on =:5199=, not the =:5173= deploy server he had open):
+curl round-trip through every path (create → 201, duplicate pid → 400,
+unknown subject → 400, invalid-character pid → 400, missing fields →
+400, fetch-back → 200), then a real headless-browser click-through —
+clicked "New solution", answered the pid prompt, confirmed it
+navigated to =#/s/<pid>= with the right title, confirmed via a fresh
+API fetch it actually persisted. All test data reverted from the real
+=algebra1= bundle afterward (=git status= confirmed clean). Backend
+=mvn compile= clean, =apps/editor= =tsc --noEmit= + =vite build= clean.
+
+* Status — 2026-09-14: increment 3 shipped (steps are editable)
+
+=components/StepEditor= is real now — TipTap (StarterKit) editing one
+step's HTML, wired to the existing =saveSolution=. Statement / MC
+question / widget slot stay read-only (milestone 6).
+
+*Real risk caught before shipping, not guessed at:* a throwaway check
+(=components/StepEditor/mathml-survival.check.ts=) loaded actual
+=alg1ptests= step content into a bare StarterKit editor and found it
+silently destroys embedded MathML — a real fraction (=y = -1/8x +
+25/8=) collapsed into unstructured text (=y = − 1 8 x + 25 8=), every
+fraction bar gone, on the very first load. Since MathML is pervasive
+across this corpus (SOLUTION_INFO.org), shipping plain StarterKit
+would have corrupted a huge share of content the moment anyone opened
+a step editor, whether they touched the math or not.
+
+*Fix:* =components/StepEditor/mathNode.ts= — a TipTap =Node= that
+treats =<math>...</math>= as an opaque atomic inline element,
+round-tripping its raw markup byte-for-byte through
+=parseHTML=/=renderHTML= (returns a real DOM node built from the
+stored string, not a TipTap-rebuilt attribute spec — that's what makes
+it byte-identical). Click the rendered math to edit its raw source via
+a plain prompt. This is deliberately narrower than the KaTeX/LaTeX
+authoring UI in milestone 4 ("MathEditor node") — its only job is to
+never lose what's already there; real WYSIWYG math authoring is still
+to come.
+
+*Verified, not just built:*
+- =mathml-survival.check.ts= (kept as a permanent regression check,
+  same pattern as the tutor's =dompurify-mathml.check.ts=) proves both
+  halves: bare StarterKit loses every MathML tag; StarterKit +
+  MathNode loses none, on the same real content.
+- Live end-to-end, real browser (Playwright, ad hoc — no editor e2e
+  suite exists yet): opened =/editor/#/s/<pid>= against the real dev
+  server, confirmed the math step actually renders a real =<math>=
+  element in the DOM (not stripped), typed into a *different*, plain
+  step, clicked Save, closed the browser, then re-fetched via
+  =GET /api/editor/solutions/<pid>= and confirmed (a) the plain edit
+  persisted through a real PUT, (b) the untouched math step round-
+  tripped byte-for-byte, (c) zero browser console errors.
+- =npx tsc --noEmit= + =vite build= clean for =apps/editor=.
+
 * Status — 2026-09-05: increment 1 shipped (read-only, file-backed)
 
 Decision (Casey): *rebuild the screens in React against new
@@ -217,6 +298,7 @@ editor was not worth it now). File store, not Postgres — yet.
 |-------------+------+--------+-----------------|
 | =listSubjects()= | =GET /api/editor/subjects= | done | — |
 | =listSolutions(subjectId)= | =GET /api/editor/solutions?subject== | done | =SearchForSolutionsAction= |
+| =createSolution(subjectId, pid)= | =POST /api/editor/solutions= | done | =SaveSolutionAsDialog= (new, not edit) |
 | =getSolution(pid)= | =GET /api/editor/solutions/{pid}= | done | =GetSolutionAdminCommand= |
 | =saveSolution(doc)= | =PUT /api/editor/solutions/{pid}= | done | =SaveSolutionAdminCommand= |
 | =publishModule(subjectId)= | =POST /api/editor/modules/{subjectId}/publish= | done | =ModuleAssembler= CLI |
@@ -280,11 +362,15 @@ is =SolutionSource= over =apps/tutor/public/modules/<id>/bundle.json=.
    and curl-verified. (2026-09-05)
 7. [X] *Publish module* endpoint — =POST /api/editor/modules/<id>/publish=.
    (2026-09-05)
-3. [ ] *Edit one step* — TipTap in =StepEditor=, editing
+3. [X] *Edit one step* — TipTap in =StepEditor=, editing
    =steps[i].content= HTML; wire the existing =saveSolution=.
-   *← next*
+   (2026-09-14 — includes =MathNode=, a raw-MathML-preserving guard;
+   see the status section above)
 4. [ ] *MathEditor node* — KaTeX-rendered inline math as a TipTap
-   extension.
+   extension. *← next.* =mathNode.ts= already round-trips raw MathML
+   losslessly (milestone 3's safety net); this milestone replaces its
+   bare click-to-edit-raw-source prompt with real WYSIWYG authoring
+   (LaTeX in, rendered via KaTeX, converted to/from MathML on save).
 6. [ ] *Statement + MC question + widget-slot + figures* panes.
 8. [ ] *Auth* (open question 3), and the *Spring/Postgres* migration
    (open question 1) when the file store stops being enough.

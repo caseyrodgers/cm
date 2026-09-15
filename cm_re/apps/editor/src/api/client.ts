@@ -61,6 +61,21 @@ export function getSolution(pid: string): Promise<Solution> {
   return fetch(`${BASE}/solutions/${encodeURIComponent(pid)}`).then((r) => unwrap<Solution>(r));
 }
 
+/**
+ * Creates a minimal solution skeleton (blank statement, no question, no
+ * steps) in `subjectId` under a new, globally-unique `pid`, and returns
+ * the stored document. Statement/question/widget-slot are still
+ * read-only in SolutionView (milestone 6) — only steps can actually be
+ * filled in via the editor today.
+ */
+export function createSolution(subjectId: string, pid: string): Promise<Solution> {
+  return fetch(`${BASE}/solutions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ subjectId, pid }),
+  }).then((r) => unwrap<Solution>(r));
+}
+
 export function saveSolution(doc: Solution): Promise<Solution> {
   return fetch(`${BASE}/solutions/${encodeURIComponent(doc.pid)}`, {
     method: "PUT",
