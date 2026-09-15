@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
-import type { Solution } from "@cm_re/shared-types";
-import { getSolution } from "../../api/client";
+import type { Solution, StepUnit } from "@cm_re/shared-types";
+import { getSolution, saveSolution } from "../../api/client";
+import StepEditor from "../StepEditor";
 
 /**
- * Read-only render of one solution: statement, MC question, widget
- * slot, and steps. Uses the same sanitize-then-dangerouslySetInnerHTML
- * approach the tutor uses (DOMPurify keeps MathML; the browser renders
- * <math> natively). TipTap editing replaces the read-only panes in the
- * next increment — see SOLUTION_EDITOR.org's milestone plan.
+ * Statement, MC question, and widget slot are still read-only renders
+ * (sanitize-then-dangerouslySetInnerHTML, same as the tutor — DOMPurify
+ * keeps MathML, the browser renders <math> natively). Steps are now
+ * editable via StepEditor (TipTap) — SOLUTION_EDITOR.org milestone 3.
+ * The rest of the panes land in a later increment (milestone 6).
  */
 
 function Html({ html }: { html: string }) {
@@ -22,17 +23,54 @@ function Html({ html }: { html: string }) {
 
 const ID_FIELDS = ["book", "chapter", "section", "set", "problemNumber", "page"] as const;
 
+type SaveStatus = "idle" | "saving" | "saved" | "error";
+
 export default function SolutionView({ pid, onBack }: { pid: string; onBack: () => void }) {
   const [sol, setSol] = useState<Solution | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Local editable copy of the steps — the parent owns this (not
+  // StepEditor) since Save writes the whole Solution doc back in one
+  // PUT, not per-step.
+  const [steps, setSteps] = useState<StepUnit[]>([]);
+  const [dirty, setDirty] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     setSol(null);
     setError(null);
+    setSteps([]);
+    setDirty(false);
+    setSaveStatus("idle");
     getSolution(pid)
-      .then(setSol)
+      .then((s) => {
+        setSol(s);
+        setSteps(s.steps);
+      })
       .catch((e) => setError(String(e)));
   }, [pid]);
+
+  function updateStepContent(index: number, html: string) {
+    setSteps((prev) => prev.map((s, i) => (i === index ? { ...s, content: html } : s)));
+    setDirty(true);
+    setSaveStatus("idle");
+  }
+
+  async function onSave() {
+    if (!sol) return;
+    setSaveStatus("saving");
+    setSaveError(null);
+    try {
+      const saved = await saveSolution({ ...sol, steps });
+      setSol(saved);
+      setSteps(saved.steps);
+      setDirty(false);
+      setSaveStatus("saved");
+    } catch (e) {
+      setSaveStatus("error");
+      setSaveError(String(e));
+    }
+  }
 
   return (
     <div className="sol-view">
@@ -102,12 +140,21 @@ export default function SolutionView({ pid, onBack }: { pid: string; onBack: () 
           )}
 
           <section>
-            <h2>Steps ({sol.steps.length})</h2>
+            <div className="steps-header">
+              <h2>Steps ({steps.length})</h2>
+              <div className="steps-save">
+                {saveStatus === "saved" && <span className="save-ok">Saved</span>}
+                {saveStatus === "error" && <span className="error">Save failed: {saveError}</span>}
+                <button type="button" onClick={onSave} disabled={!dirty || saveStatus === "saving"}>
+                  {saveStatus === "saving" ? "Saving…" : "Save"}
+                </button>
+              </div>
+            </div>
             <ol className="steps">
-              {sol.steps.map((s, i) => (
+              {steps.map((s, i) => (
                 <li key={i}>
                   <span className={`step-role step-role-${s.role}`}>{s.role}</span>
-                  <Html html={s.content} />
+                  <StepEditor content={s.content} onChange={(html) => updateStepContent(i, html)} />
                   {(s.figure || (s.figures && s.figures.length > 0)) && (
                     <p className="figure-ref">
                       figure(s): {[s.figure, ...(s.figures ?? [])].filter(Boolean).join(", ")}
@@ -119,7 +166,7 @@ export default function SolutionView({ pid, onBack }: { pid: string; onBack: () 
           </section>
 
           <p className="muted read-only-note">
-            Read-only — TipTap editing lands in the next increment.
+            Statement, question, and widget slot are still read-only — editing lands in a later increment.
           </p>
         </>
       )}

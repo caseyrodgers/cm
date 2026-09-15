@@ -150,3 +150,69 @@ a { color: var(--deep); }
 
 .figure-ref { font-size: 12px; color: var(--muted); }
 .read-only-note { margin-top: 20px; font-style: italic; }
+
+/* --- steps header / save --- */
+.steps-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.steps-header h2 { margin: 0; }
+.steps-save { display: flex; align-items: center; gap: 10px; }
+.steps-save button {
+  font: inherit;
+  padding: 5px 12px;
+  border: 1px solid var(--blue);
+  border-radius: 6px;
+  background: var(--blue);
+  color: #fff;
+  cursor: pointer;
+}
+.steps-save button:disabled { opacity: 0.5; cursor: default; background: #94c9e6; border-color: #94c9e6; }
+.save-ok { color: var(--ok); font-size: 12px; font-weight: 600; }
+.steps-save .error { font-size: 12px; white-space: normal; max-width: 40ch; }
+
+/* --- step editor (TipTap) --- */
+.step-editor {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  margin-top: 4px;
+}
+.step-editor-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.step-editor-toolbar button {
+  font: inherit;
+  font-size: 12px;
+  padding: 3px 8px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+.step-editor-toolbar button:hover { background: #fff; border-color: var(--line); }
+.step-editor-toolbar button.active { background: #e6f4ff; border-color: var(--blue); color: var(--deep); }
+
+.step-editor-content { padding: 8px 10px; }
+.step-editor-content .ProseMirror { outline: none; min-height: 1.5em; }
+.step-editor-content .ProseMirror p { margin: 0 0 8px; }
+.step-editor-content .ProseMirror p:last-child { margin-bottom: 0; }
+.step-editor-content .ProseMirror ul,
+.step-editor-content .ProseMirror ol { padding-left: 20px; margin: 0 0 8px; }
+
+/* Atomic MathML node — visually distinct from editable text so it
+   reads as "not typed here directly", matching MathNode's click-to-
+   edit-raw-source affordance (see components/StepEditor/mathNode.ts). */
+.math-node {
+  display: inline-block;
+  padding: 0 4px;
+  margin: 0 1px;
+  border-radius: 4px;
+  background: #fdf6e3;
+  border: 1px solid #f0e0a8;
+  cursor: pointer;
+}
+.math-node:hover { border-color: var(--blue); }
+.math-node-render { pointer-events: none; }
