@@ -259,13 +259,19 @@ export default function PracticeTest({
    * walk-through set (scope "custom") opened in the full tutor
    * (SolutionNav) — practice adjacent to what they got wrong, not a
    * re-quiz. The lesson label names the subject and the chapter(s).
+   *
+   * Eligible picks only need steps, not a scorable MC question — the
+   * lesson never asks the student to answer the picked problem, just
+   * walks them through it, so a browse-only problem (no MC question,
+   * e.g. the 3 alg1ptests solutions with no choices in the source) is
+   * perfectly good remediation material and shouldn't be excluded.
    */
   async function makeMissedLesson() {
     if (!test) return;
     setBusy(true);
     try {
       // Only problems that have steps to walk through.
-      const pool = (await getSolutionsForModule(subjectId)).filter((s) => scorable(s) && s.steps.length > 0);
+      const pool = (await getSolutionsForModule(subjectId)).filter((s) => s.steps.length > 0);
       const byChapter = new Map<string, string[]>();
       for (const s of pool) {
         const k = chapterOf(s.pid, subjectId).key;
