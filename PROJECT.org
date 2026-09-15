@@ -41,8 +41,9 @@ path.
   client cache / hybrid), cross-cutting concerns (prompt-version
   keying, staleness, generation tooling), and a dated status log of
   what's actually built (live per-call today: grade-aware, MathML
-  output, image/vision context for image-only problems). The
-  pre-generated-vs-live decision is still open.
+  output, image/vision context for image-only problems, and follow-up
+  questions on an explanation). The pre-generated-vs-live decision is
+  still open.
 - [[file:TUTOR_WIDGET.org][TUTOR_WIDGET.org]] — the *widget-slot infrastructure*: how a dead
   =tutor_widget_dummy.png= reference led to it, the plain-JS widget
   contract (=WidgetModule= / =WidgetContext= / =WidgetInstance=), the
@@ -51,10 +52,16 @@ path.
   open questions (wiring, grading, whiteboard conversion).
 - [[file:SOLUTION_EDITOR.org][SOLUTION_EDITOR.org]] — the *solution editor* (=apps/editor=), the
   online-only TipTap authoring tool that replaces the legacy GWT
-  =solution_editor=. Currently a stub (six comment-only files);
-  this doc has the status, the feature set derived from the 93
-  legacy classes, the data contract, the backend endpoints it needs
-  (none exist yet), open questions, and a milestone plan. *Next up.*
+  =solution_editor=. Real now, through 2026-09-15: browse/search,
+  create a new solution, and edit statement/MC question/steps (with a
+  MathML-preserving guard) against a file-backed CRUD API. This doc
+  has the full status, the feature set derived from the 93 legacy
+  classes, the data contract, open questions, and a milestone plan
+  (next up: the MathEditor/KaTeX node, widget-slot + figures panes).
+- [[file:IDEAS.org][IDEAS.org]] — running backlog of app-value ideas (tutor and
+  editor both), each with a =DOIT= checkbox, a =Status:= line, and
+  implementation notes once shipped. The working todo list day to
+  day — check here first for "what's next."
 - [[file:cm_re/DEBUG.org][cm_re/DEBUG.org]] — Eclipse debug setup for =apps/backend=: the
   local "Java Application" launch and the "attach 5005" remote launch
   against =make debug=, plus gotchas (=*.launch= is gitignored
@@ -90,13 +97,14 @@ path.
 
 * Suggested reading order
 
-1. =NEW_DIRECTION.org= (skim the Decisions log + Next steps)
-2. =APP_FLOW.org= (get the runtime shape)
-3. Whichever subsystem note matches the task —
-   =SOLUTION_EDITOR.org= for the authoring tool (next up),
+1. =IDEAS.org= (what's queued/next, day to day)
+2. =NEW_DIRECTION.org= (skim the Decisions log + Next steps)
+3. =APP_FLOW.org= (get the runtime shape)
+4. Whichever subsystem note matches the task —
+   =SOLUTION_EDITOR.org= for the authoring tool,
    =SOLUTION_INFO.org= for content/pipeline work,
    =AI_DISCUSS.org= for the Learn feature,
    =TUTOR_WIDGET.org= for interactive widgets,
    =cm_re/DEBUG.org= to attach a debugger.
-4. =CM3_MOBILE_REFERENCE.org= when you need to know what the old
+5. =CM3_MOBILE_REFERENCE.org= when you need to know what the old
    product did.

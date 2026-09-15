@@ -5,9 +5,12 @@
 
 The tutor has a *Learn* panel (=cm_re/apps/tutor/src/components/LearnPanel=)
 that asks an AI to explain the current problem at a grade level —
-"Tell me like I'm a…" 7th / 10th / 12th Grader. The call goes through
+"Tell me like I'm a…" 7th / 10th / 12th Grader — and, once that
+explanation exists, lets the student ask a related follow-up question
+answered using the same context. The calls go through
 =cm_re/apps/tutor/src/api/aiClient.ts= → =GET /api/ai/problem/{pid}?grade==
-on the dependency-free Java server, which does a *live* Claude call
+and =POST /api/ai/follow-up/{pid}= on the dependency-free Java server,
+which does a *live* Claude call either way
 (=com.catchupmath.cmre.server.AiService= / =ClaudeClient=). See the
 Status section for the build history; the stub described in earlier
 revisions of this doc is gone.
@@ -136,6 +139,22 @@ lookup + cache.
   yet") replaced with "the AI explanation service is unavailable
   right now" — =placeholder:true= now means no key / bad pid / API
   error, not a stub.
+- 2026-09-15: *follow-up questions on an explanation.* New =POST
+  /api/ai/follow-up/{pid}= (=AiService.followUp=) takes a student's
+  follow-up ("what is the form of the function?") plus the prior
+  explanation's HTML as context and answers it directly — same
+  problem text/images lookup as =getAIForProblem=, same non-disclosure
+  rule (never states the original problem's final answer/correct MC
+  choice; everything else, including a genuinely conceptual question,
+  is fair to answer in full). =LearnPanel= gained an "Ask a follow-up"
+  input below the explanation; answers append to a running list,
+  reset on a fresh explanation (grade change / re-explain / different
+  problem). Verified live: real follow-up call named the problem's
+  actual coefficients and explained the general =ax+b=cx+d= form
+  without ever stating the numeric solution; =ai-requests.log=
+  confirmed both the prior answer and the question reached the
+  prompt. New permanent e2e case in =learn-ai.spec.ts= (same
+  =RUN_AI_TESTS=1= gate as the rest of that file).
 
 *This is the "live per-call" starting point.* The choice between a
 pre-generated store (Idea A/B/C above) and keeping live calls is

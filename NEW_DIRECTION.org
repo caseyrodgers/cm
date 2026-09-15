@@ -764,10 +764,13 @@ still stands, this is the minimum to serve + proxy one call.
       point, now grade-aware and with image (vision) context for
       image-only problems — the latter adds real per-call cost, a
       data point for this decision
-- [ ] solution_editor (=apps/editor=) — still just a stub; the whole
-      authoring side is unstarted. *Next up* — status, feature set,
-      data contract, needed backend endpoints, open questions and a
-      milestone plan are in [[file:SOLUTION_EDITOR.org][SOLUTION_EDITOR.org]].
+- [~] solution_editor (=apps/editor=) — real now, not a stub: browse/
+      search, create a new solution, and edit statement/MC question/
+      steps (TipTap, with a MathML-preserving guard) all work against
+      the file-backed CRUD API, through 2026-09-15. Still open: widget
+      slot + figures panes, real MathML/LaTeX authoring (KaTeX), auth,
+      the eventual Spring/Postgres migration. Full status, milestone
+      plan, and open questions are in [[file:SOLUTION_EDITOR.org][SOLUTION_EDITOR.org]].
 - [~] "Widget infrastructure" — *contract + registry + React bridge
       built* (=apps/tutor/src/widgets/=, 2026-09-04), plus a
       preprocessor-extracted =Solution.widgetSlot= field and a first

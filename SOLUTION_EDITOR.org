@@ -9,7 +9,9 @@ The content format it authors: [[file:SOLUTION_INFO.org][SOLUTION_INFO.org]].
 =apps/editor= is the browser replacement for the legacy GWT
 =solution_editor= — an online-only authoring tool for the canonical
 =Solution= document (=packages/shared-types/src/solution.ts=) that
-the tutor reads. *We work on this next.*
+the tutor reads. *Real and in active use* — browse/search, create,
+and edit statement/MC question/steps all work; see Status below for
+what's still open.
 
 * Status — 2026-09-14: statement + MC question are editable
 
