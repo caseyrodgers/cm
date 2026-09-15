@@ -53,7 +53,7 @@ function renderRoute(route: ReturnType<typeof useHashRoute>) {
     case "solution":
       return <SolutionLoader pid={route.pid} />;
     case "test":
-      return <PracticeTest subjectId={route.subjectId} pid={route.pid} />;
+      return <PracticeTest subjectId={route.subjectId} pid={route.pid} startChapterKey={route.startChapterKey} />;
   }
 }
 

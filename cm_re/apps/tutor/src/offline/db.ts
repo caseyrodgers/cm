@@ -79,6 +79,8 @@ export type TestScope =
   | { kind: "random" }
   | { kind: "subject" }
   | { kind: "chapter"; chapterKey: string; label: string }
+  /** Two or more chapters combined into one test — "Combine chapters" in the picker. */
+  | { kind: "chapters"; chapterKeys: string[]; label: string }
   /** A review set built from problems missed on a previous test. */
   | { kind: "custom"; label: string };
 
@@ -100,11 +102,30 @@ export interface PracticeTest {
   completedAt: number | null;
 }
 
+/**
+ * Lifetime correct/answered tally for one chapter of one subject —
+ * accumulated (not overwritten) every time a test is finished, since
+ * `practiceTests` keeps only the single active/most-recent test per
+ * subject. This is what survives across tests to drive the per-chapter
+ * mastery view. See lib/chapterMastery.ts.
+ */
+export interface ChapterStat {
+  /** `${subjectId}::${chapterKey}` — primary key */
+  id: string;
+  subjectId: string;
+  chapterKey: string;
+  label: string;
+  correct: number;
+  answered: number;
+  updatedAt: number;
+}
+
 class CmDb extends Dexie {
   modules!: Table<InstalledModule, string>;
   solutions!: Table<Solution, string>;
   whiteboards!: Table<Whiteboard, string>;
   practiceTests!: Table<PracticeTest, string>;
+  chapterStats!: Table<ChapterStat, string>;
 
   constructor() {
     super("cm_re_tutor");
@@ -133,6 +154,14 @@ class CmDb extends Dexie {
       solutions: "pid, subjectId",
       whiteboards: "pid",
       practiceTests: "subjectId",
+    });
+    // v6: add the lifetime per-chapter mastery tally. Additive.
+    this.version(6).stores({
+      modules: "subjectId",
+      solutions: "pid, subjectId",
+      whiteboards: "pid",
+      practiceTests: "subjectId",
+      chapterStats: "id, subjectId",
     });
   }
 }

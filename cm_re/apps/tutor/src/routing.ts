@@ -14,11 +14,17 @@ import { useEffect, useState } from "react";
  *   #/me                this student's status + reset
  *
  * Within a subject / a solution:
- *   #/m/<subjectId>          a subject's problems (download + chapter list)
- *   #/s/<pid>                one solution, by its globally unique pid
- *   #/t/<subjectId>          a practice test for that subject
- *   #/t/<subjectId>/<pid>    a specific problem in the active "Missed
- *                            Questions Lesson" walkthrough
+ *   #/m/<subjectId>                a subject's problems (download + chapter list)
+ *   #/s/<pid>                      one solution, by its globally unique pid
+ *   #/t/<subjectId>                a practice test for that subject
+ *   #/t/<subjectId>/<pid>          a specific problem in the active "Missed
+ *                                  Questions Lesson" walkthrough
+ *   #/t/<subjectId>/chapter/<key>  land straight on a practice test for one
+ *                                  chapter — the "Practice this chapter"
+ *                                  shortcut from the subject's chapter list
+ *                                  (chapter is the primary way in; see
+ *                                  IDEAS.org "Make Chapter a high level
+ *                                  abstraction")
  */
 
 export type Route =
@@ -28,7 +34,7 @@ export type Route =
   | { kind: "me" }
   | { kind: "module"; subjectId: string }
   | { kind: "solution"; pid: string }
-  | { kind: "test"; subjectId: string; pid?: string };
+  | { kind: "test"; subjectId: string; pid?: string; startChapterKey?: string };
 
 export function parseHash(hash: string): Route {
   // Accept "#/m/x", "#m/x", "/m/x", "m/x" — normalise to segments.
@@ -40,6 +46,9 @@ export function parseHash(hash: string): Route {
   }
   if (segments[0] === "s" && segments[1]) {
     return { kind: "solution", pid: segments[1] };
+  }
+  if (segments[0] === "t" && segments[1] && segments[2] === "chapter" && segments[3]) {
+    return { kind: "test", subjectId: segments[1], startChapterKey: segments[3] };
   }
   if (segments[0] === "t" && segments[1]) {
     return { kind: "test", subjectId: segments[1], pid: segments[2] };
@@ -61,6 +70,9 @@ export const hashFor = {
     pid
       ? `#/t/${encodeURIComponent(subjectId)}/${encodeURIComponent(pid)}`
       : `#/t/${encodeURIComponent(subjectId)}`,
+  /** Land directly on a practice test for one chapter — see the route comment above. */
+  testChapter: (subjectId: string, chapterKey: string) =>
+    `#/t/${encodeURIComponent(subjectId)}/chapter/${encodeURIComponent(chapterKey)}`,
 };
 
 /** Navigate by setting the hash — the single source of truth; the hook below re-renders off `hashchange`. */

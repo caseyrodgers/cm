@@ -2,17 +2,18 @@ import { test, expect } from "@playwright/test";
 import { SUBJECT, installModule } from "../helpers";
 
 /**
- * "Show all problems" groups the list into collapsible chapter nodes,
- * each labelled with the topic name baked into the manifest
- * (ChapterNamer). Uses the real subject so there are named chapters —
- * @slow (846-solution install).
+ * The subject screen's chapter list (the primary way into an installed
+ * subject's content — see IDEAS.org "Make Chapter a high level
+ * abstraction") groups problems into collapsible chapter nodes, each
+ * labelled with the topic name baked into the manifest (ChapterNamer).
+ * Uses the real subject so there are named chapters — @slow
+ * (846-solution install).
  */
 test.describe("@slow chapter list", () => {
   test.slow();
 
   test("problems are grouped into collapsible, named chapter nodes", async ({ page }) => {
     await installModule(page, SUBJECT.real);
-    await page.getByRole("button", { name: /Show all \d+ problems/i }).click();
 
     const ch1 = page.getByRole("button", { name: /^\s*›?\s*Chapter 1: .+\d+$/ });
     await expect(ch1.first()).toBeVisible();

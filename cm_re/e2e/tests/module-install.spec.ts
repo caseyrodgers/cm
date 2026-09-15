@@ -26,7 +26,10 @@ test.describe("module install", () => {
     await expect(page.getByText(/Installed for offline use/i)).toBeVisible({ timeout: 60_000 });
     await expect(page.getByRole("button", { name: /Take a practice test/i })).toBeVisible();
     await expect(page.getByText(/pick when you start/i)).toBeVisible(); // the context label under it
-    await expect(page.getByRole("button", { name: /Show all \d+ problems/i })).toBeVisible();
+    // Chapter list is the primary way in and is shown by default now —
+    // no "show all problems" toggle to click first.
+    await expect(page.getByText("Chapters", { exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Practice" }).first()).toBeVisible();
 
     await page.getByRole("button", { name: /Remove download/i }).click();
     await page.getByTestId("app-dialog-confirm").click(); // custom "Remove download" dialog

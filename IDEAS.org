@@ -1,0 +1,152 @@
+#+TITLE: App value ideas
+#+DATE: 2026-09-06
+
+Grounded in what's already built (offline-first, per-subject modules, the
+whiteboard AI trio, and the stats already being tracked) rather than
+generic suggestions.
+
+* Learning effectiveness
+
+** Struggling-problems queue (spaced repetition)
+- [ ] DOIT
+Status: Not started
+Correct/wrong per pid is already tracked, and the missed-question lesson
+already builds a one-off review set right after a test. Turn that into
+an ongoing queue: problems missed recently resurface automatically after
+a few days, not just once at test-end. Reuses ~practiceTestStore~ and
+the existing ~TestScope: {kind: "custom"}~ path almost as-is.
+
+** Auto-explain on missed questions
+- [ ] DOIT
+Status: Not started
+On the score-review screen, offer "Explain what I got wrong" per wrong
+answer instead of making Learn something the student has to remember
+exists. Learn/AI explanation infra already shipped.
+
+** Per-chapter mastery view
+- [X] DOIT
+Status: Done (2026-09-14)
+~scorableCount~ and correctness are already computed per subject. Roll
+it up to a per-chapter % and surface "focus here next" on Hub or Me.
+Turns raw stats into an actual recommendation.
+
+Implementation notes: correctness data lived only in the single
+active/overwritten ~practiceTests~ row per subject, so there was no
+lifetime per-chapter history to roll up — added a new Dexie table
+(~chapterStats~, db v6) that accumulates correct/answered per
+~chapterOf()~ key every time a test finishes
+(~lib/chapterMastery.ts~, wired into ~PracticeTest.onFinish~). The
+~#/me~ screen (~StudentStatus~) now shows a collapsed "Focus: Chapter
+N (pct%)" hint per subject, expandable to a full worst-first bar
+breakdown; ~resetStats()~ clears it along with everything else.
+~tsc --noEmit~ and ~npm run build~ both clean.
+
+* Access & format
+
+** Text-to-speech on problem statements
+- [ ] DOIT
+Status: Not started
+Browser-native ~SpeechSynthesis~ reading problem statements and Learn
+explanations aloud. Zero new dependency, works fully offline. Real
+accessibility/auditory-learner win for minimal effort.
+
+** Printable practice sheets
+- [ ] DOIT
+Status: Not started
+Generate a print-friendly HTML view of a practice test. Content is
+already there (statements, choices). The legacy app had an
+~assignment_print/~ module — real prior demand for pen-and-paper
+practice.
+
+** Progress export/import file
+- [ ] DOIT
+Status: Not started
+The app is deliberately account-free (IndexedDB/localStorage only). A
+"save my progress to a file, load it on another device" button solves
+the real cross-device problem (school Chromebook vs. home device)
+without standing up any backend or account system.
+
+* Engagement
+
+** Timed / exam-simulation mode
+- [ ] DOIT
+Status: Not started
+A countdown option on practice tests. Useful specifically for
+placement-test-style content, where pacing is part of what's being
+assessed.
+
+** Daily streak
+- [ ] DOIT
+Status: Not started
+Trivial to build given the existing localStorage-tally pattern
+(~correctTotal~/~answeredTotal~/~viewedTotal~), and a proven low-effort
+retention lever.
+
+* Navigation & structure
+
+** Make Chapter a high level abstraction.
+- [X] DOIT
+Status: Done (2026-09-14)
+
+We want Chapter to be higher level selection.   On the tabs, etc.
+The user should choose chapter then the tests/problems.
+A full multi chapter test option can be provided as well.
+
+Implementation notes: a subject's screen (~ModuleDownloadPrompt~) now
+leads with its chapter list always shown (no more "Show all N
+problems" toggle hiding it) — chapter is the primary way in. Each
+chapter row got a "Practice" button that jumps straight into a test
+for that one chapter, via a new route
+(~#/t/<subjectId>/chapter/<key>~, ~hashFor.testChapter~) that
+auto-starts the test and then drops the segment from the URL.
+
+For the multi-chapter test: the practice-test picker's "By chapter"
+section gained a "Combine chapters" mode — checkboxes per chapter,
+"Start combined test" samples ~CHAPTER_SIZE~ from each checked
+chapter into one test. New ~TestScope~ variant
+(~{kind:"chapters", chapterKeys, label}~) carries it; ~testTitle()~
+and the score screen need no other changes since they already key off
+~scope.label~.
+
+Updated 2 e2e specs (~module-install~, ~chapter-list~) that asserted
+on the old "Show all N problems" toggle. Full e2e suite (37 specs, 1
+pre-existing skip) green; ~tsc --noEmit~ and ~npm run build~ clean.
+
+* Ongoing visual checks and change requests
+
+** Whiteboard Sketch AI
+If there are graphics on the problem statement, the outline of the graphic should be part of the Sketch.
+
+- [X] DOIT
+Status: Done (2026-09-14)
+
+Implementation notes: ~AiService.buildSkeleton~ (the "Sketch a starting
+point" prompt) was text-only — unlike ~getAIForProblem~ and
+~checkWork~, it never attached a problem's own images
+(~store.problemImagesFor~), so a legacy problem whose figure is
+authored as a picture rather than text gave the model nothing to draw
+from. It now loads and attaches those images (vision) the same way
+the other two endpoints do, and case (a) of the prompt (redraw a
+geometric figure) explicitly tells the model to trace the actual
+outline/proportions it sees in the image rather than substitute a
+generic shape. No client-side change needed — the request is still
+just ~GET /api/ai/skeleton/{pid}~; the server decides what to attach.
+
+Verified: backend compiles clean (~mvn compile~); full e2e suite (37
+specs, 1 pre-existing skip) still green — the two "Sketch a starting
+point" specs mock the network route directly, so they exercise the
+client contract, which is unchanged.
+   
+
+
+
+* Recommendation
+
+Start with the struggling-problems queue + per-chapter mastery view —
+both reuse data already being collected, need no new AI calls or
+architecture, and turn "here are some stats" into "here's what to do
+next." Text-to-speech is the best effort-to-value ratio for something
+small and self-contained.
+
+
+

@@ -25,6 +25,7 @@ import {
 } from "../../offline/practiceTestStore";
 import { solutionTitle } from "../../lib/solutionTitle";
 import { bumpCorrectTotal, bumpAnsweredTotal } from "../../lib/correctCount";
+import { recordChapterResults } from "../../lib/chapterMastery";
 import { orderPids, groupByChapter, chapterOf } from "../../lib/problemOrder";
 import { navigate, hashFor } from "../../routing";
 import { QuestionView, choiceLetter } from "../QuestionView";
@@ -78,7 +79,16 @@ function joinChapters(entries: { label: string; name: string }[]): string {
   return `${parts.join(", ")} review`;
 }
 
-export default function PracticeTest({ subjectId, pid }: { subjectId: string; pid?: string }) {
+export default function PracticeTest({
+  subjectId,
+  pid,
+  startChapterKey,
+}: {
+  subjectId: string;
+  pid?: string;
+  /** From `#/t/<subjectId>/chapter/<key>` — auto-starts that chapter's test instead of showing the picker. See routing.ts. */
+  startChapterKey?: string;
+}) {
   const [installed, setInstalled] = useState<boolean | null>(null);
   const [test, setTest] = useState<PracticeTestT | null | undefined>(undefined);
   const [allSolutions, setAllSolutions] = useState<Solution[] | null>(null);
@@ -87,6 +97,9 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
   const [busy, setBusy] = useState(false);
   // key -> baked-in topic name from the installed manifest ("" if none)
   const [chapterNames, setChapterNames] = useState<Map<string, string>>(new Map());
+  // "Combine chapters" picker state — see the By-chapter section below.
+  const [combineMode, setCombineMode] = useState(false);
+  const [selectedChapters, setSelectedChapters] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     getInstalledManifest(subjectId).then((m) =>
@@ -161,6 +174,45 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
     [subjectId]
   );
 
+  // #/t/<subjectId>/chapter/<key> — land straight on that chapter's test
+  // instead of the picker (the "Practice this chapter" shortcut from the
+  // subject's chapter list). Fires once, when the picker's data is ready
+  // and there's no active test yet; then drops the chapter segment from
+  // the URL so a refresh doesn't restart the test.
+  useEffect(() => {
+    if (!startChapterKey || test !== null || chapters.length === 0) return;
+    const group = chapters.find((g) => g.chapter.key === startChapterKey);
+    if (!group) {
+      navigate(hashFor.test(subjectId)); // unknown key — fall back to the picker
+      return;
+    }
+    const display = chapterDisplay(group.chapter.label, chapterNames.get(group.chapter.key));
+    begin(sample(group.pids, CHAPTER_SIZE), { kind: "chapter", chapterKey: group.chapter.key, label: display }, allSolutions ?? []).then(
+      () => navigate(hashFor.test(subjectId))
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startChapterKey, test, chapters]);
+
+  function toggleChapterSelect(key: string) {
+    setSelectedChapters((prev) => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+  }
+
+  /** "Combine chapters": one test drawn from every checked chapter, CHAPTER_SIZE questions from each. */
+  async function startCombined(pool: Solution[]) {
+    const chosen = chapters.filter((g) => selectedChapters.has(g.chapter.key));
+    if (chosen.length === 0) return;
+    const pids = chosen.flatMap((g) => sample(g.pids, CHAPTER_SIZE));
+    const labels = chosen.map((g) => chapterDisplay(g.chapter.label, chapterNames.get(g.chapter.key)));
+    const label = labels.length <= 3 ? labels.join(" + ") : `${chosen.length} chapters`;
+    await begin(pids, { kind: "chapters", chapterKeys: chosen.map((g) => g.chapter.key), label }, pool);
+    setCombineMode(false);
+    setSelectedChapters(new Set());
+  }
+
   async function onAnswer(pid: string, selectedIndex: number, correct: boolean | null) {
     await recordAnswer(subjectId, pid, { selectedIndex, correct });
     setTest((t) => (t ? { ...t, answers: { ...t.answers, [pid]: { selectedIndex, correct } } } : t));
@@ -185,6 +237,7 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
       const { correct, answered } = scoreTest(test);
       bumpCorrectTotal(correct);
       bumpAnsweredTotal(answered);
+      await recordChapterResults(subjectId, test.pids, test.answers);
     }
     await finishTest(subjectId);
     setTest((t) => (t ? { ...t, completedAt: Date.now() } : t));
@@ -309,32 +362,62 @@ export default function PracticeTest({ subjectId, pid }: { subjectId: string; pi
             Whole subject test — all {scorablePids.length} problems
           </Button>
 
-          <p className="mb-2 text-sm font-medium text-slate-700">By chapter ({CHAPTER_SIZE} questions each)</p>
+          <div className="mb-2 flex items-center justify-between">
+            <p className="text-sm font-medium text-slate-700">By chapter ({CHAPTER_SIZE} questions each)</p>
+            <button
+              type="button"
+              className="text-xs text-blue-600 hover:underline"
+              onClick={() => {
+                setCombineMode((v) => !v);
+                setSelectedChapters(new Set());
+              }}
+            >
+              {combineMode ? "Cancel" : "Combine chapters"}
+            </button>
+          </div>
           <List>
             {chapters.map(({ chapter, pids }) => {
               const display = chapterDisplay(chapter.label, chapterNames.get(chapter.key));
+              const label = (
+                <span className="flex flex-col">
+                  <span>{display}</span>
+                  {isCourseTest(chapter.key) && (
+                    <span className="text-xs font-normal text-slate-400">{COURSE_TEST_BLURB}</span>
+                  )}
+                </span>
+              );
+              if (combineMode) {
+                const checked = selectedChapters.has(chapter.key);
+                return (
+                  <ListItemButton key={chapter.key} onClick={() => toggleChapterSelect(chapter.key)}>
+                    <span className="flex items-center gap-2">
+                      <input type="checkbox" checked={checked} readOnly className="pointer-events-none" />
+                      {label}
+                    </span>
+                    <span className="shrink-0 self-start text-xs text-slate-400">{pids.length} available</span>
+                  </ListItemButton>
+                );
+              }
               return (
                 <ListItemButton
                   key={chapter.key}
-                  onClick={() =>
-                    begin(
-                      sample(pids, CHAPTER_SIZE),
-                      { kind: "chapter", chapterKey: chapter.key, label: display },
-                      pool
-                    )
-                  }
+                  onClick={() => begin(sample(pids, CHAPTER_SIZE), { kind: "chapter", chapterKey: chapter.key, label: display }, pool)}
                 >
-                  <span className="flex flex-col">
-                    <span>{display}</span>
-                    {isCourseTest(chapter.key) && (
-                      <span className="text-xs font-normal text-slate-400">{COURSE_TEST_BLURB}</span>
-                    )}
-                  </span>
+                  {label}
                   <span className="shrink-0 self-start text-xs text-slate-400">{pids.length} available</span>
                 </ListItemButton>
               );
             })}
           </List>
+          {combineMode && (
+            <Button
+              className="mt-2 w-full"
+              disabled={busy || selectedChapters.size === 0}
+              onClick={() => startCombined(pool)}
+            >
+              Start combined test — {selectedChapters.size} chapter{selectedChapters.size === 1 ? "" : "s"}
+            </Button>
+          )}
         </CardContent>
       </Card>
     );

@@ -9,6 +9,7 @@ import {
   resetViewedTotal,
 } from "./correctCount";
 import { scoreTest, testTitle } from "../offline/practiceTestStore";
+import { getChapterMastery, resetChapterMastery, type ChapterMastery } from "./chapterMastery";
 
 /**
  * The current student is whoever's using this browser — everything is
@@ -31,6 +32,8 @@ export interface SubjectStat {
     total: number;
     answered: number;
   };
+  /** Lifetime per-chapter mastery, worst-first. Empty when no test for this subject has ever been finished. */
+  chapters: ChapterMastery[];
 }
 
 export interface StudentStats {
@@ -59,7 +62,12 @@ export async function getStudentStats(): Promise<StudentStats> {
   // Every subject we know about, from either source.
   const ids = new Set<string>([...titleById.keys(), ...installedById.keys(), ...testById.keys()]);
 
-  const subjects: SubjectStat[] = [...ids].sort().map((subjectId) => {
+  const sortedIds = [...ids].sort();
+  const chaptersById = new Map(
+    await Promise.all(sortedIds.map(async (id): Promise<[string, ChapterMastery[]]> => [id, await getChapterMastery(id)]))
+  );
+
+  const subjects: SubjectStat[] = sortedIds.map((subjectId) => {
     const mod = installedById.get(subjectId);
     const t = testById.get(subjectId);
     const stat: SubjectStat = {
@@ -67,6 +75,7 @@ export async function getStudentStats(): Promise<StudentStats> {
       title: titleById.get(subjectId) ?? subjectId,
       installed: !!mod,
       approxSizeBytes: mod?.approxSizeBytes ?? 0,
+      chapters: chaptersById.get(subjectId) ?? [],
     };
     if (t) {
       const s = scoreTest(t);
@@ -136,8 +145,9 @@ export async function resetStats(): Promise<void> {
   resetCorrectTotal();
   resetAnsweredTotal();
   resetViewedTotal();
-  await db.transaction("rw", db.practiceTests, db.whiteboards, async () => {
+  await db.transaction("rw", db.practiceTests, db.whiteboards, db.chapterStats, async () => {
     await db.practiceTests.clear();
     await db.whiteboards.clear();
+    await resetChapterMastery();
   });
 }

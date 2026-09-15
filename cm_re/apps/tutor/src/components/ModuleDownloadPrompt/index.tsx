@@ -44,7 +44,6 @@ export default function ModuleDownloadPrompt({
   const [installed, setInstalled] = useState(false);
   const [hasUpdate, setHasUpdate] = useState(false);
   const [solutions, setSolutions] = useState<Solution[] | null>(null); // null = not fetched yet
-  const [showAll, setShowAll] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [activeTest, setActiveTest] = useState<PracticeTest | null>(null);
 
@@ -64,16 +63,18 @@ export default function ModuleDownloadPrompt({
     }
   }, [installed, subjectId]);
 
-  // The full solution list (all 846, for the real subject) is only
-  // fetched once the student actually asks to see it — the practice
-  // test is the default path and doesn't need it.
+  // The full solution list (all 846, for the real subject) backs the
+  // chapter list below, which is the primary way into an installed
+  // subject's content — see IDEAS.org "Make Chapter a high level
+  // abstraction". Read from IndexedDB (already downloaded), so this is
+  // local, not a network fetch.
   useEffect(() => {
-    if (installed && showAll && solutions === null) {
+    if (installed && solutions === null) {
       getSolutionsForModule(subjectId).then((list) =>
         setSolutions([...list].sort((a, b) => compareProblems(a.pid, b.pid, subjectId)))
       );
     }
-  }, [installed, showAll, solutions, subjectId]);
+  }, [installed, solutions, subjectId]);
 
   async function handleDownload() {
     setStatus("downloading");
@@ -102,7 +103,6 @@ export default function ModuleDownloadPrompt({
       setInstalled(false);
       setHasUpdate(false);
       setSolutions(null);
-      setShowAll(false);
       setActiveTest(null);
       setStatus("idle");
     } catch {
@@ -128,33 +128,30 @@ export default function ModuleDownloadPrompt({
           <>
             <p className="mb-3 text-sm font-medium text-green-700">&#10003; Installed for offline use.</p>
 
-            {/* Two ways into a subject's problems: a practice test (the
-                default path), or the complete list on demand. */}
-            <div className="mb-3 space-y-2">
-              <div>
-                <Button className="w-full" onClick={() => navigate(hashFor.test(subjectId))}>
-                  {practiceTestCta(activeTest)} &rarr;
-                </Button>
-                <p className="mt-1 rounded-md bg-slate-50 px-3 py-1.5 text-xs text-slate-500">
-                  {practiceTestContext(activeTest)}
-                </p>
-              </div>
-              <Button variant="outline" className="w-full" onClick={() => setShowAll((v) => !v)}>
-                {showAll ? "Hide full problem list" : `Show all ${manifest.solutionIds.length} problems`}
+            {/* A subject-wide quick option stays available above the
+                chapter list, but chapter is the primary way in — pick a
+                chapter, then practice it or browse its problems. See
+                IDEAS.org "Make Chapter a high level abstraction". */}
+            <div className="mb-3">
+              <Button className="w-full" onClick={() => navigate(hashFor.test(subjectId))}>
+                {practiceTestCta(activeTest)} &rarr;
               </Button>
+              <p className="mt-1 rounded-md bg-slate-50 px-3 py-1.5 text-xs text-slate-500">
+                {practiceTestContext(activeTest)}
+              </p>
             </div>
 
-            {showAll &&
-              (solutions === null ? (
-                <Spinner />
-              ) : (
-                <ChapterList
-                  solutions={solutions}
-                  subjectId={subjectId}
-                  chapters={manifest.chapters}
-                  onOpenSolution={onOpenSolution}
-                />
-              ))}
+            <p className="mb-2 text-sm font-medium text-slate-700">Chapters</p>
+            {solutions === null ? (
+              <Spinner />
+            ) : (
+              <ChapterList
+                solutions={solutions}
+                subjectId={subjectId}
+                chapters={manifest.chapters}
+                onOpenSolution={onOpenSolution}
+              />
+            )}
 
             {hasUpdate && (
               <Button className="mt-3 w-full" onClick={handleDownload} disabled={status === "downloading"}>
@@ -243,18 +240,27 @@ function ChapterList({
         const isOpen = open.has(chapter.key);
         return (
           <div key={chapter.key}>
-            <button
-              type="button"
-              aria-expanded={isOpen}
-              onClick={() => toggle(chapter.key)}
-              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium text-slate-800 hover:bg-slate-50"
-            >
-              <span aria-hidden className={`text-slate-400 transition-transform ${isOpen ? "rotate-90" : ""}`}>
-                &rsaquo;
-              </span>
-              <span className="flex-1">{chapterDisplay(chapter.label, nameOf(chapter.key))}</span>
-              <span className="text-xs font-normal text-slate-400">{pids.length}</span>
-            </button>
+            <div className="flex items-center gap-2 px-3 py-2">
+              <button
+                type="button"
+                aria-expanded={isOpen}
+                onClick={() => toggle(chapter.key)}
+                className="flex flex-1 items-center gap-2 text-left text-sm font-medium text-slate-800 hover:text-slate-900"
+              >
+                <span aria-hidden className={`text-slate-400 transition-transform ${isOpen ? "rotate-90" : ""}`}>
+                  &rsaquo;
+                </span>
+                <span className="flex-1">{chapterDisplay(chapter.label, nameOf(chapter.key))}</span>
+                <span className="text-xs font-normal text-slate-400">{pids.length}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate(hashFor.testChapter(subjectId, chapter.key))}
+                className="shrink-0 rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Practice
+              </button>
+            </div>
             {isCourseTest(chapter.key) && (
               <p className="px-3 pb-2 text-xs text-slate-400">{COURSE_TEST_BLURB}</p>
             )}
