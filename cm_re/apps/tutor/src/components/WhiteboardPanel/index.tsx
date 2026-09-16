@@ -121,8 +121,195 @@ function loadOpacity(): number {
 
 type AiStatus = "idle" | "loading" | "done" | "error";
 
+type CalcOp = "+" | "-" | "×" | "÷";
+
+/** Classic four-function calculator arithmetic — no eval(), just the operator switch. */
+function calcApply(a: number, b: number, op: CalcOp): number {
+  switch (op) {
+    case "+":
+      return a + b;
+    case "-":
+      return a - b;
+    case "×":
+      return a * b;
+    case "÷":
+      return b === 0 ? NaN : a / b;
+  }
+}
+
+/** Trims binary floating-point noise (0.1+0.2 -> "0.3", not "0.30000000000000004") without truncating a genuinely long result; NaN/Infinity (e.g. divide by zero) becomes a readable "Error". */
+function formatCalcResult(n: number): string {
+  if (!Number.isFinite(n)) return "Error";
+  if (Number.isInteger(n)) return String(n);
+  return String(parseFloat(n.toPrecision(12)));
+}
+
+/**
+ * A basic on-screen calculator floating over the board — "IDEAS.org"
+ * (Casey: "Add a Calculator to the whiteboard"). Deliberately has no
+ * connection to the drawing surface (no strokes, no persistence, no
+ * undo stack) — it's scratch arithmetic while working a problem, reset
+ * whenever it's closed and reopened, same lifecycle as the AI result
+ * panels below it. Standard accumulator/pending-operator state
+ * machine: pressing an operator resolves whatever's pending first, so
+ * chained entry ("12 + 5 - 3 =") works left-to-right like every
+ * pocket calculator, not like a full expression evaluator.
+ */
+function Calculator({ onClose }: { onClose: () => void }) {
+  const [display, setDisplay] = useState("0");
+  const [accumulator, setAccumulator] = useState<number | null>(null);
+  const [pendingOp, setPendingOp] = useState<CalcOp | null>(null);
+  // True right after an operator/equals/percent — the next digit starts a fresh number instead of appending.
+  const [overwrite, setOverwrite] = useState(false);
+
+  function pressDigit(d: string) {
+    setDisplay((prev) => {
+      if (overwrite) return d;
+      if (prev === "0") return d;
+      return prev.length >= 14 ? prev : prev + d; // guard against runaway display width, not a real precision limit
+    });
+    setOverwrite(false);
+  }
+
+  function pressDot() {
+    setDisplay((prev) => {
+      if (overwrite) return "0.";
+      return prev.includes(".") ? prev : prev + ".";
+    });
+    setOverwrite(false);
+  }
+
+  function pressOp(op: CalcOp) {
+    const current = parseFloat(display);
+    if (pendingOp && accumulator !== null && !overwrite) {
+      const result = calcApply(accumulator, current, pendingOp);
+      setAccumulator(result);
+      setDisplay(formatCalcResult(result));
+    } else {
+      setAccumulator(current);
+    }
+    setPendingOp(op);
+    setOverwrite(true);
+  }
+
+  function pressEquals() {
+    if (pendingOp === null || accumulator === null) return;
+    setDisplay(formatCalcResult(calcApply(accumulator, parseFloat(display), pendingOp)));
+    setAccumulator(null);
+    setPendingOp(null);
+    setOverwrite(true);
+  }
+
+  function pressClear() {
+    setDisplay("0");
+    setAccumulator(null);
+    setPendingOp(null);
+    setOverwrite(false);
+  }
+
+  function pressBackspace() {
+    if (overwrite) return;
+    setDisplay((prev) => (prev.length <= 1 ? "0" : prev.slice(0, -1)));
+  }
+
+  function pressSign() {
+    setDisplay((prev) => (prev.startsWith("-") ? prev.slice(1) : prev === "0" ? prev : "-" + prev));
+  }
+
+  function pressPercent() {
+    setDisplay(formatCalcResult(parseFloat(display) / 100));
+    setOverwrite(true);
+  }
+
+  const numBtn =
+    "rounded-md border border-slate-200 bg-white py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 active:bg-slate-100";
+  const opBtn =
+    "rounded-md border border-blue-200 bg-blue-50 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-100 active:bg-blue-200";
+
+  return (
+    <div className="absolute right-2 top-20 z-40 w-56 rounded-lg border border-slate-300 bg-white p-2 shadow-xl">
+      <div className="mb-1 flex items-center justify-between">
+        <span className="text-xs font-medium text-slate-500">Calculator</span>
+        <button
+          type="button"
+          aria-label="close calculator"
+          onClick={onClose}
+          className="rounded px-1.5 py-0.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+        >
+          ✕
+        </button>
+      </div>
+      <div
+        data-testid="calc-display"
+        className="mb-2 overflow-x-auto rounded-md bg-slate-100 px-2 py-2 text-right font-mono text-xl tabular-nums text-slate-900"
+      >
+        {display}
+      </div>
+      <div className="grid grid-cols-4 gap-1">
+        <button type="button" className={numBtn} onClick={pressClear}>
+          C
+        </button>
+        <button type="button" className={numBtn} onClick={pressBackspace} aria-label="backspace">
+          ⌫
+        </button>
+        <button type="button" className={numBtn} onClick={pressPercent}>
+          %
+        </button>
+        <button type="button" className={opBtn} onClick={() => pressOp("÷")}>
+          ÷
+        </button>
+
+        {(["7", "8", "9"] as const).map((d) => (
+          <button key={d} type="button" className={numBtn} onClick={() => pressDigit(d)}>
+            {d}
+          </button>
+        ))}
+        <button type="button" className={opBtn} onClick={() => pressOp("×")}>
+          ×
+        </button>
+
+        {(["4", "5", "6"] as const).map((d) => (
+          <button key={d} type="button" className={numBtn} onClick={() => pressDigit(d)}>
+            {d}
+          </button>
+        ))}
+        <button type="button" className={opBtn} onClick={() => pressOp("-")}>
+          -
+        </button>
+
+        {(["1", "2", "3"] as const).map((d) => (
+          <button key={d} type="button" className={numBtn} onClick={() => pressDigit(d)}>
+            {d}
+          </button>
+        ))}
+        <button type="button" className={opBtn} onClick={() => pressOp("+")}>
+          +
+        </button>
+
+        <button type="button" className={numBtn} onClick={pressSign} aria-label="toggle sign">
+          ±
+        </button>
+        <button type="button" className={numBtn} onClick={() => pressDigit("0")}>
+          0
+        </button>
+        <button type="button" className={numBtn} onClick={pressDot}>
+          .
+        </button>
+        <button
+          type="button"
+          className="rounded-md bg-blue-600 py-2 text-sm font-semibold text-white hover:bg-blue-700 active:bg-blue-800"
+          onClick={pressEquals}
+        >
+          =
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function WhiteboardPanel({ pid }: { pid: string }) {
   const [open, setOpen] = useState(false);
+  const [calcOpen, setCalcOpen] = useState(false);
   const [color, setColor] = useState<string>(PEN_COLORS[0]);
   const [strokeCount, setStrokeCount] = useState(0);
   const [historyCount, setHistoryCount] = useState(0);
@@ -427,6 +614,13 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
               <Button variant="outline" onClick={clearAll} disabled={strokeCount === 0}>
                 Clear
               </Button>
+              <Button
+                variant={calcOpen ? "default" : "outline"}
+                onClick={() => setCalcOpen((v) => !v)}
+                aria-pressed={calcOpen}
+              >
+                🧮 Calc
+              </Button>
               <button
                 type="button"
                 aria-label="close whiteboard"
@@ -457,6 +651,8 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
               {Math.round(((opacityToVisibility(opacity) - MIN_OPACITY) / (MAX_OPACITY - MIN_OPACITY)) * 100)}%
             </span>
           </div>
+
+          {calcOpen && <Calculator onClose={() => setCalcOpen(false)} />}
 
           <div className="flex-1 overflow-y-auto p-2">
             <canvas

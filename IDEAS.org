@@ -121,6 +121,30 @@ up the fresh code. Worth remembering whenever a change "isn't showing
 up" in e2e results despite being in the source.
 
 
+** Add a Calculator to the whiteboard
+- [X] DOIT
+Status: Done (2026-09-16)
+
+A basic on-screen calculator floating over the whiteboard for scratch
+arithmetic while working a problem.
+
+Implementation notes: a new "🧮 Calc" toggle in the whiteboard's
+toolbar (next to Undo/Clear) opens a small floating panel
+(~WhiteboardPanel~'s own ~Calculator~ component) positioned top-right
+over the canvas, dismissible with its own ✕ — same lifecycle as the
+AI result panels next to it (no persistence, resets each time it's
+closed and reopened). Standard four-function accumulator/pending-
+operator state machine (no ~eval~), so chained entry
+("12 + 5 - 7 =") resolves left-to-right like a real pocket calculator.
+Divide-by-zero and other non-finite results render as "Error" rather
+than leaking "NaN"/"Infinity". Deliberately has zero connection to the
+drawing surface — no strokes, no undo-stack entry, no IndexedDB write.
+
+Verified: a real headless-browser run confirmed 12+5=17, then chained
+17-7=10, then 9÷0="Error", closing it leaves the (empty) board
+untouched. Added a permanent e2e case to ~whiteboard.spec.ts~. Full
+e2e suite (39 passed / 3 AI-gated skips) green; ~tsc --noEmit~ clean.
+
 ** On Timed test, we should have the timer visible as it counts down.
 - [X] DOIT
 Status: Done (already covered) — the countdown badge (~⏱ mm:ss~, turns

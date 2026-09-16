@@ -254,4 +254,37 @@ test.describe("whiteboard", () => {
     await expect(page.getByText("Nothing to sketch for this problem.")).toBeVisible();
     await expect(page.getByRole("button", { name: /^Whiteboard$/ })).toBeVisible(); // no strokes added
   });
+
+  test("Calculator — chained ops, divide by zero, dismissible without touching the board", async ({ page }) => {
+    await page.getByRole("button", { name: /^Whiteboard/ }).click();
+    await page.getByRole("button", { name: /Calc/i }).click();
+
+    const display = page.getByTestId("calc-display");
+    const press = (label: string) => page.getByRole("button", { name: label, exact: true }).click();
+
+    // Chained entry, left-to-right like a pocket calculator: (12 + 5) - 7 = 10
+    await press("1");
+    await press("2");
+    await press("+");
+    await press("5");
+    await press("=");
+    await expect(display).toHaveText("17");
+    await press("-");
+    await press("7");
+    await press("=");
+    await expect(display).toHaveText("10");
+
+    // Divide by zero reads as "Error", not NaN/Infinity leaking through.
+    await press("C");
+    await press("9");
+    await press("÷");
+    await press("0");
+    await press("=");
+    await expect(display).toHaveText("Error");
+
+    // Closing the calculator doesn't touch the (empty) board underneath.
+    await page.getByRole("button", { name: "close calculator" }).click();
+    await expect(display).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /^Whiteboard$/ })).toBeVisible();
+  });
 });
