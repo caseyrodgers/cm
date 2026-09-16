@@ -1,0 +1,184 @@
+#+TITLE: Catchup Math — Marketing Ideas
+#+STARTUP: overview
+
+Doc index: [[file:PROJECT.org][PROJECT.org]]. Grounded in the actual legacy
+business model (=src/main/webapp=: pricing pages, faculty-friendly page,
+admin getting-started guide) and the real new capabilities landing in
+[[file:cm_re/][cm_re]] (the rewrite) — not generic EdTech-marketing filler.
+
+* Where this starts from (context, not guessed)
+
+- Existing business model, real and already running: *B2B* school/
+  college licensing (=cm-purchase.html=, a School/College Price List,
+  per-student licenses, a *free 60-day pilot* program with no
+  obligation) plus *B2C* self-pay personal licenses (3- and 12-month
+  terms) and a college self-pay tier.
+- Existing selling points already in the legacy marketing pages
+  (=faculty_friendly.html=): ease of self-registration (a school
+  login name + a program-name password, or =QUIZME= for
+  diagnostic-quiz placement), the online whiteboard as *qualitative*
+  assessment ("see their work, not just their answer"), and a
+  support-heavy pitch (account managers, a two-page getting-started
+  guide, teacher FAQ, training videos).
+- What's *new* in the rewrite (=cm_re=) that the legacy marketing
+  never had to sell: a real installable offline PWA (works with zero
+  connectivity once a subject is downloaded — a genuine Chromebook/
+  spotty-wifi story, not a claim), live AI-tutor explanations tuned
+  to a chosen grade level ("Learn — explain this problem") with
+  follow-up Q&A, an AI-graded whiteboard trio (sketch a starting
+  point, check my work, read back what I wrote), timed exam-simulation
+  practice tests, and per-chapter mastery tracking that turns raw
+  stats into "focus here next."
+- Net: the rewrite isn't just a technical modernization, it's a
+  genuinely new pitch — "the AI tutor that still works when the wifi
+  doesn't" — that the current site and sales materials don't say yet.
+
+* The core opportunity: re-launch the pitch, not just the app
+
+The single highest-leverage marketing move is timing a *relaunch
+narrative* to the rewrite's ship date rather than quietly swapping the
+tech underneath the same old pages. "Same Catchup Math, quietly
+rebuilt" wastes the best story available. Concretely:
+
+- A dated "What's New" / relaunch page (and matching email to every
+  existing school + personal-license customer) leading with AI
+  explanations + true offline support, not "we modernized our stack."
+- Retire "GWT-era" screenshots and language on the marketing site —
+  anything visual (login flow, whiteboard, subject picker) should be
+  re-shot from =cm_re= before any campaign spends money driving
+  traffic to a page showing the old UI.
+
+* B2B — schools, districts, colleges
+
+- *Revive and re-market the free 60-day pilot*, but lead with the new
+  hook: "no wifi, no problem — try it in the one classroom/lab where
+  your Chromebooks always drop signal." IT/purchasing objections
+  about offline reliability are a real, specific pain point this
+  product now actually solves; say so by name.
+- *One-page "what changed for administrators" sheet* alongside the
+  existing two-page Getting Started Guide — reassure existing
+  licensees the rewrite doesn't change their rostering/login flow
+  (school login name + program-name password, =QUIZME= placement)
+  even though the UI is new.
+- *Case study from an existing pilot/customer*, specifically
+  quantifying the whiteboard's "qualitative assessment" angle plus a
+  chapter-mastery screenshot — "we could finally see where kids were
+  actually stuck, not just their final score."
+- *District/state math-intervention or ESSER-style funding angle*:
+  remedial/catch-up math products often qualify for intervention
+  budget lines separate from general curriculum spend — worth a
+  one-pager mapping Catchup Math's features to common intervention
+  funding criteria (progress monitoring, diagnostic placement,
+  individualized pacing).
+- *Conference/webinar presence* timed to the relaunch — the legacy
+  page already promises "we'll do webinars," so a live "see the new
+  AI tutor" webinar for existing account managers' contact lists is a
+  near-zero-cost win using a channel that already exists.
+
+* B2C — parents, students, homeschoolers, self-pay adults
+
+- *Homeschool-specific landing page.* Homeschool families are a
+  strong existing fit for "offline PWA + AI tutor tuned to grade
+  level + timed practice tests" and are a distinct, addressable
+  community (homeschool co-ops, curriculum fairs, homeschool
+  Facebook groups/forums) mostly untouched by the current B2B-leaning
+  marketing.
+- *"Placement Test" as a free top-of-funnel hook* — the product
+  already ships a =placement= subject module. A free, no-signup
+  "find out what grade level you're actually at" placement quiz is a
+  classic lead magnet for the anxious-parent search query ("is my
+  kid behind in math").
+- *Back-to-school and post-report-card seasonality* — paid search /
+  social spend concentrated at back-to-school (Aug–Sep) and right
+  after report cards go out (a natural "my kid needs help NOW"
+  moment), rather than spread flat all year.
+- *Summer-slide positioning* — "catch up before next year starts" is
+  almost the product's name already; a dedicated summer campaign
+  writes itself.
+- *Before/after screenshots of the AI "Learn" explanation* set to a
+  student's own grade level — this is genuinely novel enough
+  (competitors mostly show static worked solutions) to be the hero
+  visual in ads, not buried in a features list.
+
+* Content & SEO
+
+- *"Is my [grade] grader behind in math" / "math placement test
+  online free"* type search terms map directly to the free placement
+  quiz above — high-intent, low-competition long-tail queries most
+  big EdTech players don't bother targeting specifically.
+- *Parent-facing blog/content on specific stuck points* ("why does my
+  kid get quadratic equations but not word problems") that quietly
+  demonstrates the AI explanation feature via embedded examples.
+- *Teacher-facing content* on using diagnostic placement + chapter
+  mastery for intervention groups — repurpose existing admin
+  documentation into shareable, SEO-indexed pages instead of
+  PDF/gated guides only existing customers see.
+
+* Partnerships & channels
+
+- *Tutoring centers and learning centers* as a channel, not just a
+  competitor — offer Catchup Math as the "homework/practice between
+  sessions" companion product a tutoring center can white-label or
+  bundle, extending value between paid in-person sessions.
+- *School counselors / intervention specialists* as a distinct buyer
+  persona from classroom teachers — they're often the ones actually
+  searching for remediation tools for specific struggling students.
+- *Homeschool curriculum bundlers/co-ops* — cross-listing or bundle
+  deals with complementary homeschool curriculum providers.
+
+* Low-cost / quick-win tactics
+
+- *Re-engage every existing licensee* (school + personal) with the
+  relaunch email above — zero acquisition cost, warm audience,
+  natural renewal-conversation trigger.
+- *Testimonials/reviews refresh* — solicit updated reviews/quotes
+  from existing pilot schools specifically about the new AI features,
+  for both the website and any paid-search ad copy.
+- *"Free pilot" as the ad itself* — a B2B paid-search/LinkedIn
+  campaign whose entire offer is the existing no-obligation 60-day
+  pilot, which already removes the biggest objection (cost, without
+  proof) for a district considering a new tool.
+
+* Bigger bets (longer-term, needs more validation first)
+
+- *Freemium self-pay tier* — a limited free version (e.g. one subject,
+  or placement-test-only) to build a self-serve funnel parallel to
+  the school-sales motion, letting individual parents/students
+  convert without ever talking to an account manager.
+- *App-store-style PWA install prompts* leaning into "installs like a
+  real app, no App Store needed" — useful messaging specifically for
+  school IT departments that restrict native app installs but allow
+  PWAs.
+- *Referral program* for existing personal-license families — a
+  "give a free month, get a free month" mechanic is cheap to build
+  and fits a self-pay subscription model well.
+
+* Messaging / positioning starting points
+
+- "The math tutor that still works when the wifi doesn't."
+- "Show your work — an AI whiteboard tutor that checks *how* you got
+  there, not just the answer."
+- "Find out exactly where you're stuck, in five minutes, for free."
+  (placement-quiz lead magnet)
+- "Catch up before the school year catches up with you." (summer-slide
+  angle)
+
+* Things to be careful about
+
+- Don't oversell "AI" in a way the product can't back up live — the
+  AI explanation/whiteboard-feedback paths already have a documented
+  placeholder fallback when no API key / service is unavailable
+  (see =AiService.java=); any campaign demo must be run against a
+  live-key environment, not the placeholder path, or it undersells
+  the feature by showing the degraded state.
+- Any offline/Chromebook claim in ad copy should be verified against
+  the actual current e2e-tested behavior before it ships in a
+  campaign — see [[file:IDEAS.org][IDEAS.org]] and
+  [[file:NEW_DIRECTION.org][NEW_DIRECTION.org]] for what's actually
+  shipped vs. still in progress at any given time.
+- FERPA/COPPA/student-data messaging matters a lot more to B2B
+  (district) buyers than B2C parents — any new "AI" messaging aimed
+  at schools should be paired with a plain-English data-handling
+  statement (what's sent to the AI service, what's stored where),
+  since "AI" + "student data" is now a default objection in district
+  procurement conversations.
