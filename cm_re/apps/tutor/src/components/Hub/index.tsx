@@ -80,7 +80,7 @@ export default function Hub() {
                   (s.installed ? "downloaded" : "not downloaded") +
                   (s.approxSizeBytes != null ? ` · ${formatSize(s.approxSizeBytes)}` : "")
                 }
-                className="relative flex aspect-square flex-col items-center justify-center gap-0.5 rounded-lg border border-slate-200 bg-white p-1.5 text-center shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50"
+                className="relative flex aspect-square flex-col items-start justify-start gap-0.5 rounded-lg border border-slate-200 bg-white p-1 text-left shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50"
               >
                 <span
                   className={
@@ -89,7 +89,7 @@ export default function Hub() {
                   }
                   aria-hidden
                 />
-                <span aria-hidden className="text-4xl leading-none">
+                <span aria-hidden className="text-5xl leading-none">
                   {subjectIcon(s.subjectId)}
                 </span>
                 <span className="line-clamp-2 text-[11px] font-medium leading-tight text-slate-800">
