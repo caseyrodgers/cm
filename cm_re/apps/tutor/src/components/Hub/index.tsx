@@ -69,28 +69,31 @@ export default function Hub() {
         {!subjects ? (
           <Spinner />
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-4 gap-2">
             {subjects.map((s) => (
               <button
                 key={s.subjectId}
                 onClick={() => navigate(hashFor.module(s.subjectId))}
-                className="relative flex aspect-square flex-col items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white p-3 text-center shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50"
+                title={
+                  s.title +
+                  " — " +
+                  (s.installed ? "downloaded" : "not downloaded") +
+                  (s.approxSizeBytes != null ? ` · ${formatSize(s.approxSizeBytes)}` : "")
+                }
+                className="relative flex aspect-square flex-col items-center justify-center gap-0.5 rounded-lg border border-slate-200 bg-white p-1.5 text-center shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50"
               >
                 <span
                   className={
-                    "absolute right-2 top-2 h-2.5 w-2.5 rounded-full " +
+                    "absolute right-1 top-1 h-1.5 w-1.5 rounded-full " +
                     (s.installed ? "bg-green-500" : "bg-slate-300")
                   }
                   aria-hidden
-                  title={s.installed ? "downloaded" : "not downloaded"}
                 />
-                <span aria-hidden className="text-5xl leading-none">
+                <span aria-hidden className="text-2xl leading-none">
                   {subjectIcon(s.subjectId)}
                 </span>
-                <span className="mt-1 line-clamp-2 text-sm font-medium text-slate-800">{s.title}</span>
-                <span className="flex items-center gap-1 text-xs text-slate-400">
-                  <span>{s.installed ? "downloaded" : "not downloaded"}</span>
-                  {s.approxSizeBytes != null && <span>· {formatSize(s.approxSizeBytes)}</span>}
+                <span className="line-clamp-2 text-[11px] font-medium leading-tight text-slate-800">
+                  {s.title}
                 </span>
               </button>
             ))}

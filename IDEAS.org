@@ -324,6 +324,24 @@ plus the "N of M downloaded" count. Full e2e suite (38 specs) green;
 ~tsc --noEmit~ + ~vite build~ clean.
 
 
+** Hub subject tiles are too big — make them much smaller
+- [X] DOIT
+Status: Done (2026-09-16)
+
+Casey: "on the Hub, make the Subject squares much smaller." Went from a
+2-column grid of large cards (5xl icon, title, status text + size) to
+a 4-column grid of compact tiles (2xl icon, a 2-line-clamped title,
+just a small status dot) — the download-status/size text moved into
+the button's ~title~ attribute (hover tooltip) instead of being always
+visible, which is what actually let the tile shrink this far.
+
+Verified live via a real screenshot: all 8 subjects now fit in 2 rows
+instead of 4. Real e2e fallout found and fixed: ~shell.spec.ts~
+asserted on the status text being visible inside the tile, which no
+longer exists as rendered text — switched those assertions to check
+the ~title~ attribute instead. Full e2e suite (38 specs) green; ~tsc
+--noEmit~ + ~vite build~ clean.
+
 * Recommendation
 
 Start with the struggling-problems queue + per-chapter mastery view —
