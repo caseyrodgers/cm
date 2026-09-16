@@ -80,5 +80,24 @@ test.describe("practice test", () => {
     await page.reload();
 
     await expect(page.getByRole("heading", { name: /your score/i })).toBeVisible({ timeout: 10_000 });
+    // Score screen shows how long it took, and flags that the clock ran out.
+    await expect(page.getByText(/time's up/i)).toBeVisible();
+  });
+
+  test("timed mode: score screen shows elapsed time when finished before the clock runs out", async ({ page }) => {
+    await page.getByRole("checkbox").check(); // "Timed" toggle
+    await page.getByRole("button", { name: /Quick test/i }).click();
+    await page.getByRole("button", { name: /^Start/ }).click();
+
+    const key = await answerKey(page, SUBJECT.demo);
+    const correct = Object.values(key)[0];
+    await choices(page).nth(correct).click();
+    await page.getByTestId("mc-submit").click();
+    await page.getByRole("button", { name: /Finish/i }).click();
+
+    await expect(page.getByRole("heading", { name: /your score/i })).toBeVisible();
+    // Finished in well under the 60s budget -- elapsed time shown, no "time's up".
+    await expect(page.getByText(/⏱ \d+:\d{2}/)).toBeVisible();
+    await expect(page.getByText(/time's up/i)).toHaveCount(0);
   });
 });

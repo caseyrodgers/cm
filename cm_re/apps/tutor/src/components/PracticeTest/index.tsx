@@ -72,6 +72,14 @@ function formatCountdown(ms: number): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
+/** "3:45" — elapsed time, floor (not ceil like the countdown) since this is a fixed past duration, not a ticking clock. */
+function formatDuration(ms: number): string {
+  const totalSeconds = Math.floor(ms / 1000);
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
 /** Turns red + pulses under a minute left, so the pressure actually reads as pressure. */
 function CountdownBadge({ remainingMs }: { remainingMs: number }) {
   const low = remainingMs < 60_000;
@@ -640,14 +648,28 @@ export default function PracticeTest({
       const a = test.answers[p];
       return !a || a.correct === false;
     });
+    // Timed mode: how long it actually took. completedAt is stamped by
+    // finishNow whether the student finished early or the clock ran it
+    // out — >= timeLimitMs (with a hair of slack for the 1s tick) means
+    // it was the latter.
+    const elapsedMs = test.timeLimitMs != null && test.completedAt != null ? test.completedAt - test.startedAt : null;
+    const ranOutOfTime = elapsedMs != null && elapsedMs >= test.timeLimitMs! - 500;
     return (
       <Card>
         <CardHeader>
           <CardTitle>{title} — your score</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-1 text-2xl font-bold text-slate-900">
-            {correct} / {total}
+          <p className="mb-1 flex items-baseline gap-3">
+            <span className="text-2xl font-bold text-slate-900">
+              {correct} / {total}
+            </span>
+            {elapsedMs != null && (
+              <span className="text-sm font-medium text-slate-600">
+                ⏱ {formatDuration(elapsedMs)}
+                {ranOutOfTime ? " — time's up" : ""}
+              </span>
+            )}
           </p>
           <p className="mb-4 text-sm text-slate-500">
             {answered} of {total} answered

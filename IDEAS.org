@@ -101,6 +101,25 @@ screen. Added a permanent e2e case
 auto-finishes when time runs out") using the same technique. Full e2e
 suite (39 specs) green; ~tsc --noEmit~ + ~vite build~ clean.
 
+Follow-up (2026-09-16): Casey — "if timed, the score and the time
+should be shown after grading quiz." Score screen now shows elapsed
+time (~⏱ m:ss~) next to the score digits for any timed test —
+~completedAt - startedAt~, flagged "— time's up" when it hit the
+budget (elapsed >= timeLimitMs, with 500ms slack for the 1s tick) vs.
+a plain elapsed time when finished early. Untimed tests show nothing
+extra, same as before. Verified via two real screenshots (finished
+early: "0:00"; ran out of the 60s budget on the demo's 1-question
+quick test: "1:05 — time's up") and a new e2e case alongside the
+existing timeout one. Full e2e suite (40 specs) green; ~tsc --noEmit~
+clean.
+
+Note: caught the ~reuseExistingServer: true~ gotcha again mid-session
+— a stale ~make run~ server from earlier in the day was still
+answering on :5173 serving the pre-change build, so the first test
+run against it failed. ~make kill-server~ before the next run picked
+up the fresh code. Worth remembering whenever a change "isn't showing
+up" in e2e results despite being in the source.
+
 ** Daily streak
 - [ ] DOIT
 Status: Not started
