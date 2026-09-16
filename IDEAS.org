@@ -380,6 +380,19 @@ justify-start text-left~ (icon anchors top-left instead of centered),
 icon ~text-4xl~ -> ~text-5xl~, padding ~p-1.5~ -> ~p-1~. Verified via
 another screenshot; full e2e suite green.
 
+Follow-up (2026-09-16): Casey — "make the words be top left, bold, a
+little bigger. the icon centered in the box, maybe make the box
+rectangular." Re-split the two elements' roles instead of moving both
+together: title now sits alone at the top-left in normal flow
+(~text-[11px] font-medium~ -> ~text-xs font-bold~), the icon moved
+into its own ~flex-1 items-center justify-center~ wrapper so it
+centers in the leftover space below the title, and the tile went from
+~aspect-square~ to ~aspect-[4/5]~ (a taller rectangle, more headroom
+for the stacked title-then-centered-icon layout) with icon size eased
+back ~text-5xl~ -> ~text-4xl~ to fit. Verified via a real screenshot
+(8 subjects, 2 rows of 4, bold top-left titles, centered icons in
+visibly rectangular tiles).
+
 * Recommendation
 
 Start with the struggling-problems queue + per-chapter mastery view —
