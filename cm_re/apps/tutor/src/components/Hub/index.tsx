@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { getSubjectDownloadStats, formatSize, type SubjectDownloadStat } from "../../lib/studentStats";
+import { subjectIcon } from "../../lib/subjectIcon";
 import { navigate, hashFor } from "../../routing";
 import { Card, CardContent } from "../ui/card";
-import { List, ListItemButton } from "../ui/list";
 import { Spinner } from "../ui/spinner";
 
 /**
@@ -57,42 +57,46 @@ export default function Hub() {
         ))}
       </div>
 
-      <Card>
-        <CardContent>
-          <div className="mb-2 flex items-baseline justify-between">
-            <p className="text-sm font-semibold text-slate-900">Subjects</p>
-            {subjects && (
-              <span className="text-xs text-slate-500" data-testid="installed-subject-count">
-                {installedCount} of {subjects.length} downloaded
-              </span>
-            )}
-          </div>
-          {!subjects ? (
-            <Spinner />
-          ) : (
-            <List>
-              {subjects.map((s) => (
-                <ListItemButton key={s.subjectId} onClick={() => navigate(hashFor.module(s.subjectId))}>
-                  <span className="text-slate-800">{s.title}</span>
-                  <span className="flex shrink-0 items-center gap-2">
-                    <span className="text-xs text-slate-400">
-                      {s.approxSizeBytes != null ? formatSize(s.approxSizeBytes) : "—"}
-                    </span>
-                    <span
-                      className={
-                        "rounded-full px-2 py-0.5 text-xs font-medium " +
-                        (s.installed ? "bg-green-100 text-green-800" : "bg-slate-100 text-slate-500")
-                      }
-                    >
-                      {s.installed ? "downloaded" : "not downloaded"}
-                    </span>
-                  </span>
-                </ListItemButton>
-              ))}
-            </List>
+      <div>
+        <div className="mb-2 flex items-baseline justify-between">
+          <p className="text-sm font-semibold text-slate-900">Subjects</p>
+          {subjects && (
+            <span className="text-xs text-slate-500" data-testid="installed-subject-count">
+              {installedCount} of {subjects.length} downloaded
+            </span>
           )}
-        </CardContent>
-      </Card>
+        </div>
+        {!subjects ? (
+          <Spinner />
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {subjects.map((s) => (
+              <button
+                key={s.subjectId}
+                onClick={() => navigate(hashFor.module(s.subjectId))}
+                className="relative flex aspect-square flex-col items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white p-3 text-center shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50"
+              >
+                <span
+                  className={
+                    "absolute right-2 top-2 h-2.5 w-2.5 rounded-full " +
+                    (s.installed ? "bg-green-500" : "bg-slate-300")
+                  }
+                  aria-hidden
+                  title={s.installed ? "downloaded" : "not downloaded"}
+                />
+                <span aria-hidden className="text-5xl leading-none">
+                  {subjectIcon(s.subjectId)}
+                </span>
+                <span className="mt-1 line-clamp-2 text-sm font-medium text-slate-800">{s.title}</span>
+                <span className="flex items-center gap-1 text-xs text-slate-400">
+                  <span>{s.installed ? "downloaded" : "not downloaded"}</span>
+                  {s.approxSizeBytes != null && <span>· {formatSize(s.approxSizeBytes)}</span>}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

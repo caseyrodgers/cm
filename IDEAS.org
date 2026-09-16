@@ -230,8 +230,24 @@ suite (38 specs) still green; backend ~mvn test~ clean.
 
 ** Change subject list on Hub to be interesting icons/graphics as custom larage square buttons.
 - [X] DOIT
+Status: Done (2026-09-15)
 
-  
+Implementation notes: new ~lib/subjectIcon.ts~ — a keyword-matched
+emoji per subjectId (🧮 algebra, 📐 geometry, 📈 calculus, 🖩 graphing
+calculator, 📝 placement, 📘 fallback), most-specific pattern first so
+e.g. ~gcprealgpractice~ (graphing calculator *and* pre-algebra) gets
+the calculator icon, not the generic algebra one. No new dependency —
+matches the app's existing no-icon-library posture. Hub's subject list
+is now a 2-column grid of large square tiles (icon, title, a small
+downloaded/not-downloaded status dot + text, size when known) instead
+of the plain row list; tapping a tile still goes to the same
+~#/m/<id>~ download screen.
+
+Verified live via real screenshots (not just automated assertions) in
+both states — not-downloaded (grey dot, size shown) and downloaded
+(green dot) — confirming the icons render distinctly and the layout
+holds up with a long title (2-line clamp). Full e2e suite (38 specs)
+still green; ~tsc --noEmit~ + ~vite build~ clean.
 
 
 ** Change Hub to contain All the subjects and their download stats.  Remove that info from the Me tab.
