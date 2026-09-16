@@ -45,4 +45,40 @@ test.describe("practice test", () => {
     await expect(page.getByRole("button", { name: /Finish/i })).toBeVisible();
     await expect(page.getByRole("button", { name: /Quick test/i })).toHaveCount(0);
   });
+
+  test("timed mode: shows a countdown and auto-finishes when time runs out", async ({ page }) => {
+    await page.getByRole("checkbox").check(); // "Timed" toggle
+    await page.getByRole("button", { name: /Quick test/i }).click();
+
+    // The demo module's one scorable problem -> a 1-question test -> 60s budget.
+    await expect(page.getByText("⏱ 1:00")).toBeVisible();
+
+    // Simulate time actually running out (rather than waiting a real
+    // minute): push the persisted startedAt back past the budget, then
+    // reload — auto-finish is driven off wall-clock startedAt+
+    // timeLimitMs, so this exercises the real code path, not a mock.
+    await page.evaluate(
+      () =>
+        new Promise((resolve, reject) => {
+          const req = indexedDB.open("cm_re_tutor");
+          req.onsuccess = () => {
+            const db = req.result;
+            const tx = db.transaction("practiceTests", "readwrite");
+            const store = tx.objectStore("practiceTests");
+            const getReq = store.get("algebra1");
+            getReq.onsuccess = () => {
+              const t = getReq.result;
+              t.startedAt = Date.now() - t.timeLimitMs - 5000;
+              store.put(t);
+            };
+            tx.oncomplete = resolve;
+            tx.onerror = reject;
+          };
+          req.onerror = reject;
+        })
+    );
+    await page.reload();
+
+    await expect(page.getByRole("heading", { name: /your score/i })).toBeVisible({ timeout: 10_000 });
+  });
 });

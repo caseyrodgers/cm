@@ -38,8 +38,13 @@ export function sample<T>(items: readonly T[], n: number): T[] {
   return pool.slice(0, take);
 }
 
-/** Starts (or restarts) the subject's test. `pids` should already be in problem order. */
-export async function startTest(subjectId: string, pids: string[], scope: TestScope): Promise<PracticeTest> {
+/** Starts (or restarts) the subject's test. `pids` should already be in problem order. `timeLimitMs`, when given, puts the test in timed mode — see PracticeTest.timeLimitMs. */
+export async function startTest(
+  subjectId: string,
+  pids: string[],
+  scope: TestScope,
+  timeLimitMs?: number
+): Promise<PracticeTest> {
   const test: PracticeTest = {
     subjectId,
     pids,
@@ -47,6 +52,7 @@ export async function startTest(subjectId: string, pids: string[], scope: TestSc
     scope,
     startedAt: Date.now(),
     completedAt: null,
+    ...(timeLimitMs != null ? { timeLimitMs } : {}),
   };
   await db.practiceTests.put(test);
   return test;

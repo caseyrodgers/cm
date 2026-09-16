@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Solution } from "@cm_re/shared-types";
 import {
   isModuleInstalled,
@@ -59,6 +59,34 @@ type View = { k: "index" } | { k: "question"; idx: number } | { k: "score" } | {
 // only solutions with a scorable MC question can be in a test
 const scorable = (s: Solution) => !!s.question && typeof s.question.correctIndex === "number";
 
+// "Timed / exam-simulation mode" (IDEAS.org) — a flat per-question
+// allowance, scaled by however many questions the chosen test scope
+// ends up with. Placement-test-style pacing, not a fixed clock.
+const SECONDS_PER_QUESTION = 60;
+
+/** "9:05" — ceil so the last second doesn't flash "0:00" before actually hitting zero. */
+function formatCountdown(ms: number): string {
+  const totalSeconds = Math.ceil(ms / 1000);
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+/** Turns red + pulses under a minute left, so the pressure actually reads as pressure. */
+function CountdownBadge({ remainingMs }: { remainingMs: number }) {
+  const low = remainingMs < 60_000;
+  return (
+    <span
+      className={
+        "shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums " +
+        (low ? "animate-pulse bg-red-100 text-red-700" : "bg-slate-100 text-slate-600")
+      }
+    >
+      ⏱ {formatCountdown(remainingMs)}
+    </span>
+  );
+}
+
 /** Human subject name from modules/index.json; falls back to the id (e.g. offline). */
 async function subjectTitle(id: string): Promise<string> {
   try {
@@ -100,6 +128,11 @@ export default function PracticeTest({
   // "Combine chapters" picker state — see the By-chapter section below.
   const [combineMode, setCombineMode] = useState(false);
   const [selectedChapters, setSelectedChapters] = useState<Set<string>>(new Set());
+  // "Timed" toggle in the picker — applies to whichever test the student starts next.
+  const [timed, setTimed] = useState(false);
+  // Live countdown tick + a guard so the timeout auto-finish fires exactly once.
+  const [now, setNow] = useState(() => Date.now());
+  const autoFinishingRef = useRef(false);
 
   useEffect(() => {
     getInstalledManifest(subjectId).then((m) =>
@@ -159,20 +192,24 @@ export default function PracticeTest({
   }, [allSolutions, subjectId]);
 
   const begin = useCallback(
-    async (pids: string[], scope: TestScope, pool: Solution[]) => {
+    async (pids: string[], scope: TestScope, pool: Solution[], timeLimitMs?: number) => {
       setBusy(true);
       try {
         const ordered = orderPids(pids, subjectId);
-        const fresh = await startTest(subjectId, ordered, scope);
+        const fresh = await startTest(subjectId, ordered, scope, timeLimitMs);
         setSolutions(new Map(ordered.map((pid) => [pid, pool.find((s) => s.pid === pid)!])));
         setTest(fresh);
         setView({ k: "index" });
+        autoFinishingRef.current = false;
       } finally {
         setBusy(false);
       }
     },
     [subjectId]
   );
+
+  /** Timed mode's per-test time budget, given how many questions it'll have — undefined (untimed) unless the "Timed" toggle is on. */
+  const timeLimitFor = useCallback((questionCount: number) => (timed ? questionCount * SECONDS_PER_QUESTION * 1000 : undefined), [timed]);
 
   // #/t/<subjectId>/chapter/<key> — land straight on that chapter's test
   // instead of the picker (the "Practice this chapter" shortcut from the
@@ -208,7 +245,7 @@ export default function PracticeTest({
     const pids = chosen.flatMap((g) => sample(g.pids, CHAPTER_SIZE));
     const labels = chosen.map((g) => chapterDisplay(g.chapter.label, chapterNames.get(g.chapter.key)));
     const label = labels.length <= 3 ? labels.join(" + ") : `${chosen.length} chapters`;
-    await begin(pids, { kind: "chapters", chapterKeys: chosen.map((g) => g.chapter.key), label }, pool);
+    await begin(pids, { kind: "chapters", chapterKeys: chosen.map((g) => g.chapter.key), label }, pool, timeLimitFor(pids.length));
     setCombineMode(false);
     setSelectedChapters(new Set());
   }
@@ -218,17 +255,9 @@ export default function PracticeTest({
     setTest((t) => (t ? { ...t, answers: { ...t.answers, [pid]: { selectedIndex, correct } } } : t));
   }
 
-  async function onFinish() {
+  /** The actual completion — shared by the manual "Finish" button (after its confirm, if needed) and timed mode's auto-finish (no confirm; time's up is time's up). */
+  const finishNow = useCallback(async () => {
     if (!test) return;
-    const unanswered = test.pids.filter((p) => !test.answers[p]).length;
-    if (unanswered > 0) {
-      const go = await confirm({
-        title: "Finish test?",
-        message: `${unanswered} question${unanswered === 1 ? "" : "s"} still unanswered. Finish anyway?`,
-        confirmLabel: "Finish anyway",
-      });
-      if (!go) return;
-    }
     // Add this test's counts to the lifetime tallies, once — a completed
     // test can be reopened straight to the score screen without coming
     // back through here. (Test-mode QuestionViews don't tally on their
@@ -242,7 +271,43 @@ export default function PracticeTest({
     await finishTest(subjectId);
     setTest((t) => (t ? { ...t, completedAt: Date.now() } : t));
     setView({ k: "score" });
+  }, [test, subjectId]);
+
+  async function onFinish() {
+    if (!test) return;
+    const unanswered = test.pids.filter((p) => !test.answers[p]).length;
+    if (unanswered > 0) {
+      const go = await confirm({
+        title: "Finish test?",
+        message: `${unanswered} question${unanswered === 1 ? "" : "s"} still unanswered. Finish anyway?`,
+        confirmLabel: "Finish anyway",
+      });
+      if (!go) return;
+    }
+    await finishNow();
   }
+
+  // Timed mode: tick once a second while a timed test is in progress,
+  // and auto-finish (no confirm dialog — time's up) the instant the
+  // budget runs out. Survives a reload since it's driven off the
+  // persisted startedAt/timeLimitMs, not any in-memory countdown state.
+  const timeLimitMs = test?.timeLimitMs;
+  const isTimedAndActive = !!test && timeLimitMs != null && test.completedAt == null;
+  useEffect(() => {
+    if (!isTimedAndActive) return;
+    setNow(Date.now());
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [isTimedAndActive]);
+
+  const remainingMs = isTimedAndActive ? Math.max(0, test!.startedAt + timeLimitMs! - now) : null;
+
+  useEffect(() => {
+    if (remainingMs === 0 && !autoFinishingRef.current) {
+      autoFinishingRef.current = true;
+      void finishNow();
+    }
+  }, [remainingMs, finishNow]);
 
   async function backToPicker() {
     await clearTest(subjectId);
@@ -352,10 +417,14 @@ export default function PracticeTest({
           <CardTitle>Practice test</CardTitle>
         </CardHeader>
         <CardContent>
+          <label className="mb-3 flex items-center gap-2 text-sm text-slate-700">
+            <input type="checkbox" checked={timed} onChange={(e) => setTimed(e.target.checked)} />
+            <span aria-hidden>⏱</span> Timed ({SECONDS_PER_QUESTION}s per question)
+          </label>
           <Button
             className="mb-2 w-full"
             disabled={busy}
-            onClick={() => begin(sample(scorablePids, QUICK_SIZE), { kind: "random" }, pool)}
+            onClick={() => begin(sample(scorablePids, QUICK_SIZE), { kind: "random" }, pool, timeLimitFor(Math.min(QUICK_SIZE, scorablePids.length)))}
           >
             Quick test — {Math.min(QUICK_SIZE, scorablePids.length)} random
           </Button>
@@ -363,7 +432,7 @@ export default function PracticeTest({
             variant="outline"
             className="mb-4 w-full"
             disabled={busy}
-            onClick={() => begin(scorablePids, { kind: "subject" }, pool)}
+            onClick={() => begin(scorablePids, { kind: "subject" }, pool, timeLimitFor(scorablePids.length))}
           >
             Whole subject test — all {scorablePids.length} problems
           </Button>
@@ -407,7 +476,14 @@ export default function PracticeTest({
               return (
                 <ListItemButton
                   key={chapter.key}
-                  onClick={() => begin(sample(pids, CHAPTER_SIZE), { kind: "chapter", chapterKey: chapter.key, label: display }, pool)}
+                  onClick={() =>
+                    begin(
+                      sample(pids, CHAPTER_SIZE),
+                      { kind: "chapter", chapterKey: chapter.key, label: display },
+                      pool,
+                      timeLimitFor(Math.min(CHAPTER_SIZE, pids.length))
+                    )
+                  }
                 >
                   {label}
                   <span className="shrink-0 self-start text-xs text-slate-400">{pids.length} available</span>
@@ -479,8 +555,11 @@ export default function PracticeTest({
             <button className="text-blue-600 hover:underline" onClick={goIndex}>
               &larr; {title}
             </button>
-            <span className="text-slate-500">
-              {view.idx + 1} / {test.pids.length}
+            <span className="flex items-center gap-2">
+              {remainingMs != null && <CountdownBadge remainingMs={remainingMs} />}
+              <span className="text-slate-500">
+                {view.idx + 1} / {test.pids.length}
+              </span>
             </span>
           </div>
           <h2 className="mb-3 text-base font-semibold text-slate-900">{solutionTitle(pid, subjectId)}</h2>
@@ -658,8 +737,11 @@ export default function PracticeTest({
           <button className="text-sm text-blue-600 hover:underline" onClick={backToPicker}>
             &larr; Test menu
           </button>
-          <span className="text-sm text-slate-500">
-            {answeredCount} of {test.pids.length} answered
+          <span className="flex items-center gap-2">
+            {remainingMs != null && <CountdownBadge remainingMs={remainingMs} />}
+            <span className="text-sm text-slate-500">
+              {answeredCount} of {test.pids.length} answered
+            </span>
           </span>
         </div>
         {firstUnanswered !== -1 && (

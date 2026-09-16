@@ -69,11 +69,37 @@ without standing up any backend or account system.
 * Engagement
 
 ** Timed / exam-simulation mode
-- [ ] DOIT
-Status: Not started
+- [X] DOIT
+Status: Done (2026-09-16)
 A countdown option on practice tests. Useful specifically for
 placement-test-style content, where pacing is part of what's being
 assessed.
+
+Implementation notes: a "Timed" checkbox in the picker (60s/question,
+scaled by however many questions the chosen scope ends up with —
+Quick/Whole-subject/single-chapter/combined-chapters all wired
+through the same ~timeLimitFor()~) sets ~PracticeTest.timeLimitMs~ at
+~startTest~ time. The countdown itself isn't separate timer state —
+it's derived live from the persisted ~startedAt + timeLimitMs~ vs.
+~Date.now()~, ticking once a second, so it survives a reload exactly
+right (no "timer resets on refresh" bug) without needing its own
+IndexedDB field beyond the budget itself. Hits zero -> auto-finishes
+via the same completion path as the manual "Finish" button, minus its
+confirm-if-unanswered dialog (time's up is time's up). A small badge
+(⏱ mm:ss, turns red + pulses under a minute) shows in both the test
+index and question-view headers; the missed-questions lesson
+walkthrough is never timed (it's a re-quiz never re-quizzed).
+
+Verified live end-to-end, not just built: countdown badge showed the
+exact expected budget right after starting (10 questions × 60s =
+"10:00"); then — rather than waiting out a real countdown — pushed the
+test's persisted ~startedAt~ back past its budget directly in
+IndexedDB (exercising the real wall-clock-driven code path, not a
+mock) and confirmed a reload auto-finished straight to the score
+screen. Added a permanent e2e case
+(~practice-test.spec.ts~ "timed mode: shows a countdown and
+auto-finishes when time runs out") using the same technique. Full e2e
+suite (39 specs) green; ~tsc --noEmit~ + ~vite build~ clean.
 
 ** Daily streak
 - [ ] DOIT
@@ -346,6 +372,13 @@ Follow-up (same day): Casey — "make the icon part larger." Icon
 bumped ~text-2xl~ -> ~text-4xl~ so it's the dominant element in the
 still-compact tile. Verified via another screenshot; full e2e suite
 green.
+
+Follow-up (2026-09-16): Casey — "make the icons start at top left of
+box, a bit bigger and less white space." Tile alignment
+~items-center justify-center text-center~ -> ~items-start
+justify-start text-left~ (icon anchors top-left instead of centered),
+icon ~text-4xl~ -> ~text-5xl~, padding ~p-1.5~ -> ~p-1~. Verified via
+another screenshot; full e2e suite green.
 
 * Recommendation
 

@@ -100,6 +100,8 @@ export interface PracticeTest {
   scope?: TestScope;
   startedAt: number;
   completedAt: number | null;
+  /** Timed mode (IDEAS.org "Timed / exam-simulation mode") — when set, the test auto-finishes `startedAt + timeLimitMs` after starting. Absent for an untimed test (the default) and for a "custom" missed-questions-lesson walkthrough, which is never timed. */
+  timeLimitMs?: number;
 }
 
 /**
