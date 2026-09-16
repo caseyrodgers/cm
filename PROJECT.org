@@ -36,6 +36,12 @@ path.
   shared specialchars set) and the reference-based image-copy fix,
   multiple-choice question extraction, and the regression bugs found
   running it at corpus scale.
+- [[file:SOLUTION_DATA.org][SOLUTION_DATA.org]] — where solution data physically lives at each
+  stage today, and the pipeline that moves it: legacy export ->
+  LegacySolutionPreprocessor/ModuleAssembler (or live editor authoring)
+  -> apps/tutor/public/modules/<subject>/bundle.json -> make dist ->
+  deploy/web/ (committed to git) -> TutorServer -> browser IndexedDB.
+  Sequence diagram included.
 - [[file:AI_DISCUSS.org][AI_DISCUSS.org]] — the *"Learn" AI explanation* feature: three
   candidate serving models (bake into the module / server endpoint +
   client cache / hybrid), cross-cutting concerns (prompt-version

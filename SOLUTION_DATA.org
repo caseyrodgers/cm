@@ -1,0 +1,182 @@
+#+TITLE: Catchup Math (cm_re) — Solution Data: Storage & Deployment Pipeline
+#+STARTUP: overview
+
+Doc index: [[file:PROJECT.org][PROJECT.org]]. Companion docs:
+[[file:SOLUTION_INFO.org][SOLUTION_INFO.org]] (legacy content format +
+detailed findings), [[file:SOLUTION_EDITOR.org][SOLUTION_EDITOR.org]]
+(the authoring UI this feeds).
+
+* One-line
+
+A factual snapshot (2026-09-16) of where solution data physically
+lives at each stage — from the original legacy export through to a
+student's offline IndexedDB cache. Not a design discussion (see
+NEW_DIRECTION.org for that); this is "here's what's actually on disk
+right now and how it gets from A to B."
+
+* The pipeline, in order
+
+1. *Legacy export* (source of truth for content not yet migrated) —
+   =c:/dev/projects/catchupmath/solution_data/help_2022_06/solutions/<book>/<chapter>/<section>/tutor_steps.html=
+   (+ images, JSON sidecars). Lives outside the cm_re repo entirely.
+   Referenced by =cm_re/Makefile='s =LEGACY_SOLUTIONS_DIR= var — used
+   by =make serve-legacy= (a throwaway python http.server for
+   cross-checking a converted solution against its original) and as
+   the input directory to LegacySolutionPreprocessor below.
+
+2. *LegacySolutionPreprocessor* — a one-time-per-solution CLI
+   (=apps/backend/.../preprocessor/LegacySolutionPreprocessor.java=).
+   Usage: =LegacySolutionPreprocessor <input-dir> <subjectId>
+   <output-dir>=.
+   - =LegacySolutionParser.parse()= + =HtmlCleaner= normalize each
+     =tutor_steps.html= into the clean =Solution= JSON shape
+     (=packages/shared-types/src/solution.ts=) — this is where MC
+     questions get lifted out of statement HTML, widget-slot
+     placeholders get recognized, letter prefixes get stripped, etc.
+     (full detail in SOLUTION_INFO.org).
+   - Output: =<output-dir>/<pid>.json= (one clean Solution doc) +
+     =<output-dir>/<pid>/<image>= — only images the *cleaned* HTML
+     actually references, copied by reference, not by filename
+     pattern.
+   - =output-dir= is meant to be
+     =apps/tutor/public/modules/<subjectId>/=.
+
+3. *ModuleAssembler* — second half of the same CLI pipeline
+   (=apps/backend/.../preprocessor/ModuleAssembler.java=). Usage:
+   =ModuleAssembler <moduleDir> <subjectId> <version>=.
+   - Input: the loose =<pid>.json= files step 2 just wrote, all
+     sitting in one =moduleDir=.
+   - Assembles them into =bundle.json= (=\{"solutions": [...]\}=),
+     computes =manifest.json= (subjectId, version, solutionIds,
+     approxSizeBytes, scorableCount, and =chapters= via
+     =ChapterNamer= — best-effort AI-inferred topic names baked in at
+     assembly time so the client never calls out for them).
+   - Deletes the loose =<pid>.json= files afterward — =bundle.json= is
+     the single source of solution content from here on.
+   - *Both steps are run manually, per subject, against the legacy
+     export.* Nothing in the Makefile invokes either class
+     automatically — this is a one-way, one-time conversion per
+     legacy subject, with no live sync back to the export tree.
+
+4. *Canonical storage at rest* —
+   =apps/tutor/public/modules/<subjectId>/\{bundle.json,manifest.json\}=
+   (+ per-pid asset directories for images).
+   =apps/tutor/public/modules/index.json= lists the subjects shown in
+   the picker. This directory *is* the source of truth for cm_re-
+   native content, whether it arrived via the legacy-migration CLI
+   above or via live authoring below — the tutor and editor never
+   know or care which path a given solution came from.
+   - =apps/editor= writes here too, live:
+     =EditorHandler= → =SolutionSource.java= reads/rewrites
+     =bundle.json= entries directly (no database — see "Known gaps"
+     below). =SolutionSource.publish()= recomputes =manifest.json=
+     (version = sha256 of =bundle.json=, truncated to 12 hex chars)
+     and copies both files into whatever web root is currently being
+     served, so a running tutor's update check picks up the change on
+     its next poll.
+
+5. *=make build=* (=apps/tutor=: =vite build=) — vite copies
+   =public/= (including =modules/=) verbatim into
+   =apps/tutor/dist/=. A straight file copy, not a data transform.
+
+6. *=make dist=* (=build= + =editor= + =mvn package=) —
+   =apps/backend/pom.xml='s =maven-resources-plugin= copies
+   =apps/tutor/dist/= → =cm_re/deploy/web/= and
+   =apps/editor/dist/= → =cm_re/deploy/web/editor/=;
+   =maven-assembly-plugin= packages the fat jar to
+   =cm_re/deploy/cm_re-server.jar=. =deploy/= is committed to git (the
+   whole point being the production box needs only a JRE, no Node, no
+   Maven) and pushed; the server just =git pull=s and runs
+   =make serve= (=java -jar deploy/cm_re-server.jar=).
+
+7. *TutorServer* (=apps/backend/.../server/TutorServer.java=) serves
+   =deploy/web/= as static files via =StaticHandler= —
+   =/modules/<subjectId>/\{manifest,bundle\}.json= are plain static
+   GETs; there's no dynamic module-serving endpoint yet.
+
+8. *Browser runtime* (=apps/tutor/src/api/client.ts= +
+   =offline/moduleManager.ts= + =offline/db.ts=):
+   - =listSubjects()= fetches =/modules/index.json=.
+   - =checkForUpdate()=/=downloadModule()= fetch
+     =/modules/<id>/manifest.json= then =/modules/<id>/bundle.json=.
+   - =downloadModule()= writes every =Solution= into Dexie's
+     =solutions= table (keyed by =pid=) and the manifest into
+     =modules= (keyed by =subjectId=) inside one IndexedDB
+     transaction — the final, per-device "deployment" hop.
+   - Everything downstream (QuestionView, PracticeTest, SolutionNav,
+     …) reads *only* from IndexedDB — fully offline once downloaded.
+
+* Two independent ways content gets into bundle.json
+
+- *Legacy migration*: LegacySolutionPreprocessor + ModuleAssembler,
+  run by hand, per subject, against the =solution_data= export tree.
+- *Live authoring*: =apps/editor='s UI → EditorHandler → SolutionSource,
+  editing =bundle.json= directly, subject-by-subject, no legacy export
+  involved at all.
+
+Both converge on the same file and the same schema
+(=shared-types='s =Solution=).
+
+* Known gaps / manual steps (as of 2026-09-16)
+
+- No single "republish everything" command — publishing an editor
+  change updates just that one subject's manifest/bundle; a full
+  =make dist= just copies whatever currently sits in
+  =apps/tutor/public/modules/= at build time.
+- Nothing automates re-running the preprocessor/assembler pair when
+  the legacy export changes; both are manual CLI invocations.
+- No Postgres/DB backing yet, despite shared-types' doc comment
+  calling this "what the backend stores as a Postgres JSONB row" —
+  that migration is still a future decision (see
+  [[file:SOLUTION_EDITOR.org][SOLUTION_EDITOR.org]]).
+
+* Sequence diagram
+
+#+begin_src mermaid :file solution_data_pipeline.png
+sequenceDiagram
+    participant Legacy as Legacy export<br/>(solution_data/help_2022_06)
+    participant Prep as LegacySolutionPreprocessor
+    participant Asm as ModuleAssembler
+    participant Author as Editor UI<br/>(apps/editor)
+    participant EH as EditorHandler /<br/>SolutionSource
+    participant Content as apps/tutor/public/modules/&lt;subject&gt;<br/>(bundle.json + manifest.json)
+    participant Vite as vite build<br/>(make build)
+    participant Mvn as mvn package<br/>(make dist)
+    participant Deploy as cm_re/deploy/web<br/>(committed to git)
+    participant Server as TutorServer<br/>(StaticHandler)
+    participant Client as tutor app<br/>(moduleManager.ts)
+    participant IDB as Dexie / IndexedDB
+
+    rect rgb(240,244,248)
+    Note over Legacy,Content: Path A — one-time legacy migration (manual, per subject)
+    Legacy->>Prep: tutor_steps.html + images
+    Prep->>Prep: LegacySolutionParser.parse()<br/>+ HtmlCleaner normalize
+    Prep->>Content: write &lt;pid&gt;.json + &lt;pid&gt;/&lt;image&gt;
+    Content->>Asm: loose &lt;pid&gt;.json files
+    Asm->>Asm: assemble solutions[]<br/>+ ChapterNamer (AI topic names)
+    Asm->>Content: write bundle.json + manifest.json<br/>(delete loose &lt;pid&gt;.json)
+    end
+
+    rect rgb(244,248,240)
+    Note over Author,Content: Path B — live authoring (any time, no legacy export involved)
+    Author->>EH: edit statement / question / steps
+    EH->>Content: SolutionSource.saveSolution()<br/>rewrites one bundle.json entry
+    Author->>EH: Publish
+    EH->>Content: SolutionSource.publish()<br/>recompute manifest.json (sha256 version)
+    end
+
+    Note over Content,Deploy: Build + deploy (make dist)
+    Content->>Vite: public/modules/** copied verbatim
+    Vite->>Mvn: apps/tutor/dist/
+    Mvn->>Deploy: maven-resources-plugin copies dist -> deploy/web/<br/>(+ editor/dist -> deploy/web/editor/)
+    Deploy->>Deploy: git add / commit / push<br/>(deploy/ is committed)
+
+    Note over Deploy,IDB: Runtime, per student device
+    Deploy->>Server: git pull + make serve<br/>(java -jar cm_re-server.jar)
+    Client->>Server: GET /modules/index.json
+    Client->>Server: GET /modules/&lt;id&gt;/manifest.json
+    Client->>Server: GET /modules/&lt;id&gt;/bundle.json
+    Server-->>Client: manifest + bundle (plain static files)
+    Client->>IDB: downloadModule() writes<br/>solutions (by pid) + modules (by subjectId)
+    Note over Client,IDB: All later reads (QuestionView, PracticeTest,<br/>SolutionNav, ...) are IndexedDB-only from here
+#+end_src
