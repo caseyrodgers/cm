@@ -89,7 +89,7 @@ export default function Hub() {
                   }
                   aria-hidden
                 />
-                <span aria-hidden className="text-2xl leading-none">
+                <span aria-hidden className="text-4xl leading-none">
                   {subjectIcon(s.subjectId)}
                 </span>
                 <span className="line-clamp-2 text-[11px] font-medium leading-tight text-slate-800">

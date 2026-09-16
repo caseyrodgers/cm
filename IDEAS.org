@@ -342,6 +342,11 @@ longer exists as rendered text — switched those assertions to check
 the ~title~ attribute instead. Full e2e suite (38 specs) green; ~tsc
 --noEmit~ + ~vite build~ clean.
 
+Follow-up (same day): Casey — "make the icon part larger." Icon
+bumped ~text-2xl~ -> ~text-4xl~ so it's the dominant element in the
+still-compact tile. Verified via another screenshot; full e2e suite
+green.
+
 * Recommendation
 
 Start with the struggling-problems queue + per-chapter mastery view —
