@@ -393,6 +393,11 @@ back ~text-5xl~ -> ~text-4xl~ to fit. Verified via a real screenshot
 (8 subjects, 2 rows of 4, bold top-left titles, centered icons in
 visibly rectangular tiles).
 
+Follow-up (2026-09-16): Casey — "make the icon twice as big." Icon
+~text-4xl~ (2.25rem) -> ~text-7xl~ (4.5rem) — exactly double.
+Verified via screenshot (icons now the dominant element, no clipping
+in the tile); full e2e suite green (37 passed / 2 skipped).
+
 * Recommendation
 
 Start with the struggling-problems queue + per-chapter mastery view —

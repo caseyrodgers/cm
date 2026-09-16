@@ -92,7 +92,7 @@ export default function Hub() {
                 <span className="line-clamp-2 text-xs font-bold leading-tight text-slate-800">
                   {s.title}
                 </span>
-                <span aria-hidden className="flex flex-1 w-full items-center justify-center text-4xl leading-none">
+                <span aria-hidden className="flex flex-1 w-full items-center justify-center text-7xl leading-none">
                   {subjectIcon(s.subjectId)}
                 </span>
               </button>
