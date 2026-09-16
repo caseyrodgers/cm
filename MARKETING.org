@@ -182,3 +182,68 @@ rebuilt" wastes the best story available. Concretely:
   statement (what's sent to the AI service, what's stored where),
   since "AI" + "student data" is now a default objection in district
   procurement conversations.
+
+* Patreon — does it fit?
+
+Honest take: *not as a replacement for the core product's revenue*,
+but it could work as a genuine parallel layer for the B2C/homeschool
+audience specifically. Worth separating what Patreon is actually good
+at from what this business already does.
+
+** Where it's a real mismatch
+
+- Patreon is a creator-support platform (patrons back a person/project
+  they feel connected to) — it doesn't touch the *B2B* motion at all.
+  No district or college is going to license software through a
+  Patreon tier; that channel stays exactly as it is (direct
+  sales/pilot/purchase).
+- It takes a real cut on top of payment processing (Patreon's platform
+  fee + Stripe/PayPal fees), which is worse economics than the
+  existing direct 3-/12-month self-pay licenses for what would be the
+  same underlying transaction if it just replaced them outright.
+- Gating actual app *access* behind Patreon membership tiers needs a
+  real integration (Patreon's API can verify membership) — and that
+  runs straight into an actual architectural decision already made in
+  =cm_re=: the tutor is deliberately *account-free*, IndexedDB/
+  localStorage only (see IDEAS.org's "Progress export/import" idea,
+  whose whole rationale is "no backend account system"). Patreon-gated
+  subject access would mean introducing real accounts/auth just to
+  check tier status — a bigger architectural change than the marketing
+  idea itself, not a quick win.
+- Patreon has weak cold-audience discovery. It monetizes people who
+  already found you somewhere else; it doesn't replace the SEO/
+  placement-quiz/paid-search funnel already proposed above.
+
+** Where it could genuinely work
+
+Not "sell the app on Patreon" — "support free public math content,
+with patron perks," running *alongside* the real product, aimed
+squarely at the homeschool/parent audience already identified as
+underserved by current marketing:
+
+- A small public library of free content (worked-example videos,
+  printable practice sheets — reusing the "Printable practice sheets"
+  IDEAS.org backlog item, short "why does my kid get X but not Y"
+  explainers) funded by patrons, separate from the licensed product.
+- Patron perks that don't require gating the app itself: early access
+  to new subject modules' release notes, a monthly "request a topic"
+  explainer, printable worksheet packs, a patron-only Q&A/office-hours
+  call — all things that live *outside* the account-free tutor, so no
+  architecture change is needed.
+- This works best if there's an actual person/personality attached —
+  "watch us build a math-help tool and get extra material along the
+  way" reads as authentic on Patreon; "support our SaaS product" does
+  not. Only pursue this if someone's willing to be the visible
+  face/voice of that content stream.
+- Low commitment to test: this can be piloted with zero product
+  changes — a handful of free videos/worksheets and a Patreon page,
+  see if the homeschool audience actually bites, before building
+  anything.
+
+** Bottom line
+
+Patreon is a plausible *top-of-funnel/community* experiment for the
+homeschool segment, not a monetization model for the product itself —
+and definitely not something that should influence the B2B pricing/
+licensing model at all. Treat it as a small, cheap test of the
+homeschool content-marketing angle above, not a pivot.
