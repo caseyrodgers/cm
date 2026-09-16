@@ -250,6 +250,42 @@ holds up with a long title (2-line clamp). Full e2e suite (38 specs)
 still green; ~tsc --noEmit~ + ~vite build~ clean.
 
 
+** On Practice Tests tab, when listing subjects, use the same icon used for the subject in the Hub.
+- [X] DOIT
+Status: Done (2026-09-15)
+
+Implementation notes: ~SubjectSelector~ (shared by both ~#/tests~ and
+~#/problems~) now renders ~subjectIcon(s.subjectId)~ next to each
+title — the exact same lookup Hub's tiles use, so a subject reads the
+same everywhere. Found and fixed a small regression while verifying:
+the icon's extra width pushed the longest title
+("Graphing Calculator Pre-Algebra Practice") onto two lines, which
+wrapped its status badge too — added ~truncate~/~min-w-0~ on the title
+and ~shrink-0~ on the badge so long rows stay single-line with an
+ellipsis instead.
+
+Verified live via real screenshots on both ~#/tests~ and ~#/problems~
+(the latter includes the browse-only/calculator/calculus subjects
+~#/tests~ filters out) — icons match Hub's, long titles truncate
+cleanly. Full e2e suite (38 specs) green; ~tsc --noEmit~ +
+~vite build~ clean.
+
+** On Me, My Progress, put the icons on the subjects/problems.
+- [X] DOIT
+Status: Done (2026-09-15)
+
+Implementation notes: ~StudentStatus~'s "My progress by subject" list
+gets the same ~subjectIcon()~ next to each subject's title, alongside
+its test-status text and chapter-mastery hint — same lookup as Hub and
+the Practice Tests/Problems pickers, so the icon is consistent
+everywhere a subject is named.
+
+Verified live: installed a real subject, finished a quick test so a
+real progress row exists, screenshotted ~#/me~ — icon renders cleanly
+next to the title with no layout regression alongside the existing
+test-status text. Full e2e suite (38 specs) green; ~tsc --noEmit~ +
+~vite build~ clean.
+
 ** Change Hub to contain All the subjects and their download stats.  Remove that info from the Me tab.
 
 - [X] DOIT

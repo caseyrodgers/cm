@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { SubjectSummary } from "@cm_re/shared-types";
 import { listSubjects } from "../../api/client";
 import { isModuleInstalled, checkForUpdate } from "../../offline/moduleManager";
+import { subjectIcon } from "../../lib/subjectIcon";
 import { List, ListItemButton } from "../ui/list";
 import { Spinner } from "../ui/spinner";
 
@@ -62,19 +63,24 @@ export default function SubjectSelector({
       <List>
         {subjects.map((s) => (
           <ListItemButton key={s.subjectId} onClick={() => onSelect(s.subjectId)}>
-            <span>{s.title}</span>
+            <span className="flex min-w-0 items-center gap-2">
+              <span aria-hidden className="shrink-0 text-xl leading-none">
+                {subjectIcon(s.subjectId)}
+              </span>
+              <span className="truncate">{s.title}</span>
+            </span>
             {statuses[s.subjectId] === "update-available" && (
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+              <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
                 Update available
               </span>
             )}
             {statuses[s.subjectId] === "up-to-date" && (
-              <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
+              <span className="shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
                 Installed
               </span>
             )}
             {(statuses[s.subjectId] === "not-installed" || statuses[s.subjectId] === undefined) && (
-              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">
+              <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">
                 Not installed
               </span>
             )}

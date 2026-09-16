@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getStudentStats, resetStats, type StudentStats } from "../../lib/studentStats";
 import type { ChapterMastery } from "../../lib/chapterMastery";
+import { subjectIcon } from "../../lib/subjectIcon";
 import { activeShellId, setShell } from "../../lib/shell";
 import { confirm } from "../../lib/dialog";
 import { SHELL_IDS } from "../../shells";
@@ -72,10 +73,13 @@ export default function StudentStatus() {
                 <li key={s.subjectId} className="py-2">
                   <div className="flex items-center gap-2">
                     <button
-                      className="flex-1 text-left text-slate-800 hover:underline"
+                      className="flex flex-1 items-center gap-2 text-left text-slate-800 hover:underline"
                       onClick={() => navigate(hashFor.module(s.subjectId))}
                     >
-                      {s.title}
+                      <span aria-hidden className="shrink-0 text-lg leading-none">
+                        {subjectIcon(s.subjectId)}
+                      </span>
+                      <span>{s.title}</span>
                     </button>
                     {s.test && (
                       <span className="text-xs text-slate-500">
