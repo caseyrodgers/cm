@@ -120,6 +120,14 @@ run against it failed. ~make kill-server~ before the next run picked
 up the fresh code. Worth remembering whenever a change "isn't showing
 up" in e2e results despite being in the source.
 
+
+** On Timed test, we should have the timer visible as it counts down.
+- [X] DOIT
+Status: Done (already covered) — the countdown badge (~⏱ mm:ss~, turns
+red + pulses under a minute) added with the original timed-mode work
+already shows live in both the test index and question-view headers.
+No code change needed; Casey confirmed on a second look.
+
 ** Daily streak
 - [ ] DOIT
 Status: Not started
