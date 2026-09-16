@@ -139,7 +139,7 @@ sequenceDiagram
     participant Asm as ModuleAssembler
     participant Author as Editor UI<br/>(apps/editor)
     participant EH as EditorHandler /<br/>SolutionSource
-    participant Content as apps/tutor/public/modules/&lt;subject&gt;<br/>(bundle.json + manifest.json)
+    participant Content as apps/tutor/public/modules/SUBJECT<br/>(bundle.json + manifest.json)
     participant Vite as vite build<br/>(make build)
     participant Mvn as mvn package<br/>(make dist)
     participant Deploy as cm_re/deploy/web<br/>(committed to git)
@@ -151,10 +151,10 @@ sequenceDiagram
     Note over Legacy,Content: Path A — one-time legacy migration (manual, per subject)
     Legacy->>Prep: tutor_steps.html + images
     Prep->>Prep: LegacySolutionParser.parse()<br/>+ HtmlCleaner normalize
-    Prep->>Content: write &lt;pid&gt;.json + &lt;pid&gt;/&lt;image&gt;
-    Content->>Asm: loose &lt;pid&gt;.json files
+    Prep->>Content: write PID.json + PID/IMAGE
+    Content->>Asm: loose PID.json files
     Asm->>Asm: assemble solutions[]<br/>+ ChapterNamer (AI topic names)
-    Asm->>Content: write bundle.json + manifest.json<br/>(delete loose &lt;pid&gt;.json)
+    Asm->>Content: write bundle.json + manifest.json<br/>(delete loose PID.json)
     end
 
     rect rgb(244,248,240)
@@ -174,9 +174,12 @@ sequenceDiagram
     Note over Deploy,IDB: Runtime, per student device
     Deploy->>Server: git pull + make serve<br/>(java -jar cm_re-server.jar)
     Client->>Server: GET /modules/index.json
-    Client->>Server: GET /modules/&lt;id&gt;/manifest.json
-    Client->>Server: GET /modules/&lt;id&gt;/bundle.json
+    Client->>Server: GET /modules/ID/manifest.json
+    Client->>Server: GET /modules/ID/bundle.json
     Server-->>Client: manifest + bundle (plain static files)
     Client->>IDB: downloadModule() writes<br/>solutions (by pid) + modules (by subjectId)
     Note over Client,IDB: All later reads (QuestionView, PracticeTest,<br/>SolutionNav, ...) are IndexedDB-only from here
 #+end_src
+
+#+RESULTS:
+[[file:solution_data_pipeline.png]]
