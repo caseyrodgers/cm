@@ -56,4 +56,30 @@ test.describe("Learn — AI explanation", () => {
     // The question itself is echoed above its answer.
     await expect(page.getByText("what is the general form of this equation?")).toBeVisible();
   });
+
+  test("each AI result can be removed independently", async ({ page }) => {
+    await installModule(page, SUBJECT.demo);
+    await openSolution(page, MC_PID);
+
+    await page.getByRole("button", { name: /Learn .* explain this problem/i }).click();
+    await page.getByRole("button", { name: /10th Grader/i }).click();
+    await expect(page.locator(".learn-explanation").first()).toBeVisible({ timeout: 60_000 });
+
+    const input = page.getByPlaceholder(/Ask a follow-up/i);
+    await input.fill("what is the general form of this equation?");
+    await page.getByRole("button", { name: "Ask" }).click();
+    await expect(page.locator(".learn-explanation")).toHaveCount(2, { timeout: 60_000 });
+
+    // Removing the follow-up leaves the main explanation (and its remove
+    // button) alone.
+    await page.getByRole("button", { name: "Remove this answer" }).click();
+    await expect(page.locator(".learn-explanation")).toHaveCount(1);
+    await expect(page.getByText("what is the general form of this equation?")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Remove explanation" })).toBeVisible();
+
+    // Removing the main explanation clears everything -- back to the grade picker.
+    await page.getByRole("button", { name: "Remove explanation" }).click();
+    await expect(page.locator(".learn-explanation")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /10th Grader/i })).toBeVisible();
+  });
 });

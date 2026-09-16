@@ -107,6 +107,22 @@ export default function LearnPanel({ solution, title }: { solution: Solution; ti
     }
   }
 
+  /** Dismisses one follow-up Q&A from the running list — doesn't touch the main explanation or any other follow-up. */
+  function removeFollowUp(index: number) {
+    setFollowUps((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  /** Dismisses the main explanation (and, with it, every follow-up — they have no context without it). Back to the grade picker, same as before any grade was picked. */
+  function dismissExplanation() {
+    abortRef.current?.abort();
+    followUpAbortRef.current?.abort();
+    setStatus("idle");
+    setResult(null);
+    setPlaceholder(false);
+    setFollowUps([]);
+    setQuestion("");
+  }
+
   async function submitFollowUp() {
     const q = question.trim();
     if (!q || !result || !grade || followUpBusy) return;
@@ -170,11 +186,24 @@ export default function LearnPanel({ solution, title }: { solution: Solution; ti
 
           {result && (
             <div className="mt-3">
-              {placeholder && (
-                <p className="mb-1 text-xs font-medium text-amber-700">
-                  Placeholder — the AI explanation service is unavailable right now
-                </p>
-              )}
+              <div className="mb-1 flex items-start justify-between gap-2">
+                {placeholder ? (
+                  <p className="text-xs font-medium text-amber-700">
+                    Placeholder — the AI explanation service is unavailable right now
+                  </p>
+                ) : (
+                  <span />
+                )}
+                <button
+                  type="button"
+                  onClick={dismissExplanation}
+                  aria-label="Remove explanation"
+                  title="Remove explanation"
+                  className="shrink-0 rounded px-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                >
+                  ✕
+                </button>
+              </div>
               {/* The model returns an HTML fragment with <math> MathML for
                   formulas (see AiService's prompt). Sanitize + render the
                   same way StepViewer does — DOMPurify keeps MathML, the
@@ -186,7 +215,18 @@ export default function LearnPanel({ solution, title }: { solution: Solution; ti
 
               {followUps.map((f, i) => (
                 <div key={i} className="mt-2 border-t border-slate-200 pt-2">
-                  <p className="text-sm font-medium text-slate-700">{f.question}</p>
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm font-medium text-slate-700">{f.question}</p>
+                    <button
+                      type="button"
+                      onClick={() => removeFollowUp(i)}
+                      aria-label="Remove this answer"
+                      title="Remove this answer"
+                      className="shrink-0 rounded px-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                    >
+                      ✕
+                    </button>
+                  </div>
                   {f.error && <p className="mt-1 text-sm text-red-600">Couldn't get an answer. Try again.</p>}
                   {f.answer == null && !f.error && (
                     <p className="mt-1 flex items-center gap-2 text-sm text-slate-500">
@@ -220,7 +260,7 @@ export default function LearnPanel({ solution, title }: { solution: Solution; ti
                   type="text"
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
-                  placeholder="Ask a follow-up — e.g. what is the form of the function?"
+                  placeholder="Ask a follow-up — e.g. what is it?"
                   disabled={followUpBusy}
                   className="flex-1 rounded-md border border-slate-300 px-3 py-1.5 text-sm disabled:opacity-60"
                 />
