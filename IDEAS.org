@@ -473,6 +473,32 @@ can be removed independently") — gated behind ~RUN_AI_TESTS=1~ like
 its neighbors since it hits the live API; ran it live (passed), then
 the full non-AI suite (38 passed / 3 skipped); ~tsc --noEmit~ clean.
 
+** Editor: link to the tutor view for the solution being edited
+- [X] DOIT
+Status: Done (2026-09-16)
+
+Casey: "on the editor, put a link to tutor view for that problem." An
+"Open in tutor ↗" link now sits right under the pid heading in
+~apps/editor~'s ~SolutionView~ — ~target="_blank"~, ~href="/#/s/<pid>"~.
+
+Implementation notes: both apps happen to use the identical
+~#/s/<pid>~ hash shape for a single solution (tutor at =/=, editor at
+=/editor/= — SOLUTION_EDITOR.org's "one server, two UIs"), so the href
+has to be root-relative (~/#/s/<pid>~), not a bare ~#/s/<pid>~ —
+otherwise clicking it would just rewrite the *editor's own* hash
+instead of navigating to the tutor, since the pathname wouldn't
+change. A root-relative href forces a real navigation to the other
+app's document. Only shows real content if that pid's subject module
+is already downloaded in whatever browser tab it opens in — the tutor
+has no live single-pid fetch endpoint, IndexedDB-only — noted via the
+link's ~title~ tooltip.
+
+Verified live end-to-end (not just typechecked): downloaded a real
+subject in one tab, opened the same pid in the editor, clicked the
+link, confirmed the new tab lands on the real tutor question view
+(same MC choices, same problem) via a real headless-browser run.
+~tsc --noEmit~ clean on the editor.
+
 * Recommendation
 
 Start with the struggling-problems queue + per-chapter mastery view —

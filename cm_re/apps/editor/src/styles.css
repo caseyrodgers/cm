@@ -111,6 +111,15 @@ a { color: var(--deep); }
   color: var(--deep);
   word-break: break-all;
 }
+.tutor-link {
+  display: inline-block;
+  margin: 4px 0 8px;
+  font-size: 13px;
+  color: var(--blue);
+  text-decoration: none;
+}
+.tutor-link:hover { text-decoration: underline; }
+
 .meta { display: flex; flex-wrap: wrap; gap: 4px 24px; margin: 0 0 16px; }
 .meta > div { display: flex; gap: 6px; }
 .meta dt { color: var(--muted); }

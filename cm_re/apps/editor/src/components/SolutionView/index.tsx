@@ -144,6 +144,24 @@ export default function SolutionView({ pid, onBack }: { pid: string; onBack: () 
           <div className="sol-header">
             <div>
               <h1 className="sol-title">{sol.pid}</h1>
+              {/* The tutor is the same origin's "/" (this editor is "/editor/"
+                  — see SOLUTION_EDITOR.org's "one server, two UIs"), and both
+                  apps happen to use the identical #/s/<pid> hash shape for a
+                  single solution — so a root-relative href (not a bare "#/s/…")
+                  is what forces a real navigation to the *other* app instead of
+                  just rewriting this page's own hash. Only shows something if
+                  that pid's subject module is already downloaded in whatever
+                  browser tab it opens in — the tutor has no live single-pid
+                  fetch, IndexedDB-only. */}
+              <a
+                className="tutor-link"
+                href={`/#/s/${encodeURIComponent(sol.pid)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Opens in the tutor app — only shows content if this solution's subject is already downloaded there"
+              >
+                Open in tutor ↗
+              </a>
               <dl className="meta">
                 <div><dt>subject</dt><dd>{sol.subjectId}</dd></div>
                 <div><dt>format version</dt><dd>{sol.version}</dd></div>
