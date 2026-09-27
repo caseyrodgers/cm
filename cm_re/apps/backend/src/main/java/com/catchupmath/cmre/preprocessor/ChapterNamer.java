@@ -76,7 +76,16 @@ public final class ChapterNamer {
         for (Chapters.Ref r : refs) {
             String name = "";
             String reuse = existing == null ? null : existing.get(r.key());
-            if (!force && reuse != null && !reuse.isBlank()) {
+            // "extra" (Chapters.of's catch-all for named-topic folders,
+            // e.g. cmextrasalg1/2's abs/quadra-formula/circle-graphs/...)
+            // is deliberately heterogeneous — a 3-sample AI topic name
+            // would be misleading, not descriptive. Its own label
+            // ("Extra Topics") already says what it is; leave name empty
+            // (chapterDisplay falls back to the bare label) rather than
+            // spend a call inventing a name for a grab-bag.
+            if (r.key().equals("extra")) {
+                // no-op: name stays ""
+            } else if (!force && reuse != null && !reuse.isBlank()) {
                 name = reuse;
             } else if (canCall) {
                 try {

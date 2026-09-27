@@ -16,7 +16,7 @@ public final class Chapters {
 
     private Chapters() {}
 
-    /** key: stable grouping id ("ch-10", "course-1", "other"); label: display ("Chapter 10"); rank: sort position. */
+    /** key: stable grouping id ("ch-10", "course-1", "extra"); label: display ("Chapter 10"); rank: sort position. */
     public record Ref(String key, String label, int rank) {}
 
     public static Ref of(String pid, String subjectId) {
@@ -35,6 +35,13 @@ public final class Chapters {
             int n = Integer.parseInt(t[1]);
             return new Ref("course-" + n, "Course Test " + n, 1000 + n);
         }
-        return new Ref("other", "Other", 100000);
+        // Everything else — a named-topic folder rather than a numbered
+        // chapter (e.g. cmextrasalg1/2's abs, quadra-formula,
+        // circle-graphs, ...) — groups into ONE unit rather than
+        // scattering as dozens of one-off "chapters" or an unnamed
+        // "Other": Casey, 2026-09-19, "process them, but group together
+        // somehow so we can treat them as a unit." Keep in sync with
+        // problemOrder.ts's chapterOf().
+        return new Ref("extra", "Extra Topics", 100000);
     }
 }

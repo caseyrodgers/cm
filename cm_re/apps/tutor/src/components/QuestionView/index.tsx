@@ -177,7 +177,11 @@ export function QuestionView({
       {!reviewMode && (
         <div className="mt-3 flex items-center gap-3">
           <Button
-            variant="outline"
+            // Louder on tests specifically (Casey, 2026-09-22): submitting
+            // an answer during a test is the one-way, no-reveal action —
+            // worth a visually heavier button than practice's "Check
+            // answer", which is low-stakes and re-triable.
+            variant={revealOnCheck ? "outline" : "default"}
             data-testid="mc-submit"
             onClick={submit}
             disabled={selected === null || (checked && locked)}

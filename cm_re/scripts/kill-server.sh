@@ -10,8 +10,12 @@
 
 PORT="${PORT:-5173}"
 
+# netstat, not a GET /api/health probe — /api/health only exists on
+# TutorServer (:5173/:5174). A plain dev server with no such route
+# (e.g. tutor-dev's Vite HMR server on :5175) would 404/fail that probe
+# and get misreported as "free", skipping the kill below entirely.
 port_free() {
-  ! curl -sf -o /dev/null --max-time 1 "http://localhost:${PORT}/api/health" 2>/dev/null
+  ! netstat -ano 2>/dev/null | grep -qE "[:.]${PORT}[[:space:]].*LISTENING"
 }
 
 wait_free() {

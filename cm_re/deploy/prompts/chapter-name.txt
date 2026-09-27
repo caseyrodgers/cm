@@ -1,0 +1,5 @@
+Here are sample problems from "{{CHAPTER_LABEL}}" of a "{{SUBJECT_ID}}" course:
+
+{{SAMPLE_TEXTS}}
+
+Based on their content, give a short, specific topic name for this chapter (2-5 words, e.g. "Linear Equations" or "Quadratic Functions"). Respond with ONLY the topic name — no punctuation, quotes, or explanation.

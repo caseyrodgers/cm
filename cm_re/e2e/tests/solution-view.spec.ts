@@ -16,6 +16,12 @@ test.describe("solution view", () => {
     expect(await page.locator("math").count()).toBeGreaterThan(1);
   });
 
+  test("practice mode's 'Check answer' stays the quieter outline button, unlike a test's 'Submit answer'", async ({ page }) => {
+    const submit = page.getByTestId("mc-submit");
+    await expect(submit).toHaveText(/Check answer/i);
+    await expect(submit).not.toHaveClass(/bg-blue-600/);
+  });
+
   test("checking the correct answer reveals it and fires the celebration", async ({ page }) => {
     const key = await answerKey(page, SUBJECT.demo);
     const correct = key[MC_PID];
@@ -45,5 +51,20 @@ test.describe("solution view", () => {
     await expect(page.getByTestId("mc-question").getByText("Not quite")).toBeVisible();
     await page.waitForTimeout(500); // give any async mount a chance
     await expect(celebration(page)).toHaveCount(0);
+  });
+
+  test("shows 'View source directory' for a solution converted from the legacy corpus", async ({ page }) => {
+    await expect(page.getByRole("link", { name: /View source directory/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Editor" })).toHaveCount(0);
+  });
+
+  test("shows an 'Editor' link (opens apps/editor for this pid) for a solution with no legacy source", async ({ page }) => {
+    // sol-linear-eq-1 is a synthetic fixture in the same installed
+    // algebra1 module -- no data/solutionSources.ts entry.
+    await page.goto("/#/s/sol-linear-eq-1");
+    const link = page.getByRole("link", { name: "Editor" });
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute("href", "/editor/#/s/sol-linear-eq-1");
+    await expect(page.getByRole("link", { name: /View source directory/i })).toHaveCount(0);
   });
 });

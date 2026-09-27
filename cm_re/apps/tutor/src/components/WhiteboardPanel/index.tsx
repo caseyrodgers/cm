@@ -145,15 +145,16 @@ function formatCalcResult(n: number): string {
 }
 
 /**
- * A basic on-screen calculator floating over the board — "IDEAS.org"
- * (Casey: "Add a Calculator to the whiteboard"). Deliberately has no
+ * A basic on-screen calculator, fixed to the bottom-right of the whole
+ * window — "IDEAS.org" (Casey: "Add a Calculator to the whiteboard",
+ * then 2026-09-19: "move the Calc button to the main window" so it's
+ * usable without opening the whiteboard first). Deliberately has no
  * connection to the drawing surface (no strokes, no persistence, no
  * undo stack) — it's scratch arithmetic while working a problem, reset
- * whenever it's closed and reopened, same lifecycle as the AI result
- * panels below it. Standard accumulator/pending-operator state
- * machine: pressing an operator resolves whatever's pending first, so
- * chained entry ("12 + 5 - 3 =") works left-to-right like every
- * pocket calculator, not like a full expression evaluator.
+ * whenever it's closed and reopened. Standard accumulator/pending-
+ * operator state machine: pressing an operator resolves whatever's
+ * pending first, so chained entry ("12 + 5 - 3 =") works left-to-right
+ * like every pocket calculator, not like a full expression evaluator.
  */
 function Calculator({ onClose }: { onClose: () => void }) {
   const [display, setDisplay] = useState("0");
@@ -227,7 +228,7 @@ function Calculator({ onClose }: { onClose: () => void }) {
     "rounded-md border border-blue-200 bg-blue-50 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-100 active:bg-blue-200";
 
   return (
-    <div className="absolute right-2 top-20 z-40 w-56 rounded-lg border border-slate-300 bg-white p-2 shadow-xl">
+    <div className="fixed bottom-4 right-4 z-50 w-56 rounded-lg border border-slate-300 bg-white p-2 shadow-xl">
       <div className="mb-1 flex items-center justify-between">
         <span className="text-xs font-medium text-slate-500">Calculator</span>
         <button
@@ -576,14 +577,25 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
 
   return (
     <>
-      <button
-        type="button"
-        className="mt-4 flex w-full items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700"
-        onClick={() => setOpen((v) => !v)}
-      >
-        <span>Whiteboard{strokeCount > 0 ? ` (${strokeCount})` : ""}</span>
-        <span aria-hidden className="text-slate-400">{open ? "close ›" : "open ‹"}</span>
-      </button>
+      <div className="mt-4 flex items-center gap-2">
+        <button
+          type="button"
+          className="flex flex-1 items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700"
+          onClick={() => setOpen((v) => !v)}
+        >
+          <span>Whiteboard{strokeCount > 0 ? ` (${strokeCount})` : ""}</span>
+          <span aria-hidden className="text-slate-400">{open ? "close ›" : "open ‹"}</span>
+        </button>
+        <Button
+          variant={calcOpen ? "default" : "outline"}
+          onClick={() => setCalcOpen((v) => !v)}
+          aria-pressed={calcOpen}
+        >
+          🧮 Calc
+        </Button>
+      </div>
+
+      {calcOpen && <Calculator onClose={() => setCalcOpen(false)} />}
 
       {open && (
         // No background of its own — the header/opacity/footer bars carry their own
@@ -613,13 +625,6 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
               </Button>
               <Button variant="outline" onClick={clearAll} disabled={strokeCount === 0}>
                 Clear
-              </Button>
-              <Button
-                variant={calcOpen ? "default" : "outline"}
-                onClick={() => setCalcOpen((v) => !v)}
-                aria-pressed={calcOpen}
-              >
-                🧮 Calc
               </Button>
               <button
                 type="button"
@@ -651,8 +656,6 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
               {Math.round(((opacityToVisibility(opacity) - MIN_OPACITY) / (MAX_OPACITY - MIN_OPACITY)) * 100)}%
             </span>
           </div>
-
-          {calcOpen && <Calculator onClose={() => setCalcOpen(false)} />}
 
           <div className="flex-1 overflow-y-auto p-2">
             <canvas

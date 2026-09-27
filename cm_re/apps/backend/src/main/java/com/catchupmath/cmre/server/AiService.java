@@ -5,7 +5,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import javax.imageio.ImageIO;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -25,15 +33,54 @@ import java.util.Locale;
  *
  * The pre-generated / cached design is still the end goal (see
  * cm/AI_DISCUSS.org); this is the direct live call.
+ *
+ * Prompt templates live as plain text files under {@code promptsDir}
+ * (cm_re/prompts/), NOT as Java string literals — IDEAS.org, Casey,
+ * 2026-09-19: "AI Context should be stored in a text file and read
+ * fresh everytime it is used." Every prompt on this class had already
+ * been iterated on live, in production, multiple times this whole
+ * project (the buildSkeleton "no words/no restatement" saga, checkWork's
+ * "circled option" fabrication fix, readWork's context-removal fix,
+ * getAIForProblem's answer-leakage fix) — each of those was a Java edit
+ * + recompile + redeploy cycle for what's really just wording. {@link
+ * #loadPrompt} re-reads the file on every single call, no caching, so
+ * an operator can edit a prompt file on the running server (dev or
+ * deploy/) and the very next request picks it up — no rebuild, no
+ * restart. {@link #fill} is deliberately not a real templating engine
+ * (literal {@code {{TOKEN}}} string substitution, in the same spirit as
+ * this codebase's other "no eval" choices, e.g. the whiteboard
+ * calculator) — these are short, fixed, developer-authored templates,
+ * not untrusted input.
  */
 public final class AiService {
 
     private final SolutionStore store;
     private final ClaudeClient claude;
+    private final Path promptsDir;
 
-    public AiService(SolutionStore store) {
+    public AiService(SolutionStore store, Path promptsDir) {
         this.store = store;
         this.claude = new ClaudeClient();
+        this.promptsDir = promptsDir;
+    }
+
+    /** Re-reads the named prompt file fresh on every call — see the class doc. Package-visible for AiServiceTest. */
+    String loadPrompt(String filename) {
+        Path p = promptsDir.resolve(filename);
+        try {
+            return Files.readString(p, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new UncheckedIOException("missing/unreadable prompt file: " + p, e);
+        }
+    }
+
+    /** Literal {{TOKEN}} -> value substitution, applied in order. Not a templating engine — see the class doc. Package-visible for AiServiceTest. */
+    static String fill(String template, String... tokenValuePairs) {
+        String out = template;
+        for (int i = 0; i + 1 < tokenValuePairs.length; i += 2) {
+            out = out.replace(tokenValuePairs[i], tokenValuePairs[i + 1]);
+        }
+        return out;
     }
 
     /**
@@ -54,24 +101,16 @@ public final class AiService {
 
         List<ClaudeClient.ImageAttachment> images = loadImages(store.problemImagesFor(safePid));
 
-        String prompt = "You are a patient math tutor. A student is stuck on this problem:\n\n"
-                + problem
-                + (images.isEmpty() ? "" : "\n\n(Part of this problem — the equation and/or its answer"
-                        + " choices — is shown to you only as the attached image(s), not as text above."
-                        + " Read the image(s) carefully; they are the actual problem content, not decoration.)")
-                + "\n\nExplain how to solve it, step by step, in plain language a student can follow. Be concise."
-                + " Walk through the method and the reasoning all the way up to — but not including — the"
-                + " final answer: do NOT state the final numeric result, do NOT say which multiple-choice"
-                + " option is correct, and do NOT solve the very last arithmetic/simplification step for"
-                + " them. Leave that last step for the student to do themselves once they understand the"
-                + " approach — this is a teaching explanation, not an answer key."
-                + gradeLevelPhrase(grade)
-                + "\n\nReturn the answer as an HTML fragment. Prose in <p>; steps in <ol><li>;"
-                + " emphasis with <strong>. Write EVERY formula, fraction, equation and"
-                + " numeric expression as MathML inside <math>...</math> (e.g."
-                + " <math><mfrac><mn>20</mn><mn>160</mn></mfrac></math>). No Markdown, no LaTeX,"
-                + " no $ delimiters, no <script>/<style>/<img>, no surrounding <html> or"
-                + " <body> tags — just the fragment.";
+        String prompt;
+        try {
+            String imagesNote = images.isEmpty() ? "" : "\n\n" + loadPrompt("images-note.txt");
+            prompt = fill(loadPrompt("learn.txt"),
+                    "{{PROBLEM}}", problem,
+                    "{{IMAGES_NOTE}}", imagesNote,
+                    "{{GRADE_PHRASE}}", gradeLevelPhrase(grade));
+        } catch (UncheckedIOException e) {
+            return payload(safePid, e.getMessage(), true);
+        }
 
         try {
             AiLog.logRequest("getAIForProblem", safePid, prompt, images);
@@ -118,26 +157,18 @@ public final class AiService {
 
         List<ClaudeClient.ImageAttachment> images = loadImages(store.problemImagesFor(safePid));
 
-        String prompt = "You are a patient math tutor. A student is working through this problem:\n\n"
-                + problem
-                + (images.isEmpty() ? "" : "\n\n(Part of this problem — the equation and/or its answer"
-                        + " choices — is shown to you only as the attached image(s), not as text above."
-                        + " Read the image(s) carefully; they are the actual problem content, not decoration.)")
-                + "\n\nYou already gave them this explanation of how to approach it:\n\n"
-                + (priorAnswer == null ? "" : priorAnswer)
-                + "\n\nThe student now has a follow-up question:\n\n" + (question == null ? "" : question)
-                + "\n\nAnswer the follow-up directly and concisely, using the problem and the explanation"
-                + " above as context. Do NOT restate the whole original explanation — just address what"
-                + " they're asking."
-                + " Same rule as before: do NOT state the final numeric result for the original problem,"
-                + " do NOT say which multiple-choice option is correct, and do NOT do the final"
-                + " arithmetic/simplification step for them. Everything else — concepts, the general form"
-                + " of an equation, intermediate reasoning, definitions — is fair to answer in full."
-                + gradeLevelPhrase(grade)
-                + "\n\nReturn the answer as an HTML fragment. Prose in <p>; steps in <ol><li> if useful;"
-                + " emphasis with <strong>. Write EVERY formula, fraction, equation and numeric expression"
-                + " as MathML inside <math>...</math>. No Markdown, no LaTeX, no $ delimiters, no"
-                + " <script>/<style>/<img>, no surrounding <html> or <body> tags — just the fragment.";
+        String prompt;
+        try {
+            String imagesNote = images.isEmpty() ? "" : "\n\n" + loadPrompt("images-note.txt");
+            prompt = fill(loadPrompt("follow-up.txt"),
+                    "{{PROBLEM}}", problem,
+                    "{{IMAGES_NOTE}}", imagesNote,
+                    "{{PRIOR_ANSWER}}", priorAnswer == null ? "" : priorAnswer,
+                    "{{QUESTION}}", question == null ? "" : question,
+                    "{{GRADE_PHRASE}}", gradeLevelPhrase(grade));
+        } catch (UncheckedIOException e) {
+            return payload(safePid, e.getMessage(), true);
+        }
 
         try {
             AiLog.logRequest("followUp", safePid, prompt, images);
@@ -181,41 +212,17 @@ public final class AiService {
         List<ClaudeClient.ImageAttachment> images = loadImages(store.problemImagesFor(safePid));
         boolean hasProblemImages = !images.isEmpty();
         images.add(new ClaudeClient.ImageAttachment("image/png", image));
+        String imagesNote = hasProblemImages ? "\n\n(Part of this problem — the equation and/or its answer choices — is"
+                + " shown to you only as image(s), not as text above. Read them carefully.)" : "";
 
-        String prompt = "You are a patient math tutor reviewing a student's scratch work on this problem:\n\n"
-                + problem
-                + (hasProblemImages ? "\n\n(Part of this problem — the equation and/or its answer choices — is"
-                        + " shown to you only as image(s), not as text above. Read them carefully.)" : "")
-                + "\n\nThe LAST attached image is a photo of the student's handwritten/drawn work on a digital"
-                + " whiteboard while solving this problem. IMPORTANT: this image shows ONLY the student's own"
-                + " ink strokes on a blank background — it does NOT include the problem statement, the answer"
-                + " choices, or their layout/position on the page (the whiteboard is a separate overlay with no"
-                + " fixed spatial relationship to where choices are rendered). Never claim to see something"
-                + " \"circled\" or \"selected\" as corresponding to a particular lettered choice because of"
-                + " where it sits in the image — there is no such correspondence to read. The only valid way to"
-                + " match the work to a choice is by its actual written content (a number, word, or letter the"
-                + " student wrote) compared against the choice list given above — never by position."
-                + " FIRST, look carefully and note to yourself what"
-                + " marks, numbers, symbols or text are actually visible — don't default to calling it unclear"
-                + " or illegible just because it's sparse or handwritten; read it the way you'd read anyone's"
-                + " quick scratch work. THEN assess whether what's there shows real understanding of THIS"
-                + " problem — not just whether a final answer happens to match, but whether the steps or"
-                + " reasoning shown actually make sense for it, or whether it's only a final answer with no"
-                + " work shown. Be encouraging but honest: call out what's right, and gently point out anything"
-                + " missing, confused, or incorrect. Only say the board is blank or genuinely illegible if,"
-                + " after really looking, there's truly nothing legible there — don't hedge on content you can"
-                + " actually make out."
-                + " Quick freehand digits are easy to misread or transpose (36 vs 63, 15 vs 51, 6 vs 9) — if a"
-                + " number you read is close to one of this problem's real answer choices but not an exact"
-                + " match, that's more likely a reading slip than the student inventing a number that isn't"
-                + " even an option. In that case treat it as the matching choice and say so as a question,"
-                + " not a correction — e.g. \"looks like you wrote 63 — did you mean 36?\" — rather than"
-                + " asserting the off-by-transposition reading as the student's definite, wrong answer."
-                + " Keep it to a few sentences, conversational — no letter grade, no percentage, no pass/fail"
-                + " verdict."
-                + "\n\nReturn the answer as an HTML fragment. Prose in <p>; write any formula/equation you"
-                + " reference as MathML inside <math>...</math>. No Markdown, no LaTeX, no $ delimiters, no"
-                + " <script>/<style>/<img>, no surrounding <html> or <body> tags — just the fragment.";
+        String prompt;
+        try {
+            prompt = fill(loadPrompt("check-work.txt"),
+                    "{{PROBLEM}}", problem,
+                    "{{IMAGES_NOTE}}", imagesNote);
+        } catch (UncheckedIOException e) {
+            return workPayload(safePid, e.getMessage(), true);
+        }
 
         try {
             AiLog.logRequest("checkWork", safePid, prompt, images);
@@ -263,23 +270,12 @@ public final class AiService {
             return readPayload(safePid, "No whiteboard image was sent.", true);
         }
 
-        String prompt = "The attached image is a photo of handwritten/drawn work on a digital whiteboard."
-                + " FIRST, look carefully and note to yourself what marks, numbers, symbols or text are"
-                + " actually visible — don't default to calling it unclear or illegible just because it's"
-                + " sparse or handwritten; read it the way you'd read anyone's quick scratch work."
-                + " THEN transcribe it as typed text: convert handwritten digits and math symbols into their"
-                + " typed equivalents (e.g. a handwritten \"7\" becomes \"7\", a fraction becomes \"3/4\","
-                + " an equation becomes \"x = 7\")."
-                + " Transcribe ONLY the actual shapes you can see on the board. Never guess, complete, or"
-                + " invent content based on what a plausible or expected answer might look like — you have"
-                + " no information about what problem this work is for, and must not assume any. If several"
-                + " marks are grouped like separate lines of work but you can't actually resolve what most of"
-                + " them say, transcribe only the specific characters you can genuinely identify and describe"
-                + " the rest plainly as illegible marks — do not fill the gaps in with something that merely"
-                + " looks like a coherent derivation. If, after really looking, none of it is legible at all,"
-                + " say so plainly in one short sentence instead of guessing."
-                + "\n\nReply with ONLY the transcription (or that one-sentence note if nothing's legible) —"
-                + " plain text, no HTML, no Markdown, no commentary before or after it.";
+        String prompt;
+        try {
+            prompt = loadPrompt("read-work.txt");
+        } catch (UncheckedIOException e) {
+            return readPayload(safePid, e.getMessage(), true);
+        }
 
         try {
             List<ClaudeClient.ImageAttachment> images = List.of(new ClaudeClient.ImageAttachment("image/png", image));
@@ -356,79 +352,24 @@ public final class AiService {
 
         List<ClaudeClient.ImageAttachment> images = loadImages(store.problemImagesFor(safePid));
         boolean hasProblemImages = !images.isEmpty();
+        String imagesNoteTop = hasProblemImages ? "\n\n(Part of this problem — a figure, graph, or diagram — is shown to"
+                + " you only as the attached image(s), not as text above. Look at the image(s)"
+                + " carefully: they are the actual figure, not decoration.)" : "";
+        String imagesNoteCaseA = hasProblemImages ? " — if the figure is one of the attached images, this case applies:"
+                + " trace its actual outline (the real shape and proportions you see — a triangle's"
+                + " actual vertices, a circle's actual size relative to what's inside it, an"
+                + " irregular polygon's actual number of sides) rather than substituting a generic"
+                + " or default shape" : "";
 
-        String prompt = "Here is a math problem:\n\n" + problem
-                + (hasProblemImages ? "\n\n(Part of this problem — a figure, graph, or diagram — is shown to"
-                        + " you only as the attached image(s), not as text above. Look at the image(s)"
-                        + " carefully: they are the actual figure, not decoration.)" : "")
-                + "\n\nDecide whether this problem describes any of exactly these three things:"
-                + "\n(a) a geometric figure (a shape, points, a diagram) that could be redrawn larger and"
-                + " clearer than a small embedded picture, with its given values labeled on it"
-                + (hasProblemImages ? " — if the figure is one of the attached images, this case applies:"
-                        + " trace its actual outline (the real shape and proportions you see — a triangle's"
-                        + " actual vertices, a circle's actual size relative to what's inside it, an"
-                        + " irregular polygon's actual number of sides) rather than substituting a generic"
-                        + " or default shape" : "") + ";"
-                + "\n(b) coordinate points, a graph, or an inequality/interval, where blank x/y axes or a"
-                + " number line would help — this includes any problem that gives one or more (x, y) points"
-                + " to work with even if it never says the word \"graph\" (distance between two points,"
-                + " midpoint, slope between points, plotting a point): draw the axes so the given points can"
-                + " be plotted on them;"
-                + "\n(c) several given values or inputs that would be clearer organized into a blank grid or"
-                + " table (cells holding only a given number, or left empty)."
-                + "\n\nIf NONE of (a), (b), or (c) genuinely apply — this covers the majority of problems,"
-                + " including any problem that is just an equation or expression to solve, simplify, or"
-                + " evaluate, with no figure or graph described — output exactly this and stop: []"
-                + "\n\nDo not invent a substitute structure for that case. A \"Left side / Right side\" box, a"
-                + " balance diagram, a general template using letters like a/b/c standing in for the"
-                + " problem's own numbers, or any other container whose real purpose is to redo or restate the"
-                + " equation belongs in this empty-array case too — those are not (a), (b), or (c), no matter"
-                + " how structured they look."
-                + "\n\nExample of what NOT to output, for \"Solve for x: 4/5x + 5 = 2x\": anything like"
-                + " [{\"type\":\"text\",\"text\":\"Left side\"},{\"type\":\"text\",\"text\":\"4/5 x\"},"
-                + "{\"type\":\"text\",\"text\":\"Right side\"},{\"type\":\"text\",\"text\":\"2x\"}] — the"
-                + " correct output for that problem is []."
-                + "\n\nExample of what TO output, for \"The distance between the points (-3, 5) and (1, 2)"
-                + " is\": this IS case (b) — draw x/y axes and plot the two given points on them, e.g."
-                + " [{\"type\":\"line\",\"from\":[40,200],\"to\":[440,200]},"
-                + "{\"type\":\"line\",\"from\":[240,50],\"to\":[240,350]},"
-                + "{\"type\":\"text\",\"at\":[248,205],\"text\":\"0\"},"
-                + "{\"type\":\"circle\",\"center\":[180,140],\"radius\":3},"
-                + "{\"type\":\"text\",\"at\":[150,125],\"text\":\"(-3,5)\"},"
-                + "{\"type\":\"circle\",\"center\":[280,180],\"radius\":3},"
-                + "{\"type\":\"text\",\"at\":[290,190],\"text\":\"(1,2)\"}] — axes with the given points"
-                + " plotted on them, not the computed distance."
-                + "\n\nExample of what TO output, for a problem describing a circle centered at P with an"
-                + " inscribed triangle PQR and a given diameter: this IS case (a) — redraw the figure with"
-                + " its given value labeled, e.g."
-                + " [{\"type\":\"circle\",\"center\":[150,150],\"radius\":100},"
-                + "{\"type\":\"text\",\"at\":[145,150],\"text\":\"P\"},"
-                + "{\"type\":\"polyline\",\"points\":[[150,150],[250,220],[100,280],[150,150]]},"
-                + "{\"type\":\"text\",\"at\":[255,215],\"text\":\"Q\"},"
-                + "{\"type\":\"text\",\"at\":[95,285],\"text\":\"R\"},"
-                + "{\"type\":\"text\",\"at\":[150,60],\"text\":\"d = 22 in\"}] — the figure itself, not a"
-                + " computed area. Cases (a), (b), and (c) are independent of each other and of how many"
-                + " problems in a row happened to need the same one — judge each problem only on its own"
-                + " content."
-                + "\n\nIf (a), (b), or (c) genuinely does apply, build ONLY the diagram/axes/table itself —"
-                + " never restate the problem's own equation or answer choices as text anywhere, and never use"
-                + " words: no prose, no sentences, no guiding questions, no explanatory labels like \"Base"
-                + " pay:\". Every \"text\" shape must be SHORT — a bare number, a unit, a single variable"
-                + " letter, or a blank placeholder like \"___\" — labeling a given value directly on the"
-                + " diagram (e.g. a side length on a triangle) is fine; anything longer is not."
-                + "\n\nNever solve anything, never simplify the problem's own expression, and never reveal or"
-                + " hint at which multiple-choice option is correct."
-                + "\n\nWhen you do output shapes, use ONLY a JSON array (no markdown code fences, no"
-                + " commentary before or after) with this exact schema — nothing else:"
-                + "\n[{\"type\":\"line\",\"from\":[x,y],\"to\":[x,y]},"
-                + " {\"type\":\"polyline\",\"points\":[[x,y],[x,y],...]},"
-                + " {\"type\":\"circle\",\"center\":[x,y],\"radius\":r},"
-                + " {\"type\":\"text\",\"at\":[x,y],\"text\":\"...\"}]"
-                + "\n\nCoordinate space: 480 units wide, up to 1200 tall, origin at top-left, y increases"
-                + " downward. Keep the whole thing compact — stay within the top 400 units so it's visible"
-                + " without scrolling. For text, write plainly the way you'd write by hand: fractions as"
-                + " \"4/5\", exponents as \"x^2\" — no MathML, no LaTeX. Keep it simple, a handful of shapes,"
-                + " not an elaborate illustration.";
+        String prompt;
+        try {
+            prompt = fill(loadPrompt("sketch.txt"),
+                    "{{PROBLEM}}", problem,
+                    "{{IMAGES_NOTE_TOP}}", imagesNoteTop,
+                    "{{IMAGES_NOTE_CASE_A}}", imagesNoteCaseA);
+        } catch (UncheckedIOException e) {
+            return skeletonPayload(safePid, new JsonArray(), e.getMessage(), true);
+        }
 
         try {
             AiLog.logRequest("buildSkeleton", safePid, prompt, images);
@@ -546,12 +487,85 @@ public final class AiService {
         for (Path p : paths) {
             try {
                 byte[] bytes = Files.readAllBytes(p);
-                out.add(new ClaudeClient.ImageAttachment(mediaTypeFor(p), Base64.getEncoder().encodeToString(bytes)));
+                out.add(toAttachment(bytes, mediaTypeFor(p)));
             } catch (IOException e) {
                 System.err.println("AiService: failed to read image " + p + ": " + e);
             }
         }
         return out;
+    }
+
+    // Below this, the model reliably misreads a tiny symbol as a different, more
+    // "plausible" one instead of admitting uncertainty — found live 2026-09-20 on a
+    // real 51x45px absolute-value expression the model kept inventing a different
+    // structure for. The legacy corpus' WIRIS-rendered inline equation snippets are
+    // routinely 25-150px (sampled across real solutions); actual figures/graphs are
+    // routinely 300x300+ and read fine already, so this only touches the small ones.
+    private static final int MIN_IMAGE_DIMENSION = 200;
+    private static final int MAX_UPSCALE_FACTOR = 8;
+
+    /**
+     * Upscales a genuinely tiny source image before it's attached for vision —
+     * bicubic, not nearest-neighbor, so anti-aliased edges stay smooth rather than
+     * blocky. Re-encoded as PNG regardless of source format: a GIF's fixed indexed
+     * palette isn't a good target for smooth interpolation, and PNG is lossless.
+     * Images already at or above {@link #MIN_IMAGE_DIMENSION} on their longer side,
+     * or that fail to decode as a raster image (shouldn't happen for this corpus,
+     * but not worth failing the whole request over), are sent through unchanged.
+     */
+    static ClaudeClient.ImageAttachment toAttachment(byte[] bytes, String mediaType) throws IOException {
+        BufferedImage img = ImageIO.read(new ByteArrayInputStream(bytes));
+        if (img == null) {
+            return new ClaudeClient.ImageAttachment(mediaType, Base64.getEncoder().encodeToString(bytes));
+        }
+        int w = img.getWidth();
+        int h = img.getHeight();
+        int maxDim = Math.max(w, h);
+        if (maxDim <= 0 || maxDim >= MIN_IMAGE_DIMENSION) {
+            return new ClaudeClient.ImageAttachment(mediaType, Base64.getEncoder().encodeToString(bytes));
+        }
+
+        // Flatten onto opaque white, WITH a white margin padded around the
+        // source content, before scaling — found live (2026-09-20, same
+        // absolute-value pid, two rounds of debugging): a source this
+        // small often has real ink (an absolute-value bar, in this case)
+        // running the full height of the image at column 0 / column w-1,
+        // i.e. literally touching the edge. Java2D's bicubic interpolation
+        // needs source samples beyond the image bounds for pixels near an
+        // edge; with no real "beyond the edge" data it ends up smearing
+        // that edge-touching black column across the whole top/bottom
+        // border on scale-up — a plain "|x|" became a misleading solid
+        // black picture-frame, which made the model read a boxed "complex
+        // fraction" instead of an absolute-value expression. Padding with
+        // real white margin BEFORE scaling gives the kernel real
+        // background to sample near every edge, so there's nothing to
+        // smear. (Flattening onto opaque white first, rather than keeping
+        // alpha, isn't itself what fixes the frame — confirmed by testing
+        // — but it's still correct: these are equation snippets meant to
+        // sit on a white page, and it sidesteps a separate, real class of
+        // alpha-interpolation halo bugs.)
+        int pad = Math.max(4, maxDim / 8);
+        int pw = w + pad * 2;
+        int ph = h + pad * 2;
+        BufferedImage flattened = new BufferedImage(pw, ph, BufferedImage.TYPE_INT_RGB);
+        Graphics2D fg = flattened.createGraphics();
+        fg.setColor(java.awt.Color.WHITE);
+        fg.fillRect(0, 0, pw, ph);
+        fg.drawImage(img, pad, pad, null);
+        fg.dispose();
+
+        int scale = Math.min(MAX_UPSCALE_FACTOR, (int) Math.ceil((double) MIN_IMAGE_DIMENSION / maxDim));
+        BufferedImage scaled = new BufferedImage(pw * scale, ph * scale, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = scaled.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.drawImage(flattened, 0, 0, pw * scale, ph * scale, null);
+        g.dispose();
+
+        ByteArrayOutputStream png = new ByteArrayOutputStream();
+        ImageIO.write(scaled, "png", png);
+        return new ClaudeClient.ImageAttachment("image/png", Base64.getEncoder().encodeToString(png.toByteArray()));
     }
 
     private static String mediaTypeFor(Path p) {

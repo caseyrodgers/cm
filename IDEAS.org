@@ -23,24 +23,6 @@ On the score-review screen, offer "Explain what I got wrong" per wrong
 answer instead of making Learn something the student has to remember
 exists. Learn/AI explanation infra already shipped.
 
-** Per-chapter mastery view
-- [X] DOIT
-Status: Done (2026-09-14)
-~scorableCount~ and correctness are already computed per subject. Roll
-it up to a per-chapter % and surface "focus here next" on Hub or Me.
-Turns raw stats into an actual recommendation.
-
-Implementation notes: correctness data lived only in the single
-active/overwritten ~practiceTests~ row per subject, so there was no
-lifetime per-chapter history to roll up — added a new Dexie table
-(~chapterStats~, db v6) that accumulates correct/answered per
-~chapterOf()~ key every time a test finishes
-(~lib/chapterMastery.ts~, wired into ~PracticeTest.onFinish~). The
-~#/me~ screen (~StudentStatus~) now shows a collapsed "Focus: Chapter
-N (pct%)" hint per subject, expandable to a full worst-first bar
-breakdown; ~resetStats()~ clears it along with everything else.
-~tsc --noEmit~ and ~npm run build~ both clean.
-
 * Access & format
 
 ** Text-to-speech on problem statements
@@ -67,6 +49,33 @@ the real cross-device problem (school Chromebook vs. home device)
 without standing up any backend or account system.
 
 * Engagement
+
+** Daily streak
+- [ ] DOIT
+Status: Not started
+Trivial to build given the existing localStorage-tally pattern
+(~correctTotal~/~answeredTotal~/~viewedTotal~), and a proven low-effort
+retention lever.
+
+* HAS_COMPLETED
+
+** Per-chapter mastery view
+- [X] DOIT
+Status: Done (2026-09-14)
+~scorableCount~ and correctness are already computed per subject. Roll
+it up to a per-chapter % and surface "focus here next" on Hub or Me.
+Turns raw stats into an actual recommendation.
+
+Implementation notes: correctness data lived only in the single
+active/overwritten ~practiceTests~ row per subject, so there was no
+lifetime per-chapter history to roll up — added a new Dexie table
+(~chapterStats~, db v6) that accumulates correct/answered per
+~chapterOf()~ key every time a test finishes
+(~lib/chapterMastery.ts~, wired into ~PracticeTest.onFinish~). The
+~#/me~ screen (~StudentStatus~) now shows a collapsed "Focus: Chapter
+N (pct%)" hint per subject, expandable to a full worst-first bar
+breakdown; ~resetStats()~ clears it along with everything else.
+~tsc --noEmit~ and ~npm run build~ both clean.
 
 ** Timed / exam-simulation mode
 - [X] DOIT
@@ -120,7 +129,6 @@ run against it failed. ~make kill-server~ before the next run picked
 up the fresh code. Worth remembering whenever a change "isn't showing
 up" in e2e results despite being in the source.
 
-
 ** Add a Calculator to the whiteboard
 - [X] DOIT
 Status: Done (2026-09-16)
@@ -152,15 +160,6 @@ red + pulses under a minute) added with the original timed-mode work
 already shows live in both the test index and question-view headers.
 No code change needed; Casey confirmed on a second look.
 
-** Daily streak
-- [ ] DOIT
-Status: Not started
-Trivial to build given the existing localStorage-tally pattern
-(~correctTotal~/~answeredTotal~/~viewedTotal~), and a proven low-effort
-retention lever.
-
-* Navigation & structure
-
 ** Make Chapter a high level abstraction.
 - [X] DOIT
 Status: Done (2026-09-14)
@@ -189,8 +188,6 @@ Updated 2 e2e specs (~module-install~, ~chapter-list~) that asserted
 on the old "Show all N problems" toggle. Full e2e suite (37 specs, 1
 pre-existing skip) green; ~tsc --noEmit~ and ~npm run build~ clean.
 
-* Ongoing visual checks and change requests
-
 ** Whiteboard Sketch AI
 If there are graphics on the problem statement, the outline of the graphic should be part of the Sketch.
 
@@ -213,9 +210,6 @@ Verified: backend compiles clean (~mvn compile~); full e2e suite (37
 specs, 1 pre-existing skip) still green — the two "Sketch a starting
 point" specs mock the network route directly, so they exercise the
 client contract, which is unchanged.
-   
-
-
 
 ** request more info about AI answer
 After getting response for 'Learn'.   Add a 'More Info' input to allow related question to the current response.  Like saying , "what is the form of the function?" and AI using the current problem's context.
@@ -248,8 +242,6 @@ a permanent e2e case was added to ~learn-ai.spec.ts~ (gated behind
 ~RUN_AI_TESTS=1~ like the rest of that file). Full e2e suite (38
 specs, 2 AI-gated skips without the flag) green; backend ~mvn
 compile~, tutor ~tsc --noEmit~ + ~vite build~ clean.
-  
-
 
 ** Browse-only problems should be eligible for the missed-questions lesson
 - [X] DOIT
@@ -303,8 +295,6 @@ renders; a real module-specific image resolves (200, real bytes) both
 via direct fetch and rendered ~naturalWidth~ in the browser. Full e2e
 suite (38 specs) still green; backend ~mvn test~ clean.
 
-
-
 ** Change subject list on Hub to be interesting icons/graphics as custom larage square buttons.
 - [X] DOIT
 Status: Done (2026-09-15)
@@ -325,7 +315,6 @@ both states — not-downloaded (grey dot, size shown) and downloaded
 (green dot) — confirming the icons render distinctly and the layout
 holds up with a long title (2-line clamp). Full e2e suite (38 specs)
 still green; ~tsc --noEmit~ + ~vite build~ clean.
-
 
 ** On Practice Tests tab, when listing subjects, use the same icon used for the subject in the Hub.
 - [X] DOIT
@@ -399,7 +388,6 @@ not the student's personal stats") to match — asserts a real catalog
 subject shows "not downloaded" before install and "downloaded" after,
 plus the "N of M downloaded" count. Full e2e suite (38 specs) green;
 ~tsc --noEmit~ + ~vite build~ clean.
-
 
 ** Hub subject tiles are too big — make them much smaller
 - [X] DOIT
@@ -499,6 +487,126 @@ link, confirmed the new tab lands on the real tutor question view
 (same MC choices, same problem) via a real headless-browser run.
 ~tsc --noEmit~ clean on the editor.
 
+** Tutor: turn 'View JSON' into an 'Editor' link
+- [X] DOIT
+Status: Done (2026-09-18)
+
+Casey: "change the 'View JSON' button to be a 'Editor' which loads the
+editor with the given problem." The tutor's debug link
+(~SolutionNav~) had two mutually-exclusive labels depending on whether
+~data/solutionSources.ts~ has a legacy-export entry for the pid: "View
+source directory" (real converted content) or "View JSON" (synthetic
+fixtures with no legacy source, e.g. the algebra1 demo module's
+~sol-linear-eq-1~/~sol-quadratic-1~). Only the "View JSON" case
+changed — "View source directory" is untouched, still opens the real
+legacy export's file listing.
+
+Implementation notes: the no-source branch now renders an "Editor"
+link (~href="/editor/#/s/<pid>"~, ~target="_blank"~) instead of a
+Blob-URL JSON dump — the mirror image of the editor's own "Open in
+tutor" link added earlier this session, same root-relative-href
+reasoning. Works because every pid ~SolutionNav~ can render already
+lives in some subject's ~bundle.json~ under
+~apps/tutor/public/modules~ (the editor's content root), fixture or
+not, so the editor always finds it.
+
+Verified live: the no-source fixture pid shows "Editor" with the
+correct href and no "View JSON" anywhere; the real-source pid still
+shows "View source directory" with no "Editor" link. Added 2 e2e
+cases to ~solution-view.spec.ts~. Full e2e suite (41 passed / 3
+AI-gated skips) green; ~tsc --noEmit~ clean.
+
+
+** Named-topic solution data processed: cmextrasalg1, cmextrasalg2
+- [X] DOIT
+Status: Done (2026-09-19)
+
+Casey: "process c:/dev/projects/catchupmath/solution_data/help_2022_06/
+solutions/cmextrasalg1/" (then cmextrasalg2/). Two large supplementary
+"extras" exports, structurally different from every subject shipped so
+far — numbered chapter folders (1-8 / 1-5) plus dozens of named-topic
+folders (~abs~, ~quadra-formula~, ~circle-graphs~, etc.) instead of one
+clean numbering scheme.
+
+Investigated before processing (found real problems, not just ran the
+pipeline blind): ~cmextrasalg~ (no suffix) turned out to be a single
+broken/incomplete export with no ~tutor_steps.html~ anywhere — dead,
+skipped. Both ~-debug~ variants had zero real solutions — skipped.
+~cmextrasalg1~'s ~casey/~ and ~test/~ folders and ~cmextrasalg2~'s
+~debug/~, ~end/~, ~root-debug/~ folders (7 solutions total) were
+Casey's own scratch content, not curriculum — excluded via a staged
+filtered copy before running the preprocessor (the tool walks its
+whole input tree, no folder-exclusion flag).
+
+Design question resolved with Casey: the tutor's ~chapterOf()~ only
+recognizes a purely-numeric first pid token -> "Chapter N"; every
+named-topic solution would've landed in one unnamed "Other" bucket.
+Casey: "process them, but group together somehow so we can treat them
+as a unit." Fixed ~chapterOf()~ (~problemOrder.ts~) and its Java mirror
+(~Chapters.java~) so the catch-all case is a real, stable ~"extra"~ key
+/ *"Extra Topics"* label (sorts last) instead of an unnamed ~"other"~
+— every named-topic folder, regardless of specific name, collapses
+into that one unit. ~ChapterNamer~ skips its AI-topic-naming call for
+that key specifically (a 3-sample name for a deliberate 300-1000-item
+grab-bag would be misleading, not descriptive) — the label alone
+displays fine via ~chapterDisplay()~'s bare-label fallback.
+
+Ran the real pipeline (~LegacySolutionPreprocessor~ -> ~ModuleAssembler~)
+against the filtered staged copies:
+- *cmextrasalg1* ("Algebra 1 Extra Practice") — 1098/1098 converted, 0
+  failed, 1 genuine missing image. Chapters 1,2,3,4,5,6,8 (AI-named,
+  e.g. "Direct Variation and Sequences") + Extra Topics. 27 scorable,
+  11.4 MB.
+- *cmextrasalg2* ("Algebra 2 Extra Practice") — 1243/1243 converted, 0
+  failed, 4 genuine missing images. Chapters 1,2,3,4,5 (e.g.
+  "Applications of Trigonometry") + Extra Topics. 73 scorable, 17.2 MB.
+
+Both added to ~modules/index.json~ (10 subjects now). Both mostly
+worked-example/browse content (low scorable counts), so — like Mini
+Calculus — they'll show up under Problems but barely register in the
+Practice Tests picker.
+
+Verified: ~tsc --noEmit~ and backend ~mvn test~ clean; 3 new
+~problemOrder.check.ts~ assertions (named-topic pid -> ~extra~ key/
+"Extra Topics" label; two different named-topic folders collapse into
+the same one unit); full e2e suite green (43 passed / 3 AI-gated
+skips); confirmed live via the served manifest that
+~cmextrasalg1~'s chapter list renders the 7 real AI-named chapters
+plus a bare "Extra Topics" entry at the end, no fabricated name.
+~deploy/~ not regenerated (~make dist~ not run this session).
+
+** Calculator moved to the main window
+- [X] DOIT
+Status: Done (2026-09-19)
+
+Casey: "move the Calc button to the main window." The 🧮 Calc button
+(added earlier — see the whiteboard-calculator entry above) lived
+inside the whiteboard's own toolbar, so opening it required opening
+the whiteboard first even though the calculator has zero connection to
+the drawing surface.
+
+Implementation notes: moved the toggle button out of
+~WhiteboardPanel~'s internal ~open &&~ block into the always-visible
+row next to the "Whiteboard" toggle itself — both now sit side by side
+regardless of whether the board is open. The floating ~Calculator~
+panel's positioning switched from ~absolute~ (relative to the
+whiteboard's own overlay, which may not even be mounted now) to
+~fixed~ (bottom-right of the viewport), so it genuinely floats over
+the whole window rather than being clipped to wherever the whiteboard
+overlay happens to be.
+
+Verified: rewrote ~whiteboard.spec.ts~'s calculator test to actually
+exercise the point of the change — it now opens the calculator
+*without* clicking "Whiteboard" first and asserts no ~<canvas>~ ever
+mounts. ~tsc --noEmit~ clean, ~make build~ clean, full e2e suite green
+(43 passed / 3 AI-gated skips).
+
+** Solution Editor
+
+
+* AI Context should be stored in a text file and read fresh everytime it is used.
+- [X] DOIT
+
 * Recommendation
 
 Start with the struggling-problems queue + per-chapter mastery view —
@@ -506,6 +614,3 @@ both reuse data already being collected, need no new AI calls or
 architecture, and turn "here are some stats" into "here's what to do
 next." Text-to-speech is the best effort-to-value ratio for something
 small and self-contained.
-
-
-

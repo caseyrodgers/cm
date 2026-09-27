@@ -18,6 +18,8 @@ test.describe("practice test", () => {
 
     // test mode: the button says "Submit answer" and nothing is revealed
     await expect(page.getByTestId("mc-submit")).toHaveText(/Submit answer/i);
+    // "louder" on tests (Casey, 2026-09-22) — solid, not the practice-mode outline button.
+    await expect(page.getByTestId("mc-submit")).toHaveClass(/bg-blue-600/);
     // no "Learn" while the test is in progress
     await expect(page.getByRole("button", { name: /Learn .* explain this problem/i })).toHaveCount(0);
 

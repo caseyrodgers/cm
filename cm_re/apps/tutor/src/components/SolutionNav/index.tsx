@@ -42,23 +42,27 @@ export default function SolutionNav({ solution, onBack }: { solution: Solution; 
   const atEnd = clampedIndex >= lastStep;
   const goStep = (next: number) => setStepIndex(Math.min(Math.max(next, 0), lastStep));
 
-  // Debug affordance: show either the original legacy export
-  // directory's file listing (when this solution was actually
-  // converted from a real one — see data/solutionSources.ts) or, for
-  // synthetic fixture solutions with no real source, the raw stored
-  // JSON document instead. Blob URL rather than a data: URI since
-  // content can be large enough to hit some browsers' data: URI
+  // Debug affordance: the original legacy export directory's file
+  // listing, when this solution was actually converted from a real one
+  // (see data/solutionSources.ts) — a Blob URL rather than a data: URI
+  // since content can be large enough to hit some browsers' data: URI
   // length limits, and rather than a `file://` link since that's
   // unreliable/blocked from an http://-served page in several browsers.
+  // Solutions with no legacy source (synthetic fixtures, or anything
+  // authored directly in cm_re) get an "Editor" link instead — every
+  // pid reachable here already lives in some subject's bundle.json
+  // (the editor's own content root), so it always resolves.
   const source = getSolutionSource(solution.pid);
-  const debugLinkLabel = source ? "View source directory" : "View JSON";
+  const editorUrl = `/editor/#/s/${encodeURIComponent(solution.pid)}`;
   const debugUrl = useMemo(() => {
-    const blob = source
-      ? new Blob([renderDirectoryListing(source)], { type: "text/html" })
-      : new Blob([JSON.stringify(solution, null, 2)], { type: "application/json" });
+    if (!source) return null;
+    const blob = new Blob([renderDirectoryListing(source)], { type: "text/html" });
     return URL.createObjectURL(blob);
-  }, [solution, source]);
-  useEffect(() => () => URL.revokeObjectURL(debugUrl), [debugUrl]);
+  }, [source]);
+  useEffect(() => {
+    if (!debugUrl) return;
+    return () => URL.revokeObjectURL(debugUrl);
+  }, [debugUrl]);
 
   return (
     <Card>
@@ -67,9 +71,21 @@ export default function SolutionNav({ solution, onBack }: { solution: Solution; 
           <button className="text-sm text-blue-600 hover:underline" onClick={onBack}>
             &larr; Back to solutions
           </button>
-          <a className="text-sm text-slate-500 hover:underline" href={debugUrl} target="_blank" rel="noreferrer">
-            {debugLinkLabel}
-          </a>
+          {source ? (
+            <a className="text-sm text-slate-500 hover:underline" href={debugUrl!} target="_blank" rel="noreferrer">
+              View source directory
+            </a>
+          ) : (
+            <a
+              className="text-sm text-slate-500 hover:underline"
+              href={editorUrl}
+              target="_blank"
+              rel="noreferrer"
+              title="Opens this solution in the editor"
+            >
+              Editor
+            </a>
+          )}
         </div>
 
         <h2 className="mb-3 text-base font-semibold text-slate-900">

@@ -103,6 +103,25 @@
               </resources>
             </configuration>
           </execution>
+          <execution>
+            <id>bundle-prompts</id>
+            <phase>prepare-package</phase>
+            <goals><goal>copy-resources</goal></goals>
+            <configuration>
+              <!-- deploy/prompts, a SIBLING of deploy/web (not inside it) —
+                   TutorServer.resolvePromptsDir falls back to
+                   webRoot.getParent()/prompts for exactly this layout.
+                   overwrite=false: an operator may have hand-edited a
+                   prompt directly on the deploy box (the whole point of
+                   "read fresh every time"), and a redeploy shouldn't
+                   silently clobber that. -->
+              <outputDirectory>${project.basedir}/../../deploy/prompts</outputDirectory>
+              <overwrite>false</overwrite>
+              <resources>
+                <resource><directory>${project.basedir}/../../prompts</directory></resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>

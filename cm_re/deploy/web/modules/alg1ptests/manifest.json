@@ -1,6 +1,6 @@
 {
   "subjectId": "alg1ptests",
-  "version": "3",
+  "version": "782c06911b1f",
   "solutionIds": [
     "alg1ptests_10_1__5_10",
     "alg1ptests_10_1_chapter10practicetest_10_10",
@@ -849,7 +849,8 @@
     "alg1ptests_coursetest_2_algebra1practicetest_9_1",
     "alg1ptests_coursetest_2_algebra1practicetest_9_2"
   ],
-  "approxSizeBytes": 5502253,
+  "approxSizeBytes": 5544395,
+  "scorableCount": 842,
   "chapters": [
     {
       "key": "ch-1",
@@ -941,6 +942,5 @@
       "name": "Lines and Percents",
       "rank": 1002
     }
-  ],
-  "scorableCount": 842
+  ]
 }

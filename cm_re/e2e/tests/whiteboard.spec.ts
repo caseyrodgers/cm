@@ -255,8 +255,10 @@ test.describe("whiteboard", () => {
     await expect(page.getByRole("button", { name: /^Whiteboard$/ })).toBeVisible(); // no strokes added
   });
 
-  test("Calculator — chained ops, divide by zero, dismissible without touching the board", async ({ page }) => {
-    await page.getByRole("button", { name: /^Whiteboard/ }).click();
+  test("Calculator — works from the main window without opening the whiteboard, chained ops, divide by zero, dismissible without touching the board", async ({ page }) => {
+    // Moved to the main window (2026-09-19, Casey: "move the Calc button
+    // to the main window") specifically so it's usable without opening
+    // the whiteboard first — deliberately NOT clicking "Whiteboard" here.
     await page.getByRole("button", { name: /Calc/i }).click();
 
     const display = page.getByTestId("calc-display");
@@ -282,9 +284,12 @@ test.describe("whiteboard", () => {
     await press("=");
     await expect(display).toHaveText("Error");
 
-    // Closing the calculator doesn't touch the (empty) board underneath.
+    // Closing the calculator doesn't touch the (still-unopened) board underneath.
     await page.getByRole("button", { name: "close calculator" }).click();
     await expect(display).toHaveCount(0);
     await expect(page.getByRole("button", { name: /^Whiteboard$/ })).toBeVisible();
+
+    // The whiteboard itself was never opened this whole time.
+    await expect(page.locator("canvas")).toHaveCount(0);
   });
 });

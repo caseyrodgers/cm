@@ -1815,7 +1815,7 @@
         "problemNumber": "5",
         "page": null
       },
-      "statement": "\u003cp\u003e\u003c/p\u003e",
+      "statement": "\u003cp\u003eThis is a test subject for this problem.\u003c/p\u003e",
       "statementFigure": null,
       "question": {
         "prompt": "\u003cp\u003e\u003c/p\u003e\n\u003cp\u003eWhat are the coordinates of the vertex of the parabola represented by the equation\u003c/p\u003e\n\u003cp\u003e\u003ci\u003ey\u003c/i\u003e \u003d \u003ci\u003ex\u003c/i\u003e\u003csup\u003e2\u003c/sup\u003e – 2\u003ci\u003ex\u003c/i\u003e + 9?\u003c/p\u003e\n\u003cp\u003e\u003c/p\u003e",

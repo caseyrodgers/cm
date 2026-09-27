@@ -20,7 +20,7 @@ function tokensOf(pid: string, subjectId: string): string[] {
 }
 
 export interface Chapter {
-  /** stable id for grouping, e.g. "ch-10", "course-1", "other" */
+  /** stable id for grouping, e.g. "ch-10", "course-1", "extra" */
   key: string;
   label: string;
   /** sort position: numeric chapters 1..N, then course tests, then the rest */
@@ -37,7 +37,12 @@ export function chapterOf(pid: string, subjectId: string): Chapter {
     const n = Number(t[1]);
     return { key: `course-${n}`, label: `Course Test ${n}`, rank: 1000 + n };
   }
-  return { key: "other", label: "Other", rank: 100000 };
+  // Everything else — a named-topic folder rather than a numbered chapter
+  // (e.g. cmextrasalg1/2's abs, quadra-formula, circle-graphs, ...) —
+  // groups into ONE unit rather than scattering as dozens of one-off
+  // "chapters" or an unnamed "Other": Casey, 2026-09-19, "process them,
+  // but group together somehow so we can treat them as a unit."
+  return { key: "extra", label: "Extra Topics", rank: 100000 };
 }
 
 /** [chapterRank, section, problemNumber, variant] — trailing tokens are the variant then the problem number. */

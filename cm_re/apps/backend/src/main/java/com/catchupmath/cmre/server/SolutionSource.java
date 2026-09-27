@@ -181,10 +181,20 @@ public final class SolutionSource {
     /**
      * Recompute manifest.json for the subject in the content root
      * (version = content hash of bundle.json, sorted solutionIds,
-     * approxSizeBytes = size of the module dir), then copy bundle.json
-     * + manifest.json into the served web root. Returns the manifest
-     * JSON. A running tutor sees the version bump on its next update
-     * check.
+     * approxSizeBytes = size of the module dir, scorableCount recounted
+     * from the current bundle), then copy bundle.json + manifest.json
+     * into the served web root. Returns the manifest JSON. A running
+     * tutor sees the version bump on its next update check.
+     *
+     * <p>{@code chapters} (the AI-inferred per-chapter topic names baked
+     * in by ModuleAssembler/ChapterNamer at initial assembly) is carried
+     * forward unchanged from whatever manifest.json already exists on
+     * disk, rather than regenerated — a plain field/rebuild here has no
+     * Claude call to re-derive them from. Bug fixed 2026-09-18: this
+     * method used to build a brand-new manifest from scratch, silently
+     * dropping {@code chapters} (and {@code scorableCount}) on every
+     * single publish — real content published through the editor came
+     * back with every chapter renamed to a bare "Chapter N" fallback.
      */
     public String publish(String subjectId) throws IOException {
         Path srcDir = contentRoot.resolve(subjectId);
@@ -194,10 +204,25 @@ public final class SolutionSource {
         }
         byte[] bundleBytes = Files.readAllBytes(srcBundle);
         JsonObject bundle = JsonParser.parseString(new String(bundleBytes, StandardCharsets.UTF_8)).getAsJsonObject();
+        JsonArray solutions = bundle.getAsJsonArray("solutions");
 
         List<String> ids = new ArrayList<>();
-        bundle.getAsJsonArray("solutions").forEach(e -> ids.add(pid(e.getAsJsonObject())));
+        solutions.forEach(e -> ids.add(pid(e.getAsJsonObject())));
         Collections.sort(ids);
+
+        long scorableCount = 0;
+        for (JsonElement e : solutions) {
+            JsonObject sol = e.getAsJsonObject();
+            JsonObject q = sol.has("question") && sol.get("question").isJsonObject()
+                    ? sol.getAsJsonObject("question")
+                    : null;
+            if (q != null && q.has("correctIndex") && q.get("correctIndex").isJsonPrimitive()
+                    && q.get("correctIndex").getAsJsonPrimitive().isNumber()) {
+                scorableCount++;
+            }
+        }
+
+        JsonElement existingChapters = readExistingChapters(srcDir);
 
         JsonObject manifest = new JsonObject();
         manifest.addProperty("subjectId", subjectId);
@@ -206,6 +231,10 @@ public final class SolutionSource {
         ids.forEach(idsJson::add);
         manifest.add("solutionIds", idsJson);
         manifest.addProperty("approxSizeBytes", dirSize(srcDir));
+        manifest.addProperty("scorableCount", scorableCount);
+        if (existingChapters != null) {
+            manifest.add("chapters", existingChapters);
+        }
 
         String manifestJson = GSON.toJson(manifest);
         Files.writeString(srcDir.resolve("manifest.json"), manifestJson, StandardCharsets.UTF_8);
@@ -220,6 +249,21 @@ public final class SolutionSource {
     }
 
     // ---- internals ----
+
+    /** The current manifest.json's "chapters" array, or null if there's no manifest yet / it has none. */
+    private static JsonElement readExistingChapters(Path srcDir) throws IOException {
+        Path manifestPath = srcDir.resolve("manifest.json");
+        if (!Files.isRegularFile(manifestPath)) {
+            return null;
+        }
+        JsonObject existing;
+        try {
+            existing = JsonParser.parseString(Files.readString(manifestPath, StandardCharsets.UTF_8)).getAsJsonObject();
+        } catch (RuntimeException e) {
+            return null; // malformed/partial manifest on disk — don't fail the publish over it
+        }
+        return existing.has("chapters") && existing.get("chapters").isJsonArray() ? existing.get("chapters") : null;
+    }
 
     private Path bundlePath(String subjectId) {
         return contentRoot.resolve(subjectId).resolve("bundle.json");

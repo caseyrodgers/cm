@@ -1,4 +1,4 @@
-.PHONY: build run debug dist serve serve-legacy kill-python kill-server api editor editor-dev tutor-dev e2e e2e-ui e2e-setup
+.PHONY: build run debug dist serve serve-legacy kill-python kill-server kill-servers api editor editor-dev tutor-dev e2e e2e-ui e2e-setup
 
 # JDWP address for `make debug`. suspend=y makes the JVM wait for a
 # debugger before running main() (good for breakpoints in startup);
@@ -34,6 +34,16 @@ run: build
 # listening PID) — never a blanket taskkill of java.exe.
 kill-server:
 	@sh scripts/kill-server.sh
+
+# Stop both local dev servers you'd typically have up at once: the Java
+# TutorServer on :5173 (make run/api/debug) and the tutor-dev Vite HMR
+# server on :5175 (make tutor-dev, hardcoded in apps/tutor/vite.config.ts
+# — it has no /api/dev/shutdown, so kill-server.sh falls back to killing
+# just the PID listening on that port). editor-dev's :5174 isn't included
+# here — add `PORT=5174 sh scripts/kill-server.sh` if you need that too.
+kill-servers:
+	@PORT=5173 sh scripts/kill-server.sh
+	@PORT=5175 sh scripts/kill-server.sh
 
 # Same as `run` but with a JDWP debug socket on JDWP_PORT (default 5005).
 # With JDWP_SUSPEND=y the JVM waits for a debugger to attach before

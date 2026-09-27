@@ -50,7 +50,7 @@ public final class TutorServer {
             return;
         }
 
-        var apiHandler = new ApiHandler(new AiService(new SolutionStore(webRoot)));
+        var apiHandler = new ApiHandler(new AiService(new SolutionStore(webRoot), resolvePromptsDir(webRoot)));
         var staticHandler = new StaticHandler(webRoot);
         var editorHandler = resolveEditorHandler(webRoot);
         Path editorWebRoot = editorHandler != null ? resolveEditorWebRoot(webRoot) : null;
@@ -134,6 +134,33 @@ public final class TutorServer {
             }
         }
         return null;
+    }
+
+    /**
+     * cm_re/prompts/ — the AI prompt template text files AiService reads
+     * fresh on every call (see its class doc). Same walk-up-from-CWD
+     * pattern as resolveEditorHandler's contentRoot, so it resolves
+     * whether launched from cm_re/, cm_re/apps/backend/ (Eclipse), or a
+     * deploy/ tree (where prompts/ sits alongside deploy/web, i.e. a
+     * sibling of webRoot).
+     */
+    private static Path resolvePromptsDir(Path webRoot) {
+        Path dir = Path.of("").toAbsolutePath();
+        for (int i = 0; i < 8 && dir != null; i++, dir = dir.getParent()) {
+            for (String rel : new String[] { "prompts", "cm_re/prompts" }) {
+                Path cand = dir.resolve(rel).normalize();
+                if (Files.isDirectory(cand)) {
+                    return cand;
+                }
+            }
+        }
+        Path sibling = webRoot.getParent() == null ? null : webRoot.getParent().resolve("prompts");
+        if (sibling != null && Files.isDirectory(sibling)) {
+            return sibling; // deploy/ tree: deploy/prompts next to deploy/web
+        }
+        System.err.println("no prompts/ directory found (walked up from " + Path.of("").toAbsolutePath()
+                + ", checked " + webRoot.getParent() + "/prompts) — AI endpoints will return a placeholder error");
+        return webRoot.resolve("__missing_prompts_dir__"); // never a real dir; AiService.loadPrompt fails loud, not NPE
     }
 
     /**

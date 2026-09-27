@@ -235,8 +235,46 @@ a { color: var(--deep); }
 }
 .step-editor-toolbar button:hover { background: #fff; border-color: var(--line); }
 .step-editor-toolbar button.active { background: #e6f4ff; border-color: var(--blue); color: var(--deep); }
+.step-editor-toolbar button:disabled { opacity: 0.4; cursor: default; }
 
 .step-editor-content { padding: 8px 10px; }
+
+/* --- "View HTML" raw source mode --- */
+.step-editor-raw-textarea {
+  display: block;
+  width: 100%;
+  min-height: 6em;
+  padding: 8px 10px;
+  border: none;
+  resize: vertical;
+  font: 12px/1.5 "SFMono-Regular", Consolas, Menlo, monospace;
+  color: var(--ink);
+  background: #fbfcfd;
+}
+.step-editor-raw-textarea:focus { outline: none; }
+.step-editor-raw-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 6px 8px;
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+}
+.step-editor-raw-actions button {
+  font: inherit;
+  font-size: 12px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+}
+.step-editor-raw-actions button.primary {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
 .step-editor-content .ProseMirror { outline: none; min-height: 1.5em; }
 .step-editor-content .ProseMirror p { margin: 0 0 8px; }
 .step-editor-content .ProseMirror p:last-child { margin-bottom: 0; }

@@ -80,20 +80,21 @@ export default function Hub() {
                   (s.installed ? "downloaded" : "not downloaded") +
                   (s.approxSizeBytes != null ? ` · ${formatSize(s.approxSizeBytes)}` : "")
                 }
-                className="relative flex aspect-[4/5] flex-col items-start justify-start gap-0.5 rounded-lg border border-slate-200 bg-white p-1.5 text-left shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50"
+                className="flex aspect-[4/5] flex-col items-start justify-start gap-0.5 rounded-lg border border-slate-200 bg-white p-1.5 text-left shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50"
               >
-                <span
-                  className={
-                    "absolute right-1 top-1 h-1.5 w-1.5 rounded-full " +
-                    (s.installed ? "bg-green-500" : "bg-slate-300")
-                  }
-                  aria-hidden
-                />
                 <span className="line-clamp-2 text-xs font-bold leading-tight text-slate-800">
                   {s.title}
                 </span>
                 <span aria-hidden className="flex flex-1 w-full items-center justify-center text-7xl leading-none">
                   {subjectIcon(s.subjectId)}
+                </span>
+                <span
+                  className={
+                    "text-[9px] font-semibold uppercase tracking-wide leading-none " +
+                    (s.installed ? "text-green-600" : "text-slate-400")
+                  }
+                >
+                  {s.installed ? "Downloaded" : "Not downloaded"}
                 </span>
               </button>
             ))}

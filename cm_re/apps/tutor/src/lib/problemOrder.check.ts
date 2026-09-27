@@ -21,6 +21,17 @@ eq(chapterOf("alg1ptests_coursetest_1_algebra1practicetest_10_1", S).label, "Cou
 eq(chapterOf("alg1ptests_coursetest_2_algebra1practicetest_10_1", S).rank, 1002, "coursetest ranks after chapters");
 eq(chapterOf("alg1ptests_10_1__5_10", S).label, "Chapter 10", "chapterOf malformed (empty set token)");
 
+// Named-topic folders (cmextrasalg1/2: abs, quadra-formula, casey, ...)
+// group as ONE "extra" unit rather than each getting its own chapter or
+// scattering into an unnamed "Other" — Casey, 2026-09-19.
+eq(chapterOf("cmextrasalg1_abs_1_1_1_1", "cmextrasalg1").key, "extra", "named-topic folder -> extra key");
+eq(chapterOf("cmextrasalg1_abs_1_1_1_1", "cmextrasalg1").label, "Extra Topics", "named-topic folder -> Extra Topics label");
+eq(
+  chapterOf("cmextrasalg2_quadra-formula_1_1_1_1", "cmextrasalg2").key,
+  chapterOf("cmextrasalg2_trig_1_1_1_1", "cmextrasalg2").key,
+  "different named-topic folders collapse into the same one unit"
+);
+
 // problem 2 before problem 10 (numeric, not lexical); chapter 2 before chapter 10.
 const scrambled = [
   "alg1ptests_10_1_chapter10practicetest_10_10",
