@@ -4,6 +4,7 @@ import type { McQuestion } from "@cm_re/shared-types";
 import { Button } from "../ui/button";
 import { cn } from "../../lib/utils";
 import { bumpCorrectTotal, bumpAnsweredTotal } from "../../lib/correctCount";
+import { updateStreak } from "../../lib/streak";
 import CorrectCelebration from "../CorrectCelebration";
 
 /**
@@ -100,6 +101,7 @@ export function QuestionView({
     // adds the test's counts there), and never in read-only review.
     if (revealOnCheck && !reviewMode) {
       bumpAnsweredTotal();
+      updateStreak();
       if (right) {
         setCelebrate(true);
         bumpCorrectTotal();

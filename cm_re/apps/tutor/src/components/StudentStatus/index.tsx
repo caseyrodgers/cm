@@ -57,7 +57,8 @@ export default function StudentStatus() {
         <Stat label="Correct" value={String(stats.correctTotal)} />
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-3 gap-2">
+        <Stat label="Streak" value={stats.streak > 0 ? `${stats.streak} day${stats.streak === 1 ? "" : "s"}` : "—"} testId="streak" />
         <Stat label="Grade" value={stats.grade ? `${stats.grade}` : "—"} />
         <Stat label="Whiteboards" value={String(stats.whiteboardCount)} />
       </div>

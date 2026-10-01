@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useHashRoute, navigate, hashFor } from "../routing";
 import { useCorrectTotal } from "../lib/correctCount";
+import { useStreak } from "../lib/streak";
 import { useCurrentSubject } from "../lib/useCurrentSubject";
 
 /**
@@ -45,6 +46,7 @@ function sectionOf(kind: string): Section | null {
 export default function DefaultShell({ children }: { children: ReactNode }) {
   const route = useHashRoute();
   const total = useCorrectTotal();
+  const streak = useStreak();
   const subject = useCurrentSubject();
   const section = sectionOf(route.kind);
   const deep = route.kind === "module" || route.kind === "solution" || route.kind === "test";
@@ -68,14 +70,26 @@ export default function DefaultShell({ children }: { children: ReactNode }) {
           >
             Catchup Math
           </button>
-          <span
-            data-testid="correct-total"
-            title="Correct answers — all time"
-            className="ml-auto inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-1 text-sm font-semibold text-green-800"
-          >
-            <span aria-hidden>&#10003;</span>
-            {total}
-          </span>
+          <div className="ml-auto flex items-center gap-2">
+            {streak > 0 && (
+              <span
+                data-testid="streak-badge"
+                title={`${streak}-day streak — answered at least one question each day`}
+                className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2.5 py-1 text-sm font-semibold text-orange-800"
+              >
+                <span aria-hidden>&#128293;</span>
+                {streak}
+              </span>
+            )}
+            <span
+              data-testid="correct-total"
+              title="Correct answers — all time"
+              className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-1 text-sm font-semibold text-green-800"
+            >
+              <span aria-hidden>&#10003;</span>
+              {total}
+            </span>
+          </div>
         </div>
         <nav className="mx-auto flex max-w-3xl gap-1 px-3 pb-1 text-sm">
           {NAV.map((n) => (

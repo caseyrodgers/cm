@@ -10,6 +10,7 @@ import {
 } from "./correctCount";
 import { scoreTest, testTitle } from "../offline/practiceTestStore";
 import { getChapterMastery, resetChapterMastery, type ChapterMastery } from "./chapterMastery";
+import { getStreak, resetStreak } from "./streak";
 
 /**
  * The current student is whoever's using this browser — everything is
@@ -40,6 +41,8 @@ export interface StudentStats {
   answeredTotal: number;
   /** every problem viewed (opened in the full statement+steps view) */
   viewedTotal: number;
+  /** consecutive days with at least one question answered */
+  streak: number;
   grade: string | null;
   whiteboardCount: number;
   subjects: SubjectStat[];
@@ -101,6 +104,7 @@ export async function getStudentStats(): Promise<StudentStats> {
     correctTotal: getCorrectTotal(),
     answeredTotal: getAnsweredTotal(),
     viewedTotal: getViewedTotal(),
+    streak: getStreak(),
     grade,
     whiteboardCount,
     subjects,
@@ -171,6 +175,7 @@ export async function resetStats(): Promise<void> {
   resetCorrectTotal();
   resetAnsweredTotal();
   resetViewedTotal();
+  resetStreak();
   await db.transaction("rw", db.practiceTests, db.whiteboards, db.chapterStats, async () => {
     await db.practiceTests.clear();
     await db.whiteboards.clear();

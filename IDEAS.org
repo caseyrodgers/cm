@@ -51,11 +51,24 @@ without standing up any backend or account system.
 * Engagement
 
 ** Daily streak
-- [ ] DOIT
-Status: Not started
-Trivial to build given the existing localStorage-tally pattern
-(~correctTotal~/~answeredTotal~/~viewedTotal~), and a proven low-effort
-retention lever.
+- [X] DOIT
+Status: Done (2026-09-27)
+
+Implementation notes: new ~lib/streak.ts~ — two localStorage keys
+(~cm_re.streak.current~, ~cm_re.streak.lastActiveDate~).
+~updateStreak()~ called alongside ~bumpAnsweredTotal()~ at both answer
+sites (~QuestionView.submit~ in practice/lesson mode, and
+~PracticeTest.onFinish~). Logic: if last-active-date is today, no-op;
+if yesterday, increment; otherwise reset to 1. ~getStreak()~ returns 0
+if the stored date is older than yesterday (streak broken without
+needing an explicit clear). Same ~CustomEvent~ + ~storage~ listener
+pattern as the other tallies for live cross-tab reactivity.
+
+Header badge in ~DefaultShell~: an orange "fire N" pill next to the
+existing green correct-answer pill, only shown when streak >= 1. Also
+added to ~#/me~ (~StudentStatus~) as a stat card alongside
+Grade/Whiteboards. ~resetStats()~ clears the streak along with
+everything else. ~tsc --noEmit~ + ~vite build~ clean.
 
 * HAS_COMPLETED
 
@@ -606,6 +619,22 @@ mounts. ~tsc --noEmit~ clean, ~make build~ clean, full e2e suite green
 
 * AI Context should be stored in a text file and read fresh everytime it is used.
 - [X] DOIT
+Status: Done (2026-09-19)
+
+Casey: "AI Context should be stored in a text file and read fresh
+everytime it is used." All 7 AI prompt templates (learn, follow-up,
+check-work, read-work, sketch, chapter-name, images-note) moved from
+Java string literals in ~AiService.java~ to plain text files under
+~cm_re/prompts/~. ~AiService.loadPrompt~ re-reads the file on every
+single call, no caching — an operator can edit a prompt file on the
+running server and the very next request picks it up, no rebuild or
+restart. ~AiService.fill~ does literal ~{{TOKEN}}~ substitution for
+per-request values (problem text, grade phrase, etc.). Deploy copy at
+~deploy/prompts/~ sits alongside ~deploy/web~; ~TutorServer~ resolves
+it via the same walk-up pattern as the editor's content root.
+
+New ~AiServiceTest.java~ covers ~loadPrompt~ (re-read, missing-file
+error) and ~fill~ (substitution). Backend ~mvn test~ green.
 
 * Recommendation
 

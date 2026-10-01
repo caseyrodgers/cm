@@ -25,6 +25,7 @@ import {
 } from "../../offline/practiceTestStore";
 import { solutionTitle } from "../../lib/solutionTitle";
 import { bumpCorrectTotal, bumpAnsweredTotal } from "../../lib/correctCount";
+import { updateStreak } from "../../lib/streak";
 import { recordChapterResults } from "../../lib/chapterMastery";
 import { orderPids, groupByChapter, chapterOf } from "../../lib/problemOrder";
 import { navigate, hashFor } from "../../routing";
@@ -274,6 +275,7 @@ export default function PracticeTest({
       const { correct, answered } = scoreTest(test);
       bumpCorrectTotal(correct);
       bumpAnsweredTotal(answered);
+      updateStreak();
       await recordChapterResults(subjectId, test.pids, test.answers);
     }
     await finishTest(subjectId);
