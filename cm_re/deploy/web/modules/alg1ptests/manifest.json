@@ -856,13 +856,21 @@
       "key": "ch-1",
       "label": "Chapter 1",
       "name": "Linear Equations and Applications",
-      "rank": 1
+      "rank": 1,
+      "skills": [
+        "linear-equations"
+      ]
     },
     {
       "key": "ch-2",
       "label": "Chapter 2",
       "name": "Equations of Lines",
-      "rank": 2
+      "rank": 2,
+      "skills": [
+        "slope",
+        "graphing-linear",
+        "linear-equations"
+      ]
     },
     {
       "key": "ch-3",
@@ -874,73 +882,120 @@
       "key": "ch-4",
       "label": "Chapter 4",
       "name": "Absolute Value and Inequalities",
-      "rank": 4
+      "rank": 4,
+      "skills": [
+        "inequalities",
+        "integers",
+        "linear-equations"
+      ]
     },
     {
       "key": "ch-5",
       "label": "Chapter 5",
       "name": "Systems of Linear Inequalities",
-      "rank": 5
+      "rank": 5,
+      "skills": [
+        "systems-of-equations",
+        "linear-equations",
+        "inequalities"
+      ]
     },
     {
       "key": "ch-6",
       "label": "Chapter 6",
       "name": "Factoring Quadratic Trinomials",
-      "rank": 6
+      "rank": 6,
+      "skills": [
+        "quadratics",
+        "polynomials",
+        "multiples"
+      ]
     },
     {
       "key": "ch-7",
       "label": "Chapter 7",
       "name": "Polynomial Division",
-      "rank": 7
+      "rank": 7,
+      "skills": [
+        "polynomials",
+        "exponents"
+      ]
     },
     {
       "key": "ch-8",
       "label": "Chapter 8",
       "name": "Radical Expressions and Equations",
-      "rank": 8
+      "rank": 8,
+      "skills": [
+        "radicals"
+      ]
     },
     {
       "key": "ch-9",
       "label": "Chapter 9",
       "name": "Exponential Functions",
-      "rank": 9
+      "rank": 9,
+      "skills": [
+        "exponents"
+      ]
     },
     {
       "key": "ch-10",
       "label": "Chapter 10",
       "name": "Quadratic Functions and Equations",
-      "rank": 10
+      "rank": 10,
+      "skills": [
+        "quadratics"
+      ]
     },
     {
       "key": "ch-11",
       "label": "Chapter 11",
       "name": "Linear Equations and Data Analysis",
-      "rank": 11
+      "rank": 11,
+      "skills": [
+        "linear-equations",
+        "data-analysis"
+      ]
     },
     {
       "key": "ch-12",
       "label": "Chapter 12",
       "name": "Interquartile Range and Quartiles",
-      "rank": 12
+      "rank": 12,
+      "skills": [
+        "data-analysis"
+      ]
     },
     {
       "key": "ch-13",
       "label": "Chapter 13",
       "name": "Probability and Events",
-      "rank": 13
+      "rank": 13,
+      "skills": [
+        "probability"
+      ]
     },
     {
       "key": "course-1",
       "label": "Course Test 1",
       "name": "Percents and Inequalities",
-      "rank": 1001
+      "rank": 1001,
+      "skills": [
+        "inequalities",
+        "percents",
+        "decimals"
+      ]
     },
     {
       "key": "course-2",
       "label": "Course Test 2",
       "name": "Lines and Percents",
-      "rank": 1002
+      "rank": 1002,
+      "skills": [
+        "percents",
+        "decimals"
+      ]
     }
   ]
 }

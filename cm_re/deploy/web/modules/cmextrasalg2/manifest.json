@@ -1253,31 +1253,49 @@
       "key": "ch-1",
       "label": "Chapter 1",
       "name": "Applications of Trigonometry",
-      "rank": 1
+      "rank": 1,
+      "skills": [
+        "trig-ratios"
+      ]
     },
     {
       "key": "ch-2",
       "label": "Chapter 2",
       "name": "Parabola Focus and Vertex",
-      "rank": 2
+      "rank": 2,
+      "skills": [
+        "graphing-quadratic",
+        "quadratics"
+      ]
     },
     {
       "key": "ch-3",
       "label": "Chapter 3",
       "name": "Conic Sections and Functions",
-      "rank": 3
+      "rank": 3,
+      "skills": [
+        "coordinate-geometry",
+        "quadratics"
+      ]
     },
     {
       "key": "ch-4",
       "label": "Chapter 4",
       "name": "Taylor Series and Polynomials",
-      "rank": 4
+      "rank": 4,
+      "skills": [
+        "polynomials",
+        "exponents"
+      ]
     },
     {
       "key": "ch-5",
       "label": "Chapter 5",
       "name": "Evaluating Logarithms",
-      "rank": 5
+      "rank": 5,
+      "skills": [
+        "exponents"
+      ]
     },
     {
       "key": "extra",

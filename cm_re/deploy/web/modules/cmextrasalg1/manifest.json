@@ -1108,43 +1108,70 @@
       "key": "ch-1",
       "label": "Chapter 1",
       "name": "Direct Variation and Sequences",
-      "rank": 1
+      "rank": 1,
+      "skills": [
+        "slope",
+        "linear-equations"
+      ]
     },
     {
       "key": "ch-2",
       "label": "Chapter 2",
       "name": "Graphing Quadratic Functions",
-      "rank": 2
+      "rank": 2,
+      "skills": [
+        "quadratics",
+        "graphing-quadratic"
+      ]
     },
     {
       "key": "ch-3",
       "label": "Chapter 3",
       "name": "Parallel and Perpendicular Lines",
-      "rank": 3
+      "rank": 3,
+      "skills": [
+        "slope",
+        "graphing-linear"
+      ]
     },
     {
       "key": "ch-4",
       "label": "Chapter 4",
       "name": "Polynomial Operations",
-      "rank": 4
+      "rank": 4,
+      "skills": [
+        "polynomials",
+        "exponents"
+      ]
     },
     {
       "key": "ch-5",
       "label": "Chapter 5",
       "name": "Multi-Step Linear Equations",
-      "rank": 5
+      "rank": 5,
+      "skills": [
+        "linear-equations"
+      ]
     },
     {
       "key": "ch-6",
       "label": "Chapter 6",
       "name": "Rational Expressions",
-      "rank": 6
+      "rank": 6,
+      "skills": [
+        "rationals",
+        "fractions-multiply"
+      ]
     },
     {
       "key": "ch-8",
       "label": "Chapter 8",
       "name": "Rational Exponents and Radicals",
-      "rank": 8
+      "rank": 8,
+      "skills": [
+        "exponents",
+        "radicals"
+      ]
     },
     {
       "key": "extra",

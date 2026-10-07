@@ -214,7 +214,10 @@
       "key": "ch-1",
       "label": "Chapter 1",
       "name": "Function Composition and Transformations",
-      "rank": 1
+      "rank": 1,
+      "skills": [
+        "coordinate-geometry"
+      ]
     },
     {
       "key": "ch-2",
@@ -244,7 +247,10 @@
       "key": "ch-6",
       "label": "Chapter 6",
       "name": "Volumes and Work Integrals",
-      "rank": 6
+      "rank": 6,
+      "skills": [
+        "area-perimeter"
+      ]
     },
     {
       "key": "ch-7",

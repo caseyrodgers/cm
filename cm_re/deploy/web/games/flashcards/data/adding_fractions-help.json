@@ -1,0 +1,19 @@
+[{
+    "type": "question",
+    "value": ""
+}, {
+    "type": "text",
+    "value": "When two fractions have like denominators, keep the denominator the same and add the numerators."
+}, {
+    "type": "equation",
+    "value": "($numerator1+$numerator2)/$denominator1=$numerator3/$denominator3"
+}, {
+    "type": "text",
+    "value": "This fraction is not in simplest form. There is a factor of $factor in both the numerator and denominator. Reduce the fraction to simplest form."
+}, {
+    "type": "equation",
+    "value": "$numerator3/$denominator3=$numerator4/$denominator4"
+}, {
+    "type": "equation",
+    "value": "= $answer_in_lowestterms"
+}]

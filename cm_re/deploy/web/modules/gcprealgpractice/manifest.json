@@ -152,25 +152,39 @@
       "key": "ch-1",
       "label": "Chapter 1",
       "name": "Calculator Basics and Operations",
-      "rank": 1
+      "rank": 1,
+      "skills": [
+        "integers",
+        "order-of-operations"
+      ]
     },
     {
       "key": "ch-2",
       "label": "Chapter 2",
       "name": "Exponents and Number Operations",
-      "rank": 2
+      "rank": 2,
+      "skills": [
+        "exponents"
+      ]
     },
     {
       "key": "ch-3",
       "label": "Chapter 3",
       "name": "Scientific Notation",
-      "rank": 3
+      "rank": 3,
+      "skills": [
+        "exponents",
+        "decimals"
+      ]
     },
     {
       "key": "ch-4",
       "label": "Chapter 4",
       "name": "Solving Linear Equations",
-      "rank": 4
+      "rank": 4,
+      "skills": [
+        "linear-equations"
+      ]
     },
     {
       "key": "ch-5",
@@ -182,31 +196,48 @@
       "key": "ch-6",
       "label": "Chapter 6",
       "name": "Exponential Growth",
-      "rank": 6
+      "rank": 6,
+      "skills": [
+        "exponents"
+      ]
     },
     {
       "key": "ch-7",
       "label": "Chapter 7",
       "name": "Coordinate Geometry and Polygons",
-      "rank": 7
+      "rank": 7,
+      "skills": [
+        "coordinate-geometry",
+        "angles",
+        "area-perimeter"
+      ]
     },
     {
       "key": "ch-8",
       "label": "Chapter 8",
       "name": "Square Roots and Rounding",
-      "rank": 8
+      "rank": 8,
+      "skills": [
+        "radicals"
+      ]
     },
     {
       "key": "ch-9",
       "label": "Chapter 9",
       "name": "Volume and Surface Area",
-      "rank": 9
+      "rank": 9,
+      "skills": [
+        "area-perimeter"
+      ]
     },
     {
       "key": "ch-10",
       "label": "Chapter 10",
       "name": "Linear Inequalities",
-      "rank": 10
+      "rank": 10,
+      "skills": [
+        "inequalities"
+      ]
     }
   ]
 }

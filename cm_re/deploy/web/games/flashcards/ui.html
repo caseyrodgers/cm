@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<HTML>
+
+<HEAD>
+    <TITLE>Default</TITLE>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" , "user-scalable=no">
+    <SCRIPT type="text/javascript" src="jquery.js"></SCRIPT>
+    <SCRIPT type="text/javascript" src="ASCIIMathML.js"></SCRIPT>
+    <script src="flashcard_problemGenerator.js"></script>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+        }
+        .fc_container {
+            background: lightgray;
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            font-size: 12pt;
+            border: 1px solid black;
+            position: relative;
+        }
+        .fc_header {
+            height: 40px;
+            width: 100%;
+            background: #F94600;
+            color: white;
+            position: relative;
+        }
+        .fc_title {
+            right: 0px;
+            bottom: 0px;
+            position: absolute;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 1%;
+        }
+        .fc_content {
+            width: 100%;
+            height: 100%;
+            background: whitesmoke;
+        }
+        .fc_quest_statement {
+            width: 100%;
+            background: #606060;
+            color: white;
+            font-family: Helvetica, Arial;
+            font-size: 0.85em;
+            position: relative;
+        }
+        .fc_quest_statement span {
+            position: absolute;
+            margin: 2%;
+            bottom: 0px;
+            font-weight: bold;
+            font-size: 1.25em;
+        }
+        .fc_quest_display {
+            width: 100%;
+            color: black;
+            font-family: Helvetica, Arial;
+            font-size: 1em;
+            border-top: 1px solid gray;
+            border-bottom: 2px solid gray;
+            font-size: 2em;
+        }
+        .fc_quest_info {
+            width: 100%;
+            color: white;
+            font-family: Helvetica, Arial;
+            font-size: 0.85em;
+            background: #606060;
+            position: relative;
+        }
+        .fc_qinfo_count {
+            color: white;
+            font-family: Helvetica, Arial;
+            font-size: 1.25em;
+            font-weight: bold;
+            padding: 1%
+        }
+        .fc_qinfo_tip {
+            color: white;
+            font-family: Helvetica, Arial;
+            font-size: 1em;
+            font-weight: bold;
+            padding: 1%
+        }
+        .fc_footer {
+            height: 40px;
+            width: 100%;
+            background: grey;
+        }
+        .quest_enterblock {
+            display: inline-block;
+        }
+        .fc_go {
+            width: 100px;
+            height: 100px;
+            vertical-align: 1em;
+        }
+        .quest_holder {
+            position: relative;
+            width: auto;
+            text-align: center;
+        }
+        .quest_block {
+            display: inline-block;
+            min-width: 100px;
+            padding: 1%;
+            margin: 1%;
+        }
+        .quest_leftblock {
+            font-size: 2em;
+        }
+        .quest_inputblock {
+            font-size: 2em;
+            border: 1px solid;
+            vertical-align: -0.25em;
+        }
+        .quest_eqblock {
+            font-size: 2em;
+        }
+        .info_cont {
+            margin: 1px;
+            padding: 1%;
+        }
+        .info_exp {
+            bottom: 5px;
+            padding-left: 2%;
+            position: absolute;
+        }
+        .fc_help_container {
+            width: 100%;
+            position: absolute;
+            font-size: 1.25em;
+            top: 40px;
+            background: whitesmoke;
+        }
+        .fc_help_container .question {
+            font-size: 1.5em;
+            padding: 10px;
+            padding-left: 20px;
+        }
+        .fc_help_container .textLine {
+            padding: 5px;
+            padding-left: 10px;
+        }
+        .fc_help_container .eqnLine {
+            padding: 10px;
+            padding-left: 20px;
+        }
+        .fc_container .next_prob {
+            height: 30px;
+        }
+        .fc_container .next_prob_btn {
+            padding: 8px;
+            text-align: right;
+        }
+        .fc_explain{
+            width:100px;
+            height: 30px;
+        }
+    </style>
+    <script>
+        var fcm;
+        var def_wid = 800;
+        var def_ht = 600;
+
+        function showNext() {
+            hideHelp();
+            fcm.showProblem();
+        }
+
+        function hideHelp() {
+            $("div[name='fc_help_container']").hide();
+            $(".fc_container").find(".next_prob_btn").hide();
+        }
+
+        function showHelp() {
+            $("div[name='fc_help_container']").show();
+            $(".fc_container").find(".next_prob_btn").show();
+        }
+
+        function showExplain() {
+            fcm.showHelp();
+        }
+
+        function getViewport() {
+
+            var viewPortWidth;
+            var viewPortHeight;
+
+            // the more standards compliant browsers (mozilla/netscape/opera/IE7) use window.innerWidth and window.innerHeight
+            if (typeof window.innerWidth != 'undefined') {
+                viewPortWidth = window.innerWidth,
+                viewPortHeight = window.innerHeight
+            }
+
+            // IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
+            else if (typeof document.documentElement != 'undefined' && typeof document.documentElement.clientWidth !=
+                'undefined' && document.documentElement.clientWidth != 0) {
+                viewPortWidth = document.documentElement.clientWidth,
+                viewPortHeight = document.documentElement.clientHeight
+            }
+
+            // older versions of IE
+            else {
+                viewPortWidth = document.getElementsByTagName('body')[0].clientWidth,
+                viewPortHeight = document.getElementsByTagName('body')[0].clientHeight
+            }
+            return [viewPortWidth, viewPortHeight];
+        }
+        window.onload = function() {
+            var vp = getViewport()
+            def_wid = $(window).width() || 800;
+            def_ht = $(window).height() || 600;
+            var cont = $(".fc_container").get(0);
+            initFCLayout(cont, {
+                "title": "Adding Fractions"
+            }, def_wid, def_ht);
+            fcm = new FC_Manager($("div[name='fc_container']").get(0), 'adding_fractions', {
+                limit: 3,
+                helpCont: $("div[name='fc_help_container']")
+            });
+            fcm.init();
+            positionFCLayout($(cont), def_wid, def_ht);
+            $(window).resize(function() {
+                resizeFCLayout();
+            })
+        }
+
+        function initFCLayout(cont, json, w, h) {
+            $(cont).width(w);
+            $(cont).height(h);
+            var headerHeight = 40;
+            var footerHeight = 40;
+            var contentHeight = h - (headerHeight + footerHeight);
+            var html = '<div class="fc_header"><span class="fc_title">' + json.title + '</span></div><div class="fc_content"><div class="fc_quest_statement"><span>This is question statement!</span></div><div class="fc_quest_display"></div><div class="fc_quest_info"><div class="info_cont">Question information!</div><div class="info_exp"><button class="fc_explain" onclick="showExplain()">Explain</button></div></div><div class="fc_help_container" name="fc_help_container" style="display:none"></div></div><div class="fc_footer"><div class="next_prob_btn" style="display:none"><button class="next_prob" onclick="showNext()">Goto Next Problem</button></div></div>';
+            $(cont).html(html);
+            var content = $(cont).find(".fc_content");
+            content.height(contentHeight);
+            content.find(".fc_quest_statement").height("20%");
+            content.find(".fc_quest_info").height("30%");
+            content.find(".fc_quest_display").height("50%");
+            initQuestionBlock();
+
+
+        };
+
+        function positionFCLayout(c, w, h) {
+            var p = $(c).parent();
+            var pw = p.outerWidth();
+            var ph = p.outerHeight();
+            var dx = (pw - w) / 2;
+            var dy = (ph - h) / 2;
+            $(c).css("top", dy + 'px');
+            $(c).css("left", dx + 'px');
+            var cd = $(c).find(".fc_quest_display");
+            var db = cd.find(".quest_holder");
+
+            var dw = cd.outerWidth();
+            var dh = cd.outerHeight();
+            var bw = db.outerWidth();
+            var bh = db.outerHeight();
+            var bx = (dw - bw) / 2;
+            var by = (dh - bh) / 2;
+            db.css({
+                "top": by + "px",
+                "left": bx + "px"
+            });
+            var cht = $(c).find(".fc_content").height();
+            $(c).find(".fc_help_container").css("height", cht + "px");
+            console.log(p.outerWidth() + ":" + p.outerHeight());
+        };
+
+        function resizeFCLayout(_w, _h) {
+            var cont = $(".fc_container").get(0);
+            var w = _w ? _w : $(window).width();
+            var h = _h ? _h : $(window).height();
+            $(cont).width(w);
+            $(cont).height(h);
+            var headerHeight = 40;
+            var footerHeight = 40;
+            var contentHeight = h - (headerHeight + footerHeight);
+            var content = $(cont).find(".fc_content");
+            content.height(contentHeight);
+            content.find(".fc_quest_statement").height("20%");
+            content.find(".fc_quest_info").height("25%");
+            content.find(".fc_quest_display").height("55%");
+            positionFCLayout($(cont), w, h);
+        }
+
+        function initQuestionBlock() {
+            var cont = $(".fc_quest_display");
+            var block = $("<div class='quest_holder'></div>");
+            var leftblock = "<div class='quest_block quest_leftblock'></div>";
+            var eqblock = "<div class='quest_block quest_eqblock'></div>";
+            var rightblock = "<div class='quest_block quest_inputblock'></div>";
+            var enterblock = "<div class='quest_block quest_enterblock'><button class='fc_go'>GO</button></div>";
+            cont.append(block);
+            block.append(leftblock + eqblock + rightblock + enterblock);
+
+        }
+
+        function getRationalUnit(id, wi, frac, exp) {
+            var w = wi ? wi : 75;
+            var _frac = frac === undefined ? true : frac;
+            var _exp = exp === undefined ? true : exp;
+            var html = "<div style='position:absolute;'>";
+            if (_frac) {
+                html += "   <div name='widget_input_field_base_" + id + "' style='position: absolute; left: 0;'>" + getFractionField(id, w) + "</div>";
+            } else {
+                html += "   <div name='widget_input_field_base_" + id + "' style='position: absolute; left: 0;'>" + getNormalblock(id, w) + "</div>";
+            }
+            if (_exp) {
+                html += "   <input name='widget_input_field_exp_" + id + "' type='text' style='position: relative;  top: -8px;left:" + (w + 5) + "px;font-size: .5em;width: " + (w * 0.55) + "px;text-align:left;display:none;'/>";
+            }
+            html += "</div>";
+            return html;
+        };
+
+        function getFractionField(id, w, format) {
+            var wid = w ? w : 80;
+            var disp1 = format == 'fraction' ? 'inline' : 'none';
+            var disp2 = format == 'fraction' ? 'block' : 'none';
+            var html = "<div style='height: 75px;float: left;'>" + "<div style='float: left;'>" + "<input name='widget_input_field_norm_" + id + "' type='text' style='width: " + wid + "px;text-align:center;font-weight: bold;'/>" + "<div name='widget_divider_" + id + "' class='divider' style='display: " + disp2 + ";width:" + wid + "px;'>&nbsp;</div>" + "<input name='widget_input_field_den_" + id + "' type='text' style='display: " + disp1 + ";width: " + wid + "px;text-align:center;font-weight: bold;'/>" + "</div>" + "</div>";
+            return html;
+        };
+
+        function getNormalblock(id, w) {
+            var norm_html = "<input name='widget_input_field_norm_" + id + "' type='text' style='float:left; width:" + w + "px; text-align:center; font-weight: bold;'/>";
+            return norm_html;
+        };
+    </script>
+</HEAD>
+
+<body>
+    <div class="fc_container" name="fc_container">
+
+
+    </div>
+</body>
+
+</HTML>
