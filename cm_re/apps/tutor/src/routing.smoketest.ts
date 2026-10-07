@@ -44,6 +44,11 @@ assert(
     parseHash(hashFor.test("s", "p/1")).kind === "test",
   "hashFor.test(subjectId, pid) encodes + round-trips",
 );
+assert(parseHash("#/games").kind === "games", "#/games -> games");
+const g = parseHash("#/g/numbercop");
+assert(g.kind === "game" && g.slug === "numbercop", "#/g/numbercop -> game(numbercop)");
+assert(hashFor.game("a b") === "#/g/a%20b", "hashFor.game encodes the slug");
+assert(parseHash(hashFor.game("x/y")).kind === "game", "hashFor.game round-trips through parseHash");
 assert(parseHash("#/bogus/x").kind === "hub", "unknown route -> hub");
 
 // --- getSolution(pid) after a real install ---

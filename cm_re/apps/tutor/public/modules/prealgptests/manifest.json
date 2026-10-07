@@ -815,91 +815,159 @@
       "key": "ch-1",
       "label": "Chapter 1",
       "name": "Algebraic Expressions and Evaluation",
-      "rank": 1
+      "rank": 1,
+      "skills": [
+        "linear-equations",
+        "polynomials"
+      ]
     },
     {
       "key": "ch-2",
       "label": "Chapter 2",
       "name": "Integer Operations and Applications",
-      "rank": 2
+      "rank": 2,
+      "skills": [
+        "integers",
+        "multiples"
+      ]
     },
     {
       "key": "ch-3",
       "label": "Chapter 3",
       "name": "Fractions and Greatest Common Factor",
-      "rank": 3
+      "rank": 3,
+      "skills": [
+        "fractions-add",
+        "fractions-multiply",
+        "fraction-models",
+        "polynomials",
+        "multiples"
+      ]
     },
     {
       "key": "ch-4",
       "label": "Chapter 4",
       "name": "Fractions and Mixed Numbers",
-      "rank": 4
+      "rank": 4,
+      "skills": [
+        "fractions-add",
+        "fractions-multiply",
+        "fraction-models"
+      ]
     },
     {
       "key": "ch-5",
       "label": "Chapter 5",
       "name": "Fractions and Word Problems",
-      "rank": 5
+      "rank": 5,
+      "skills": [
+        "fractions-add",
+        "fractions-multiply",
+        "fraction-models"
+      ]
     },
     {
       "key": "ch-6",
       "label": "Chapter 6",
       "name": "Ratios and Proportions",
-      "rank": 6
+      "rank": 6,
+      "skills": [
+        "rationals",
+        "fractions-multiply"
+      ]
     },
     {
       "key": "ch-7",
       "label": "Chapter 7",
       "name": "Polygons and Congruence",
-      "rank": 7
+      "rank": 7,
+      "skills": [
+        "similarity-congruence",
+        "angles",
+        "area-perimeter"
+      ]
     },
     {
       "key": "ch-8",
       "label": "Chapter 8",
       "name": "Roots and Polynomials",
-      "rank": 8
+      "rank": 8,
+      "skills": [
+        "polynomials",
+        "exponents",
+        "radicals"
+      ]
     },
     {
       "key": "ch-9",
       "label": "Chapter 9",
       "name": "Area and Volume",
-      "rank": 9
+      "rank": 9,
+      "skills": [
+        "area-perimeter"
+      ]
     },
     {
       "key": "ch-10",
       "label": "Chapter 10",
       "name": "Linear Equations and Slope",
-      "rank": 10
+      "rank": 10,
+      "skills": [
+        "linear-equations",
+        "slope",
+        "graphing-linear"
+      ]
     },
     {
       "key": "ch-11",
       "label": "Chapter 11",
       "name": "Unit Conversion",
-      "rank": 11
+      "rank": 11,
+      "skills": [
+        "rationals",
+        "decimals"
+      ]
     },
     {
       "key": "ch-12",
       "label": "Chapter 12",
       "name": "Coordinate Geometry and Counting",
-      "rank": 12
+      "rank": 12,
+      "skills": [
+        "coordinate-geometry"
+      ]
     },
     {
       "key": "ch-13",
       "label": "Chapter 13",
       "name": "Volume of 3D Shapes",
-      "rank": 13
+      "rank": 13,
+      "skills": [
+        "area-perimeter"
+      ]
     },
     {
       "key": "course-1",
       "label": "Course Test 1",
       "name": "Direct Variation Problems",
-      "rank": 1001
+      "rank": 1001,
+      "skills": [
+        "slope",
+        "linear-equations"
+      ]
     },
     {
       "key": "course-2",
       "label": "Course Test 2",
       "name": "Scientific Notation and Divisibility",
-      "rank": 1002
+      "rank": 1002,
+      "skills": [
+        "multiples",
+        "primes",
+        "perfect-squares",
+        "exponents",
+        "decimals"
+      ]
     }
   ],
   "scorableCount": 806

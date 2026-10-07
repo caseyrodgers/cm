@@ -13,12 +13,13 @@ import { useCurrentSubject } from "../lib/useCurrentSubject";
  * Swap shells with `?shell=<id>` — see lib/shell.ts and shells/index.ts.
  */
 
-type Section = "hub" | "tests" | "problems" | "me";
+type Section = "hub" | "tests" | "problems" | "games" | "me";
 
 const NAV: { section: Section; label: string; to: string }[] = [
   { section: "hub", label: "Hub", to: hashFor.hub() },
   { section: "tests", label: "Practice Tests", to: hashFor.tests() },
   { section: "problems", label: "Problems", to: hashFor.problems() },
+  { section: "games", label: "Games", to: hashFor.games() },
   { section: "me", label: "Me", to: hashFor.me() },
 ];
 
@@ -38,6 +39,9 @@ function sectionOf(kind: string): Section | null {
       return "problems";
     case "me":
       return "me";
+    case "games":
+    case "game":
+      return "games";
     default:
       return null;
   }
@@ -49,7 +53,7 @@ export default function DefaultShell({ children }: { children: ReactNode }) {
   const streak = useStreak();
   const subject = useCurrentSubject();
   const section = sectionOf(route.kind);
-  const deep = route.kind === "module" || route.kind === "solution" || route.kind === "test";
+  const deep = route.kind === "module" || route.kind === "solution" || route.kind === "test" || route.kind === "game";
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">

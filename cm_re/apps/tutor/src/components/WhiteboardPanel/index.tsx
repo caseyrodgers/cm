@@ -6,6 +6,12 @@ import { SanitizedHtml } from "../StepViewer";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 import { cn } from "../../lib/utils";
+import { chapterOf } from "../../lib/problemOrder";
+import { getInstalledManifest } from "../../offline/moduleManager";
+import { gamesForContext } from "../../games/matching";
+import { GAMES, type GameEntry } from "../../games/registry";
+import type { SkillId } from "../../games/skills";
+import { navigate, hashFor } from "../../routing";
 
 /**
  * Per-solution scratch whiteboard. One continuous board per solution —
@@ -308,9 +314,11 @@ function Calculator({ onClose }: { onClose: () => void }) {
   );
 }
 
-export default function WhiteboardPanel({ pid }: { pid: string }) {
+export default function WhiteboardPanel({ pid, subjectId }: { pid: string; subjectId?: string }) {
   const [open, setOpen] = useState(false);
   const [calcOpen, setCalcOpen] = useState(false);
+  const [resourcesOpen, setResourcesOpen] = useState(false);
+  const [matchedGames, setMatchedGames] = useState<GameEntry[]>([]);
   const [color, setColor] = useState<string>(PEN_COLORS[0]);
   const [strokeCount, setStrokeCount] = useState(0);
   const [historyCount, setHistoryCount] = useState(0);
@@ -404,6 +412,22 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
   useEffect(() => () => aiAbortRef.current?.abort(), []);
   useEffect(() => () => readAbortRef.current?.abort(), []);
   useEffect(() => () => skeletonAbortRef.current?.abort(), []);
+
+  useEffect(() => {
+    if (!subjectId) { setMatchedGames(GAMES); return; }
+    let cancelled = false;
+    getInstalledManifest(subjectId).then((m) => {
+      if (cancelled) return;
+      const ch = chapterOf(pid, subjectId);
+      const chapterInfo = m?.chapters?.find((c) => c.key === ch.key);
+      const skills = (chapterInfo?.skills ?? []) as SkillId[];
+      const matched = gamesForContext({ skills, subjectId });
+      const matchedSlugs = new Set(matched.map((g) => g.slug));
+      const rest = GAMES.filter((g) => !matchedSlugs.has(g.slug));
+      setMatchedGames([...matched, ...rest]);
+    });
+    return () => { cancelled = true; };
+  }, [pid, subjectId]);
 
   function toLogical(e: React.PointerEvent<HTMLCanvasElement>): [number, number] {
     const r = e.currentTarget.getBoundingClientRect();
@@ -593,7 +617,35 @@ export default function WhiteboardPanel({ pid }: { pid: string }) {
         >
           🧮 Calc
         </Button>
+        <Button
+          variant={resourcesOpen ? "default" : "outline"}
+          onClick={() => setResourcesOpen((v) => !v)}
+          aria-pressed={resourcesOpen}
+        >
+          📚 Resources
+        </Button>
       </div>
+
+      {resourcesOpen && matchedGames.length > 0 && (
+        <div className="mt-2 rounded-lg border border-slate-200 bg-white p-3">
+          <p className="mb-2 text-xs font-semibold text-slate-600">Practice games for this chapter</p>
+          <div className="space-y-1.5">
+            {matchedGames.map((g) => (
+              <button
+                key={g.slug}
+                onClick={() => navigate(hashFor.game(g.slug))}
+                className="flex w-full items-center justify-between rounded-md border border-slate-100 px-3 py-2 text-left hover:border-blue-300 hover:bg-blue-50"
+              >
+                <span>
+                  <span className="text-sm font-semibold text-slate-800">{g.title}</span>
+                  <span className="ml-2 text-xs text-slate-500">{g.description}</span>
+                </span>
+                <span aria-hidden className="text-slate-400">&rsaquo;</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {calcOpen && <Calculator onClose={() => setCalcOpen(false)} />}
 

@@ -143,7 +143,7 @@ export default function SolutionNav({ solution, onBack }: { solution: Solution; 
         {/* Per-solution scratch space — one continuous board. key=pid so
             navigating to another solution unmounts this one (flushing its
             save) and mounts a fresh board. */}
-        <WhiteboardPanel key={solution.pid} pid={solution.pid} />
+        <WhiteboardPanel key={solution.pid} pid={solution.pid} subjectId={solution.subjectId} />
       </CardContent>
     </Card>
   );

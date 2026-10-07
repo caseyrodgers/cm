@@ -5,6 +5,8 @@ import SolutionLoader from "./components/SolutionLoader";
 import PracticeTest from "./components/PracticeTest";
 import Hub from "./components/Hub";
 import StudentStatus from "./components/StudentStatus";
+import GameList from "./components/GameList";
+import GameView from "./components/GameView";
 import DialogHost from "./components/DialogHost";
 import { useHashRoute, navigate, hashFor } from "./routing";
 import { activeShellId } from "./lib/shell";
@@ -43,6 +45,10 @@ function renderRoute(route: ReturnType<typeof useHashRoute>) {
       );
     case "me":
       return <StudentStatus />;
+    case "games":
+      return <GameList />;
+    case "game":
+      return <GameView slug={route.slug} />;
     case "module":
       return (
         <ModuleDownloadPrompt

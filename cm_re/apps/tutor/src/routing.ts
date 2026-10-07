@@ -32,6 +32,8 @@ export type Route =
   | { kind: "tests" }
   | { kind: "problems" }
   | { kind: "me" }
+  | { kind: "games" }
+  | { kind: "game"; slug: string }
   | { kind: "module"; subjectId: string }
   | { kind: "solution"; pid: string }
   | { kind: "test"; subjectId: string; pid?: string; startChapterKey?: string };
@@ -41,6 +43,10 @@ export function parseHash(hash: string): Route {
   const path = hash.replace(/^#/, "").replace(/^\//, "");
   const segments = path.split("/").filter(Boolean).map(decodeURIComponent);
 
+  if (segments[0] === "games" && !segments[1]) return { kind: "games" };
+  if (segments[0] === "g" && segments[1]) {
+    return { kind: "game", slug: segments[1] };
+  }
   if (segments[0] === "m" && segments[1]) {
     return { kind: "module", subjectId: segments[1] };
   }
@@ -64,6 +70,8 @@ export const hashFor = {
   tests: () => "#/tests",
   problems: () => "#/problems",
   me: () => "#/me",
+  games: () => "#/games",
+  game: (slug: string) => `#/g/${encodeURIComponent(slug)}`,
   module: (subjectId: string) => `#/m/${encodeURIComponent(subjectId)}`,
   solution: (pid: string) => `#/s/${encodeURIComponent(pid)}`,
   test: (subjectId: string, pid?: string) =>

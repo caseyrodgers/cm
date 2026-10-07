@@ -163,6 +163,8 @@ export interface ChapterInfo {
   name: string;
   /** sort position (numeric chapters first, then course tests, then other) */
   rank: number;
+  /** AI-inferred skill tags for game/activity matching; absent on modules assembled before this field existed */
+  skills?: string[];
 }
 
 /**

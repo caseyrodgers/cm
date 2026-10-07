@@ -19,6 +19,7 @@ import { Spinner } from "../ui/spinner";
 const TILES: { label: string; sub: string; to: string }[] = [
   { label: "Practice Tests", sub: "Take a timed set — quick, whole-subject, or by chapter.", to: hashFor.tests() },
   { label: "Problems", sub: "Browse every worked solution, grouped by chapter.", to: hashFor.problems() },
+  { label: "Games", sub: "Reinforce skills with interactive math games.", to: hashFor.games() },
   { label: "Me", sub: "Your progress so far — and a way to start over.", to: hashFor.me() },
 ];
 

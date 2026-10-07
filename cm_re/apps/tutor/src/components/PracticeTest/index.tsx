@@ -29,6 +29,8 @@ import { updateStreak } from "../../lib/streak";
 import { recordChapterResults } from "../../lib/chapterMastery";
 import { orderPids, groupByChapter, chapterOf } from "../../lib/problemOrder";
 import { navigate, hashFor } from "../../routing";
+import { gamesForContext } from "../../games/matching";
+import type { SkillId } from "../../games/skills";
 import { QuestionView, choiceLetter } from "../QuestionView";
 import { StatementView } from "../StepViewer";
 import SolutionNav from "../SolutionNav";
@@ -134,6 +136,7 @@ export default function PracticeTest({
   const [busy, setBusy] = useState(false);
   // key -> baked-in topic name from the installed manifest ("" if none)
   const [chapterNames, setChapterNames] = useState<Map<string, string>>(new Map());
+  const [chapterSkills, setChapterSkills] = useState<Map<string, string[]>>(new Map());
   // "Combine chapters" picker state — see the By-chapter section below.
   const [combineMode, setCombineMode] = useState(false);
   const [selectedChapters, setSelectedChapters] = useState<Set<string>>(new Set());
@@ -144,9 +147,10 @@ export default function PracticeTest({
   const autoFinishingRef = useRef(false);
 
   useEffect(() => {
-    getInstalledManifest(subjectId).then((m) =>
-      setChapterNames(new Map((m?.chapters ?? []).map((c) => [c.key, c.name])))
-    );
+    getInstalledManifest(subjectId).then((m) => {
+      setChapterNames(new Map((m?.chapters ?? []).map((c) => [c.key, c.name])));
+      setChapterSkills(new Map((m?.chapters ?? []).filter((c) => c.skills?.length).map((c) => [c.key, c.skills!])));
+    });
   }, [subjectId]);
 
   // In a "Missed Questions Lesson" (scope "custom") the URL carries the
@@ -595,7 +599,7 @@ export default function PracticeTest({
                   assessment. It's available on the score-screen review
                   and in the missed-questions lesson afterward. */}
               {/* Same per-solution board as the normal view (keyed by pid). */}
-              <WhiteboardPanel key={`wb-${pid}`} pid={pid} />
+              <WhiteboardPanel key={`wb-${pid}`} pid={pid} subjectId={subjectId} />
             </>
           ) : (
             <Spinner />
@@ -632,7 +636,7 @@ export default function PracticeTest({
                 <p className="text-sm text-slate-500">No recorded answer for this problem.</p>
               )}
               <LearnPanel key={`learn-${pid}`} solution={solution} title={solutionTitle(pid, subjectId)} />
-              <WhiteboardPanel key={`wb-${pid}`} pid={pid} />
+              <WhiteboardPanel key={`wb-${pid}`} pid={pid} subjectId={subjectId} />
             </>
           ) : (
             <Spinner />
@@ -740,6 +744,11 @@ export default function PracticeTest({
               </p>
             </div>
           )}
+          <GameSuggestions
+            test={test}
+            chapterSkills={chapterSkills}
+            subjectId={subjectId}
+          />
           <Button variant="outline" className="mt-2 w-full" onClick={backToPicker} disabled={busy}>
             Back to test menu
           </Button>
@@ -803,5 +812,46 @@ export default function PracticeTest({
         </Button>
       </CardContent>
     </Card>
+  );
+}
+
+function GameSuggestions({
+  test,
+  chapterSkills,
+  subjectId,
+}: {
+  test: PracticeTestT;
+  chapterSkills: Map<string, string[]>;
+  subjectId: string;
+}) {
+  const skills = useMemo(() => {
+    const set = new Set<SkillId>();
+    for (const pid of test.pids) {
+      const ch = chapterOf(pid, subjectId);
+      for (const s of chapterSkills.get(ch.key) ?? []) set.add(s as SkillId);
+    }
+    return [...set];
+  }, [test, chapterSkills, subjectId]);
+
+  const games = useMemo(() => gamesForContext({ skills, subjectId }), [skills, subjectId]);
+
+  if (games.length === 0) return null;
+
+  return (
+    <div className="mt-4">
+      <p className="mb-2 text-sm font-semibold text-slate-700">Reinforce with a game</p>
+      <div className="flex gap-2 overflow-x-auto">
+        {games.map((g) => (
+          <button
+            key={g.slug}
+            onClick={() => navigate(hashFor.game(g.slug))}
+            className="flex min-w-[140px] flex-col gap-0.5 rounded-lg border border-slate-200 bg-white p-2.5 text-left shadow-sm hover:border-blue-300 hover:bg-blue-50"
+          >
+            <span className="text-sm font-semibold text-slate-800">{g.title}</span>
+            <span className="text-xs text-slate-500">{g.description}</span>
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }

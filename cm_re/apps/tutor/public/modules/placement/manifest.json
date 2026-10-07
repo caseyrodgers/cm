@@ -188,79 +188,143 @@
       "key": "ch-1",
       "label": "Chapter 1",
       "name": "Absolute Value",
-      "rank": 1
+      "rank": 1,
+      "skills": [
+        "integers",
+        "linear-equations"
+      ]
     },
     {
       "key": "ch-2",
       "label": "Chapter 2",
       "name": "Simplifying Fractions and Expressions",
-      "rank": 2
+      "rank": 2,
+      "skills": [
+        "fractions-add",
+        "fractions-multiply",
+        "fraction-models"
+      ]
     },
     {
       "key": "ch-3",
       "label": "Chapter 3",
       "name": "Factoring and Simplification",
-      "rank": 3
+      "rank": 3,
+      "skills": [
+        "polynomials",
+        "multiples"
+      ]
     },
     {
       "key": "ch-4",
       "label": "Chapter 4",
       "name": "Linear Inequalities and Graphs",
-      "rank": 4
+      "rank": 4,
+      "skills": [
+        "graphing-linear",
+        "slope",
+        "inequalities"
+      ]
     },
     {
       "key": "ch-5",
       "label": "Chapter 5",
       "name": "Number Theory and Polynomials",
-      "rank": 5
+      "rank": 5,
+      "skills": [
+        "multiples",
+        "primes",
+        "perfect-squares",
+        "polynomials",
+        "exponents"
+      ]
     },
     {
       "key": "ch-6",
       "label": "Chapter 6",
       "name": "Basic Number Concepts",
-      "rank": 6
+      "rank": 6,
+      "skills": [
+        "multiples",
+        "primes",
+        "perfect-squares"
+      ]
     },
     {
       "key": "ch-7",
       "label": "Chapter 7",
       "name": "Basic Arithmetic and Geometry",
-      "rank": 7
+      "rank": 7,
+      "skills": [
+        "integers",
+        "order-of-operations"
+      ]
     },
     {
       "key": "ch-8",
       "label": "Chapter 8",
       "name": "Algebraic Expressions and Coordinate Geometry",
-      "rank": 8
+      "rank": 8,
+      "skills": [
+        "coordinate-geometry",
+        "linear-equations",
+        "polynomials"
+      ]
     },
     {
       "key": "ch-9",
       "label": "Chapter 9",
       "name": "Algebraic Expressions and Coordinates",
-      "rank": 9
+      "rank": 9,
+      "skills": [
+        "coordinate-geometry",
+        "linear-equations",
+        "polynomials"
+      ]
     },
     {
       "key": "ch-10",
       "label": "Chapter 10",
       "name": "Absolute Value and Distance",
-      "rank": 10
+      "rank": 10,
+      "skills": [
+        "integers",
+        "linear-equations"
+      ]
     },
     {
       "key": "ch-11",
       "label": "Chapter 11",
       "name": "Circles and Radicals",
-      "rank": 11
+      "rank": 11,
+      "skills": [
+        "radicals",
+        "area-perimeter",
+        "coordinate-geometry"
+      ]
     },
     {
       "key": "ch-12",
       "label": "Chapter 12",
       "name": "Conic Sections and Applications",
-      "rank": 12
+      "rank": 12,
+      "skills": [
+        "coordinate-geometry",
+        "quadratics"
+      ]
     },
     {
       "key": "ch-13",
       "label": "Chapter 13",
       "name": "Polynomials and Divisibility",
-      "rank": 13
+      "rank": 13,
+      "skills": [
+        "multiples",
+        "primes",
+        "perfect-squares",
+        "polynomials",
+        "exponents"
+      ]
     },
     {
       "key": "ch-14",
@@ -272,13 +336,23 @@
       "key": "ch-15",
       "label": "Chapter 15",
       "name": "Algebraic Expressions and Transformations",
-      "rank": 15
+      "rank": 15,
+      "skills": [
+        "coordinate-geometry",
+        "linear-equations",
+        "polynomials"
+      ]
     },
     {
       "key": "ch-16",
       "label": "Chapter 16",
       "name": "Areas of Parallelograms",
-      "rank": 16
+      "rank": 16,
+      "skills": [
+        "area-perimeter",
+        "slope",
+        "graphing-linear"
+      ]
     },
     {
       "key": "ch-17",
@@ -290,7 +364,11 @@
       "key": "ch-18",
       "label": "Chapter 18",
       "name": "Circles and Transformations",
-      "rank": 18
+      "rank": 18,
+      "skills": [
+        "coordinate-geometry",
+        "area-perimeter"
+      ]
     },
     {
       "key": "ch-19",
@@ -302,13 +380,22 @@
       "key": "ch-20",
       "label": "Chapter 20",
       "name": "Transformations and Circles",
-      "rank": 20
+      "rank": 20,
+      "skills": [
+        "coordinate-geometry",
+        "area-perimeter"
+      ]
     },
     {
       "key": "other",
       "label": "Other",
       "name": "Quadratic Functions and Factoring",
-      "rank": 100000
+      "rank": 100000,
+      "skills": [
+        "quadratics",
+        "polynomials",
+        "multiples"
+      ]
     }
   ],
   "scorableCount": 179
