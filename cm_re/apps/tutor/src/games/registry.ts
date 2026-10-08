@@ -24,7 +24,7 @@ export const GAMES: GameEntry[] = [
     title: "Number Cop",
     description: "Drive through multiples, primes, and perfect squares",
     url: "/games/numbercop/index.html",
-    skills: ["multiples", "primes", "perfect-squares", "rationals"],
+    skills: ["least-common-multiples", "prime-composite", "perfect-squares", "rationals"],
     gradeRange: [5, 9],
     contextParams: { type: "skill", difficulty: "difficulty" },
   },
@@ -33,7 +33,7 @@ export const GAMES: GameEntry[] = [
     title: "Fraction Flashcards",
     description: "Timed practice adding and simplifying fractions",
     url: "/games/flashcards/index.html",
-    skills: ["fractions-add", "fractions-multiply", "fraction-models"],
+    skills: ["adding-fractions", "adding-and-subtracting-fractions", "multiplying-a-fraction-by-a-fraction", "reducing-fractions"],
     gradeRange: [4, 8],
   },
   {
@@ -41,7 +41,7 @@ export const GAMES: GameEntry[] = [
     title: "Math Quiz",
     description: "Rapid-fire arithmetic — add, subtract, multiply, divide under time pressure",
     url: "https://play.gamepix.com/math-quiz-game/embed",
-    skills: ["integers", "order-of-operations", "decimals"],
+    skills: ["integers", "order-of-operations", "adding-and-subtracting-decimals", "multiplying-decimals"],
     gradeRange: [3, 8],
   },
   {
@@ -49,7 +49,7 @@ export const GAMES: GameEntry[] = [
     title: "Sudoku",
     description: "Classic 9x9 logic puzzle — builds number sense and deductive reasoning",
     url: "https://play.gamepix.com/sudoku-classic/embed",
-    skills: ["integers", "data-analysis"],
+    skills: ["integers", "natural-numbers"],
     gradeRange: [5, 12],
   },
   {
@@ -57,7 +57,7 @@ export const GAMES: GameEntry[] = [
     title: "Get 10",
     description: "Merge adjacent numbers to reach 10 — addition and strategy",
     url: "https://play.gamepix.com/get-10/embed",
-    skills: ["integers", "order-of-operations"],
+    skills: ["integers", "order-of-operations", "addition-whole-numbers"],
     gradeRange: [3, 7],
   },
   {
@@ -65,7 +65,7 @@ export const GAMES: GameEntry[] = [
     title: "Math Duck",
     description: "Platformer where you solve arithmetic to progress through levels",
     url: "https://play.gamepix.com/math-duck/embed",
-    skills: ["integers", "order-of-operations", "fractions-add"],
+    skills: ["integers", "order-of-operations", "adding-fractions", "basic-operations"],
     gradeRange: [3, 7],
   },
   {
@@ -73,7 +73,7 @@ export const GAMES: GameEntry[] = [
     title: "Number Sums",
     description: "Find number combinations that add to the target — mental math workout",
     url: "https://play.gamepix.com/number-sum/embed",
-    skills: ["integers", "order-of-operations"],
+    skills: ["integers", "order-of-operations", "addition-whole-numbers"],
     gradeRange: [3, 8],
   },
   {
@@ -81,7 +81,7 @@ export const GAMES: GameEntry[] = [
     title: "Math Crossword",
     description: "Crossword puzzle with arithmetic clues — equations in every direction",
     url: "https://play.gamepix.com/math-crossword-number-puzzle/embed",
-    skills: ["integers", "order-of-operations", "linear-equations"],
+    skills: ["integers", "order-of-operations", "solving-linear-equations", "solving-one-step-equations"],
     gradeRange: [4, 9],
   },
 ];

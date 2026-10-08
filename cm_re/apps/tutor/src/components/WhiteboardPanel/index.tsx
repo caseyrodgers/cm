@@ -11,6 +11,8 @@ import { getInstalledManifest } from "../../offline/moduleManager";
 import { gamesForContext } from "../../games/matching";
 import { GAMES, type GameEntry } from "../../games/registry";
 import type { SkillId } from "../../games/skills";
+import { videosForContext } from "../../videos/matching";
+import type { VideoEntry } from "../../videos/registry";
 import { navigate, hashFor } from "../../routing";
 
 /**
@@ -319,6 +321,7 @@ export default function WhiteboardPanel({ pid, subjectId }: { pid: string; subje
   const [calcOpen, setCalcOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
   const [matchedGames, setMatchedGames] = useState<GameEntry[]>([]);
+  const [matchedVideos, setMatchedVideos] = useState<VideoEntry[]>([]);
   const [color, setColor] = useState<string>(PEN_COLORS[0]);
   const [strokeCount, setStrokeCount] = useState(0);
   const [historyCount, setHistoryCount] = useState(0);
@@ -414,7 +417,7 @@ export default function WhiteboardPanel({ pid, subjectId }: { pid: string; subje
   useEffect(() => () => skeletonAbortRef.current?.abort(), []);
 
   useEffect(() => {
-    if (!subjectId) { setMatchedGames(GAMES); return; }
+    if (!subjectId) { setMatchedGames(GAMES); setMatchedVideos([]); return; }
     let cancelled = false;
     getInstalledManifest(subjectId).then((m) => {
       if (cancelled) return;
@@ -425,6 +428,7 @@ export default function WhiteboardPanel({ pid, subjectId }: { pid: string; subje
       const matchedSlugs = new Set(matched.map((g) => g.slug));
       const rest = GAMES.filter((g) => !matchedSlugs.has(g.slug));
       setMatchedGames([...matched, ...rest]);
+      setMatchedVideos(videosForContext({ skills }));
     });
     return () => { cancelled = true; };
   }, [pid, subjectId]);
@@ -626,24 +630,50 @@ export default function WhiteboardPanel({ pid, subjectId }: { pid: string; subje
         </Button>
       </div>
 
-      {resourcesOpen && matchedGames.length > 0 && (
+      {resourcesOpen && (matchedGames.length > 0 || matchedVideos.length > 0) && (
         <div className="mt-2 rounded-lg border border-slate-200 bg-white p-3">
-          <p className="mb-2 text-xs font-semibold text-slate-600">Practice games for this chapter</p>
-          <div className="space-y-1.5">
-            {matchedGames.map((g) => (
-              <button
-                key={g.slug}
-                onClick={() => navigate(hashFor.game(g.slug))}
-                className="flex w-full items-center justify-between rounded-md border border-slate-100 px-3 py-2 text-left hover:border-blue-300 hover:bg-blue-50"
-              >
-                <span>
-                  <span className="text-sm font-semibold text-slate-800">{g.title}</span>
-                  <span className="ml-2 text-xs text-slate-500">{g.description}</span>
-                </span>
-                <span aria-hidden className="text-slate-400">&rsaquo;</span>
-              </button>
-            ))}
-          </div>
+          {matchedVideos.length > 0 && (
+            <>
+              <p className="mb-2 text-xs font-semibold text-slate-600">Videos for this topic</p>
+              <div className="space-y-1.5">
+                {matchedVideos.map((v) => (
+                  <a
+                    key={v.slug}
+                    href={v.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex w-full items-center justify-between rounded-md border border-slate-100 px-3 py-2 text-left hover:border-indigo-300 hover:bg-indigo-50"
+                  >
+                    <span>
+                      <span className="mr-1.5 text-sm">▶</span>
+                      <span className="text-sm font-semibold text-slate-800">{v.title}</span>
+                    </span>
+                    <span aria-hidden className="text-xs text-slate-400">watch ›</span>
+                  </a>
+                ))}
+              </div>
+            </>
+          )}
+          {matchedGames.length > 0 && (
+            <>
+              <p className={cn("mb-2 text-xs font-semibold text-slate-600", matchedVideos.length > 0 && "mt-3")}>Practice games for this chapter</p>
+              <div className="space-y-1.5">
+                {matchedGames.map((g) => (
+                  <button
+                    key={g.slug}
+                    onClick={() => navigate(hashFor.game(g.slug))}
+                    className="flex w-full items-center justify-between rounded-md border border-slate-100 px-3 py-2 text-left hover:border-blue-300 hover:bg-blue-50"
+                  >
+                    <span>
+                      <span className="text-sm font-semibold text-slate-800">{g.title}</span>
+                      <span className="ml-2 text-xs text-slate-500">{g.description}</span>
+                    </span>
+                    <span aria-hidden className="text-slate-400">&rsaquo;</span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
 

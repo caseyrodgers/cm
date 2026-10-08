@@ -143,6 +143,8 @@ export interface Solution {
   question?: McQuestion;
   /** A widget the legacy statement asked for in place of interactive content. See WidgetSlot. Most solutions have none. */
   widgetSlot?: WidgetSlot;
+  /** Fine-grained topic skills from the inmh_link mapping, e.g. ["quadratic-formula", "discriminant"]. Empty when no mapping exists for this pid. */
+  skills?: string[];
   /** Flat, ordered — legacy TutorProblem.stepUnits is a flat List<TutorStepUnit>, always added as hint+step pairs. */
   steps: StepUnit[];
 }

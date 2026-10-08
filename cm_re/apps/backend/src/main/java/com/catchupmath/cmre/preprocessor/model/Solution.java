@@ -23,5 +23,7 @@ public class Solution {
     public McQuestion question;
     /** Set when the legacy statement asked for a widget in place of interactive content; null otherwise (most solutions). */
     public WidgetSlot widgetSlot;
+    /** Fine-grained topic skills from inmh_link, e.g. ["quadratic-formula"]. Null when no mapping exists. */
+    public List<String> skills;
     public List<StepUnit> steps = new ArrayList<>();
 }

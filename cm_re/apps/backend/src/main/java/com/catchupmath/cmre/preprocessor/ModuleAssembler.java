@@ -53,13 +53,36 @@ public class ModuleAssembler {
             return;
         }
 
+        SkillMapper skillMapper;
+        try {
+            skillMapper = SkillMapper.load();
+            System.out.println("Loaded skill mapper (" + skillMapper.getSkillToVideos().size() + " skills with videos)");
+        } catch (IOException e) {
+            System.err.println("Warning: could not load inmh_link.json — skills will not be stamped: " + e.getMessage());
+            skillMapper = null;
+        }
+
         JsonArray solutions = new JsonArray();
         List<String> solutionIds = new ArrayList<>();
+        int skillsStamped = 0;
         for (File f : solutionFiles) {
             String json = Files.readString(f.toPath(), StandardCharsets.UTF_8);
             JsonObject solution = JsonParser.parseString(json).getAsJsonObject();
+            String pid = solution.get("pid").getAsString();
+            if (skillMapper != null) {
+                List<String> skills = skillMapper.skillsForPid(pid);
+                if (!skills.isEmpty()) {
+                    JsonArray skillsArr = new JsonArray();
+                    skills.forEach(skillsArr::add);
+                    solution.add("skills", skillsArr);
+                    skillsStamped++;
+                }
+            }
             solutions.add(solution);
-            solutionIds.add(solution.get("pid").getAsString());
+            solutionIds.add(pid);
+        }
+        if (skillMapper != null) {
+            System.out.println("Skills stamped: " + skillsStamped + " / " + solutionIds.size());
         }
         Collections.sort(solutionIds);
 
