@@ -316,7 +316,7 @@ function Calculator({ onClose }: { onClose: () => void }) {
   );
 }
 
-export default function WhiteboardPanel({ pid, subjectId }: { pid: string; subjectId?: string }) {
+export default function WhiteboardPanel({ pid, subjectId, skills: solutionSkills }: { pid: string; subjectId?: string; skills?: string[] }) {
   const [open, setOpen] = useState(false);
   const [calcOpen, setCalcOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
@@ -423,15 +423,16 @@ export default function WhiteboardPanel({ pid, subjectId }: { pid: string; subje
       if (cancelled) return;
       const ch = chapterOf(pid, subjectId);
       const chapterInfo = m?.chapters?.find((c) => c.key === ch.key);
-      const skills = (chapterInfo?.skills ?? []) as SkillId[];
-      const matched = gamesForContext({ skills, subjectId });
+      const chapterSkills = (chapterInfo?.skills ?? []) as SkillId[];
+      const matched = gamesForContext({ skills: chapterSkills, subjectId });
       const matchedSlugs = new Set(matched.map((g) => g.slug));
       const rest = GAMES.filter((g) => !matchedSlugs.has(g.slug));
       setMatchedGames([...matched, ...rest]);
-      setMatchedVideos(videosForContext({ skills }));
+      const videoSkills = (solutionSkills?.length ? solutionSkills : chapterSkills) as SkillId[];
+      setMatchedVideos(videosForContext({ skills: videoSkills }));
     });
     return () => { cancelled = true; };
-  }, [pid, subjectId]);
+  }, [pid, subjectId, solutionSkills]);
 
   function toLogical(e: React.PointerEvent<HTMLCanvasElement>): [number, number] {
     const r = e.currentTarget.getBoundingClientRect();
