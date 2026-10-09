@@ -102,7 +102,7 @@
         },
         {
           "role": "step",
-          "content": "<div class=\"step_content\">\n <p>Subtract 2<i>x</i> from both sides of the equation.</p>\n <p>\n  <MATH display=\"block\">\n   <MROW>\n    <MFRAC>\n     <MN>4</MN>\n     <MN>5</MN>\n    </MFRAC>\n    <MI>x</MI>\n    <MO>+</MO>\n    <MN>5</MN>\n    <MO>\u00e2\u02c6\u2019</MO>\n    <MN>2</MN>\n    <MI>x</MI>\n    <MO>=</MO>\n    <MN>2</MN>\n    <MI>x</MI>\n    <MO>\u00e2\u02c6\u2019</MO>\n    <MN>2</MN>\n    <MI>x</MI>\n   </MROW>\n  </MATH></p>\n <p>\n  <MATH display=\"block\">\n   <MROW>\n    <MFRAC>\n     <MN>4</MN>\n     <MN>5</MN>\n    </MFRAC>\n    <MI>x</MI>\n    <MO>\u00e2\u02c6\u2019</MO>\n    <MN>2</MN>\n    <MI>x</MI>\n    <MO>+</MO>\n    <MN>5</MN>\n    <MO>=</MO>\n    <MN>0</MN>\n   </MROW>\n  </MATH></p>\n</div>",
+          "content": "<div class=\"step_content\">\n <p>Subtract 2<i>x</i> from both sides of the equation.</p>\n <p>\n  <MATH display=\"block\">\n   <MROW>\n    <MFRAC>\n     <MN>4</MN>\n     <MN>5</MN>\n    </MFRAC>\n    <MI>x</MI>\n    <MO>+</MO>\n    <MN>5</MN>\n    <MO>âˆ’</MO>\n    <MN>2</MN>\n    <MI>x</MI>\n    <MO>=</MO>\n    <MN>2</MN>\n    <MI>x</MI>\n    <MO>âˆ’</MO>\n    <MN>2</MN>\n    <MI>x</MI>\n   </MROW>\n  </MATH></p>\n <p>\n  <MATH display=\"block\">\n   <MROW>\n    <MFRAC>\n     <MN>4</MN>\n     <MN>5</MN>\n    </MFRAC>\n    <MI>x</MI>\n    <MO>âˆ’</MO>\n    <MN>2</MN>\n    <MI>x</MI>\n    <MO>+</MO>\n    <MN>5</MN>\n    <MO>=</MO>\n    <MN>0</MN>\n   </MROW>\n  </MATH></p>\n</div>",
           "figure": null,
           "figures": null
         }
