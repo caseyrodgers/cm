@@ -38,7 +38,7 @@ public final class SkillMapper {
         }
 
         public String resolveUrl() {
-            if (key.contains("youtube")) return key;
+            if (key.contains("youtube.com") || key.contains("youtu.be")) return key;
             String fileName = key.endsWith(".flv") ? key.replace(".flv", ".mp4")
                     : key + ".mp4";
             if (isNumeric(key)) return "https://catchupmath.com/help/flvs/tw/" + fileName;
