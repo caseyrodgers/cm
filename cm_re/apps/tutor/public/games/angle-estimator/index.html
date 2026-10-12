@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Angle Estimator</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:#0f172a;color:#e2e8f0;
+  min-height:100vh;display:flex;justify-content:center;
+  overflow-x:hidden;
+}
+#game{width:100%;max-width:420px;padding:16px}
+
+.start{text-align:center;padding-top:40px}
+.start h1{font-size:2rem;color:#f43f5e;margin-bottom:4px}
+.start .sub{color:#94a3b8;margin-bottom:28px;font-size:.95rem}
+.diff-grid{display:flex;flex-direction:column;gap:10px}
+.diff-btn{
+  padding:14px 16px;border:1.5px solid #334155;border-radius:12px;
+  background:#1e293b;color:#e2e8f0;cursor:pointer;text-align:left;
+  transition:border-color .2s;font-family:inherit;
+}
+.diff-btn:hover{border-color:#f43f5e}
+.diff-btn .dt{font-weight:700;font-size:1.05rem;margin-bottom:2px}
+.diff-btn .dd{font-size:.82rem;color:#94a3b8}
+
+.hud{display:flex;justify-content:space-between;font-size:.85rem;color:#94a3b8;margin-bottom:6px}
+.hud b{color:#e2e8f0}
+.hud .streak{color:#f59e0b}
+.prog{width:100%;height:4px;background:#1e293b;border-radius:2px;margin-bottom:8px;overflow:hidden}
+.prog-fill{height:100%;background:#f43f5e;border-radius:2px;transition:width .3s}
+.pills{display:flex;gap:6px;justify-content:center;margin-bottom:10px}
+.pill{width:28px;height:5px;border-radius:3px;background:#334155;transition:background .3s}
+.pill.on{background:#f43f5e}
+
+.prompt{text-align:center;font-size:1.2rem;font-weight:600;margin:4px 0 10px;color:#cbd5e1}
+.inp-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px}
+.inp-row input{
+  width:80px;padding:10px 12px;font-size:1.3rem;font-weight:600;
+  text-align:center;border:2px solid #334155;border-radius:8px;
+  background:#1e293b;color:#e2e8f0;outline:none;
+  font-family:inherit;transition:border-color .2s;
+}
+.inp-row input:focus{border-color:#f43f5e}
+.inp-row input:disabled{opacity:.5}
+.deg-label{font-size:1.3rem;font-weight:600;color:#94a3b8}
+.btn-chk{
+  padding:10px 20px;font-size:1rem;font-weight:600;border:none;border-radius:8px;
+  background:#f43f5e;color:#fff;cursor:pointer;font-family:inherit;transition:background .15s;
+}
+.btn-chk:hover{background:#e11d48}
+.btn-chk:active{transform:scale(.97)}
+.btn-chk:disabled{opacity:.5;cursor:default}
+.sub-row{text-align:center;margin-top:4px}
+.btn-skip{
+  background:none;border:none;color:#64748b;font-size:.8rem;cursor:pointer;
+  padding:6px 12px;font-family:inherit;
+}
+.btn-skip:hover{color:#94a3b8}
+
+.fb{text-align:center;min-height:22px;font-size:.9rem;font-weight:600;margin:4px 0}
+.fb.ok{color:#22c55e}.fb.no{color:#ef4444}.fb.hint{color:#f59e0b}
+.fb .meta{color:#94a3b8;font-weight:400}
+
+.end{text-align:center;padding-top:40px}
+.end h2{font-size:1.8rem;color:#f43f5e;margin-bottom:20px}
+.end-stats{display:flex;flex-direction:column;gap:10px;max-width:220px;margin:0 auto 24px}
+.es{display:flex;justify-content:space-between;font-size:1.05rem}
+.es .l{color:#94a3b8}.es .v{font-weight:700}
+.btn-play{
+  padding:14px 32px;font-size:1.1rem;font-weight:700;border:none;border-radius:10px;
+  background:#f43f5e;color:#fff;cursor:pointer;font-family:inherit;
+}
+.btn-play:hover{background:#e11d48}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+
+.lvl-toast{
+  position:fixed;top:38%;left:50%;transform:translate(-50%,-50%) scale(.5);
+  font-size:1.6rem;font-weight:800;color:#f59e0b;
+  text-shadow:0 0 20px rgba(245,158,11,.4);
+  animation:toast 1.3s ease-out forwards;pointer-events:none;z-index:100;
+}
+@keyframes toast{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}
+  25%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+  55%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-65%) scale(1)}
+}
+</style>
+</head>
+<body>
+<div id="game"></div>
+<script>
+'use strict';
+
+var TOTAL=15, STREAK_LVL=4;
+var COMMON=[30,45,60,90,120,135,150];
+var G=document.getElementById('game');
+var S={screen:'start',level:1,auto:true,score:0,correct:0,total:0,streak:0,best:0,angle:0,guess:0};
+
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function pk(a){return a[Math.floor(Math.random()*a.length)]}
+
+function genAngle(lv){
+  if(lv===1)return pk(COMMON);
+  if(lv===2)return ri(2,35)*5;
+  return ri(2,70)*5;
+}
+
+function atype(a){
+  if(a<90)return'Acute';if(a===90)return'Right';
+  if(a<180)return'Obtuse';if(a===180)return'Straight';return'Reflex';
+}
+
+function scoreFor(d){
+  if(d<=3)return{pts:20,lbl:'Bullseye!',c:'ok'};
+  if(d<=8)return{pts:15,lbl:'Excellent!',c:'ok'};
+  if(d<=15)return{pts:10,lbl:'Good',c:'ok'};
+  if(d<=25)return{pts:5,lbl:'Close',c:'hint'};
+  return{pts:0,lbl:'Off',c:'no'};
+}
+
+// --- SVG ---
+
+function drawAngle(angle,guess,show){
+  var cx=150,cy=155,len=120,ar=40,fr=65;
+  var rad=angle*Math.PI/180;
+  var r2x=cx+len*Math.cos(rad),r2y=cy-len*Math.sin(rad);
+  var ax=cx+ar*Math.cos(rad),ay=cy-ar*Math.sin(rad);
+  var fx=cx+fr*Math.cos(rad),fy=cy-fr*Math.sin(rad);
+  var la=angle>180?1:0;
+
+  var s='<svg viewBox="0 0 300 310" style="width:100%;max-width:280px;display:block;margin:0 auto">';
+
+  // filled wedge
+  s+='<path d="M '+cx+' '+cy+' L '+(cx+fr)+' '+cy+' A '+fr+' '+fr+' 0 '+la+' 0 '+fx.toFixed(1)+' '+fy.toFixed(1)+' Z" fill="rgba(244,63,94,0.1)"/>';
+
+  // arc
+  var ac=show?'#f43f5e':'#f43f5e';
+  if(show){var d=Math.abs(angle-guess);ac=d<=15?'#22c55e':d<=25?'#f59e0b':'#ef4444'}
+  s+='<path d="M '+(cx+ar)+' '+cy+' A '+ar+' '+ar+' 0 '+la+' 0 '+ax.toFixed(1)+' '+ay.toFixed(1)+'" fill="none" stroke="'+ac+'" stroke-width="2.5"/>';
+
+  // rays
+  s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+len)+'" y2="'+cy+'" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>';
+  s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+r2x.toFixed(1)+'" y2="'+r2y.toFixed(1)+'" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>';
+
+  // guess overlay
+  if(show&&guess>0){
+    var gr=guess*Math.PI/180;
+    var gx=cx+len*.75*Math.cos(gr),gy=cy-len*.75*Math.sin(gr);
+    s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+gx.toFixed(1)+'" y2="'+gy.toFixed(1)+'" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.7"/>';
+    var gar=ar+10,gax=cx+gar*Math.cos(gr),gay=cy-gar*Math.sin(gr);
+    var gla=guess>180?1:0;
+    s+='<path d="M '+(cx+gar)+' '+cy+' A '+gar+' '+gar+' 0 '+gla+' 0 '+gax.toFixed(1)+' '+gay.toFixed(1)+'" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>';
+  }
+
+  // vertex
+  s+='<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#f43f5e"/>';
+
+  // label
+  if(show){
+    var mr=(angle/2)*Math.PI/180;
+    var lx=cx+(ar+20)*Math.cos(mr),ly=cy-(ar+20)*Math.sin(mr);
+    s+='<text x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" fill="'+ac+'" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="middle">'+angle+'°</text>';
+  }
+
+  s+='</svg>';
+  return s;
+}
+
+// --- Screens ---
+
+function render(){
+  if(S.screen==='start')renderStart();
+  else if(S.screen==='play')renderPlay();
+  else renderEnd();
+}
+
+function renderStart(){
+  G.innerHTML=
+    '<div class="start">'+
+    '<h1>Angle Estimator</h1>'+
+    '<p class="sub">How close can you guess the angle?</p>'+
+    '<div class="diff-grid">'+
+    '<button class="diff-btn" data-l="0"><div class="dt">Auto Mode</div><div class="dd">Starts with common angles, levels up</div></button>'+
+    '<button class="diff-btn" data-l="1"><div class="dt">Common Angles</div><div class="dd">30° • 45° • 60° • 90° • 120° • 135° • 150°</div></button>'+
+    '<button class="diff-btn" data-l="2"><div class="dt">Any Angle</div><div class="dd">Acute and obtuse (10°–175°)</div></button>'+
+    '<button class="diff-btn" data-l="3"><div class="dt">Full Range</div><div class="dd">Includes reflex angles (10°–350°)</div></button>'+
+    '</div></div>';
+  var btns=G.querySelectorAll('.diff-btn');
+  for(var i=0;i<btns.length;i++){
+    btns[i].onclick=function(){
+      var lv=+this.getAttribute('data-l');
+      S.auto=lv===0;S.level=lv===0?1:lv;
+      startGame();
+    };
+  }
+}
+
+function startGame(){
+  S.screen='play';S.score=0;S.correct=0;S.total=0;S.streak=0;S.best=0;
+  nextAngle();render();
+}
+function nextAngle(){S.angle=genAngle(S.level);S.guess=0}
+
+function renderPlay(){
+  var pct=(S.total/TOTAL)*100;
+  var st=S.streak>=2?'🎯 ':'';
+  G.innerHTML=
+    '<div class="hud">'+
+    '<span>Score: <b>'+S.score+'</b></span>'+
+    '<span>Level <b>'+S.level+'</b></span>'+
+    '<span class="'+(S.streak>=2?'streak':'')+'">'+st+'Streak: <b>'+S.streak+'</b></span>'+
+    '</div>'+
+    '<div class="prog"><div class="prog-fill" style="width:'+pct+'%"></div></div>'+
+    '<div class="pills">'+
+    '<div class="pill'+(S.level>=1?' on':'')+'"></div>'+
+    '<div class="pill'+(S.level>=2?' on':'')+'"></div>'+
+    '<div class="pill'+(S.level>=3?' on':'')+'"></div>'+
+    '</div>'+
+    '<div id="svg">'+drawAngle(S.angle,0,false)+'</div>'+
+    '<div class="prompt">What angle is this?</div>'+
+    '<div class="inp-row">'+
+    '<input type="number" id="ans" min="1" max="359" autocomplete="off">'+
+    '<span class="deg-label">°</span>'+
+    '<button class="btn-chk" id="chk">Check</button>'+
+    '</div>'+
+    '<div class="fb" id="fb"></div>'+
+    '<div class="sub-row"><button class="btn-skip" id="skp">Skip →</button></div>';
+
+  var inp=document.getElementById('ans');
+  setTimeout(function(){inp.focus()},50);
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter')check()});
+  document.getElementById('chk').onclick=check;
+  document.getElementById('skp').onclick=skip;
+}
+
+function check(){
+  var inp=document.getElementById('ans');
+  var fb=document.getElementById('fb');
+  var v=inp.value.trim();
+  if(v==='')return;
+  var guess=parseInt(v,10);
+  if(isNaN(guess)||guess<0||guess>360){
+    fb.textContent='Enter 1° to 359°';fb.className='fb hint';return;
+  }
+
+  S.guess=guess;
+  var diff=Math.abs(S.angle-guess);
+  var r=scoreFor(diff);
+
+  S.score+=r.pts;
+  if(r.pts>0){S.correct++;S.streak++;if(S.streak>S.best)S.best=S.streak}
+  else{S.streak=0}
+
+  if(S.auto&&S.streak>0&&S.streak%STREAK_LVL===0&&S.level<3){
+    S.level++;showToast('Level '+S.level+'!');
+  }
+
+  document.getElementById('svg').innerHTML=drawAngle(S.angle,guess,true);
+  inp.disabled=true;
+  document.getElementById('chk').disabled=true;
+
+  var tp=atype(S.angle);
+  if(r.pts>0){
+    fb.innerHTML=r.lbl+' +'+r.pts+' <span class="meta">('+tp+', off by '+diff+'°)</span>';
+  }else{
+    fb.innerHTML='It was '+S.angle+'° <span class="meta">('+tp+', off by '+diff+'°)</span>';
+  }
+  fb.className='fb '+r.c;
+
+  S.total++;
+  if(S.total>=TOTAL){setTimeout(function(){S.screen='end';render()},1300)}
+  else{setTimeout(function(){nextAngle();renderPlay()},1300)}
+}
+
+function skip(){
+  S.streak=0;S.total++;
+  document.getElementById('svg').innerHTML=drawAngle(S.angle,0,true);
+  var fb=document.getElementById('fb');
+  fb.textContent='It was '+S.angle+'° ('+atype(S.angle)+')';
+  fb.className='fb hint';
+  if(S.total>=TOTAL){setTimeout(function(){S.screen='end';render()},1000)}
+  else{setTimeout(function(){nextAngle();renderPlay()},1000)}
+}
+
+function showToast(msg){
+  var t=document.createElement('div');t.className='lvl-toast';t.textContent=msg;
+  document.body.appendChild(t);setTimeout(function(){t.remove()},1400);
+}
+
+function renderEnd(){
+  var acc=S.total>0?Math.round(S.correct/S.total*100):0;
+  G.innerHTML=
+    '<div class="end">'+
+    '<h2>Round Complete!</h2>'+
+    '<div class="end-stats">'+
+    '<div class="es"><span class="l">Score</span><span class="v">'+S.score+'</span></div>'+
+    '<div class="es"><span class="l">On Target</span><span class="v">'+S.correct+' / '+S.total+'</span></div>'+
+    '<div class="es"><span class="l">Accuracy</span><span class="v">'+acc+'%</span></div>'+
+    '<div class="es"><span class="l">Best Streak</span><span class="v">'+S.best+'</span></div>'+
+    '<div class="es"><span class="l">Final Level</span><span class="v">'+S.level+'</span></div>'+
+    '</div>'+
+    '<button class="btn-play" id="replay">Play Again</button>'+
+    '</div>';
+  document.getElementById('replay').onclick=function(){S.screen='start';render()};
+}
+
+render();
+</script>
+</body>
+</html>

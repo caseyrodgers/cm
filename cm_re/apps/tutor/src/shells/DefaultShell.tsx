@@ -41,6 +41,8 @@ function sectionOf(kind: string): Section | null {
       return "me";
     case "games":
     case "game":
+    case "videos":
+    case "video":
       return "games";
     default:
       return null;
@@ -53,7 +55,7 @@ export default function DefaultShell({ children }: { children: ReactNode }) {
   const streak = useStreak();
   const subject = useCurrentSubject();
   const section = sectionOf(route.kind);
-  const deep = route.kind === "module" || route.kind === "solution" || route.kind === "test" || route.kind === "game";
+  const deep = route.kind === "module" || route.kind === "solution" || route.kind === "test" || route.kind === "game" || route.kind === "video";
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">

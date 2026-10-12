@@ -34,9 +34,11 @@ export type Route =
   | { kind: "me" }
   | { kind: "games" }
   | { kind: "game"; slug: string }
+  | { kind: "videos" }
+  | { kind: "video"; slug: string }
   | { kind: "module"; subjectId: string }
   | { kind: "solution"; pid: string }
-  | { kind: "test"; subjectId: string; pid?: string; startChapterKey?: string };
+  | { kind: "test"; subjectId: string; pid?: string; startChapterKey?: string; startSkills?: string[] };
 
 export function parseHash(hash: string): Route {
   // Accept "#/m/x", "#m/x", "/m/x", "m/x" — normalise to segments.
@@ -47,11 +49,18 @@ export function parseHash(hash: string): Route {
   if (segments[0] === "g" && segments[1]) {
     return { kind: "game", slug: segments[1] };
   }
+  if (segments[0] === "videos" && !segments[1]) return { kind: "videos" };
+  if (segments[0] === "v" && segments[1]) {
+    return { kind: "video", slug: decodeURIComponent(segments.slice(1).join("/")) };
+  }
   if (segments[0] === "m" && segments[1]) {
     return { kind: "module", subjectId: segments[1] };
   }
   if (segments[0] === "s" && segments[1]) {
     return { kind: "solution", pid: segments[1] };
+  }
+  if (segments[0] === "t" && segments[1] && segments[2] === "skills" && segments[3]) {
+    return { kind: "test", subjectId: segments[1], startSkills: segments[3].split(",").map(decodeURIComponent) };
   }
   if (segments[0] === "t" && segments[1] && segments[2] === "chapter" && segments[3]) {
     return { kind: "test", subjectId: segments[1], startChapterKey: segments[3] };
@@ -72,6 +81,8 @@ export const hashFor = {
   me: () => "#/me",
   games: () => "#/games",
   game: (slug: string) => `#/g/${encodeURIComponent(slug)}`,
+  videos: () => "#/videos",
+  video: (slug: string) => `#/v/${encodeURIComponent(slug)}`,
   module: (subjectId: string) => `#/m/${encodeURIComponent(subjectId)}`,
   solution: (pid: string) => `#/s/${encodeURIComponent(pid)}`,
   test: (subjectId: string, pid?: string) =>
@@ -81,6 +92,8 @@ export const hashFor = {
   /** Land directly on a practice test for one chapter — see the route comment above. */
   testChapter: (subjectId: string, chapterKey: string) =>
     `#/t/${encodeURIComponent(subjectId)}/chapter/${encodeURIComponent(chapterKey)}`,
+  testSkills: (subjectId: string, skills: string[]) =>
+    `#/t/${encodeURIComponent(subjectId)}/skills/${skills.map(encodeURIComponent).join(",")}`,
 };
 
 /** Navigate by setting the hash — the single source of truth; the hook below re-renders off `hashchange`. */

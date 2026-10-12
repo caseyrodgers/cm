@@ -122,11 +122,14 @@ export default function PracticeTest({
   subjectId,
   pid,
   startChapterKey,
+  startSkills,
 }: {
   subjectId: string;
   pid?: string;
   /** From `#/t/<subjectId>/chapter/<key>` — auto-starts that chapter's test instead of showing the picker. See routing.ts. */
   startChapterKey?: string;
+  /** From `#/t/<subjectId>/skills/<csv>` — auto-starts a test from problems whose skills overlap. See routing.ts. */
+  startSkills?: string[];
 }) {
   const [installed, setInstalled] = useState<boolean | null>(null);
   const [test, setTest] = useState<PracticeTestT | null | undefined>(undefined);
@@ -242,6 +245,28 @@ export default function PracticeTest({
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startChapterKey, test, chapters]);
+
+  // #/t/<subjectId>/skills/<csv> — auto-start a test from problems whose
+  // skills overlap with the given set (the "Practice" shortcut from game
+  // cards). Same one-shot pattern as startChapterKey above.
+  useEffect(() => {
+    if (!startSkills || startSkills.length === 0 || test !== null || !allSolutions) return;
+    const pool = allSolutions;
+    const skillSet = new Set(startSkills);
+    const matching = pool
+      .filter(scorable)
+      .filter((s) => s.skills?.some((sk) => skillSet.has(sk)));
+    if (matching.length === 0) {
+      navigate(hashFor.test(subjectId));
+      return;
+    }
+    const pids = sample(matching.map((s) => s.pid), CHAPTER_SIZE);
+    const label = `Skills practice (${startSkills.length} skill${startSkills.length === 1 ? "" : "s"})`;
+    begin(pids, { kind: "chapters", chapterKeys: [], label }, pool).then(
+      () => navigate(hashFor.test(subjectId))
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startSkills, test, allSolutions]);
 
   function toggleChapterSelect(key: string) {
     setSelectedChapters((prev) => {

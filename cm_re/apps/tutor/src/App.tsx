@@ -7,6 +7,8 @@ import Hub from "./components/Hub";
 import StudentStatus from "./components/StudentStatus";
 import GameList from "./components/GameList";
 import GameView from "./components/GameView";
+import VideoList from "./components/VideoList";
+import VideoView from "./components/VideoView";
 import DialogHost from "./components/DialogHost";
 import { useHashRoute, navigate, hashFor } from "./routing";
 import { activeShellId } from "./lib/shell";
@@ -49,6 +51,10 @@ function renderRoute(route: ReturnType<typeof useHashRoute>) {
       return <GameList />;
     case "game":
       return <GameView slug={route.slug} />;
+    case "videos":
+      return <VideoList />;
+    case "video":
+      return <VideoView slug={route.slug} />;
     case "module":
       return (
         <ModuleDownloadPrompt
@@ -59,7 +65,7 @@ function renderRoute(route: ReturnType<typeof useHashRoute>) {
     case "solution":
       return <SolutionLoader pid={route.pid} />;
     case "test":
-      return <PracticeTest subjectId={route.subjectId} pid={route.pid} startChapterKey={route.startChapterKey} />;
+      return <PracticeTest subjectId={route.subjectId} pid={route.pid} startChapterKey={route.startChapterKey} startSkills={route.startSkills} />;
   }
 }
 

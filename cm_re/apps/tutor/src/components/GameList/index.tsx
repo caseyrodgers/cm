@@ -1,8 +1,16 @@
-import { GAMES } from "../../games/registry";
+import { useEffect, useState } from "react";
+import { GAMES, type GameEntry } from "../../games/registry";
 import { navigate, hashFor } from "../../routing";
+import { getInstalledModules } from "../../offline/moduleManager";
+import type { InstalledModule } from "../../offline/db";
 import { Card, CardContent } from "../ui/card";
 
 export default function GameList() {
+  const [modules, setModules] = useState<InstalledModule[]>([]);
+  useEffect(() => {
+    getInstalledModules().then(setModules);
+  }, []);
+
   return (
     <div className="space-y-2">
       <h2 className="mb-2 text-base font-medium text-slate-700">Games</h2>
@@ -25,6 +33,7 @@ export default function GameList() {
                 </span>
               )}
             </button>
+            <PracticeButton game={g} modules={modules} />
           </CardContent>
         </Card>
       ))}
@@ -33,4 +42,40 @@ export default function GameList() {
       )}
     </div>
   );
+}
+
+function PracticeButton({ game, modules }: { game: GameEntry; modules: InstalledModule[] }) {
+  const match = bestSubjectForGame(game, modules);
+  if (!match) return null;
+
+  return (
+    <button
+      className="mt-2 w-full rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-100"
+      onClick={(e) => {
+        e.stopPropagation();
+        navigate(hashFor.testSkills(match, game.skills));
+      }}
+    >
+      Practice these skills
+    </button>
+  );
+}
+
+function bestSubjectForGame(game: GameEntry, modules: InstalledModule[]): string | null {
+  const skillSet = new Set<string>(game.skills);
+  let best: string | null = null;
+  let bestCount = 0;
+  for (const mod of modules) {
+    let count = 0;
+    for (const ch of mod.chapters ?? []) {
+      for (const s of ch.skills ?? []) {
+        if (skillSet.has(s)) count++;
+      }
+    }
+    if (count > bestCount) {
+      bestCount = count;
+      best = mod.subjectId;
+    }
+  }
+  return best;
 }
