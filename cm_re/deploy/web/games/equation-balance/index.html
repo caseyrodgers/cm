@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Equation Balance</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:#0f172a;color:#e2e8f0;
+  min-height:100vh;display:flex;justify-content:center;
+  overflow-x:hidden;
+}
+#game{width:100%;max-width:420px;padding:16px}
+
+/* Start screen */
+.start{text-align:center;padding-top:40px}
+.start h1{font-size:2rem;color:#f43f5e;margin-bottom:4px}
+.start .sub{color:#94a3b8;margin-bottom:28px;font-size:.95rem}
+.diff-grid{display:flex;flex-direction:column;gap:10px}
+.diff-btn{
+  padding:14px 16px;border:1.5px solid #334155;border-radius:12px;
+  background:#1e293b;color:#e2e8f0;cursor:pointer;text-align:left;
+  transition:border-color .2s;font-family:inherit;
+}
+.diff-btn:hover{border-color:#f43f5e}
+.diff-btn .dt{font-weight:700;font-size:1.05rem;margin-bottom:2px}
+.diff-btn .dd{font-size:.82rem;color:#94a3b8}
+
+/* HUD */
+.hud{display:flex;justify-content:space-between;font-size:.85rem;color:#94a3b8;margin-bottom:6px}
+.hud b{color:#e2e8f0}
+.hud .streak{color:#f59e0b}
+.prog{width:100%;height:4px;background:#1e293b;border-radius:2px;margin-bottom:8px;overflow:hidden}
+.prog-fill{height:100%;background:#f43f5e;border-radius:2px;transition:width .3s}
+.pills{display:flex;gap:6px;justify-content:center;margin-bottom:10px}
+.pill{width:28px;height:5px;border-radius:3px;background:#334155;transition:background .3s}
+.pill.on{background:#f43f5e}
+
+/* Scale */
+.sc{position:relative;width:100%;max-width:350px;height:175px;margin:0 auto 4px}
+.sc-base{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:54px;height:7px;background:#475569;border-radius:4px}
+.sc-post{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:5px;height:65px;background:linear-gradient(#64748b,#475569);border-radius:3px}
+.sc-tri{
+  position:absolute;bottom:72px;left:50%;transform:translateX(-50%);
+  width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;
+  border-bottom:22px solid #475569;
+}
+.sc-dot{position:absolute;bottom:92px;left:50%;transform:translate(-50%,50%);width:14px;height:14px;background:#f43f5e;border-radius:50%;z-index:2}
+.sc-beam{
+  position:absolute;bottom:96px;left:15px;right:15px;height:5px;
+  background:linear-gradient(90deg,#64748b,#94a3b8,#64748b);
+  border-radius:3px;transform-origin:center center;
+  transition:transform .5s cubic-bezier(.34,1.56,.64,1);
+}
+.pan{
+  position:absolute;width:120px;padding:10px 8px;
+  background:rgba(30,41,59,.92);border-radius:10px;
+  text-align:center;font-size:1.15rem;font-weight:600;
+  white-space:nowrap;
+  transition:top .5s cubic-bezier(.34,1.56,.64,1);
+}
+.pan-l{left:0;border:1.5px solid rgba(96,165,250,.4);color:#93c5fd}
+.pan-r{right:0;border:1.5px solid rgba(74,222,128,.4);color:#86efac}
+.pan.glow-ok{box-shadow:0 0 14px rgba(34,197,94,.35)}
+.pan.glow-no{box-shadow:0 0 14px rgba(239,68,68,.3)}
+
+/* Equation line */
+.eq{text-align:center;font-size:1.5rem;font-weight:700;margin:4px 0 10px;letter-spacing:1px}
+.eq .x{color:#f43f5e}
+
+/* Input */
+.inp-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px}
+.inp-row label{font-size:1.4rem;font-weight:700;color:#f43f5e}
+.inp-row input{
+  width:90px;padding:10px 12px;font-size:1.3rem;font-weight:600;
+  text-align:center;border:2px solid #334155;border-radius:8px;
+  background:#1e293b;color:#e2e8f0;outline:none;
+  font-family:inherit;transition:border-color .2s;
+}
+.inp-row input:focus{border-color:#f43f5e}
+.inp-row input.ok{border-color:#22c55e;background:rgba(34,197,94,.1)}
+.inp-row input.no{border-color:#ef4444;background:rgba(239,68,68,.1);animation:shake .35s}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+.btn-chk{
+  padding:10px 20px;font-size:1rem;font-weight:600;border:none;border-radius:8px;
+  background:#f43f5e;color:#fff;cursor:pointer;font-family:inherit;transition:background .15s;
+}
+.btn-chk:hover{background:#e11d48}
+.btn-chk:active{transform:scale(.97)}
+.sub-row{text-align:center;margin-top:4px}
+.btn-skip{
+  background:none;border:none;color:#64748b;font-size:.8rem;cursor:pointer;
+  padding:6px 12px;font-family:inherit;
+}
+.btn-skip:hover{color:#94a3b8}
+
+/* Feedback */
+.fb{text-align:center;min-height:22px;font-size:.9rem;font-weight:600;margin:4px 0}
+.fb.ok{color:#22c55e}.fb.no{color:#ef4444}.fb.hint{color:#f59e0b}
+
+/* End screen */
+.end{text-align:center;padding-top:40px}
+.end h2{font-size:1.8rem;color:#f43f5e;margin-bottom:20px}
+.end-stats{display:flex;flex-direction:column;gap:10px;max-width:220px;margin:0 auto 24px}
+.es{display:flex;justify-content:space-between;font-size:1.05rem}
+.es .l{color:#94a3b8}.es .v{font-weight:700}
+.btn-play{
+  padding:14px 32px;font-size:1.1rem;font-weight:700;border:none;border-radius:10px;
+  background:#f43f5e;color:#fff;cursor:pointer;font-family:inherit;
+}
+.btn-play:hover{background:#e11d48}
+
+/* Animations */
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}40%{transform:translateX(6px)}
+  60%{transform:translateX(-4px)}80%{transform:translateX(4px)}
+}
+.lvl-toast{
+  position:fixed;top:38%;left:50%;transform:translate(-50%,-50%) scale(.5);
+  font-size:1.6rem;font-weight:800;color:#f59e0b;
+  text-shadow:0 0 20px rgba(245,158,11,.4);
+  animation:toast 1.3s ease-out forwards;pointer-events:none;z-index:100;
+}
+@keyframes toast{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}
+  25%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+  55%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-65%) scale(1)}
+}
+</style>
+</head>
+<body>
+<div id="game"></div>
+<script>
+'use strict';
+var M='−', TOTAL=15, STREAK_LVL=4;
+var G=document.getElementById('game');
+
+var S={screen:'start',level:1,auto:true,score:0,correct:0,total:0,streak:0,best:0,eq:null,att:0};
+
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function pk(a){return a[Math.floor(Math.random()*a.length)]}
+function fm(n){return n<0?M+Math.abs(n):''+n}
+function fc(c){if(c===1)return'';if(c===-1)return M;return c<0?M+Math.abs(c):''+c}
+function fp(n){if(n===0)return'';return n>0?' + '+n:' '+M+' '+Math.abs(n)}
+
+// --- Generators (always produce integer answers) ---
+
+function gen(lv){return lv===1?g1():lv===2?g2():g3()}
+
+function g1(){
+  switch(pk(['add','sub','mul'])){
+    case'add':{var a=ri(1,15),x=ri(-12,12),b=x+a;
+      return{ans:x,ls:'x + '+a,rs:fm(b),lf:function(v){return v+a},rf:function(){return b}}}
+    case'sub':{var a=ri(1,15),x=ri(-12,12),b=x-a;
+      return{ans:x,ls:'x '+M+' '+a,rs:fm(b),lf:function(v){return v-a},rf:function(){return b}}}
+    case'mul':{var a=ri(2,9),x=ri(-10,10),b=a*x;
+      return{ans:x,ls:a+'x',rs:fm(b),lf:function(v){return a*v},rf:function(){return b}}}
+  }
+}
+
+function g2(){
+  var a=ri(2,6),x=ri(-8,8),b=ri(1,10);
+  if(pk([0,1])){
+    var c=a*x+b;
+    return{ans:x,ls:a+'x + '+b,rs:fm(c),lf:function(v){return a*v+b},rf:function(){return c}}
+  }else{
+    var c=a*x-b;
+    return{ans:x,ls:a+'x '+M+' '+b,rs:fm(c),lf:function(v){return a*v-b},rf:function(){return c}}
+  }
+}
+
+function g3(){
+  if(pk([0,1])){
+    // ax + b = cx + d  (a > c, integer solution)
+    var x=ri(-5,5),a=ri(3,7),c=ri(1,a-1),b=ri(1,8)*(pk([0,1])?1:-1);
+    var d=(a-c)*x+b;
+    return{ans:x,ls:fc(a)+'x'+fp(b),rs:fc(c)+'x'+fp(d),
+      lf:function(v){return a*v+b},rf:function(v){return c*v+d}}
+  }else{
+    // a(x +/- b) = c
+    var a=ri(2,5),x=ri(-6,6),b=ri(1,8),sub=pk([0,1]);
+    if(sub){
+      var c=a*(x-b);
+      return{ans:x,ls:a+'(x '+M+' '+b+')',rs:fm(c),
+        lf:function(v){return a*(v-b)},rf:function(){return c}}
+    }else{
+      var c=a*(x+b);
+      return{ans:x,ls:a+'(x + '+b+')',rs:fm(c),
+        lf:function(v){return a*(v+b)},rf:function(){return c}}
+    }
+  }
+}
+
+// --- Scale ---
+
+function setScale(deg){
+  var beam=document.getElementById('beam');
+  var pl=document.getElementById('panL');
+  var pr=document.getElementById('panR');
+  if(!beam)return;
+  beam.style.transform='rotate('+deg+'deg)';
+  var off=Math.sin(deg*Math.PI/180)*110;
+  var base=82;
+  pl.style.top=(base+off)+'px';
+  pr.style.top=(base-off)+'px';
+}
+
+// --- Rendering ---
+
+function render(){
+  if(S.screen==='start')renderStart();
+  else if(S.screen==='play')renderPlay();
+  else renderEnd();
+}
+
+function renderStart(){
+  G.innerHTML=
+    '<div class="start">'+
+    '<h1>Equation Balance</h1>'+
+    '<p class="sub">Solve for x to balance the scale</p>'+
+    '<div class="diff-grid">'+
+    '<button class="diff-btn" data-l="0"><div class="dt">Auto Mode</div><div class="dd">Starts easy, levels up as you streak</div></button>'+
+    '<button class="diff-btn" data-l="1"><div class="dt">One-Step</div><div class="dd">x + 5 = 12 &nbsp;&#8226;&nbsp; 3x = 21</div></button>'+
+    '<button class="diff-btn" data-l="2"><div class="dt">Two-Step</div><div class="dd">2x + 3 = 11 &nbsp;&#8226;&nbsp; 4x '+M+' 5 = 19</div></button>'+
+    '<button class="diff-btn" data-l="3"><div class="dt">Multi-Step</div><div class="dd">3x + 2 = x + 8 &nbsp;&#8226;&nbsp; 2(x + 3) = 14</div></button>'+
+    '</div></div>';
+  var btns=G.querySelectorAll('.diff-btn');
+  for(var i=0;i<btns.length;i++){
+    btns[i].onclick=function(){
+      var lv=+this.getAttribute('data-l');
+      S.auto=lv===0;S.level=lv===0?1:lv;
+      startGame();
+    };
+  }
+}
+
+function startGame(){
+  S.screen='play';S.score=0;S.correct=0;S.total=0;S.streak=0;S.best=0;S.att=0;
+  nextEq();render();
+}
+
+function nextEq(){S.eq=gen(S.level);S.att=0}
+
+function renderPlay(){
+  var eq=S.eq,pct=(S.total/TOTAL)*100;
+  var streakTxt=S.streak>=2?'🔥 ':'';
+  G.innerHTML=
+    '<div class="hud">'+
+    '<span>Score: <b>'+S.score+'</b></span>'+
+    '<span>Level <b>'+S.level+'</b></span>'+
+    '<span class="'+(S.streak>=2?'streak':'')+'">'+streakTxt+'Streak: <b>'+S.streak+'</b></span>'+
+    '</div>'+
+    '<div class="prog"><div class="prog-fill" style="width:'+pct+'%"></div></div>'+
+    '<div class="pills">'+
+    '<div class="pill'+(S.level>=1?' on':'')+'"></div>'+
+    '<div class="pill'+(S.level>=2?' on':'')+'"></div>'+
+    '<div class="pill'+(S.level>=3?' on':'')+'"></div>'+
+    '</div>'+
+    '<div class="sc">'+
+    '<div class="sc-beam" id="beam"></div>'+
+    '<div class="sc-dot"></div><div class="sc-tri"></div>'+
+    '<div class="sc-post"></div><div class="sc-base"></div>'+
+    '<div class="pan pan-l" id="panL">'+eq.ls+'</div>'+
+    '<div class="pan pan-r" id="panR">'+eq.rs+'</div>'+
+    '</div>'+
+    '<div class="eq">'+eqHtml(eq)+'</div>'+
+    '<div class="inp-row">'+
+    '<label>x =</label>'+
+    '<input type="number" id="ans" autocomplete="off">'+
+    '<button class="btn-chk" id="chk">Check</button>'+
+    '</div>'+
+    '<div class="fb" id="fb"></div>'+
+    '<div class="sub-row"><button class="btn-skip" id="skp">Skip →</button></div>';
+
+  setScale(0);
+  var inp=document.getElementById('ans');
+  setTimeout(function(){inp.focus()},50);
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter')checkAns()});
+  document.getElementById('chk').onclick=checkAns;
+  document.getElementById('skp').onclick=skipEq;
+}
+
+function eqHtml(eq){
+  var s=eq.ls+' = '+eq.rs;
+  return s.replace(/x/g,'<span class="x">x</span>');
+}
+
+// --- Game logic ---
+
+function checkAns(){
+  var inp=document.getElementById('ans');
+  var fb=document.getElementById('fb');
+  var v=inp.value.trim();
+  if(v==='')return;
+  var guess=parseInt(v,10);
+  if(isNaN(guess)){fb.textContent='Enter a whole number';fb.className='fb hint';return}
+
+  var eq=S.eq;
+  if(guess===eq.ans){
+    S.correct++;S.streak++;
+    if(S.streak>S.best)S.best=S.streak;
+    var pts=10*S.level;
+    var bonus=S.streak>=3?(S.streak-2)*5:0;
+    S.score+=pts+bonus;
+    inp.className='ok';
+    setScale(0);
+    document.getElementById('panL').className='pan pan-l glow-ok';
+    document.getElementById('panR').className='pan pan-r glow-ok';
+    fb.textContent=bonus>0?'Correct! +'+(pts+bonus)+' (streak bonus!)':'Correct! +'+pts;
+    fb.className='fb ok';
+
+    if(S.auto&&S.streak>0&&S.streak%STREAK_LVL===0&&S.level<3){
+      S.level++;showToast('Level '+S.level+'!');
+    }
+
+    S.total++;
+    if(S.total>=TOTAL){setTimeout(function(){S.screen='end';render()},900)}
+    else{setTimeout(function(){nextEq();renderPlay()},900)}
+  }else{
+    S.att++;S.streak=0;
+    inp.className='no';
+    document.getElementById('panL').className='pan pan-l glow-no';
+    document.getElementById('panR').className='pan pan-r glow-no';
+
+    var lv=eq.lf(guess),rv=eq.rf(guess);
+    var diff=lv-rv;
+    var ang=Math.sign(diff)*Math.min(15,Math.sqrt(Math.abs(diff))*5);
+    setScale(ang);
+
+    if(S.att>=3){
+      fb.textContent='Answer: x = '+fm(eq.ans);
+      fb.className='fb hint';
+      S.total++;
+      if(S.total>=TOTAL){setTimeout(function(){S.screen='end';render()},1400)}
+      else{setTimeout(function(){nextEq();renderPlay()},1400)}
+    }else{
+      fb.textContent=diff>0?'Left side is heavier — try a smaller x':'Right side is heavier — try a larger x';
+      fb.className='fb no';
+      setTimeout(function(){
+        inp.className='';inp.value='';inp.focus();
+        document.getElementById('panL').className='pan pan-l';
+        document.getElementById('panR').className='pan pan-r';
+      },700);
+    }
+  }
+}
+
+function skipEq(){
+  S.streak=0;S.total++;
+  var fb=document.getElementById('fb');
+  fb.textContent='Answer: x = '+fm(S.eq.ans);fb.className='fb hint';
+  if(S.total>=TOTAL){setTimeout(function(){S.screen='end';render()},1000)}
+  else{setTimeout(function(){nextEq();renderPlay()},1000)}
+}
+
+function showToast(msg){
+  var t=document.createElement('div');t.className='lvl-toast';t.textContent=msg;
+  document.body.appendChild(t);setTimeout(function(){t.remove()},1400);
+}
+
+function renderEnd(){
+  var acc=S.total>0?Math.round(S.correct/S.total*100):0;
+  G.innerHTML=
+    '<div class="end">'+
+    '<h2>Round Complete!</h2>'+
+    '<div class="end-stats">'+
+    '<div class="es"><span class="l">Score</span><span class="v">'+S.score+'</span></div>'+
+    '<div class="es"><span class="l">Correct</span><span class="v">'+S.correct+' / '+S.total+'</span></div>'+
+    '<div class="es"><span class="l">Accuracy</span><span class="v">'+acc+'%</span></div>'+
+    '<div class="es"><span class="l">Best Streak</span><span class="v">'+S.best+'</span></div>'+
+    '<div class="es"><span class="l">Final Level</span><span class="v">'+S.level+'</span></div>'+
+    '</div>'+
+    '<button class="btn-play" id="replay">Play Again</button>'+
+    '</div>';
+  document.getElementById('replay').onclick=function(){S.screen='start';render()};
+}
+
+render();
+</script>
+</body>
+</html>
