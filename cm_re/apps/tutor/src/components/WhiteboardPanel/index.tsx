@@ -638,19 +638,21 @@ export default function WhiteboardPanel({ pid, subjectId, skills: solutionSkills
               <p className="mb-2 text-xs font-semibold text-slate-600">Videos for this topic</p>
               <div className="space-y-1.5">
                 {matchedVideos.map((v) => (
-                  <a
-                    key={v.slug}
-                    href={v.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex w-full items-center justify-between rounded-md border border-slate-100 px-3 py-2 text-left hover:border-indigo-300 hover:bg-indigo-50"
-                  >
-                    <span>
-                      <span className="mr-1.5 text-sm">▶</span>
-                      <span className="text-sm font-semibold text-slate-800">{v.title}</span>
-                    </span>
-                    <span aria-hidden className="text-xs text-slate-400">watch ›</span>
-                  </a>
+                  <div key={v.slug} className="rounded-md border border-slate-100 px-3 py-2">
+                    <p className="mb-1.5 text-sm font-semibold text-slate-800">
+                      <span className="mr-1.5">▶</span>{v.title}
+                    </p>
+                    <video
+                      controls
+                      preload="metadata"
+                      className="w-full rounded"
+                      src={v.url}
+                    >
+                      <a href={v.url} target="_blank" rel="noopener noreferrer">
+                        Download video
+                      </a>
+                    </video>
+                  </div>
                 ))}
               </div>
             </>

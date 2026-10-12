@@ -41,6 +41,8 @@ public class StaticHandler implements HttpHandler {
             Map.entry("ico", "image/x-icon"),
             Map.entry("woff2", "font/woff2"),
             Map.entry("woff", "font/woff"),
+            Map.entry("mp4", "video/mp4"),
+            Map.entry("webm", "video/webm"),
             Map.entry("txt", "text/plain"),
             Map.entry("map", "application/json"));
 
