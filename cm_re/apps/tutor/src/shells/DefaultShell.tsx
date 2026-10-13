@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useHashRoute, navigate, hashFor } from "../routing";
+import { BUILD_NUMBER } from "../buildNumber";
 import { useCorrectTotal } from "../lib/correctCount";
 import { useStreak } from "../lib/streak";
 import { useCurrentSubject } from "../lib/useCurrentSubject";
@@ -129,7 +130,7 @@ export default function DefaultShell({ children }: { children: ReactNode }) {
       <main className="mx-auto w-full max-w-3xl flex-1 p-4">{children}</main>
 
       <footer className="border-t border-slate-200 bg-white px-4 py-3 text-center text-xs text-slate-400">
-        Catchup Math &middot; works offline &middot; your progress stays on this device
+        Catchup Math &middot; works offline &middot; your progress stays on this device &middot; build {BUILD_NUMBER}
       </footer>
     </div>
   );

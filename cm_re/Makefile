@@ -11,6 +11,7 @@ LEGACY_SOLUTIONS_DIR := c:/dev/projects/catchupmath/solution_data/help_2022_06/s
 # Real Vite + vite-plugin-pwa build: app shell, manifest with real
 # icons, generated service worker (dist/sw.js) via Workbox generateSW.
 build:
+	sh scripts/bump-build.sh
 	cd apps/tutor && npm install && npm run build
 
 # Builds the tutor, then serves it + the REST API from the
