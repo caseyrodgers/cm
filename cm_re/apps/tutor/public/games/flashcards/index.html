@@ -1,57 +1,347 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title></title>
-    <script src="jquery.js"></script>
-    <script src="flashcard_problemGenerator.js"></script>
-    <script>
-    var fcm
-        $(document).ready(function(){
-        fcm=new FC_Manager($("div[name='fc_container']").get(0),'adding_fractions',{limit:3,helpCont:$("div[name='fc_help_container']")})
-        fcm.init();
-        
-        });
-        function showNext(){
-            fcm.showProblem();
-        }
-        function showExplain(){
-            fcm.showHelp();
-        }
-    </script>
-    <style>
-        .qblock{
-            float:left;
-        }
-        .ablock{
-            float:left;
-        }
-        .ablock input {
-            font-family: Helvetica,Arial;
-            font-size: 15pt;
-            width: 75px;
-        }
-        .iblock{
-            height: 100px;
-            padding-top: 10%;
-            text-align: center;
-            width: 100px;
-            
-        }
-        
-        .eqnLine {
-            padding: 5px 0;
-            font-size:0.75em;
-        }
-        .question{
-            font-size:1.5em;
-        }
-    </style>
-  </head>
-  <body>
-<div name ="fc_container" style="width:300px;height:200px;border:1px solid red;position:absolute;top:100px;left:100px;font-size:2em;padding:20px;"></div>
-<div name ="fc_help_container" style="width:300px;height:200px;border:1px solid blue;position:absolute;top:100px;left:100px;padding:20px;background:white;font-size:10pt;display:none"></div>
-<div style="position:absolute;top:345px;left:100px;"><button onclick="showExplain()">Explain</button><button onclick="showNext()" >Next</button></div>
-  </body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Fraction Flashcards</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:#0f172a;color:#e2e8f0;
+  min-height:100vh;display:flex;justify-content:center;
+  overflow-x:hidden;
+}
+#game{width:100%;max-width:420px;padding:16px}
+
+.start{text-align:center;padding-top:40px}
+.start h1{font-size:2rem;color:#6366f1;margin-bottom:4px}
+.start .sub{color:#94a3b8;margin-bottom:28px;font-size:.95rem}
+.diff-grid{display:flex;flex-direction:column;gap:10px}
+.diff-btn{
+  padding:14px 16px;border:1.5px solid #334155;border-radius:12px;
+  background:#1e293b;color:#e2e8f0;cursor:pointer;text-align:left;
+  transition:border-color .2s;font-family:inherit;
+}
+.diff-btn:hover{border-color:#6366f1}
+.diff-btn .dt{font-weight:700;font-size:1.05rem;margin-bottom:2px}
+.diff-btn .dd{font-size:.82rem;color:#94a3b8}
+
+.hud{display:flex;justify-content:space-between;font-size:.85rem;color:#94a3b8;margin-bottom:6px}
+.hud b{color:#e2e8f0}
+.hud .streak{color:#f59e0b}
+.prog{width:100%;height:4px;background:#1e293b;border-radius:2px;margin-bottom:8px;overflow:hidden}
+.prog-fill{height:100%;background:#6366f1;border-radius:2px;transition:width .3s}
+.pills{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+.pill{width:28px;height:5px;border-radius:3px;background:#334155;transition:background .3s}
+.pill.on{background:#6366f1}
+
+.eq-row{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:1.6rem;font-weight:600;margin-bottom:20px;min-height:80px;
+}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle}
+.frac-num,.frac-den{padding:2px 8px;text-align:center;min-width:24px}
+.frac-bar{width:100%;height:2px;background:#94a3b8;border-radius:1px}
+.op{color:#94a3b8;font-size:1.4rem;padding:0 2px}
+.eq-sign{color:#64748b;font-size:1.4rem;padding:0 2px}
+
+.ans-frac{display:inline-flex;flex-direction:column;align-items:center}
+.ans-frac input{
+  width:56px;padding:4px;font-size:1.3rem;font-weight:600;
+  text-align:center;border:2px solid #334155;border-radius:6px;
+  background:#1e293b;color:#e2e8f0;outline:none;font-family:inherit;
+  transition:border-color .2s;
+}
+.ans-frac input:focus{border-color:#6366f1}
+.ans-frac input:disabled{opacity:.5}
+.ans-bar{width:56px;height:2px;background:#6366f1;margin:3px 0;border-radius:1px}
+
+.btn-row{display:flex;justify-content:center;gap:8px;margin-bottom:6px}
+.btn-chk{
+  padding:10px 24px;font-size:1rem;font-weight:600;border:none;border-radius:8px;
+  background:#6366f1;color:#fff;cursor:pointer;font-family:inherit;transition:background .15s;
+}
+.btn-chk:hover{background:#4f46e5}
+.btn-chk:active{transform:scale(.97)}
+.btn-chk:disabled{opacity:.5;cursor:default}
+.sub-row{text-align:center;margin-top:4px}
+.btn-skip{
+  background:none;border:none;color:#64748b;font-size:.8rem;cursor:pointer;
+  padding:6px 12px;font-family:inherit;
+}
+.btn-skip:hover{color:#94a3b8}
+
+.fb{text-align:center;min-height:22px;font-size:.9rem;font-weight:600;margin:4px 0}
+.fb.ok{color:#22c55e}.fb.no{color:#ef4444}.fb.hint{color:#f59e0b}
+.fb .meta{color:#94a3b8;font-weight:400}
+
+.ans-display{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;border-radius:8px;background:#1e293b;margin-top:8px;
+  font-size:1.3rem;font-weight:700;
+}
+.ans-display.ok{color:#22c55e;border:1.5px solid #22c55e30}
+.ans-display.no{color:#ef4444;border:1.5px solid #ef444430}
+
+.end{text-align:center;padding-top:40px}
+.end h2{font-size:1.8rem;color:#6366f1;margin-bottom:20px}
+.end-stats{display:flex;flex-direction:column;gap:10px;max-width:220px;margin:0 auto 24px}
+.es{display:flex;justify-content:space-between;font-size:1.05rem}
+.es .l{color:#94a3b8}.es .v{font-weight:700}
+.btn-play{
+  padding:14px 32px;font-size:1.1rem;font-weight:700;border:none;border-radius:10px;
+  background:#6366f1;color:#fff;cursor:pointer;font-family:inherit;
+}
+.btn-play:hover{background:#4f46e5}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+
+.lvl-toast{
+  position:fixed;top:38%;left:50%;transform:translate(-50%,-50%) scale(.5);
+  font-size:1.6rem;font-weight:800;color:#f59e0b;
+  text-shadow:0 0 20px rgba(245,158,11,.4);
+  animation:toast 1.3s ease-out forwards;pointer-events:none;z-index:100;
+}
+@keyframes toast{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}
+  25%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+  55%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-65%) scale(1)}
+}
+</style>
+</head>
+<body>
+<div id="game"></div>
+<script>
+'use strict';
+
+var TOTAL=15,STREAK_LVL=4,MAX_TRIES=2;
+var G=document.getElementById('game');
+var S={screen:'start',level:1,auto:true,score:0,correct:0,total:0,streak:0,best:0,
+       prob:null,tries:0};
+
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function pk(a){return a[Math.floor(Math.random()*a.length)]}
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=b;b=a%b;a=t}return a}
+function lcm(a,b){return a/gcd(a,b)*b}
+function simp(n,d){var g=gcd(Math.abs(n),Math.abs(d));return[n/g,d/g]}
+
+// --- Problem generators ---
+
+function genL1(){
+  var d=pk([2,3,4,5,6,8,10]);
+  var n1=ri(1,d-1),n2=ri(1,d-1);
+  var an=n1+n2,ad=d;
+  return{n1:n1,d1:d,n2:n2,d2:d,op:'+',an:an,ad:ad};
+}
+
+function genL2(){
+  var ds=[2,3,4,5,6,8,10,12];
+  var d1=pk(ds),d2=pk(ds.filter(function(x){return x!==d1}));
+  var n1=ri(1,d1-1),n2=ri(1,d2-1);
+  var L=lcm(d1,d2);
+  var op=Math.random()<0.5?'+':'−';
+  var an;
+  if(op==='+'){an=n1*(L/d1)+n2*(L/d2)}
+  else{an=n1*(L/d1)-n2*(L/d2);if(an<=0){op='+';an=n1*(L/d1)+n2*(L/d2)}}
+  return{n1:n1,d1:d1,n2:n2,d2:d2,op:op,an:an,ad:L};
+}
+
+function genL3(){
+  var n1=ri(1,8),d1=ri(2,8),n2=ri(1,8),d2=ri(2,8);
+  return{n1:n1,d1:d1,n2:n2,d2:d2,op:'×',an:n1*n2,ad:d1*d2};
+}
+
+function gen(lv){return lv===1?genL1():lv===2?genL2():genL3()}
+
+// --- Fraction HTML ---
+
+function fracHTML(n,d){
+  if(d===1)return '<span class="frac"><span class="frac-num" style="padding-bottom:0">'+n+'</span></span>';
+  return '<span class="frac"><span class="frac-num">'+n+'</span><span class="frac-bar"></span><span class="frac-den">'+d+'</span></span>';
+}
+
+function fracDisplayHTML(n,d){
+  if(d===1||d===-1)return '<span style="font-size:1.6rem;font-weight:700">'+n/d+'</span>';
+  var s=simp(n,d);
+  return '<span class="frac"><span class="frac-num">'+s[0]+'</span><span class="frac-bar"></span><span class="frac-den">'+s[1]+'</span></span>';
+}
+
+// --- Screens ---
+
+function render(){
+  if(S.screen==='start')renderStart();
+  else if(S.screen==='play')renderPlay();
+  else renderEnd();
+}
+
+function renderStart(){
+  G.innerHTML=
+    '<div class="start">'+
+    '<h1>Fraction Flashcards</h1>'+
+    '<p class="sub">Add, subtract, and multiply fractions</p>'+
+    '<div class="diff-grid">'+
+    '<button class="diff-btn" data-l="0"><div class="dt">Auto Mode</div><div class="dd">Starts easy, levels up as you go</div></button>'+
+    '<button class="diff-btn" data-l="1"><div class="dt">Same Denominator</div><div class="dd">Add fractions like 1/4 + 2/4</div></button>'+
+    '<button class="diff-btn" data-l="2"><div class="dt">Different Denominators</div><div class="dd">Add and subtract: 1/3 + 1/4, 3/4 − 1/6</div></button>'+
+    '<button class="diff-btn" data-l="3"><div class="dt">Multiply</div><div class="dd">Multiply fractions: 2/3 × 3/5</div></button>'+
+    '</div></div>';
+  var btns=G.querySelectorAll('.diff-btn');
+  for(var i=0;i<btns.length;i++){
+    btns[i].onclick=function(){
+      var lv=+this.getAttribute('data-l');
+      S.auto=lv===0;S.level=lv===0?1:lv;
+      startGame();
+    };
+  }
+}
+
+function startGame(){
+  S.screen='play';S.score=0;S.correct=0;S.total=0;S.streak=0;S.best=0;
+  nextProb();render();
+}
+
+function nextProb(){S.prob=gen(S.level);S.tries=0}
+
+function renderPlay(){
+  var p=S.prob;
+  var pct=(S.total/TOTAL)*100;
+  var st=S.streak>=2?'🔥 ':'';
+
+  var eqn=fracHTML(p.n1,p.d1)+
+    '<span class="op">'+p.op+'</span>'+
+    fracHTML(p.n2,p.d2)+
+    '<span class="eq-sign">=</span>'+
+    '<span class="ans-frac">'+
+    '<input type="number" id="anum" autocomplete="off">'+
+    '<span class="ans-bar"></span>'+
+    '<input type="number" id="aden" placeholder="1" autocomplete="off">'+
+    '</span>';
+
+  G.innerHTML=
+    '<div class="hud">'+
+    '<span>Score: <b>'+S.score+'</b></span>'+
+    '<span>Level <b>'+S.level+'</b></span>'+
+    '<span class="'+(S.streak>=2?'streak':'')+'">'+st+'Streak: <b>'+S.streak+'</b></span>'+
+    '</div>'+
+    '<div class="prog"><div class="prog-fill" style="width:'+pct+'%"></div></div>'+
+    '<div class="pills">'+
+    '<div class="pill'+(S.level>=1?' on':'')+'"></div>'+
+    '<div class="pill'+(S.level>=2?' on':'')+'"></div>'+
+    '<div class="pill'+(S.level>=3?' on':'')+'"></div>'+
+    '</div>'+
+    '<div class="eq-row">'+eqn+'</div>'+
+    '<div class="btn-row">'+
+    '<button class="btn-chk" id="chk">Check</button>'+
+    '</div>'+
+    '<div class="fb" id="fb"></div>'+
+    '<div class="sub-row"><button class="btn-skip" id="skp">Skip →</button></div>';
+
+  var numI=document.getElementById('anum');
+  var denI=document.getElementById('aden');
+  setTimeout(function(){numI.focus()},50);
+
+  function onKey(e){if(e.key==='Enter')check()}
+  numI.addEventListener('keydown',onKey);
+  denI.addEventListener('keydown',onKey);
+  document.getElementById('chk').onclick=check;
+  document.getElementById('skp').onclick=skip;
+}
+
+function check(){
+  var numI=document.getElementById('anum');
+  var denI=document.getElementById('aden');
+  var fb=document.getElementById('fb');
+  var nv=numI.value.trim(),dv=denI.value.trim();
+  if(nv===''){fb.textContent='Enter the numerator';fb.className='fb hint';return}
+
+  var un=parseInt(nv,10);
+  var ud=dv===''?1:parseInt(dv,10);
+  if(isNaN(un)||isNaN(ud)||ud===0){
+    fb.textContent='Enter valid numbers (denominator can’t be 0)';fb.className='fb hint';return;
+  }
+
+  var p=S.prob;
+  var correct=un*p.ad===p.an*ud;
+  var s=simp(p.an,p.ad);
+  S.tries++;
+
+  if(correct){
+    var isSimplified=gcd(Math.abs(un),Math.abs(ud))===1;
+    var pts=isSimplified?20:15;
+    S.score+=pts;S.correct++;S.streak++;
+    if(S.streak>S.best)S.best=S.streak;
+
+    if(S.auto&&S.streak>0&&S.streak%STREAK_LVL===0&&S.level<3){
+      S.level++;showToast('Level '+S.level+'!');
+    }
+
+    numI.disabled=true;denI.disabled=true;
+    document.getElementById('chk').disabled=true;
+    var msg='Correct! +'+pts;
+    if(!isSimplified)msg+=' <span class="meta">(simplifies to '+s[0]+'/'+s[1]+')</span>';
+    fb.innerHTML=msg;fb.className='fb ok';
+
+    S.total++;
+    if(S.total>=TOTAL)setTimeout(function(){S.screen='end';render()},1200);
+    else setTimeout(function(){nextProb();renderPlay()},1200);
+  } else {
+    S.streak=0;
+    if(S.tries>=MAX_TRIES){
+      numI.disabled=true;denI.disabled=true;
+      document.getElementById('chk').disabled=true;
+      var ans=s[1]===1?''+s[0]:s[0]+'/'+s[1];
+      fb.innerHTML='The answer is '+ans;
+      fb.className='fb no';
+      S.total++;
+      if(S.total>=TOTAL)setTimeout(function(){S.screen='end';render()},1300);
+      else setTimeout(function(){nextProb();renderPlay()},1300);
+    } else {
+      fb.textContent='Not quite — try again';fb.className='fb hint';
+      numI.value='';denI.value='';numI.focus();
+    }
+  }
+}
+
+function skip(){
+  S.streak=0;S.total++;
+  var p=S.prob,s=simp(p.an,p.ad);
+  var fb=document.getElementById('fb');
+  var ans=s[1]===1?''+s[0]:s[0]+'/'+s[1];
+  fb.textContent='Answer: '+ans;fb.className='fb hint';
+  document.getElementById('anum').disabled=true;
+  document.getElementById('aden').disabled=true;
+  document.getElementById('chk').disabled=true;
+  if(S.total>=TOTAL)setTimeout(function(){S.screen='end';render()},1000);
+  else setTimeout(function(){nextProb();renderPlay()},1000);
+}
+
+function showToast(msg){
+  var t=document.createElement('div');t.className='lvl-toast';t.textContent=msg;
+  document.body.appendChild(t);setTimeout(function(){t.remove()},1400);
+}
+
+function renderEnd(){
+  var acc=S.total>0?Math.round(S.correct/S.total*100):0;
+  G.innerHTML=
+    '<div class="end">'+
+    '<h2>Round Complete!</h2>'+
+    '<div class="end-stats">'+
+    '<div class="es"><span class="l">Score</span><span class="v">'+S.score+'</span></div>'+
+    '<div class="es"><span class="l">Correct</span><span class="v">'+S.correct+' / '+S.total+'</span></div>'+
+    '<div class="es"><span class="l">Accuracy</span><span class="v">'+acc+'%</span></div>'+
+    '<div class="es"><span class="l">Best Streak</span><span class="v">'+S.best+'</span></div>'+
+    '<div class="es"><span class="l">Final Level</span><span class="v">'+S.level+'</span></div>'+
+    '</div>'+
+    '<button class="btn-play" id="replay">Play Again</button>'+
+    '</div>';
+  document.getElementById('replay').onclick=function(){S.screen='start';render()};
+}
+
+render();
+</script>
+</body>
 </html>
