@@ -24,6 +24,7 @@ import java.util.List;
  *   POST /api/ai/read-work/{pid}   {"image":"<base64 png>"} -> AiService.readWork(pid, image)
  *   GET  /api/ai/skeleton/{pid}                       -> AiService.buildSkeleton(pid)
  *   POST /api/ai/follow-up/{pid}   {"grade","priorAnswer","question"} -> AiService.followUp(...)
+ *   POST /api/ai/explain-game      {"problem","grade"}               -> AiService.explainGame(...)
  */
 public class ApiHandler implements HttpHandler {
 
@@ -92,6 +93,18 @@ public class ApiHandler implements HttpHandler {
                 String priorAnswer = stringField(body, "priorAnswer");
                 String question = stringField(body, "question");
                 send(ex, 200, "application/json", ai.followUp(pid, grade, priorAnswer, question));
+                return;
+            }
+
+            if (path.equals("/api/ai/explain-game")) {
+                if (!"POST".equalsIgnoreCase(method)) {
+                    send(ex, 405, "application/json", "{\"error\":\"method not allowed\"}");
+                    return;
+                }
+                JsonObject body = readJsonBody(ex);
+                String problem = stringField(body, "problem");
+                String grade = stringField(body, "grade");
+                send(ex, 200, "application/json", ai.explainGame(problem, grade));
                 return;
             }
 

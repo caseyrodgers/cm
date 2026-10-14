@@ -285,6 +285,34 @@ export async function buildSkeleton(pid: string, signal?: AbortSignal): Promise<
   };
 }
 
+export interface ExplainGameRequest {
+  problem: string;
+  grade: Grade;
+}
+
+export async function explainGame(req: ExplainGameRequest, signal?: AbortSignal): Promise<ExplainResult> {
+  let res: Response;
+  try {
+    res = await fetch(`${AI_BASE}/explain-game`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ problem: req.problem, grade: req.grade }),
+      signal,
+    });
+  } catch (e) {
+    if (isAbort(e)) throw new ExplainAbortError();
+    throw new Error(`explain-game request failed: ${String(e)}`);
+  }
+  if (!res.ok) {
+    throw new Error(`explain-game request failed: ${res.status}`);
+  }
+  const data = (await res.json()) as { text?: string; placeholder?: boolean };
+  return {
+    text: typeof data.text === "string" ? data.text : "",
+    placeholder: data.placeholder === true,
+  };
+}
+
 /** Rough plain text from a solution's statement + steps, for the request payload. */
 export function problemTextOf(solution: Solution): string {
   const parts = [solution.statement, ...solution.steps.map((s) => s.content)];

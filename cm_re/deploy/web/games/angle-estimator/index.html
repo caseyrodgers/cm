@@ -183,6 +183,7 @@ function render(){
 }
 
 function renderStart(){
+  notifyClear();
   G.innerHTML=
     '<div class="start">'+
     '<h1>Angle Estimator</h1>'+
@@ -207,7 +208,17 @@ function startGame(){
   S.screen='play';S.score=0;S.correct=0;S.total=0;S.streak=0;S.best=0;
   nextAngle();render();
 }
-function nextAngle(){S.angle=genAngle(S.level);S.guess=0}
+function nextAngle(){S.angle=genAngle(S.level);S.guess=0;notifyProblem()}
+
+function notifyProblem(){
+  if(!window.parent||window.parent===window)return;
+  window.parent.postMessage({type:'cm_game_problem',problem:'Estimate this angle (it is '+S.angle+'°)'},'*');
+}
+
+function notifyClear(){
+  if(!window.parent||window.parent===window)return;
+  window.parent.postMessage({type:'cm_game_problem',problem:null},'*');
+}
 
 function renderPlay(){
   var pct=(S.total/TOTAL)*100;
@@ -296,6 +307,7 @@ function showToast(msg){
 }
 
 function renderEnd(){
+  notifyClear();
   var acc=S.total>0?Math.round(S.correct/S.total*100):0;
   G.innerHTML=
     '<div class="end">'+

@@ -634,6 +634,39 @@ public final class AiService {
                 + "}";
     }
 
+    /**
+     * Explain a game-generated problem (no PID — the problem text comes
+     * directly from the client via postMessage). Same posture as
+     * getAIForProblem but with the full answer included, since these are
+     * practice games (not graded assessments). Uses game-explain.txt.
+     */
+    public String explainGame(String problem, String grade) {
+        if (!claude.isConfigured()) {
+            return payload("", "Set ANTHROPIC_API_KEY on the server to enable AI explanations.", true);
+        }
+        if (problem == null || problem.isBlank()) {
+            return payload("", "No problem text was sent.", true);
+        }
+
+        String prompt;
+        try {
+            prompt = fill(loadPrompt("game-explain.txt"),
+                    "{{PROBLEM}}", problem,
+                    "{{GRADE_PHRASE}}", gradeLevelPhrase(grade));
+        } catch (UncheckedIOException e) {
+            return payload("", e.getMessage(), true);
+        }
+
+        try {
+            AiLog.logRequest("explainGame", "", prompt, null);
+            String text = claude.complete(prompt);
+            return payload("", text, false);
+        } catch (Exception e) {
+            System.err.println("AiService.explainGame: " + e);
+            return payload("", "Couldn't reach the AI service: " + e.getMessage(), true);
+        }
+    }
+
     /** "" when no usable grade, else a sentence telling the model who to pitch to. */
     static String gradeLevelPhrase(String grade) {
         String digits = grade == null ? "" : grade.replaceAll("[^0-9]", "");

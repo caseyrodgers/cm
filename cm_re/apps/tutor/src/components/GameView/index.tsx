@@ -4,6 +4,16 @@ import { gameUrl, type GameContext } from "../../games/matching";
 import { navigate, hashFor } from "../../routing";
 import { getInstalledModules } from "../../offline/moduleManager";
 import { listSubjects } from "../../api/client";
+import {
+  GRADES,
+  gradeLabel,
+  explainGame,
+  ExplainAbortError,
+  type Grade,
+  type ExplainResult,
+} from "../../api/aiClient";
+import { SanitizedHtml } from "../StepViewer";
+import { Spinner } from "../ui/spinner";
 import type { InstalledModule } from "../../offline/db";
 
 interface SubjectMatch {
@@ -55,11 +65,29 @@ function subjectsForGame(
   return matches;
 }
 
+const GRADE_KEY = "cm_re.learn.grade";
+
+function loadGrade(): Grade | null {
+  try {
+    const v = localStorage.getItem(GRADE_KEY);
+    return (GRADES as string[]).includes(v ?? "") ? (v as Grade) : null;
+  } catch { return null; }
+}
+
+type ExplainStatus = "idle" | "loading" | "done" | "error";
+
 export default function GameView({ slug, ctx }: { slug: string; ctx?: GameContext }) {
   const game = GAMES.find((g) => g.slug === slug);
   const headerRef = useRef<HTMLDivElement>(null);
   const [iframeHeight, setIframeHeight] = useState<number>(0);
   const [subjects, setSubjects] = useState<SubjectMatch[]>([]);
+
+  const [currentProblem, setCurrentProblem] = useState<string | null>(null);
+  const [explainOpen, setExplainOpen] = useState(false);
+  const [grade, setGrade] = useState<Grade | null>(loadGrade);
+  const [explainStatus, setExplainStatus] = useState<ExplainStatus>("idle");
+  const [explainResult, setExplainResult] = useState<ExplainResult | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (!game) return;
@@ -82,10 +110,20 @@ export default function GameView({ slug, ctx }: { slug: string; ctx?: GameContex
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
-  }, []);
+  });
 
   useEffect(() => {
     function onMessage(e: MessageEvent) {
+      if (e.data?.type === "cm_game_problem") {
+        const problem = typeof e.data.problem === "string" ? e.data.problem : null;
+        setCurrentProblem(problem);
+        if (!problem) {
+          setExplainOpen(false);
+          setExplainStatus("idle");
+          setExplainResult(null);
+          abortRef.current?.abort();
+        }
+      }
       if (e.data?.type === "cm_game_score") {
         // future: record score, tie into streak/stats
       }
@@ -93,6 +131,38 @@ export default function GameView({ slug, ctx }: { slug: string; ctx?: GameContex
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
   }, []);
+
+  useEffect(() => () => abortRef.current?.abort(), []);
+
+  function pickGrade(g: Grade) {
+    setGrade(g);
+    try { localStorage.setItem(GRADE_KEY, g); } catch { /* ok */ }
+    doExplain(g);
+  }
+
+  async function doExplain(g: Grade) {
+    if (!currentProblem) return;
+    abortRef.current?.abort();
+    const ac = new AbortController();
+    abortRef.current = ac;
+    setExplainStatus("loading");
+    setExplainResult(null);
+    try {
+      const res = await explainGame({ problem: currentProblem, grade: g }, ac.signal);
+      setExplainResult(res);
+      setExplainStatus("done");
+    } catch (e) {
+      if (e instanceof ExplainAbortError) return;
+      setExplainStatus("error");
+    }
+  }
+
+  function dismissExplain() {
+    abortRef.current?.abort();
+    setExplainOpen(false);
+    setExplainStatus("idle");
+    setExplainResult(null);
+  }
 
   if (!game) {
     return (
@@ -115,7 +185,21 @@ export default function GameView({ slug, ctx }: { slug: string; ctx?: GameContex
             &larr; Games
           </button>
           <span className="text-sm font-semibold text-slate-700">{game.title}</span>
-          <span />
+          {currentProblem ? (
+            <button
+              className={
+                "rounded-md px-2.5 py-1 text-xs font-medium transition-colors " +
+                (explainOpen
+                  ? "bg-indigo-100 text-indigo-800"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200")
+              }
+              onClick={() => setExplainOpen((v) => !v)}
+            >
+              Explain
+            </button>
+          ) : (
+            <span />
+          )}
         </div>
         {subjects.length > 0 && (
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-slate-100 bg-slate-50 px-3 py-1.5">
@@ -140,6 +224,53 @@ export default function GameView({ slug, ctx }: { slug: string; ctx?: GameContex
                 )}
               </span>
             ))}
+          </div>
+        )}
+        {explainOpen && currentProblem && (
+          <div className="border-b border-slate-200 bg-white px-3 py-3">
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-sm font-medium text-slate-700">Explain this problem</p>
+              <button
+                onClick={dismissExplain}
+                className="rounded px-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="mb-1 grid grid-cols-3 gap-2">
+              {GRADES.map((g) => (
+                <button
+                  key={g}
+                  type="button"
+                  onClick={() => pickGrade(g)}
+                  disabled={explainStatus === "loading"}
+                  className={
+                    "rounded-md border px-2 py-1.5 text-xs transition-colors disabled:cursor-not-allowed disabled:opacity-60 " +
+                    (grade === g
+                      ? "border-blue-500 bg-blue-50 font-medium text-blue-800"
+                      : "border-slate-200 text-slate-700 hover:border-slate-300")
+                  }
+                >
+                  {explainStatus === "loading" && grade === g ? <Spinner /> : gradeLabel(g)}
+                </button>
+              ))}
+            </div>
+            {explainStatus === "error" && (
+              <p className="mt-2 text-sm text-red-600">Couldn't get an explanation. Try again.</p>
+            )}
+            {explainResult && (
+              <div className="mt-2">
+                {explainResult.placeholder && (
+                  <p className="mb-1 text-xs font-medium text-amber-700">
+                    Placeholder — the AI explanation service is unavailable right now
+                  </p>
+                )}
+                <SanitizedHtml
+                  html={explainResult.text}
+                  className="learn-explanation rounded-md bg-slate-50 p-3 text-sm text-slate-800"
+                />
+              </div>
+            )}
           </div>
         )}
       </div>

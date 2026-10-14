@@ -220,6 +220,7 @@ function render(){
 }
 
 function renderStart(){
+  notifyClear();
   G.innerHTML=
     '<div class="start">'+
     '<h1>Equation Balance</h1>'+
@@ -245,7 +246,17 @@ function startGame(){
   nextEq();render();
 }
 
-function nextEq(){S.eq=gen(S.level);S.att=0}
+function nextEq(){S.eq=gen(S.level);S.att=0;notifyProblem()}
+
+function notifyProblem(){
+  if(!window.parent||window.parent===window)return;
+  window.parent.postMessage({type:'cm_game_problem',problem:'Solve: '+S.eq.ls+' = '+S.eq.rs},'*');
+}
+
+function notifyClear(){
+  if(!window.parent||window.parent===window)return;
+  window.parent.postMessage({type:'cm_game_problem',problem:null},'*');
+}
 
 function renderPlay(){
   var eq=S.eq,pct=(S.total/TOTAL)*100;
@@ -365,6 +376,7 @@ function showToast(msg){
 }
 
 function renderEnd(){
+  notifyClear();
   var acc=S.total>0?Math.round(S.correct/S.total*100):0;
   G.innerHTML=
     '<div class="end">'+
