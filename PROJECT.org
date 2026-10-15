@@ -1,6 +1,8 @@
 #+TITLE: Catchup Math — project doc index
 #+STARTUP: overview
 
+Build *11* (=cm_re/apps/tutor/src/buildNumber.ts=).
+
 This repo (=github.com/caseyrodgers/cm=, branch =main=) holds two
 things:
 
@@ -21,7 +23,7 @@ path.
   Java/Spring-Boot backend, Postgres JSONB storage, per-subject
   content modules, legacy pre-processor as a one-time fixup), the
   first-pass scaffold, the consolidated *Tutor feature build-out* log
-  (2026-08-27 → 2026-09-05), and the *Next steps* checklist. Read
+  (2026-08-27 → 2026-09-06), and the *Next steps* checklist. Read
   this first; the others are depth on one topic each.
 - [[file:APP_FLOW.org][APP_FLOW.org]] — high-level runtime flow of the rewritten tutor,
   with two Mermaid sequence diagrams (full lifecycle; a student's
@@ -58,12 +60,21 @@ path.
   open questions (wiring, grading, whiteboard conversion).
 - [[file:SOLUTION_EDITOR.org][SOLUTION_EDITOR.org]] — the *solution editor* (=apps/editor=), the
   online-only TipTap authoring tool that replaces the legacy GWT
-  =solution_editor=. Real now, through 2026-09-15: browse/search,
-  create a new solution, and edit statement/MC question/steps (with a
-  MathML-preserving guard) against a file-backed CRUD API. This doc
-  has the full status, the feature set derived from the 93 legacy
-  classes, the data contract, open questions, and a milestone plan
-  (next up: the MathEditor/KaTeX node, widget-slot + figures panes).
+  =solution_editor=. Real now, through 2026-10-14: browse/search,
+  create a new solution, and edit statement/MC question/steps against
+  a file-backed CRUD API. Content preservation guards for MathML
+  (=MathNode=), images (=Image=), and =<div>= elements (=DivBlock=)
+  prevent TipTap from silently destroying markup it doesn't
+  understand. A shared raw editor modal (split textarea + live
+  preview + tag toolbar) replaced =window.prompt()= for all opaque
+  node editing. Next up: MathEditor/KaTeX node, widget-slot + figures.
+- [[file:GAMES.org][GAMES.org]] — *games, videos & resources* integration: the skill
+  taxonomy (~468 fine-grained IDs), the game registry (4 local
+  offline-capable games), the video registry (370 videos from 4
+  legacy sources), fuzzy skill matching, the four surfaces (browse
+  pages, score-screen suggestions, Resources toolbar button, game
+  view related-subjects bar), routing, the per-game AI Explain
+  button, postMessage protocol, and open items.
 - [[file:IDEAS.org][IDEAS.org]] — running backlog of app-value ideas (tutor and
   editor both), each with a =DOIT= checkbox, a =Status:= line, and
   implementation notes once shipped. The working todo list day to
@@ -72,6 +83,16 @@ path.
   local "Java Application" launch and the "attach 5005" remote launch
   against =make debug=, plus gotchas (=*.launch= is gitignored
   because Eclipse persists secrets into it).
+
+* Strategy
+
+- [[file:MARKETING.org][MARKETING.org]] — *marketing ideas*, grounded in the real
+  legacy business model (B2B school/college licensing + B2C self-pay)
+  and the new =cm_re= capabilities (offline PWA, AI tutor, whiteboard
+  trio, practice tests). Covers relaunch positioning, B2B pilot
+  revival, B2C/homeschool landing pages, placement-test lead magnet,
+  SEO/content strategy, partnership channels, messaging starting
+  points, and a Patreon-fit analysis.
 
 * Reference — the legacy world
 
@@ -114,3 +135,7 @@ path.
    =cm_re/DEBUG.org= to attach a debugger.
 5. =CM3_MOBILE_REFERENCE.org= when you need to know what the old
    product did.
+* Domain info
+
+dns godaddy un=10736649   pwd=
+points to caseyrodgers.com ip 96.44.130.18

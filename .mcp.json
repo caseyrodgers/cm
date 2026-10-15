@@ -3,6 +3,17 @@
     "playwright": {
       "command": "cmd",
       "args": ["/c", "npx", "-y", "@playwright/mcp@latest", "--browser", "chromium"]
+    },
+    "cm-db": {
+      "command": "npx",
+      "args": ["-y", "@benborla29/mcp-server-mysql"],
+      "env": {
+        "MYSQL_HOST": "caseyrodgers.com",
+        "MYSQL_PORT": "3306",
+        "MYSQL_USER": "claude_ro",
+        "MYSQL_PASS": "claudepass",
+        "MYSQL_DB": "cm"
+      }
     }
   }
 }

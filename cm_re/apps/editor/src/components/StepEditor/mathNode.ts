@@ -1,4 +1,5 @@
 import { Node } from "@tiptap/core";
+import { openRawEditor } from "./rawEditModal";
 
 /**
  * Preserves an embedded MathML `<math>...</math>` element as an opaque,
@@ -68,21 +69,19 @@ export const MathNode = Node.create({
       wrapper.appendChild(render);
 
       wrapper.addEventListener("click", () => {
-        const current = wrapper.dataset.html ?? (node.attrs.html as string);
-        // eslint-disable-next-line no-alert -- deliberately minimal for
-        // now; a proper inline popover is part of the later MathEditor
-        // increment, not this one's job (see class doc above).
-        const next = window.prompt("Edit raw MathML source:", current);
-        if (next == null || next === current) return;
-        const pos = typeof getPos === "function" ? getPos() : null;
-        if (pos == null) return;
-        editor
-          .chain()
-          .command(({ tr }) => {
-            tr.setNodeMarkup(pos, undefined, { html: next });
-            return true;
-          })
-          .run();
+        const current = node.attrs.html as string;
+        openRawEditor(current, { title: "Edit MathML", mode: "mathml" }).then((next) => {
+          if (next == null || next === current) return;
+          const pos = typeof getPos === "function" ? getPos() : null;
+          if (pos == null) return;
+          editor
+            .chain()
+            .command(({ tr }) => {
+              tr.setNodeMarkup(pos, undefined, { html: next });
+              return true;
+            })
+            .run();
+        });
       });
 
       return {

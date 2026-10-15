@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { McChoice, McQuestion, Solution, StepUnit } from "@cm_re/shared-types";
-import { getSolution, saveSolution } from "../../api/client";
+import type { ChapterInfo } from "@cm_re/shared-types";
+import { ALL_SKILLS } from "@cm_re/shared-types";
+import { getManifest, getSolution, saveSolution, inferSkills } from "../../api/client";
 import StepEditor from "../StepEditor";
 
 /**
@@ -28,6 +30,14 @@ export default function SolutionView({ pid, onBack }: { pid: string; onBack: () 
   const [statement, setStatement] = useState("");
   const [question, setQuestion] = useState<McQuestion | undefined>(undefined);
   const [steps, setSteps] = useState<StepUnit[]>([]);
+  const [skills, setSkills] = useState<string[]>([]);
+  const [skillInput, setSkillInput] = useState("");
+  const [skillDropdownOpen, setSkillDropdownOpen] = useState(false);
+  const [skillHighlight, setSkillHighlight] = useState(0);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [inferring, setInferring] = useState(false);
+  const skillInputRef = useRef<HTMLInputElement>(null);
+  const [chapterInfo, setChapterInfo] = useState<ChapterInfo | null>(null);
   const [dirty, setDirty] = useState(false);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -38,6 +48,9 @@ export default function SolutionView({ pid, onBack }: { pid: string; onBack: () 
     setStatement("");
     setQuestion(undefined);
     setSteps([]);
+    setSkills([]);
+    setSkillInput("");
+    setChapterInfo(null);
     setDirty(false);
     setSaveStatus("idle");
     getSolution(pid)
@@ -46,6 +59,16 @@ export default function SolutionView({ pid, onBack }: { pid: string; onBack: () 
         setStatement(s.statement);
         setQuestion(s.question);
         setSteps(s.steps);
+        setSkills(s.skills ?? []);
+        const chNum = s.identification?.chapter;
+        if (chNum && s.subjectId) {
+          getManifest(s.subjectId)
+            .then((m) => {
+              const ch = m.chapters?.find((c) => c.key === `ch-${chNum}`);
+              if (ch) setChapterInfo(ch);
+            })
+            .catch(() => {});
+        }
       })
       .catch((e) => setError(String(e)));
   }, [pid]);
@@ -114,16 +137,79 @@ export default function SolutionView({ pid, onBack }: { pid: string; onBack: () 
     markDirty();
   }
 
+  const skillsSet = new Set(skills);
+  const filteredSkills = skillInput.trim()
+    ? ALL_SKILLS.filter((sk) => !skillsSet.has(sk) && sk.includes(skillInput.trim().toLowerCase().replace(/\s+/g, "-")))
+        .slice(0, 12)
+    : [];
+
+  function addSkill(sk: string) {
+    if (!sk || skills.includes(sk) || !ALL_SKILLS.includes(sk as never)) return;
+    setSkills((prev) => [...prev, sk]);
+    setSkillInput("");
+    setSkillDropdownOpen(false);
+    setSkillHighlight(0);
+    markDirty();
+  }
+
+  function removeSkill(sk: string) {
+    setSkills((prev) => prev.filter((s) => s !== sk));
+    markDirty();
+  }
+
+  function handleSkillKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSkillHighlight((h) => Math.min(h + 1, filteredSkills.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSkillHighlight((h) => Math.max(h - 1, 0));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (filteredSkills.length > 0) addSkill(filteredSkills[skillHighlight]);
+    } else if (e.key === "Escape") {
+      setSkillDropdownOpen(false);
+    }
+  }
+
+  async function handleInfer() {
+    if (!sol) return;
+    setInferring(true);
+    try {
+      const result = await inferSkills(sol.pid);
+      const newSuggestions = result.skills.filter((sk: string) => !skills.includes(sk));
+      setSuggestions(newSuggestions);
+    } catch {
+      setSuggestions([]);
+    } finally {
+      setInferring(false);
+    }
+  }
+
+  function acceptSuggestion(sk: string) {
+    if (!skills.includes(sk)) {
+      setSkills((prev) => [...prev, sk]);
+      markDirty();
+    }
+    setSuggestions((prev) => prev.filter((s) => s !== sk));
+  }
+
+  function dismissSuggestion(sk: string) {
+    setSuggestions((prev) => prev.filter((s) => s !== sk));
+  }
+
   async function onSave() {
     if (!sol) return;
     setSaveStatus("saving");
     setSaveError(null);
     try {
-      const saved = await saveSolution({ ...sol, statement, question, steps });
+      const doc = { ...sol, statement, question, steps, skills: skills.length > 0 ? skills : undefined };
+      const saved = await saveSolution(doc);
       setSol(saved);
       setStatement(saved.statement);
       setQuestion(saved.question);
       setSteps(saved.steps);
+      setSkills(saved.skills ?? []);
       setDirty(false);
       setSaveStatus("saved");
     } catch (e) {
@@ -179,6 +265,97 @@ export default function SolutionView({ pid, onBack }: { pid: string; onBack: () 
                   </div>
                 )}
               </dl>
+              {chapterInfo && chapterInfo.name && (
+                <div className="chapter-skills-row">
+                  <span className="chapter-name">{chapterInfo.label}: {chapterInfo.name}</span>
+                  {chapterInfo.skills && chapterInfo.skills.length > 0 && (
+                    <span className="skill-tags">
+                      {chapterInfo.skills.map((sk) => (
+                        <span key={sk} className="tag tag-chapter-skill" title="chapter-level skill">{sk}</span>
+                      ))}
+                    </span>
+                  )}
+                </div>
+              )}
+              <div className="solution-skills-row">
+                <span className="skills-label">skills</span>
+                <span className="skill-tags">
+                  {skills.map((sk) => (
+                    <span key={sk} className="tag tag-skill">
+                      {sk}
+                      <button
+                        type="button"
+                        className="skill-remove"
+                        onClick={() => removeSkill(sk)}
+                        title={`Remove "${sk}"`}
+                      >×</button>
+                    </span>
+                  ))}
+                </span>
+                <div className="skill-autocomplete">
+                  <input
+                    ref={skillInputRef}
+                    className="skill-add-input"
+                    type="text"
+                    placeholder="add skill…"
+                    value={skillInput}
+                    onChange={(e) => {
+                      setSkillInput(e.target.value);
+                      setSkillDropdownOpen(true);
+                      setSkillHighlight(0);
+                    }}
+                    onFocus={() => setSkillDropdownOpen(true)}
+                    onBlur={() => setTimeout(() => setSkillDropdownOpen(false), 150)}
+                    onKeyDown={handleSkillKeyDown}
+                  />
+                  {skillDropdownOpen && filteredSkills.length > 0 && (
+                    <ul className="skill-dropdown">
+                      {filteredSkills.map((sk, i) => (
+                        <li
+                          key={sk}
+                          className={i === skillHighlight ? "highlighted" : ""}
+                          onMouseDown={(e) => { e.preventDefault(); addSkill(sk); }}
+                          onMouseEnter={() => setSkillHighlight(i)}
+                        >{sk}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  className="skill-infer-btn"
+                  onClick={handleInfer}
+                  disabled={inferring}
+                  title="Ask AI to suggest skills from the solution content"
+                >{inferring ? "Inferring…" : "Infer"}</button>
+              </div>
+              {suggestions.length > 0 && (
+                <div className="skill-suggestions">
+                  <span className="skills-label">suggested</span>
+                  {suggestions.map((sk) => (
+                    <span key={sk} className="tag tag-suggestion">
+                      {sk}
+                      <button
+                        type="button"
+                        className="suggestion-accept"
+                        onClick={() => acceptSuggestion(sk)}
+                        title="Add this skill"
+                      >+</button>
+                      <button
+                        type="button"
+                        className="suggestion-dismiss"
+                        onClick={() => dismissSuggestion(sk)}
+                        title="Dismiss"
+                      >×</button>
+                    </span>
+                  ))}
+                  <button
+                    type="button"
+                    className="skill-add-btn"
+                    onClick={() => { suggestions.forEach(acceptSuggestion); }}
+                  >Add all</button>
+                </div>
+              )}
             </div>
             <div className="save-bar">
               {saveStatus === "saved" && <span className="save-ok">Saved</span>}

@@ -3,6 +3,8 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import { MathNode } from "./mathNode";
+import { DivBlock } from "./divBlock";
+import { openRawEditor } from "./rawEditModal";
 
 /**
  * TipTap-based rich content editor for one SolutionStep's HTML.
@@ -54,7 +56,7 @@ export default function StepEditor({
   onChange: (html: string) => void;
 }) {
   const editor = useEditor({
-    extensions: [StarterKit, MathNode, Image],
+    extensions: [StarterKit, MathNode, Image, DivBlock],
     content,
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
   });
@@ -73,34 +75,23 @@ export default function StepEditor({
     };
   }, [editor]);
 
-  const [rawMode, setRawMode] = useState(false);
-  const [rawHtml, setRawHtml] = useState("");
-
   // Resync if the step's content is replaced out from under us (e.g. a
   // different solution loaded into a remounted-but-reused instance) —
-  // never while the user is actively editing this exact editor (rich OR
-  // raw — an open raw-HTML edit shouldn't get silently discarded either).
+  // never while the user is actively editing this exact editor.
   useEffect(() => {
-    if (!editor || editor.isFocused || rawMode) return;
+    if (!editor || editor.isFocused) return;
     if (editor.getHTML() === content) return;
     editor.commands.setContent(content, false);
-  }, [content, editor, rawMode]);
+  }, [content, editor]);
 
   if (!editor) return null;
 
-  function enterRawMode() {
-    setRawHtml(editor!.getHTML());
-    setRawMode(true);
-  }
-
-  function applyRawMode() {
-    editor!.commands.setContent(rawHtml, false);
-    onChange(rawHtml);
-    setRawMode(false);
-  }
-
-  function cancelRawMode() {
-    setRawMode(false);
+  function openRawHtmlModal() {
+    openRawEditor(editor!.getHTML(), { title: "Edit step HTML" }).then((next) => {
+      if (next == null) return;
+      editor!.commands.setContent(next, false);
+      onChange(next);
+    });
   }
 
   return (
@@ -110,61 +101,36 @@ export default function StepEditor({
           label="B"
           title="Bold"
           active={editor.isActive("bold")}
-          disabled={rawMode}
           onClick={() => editor.chain().focus().toggleBold().run()}
         />
         <ToolbarButton
           label="I"
           title="Italic"
           active={editor.isActive("italic")}
-          disabled={rawMode}
           onClick={() => editor.chain().focus().toggleItalic().run()}
         />
         <ToolbarButton
           label="• List"
           title="Bullet list"
           active={editor.isActive("bulletList")}
-          disabled={rawMode}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         />
         <ToolbarButton
           label="1. List"
           title="Ordered list"
           active={editor.isActive("orderedList")}
-          disabled={rawMode}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         />
-        <ToolbarButton label="Undo" title="Undo" disabled={rawMode} onClick={() => editor.chain().focus().undo().run()} />
-        <ToolbarButton label="Redo" title="Redo" disabled={rawMode} onClick={() => editor.chain().focus().redo().run()} />
+        <ToolbarButton label="Undo" title="Undo" onClick={() => editor.chain().focus().undo().run()} />
+        <ToolbarButton label="Redo" title="Redo" onClick={() => editor.chain().focus().redo().run()} />
         <ToolbarButton
           label="</>"
           title="View / edit the raw HTML (and MathML) source"
-          active={rawMode}
-          onClick={() => (rawMode ? cancelRawMode() : enterRawMode())}
+          onClick={openRawHtmlModal}
           testId="raw-html-toggle"
         />
       </div>
-      {rawMode ? (
-        <div className="step-editor-raw">
-          <textarea
-            className="step-editor-raw-textarea"
-            data-testid="raw-html-textarea"
-            value={rawHtml}
-            onChange={(e) => setRawHtml(e.target.value)}
-            spellCheck={false}
-          />
-          <div className="step-editor-raw-actions">
-            <button type="button" data-testid="raw-html-cancel" onClick={cancelRawMode}>
-              Cancel
-            </button>
-            <button type="button" data-testid="raw-html-apply" className="primary" onClick={applyRawMode}>
-              Apply
-            </button>
-          </div>
-        </div>
-      ) : (
-        <EditorContent editor={editor} className="step-editor-content" />
-      )}
+      <EditorContent editor={editor} className="step-editor-content" />
     </div>
   );
 }

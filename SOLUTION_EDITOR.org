@@ -13,6 +13,62 @@ the tutor reads. *Real and in active use* — browse/search, create,
 and edit statement/MC question/steps all work; see Status below for
 what's still open.
 
+* Status — 2026-10-14: DivBlock guard + raw editor modal
+
+Same class of silent-destruction as MathML and =<img>=, but for
+=<div>= elements — TipTap/ProseMirror has no =<div>= in its schema,
+so loading content that contains one strips the wrapper and dumps the
+inner text into a bare =<p>=. Caught in the wild: the statement of
+=cmextrasalg1_1_4-1_1_20_1= has a =<div id="hm_flash_widget_def"
+style="display: none">= wrapping a widget definition; editing the
+statement in the editor stripped the =display: none=, exposing raw
+widget text to the student.
+
+** DivBlock extension (=components/StepEditor/divBlock.ts=)
+
+Preserves =<div>= elements as opaque atom nodes, same pattern as
+MathNode. Selective: only matches =<div>= elements with an =id=
+attribute or with =display: none= / =visibility: hidden= in their
+=style= — excludes =<div class="step_content">= so step text remains
+editable in the rich editor. Click a preserved div-block to open the
+raw editor modal.
+
+** Raw editor modal (=components/StepEditor/rawEditModal.ts=)
+
+Replaced the single-line =window.prompt()= that MathNode and
+DivBlock used for click-to-edit. Plain DOM (no React) so TipTap node
+views can call it directly. All three callers now open the same modal:
+
+- *MathNode* click → "Edit MathML"
+- *DivBlock* click → "Edit HTML block"
+- *StepEditor =</>= button* → "Edit step HTML"
+
+Features:
+- Full-screen overlay with centered modal (960×680 max)
+- Split view: monospace textarea (left) + live rendered preview (right)
+- Tag-insertion toolbar with HTML group (=<b>=, =<i>=, =<sup>=,
+  =<sub>=, =<p>=, =<span>=, =<div>=, =<br/>=, =<img>=) and MathML
+  group (=<math>=, =<mfrac>=, =<msup>=, =<msub>=, =<mn>=, =<mi>=,
+  =<mo>=, =<mrow>=, =<msqrt>=) — wraps the textarea selection in the
+  chosen tag, or inserts at cursor
+- Keyboard: Ctrl+Enter to apply, Escape to cancel, Tab inserts 2
+  spaces
+- Click outside the modal to cancel
+
+The old inline raw-textarea mode (toggled by the =</>= button) was
+removed — the modal provides the same functionality with more room.
+
+** Image extension (added 2026-09-19, documented here for completeness)
+
+=@tiptap/extension-image= added alongside StarterKit + MathNode to
+prevent =<img>= tags from being silently dropped. ~43% of corpus
+solutions contain images (SOLUTION_INFO.org); without this, opening
+an image-only step would show a blank editor and saving would
+permanently delete the image reference.
+
+=StepEditor= extensions are now: =StarterKit=, =MathNode=, =Image=,
+=DivBlock=.
+
 * Status — 2026-09-14: statement + MC question are editable
 
 Casey: "the problem statement and question need to be editable." Both
@@ -356,8 +412,8 @@ is =SolutionSource= over =apps/tutor/public/modules/<id>/bundle.json=.
 | =SolutionEditor.java= (app shell) | =apps/editor/src/App.tsx= |
 | =SolutionSearcherDialog=, =ListSolutionSearch= | =components/SolutionList= |
 | =SolutionStepEditor=, =HtmlEditorApplet=, =TinyMCE= | =components/StepEditor= (TipTap) |
-| =MathMlEditorDialog=, =MathMlTransformationDialog= | =components/MathEditor= (TipTap node + KaTeX) |
-| =ProblemStatement=, =StatementContainer= | (statement pane — not stubbed yet) |
+| =MathMlEditorDialog=, =MathMlTransformationDialog= | =components/MathEditor= (TipTap node + KaTeX — TODO); raw modal via =rawEditModal.ts= for now |
+| =ProblemStatement=, =StatementContainer= | statement pane in =SolutionView= (done — reuses =StepEditor=) |
 | =SolutionResourcePanel= + resource dialogs | (figures pane — not stubbed yet) |
 | =WidgetListDialog=, =WidgetModel= | widgetSlot picker → [[file:TUTOR_WIDGET.org][TUTOR_WIDGET.org]] registry |
 | =SaveSolution*AdminAction/Command= | =PUT /api/solutions/{pid}= |
@@ -409,8 +465,9 @@ is =SolutionSource= over =apps/tutor/public/modules/<id>/bundle.json=.
    see the status section above)
 4. [ ] *MathEditor node* — KaTeX-rendered inline math as a TipTap
    extension. *← next.* =mathNode.ts= already round-trips raw MathML
-   losslessly (milestone 3's safety net); this milestone replaces its
-   bare click-to-edit-raw-source prompt with real WYSIWYG authoring
+   losslessly (milestone 3's safety net) and its click-to-edit now
+   opens a full raw editor modal (2026-10-14) instead of a single-line
+   prompt; this milestone replaces that with real WYSIWYG authoring
    (LaTeX in, rendered via KaTeX, converted to/from MathML on save).
 6. [-] *Statement + MC question + widget-slot + figures* panes.
    Statement + MC question done (2026-09-14 — reuses =StepEditor=,

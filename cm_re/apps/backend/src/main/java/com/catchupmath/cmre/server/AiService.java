@@ -667,6 +667,66 @@ public final class AiService {
         }
     }
 
+    /**
+     * Infers per-solution skill tags from the problem content using AI.
+     * Sends the statement, question, and step content along with the full
+     * valid skill vocabulary so the model picks from the canonical set.
+     */
+    public String inferSkills(String pid) {
+        String allSkillsJson;
+        try {
+            allSkillsJson = loadPrompt("skills.json");
+        } catch (UncheckedIOException e) {
+            return skillsPayload(pid == null ? "" : pid, "[]", true);
+        }
+        String safePid = pid == null ? "" : pid;
+
+        if (!claude.isConfigured()) {
+            return skillsPayload(safePid, "[]", true);
+        }
+
+        String problem = store.problemTextFor(safePid).orElse(null);
+        if (problem == null) {
+            return skillsPayload(safePid, "[]", true);
+        }
+
+        String prompt;
+        try {
+            prompt = fill(loadPrompt("infer-skills.txt"),
+                    "{{CONTENT}}", problem,
+                    "{{SKILLS}}", allSkillsJson);
+        } catch (UncheckedIOException e) {
+            return skillsPayload(safePid, "[]", true);
+        }
+
+        try {
+            AiLog.logRequest("inferSkills", safePid, prompt, null);
+            String text = claude.complete(prompt, List.of(), 0.1);
+            String cleaned = text.strip();
+            if (cleaned.startsWith("```")) {
+                int nl = cleaned.indexOf('\n');
+                int last = cleaned.lastIndexOf("```");
+                if (nl >= 0 && last > nl) cleaned = cleaned.substring(nl + 1, last).strip();
+            }
+            JsonElement parsed = JsonParser.parseString(cleaned);
+            if (!parsed.isJsonArray()) {
+                return skillsPayload(safePid, "[]", false);
+            }
+            return skillsPayload(safePid, parsed.toString(), false);
+        } catch (Exception e) {
+            System.err.println("AiService.inferSkills: " + e);
+            return skillsPayload(safePid, "[]", true);
+        }
+    }
+
+    private static String skillsPayload(String pid, String skillsArray, boolean placeholder) {
+        return "{"
+                + "\"pid\":" + jsonString(pid) + ","
+                + "\"skills\":" + skillsArray + ","
+                + "\"placeholder\":" + placeholder
+                + "}";
+    }
+
     /** "" when no usable grade, else a sentence telling the model who to pitch to. */
     static String gradeLevelPhrase(String grade) {
         String digits = grade == null ? "" : grade.replaceAll("[^0-9]", "");

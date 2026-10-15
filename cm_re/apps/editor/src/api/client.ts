@@ -1,4 +1,4 @@
-import type { Solution } from "@cm_re/shared-types";
+import type { Solution, ModuleManifest } from "@cm_re/shared-types";
 
 /**
  * Thin fetch wrapper for the editor's CRUD API. Unlike the tutor's
@@ -82,6 +82,20 @@ export function saveSolution(doc: Solution): Promise<Solution> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(doc),
   }).then((r) => unwrap<Solution>(r));
+}
+
+export function getManifest(subjectId: string): Promise<ModuleManifest> {
+  return fetch(`/modules/${encodeURIComponent(subjectId)}/manifest.json`).then((r) =>
+    unwrap<ModuleManifest>(r)
+  );
+}
+
+export function inferSkills(pid: string): Promise<{ pid: string; skills: string[]; placeholder: boolean }> {
+  return fetch(`/api/ai/infer-skills`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ pid }),
+  }).then((r) => unwrap(r));
 }
 
 export function publishModule(subject: string): Promise<PublishResult> {

@@ -624,7 +624,7 @@ export default function PracticeTest({
                   assessment. It's available on the score-screen review
                   and in the missed-questions lesson afterward. */}
               {/* Same per-solution board as the normal view (keyed by pid). */}
-              <WhiteboardPanel key={`wb-${pid}`} pid={pid} subjectId={subjectId} />
+              <WhiteboardPanel key={`wb-${pid}`} pid={pid} subjectId={subjectId} testMode />
             </>
           ) : (
             <Spinner />

@@ -40,6 +40,15 @@ export default defineConfig({
       // (offline/moduleManager.ts + db.ts), not part of this precache.
       workbox: {
         globPatterns: ["**/*.{js,css,html,png,svg}"],
+        runtimeCaching: [
+          {
+            urlPattern: /^\/modules\/.+\.(?:gif|png|jpg|jpeg|svg)$/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "cm_re-module-images",
+            },
+          },
+        ],
         // The generated SW's navigation-fallback route defaults to
         // "every same-origin navigation" — with no denylist, a browser
         // that's ever loaded the tutor at "/" (this SW's scope) has it

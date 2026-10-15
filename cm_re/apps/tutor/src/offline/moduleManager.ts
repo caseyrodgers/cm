@@ -2,6 +2,8 @@ import type { Solution } from "@cm_re/shared-types";
 import { db, type InstalledModule } from "./db";
 import { getModuleManifest, getModuleBundle } from "../api/client";
 
+const IMAGE_CACHE = "cm_re-module-images";
+
 /**
  * Module download/install logic (NEW_DIRECTION.org "Offline support").
  * The prefetch unit is the module (one per subject), not the individual
@@ -69,6 +71,8 @@ export async function downloadModule(subjectId: string): Promise<void> {
     }
     await db.modules.put({ ...manifest, installedAt: Date.now() });
   });
+
+  await cacheModuleImages(bundle.solutions);
 }
 
 /**
@@ -78,8 +82,58 @@ export async function downloadModule(subjectId: string): Promise<void> {
  * published content itself.
  */
 export async function removeModule(subjectId: string): Promise<void> {
+  const solutions = await db.solutions.where("subjectId").equals(subjectId).toArray();
   await db.transaction("rw", db.modules, db.solutions, async () => {
     await db.solutions.where("subjectId").equals(subjectId).delete();
     await db.modules.delete(subjectId);
   });
+  await uncacheModuleImages(solutions);
+}
+
+/** Regex to find image src attributes in solution HTML fields. */
+const IMG_SRC_RE = /src="(\/modules\/[^"]+\.(?:gif|png|jpg|jpeg|svg))"/gi;
+
+function extractImageUrls(solutions: Solution[]): string[] {
+  const urls = new Set<string>();
+  for (const s of solutions) {
+    const fields = [
+      s.statement,
+      s.question?.prompt ?? "",
+      ...(s.question?.choices?.map((c) => c.content) ?? []),
+      ...s.steps.map((st) => st.content),
+    ];
+    for (const html of fields) {
+      let m: RegExpExecArray | null;
+      IMG_SRC_RE.lastIndex = 0;
+      while ((m = IMG_SRC_RE.exec(html)) !== null) {
+        urls.add(m[1]);
+      }
+    }
+  }
+  return [...urls];
+}
+
+async function cacheModuleImages(solutions: Solution[]): Promise<void> {
+  const urls = extractImageUrls(solutions);
+  if (urls.length === 0) return;
+  try {
+    const cache = await caches.open(IMAGE_CACHE);
+    await Promise.all(
+      urls.map(async (url) => {
+        try {
+          const res = await fetch(url);
+          if (res.ok) await cache.put(url, res);
+        } catch { /* best-effort */ }
+      })
+    );
+  } catch { /* Cache API unavailable */ }
+}
+
+async function uncacheModuleImages(solutions: Solution[]): Promise<void> {
+  const urls = extractImageUrls(solutions);
+  if (urls.length === 0) return;
+  try {
+    const cache = await caches.open(IMAGE_CACHE);
+    await Promise.all(urls.map((url) => cache.delete(url)));
+  } catch { /* best-effort */ }
 }

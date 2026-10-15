@@ -1,0 +1,219 @@
+#+TITLE: Games, Videos & Resources — integration design
+#+STARTUP: overview
+
+The tutor embeds interactive games and tutorial videos as
+supplementary learning aids. They surface in four places: a
+dedicated browse page for each (=#/games=, =#/videos=), contextual
+game suggestions on the score screen after a practice test, a
+=📚 Resources= button in the solution toolbar (showing both games
+and videos), and skill-based practice tests linked from game cards
+and the game view's related-subjects bar.
+
+* Architecture
+
+#+begin_src
+cm_re/apps/tutor/src/
+├── games/
+│   ├── skills.ts        — SkillId union type (~468 fine-grained math skill IDs)
+│   ├── registry.ts      — GameEntry[] catalog + ContextField type
+│   └── matching.ts      — gamesForContext() filter + gameUrl() builder
+├── videos/
+│   ├── registry.ts      — VideoEntry type + VIDEOS array (loads registry.json)
+│   ├── registry.json    — 370 video entries (exported from legacy inmh_link)
+│   └── matching.ts      — videosForContext() filter
+├── components/
+│   ├── GameList/         — browse-all-games page (#/games)
+│   ├── GameView/         — iframe wrapper with explain + related subjects (#/g/<slug>)
+│   ├── VideoList/        — browse-all-videos page (#/videos)
+│   └── VideoView/        — native <video> player (#/v/<slug>)
+└── …
+#+end_src
+
+** Skill taxonomy (=skills.ts=)
+
+A union type of ~468 fine-grained math skill IDs that act as the join
+key between games, videos, and chapter content. Derived from the
+legacy =inmh_link= table's topic slugs + the skill labels already
+present in the module manifests. Examples:
+
+: solving-one-step-equations | solving-two-step-linear-equations
+: adding-and-subtracting-fractions | multiplying-a-fraction-by-a-fraction
+: pythagorean-theorem | trigonometric-ratios | quadratic-formula
+: graphing-linear-equations | slope-intercept-form | distance-formula
+
+Skills are tagged on both sides:
+- *Games:* each =GameEntry= has a =skills: SkillId[]= array.
+- *Videos:* each =VideoEntry= has a =skills: SkillId[]= array.
+- *Chapters:* each chapter in a module's =manifest.json= has an
+  optional =skills: string[]= array (same IDs). Currently 104/~130
+  chapters are tagged across 10 modules.
+- *Solutions:* per-solution skill tagging is used for video matching
+  when available (falls back to chapter skills).
+
+** Game registry (=registry.ts=)
+
+Each game entry:
+
+| Field             | Type                             | Purpose                                    |
+|-------------------+----------------------------------+--------------------------------------------|
+| =slug=            | =string=                         | URL-safe identifier, used in =#/g/<slug>=  |
+| =title=           | =string=                         | Display name                               |
+| =description=     | =string=                         | One-line blurb for cards                   |
+| =url=             | =string=                         | Iframe src — local path under =public/=    |
+| =skills=          | =SkillId[]=                      | Which skills this game exercises           |
+| =gradeRange?=     | =[number, number]=               | Min/max grade level                        |
+| =thumbnail?=      | =string=                         | Card image (not yet used)                  |
+| =contextParams?=  | =Record<string, ContextField>=   | Query params to pass context into iframe   |
+
+** Video registry (=videos/registry.ts= + =registry.json=)
+
+Each video entry:
+
+| Field    | Type         | Purpose                                       |
+|----------+--------------+-----------------------------------------------|
+| =slug=   | =string=     | URL-safe identifier, used in =#/v/<slug>=     |
+| =title=  | =string=     | Display name                                  |
+| =url=    | =string=     | MP4 URL on =catchupmath.com/help/flvs/...=    |
+| =skills= | =SkillId[]= | Which skills this video covers                |
+
+370 videos from 4 legacy sources, loaded from a static JSON file:
+
+| Source        | Count | URL pattern                                    |
+|---------------+-------+------------------------------------------------|
+| =sharon_vids= |   166 | Descriptive slugs (=area_of_circles.mp4=)      |
+| =tw=          |   140 | Numeric IDs (=10126.mp4=)                      |
+| =youtube=     |    55 | Topic slugs (=adding-complex-numbers.mp4=)     |
+| =mathtv=      |     9 | Encoded IDs (=bcm_s33_e1_arielle.mp4=)         |
+
+Videos are online-only (served from the production catchupmath.com
+domain, not bundled in the PWA).
+
+** Matching (=matching.ts=)
+
+=gamesForContext({ skills, subjectId, grade })= returns games whose
+skill sets overlap the given context, optionally filtered by grade
+range. Used by score-screen suggestions and the Resources button.
+
+=videosForContext({ skills })= returns videos whose skill sets
+overlap the given context. Used by the Resources button.
+
+=gameUrl(game, ctx)= appends =contextParams= as query-string values
+for games that adapt to the current chapter/skill.
+
+The Resources panel (=WhiteboardPanel=) resolves skills in two tiers:
+per-solution skills (if present) for video matching, falling back to
+chapter-level skills from the module manifest.
+
+* Current game catalog
+
+All four games are local (offline-capable, served from =public/games/=).
+Three of them post =cm_game_problem= messages back to the parent
+window so the Explain button can offer AI explanations of the current
+problem.
+
+| Slug                    | Title               | Skills (representative)                                   | Grade | postMessage |
+|-------------------------+---------------------+-----------------------------------------------------------+-------+-------------|
+| =numbercop=             | Number Cop          | least-common-multiples, prime-composite, perfect-squares   |  5–9  | no          |
+| =flashcards-fractions=  | Fraction Flashcards | adding-fractions, multiplying-a-fraction-by-a-fraction     |  4–8  | yes         |
+| =equation-balance=      | Equation Balance    | solving-one-step-equations through solving-multi-step      |  6–10 | yes         |
+| =angle-estimator=       | Angle Estimator     | angles, degree-measure-of-an-angle, complementary/supp.   |  5–9  | yes         |
+
+GamePix external embeds (Math Quiz, Sudoku, Get 10, Math Duck,
+Number Sums, Math Crossword) were removed — replaced by locally
+hosted games that work offline.
+
+Fraction Flashcards was rebuilt from scratch (legacy deps removed).
+
+* Surfaces
+
+** Games nav page (=#/games=)
+
+=GameList= component. Card grid of all registered games with skill
+tag pills. Each card includes a "Practice these skills" button that
+links to a skill-filtered practice test (=#/t/<subject>/skills/...=)
+for the best-matching installed subject.
+
+** Game view (=#/g/<slug>=)
+
+=GameView= component. Header bar with back-link and game title, then
+a full-bleed iframe. Height is measured dynamically:
+=window.innerHeight - headerRef.getBoundingClientRect().bottom=.
+
+Features:
+- *Explain button* — appears when the game posts a =cm_game_problem=
+  message. Opens a grade-picker panel (7th/10th/12th Grader) that
+  calls =POST /api/ai/explain-game= for an AI explanation of the
+  current problem, rendered via =SanitizedHtml= (HTML + MathML).
+  Dismissible. Grade choice sticky via =localStorage=.
+- *Related subjects bar* — on load, resolves installed modules whose
+  chapter skills overlap the game's skills (fuzzy matching via
+  stemming + substring). Each related subject shows a link to browse
+  its problems and a "Practice" button linking to a skill-filtered
+  practice test.
+- *Score messages* — listens for =cm_game_score= postMessage events
+  (future: tie into streak/stats).
+
+** Videos browse page (=#/videos=)
+
+=VideoList= component. Card grid of all 370 videos with skill tag
+pills and a ▶ icon. Click navigates to =#/v/<slug>=.
+
+** Video view (=#/v/<slug>=)
+
+=VideoView= component. Header bar with back-link and video title,
+then a native =<video>= player (autoplay, controls, download
+fallback link). Full-bleed, black background.
+
+** Score screen suggestions (=PracticeTest=)
+
+After a practice test, =GameSuggestions= shows skill-matched games
+between the missed-questions lesson and the back button. Only appears
+when games match the test's chapter skills.
+
+** Resources button (=WhiteboardPanel=)
+
+=📚 Resources= button sits next to =🧮 Calc= in the solution
+toolbar. Always visible; disabled during practice tests (=testMode=
+prop, 2026-10-14). Opens a collapsible panel listing games and
+videos, with skill-matched entries sorted first. Video matching uses
+per-solution skills when available, falling back to chapter skills.
+
+* Routing
+
+| Hash              | Route kind | Component |
+|-------------------+------------+-----------|
+| =#/games=         | =games=    | GameList  |
+| =#/g/<slug>=      | =game=     | GameView  |
+| =#/videos=        | =videos=   | VideoList |
+| =#/v/<slug>=      | =video=    | VideoView |
+
+Added to =routing.ts=, =App.tsx=, =DefaultShell.tsx= (nav + section
+mapping), and =Hub/index.tsx= (tile).
+
+Skill-filtered practice tests: =#/t/<subject>/skills/<s1>,<s2>,...=
+(=hashFor.testSkills=). Linked from game cards ("Practice these
+skills") and the game view's related-subjects bar.
+
+* postMessage protocol
+
+Games post messages to the parent window to integrate with the tutor:
+
+| Message type        | Data                   | Direction     | Purpose                                               |
+|---------------------+------------------------+---------------+-------------------------------------------------------|
+| =cm_game_problem=   | ={ problem: string }=  | game → tutor  | Sets the current problem text; enables Explain button  |
+| =cm_game_score=     | TBD                    | game → tutor  | Future: score/play tracking                            |
+
+When =cm_game_problem= fires with a non-null =problem=, the Explain
+button appears in the game view header. When it fires with =null= (or
+the game clears the problem), the explain panel dismisses.
+
+* Open items
+
+- [ ] Thumbnails for game cards
+- [ ] =cm_game_score= postMessage integration for streak/stats
+- [ ] =ChapterSkillTagger= in the assembler (automate skill tagging
+  at build time instead of the one-off script)
+- [ ] Add =cm_game_problem= support to Number Cop (the only game
+  without it)
+- [ ] Explore adding more local games
+- [ ] Score/play tracking (tie game sessions into streak/stats)

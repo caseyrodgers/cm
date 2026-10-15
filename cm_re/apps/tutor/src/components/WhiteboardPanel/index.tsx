@@ -316,7 +316,7 @@ function Calculator({ onClose }: { onClose: () => void }) {
   );
 }
 
-export default function WhiteboardPanel({ pid, subjectId, skills: solutionSkills }: { pid: string; subjectId?: string; skills?: string[] }) {
+export default function WhiteboardPanel({ pid, subjectId, skills: solutionSkills, testMode }: { pid: string; subjectId?: string; skills?: string[]; testMode?: boolean }) {
   const [open, setOpen] = useState(false);
   const [calcOpen, setCalcOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
@@ -626,6 +626,7 @@ export default function WhiteboardPanel({ pid, subjectId, skills: solutionSkills
           variant={resourcesOpen ? "default" : "outline"}
           onClick={() => setResourcesOpen((v) => !v)}
           aria-pressed={resourcesOpen}
+          disabled={testMode}
         >
           📚 Resources
         </Button>
