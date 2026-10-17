@@ -702,12 +702,29 @@ public final class AiService {
         try {
             AiLog.logRequest("inferSkills", safePid, prompt, null);
             String text = claude.complete(prompt, List.of(), 0.1);
+            System.err.println("inferSkills raw response: " + text.substring(0, Math.min(text.length(), 300)));
             String cleaned = text.strip();
             if (cleaned.startsWith("```")) {
                 int nl = cleaned.indexOf('\n');
                 int last = cleaned.lastIndexOf("```");
                 if (nl >= 0 && last > nl) cleaned = cleaned.substring(nl + 1, last).strip();
             }
+            int bracketStart = cleaned.indexOf('[');
+            if (bracketStart < 0) {
+                System.err.println("inferSkills: no JSON array in response");
+                return skillsPayload(safePid, "[]", false);
+            }
+            int depth = 0;
+            int bracketEnd = -1;
+            for (int i = bracketStart; i < cleaned.length(); i++) {
+                char ch = cleaned.charAt(i);
+                if (ch == '[') depth++;
+                else if (ch == ']') { depth--; if (depth == 0) { bracketEnd = i; break; } }
+            }
+            if (bracketEnd < 0) {
+                return skillsPayload(safePid, "[]", false);
+            }
+            cleaned = cleaned.substring(bracketStart, bracketEnd + 1);
             JsonElement parsed = JsonParser.parseString(cleaned);
             if (!parsed.isJsonArray()) {
                 return skillsPayload(safePid, "[]", false);
