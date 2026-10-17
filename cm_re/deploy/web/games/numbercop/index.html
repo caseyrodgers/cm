@@ -1,25 +1,358 @@
 <!DOCTYPE html>
- 
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title>Demo</title>
-    <script src="lib/phaser.min.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Number Cop</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:#0f172a;color:#e2e8f0;
+  min-height:100vh;display:flex;justify-content:center;
+  overflow-x:hidden;
+}
+#game{width:100%;max-width:420px;padding:16px}
 
-    <script src="js/app.js"></script>
-    <style>
-        body{
-            margin: 0;
-            padding: 0;
-        }
-        #game{
-            display: block;
-            margin:auto;
-        }
-    </style>
+.start{text-align:center;padding-top:40px}
+.start h1{font-size:2rem;color:#3b82f6;margin-bottom:4px}
+.start .sub{color:#94a3b8;margin-bottom:28px;font-size:.95rem}
+.diff-grid{display:flex;flex-direction:column;gap:10px}
+.diff-btn{
+  padding:14px 16px;border:1.5px solid #334155;border-radius:12px;
+  background:#1e293b;color:#e2e8f0;cursor:pointer;text-align:left;
+  transition:border-color .2s;font-family:inherit;
+}
+.diff-btn:hover{border-color:#3b82f6}
+.diff-btn .dt{font-weight:700;font-size:1.05rem;margin-bottom:2px}
+.diff-btn .dd{font-size:.82rem;color:#94a3b8}
+
+.hud{display:flex;justify-content:space-between;font-size:.85rem;color:#94a3b8;margin-bottom:6px}
+.hud b{color:#e2e8f0}
+.hud .streak{color:#f59e0b}
+.prog{width:100%;height:4px;background:#1e293b;border-radius:2px;margin-bottom:8px;overflow:hidden}
+.prog-fill{height:100%;background:#3b82f6;border-radius:2px;transition:width .3s}
+.pills{display:flex;gap:6px;justify-content:center;margin-bottom:10px}
+.pill{width:28px;height:5px;border-radius:3px;background:#334155;transition:background .3s}
+.pill.on{background:#3b82f6}
+
+.card{
+  text-align:center;padding:28px 16px;margin-bottom:10px;
+  background:#1e293b;border-radius:16px;border:1.5px solid #334155;
+  animation:cardIn .25s ease-out;
+}
+.card-num{font-size:3.5rem;font-weight:800;color:#e2e8f0;line-height:1.1}
+.card-q{font-size:1.15rem;font-weight:600;color:#3b82f6;margin-top:10px}
+
+.timer{width:100%;height:5px;background:#1e293b;border-radius:3px;margin-bottom:12px;overflow:hidden}
+.timer-fill{height:100%;border-radius:3px;width:100%}
+.timer-ok{background:#3b82f6}
+.timer-warn{background:#f59e0b}
+.timer-danger{background:#ef4444}
+
+.ans-row{display:flex;gap:10px;justify-content:center;margin-bottom:6px}
+.btn-catch,.btn-pass{
+  flex:1;max-width:160px;padding:14px 16px;font-size:1.1rem;font-weight:700;
+  border:none;border-radius:10px;cursor:pointer;font-family:inherit;
+  transition:transform .1s;
+}
+.btn-catch{background:#22c55e;color:#fff}
+.btn-catch:hover{background:#16a34a}
+.btn-catch:active{transform:scale(.96)}
+.btn-pass{background:#334155;color:#94a3b8}
+.btn-pass:hover{background:#475569;color:#e2e8f0}
+.btn-pass:active{transform:scale(.96)}
+.btn-catch:disabled,.btn-pass:disabled{opacity:.5;cursor:default;transform:none}
+
+.fb{text-align:center;min-height:22px;font-size:.9rem;font-weight:600;margin:4px 0}
+.fb.ok{color:#22c55e}.fb.no{color:#ef4444}.fb.hint{color:#f59e0b}
+.fb .meta{color:#94a3b8;font-weight:400}
+
+.end{text-align:center;padding-top:40px}
+.end h2{font-size:1.8rem;color:#3b82f6;margin-bottom:20px}
+.end-stats{display:flex;flex-direction:column;gap:10px;max-width:220px;margin:0 auto 24px}
+.es{display:flex;justify-content:space-between;font-size:1.05rem}
+.es .l{color:#94a3b8}.es .v{font-weight:700}
+.btn-play{
+  padding:14px 32px;font-size:1.1rem;font-weight:700;border:none;border-radius:10px;
+  background:#3b82f6;color:#fff;cursor:pointer;font-family:inherit;
+}
+.btn-play:hover{background:#2563eb}
+
+.lvl-toast{
+  position:fixed;top:38%;left:50%;transform:translate(-50%,-50%) scale(.5);
+  font-size:1.6rem;font-weight:800;color:#f59e0b;
+  text-shadow:0 0 20px rgba(245,158,11,.4);
+  animation:toast 1.3s ease-out forwards;pointer-events:none;z-index:100;
+}
+@keyframes toast{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}
+  25%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+  55%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-65%) scale(1)}
+}
+@keyframes cardIn{
+  0%{opacity:0;transform:translateY(20px) scale(.92)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+</style>
 </head>
 <body>
-    
-    <div id="game" style="width:100vw;height:100vh;"></div>
+<div id="game"></div>
+<script>
+'use strict';
+
+var TOTAL=15,STREAK_LVL=4;
+var TIMER_S=[10,7,5];
+var G=document.getElementById('game');
+var S={screen:'start',level:1,auto:true,score:0,correct:0,total:0,streak:0,best:0,
+       prob:null,rafId:null,tStart:0,tLen:0};
+
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function pk(a){return a[Math.floor(Math.random()*a.length)]}
+
+function isPrime(n){
+  if(n<2)return false;if(n<4)return true;
+  if(n%2===0||n%3===0)return false;
+  for(var i=5;i*i<=n;i+=6)if(n%i===0||n%(i+2)===0)return false;
+  return true;
+}
+function isSquare(n){if(n<0)return false;var s=Math.sqrt(n);return s===Math.floor(s)}
+function smallFactor(n){for(var i=2;i*i<=n;i++)if(n%i===0)return i;return n}
+
+function genMultiple(lv){
+  var bases=lv<=1?[2,3,4,5]:lv===2?[3,4,5,6,7]:[5,6,7,8,9,11,12];
+  var base=pk(bases);
+  var isYes=Math.random()<0.5;
+  var n,maxK=Math.min(15,Math.floor(150/base));
+  if(isYes){
+    n=base*ri(2,maxK);
+  }else{
+    do{n=ri(base+1,base*maxK)}while(n%base===0);
+  }
+  var ex=isYes?base+' × '+(n/base)+' = '+n:'not divisible by '+base;
+  return{number:n,question:'Multiple of '+base+'?',answer:isYes,explain:ex};
+}
+
+function genPrime(lv){
+  var isYes=Math.random()<0.5;
+  var primes=[2,3,5,7,11,13,17,19,23,29,31,37,41,43,47];
+  if(lv>=3)primes=primes.concat([53,59,61,67,71,73,79,83,89,97]);
+  var n;
+  if(isYes){
+    n=pk(primes);
+  }else{
+    do{n=ri(4,lv>=3?100:50)}while(isPrime(n));
+  }
+  var ex=isYes?n+' is prime':n+' = '+smallFactor(n)+' × '+(n/smallFactor(n));
+  return{number:n,question:'Prime number?',answer:isYes,explain:ex};
+}
+
+function genSquare(lv){
+  var isYes=Math.random()<0.5;
+  var maxR=lv>=3?15:12;
+  var n;
+  if(isYes){
+    var root=ri(2,maxR);n=root*root;
+  }else{
+    do{n=ri(2,maxR*maxR+10)}while(isSquare(n));
+  }
+  var ex;
+  if(isYes){
+    ex=Math.round(Math.sqrt(n))+'² = '+n;
+  }else{
+    var lo=Math.floor(Math.sqrt(n));
+    ex='between '+lo+'² = '+(lo*lo)+' and '+(lo+1)+'² = '+((lo+1)*(lo+1));
+  }
+  return{number:n,question:'Perfect square?',answer:isYes,explain:ex};
+}
+
+function gen(lv){
+  if(lv===1)return genMultiple(1);
+  if(lv===2)return Math.random()<0.5?genPrime(2):genSquare(2);
+  var r=Math.random();
+  if(r<0.35)return genMultiple(3);
+  if(r<0.65)return genPrime(3);
+  return genSquare(3);
+}
+
+function startTimer(){
+  S.tLen=TIMER_S[S.level-1]*1000;
+  S.tStart=performance.now();
+  tick();
+}
+function stopTimer(){if(S.rafId){cancelAnimationFrame(S.rafId);S.rafId=null}}
+function tick(){
+  var bar=document.getElementById('tbar');
+  if(!bar)return;
+  var pct=Math.max(0,(1-(performance.now()-S.tStart)/S.tLen))*100;
+  bar.style.width=pct+'%';
+  bar.className='timer-fill '+(pct>40?'timer-ok':pct>15?'timer-warn':'timer-danger');
+  if(pct<=0){timeUp();return}
+  S.rafId=requestAnimationFrame(tick);
+}
+function timeUp(){
+  stopTimer();disableBtns();
+  S.streak=0;S.total++;
+  var fb=document.getElementById('fb'),p=S.prob;
+  fb.innerHTML='Time! '+(p.answer?'Yes':'No')+' — <span class="meta">'+p.explain+'</span>';
+  fb.className='fb hint';
+  advance();
+}
+function disableBtns(){
+  var c=document.getElementById('bcatch'),p=document.getElementById('bpass');
+  if(c)c.disabled=true;if(p)p.disabled=true;
+}
+function advance(){
+  if(S.total>=TOTAL)setTimeout(function(){S.screen='end';render()},1200);
+  else setTimeout(function(){nextProb();renderPlay()},1200);
+}
+
+function render(){
+  stopTimer();
+  if(S.screen==='start')renderStart();
+  else if(S.screen==='play')renderPlay();
+  else renderEnd();
+}
+
+function renderStart(){
+  notifyClear();
+  G.innerHTML=
+    '<div class="start">'+
+    '<h1>Number Cop</h1>'+
+    '<p class="sub">Catch the right numbers — let the rest pass!</p>'+
+    '<div class="diff-grid">'+
+    '<button class="diff-btn" data-l="0"><div class="dt">Auto Mode</div><div class="dd">Starts with multiples, levels up as you streak</div></button>'+
+    '<button class="diff-btn" data-l="1"><div class="dt">Catch Multiples</div><div class="dd">Is it a multiple of 3? of 5? Spot them fast</div></button>'+
+    '<button class="diff-btn" data-l="2"><div class="dt">Primes & Squares</div><div class="dd">Identify prime numbers and perfect squares</div></button>'+
+    '<button class="diff-btn" data-l="3"><div class="dt">Number Sort</div><div class="dd">All types mixed — multiples, primes, and squares</div></button>'+
+    '</div></div>';
+  var btns=G.querySelectorAll('.diff-btn');
+  for(var i=0;i<btns.length;i++){
+    btns[i].onclick=function(){
+      var lv=+this.getAttribute('data-l');
+      S.auto=lv===0;S.level=lv===0?1:lv;
+      startGame();
+    };
+  }
+}
+
+function startGame(){
+  S.screen='play';S.score=0;S.correct=0;S.total=0;S.streak=0;S.best=0;
+  nextProb();render();
+}
+function nextProb(){S.prob=gen(S.level);notifyProblem()}
+
+function notifyProblem(){
+  if(!window.parent||window.parent===window)return;
+  window.parent.postMessage({type:'cm_game_problem',problem:S.prob.number+': '+S.prob.question},'*');
+}
+function notifyClear(){
+  if(!window.parent||window.parent===window)return;
+  window.parent.postMessage({type:'cm_game_problem',problem:null},'*');
+}
+
+function renderPlay(){
+  stopTimer();
+  var p=S.prob,pct=(S.total/TOTAL)*100;
+  var st=S.streak>=2?'🚔 ':'';
+  G.innerHTML=
+    '<div class="hud">'+
+    '<span>Score: <b>'+S.score+'</b></span>'+
+    '<span>Level <b>'+S.level+'</b></span>'+
+    '<span class="'+(S.streak>=2?'streak':'')+'">'+st+'Streak: <b>'+S.streak+'</b></span>'+
+    '</div>'+
+    '<div class="prog"><div class="prog-fill" style="width:'+pct+'%"></div></div>'+
+    '<div class="pills">'+
+    '<div class="pill'+(S.level>=1?' on':'')+'"></div>'+
+    '<div class="pill'+(S.level>=2?' on':'')+'"></div>'+
+    '<div class="pill'+(S.level>=3?' on':'')+'"></div>'+
+    '</div>'+
+    '<div class="card">'+
+    '<div class="card-num">'+p.number+'</div>'+
+    '<div class="card-q">'+p.question+'</div>'+
+    '</div>'+
+    '<div class="timer"><div class="timer-fill timer-ok" id="tbar"></div></div>'+
+    '<div class="ans-row">'+
+    '<button class="btn-catch" id="bcatch">✓ Catch!</button>'+
+    '<button class="btn-pass" id="bpass">✗ Pass</button>'+
+    '</div>'+
+    '<div class="fb" id="fb"></div>';
+  document.getElementById('bcatch').onclick=function(){answer(true)};
+  document.getElementById('bpass').onclick=function(){answer(false)};
+  startTimer();
+}
+
+document.addEventListener('keydown',function(e){
+  if(S.screen!=='play')return;
+  var c=document.getElementById('bcatch');
+  if(!c||c.disabled)return;
+  if(e.key==='Enter'||e.key==='y'||e.key==='Y'||e.key===' ')answer(true);
+  else if(e.key==='n'||e.key==='N')answer(false);
+});
+
+function answer(said){
+  stopTimer();disableBtns();
+  var p=S.prob,ok=said===p.answer;
+  var fb=document.getElementById('fb');
+  if(ok){
+    var pts=10*S.level;
+    var elapsed=performance.now()-S.tStart;
+    var remain=Math.max(0,1-elapsed/S.tLen);
+    var bonus=Math.round(remain*5*S.level);
+    pts+=bonus;
+    S.score+=pts;S.correct++;S.streak++;
+    if(S.streak>S.best)S.best=S.streak;
+    if(S.auto&&S.streak>0&&S.streak%STREAK_LVL===0&&S.level<3){
+      S.level++;showToast('Level '+S.level+'!');
+    }
+    fb.innerHTML='Correct! +'+pts+(bonus>0?' <span class="meta">(+'+bonus+' speed)</span>':'');
+    fb.className='fb ok';
+  }else{
+    S.streak=0;
+    fb.innerHTML='Nope — '+(p.answer?'Yes':'No')+' <span class="meta">('+p.explain+')</span>';
+    fb.className='fb no';
+  }
+  S.total++;
+  advance();
+}
+
+function showToast(msg){
+  var t=document.createElement('div');t.className='lvl-toast';t.textContent=msg;
+  document.body.appendChild(t);setTimeout(function(){t.remove()},1400);
+}
+
+function renderEnd(){
+  notifyClear();
+  var acc=S.total>0?Math.round(S.correct/S.total*100):0;
+  G.innerHTML=
+    '<div class="end">'+
+    '<h2>Round Complete!</h2>'+
+    '<div class="end-stats">'+
+    '<div class="es"><span class="l">Score</span><span class="v">'+S.score+'</span></div>'+
+    '<div class="es"><span class="l">Correct</span><span class="v">'+S.correct+' / '+S.total+'</span></div>'+
+    '<div class="es"><span class="l">Accuracy</span><span class="v">'+acc+'%</span></div>'+
+    '<div class="es"><span class="l">Best Streak</span><span class="v">'+S.best+'</span></div>'+
+    '<div class="es"><span class="l">Final Level</span><span class="v">'+S.level+'</span></div>'+
+    '</div>'+
+    '<button class="btn-play" id="replay">Play Again</button>'+
+    '</div>';
+  document.getElementById('replay').onclick=function(){S.screen='start';render()};
+}
+
+var QP=new URLSearchParams(window.location.search);
+var qType=QP.get('type');
+if(qType){
+  if(qType==='prime-composite'||qType==='perfect-squares')S.level=2;
+  else if(qType==='rationals')S.level=3;
+  else S.level=1;
+  var qd=parseInt(QP.get('difficulty')||'',10);
+  if(qd>=1&&qd<=3)S.level=qd;
+  S.auto=false;
+  startGame();
+}else{
+  render();
+}
+</script>
 </body>
 </html>

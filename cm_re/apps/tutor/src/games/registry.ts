@@ -22,7 +22,7 @@ export const GAMES: GameEntry[] = [
   {
     slug: "numbercop",
     title: "Number Cop",
-    description: "Drive through multiples, primes, and perfect squares",
+    description: "Catch multiples, primes, and perfect squares before time runs out",
     url: "/games/numbercop/index.html",
     skills: ["least-common-multiples", "prime-composite", "perfect-squares", "rationals"],
     gradeRange: [5, 9],
