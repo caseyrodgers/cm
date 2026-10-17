@@ -10,26 +10,34 @@ import { Spinner } from "../ui/spinner";
 
 type State =
   | { status: "loading" }
-  | { status: "found"; solution: Solution }
+  | { status: "found"; solution: Solution; live?: boolean }
   | { status: "missing" };
 
-/**
- * Resolves a `#/s/<pid>` deep link: reads the solution out of IndexedDB
- * by pid and hands it to SolutionNav. If the module that contains it
- * isn't installed, `getSolution` returns undefined and we say so rather
- * than rendering a blank — the pid alone doesn't tell us which subject
- * to offer for download (pids aren't reliably subject-prefixed), so the
- * fallback just routes back to the picker.
- */
+async function fetchLive(pid: string): Promise<Solution | undefined> {
+  try {
+    const res = await fetch(`/api/editor/solutions/${encodeURIComponent(pid)}`);
+    if (!res.ok) return undefined;
+    return await res.json();
+  } catch {
+    return undefined;
+  }
+}
+
 export default function SolutionLoader({ pid }: { pid: string }) {
   const [state, setState] = useState<State>({ status: "loading" });
 
   useEffect(() => {
     let cancelled = false;
     setState({ status: "loading" });
-    getSolution(pid).then((solution) => {
+    fetchLive(pid).then(async (live) => {
       if (cancelled) return;
-      setState(solution ? { status: "found", solution } : { status: "missing" });
+      if (live) {
+        setState({ status: "found", solution: live, live: true });
+        return;
+      }
+      const cached = await getSolution(pid);
+      if (cancelled) return;
+      setState(cached ? { status: "found", solution: cached } : { status: "missing" });
     });
     return () => {
       cancelled = true;

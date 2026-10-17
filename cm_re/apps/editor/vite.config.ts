@@ -12,9 +12,12 @@ import react from "@vitejs/plugin-react";
 // `make editor-dev` runs the Vite dev server below (HMR) on :5174,
 // proxying /api to the Java server on :5173 — only for actively
 // hacking the editor UI.
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   base: "/editor/",
   plugins: [react()],
+  define: {
+    __TUTOR_ORIGIN__: JSON.stringify(command === "serve" ? "http://localhost:5173" : ""),
+  },
   server: {
     port: 5174,
     proxy: {
@@ -22,4 +25,4 @@ export default defineConfig({
       "/modules": "http://localhost:5173",
     },
   },
-});
+}));

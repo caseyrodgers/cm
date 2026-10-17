@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import SolutionList from "./components/SolutionList";
 import SolutionView from "./components/SolutionView";
+import { BUILD_NUMBER } from "./buildNumber";
 
 /**
  * Top-level shell. Hash routing, no library:
@@ -28,6 +29,7 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <a href="#/" className="app-title">Catchup Math · Solution Editor</a>
+        <span className="app-build">build {BUILD_NUMBER}</span>
       </header>
       <main className="app-main">
         {pid ? (

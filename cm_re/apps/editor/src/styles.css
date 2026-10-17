@@ -29,7 +29,9 @@ a { color: var(--deep); }
   background: #fff;
   border-bottom: 1px solid var(--line);
 }
+.app-header { display: flex; align-items: center; justify-content: space-between; }
 .app-title { font-weight: 600; text-decoration: none; color: var(--deep); }
+.app-build { font-size: 11px; color: var(--muted); }
 
 .app-main { max-width: 900px; margin: 0 auto; padding: 20px; }
 
@@ -116,11 +118,76 @@ a { color: var(--deep); }
 .tutor-link {
   display: inline-block;
   margin: 4px 0 8px;
+  font: inherit;
   font-size: 13px;
   color: var(--blue);
-  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 .tutor-link:hover { text-decoration: underline; }
+
+.tutor-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0,0,0,.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tutor-popup {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.25);
+  width: min(90vw, 480px);
+  height: min(85vh, 820px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.tutor-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.tutor-popup-title {
+  font-size: 13px;
+  color: var(--muted);
+}
+.tutor-popup-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.tutor-popup-fullscreen, .tutor-popup-close {
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 2px 4px;
+}
+.tutor-popup-close { font-size: 20px; }
+.tutor-popup-fullscreen:hover, .tutor-popup-close:hover { color: var(--text); }
+.tutor-popup-frame {
+  flex: 1;
+  border: none;
+  width: 100%;
+}
+.tutor-popup-full {
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  max-width: none;
+  max-height: none;
+}
 
 .meta { display: flex; flex-wrap: wrap; gap: 4px 24px; margin: 0 0 16px; }
 .meta > div { display: flex; gap: 6px; }

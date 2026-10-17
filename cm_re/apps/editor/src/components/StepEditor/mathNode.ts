@@ -58,6 +58,8 @@ export const MathNode = Node.create({
 
   addNodeView() {
     return ({ node, editor, getPos }) => {
+      let latestHtml = node.attrs.html as string;
+
       const wrapper = document.createElement("span");
       wrapper.className = "math-node";
       wrapper.contentEditable = "false";
@@ -65,13 +67,12 @@ export const MathNode = Node.create({
 
       const render = document.createElement("span");
       render.className = "math-node-render";
-      render.innerHTML = node.attrs.html as string;
+      render.innerHTML = latestHtml;
       wrapper.appendChild(render);
 
       wrapper.addEventListener("click", () => {
-        const current = node.attrs.html as string;
-        openRawEditor(current, { title: "Edit MathML", mode: "mathml" }).then((next) => {
-          if (next == null || next === current) return;
+        openRawEditor(latestHtml, { title: "Edit MathML", mode: "mathml" }).then((next) => {
+          if (next == null || next === latestHtml) return;
           const pos = typeof getPos === "function" ? getPos() : null;
           if (pos == null) return;
           editor
@@ -88,7 +89,8 @@ export const MathNode = Node.create({
         dom: wrapper,
         update: (updatedNode) => {
           if (updatedNode.type.name !== "math") return false;
-          render.innerHTML = updatedNode.attrs.html as string;
+          latestHtml = updatedNode.attrs.html as string;
+          render.innerHTML = latestHtml;
           return true;
         },
       };

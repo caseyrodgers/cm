@@ -37,10 +37,21 @@ export default function SolutionView({ pid, onBack }: { pid: string; onBack: () 
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [inferring, setInferring] = useState(false);
   const skillInputRef = useRef<HTMLInputElement>(null);
+  const [tutorOpen, setTutorOpen] = useState(false);
+  const [tutorFull, setTutorFull] = useState(false);
   const [chapterInfo, setChapterInfo] = useState<ChapterInfo | null>(null);
   const [dirty, setDirty] = useState(false);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [saveError, setSaveError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!tutorOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") { setTutorOpen(false); setTutorFull(false); }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [tutorOpen]);
 
   useEffect(() => {
     setSol(null);
@@ -239,15 +250,14 @@ export default function SolutionView({ pid, onBack }: { pid: string; onBack: () 
                   that pid's subject module is already downloaded in whatever
                   browser tab it opens in — the tutor has no live single-pid
                   fetch, IndexedDB-only. */}
-              <a
+              <button
+                type="button"
                 className="tutor-link"
-                href={`/#/s/${encodeURIComponent(sol.pid)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Opens in the tutor app — only shows content if this solution's subject is already downloaded there"
+                onClick={() => setTutorOpen(true)}
+                title="Preview this solution in the tutor"
               >
-                Open in tutor ↗
-              </a>
+                Show in tutor ↗
+              </button>
               <dl className="meta">
                 <div><dt>subject</dt><dd>{sol.subjectId}</dd></div>
                 <div><dt>format version</dt><dd>{sol.version}</dd></div>
@@ -454,6 +464,30 @@ export default function SolutionView({ pid, onBack }: { pid: string; onBack: () 
           <p className="muted read-only-note">
             Widget slot isn't editable yet — everything else on this page is.
           </p>
+
+          {tutorOpen && (
+            <div className="tutor-overlay" onClick={() => { setTutorOpen(false); setTutorFull(false); }}>
+              <div className={`tutor-popup${tutorFull ? " tutor-popup-full" : ""}`} onClick={(e) => e.stopPropagation()}>
+                <div className="tutor-popup-header">
+                  <span className="tutor-popup-title">Tutor preview — {sol.pid}</span>
+                  <span className="tutor-popup-actions">
+                    <button
+                      type="button"
+                      className="tutor-popup-fullscreen"
+                      onClick={() => setTutorFull((f) => !f)}
+                      title={tutorFull ? "Exit full screen" : "Full screen"}
+                    >{tutorFull ? "⧉" : "⛶"}</button>
+                    <button type="button" className="tutor-popup-close" onClick={() => { setTutorOpen(false); setTutorFull(false); }}>×</button>
+                  </span>
+                </div>
+                <iframe
+                  className="tutor-popup-frame"
+                  src={`${__TUTOR_ORIGIN__}/#/s/${encodeURIComponent(sol.pid)}`}
+                  title="Tutor preview"
+                />
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>

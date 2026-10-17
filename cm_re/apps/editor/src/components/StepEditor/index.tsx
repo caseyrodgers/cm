@@ -90,7 +90,7 @@ export default function StepEditor({
     openRawEditor(editor!.getHTML(), { title: "Edit step HTML" }).then((next) => {
       if (next == null) return;
       editor!.commands.setContent(next, false);
-      onChange(next);
+      onChange(editor!.getHTML());
     });
   }
 

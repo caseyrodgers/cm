@@ -60,6 +60,8 @@ export const DivBlock = Node.create({
 
   addNodeView() {
     return ({ node, editor, getPos }) => {
+      let latestHtml = node.attrs.html as string;
+
       const wrapper = document.createElement("div");
       wrapper.className = "div-block-node";
       wrapper.contentEditable = "false";
@@ -72,14 +74,12 @@ export const DivBlock = Node.create({
 
       const preview = document.createElement("code");
       preview.className = "div-block-preview";
-      const raw = node.attrs.html as string;
-      preview.textContent = raw.length > 120 ? raw.slice(0, 120) + "…" : raw;
+      preview.textContent = latestHtml.length > 120 ? latestHtml.slice(0, 120) + "…" : latestHtml;
       wrapper.appendChild(preview);
 
       wrapper.addEventListener("click", () => {
-        const current = node.attrs.html as string;
-        openRawEditor(current, { title: "Edit HTML block" }).then((next) => {
-          if (next == null || next === current) return;
+        openRawEditor(latestHtml, { title: "Edit HTML block" }).then((next) => {
+          if (next == null || next === latestHtml) return;
           const pos = typeof getPos === "function" ? getPos() : null;
           if (pos == null) return;
           editor
@@ -96,8 +96,8 @@ export const DivBlock = Node.create({
         dom: wrapper,
         update: (updatedNode) => {
           if (updatedNode.type.name !== "divBlock") return false;
-          const html = updatedNode.attrs.html as string;
-          preview.textContent = html.length > 120 ? html.slice(0, 120) + "…" : html;
+          latestHtml = updatedNode.attrs.html as string;
+          preview.textContent = latestHtml.length > 120 ? latestHtml.slice(0, 120) + "…" : latestHtml;
           return true;
         },
       };
