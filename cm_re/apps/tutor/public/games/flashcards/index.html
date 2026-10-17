@@ -125,6 +125,8 @@ var S={screen:'start',level:1,auto:true,score:0,correct:0,total:0,streak:0,best:
 
 function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function pk(a){return a[Math.floor(Math.random()*a.length)]}
+var CHEERS=['Correct!','Nice!','Nailed it!','Awesome!','Yes!','Boom!','Great!','Right on!','Crushed it!'];
+function cheer(){return pk(CHEERS)}
 function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=b;b=a%b;a=t}return a}
 function lcm(a,b){return a/gcd(a,b)*b}
 function simp(n,d){var g=gcd(Math.abs(n),Math.abs(d));return[n/g,d/g]}
@@ -297,7 +299,7 @@ function check(){
 
     numI.disabled=true;denI.disabled=true;
     document.getElementById('chk').disabled=true;
-    var msg='Correct! +'+pts;
+    var msg=cheer()+' +'+pts;
     if(!isSimplified)msg+=' <span class="meta">(simplifies to '+s[0]+'/'+s[1]+')</span>';
     fb.innerHTML=msg;fb.className='fb ok';
 

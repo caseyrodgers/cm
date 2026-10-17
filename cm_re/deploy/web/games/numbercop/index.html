@@ -119,6 +119,8 @@ function isPrime(n){
 }
 function isSquare(n){if(n<0)return false;var s=Math.sqrt(n);return s===Math.floor(s)}
 function smallFactor(n){for(var i=2;i*i<=n;i++)if(n%i===0)return i;return n}
+var CHEERS=['Correct!','Nice!','Nailed it!','Awesome!','Yes!','Boom!','Great!','Right on!','Crushed it!'];
+function cheer(){return pk(CHEERS)}
 
 function genMultiple(lv){
   var bases=lv<=1?[2,3,4,5]:lv===2?[3,4,5,6,7]:[5,6,7,8,9,11,12];
@@ -306,7 +308,7 @@ function answer(said){
     if(S.auto&&S.streak>0&&S.streak%STREAK_LVL===0&&S.level<3){
       S.level++;showToast('Level '+S.level+'!');
     }
-    fb.innerHTML='Correct! +'+pts+(bonus>0?' <span class="meta">(+'+bonus+' speed)</span>':'');
+    fb.innerHTML=cheer()+' +'+pts+(bonus>0?' <span class="meta">(+'+bonus+' speed)</span>':'');
     fb.className='fb ok';
   }else{
     S.streak=0;

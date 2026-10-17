@@ -145,6 +145,8 @@ var S={screen:'start',level:1,auto:true,score:0,correct:0,total:0,streak:0,best:
 
 function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function pk(a){return a[Math.floor(Math.random()*a.length)]}
+var CHEERS=['Correct!','Nice!','Nailed it!','Awesome!','Yes!','Boom!','Great!','Right on!','Crushed it!'];
+function cheer(){return pk(CHEERS)}
 function fm(n){return n<0?M+Math.abs(n):''+n}
 function fc(c){if(c===1)return'';if(c===-1)return M;return c<0?M+Math.abs(c):''+c}
 function fp(n){if(n===0)return'';return n>0?' + '+n:' '+M+' '+Math.abs(n)}
@@ -323,7 +325,7 @@ function checkAns(){
     setScale(0);
     document.getElementById('panL').className='pan pan-l glow-ok';
     document.getElementById('panR').className='pan pan-r glow-ok';
-    fb.textContent=bonus>0?'Correct! +'+(pts+bonus)+' (streak bonus!)':'Correct! +'+pts;
+    fb.textContent=bonus>0?cheer()+' +'+(pts+bonus)+' (streak bonus!)':cheer()+' +'+pts;
     fb.className='fb ok';
 
     if(S.auto&&S.streak>0&&S.streak%STREAK_LVL===0&&S.level<3){
